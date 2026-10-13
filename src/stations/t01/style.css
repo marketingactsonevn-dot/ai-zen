@@ -1,0 +1,1036 @@
+/* Trạm 1 — AI là gì? Scoped under .player. */
+
+/* ───────── Scene 1 · sand → brain of light threads ───────── */
+.player .t1-brain {
+  --p: 0;
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  touch-action: none;
+  border-radius: var(--r-lg);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.player .t1-brain.is-gathered {
+  cursor: grab;
+}
+.player .t1-brain.is-grabbing {
+  cursor: grabbing;
+}
+.player .t1-brain:focus-visible {
+  outline-offset: -2px;
+}
+.player .t1-brain .stage-canvas {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* the sand bed fades out by itself (shader); the mask only softens the frame's edges, never a stone */
+  -webkit-mask: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(transparent, #000 5%, #000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(transparent, #000 5%, #000 90%, transparent);
+  mask-composite: intersect;
+}
+/* dawn light behind the brain */
+.player .t1-halo {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 44%;
+  width: min(90vmin, 820px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(calc(0.7 + var(--p) * 0.3));
+  background: radial-gradient(closest-side, var(--card), transparent);
+  opacity: calc(var(--p) * 0.35);
+  pointer-events: none;
+}
+:root[data-theme='dark'] .player .t1-mist {
+  background: linear-gradient(transparent, color-mix(in srgb, var(--paper) 70%, transparent) 46%, transparent);
+}
+/* dawn sun over the garden (a pale moon at night): the focal point before anything is touched */
+.player .t1-sun {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: var(--sy, 42%);
+  width: var(--sd, 30%);
+  height: auto;
+  aspect-ratio: 1;
+  max-width: none;
+  overflow: visible;
+  transform: translate(-50%, -50%) translateY(calc(var(--p) * -8%)) scale(calc(1 + var(--p) * 0.12));
+  opacity: calc(1 - var(--p) * 1.4);
+  pointer-events: none;
+}
+.player .t1-sun {
+  color: color-mix(in srgb, var(--vermilion) 30%, var(--paper));
+}
+:root[data-theme='dark'] .player .t1-sun {
+  color: color-mix(in srgb, var(--ink) 19%, var(--paper));
+}
+:root[data-theme='dark'] .player .t1-sun {
+  filter: drop-shadow(0 0 24px var(--glow-moss));
+}
+:root[data-theme='dark'] .player .t1-halo {
+  background: radial-gradient(closest-side, var(--glow-moss), transparent 72%),
+    radial-gradient(closest-side, color-mix(in srgb, var(--vermilion) 7%, transparent), transparent);
+  opacity: calc(var(--p) * 0.9);
+}
+/* morning mist lying over the far edge of the garden; it lifts as the brain forms */
+.player .t1-mist {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  top: 14%;
+  height: 34%;
+  background: linear-gradient(transparent, color-mix(in srgb, var(--paper) 78%, transparent) 46%, transparent);
+  opacity: calc(1 - var(--p));
+  pointer-events: none;
+}
+.player .t1-hold {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  width: 84px;
+  height: 84px;
+  margin: -42px 0 0 -42px;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.6s var(--ease), transform 0.8s var(--ease);
+}
+.player .t1-brain.is-holding .t1-hold {
+  opacity: 1;
+  transform: scale(1);
+}
+.player .t1-hold-wash {
+  fill: var(--vermilion);
+  fill-opacity: 0.07;
+}
+.player .t1-hold-track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+.player .t1-hold-ring {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+/* the sand ⟷ brain track: appears once the brain has formed; grains on the left gather into one thread on the right */
+.player .t1-scrub {
+  --k: 40px; /* the native thumb: the pebble's hit area */
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(440px, 92%);
+  transform: translateX(-50%);
+  animation: t1-scrub-in 1.2s 0.5s var(--ease) both;
+}
+.player .t1-scrub[hidden] {
+  display: none;
+}
+@keyframes t1-scrub-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+}
+.player .t1-scrub-end {
+  flex: none;
+  font: 400 0.95rem/1 var(--serif);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.player .t1-scrub-track {
+  --v: 0;
+  position: relative;
+  flex: 1 1 auto;
+  height: var(--k);
+}
+.player .t1-scrub-rail {
+  position: absolute;
+  inset: 0;
+}
+.player .t1-scrub-rail::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--k) / 2 - 4px);
+  right: calc(var(--k) / 2);
+  top: 50%;
+  height: 6px;
+  margin-top: -3px;
+  background: radial-gradient(circle, var(--ink-3) 0.9px, transparent 1.6px) 0 50% / 7px 6px repeat-x;
+  -webkit-mask: linear-gradient(90deg, #000 18%, transparent 58%);
+  mask: linear-gradient(90deg, #000 18%, transparent 58%);
+  pointer-events: none;
+}
+.player .t1-scrub-line {
+  position: absolute;
+  left: calc(var(--k) / 2);
+  top: 50%;
+  width: calc(100% - var(--k) + 2px);
+  height: 12px;
+  margin-top: -6px;
+  fill: var(--ink-2);
+  pointer-events: none;
+}
+.player .t1-scrub-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+}
+.player .t1-scrub-input:focus {
+  outline: none;
+}
+.player .t1-scrub-input::-webkit-slider-runnable-track {
+  height: var(--k);
+  background: transparent;
+}
+.player .t1-scrub-input::-webkit-slider-thumb {
+  width: var(--k);
+  height: var(--k);
+  border: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: grab;
+}
+.player .t1-scrub-input::-moz-range-track {
+  height: var(--k);
+  background: transparent;
+}
+.player .t1-scrub-input::-moz-range-thumb {
+  width: var(--k);
+  height: var(--k);
+  border: 0;
+  background: transparent;
+  cursor: grab;
+}
+.player .t1-scrub-knob {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--k) / 2 + (100% - var(--k)) * var(--v));
+  width: 30px;
+  height: 23px;
+  margin: -14px 0 0 -15px;
+  pointer-events: none;
+}
+.player .t1-scrub-knob svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.player .t1-scrub-input:focus-visible + .t1-scrub-knob::after {
+  content: '';
+  position: absolute;
+  inset: -8px -9px -5px;
+  border: 2px solid var(--vermilion);
+  border-radius: 50%;
+}
+.player .t1-scrub.is-vertical {
+  top: 2px;
+  right: 0;
+  bottom: 2px;
+  left: auto;
+  flex-direction: column-reverse;
+  gap: 8px;
+  width: auto;
+  transform: none;
+  animation-name: t1-scrub-in-v;
+}
+@keyframes t1-scrub-in-v {
+  from {
+    opacity: 0;
+  }
+}
+.player .t1-scrub.is-vertical .t1-scrub-track {
+  flex: 1 1 auto;
+  width: var(--k);
+  height: auto;
+  container-type: size;
+}
+.player .t1-scrub.is-vertical .t1-scrub-rail {
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  width: 100cqh;
+  height: var(--k);
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+.player .t1-scrub.is-vertical .t1-scrub-knob svg {
+  transform: rotate(90deg);
+}
+.player .t1-brain.is-static {
+  display: grid;
+  place-items: center;
+  cursor: default;
+}
+.player .t1-fallback {
+  width: min(100%, 520px);
+  height: auto;
+}
+.player .t1-fb-dots {
+  fill: var(--ink);
+}
+.player .t1-fb-rake {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 0.8;
+  opacity: 0.5;
+}
+
+/* ───────── Scene 2 · one letter, four machines ───────── */
+.player .t1-lad {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+.player .t1-lad-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+.player .t1-lad-stage.sand::before {
+  -webkit-mask: var(--sand-svg) repeat, radial-gradient(ellipse 50% 50% at 50% 50%, #000 30%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask: var(--sand-svg) repeat, radial-gradient(ellipse 50% 50% at 50% 50%, #000 30%, transparent 100%);
+  mask-composite: intersect;
+}
+.player .t1-mach {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+.player .t1-open {
+  position: absolute;
+  z-index: 2;
+  inset: 12% 22%;
+  border: 0;
+  border-radius: var(--r-lg);
+  background: none;
+  cursor: pointer;
+}
+.player .t1-open[hidden] {
+  display: none;
+}
+.player .t1-lad-foot {
+  flex: none;
+  display: grid;
+  justify-items: center;
+  padding-top: 2px;
+}
+.player .t1-era {
+  min-height: 1.35em;
+  margin: 0;
+  font: 300 clamp(1.2rem, 2.3vw, 1.8rem) / 1.3 var(--serif);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-align: center;
+}
+.player .t1-path {
+  position: relative;
+  width: min(100%, 780px);
+  height: 74px;
+  touch-action: none;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.player .t1-path.is-dragging {
+  cursor: grabbing;
+}
+.player .t1-rake {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent), linear-gradient(transparent, #000 30%, #000 70%, transparent);
+  -webkit-mask-composite: source-in;
+  mask: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent), linear-gradient(transparent, #000 30%, #000 70%, transparent);
+  mask-composite: intersect;
+}
+.player .t1-rake path,
+.player .t1-rake ellipse {
+  fill: none;
+  stroke-width: 1.2;
+}
+.player .t1-rake-lo {
+  stroke: var(--rake);
+}
+:root[data-theme='dark'] .player .t1-rake {
+  opacity: 0.6;
+}
+.player .t1-rake-hi {
+  stroke: var(--rake-hi);
+  transform: translateY(1.2px);
+}
+.player .t1-stop {
+  position: absolute;
+  top: 56%;
+  width: 62px;
+  height: 34px;
+  margin: -17px 0 0 -31px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  transition: transform 0.5s var(--ease);
+  touch-action: none;
+}
+.player .t1-stop:hover {
+  transform: translateY(-2px);
+}
+/* the stepping stones are painted on canvases (stone.ts); the button itself is only the hit area */
+.player .t1-stop-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.player .t1-stop-art canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 152%;
+  height: auto;
+  transform: translate(-41.8%, -64%);
+}
+.player .t1-stop-art .t1-stop-moss {
+  opacity: 0;
+  transition: opacity 1.2s var(--ease);
+}
+.player .t1-stop.seen .t1-stop-moss {
+  opacity: 1;
+}
+.player .t1-stop::after {
+  content: '';
+  position: absolute;
+  inset: -8px -4px;
+}
+.player .t1-stop.on::before {
+  content: '';
+  position: absolute;
+  inset: -9px -12px;
+  border-radius: 50%;
+  border: 1.5px solid var(--vermilion);
+  opacity: 0;
+  animation: t1-here 2.8s var(--ease-soft) infinite;
+}
+@keyframes t1-here {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(var(--here, 1.5));
+    opacity: 0;
+  }
+}
+.player .t1-pebble {
+  width: 28px;
+  height: 20px;
+  margin: -10px 0 0 -14px;
+}
+.player .t1-pebble::after {
+  inset: -14px -10px;
+}
+.player .t1-marker {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 56%;
+  width: 30px;
+  height: 23px;
+  margin: -24px 0 0 -15px;
+  pointer-events: none;
+}
+.player .t1-marker svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.player .t1-mk-shadow {
+  fill: var(--ink);
+  fill-opacity: 0.16;
+  filter: url(#ink-wash);
+}
+.player .t1-mk-body {
+  fill: var(--ink);
+}
+.player .t1-mk-hi {
+  fill: var(--stone);
+  fill-opacity: 0.5;
+}
+.player .t1-mk-dot {
+  fill: var(--vermilion);
+}
+:root[data-theme='dark'] .player .t1-mk-body {
+  fill: var(--stone);
+}
+:root[data-theme='dark'] .player .t1-mk-hi {
+  fill: var(--ink-2);
+  fill-opacity: 0.4;
+}
+:root[data-theme='dark'] .player .t1-mk-shadow {
+  fill: #000;
+  fill-opacity: 0.5;
+}
+:root[data-theme='dark'] .player .t1-mk-dot {
+  filter: drop-shadow(0 0 4px var(--glow));
+}
+@media (prefers-reduced-motion: reduce) {
+  .player .t1-stop.on::before {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+@media (max-width: 520px) {
+  .player .t1-stop {
+    --here: 1.25;
+    width: 50px;
+    height: 28px;
+    margin: -14px 0 0 -25px;
+  }
+  .player .t1-pebble {
+    width: 24px;
+    height: 17px;
+    margin: -8.5px 0 0 -12px;
+  }
+}
+/* very short screens: the path lies over the bottom of the picture, the era name sits top-left */
+.player .t1-lad.is-compact .t1-lad-foot {
+  display: contents;
+}
+.player .t1-lad.is-compact .t1-path {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 0;
+  height: 44px;
+  transform: translateX(-50%);
+}
+/* the strip is too short for the era line: it stays for screen readers only (stop labels carry the name too) */
+.player .t1-lad.is-compact .t1-era {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.player .t1-lad.is-compact .t1-stop {
+  width: 50px;
+  height: 26px;
+  margin: -13px 0 0 -25px;
+}
+
+/* SVG ink vocabulary (colours follow the theme) */
+.player .t1-mach .t1-paper {
+  fill: var(--card);
+}
+.player .t1-mach .t1-paper2 {
+  fill: var(--paper-2);
+}
+.player .t1-mach .t1-card {
+  fill: var(--card);
+}
+.player .t1-mach .t1-edge {
+  stroke: var(--line-2);
+  stroke-width: 0.8;
+}
+.player .t1-mach .t1-ink {
+  fill: var(--ink);
+}
+.player .t1-mach .t1-ink2 {
+  fill: var(--ink-2);
+}
+.player .t1-mach .t1-ink3 {
+  fill: var(--ink-3);
+}
+.player .t1-mach .t1-ver {
+  fill: var(--vermilion);
+}
+.player .t1-mach .t1-moss {
+  fill: var(--moss);
+}
+.player .t1-mach .t1-stone {
+  fill: var(--stone);
+}
+.player .t1-mach .t1-hi {
+  fill: var(--card);
+}
+.player .t1-mach .t1-case {
+  fill: var(--ink);
+}
+:root[data-theme='dark'] .player .t1-mach .t1-case {
+  fill: var(--stone-2);
+}
+.player .t1-mach .t1-collar {
+  fill: var(--stone);
+}
+.player .t1-mach .t1-wash {
+  fill: var(--ink);
+  fill-opacity: 0.08;
+}
+.player .t1-mach .t1-inkglow {
+  fill: var(--ink-3);
+  fill-opacity: 0.16;
+}
+.player .t1-mach .t1-mossglow {
+  fill: var(--moss);
+  fill-opacity: 0.22;
+}
+.player .t1-mach .t1-verglow {
+  fill: var(--vermilion);
+  fill-opacity: 0.2;
+}
+.player .t1-mach .t1-tx {
+  font-family: var(--serif);
+  font-weight: 400;
+  fill: var(--ink-2);
+}
+.player .t1-mach .t1-tx1 {
+  fill: var(--ink);
+}
+.player .t1-mach .t1-tx3 {
+  fill: var(--ink-3);
+}
+.player .t1-mach .t1-verq {
+  fill: var(--vermilion);
+  font-weight: 300;
+}
+.player .t1-mach .t1-ghost {
+  fill: var(--ink-3);
+  fill-opacity: 0.7;
+  font-weight: 300;
+}
+.player .t1-mach .t1-onver {
+  fill: var(--on-ink);
+  font-weight: 500;
+}
+:root[data-theme='dark'] .player .t1-mach .t1-onver {
+  fill: var(--ink);
+}
+/* era 1: wooden ema tags on bamboo */
+.player .t1-mach .t1-bamboo {
+  fill: color-mix(in srgb, var(--moss-2) 35%, var(--stone));
+}
+.player .t1-mach .t1-wood {
+  fill: color-mix(in srgb, var(--stone-3) 70%, var(--card));
+}
+.player .t1-mach .t1-grain {
+  fill: var(--stone);
+  fill-opacity: 0.45;
+}
+.player .t1-mach .t1-string {
+  stroke: var(--ink-3);
+  stroke-width: 1.1;
+}
+.player .t1-mach .t1-hole {
+  fill: var(--paper);
+  stroke: var(--ink-2);
+  stroke-width: 1;
+}
+/* era 2: bamboo sieve and baskets */
+.player .t1-mach .t1-sieve {
+  fill: var(--stone-3);
+}
+.player .t1-mach .t1-sieveout {
+  fill: color-mix(in srgb, var(--stone-2) 70%, var(--stone-3));
+}
+.player .t1-mach .t1-weave {
+  fill: color-mix(in srgb, var(--stone) 80%, var(--moss-2));
+}
+.player .t1-mach .t1-weave2 {
+  fill: var(--stone);
+  fill-opacity: 0.7;
+}
+.player .t1-mach .t1-basket {
+  fill: color-mix(in srgb, var(--stone-3) 60%, var(--stone-2));
+}
+.player .t1-mach .t1-mouth {
+  fill: var(--ink);
+  fill-opacity: 0.2;
+}
+.player .t1-mach .t1-drip {
+  fill: var(--ink-3);
+}
+.player .t1-mach .t1-lbl0 {
+  transition: fill 0.6s;
+}
+/* era 3: stones in raked sand */
+.player .t1-mach .t1-rk {
+  fill: none;
+  stroke: var(--rake);
+  stroke-width: 1.1;
+}
+.player .t1-mach .t1-stone2 {
+  fill: var(--stone-2);
+}
+.player .t1-mach .t1-stonehi {
+  fill: var(--stone-3);
+  fill-opacity: 0.8;
+}
+.player .t1-mach .t1-ring {
+  fill: none;
+  stroke: var(--moss);
+  stroke-width: 1.6;
+}
+.player .t1-mach .t1-ring-ver {
+  stroke: var(--vermilion);
+}
+/* era 4: inkstone, brush, paper */
+.player .t1-mach .t1-slate {
+  fill: color-mix(in srgb, var(--ink) 78%, var(--stone));
+}
+.player .t1-mach .t1-slatetop {
+  fill: color-mix(in srgb, var(--ink) 55%, var(--stone));
+}
+.player .t1-mach .t1-slategrind {
+  fill: color-mix(in srgb, var(--ink) 68%, var(--stone));
+}
+.player .t1-mach .t1-slatehi {
+  fill: var(--stone-2);
+}
+.player .t1-mach .t1-well {
+  fill: var(--ink);
+}
+:root[data-theme='dark'] .player .t1-mach .t1-slategrind {
+  fill: color-mix(in srgb, var(--stone-3) 60%, var(--paper));
+}
+:root[data-theme='dark'] .player .t1-mach .t1-slatehi {
+  fill: var(--stone);
+}
+:root[data-theme='dark'] .player .t1-mach .t1-slatetop {
+  fill: var(--stone-3);
+}
+:root[data-theme='dark'] .player .t1-mach .t1-slate {
+  fill: var(--stone-2);
+}
+:root[data-theme='dark'] .player .t1-mach .t1-well {
+  fill: var(--paper);
+}
+:root[data-theme='dark'] .player .t1-mach .t1-stone2 {
+  fill: var(--stone-2);
+}
+:root[data-theme='dark'] .player .t1-mach .t1-stonehi {
+  fill: var(--stone);
+  fill-opacity: 0.5;
+}
+:root[data-theme='dark'] .player .t1-mach .t1-hi {
+  fill: var(--ink);
+}
+:root[data-theme='dark'] .player .t1-mach .t1-ver,
+:root[data-theme='dark'] .player .t1-mach .t1-token {
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+:root[data-theme='dark'] .player .t1-mach .t1-wash {
+  fill: #000;
+  fill-opacity: 0.35;
+}
+:root[data-theme='dark'] .player .t1-mach .t1-mouth {
+  fill: #000;
+  fill-opacity: 0.45;
+}
+
+/* ───────── Scene 3 · guess the next word on the pond ───────── */
+.player .t1-nw {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.player .t1-water {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  pointer-events: none;
+}
+.player .t1-nw-line {
+  position: relative;
+  max-width: 17em;
+  margin: clamp(10px, 5vh, 56px) auto 0;
+  padding: 0 8px;
+  text-align: center;
+  font: 300 clamp(1.75rem, 5.4vw, 3.5rem) / 1.25 var(--serif);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.player .t1-nw.is-compact .t1-nw-line {
+  max-width: calc(100% - 280px);
+  margin-top: 4px;
+  font-size: 1.35rem;
+  white-space: nowrap;
+}
+.player .t1-nw-blank {
+  position: relative;
+  display: inline-block;
+  min-width: 3.4em;
+  min-height: 1.1em;
+  text-align: center;
+  vertical-align: bottom;
+}
+.player .t1-nw-blank.is-filled {
+  min-width: 0;
+}
+.player .t1-nw.is-port .t1-nw-blank {
+  display: block;
+  width: max-content;
+  min-width: 3.6em;
+  margin: 0.1em auto 0;
+}
+.player .t1-nw-blank::before {
+  content: '';
+  position: absolute;
+  inset: -0.12em -0.3em;
+  border-radius: 40% 60% 50% 50% / 60% 50% 50% 40%;
+  background: var(--vermilion);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.4s, transform 0.5s var(--ease);
+}
+.player .t1-nw-blank.is-near::before {
+  opacity: 0.1;
+  transform: scale(1);
+}
+.player .t1-nw-blank::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.02em;
+  height: 0.16em;
+  background: var(--ink-3);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7C40 3 80 9 120 6S180 4 198 6L196 8C160 9 120 10 80 9S30 9 3 9Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7C40 3 80 9 120 6S180 4 198 6L196 8C160 9 120 10 80 9S30 9 3 9Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  transition: opacity 0.6s;
+}
+.player .t1-nw-blank.is-filled::after {
+  opacity: 0.35;
+}
+.player .t1-nw-fill {
+  position: relative;
+  display: inline-block;
+  color: var(--ink);
+}
+.player .t1-nw-stones {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.player .t1-wstone {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+  border-radius: 40%;
+}
+.player .t1-wstone.is-dragging {
+  z-index: 3;
+  cursor: grabbing;
+}
+.player .t1-wstone[aria-disabled='true'] {
+  cursor: default;
+}
+.player .t1-wstone-body,
+.player .t1-wstone-float {
+  display: block;
+}
+.player .t1-wstone-in {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 52px;
+  padding: 0.6em 1.45em 0.72em;
+  transition: transform 1.2s var(--ease), opacity 1.2s;
+}
+.player .t1-wstone-word {
+  position: relative;
+  font: 400 clamp(1.02rem, 1.9vw, 1.6rem) / 1.2 var(--serif);
+  white-space: nowrap;
+}
+.player .t1-nw.is-compact .t1-wstone-word {
+  font-size: 1rem;
+}
+.player .t1-nw.is-compact .t1-wstone-in {
+  min-height: 44px;
+  padding: 0.5em 1.15em 0.6em;
+}
+.player .t1-ws-art {
+  position: absolute;
+  inset: -2px -4px -6px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  max-width: none;
+  overflow: visible;
+}
+.player .t1-ws-shadow {
+  fill: var(--ink);
+  fill-opacity: 0.12;
+  filter: url(#ink-wash);
+}
+.player .t1-ws-base {
+  fill: var(--stone-2);
+  transition: fill 0.9s;
+}
+.player .t1-ws-hi {
+  fill: var(--stone-3);
+  fill-opacity: 0.9;
+  transition: fill 0.9s;
+}
+.player .t1-ws-low {
+  fill: var(--ink);
+  fill-opacity: 0.2;
+}
+/* the contour: pressed hard on the shaded lower right, a broken hairline where the light falls */
+.player .t1-ws-rim {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-opacity: 0.72;
+  transition: stroke 0.9s;
+}
+.player .t1-ws-rim2 {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  stroke-dasharray: 16 5 4 7;
+  stroke-opacity: 0.5;
+}
+:root[data-theme='dark'] .player .t1-ws-low {
+  fill: #000;
+  fill-opacity: 0.4;
+}
+:root[data-theme='dark'] .player .t1-ws-rim2 {
+  stroke: var(--rock-hi);
+}
+:root[data-theme='dark'] .player .t1-ws-shadow {
+  fill: #000;
+  fill-opacity: 0.4;
+}
+:root[data-theme='dark'] .player .t1-ws-base {
+  fill: var(--stone-3);
+}
+:root[data-theme='dark'] .player .t1-ws-hi {
+  fill: var(--stone-2);
+}
+:root[data-theme='dark'] .player .t1-ws-rim {
+  stroke: var(--umbra);
+  stroke-opacity: 0.9;
+}
+.player .t1-wstone:not([aria-disabled]):hover .t1-ws-rim,
+.player .t1-wstone:focus-visible .t1-ws-rim {
+  stroke: var(--ink);
+}
+.player .t1-wstone.is-top .t1-ws-base {
+  fill: color-mix(in srgb, var(--vermilion) 26%, var(--stone-3));
+}
+.player .t1-wstone.is-top .t1-ws-hi {
+  fill: var(--vermilion-soft);
+}
+.player .t1-wstone.is-top .t1-ws-rim {
+  stroke: var(--vermilion);
+  stroke-opacity: 1;
+}
+:root[data-theme='dark'] .player .t1-wstone.is-top .t1-ws-base {
+  fill: color-mix(in srgb, var(--vermilion) 30%, var(--stone-3));
+}
+:root[data-theme='dark'] .player .t1-wstone.is-top .t1-wstone-in {
+  filter: drop-shadow(0 0 14px var(--glow));
+}
+.player .t1-wstone.is-you:not(.is-top) .t1-ws-rim {
+  stroke: var(--moss);
+  stroke-opacity: 1;
+}
+.player .t1-wstone.is-unlikely .t1-wstone-in {
+  transform: translateY(7px) scale(0.86);
+  opacity: 0.5;
+}
+.player .t1-wstone-pct {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
+  font: 500 0.82rem/1 var(--sans);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.player .t1-wstone.is-top .t1-wstone-pct {
+  color: var(--vermilion);
+}
+.player .t1-nw-count {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  display: flex;
+  gap: 7px;
+  margin: 0;
+}
+.player .t1-nw-dot {
+  width: 9px;
+  height: 7px;
+  border-radius: 50% 46% 52% 48%;
+  background: var(--stone-2);
+  transition: background 0.5s, width 0.5s var(--ease);
+}
+.player .t1-nw-dot.now {
+  width: 18px;
+  background: var(--ink);
+}
+.player .t1-nw-dot.done {
+  background: var(--moss-2);
+}
+.player .t1-nw-next {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+}
+.player .t1-nw.is-compact .t1-nw-next {
+  top: 22px;
+  bottom: auto;
+}
+.player .t1-nw-next[hidden] {
+  display: none;
+}
+/* at night the "ink" token is light: keep the wet brush head a deep stone grey */
+:root[data-theme='dark'] .player .t1-brush .t1-ink {
+  fill: var(--stone);
+}

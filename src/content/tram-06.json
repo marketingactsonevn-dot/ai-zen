@@ -1,0 +1,205 @@
+{
+  "id": 6,
+  "kicker": "Cây bonsai đọc cả thư viện, được cắt tỉa, rồi mới biết trả lời.",
+  "summary": "AI đoán từ điều đã học — hãy cho nó tra cứu, và tự kiểm chứng.",
+  "quiz": {
+    "q": "AI trả lời một con số quan trọng rất chắc chắn. Bạn nên làm gì?",
+    "options": [
+      "Tin luôn vì nó nói rất chắc",
+      "Kiểm chứng ở một nguồn đáng tin",
+      "Hỏi lại đúng câu đó cho chắc",
+      "Bỏ qua, AI luôn sai số liệu"
+    ],
+    "answer": 1,
+    "explain": "AI có thể bịa rất tự tin; với điều quan trọng, hãy mở nguồn ra đọc hoặc đối chiếu thêm một nơi."
+  },
+  "scenes": {
+    "life": {
+      "label": "Vòng đời cây",
+      "art": "Tranh mực: một cây non trên tảng đá giữa vườn cát. Mây chữ phía trên mưa xuống, cây lớn nhanh và mọc lộn xộn; rồi được cắt tỉa theo một cuộn nguyên tắc; cuối cùng cây trả lời câu hỏi.",
+      "hold": "Giữ để mưa chữ",
+      "holdAria": "Giữ để mưa chữ xuống cây (hoặc giữ phím cách)",
+      "prune": "Tỉa ba cành mọc lệch",
+      "ask": "Hỏi cây một câu",
+      "steps": [
+        {
+          "label": "Đọc",
+          "aria": "Bước 1: tiền huấn luyện — đọc kho chữ"
+        },
+        {
+          "label": "Cắt tỉa",
+          "aria": "Bước 2: tinh chỉnh — cắt tỉa"
+        },
+        {
+          "label": "Trả lời",
+          "aria": "Bước 3: trả lời (inference)"
+        }
+      ],
+      "cloud": "kho chữ khổng lồ",
+      "shoots": [
+        "lan man",
+        "thô lỗ",
+        "giúp việc xấu"
+      ],
+      "shootAria": "Tỉa cành “{name}”",
+      "scroll": "nguyên tắc",
+      "rules": [
+        "hữu ích",
+        "trung thực",
+        "vô hại"
+      ],
+      "shears": "phản hồi của con người",
+      "question": "“Chúc Tết giúp tôi”",
+      "askAria": "Hỏi cây: chúc Tết giúp tôi",
+      "answer": "“An khang thịnh vượng, vạn sự như ý!”",
+      "insights": [
+        {
+          "text": "Tiền huấn luyện: AI đọc một kho chữ khổng lồ để học đoán chữ tiếp theo — biết nhiều, nhưng mọc lộn xộn.",
+          "detail": "Ví dụ: sách, trang web, mã lập trình… Đọc xong, nó viết tiếp rất giỏi nhưng chưa biết cư xử như một trợ lý."
+        },
+        {
+          "text": "Tinh chỉnh: con người chấm điểm câu trả lời, viết bộ nguyên tắc, tỉa thành trợ lý hữu ích, an toàn hơn.",
+          "detail": {
+            "text": "Ví dụ: Anthropic huấn luyện Claude theo một “bản hiến pháp” (Constitutional AI) giải thích cách cư xử và lý do.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          }
+        },
+        {
+          "text": "Trả lời (inference): cây đã định hình chỉ việc trả lời bằng những gì đã học — không lớn thêm khi trò chuyện.",
+          "detail": "Muốn nó biết điều mới phải huấn luyện lại, hoặc đưa tài liệu vào ngay câu hỏi — như cảnh tra cứu phía sau."
+        }
+      ],
+      "holdMore": "Giữ thêm chút nữa"
+    },
+    "think": {
+      "label": "Giấy nháp",
+      "art": "Một tĩnh vật trên mặt bàn gỗ thấp: tờ giấy nhỏ để trả lời ngay, tờ nháp lớn để viết từng bước. Cạnh mỗi tờ là lư nhang (thời gian) và đĩa sỏi (token).",
+      "prompt": "Thử cả hai cách",
+      "question": "Bút và tẩy giá 11 nghìn. Bút đắt hơn tẩy 10 nghìn. Tẩy giá bao nhiêu?",
+      "fast": "Trả lời ngay",
+      "slow": "Nghĩ trước",
+      "fastAria": "Cho AI trả lời ngay",
+      "slowAria": "Cho AI nháp từng bước rồi mới trả lời",
+      "fastAnswer": "Tẩy: 1 nghìn",
+      "steps": [
+        "Bút = tẩy + 10",
+        "tẩy + tẩy + 10 = 11",
+        "hai tẩy = 1 → tẩy = 0,5",
+        "Thử: 0,5 + 10,5 = 11"
+      ],
+      "slowAnswer": "Tẩy: 500 đồng",
+      "time": "thời gian",
+      "cost": "token",
+      "again": "Thử cách còn lại",
+      "insight": "Chế độ suy nghĩ: AI nháp từng bước rồi mới đáp — tốn thêm token, thời gian, nhưng đỡ sai bài khó.",
+      "detail": {
+        "text": "Các mô hình biết “suy nghĩ” trước khi trả lời xuất hiện từ năm 2024. Việc dễ thì không cần bật — chỉ tốn thêm.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "hallu": {
+      "label": "Viên đá nứt",
+      "art": "Một con suối với ba viên đá kê chân, mỗi viên mang một ý trong câu trả lời của AI. Một viên là đá giả AI đặt vào chỗ nó không biết; gõ thử thì nứt và chìm.",
+      "prompt": "Gõ thử từng viên",
+      "question": "Hỏi: ChatGPT do ai làm, ra đời khi nào?",
+      "stones": [
+        {
+          "text": "do OpenAI làm",
+          "aria": "Gõ thử ý: ChatGPT do OpenAI làm",
+          "ok": true,
+          "note": {
+            "text": "vững — có nguồn",
+            "asOf": "2026-10-12",
+            "source": "openai-chatgpt"
+          }
+        },
+        {
+          "text": "ra đời 3/2021",
+          "aria": "Gõ thử ý: ra đời tháng 3/2021",
+          "ok": false
+        },
+        {
+          "text": "dựa trên mô hình GPT",
+          "aria": "Gõ thử ý: dựa trên mô hình GPT",
+          "ok": true,
+          "note": {
+            "text": "vững — có nguồn",
+            "asOf": "2026-10-12",
+            "source": "openai-chatgpt"
+          }
+        }
+      ],
+      "gap": "chỗ AI không biết",
+      "fixed": "30/11/2022",
+      "fixedNote": {
+        "text": "ngày thật — có nguồn",
+        "asOf": "2026-10-12",
+        "source": "openai-chatgpt"
+      },
+      "insight": "AI có thể bịa rất tự tin để lấp chỗ trống — gọi là “ảo giác”. Với điều quan trọng, hãy kiểm chứng.",
+      "detail": "Thói quen tốt: hỏi nguồn, mở nguồn ra đọc, đối chiếu thêm một nơi — nhất là số liệu, tên người, ngày tháng."
+    },
+    "rag": {
+      "label": "Đèn lồng tra cứu",
+      "art": "Một đèn lồng đá (trí nhớ của AI) và một thư viện nhỏ bên kia lối sỏi. AI có thể trả lời ngay, hoặc mang tài liệu về đèn lồng rồi mới trả lời.",
+      "prompt": "Thử cả hai cách",
+      "question": "Hỏi: Công ty mình nghỉ Tết mấy ngày?",
+      "memory": "Trả lời từ trí nhớ",
+      "lookup": "Tra cứu trước",
+      "memoryAria": "Cho AI trả lời bằng trí nhớ sẵn có",
+      "lookupAria": "Cho AI tra tài liệu công ty rồi mới trả lời",
+      "lantern": "ngữ cảnh của AI",
+      "guess": "Chắc khoảng 7 ngày…",
+      "guessNote": "đoán theo mặt bằng chung",
+      "shelves": [
+        "Tài liệu công ty",
+        "Web"
+      ],
+      "answer": "Nghỉ 9 ngày, từ 27 tháng Chạp.",
+      "cite": "[1] Sổ tay nhân sự, mục 3.2",
+      "citeNote": "có nguồn để kiểm",
+      "again": "Thử cách còn lại",
+      "insight": "Tra cứu (RAG): AI tìm tài liệu liên quan, đưa vào ngữ cảnh rồi mới trả lời — có nguồn để kiểm.",
+      "detail": "Tìm trên web cũng vậy: AI đọc vài trang mới trước khi đáp. Trí nhớ có sẵn của AI có thể đã cũ hoặc thiếu."
+    },
+    "pond": {
+      "label": "Một hồ, ba dòng",
+      "art": "Ba dòng suối — chữ, ảnh, âm thanh — đổ chung vào một hồ nước, như một mô hình đọc được nhiều loại dữ liệu. Dưới đáy hồ là sương mù chưa tan.",
+      "prompt": "Mở cả ba dòng suối",
+      "streams": [
+        {
+          "label": "chữ",
+          "aria": "Mở dòng chữ"
+        },
+        {
+          "label": "ảnh",
+          "aria": "Mở dòng ảnh"
+        },
+        {
+          "label": "âm thanh",
+          "aria": "Mở dòng âm thanh"
+        }
+      ],
+      "model": "một mô hình",
+      "diveAria": "Nhìn xuống đáy hồ",
+      "surfaceAria": "Trở lại mặt hồ",
+      "patterns": "quy luật",
+      "unknown": "vẫn đang được nghiên cứu",
+      "insight": "AI đa phương thức (multimodal) đọc cả chữ, ảnh, âm thanh trong cùng một mô hình — ba dòng suối, một hồ.",
+      "detail": "Ví dụ: chụp ảnh hóa đơn rồi nói “chia đều cho 4 người” — AI đọc ảnh, nghe lời bạn, rồi tính giúp.",
+      "deep": "AI nhận ra quy luật cực giỏi, nhưng không “hiểu” như người. Bên trong mô hình vẫn đang được nghiên cứu.",
+      "deepDetail": "Các nhà khoa học đang “soi” bên trong mô hình — gọi là diễn giải (interpretability) — nhưng còn nhiều điều chưa rõ."
+    }
+  },
+  "sources": {
+    "openai-chatgpt": {
+      "title": "Introducing ChatGPT",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/chatgpt/",
+      "date": "2022-11-30",
+      "note": "OpenAI giới thiệu ChatGPT ngày 30/11/2022, tinh chỉnh từ một mô hình thuộc dòng GPT-3.5."
+    }
+  }
+}

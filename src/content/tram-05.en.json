@@ -1,0 +1,838 @@
+{
+  "id": 5,
+  "kicker": "A question walks through the stone garden, then comes back as words, stroke by stroke.",
+  "journey": [
+    "Cut tokens",
+    "Embedding",
+    "Attention",
+    "Next word",
+    "Write out"
+  ],
+  "sheet": {
+    "name": "Hidden note",
+    "title": "System prompt",
+    "text": "You are a friendly assistant. Keep answers short and polite, and always reply in plain English.",
+    "count": "≈ 20 tokens"
+  },
+  "questions": [
+    {
+      "text": "What lip color suits tanned skin?",
+      "tokens": [
+        [
+          "What",
+          31872
+        ],
+        [
+          " lip",
+          6052
+        ],
+        [
+          " color",
+          4170
+        ],
+        [
+          " suits",
+          9438
+        ],
+        [
+          " tan",
+          2815
+        ],
+        [
+          "ned",
+          911
+        ],
+        [
+          " skin",
+          19307
+        ],
+        [
+          "?",
+          30
+        ]
+      ],
+      "words": [
+        "what",
+        "lip",
+        "color",
+        "suits",
+        "tanned",
+        "skin"
+      ],
+      "attn": [
+        [],
+        [
+          [
+            0,
+            0.5
+          ]
+        ],
+        [
+          [
+            1,
+            0.8
+          ],
+          [
+            0,
+            0.2
+          ]
+        ],
+        [
+          [
+            2,
+            0.7
+          ],
+          [
+            1,
+            0.3
+          ]
+        ],
+        [
+          [
+            1,
+            0.6
+          ],
+          [
+            2,
+            0.45
+          ],
+          [
+            3,
+            0.2
+          ]
+        ],
+        [
+          [
+            4,
+            0.6
+          ],
+          [
+            1,
+            0.35
+          ]
+        ],
+        [
+          [
+            5,
+            0.7
+          ],
+          [
+            4,
+            0.2
+          ]
+        ],
+        [
+          [
+            6,
+            0.9
+          ],
+          [
+            5,
+            0.7
+          ],
+          [
+            2,
+            0.25
+          ]
+        ],
+        [
+          [
+            3,
+            0.6
+          ],
+          [
+            4,
+            0.55
+          ],
+          [
+            1,
+            0.5
+          ],
+          [
+            7,
+            0.4
+          ],
+          [
+            5,
+            0.35
+          ],
+          [
+            0,
+            0.45
+          ]
+        ]
+      ],
+      "hint": 7,
+      "next": {
+        "lead": [
+          "Tan",
+          "ned",
+          " skin",
+          " looks",
+          " great",
+          " with",
+          " a"
+        ],
+        "cands": [
+          {
+            "w": "brick red",
+            "p": 38
+          },
+          {
+            "w": "terracotta",
+            "p": 24
+          },
+          {
+            "w": "brown",
+            "p": 16
+          },
+          {
+            "w": "peach pink",
+            "p": 11
+          },
+          {
+            "w": "wine red",
+            "p": 8
+          },
+          {
+            "w": "green",
+            "p": 0.4
+          }
+        ],
+        "tail": [
+          " lipstick",
+          ".",
+          " Try",
+          " a",
+          " thin",
+          " layer",
+          " on",
+          " your",
+          " lips",
+          " first",
+          ",",
+          " then",
+          " build",
+          " it",
+          " up",
+          "!"
+        ]
+      }
+    },
+    {
+      "text": "Cat is picky, what can help?",
+      "tokens": [
+        [
+          "Cat",
+          44
+        ],
+        [
+          " is",
+          11645
+        ],
+        [
+          " pic",
+          27841
+        ],
+        [
+          "ky",
+          3917
+        ],
+        [
+          ",",
+          11
+        ],
+        [
+          " what",
+          5162
+        ],
+        [
+          " can",
+          1874
+        ],
+        [
+          " help",
+          2290
+        ],
+        [
+          "?",
+          30
+        ]
+      ],
+      "words": [
+        "cat",
+        "is",
+        "picky",
+        "what",
+        "can",
+        "help"
+      ],
+      "attn": [
+        [],
+        [
+          [
+            0,
+            0.5
+          ]
+        ],
+        [
+          [
+            1,
+            0.95
+          ]
+        ],
+        [
+          [
+            2,
+            0.6
+          ],
+          [
+            1,
+            0.5
+          ]
+        ],
+        [
+          [
+            3,
+            0.85
+          ],
+          [
+            2,
+            0.55
+          ],
+          [
+            1,
+            0.4
+          ]
+        ],
+        [
+          [
+            4,
+            0.5
+          ],
+          [
+            3,
+            0.3
+          ]
+        ],
+        [
+          [
+            4,
+            0.45
+          ],
+          [
+            2,
+            0.4
+          ],
+          [
+            0,
+            0.3
+          ]
+        ],
+        [
+          [
+            6,
+            0.8
+          ],
+          [
+            2,
+            0.3
+          ]
+        ],
+        [
+          [
+            7,
+            0.8
+          ],
+          [
+            6,
+            0.5
+          ],
+          [
+            4,
+            0.3
+          ]
+        ],
+        [
+          [
+            8,
+            0.6
+          ],
+          [
+            6,
+            0.45
+          ],
+          [
+            2,
+            0.55
+          ],
+          [
+            3,
+            0.5
+          ],
+          [
+            4,
+            0.5
+          ],
+          [
+            0,
+            0.45
+          ]
+        ]
+      ],
+      "hint": 4,
+      "next": {
+        "lead": [
+          "Try",
+          " feeding",
+          " your",
+          " little",
+          " one"
+        ],
+        "cands": [
+          {
+            "w": "pâté",
+            "p": 30
+          },
+          {
+            "w": "steamed fish",
+            "p": 22
+          },
+          {
+            "w": "bit by bit",
+            "p": 18
+          },
+          {
+            "w": "on schedule",
+            "p": 14
+          },
+          {
+            "w": "new kibble",
+            "p": 10
+          },
+          {
+            "w": "cream cake",
+            "p": 0.5
+          }
+        ],
+        "tail": [
+          ",",
+          " in",
+          " small",
+          " meals",
+          ".",
+          " If",
+          " they",
+          " stop",
+          " eating",
+          " for",
+          " a",
+          " while",
+          ",",
+          " check",
+          " with",
+          " a",
+          " vet",
+          "."
+        ]
+      }
+    },
+    {
+      "text": "Rainy day, drinks to stay warm?",
+      "tokens": [
+        [
+          "Rain",
+          2898
+        ],
+        [
+          "y",
+          17790
+        ],
+        [
+          " day",
+          21460
+        ],
+        [
+          ",",
+          11
+        ],
+        [
+          " drinks",
+          14228
+        ],
+        [
+          " to",
+          2290
+        ],
+        [
+          " stay",
+          1150
+        ],
+        [
+          " warm",
+          23015
+        ],
+        [
+          "?",
+          30
+        ]
+      ],
+      "words": [
+        "rainy",
+        "day",
+        "drinks",
+        "to",
+        "stay",
+        "warm"
+      ],
+      "attn": [
+        [],
+        [
+          [
+            0,
+            0.5
+          ]
+        ],
+        [
+          [
+            1,
+            0.95
+          ]
+        ],
+        [
+          [
+            2,
+            0.7
+          ],
+          [
+            1,
+            0.6
+          ]
+        ],
+        [
+          [
+            3,
+            0.5
+          ],
+          [
+            2,
+            0.2
+          ]
+        ],
+        [
+          [
+            3,
+            0.45
+          ],
+          [
+            0,
+            0.25
+          ]
+        ],
+        [
+          [
+            5,
+            0.85
+          ],
+          [
+            3,
+            0.2
+          ]
+        ],
+        [
+          [
+            6,
+            0.5
+          ],
+          [
+            5,
+            0.45
+          ]
+        ],
+        [
+          [
+            3,
+            0.75
+          ],
+          [
+            5,
+            0.55
+          ],
+          [
+            7,
+            0.35
+          ],
+          [
+            2,
+            0.3
+          ]
+        ],
+        [
+          [
+            6,
+            0.6
+          ],
+          [
+            5,
+            0.55
+          ],
+          [
+            8,
+            0.5
+          ],
+          [
+            3,
+            0.5
+          ],
+          [
+            0,
+            0.45
+          ]
+        ]
+      ],
+      "hint": 8,
+      "next": {
+        "lead": [
+          "When",
+          " it",
+          " rains",
+          ",",
+          " try",
+          " some"
+        ],
+        "cands": [
+          {
+            "w": "ginger tea",
+            "p": 36
+          },
+          {
+            "w": "coffee",
+            "p": 24
+          },
+          {
+            "w": "cocoa",
+            "p": 16
+          },
+          {
+            "w": "hot milk",
+            "p": 12
+          },
+          {
+            "w": "milk tea",
+            "p": 8
+          },
+          {
+            "w": "iced water",
+            "p": 0.4
+          }
+        ],
+        "tail": [
+          " to",
+          " warm",
+          " up",
+          ".",
+          " Sip",
+          " it",
+          " slowly",
+          ",",
+          " and",
+          " watch",
+          " the",
+          " rain",
+          " fall",
+          " outside",
+          "."
+        ]
+      }
+    }
+  ],
+  "scenes": {
+    "cut": {
+      "label": "Cutting into tokens",
+      "prompt": "Swipe across to cut",
+      "aria": "Your question: {q}. Press to cut it into tokens.",
+      "alts": "Change question",
+      "altPick": "Send another one: {q}",
+      "done": "The sentence was cut into {n} tokens, each with its own number.",
+      "sheetAria": "Open the hidden note (system prompt)",
+      "sheetClose": "Fold the hidden note away",
+      "insight": "The sentence is cut into tokens — small pieces of text, each with an ID number. AI only works with numbers.",
+      "detail": {
+        "text": "The cuts and numbers here are a rough simulation; every AI has its own cutter. Station 4 goes deeper.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "sheetCap": "The app clips this note in front of your question: you don’t see it, but the AI reads it.",
+      "own": "Write your own",
+      "ownAria": "Write a question of your own to cut into tokens",
+      "ownPlaceholder": "Type your question…",
+      "ownSend": "Cut this one",
+      "ownCancel": "Never mind, back to the sample questions",
+      "ownNote": "Rough simulation of the cut · the next steps use the sample “{q}”",
+      "sheetDetail": "The hidden note is tokens too, placed before your question. That’s why the same AI has a different voice and rules in each app."
+    },
+    "space": {
+      "label": "Embedding",
+      "prompt": "Drag to turn, tap a word",
+      "aria": "A 3D space of meaning. Drag, or use the arrow keys, to turn it.",
+      "wordAria": "See the words near “{w}”",
+      "near": "“{w}” is near: {list}",
+      "clusters": [
+        {
+          "name": "Beauty",
+          "words": [
+            "lip",
+            "powder",
+            "blush",
+            "foundation",
+            "mascara",
+            "skin"
+          ]
+        },
+        {
+          "name": "Colors",
+          "words": [
+            "color",
+            "red",
+            "pink",
+            "brown",
+            "orange",
+            "tanned"
+          ]
+        },
+        {
+          "name": "Pets",
+          "words": [
+            "cat",
+            "dog",
+            "puppy",
+            "rabbit",
+            "hamster"
+          ]
+        },
+        {
+          "name": "Food & drink",
+          "words": [
+            "eat",
+            "drinks",
+            "picky",
+            "tea",
+            "coffee",
+            "milk",
+            "rice"
+          ]
+        },
+        {
+          "name": "Weather",
+          "words": [
+            "rainy",
+            "day",
+            "sunny",
+            "storm",
+            "wind",
+            "warm",
+            "cold"
+          ]
+        },
+        {
+          "name": "Common little words",
+          "words": [
+            "what",
+            "suits",
+            "is",
+            "can",
+            "help",
+            "to",
+            "stay"
+          ]
+        }
+      ],
+      "insight": "Embedding: each token becomes a list of numbers, like coordinates. Similar words sit close — lip by powder, cat by dog.",
+      "detail": {
+        "text": "GPT-3 (2020) uses a list of 12,288 numbers for each token. Here it’s squeezed into 3 dimensions so our eyes can see it.",
+        "asOf": "2026-10-12",
+        "source": "t05-gpt3"
+      },
+      "noWebgl": "Still version: words with similar meanings gather in clusters."
+    },
+    "threads": {
+      "label": "Attention",
+      "prompt": "Tap a word",
+      "aria": "The question’s tokens. Pick a token to see where it pays attention.",
+      "tokAria": "Token “{w}”",
+      "caption": "“{w}” looks hardest at: {list}",
+      "insight": "Attention: each token looks back at the words before it to understand itself. The darker the ink thread, the closer the look.",
+      "detail": {
+        "text": "Attention is the heart of the Transformer, an architecture published in 2017 in the paper “Attention Is All You Need”.",
+        "asOf": "2026-10-12",
+        "source": "t05-transformer"
+      }
+    },
+    "odds": {
+      "label": "Next word",
+      "prompt": "Draw a word",
+      "prompt2": "Drag the creativity slider",
+      "you": "You",
+      "ai": "AI",
+      "temp": "Creativity",
+      "tempAria": "Creativity (temperature)",
+      "tempValue": "{t} — {mood}",
+      "low": "safe",
+      "mid": "balanced",
+      "high": "dreamy",
+      "draw": "Draw a word",
+      "candsLabel": "Odds for each word",
+      "result": "The AI drew “{w}”, with odds of {p}.",
+      "insight": "The AI rates each word’s odds, then draws one. Low “creativity” (temperature) picks safe words; high dares to pick odd ones.",
+      "detail": {
+        "text": "For precise work like figures or summaries, keep it low; for fresh ideas, go higher — then choose the best yourself.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "write": {
+      "label": "Writing word by word",
+      "prompt": "Tap to keep writing",
+      "step": "Write next",
+      "auto": "Auto-write",
+      "pause": "Pause",
+      "again": "Write again",
+      "end": "end",
+      "endCaption": "When the AI predicts the “end” mark, it stops.",
+      "loopAria": "The loop: the new word joins the sentence, then the whole journey runs again.",
+      "inputAria": "Current input: {n} tokens",
+      "added": "The AI adds “{w}”.",
+      "insight": "AI writes token by token: each new word joins the sentence, and the whole journey runs again to guess the next.",
+      "detail": "That’s why answers appear bit by bit — and the longer the answer, the more tokens it costs."
+    }
+  },
+  "quiz": {
+    "q": "When answering, how does AI produce its text?",
+    "options": [
+      "Writes the whole sentence at once",
+      "Guesses token by token, adding on",
+      "Copies a ready-made sentence online",
+      "Asks a call-center operator"
+    ],
+    "answer": 1,
+    "explain": "AI guesses the next token, adds it to the sentence, and repeats until it guesses the “end” mark."
+  },
+  "summary": "The sentence is cut into tokens and turned into numbers, the words look at each other, then AI writes word by word.",
+  "sources": {
+    "t05-transformer": {
+      "title": "Attention Is All You Need",
+      "publisher": "Vaswani et al. · arXiv",
+      "date": "2017-06-12",
+      "url": "https://arxiv.org/abs/1706.03762"
+    },
+    "t05-gpt3": {
+      "title": "Language Models are Few-Shot Learners",
+      "publisher": "Brown et al. (OpenAI) · arXiv",
+      "date": "2020-05-28",
+      "url": "https://arxiv.org/abs/2005.14165",
+      "note": "Table 2.1: the 175-billion-parameter GPT-3 has a vector length (d_model) of 12,288."
+    }
+  }
+}

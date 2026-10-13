@@ -1,0 +1,478 @@
+{
+  "asOf": "2026-10-12",
+  "regionPhilosophy": {
+    "cn": {
+      "text": "Chi phí thấp, hiệu quả cao, phần lớn mở trọng số (ai cũng tải về dùng được) nên lan tỏa nhanh ra toàn cầu.",
+      "asOf": "2026-10-12",
+      "source": "brief-2026-10-12"
+    }
+  },
+  "companies": [
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "country": "us",
+      "philosophy": {
+        "text": "Đưa AGI (AI đa năng ngang tầm con người) mang lại lợi ích cho toàn nhân loại; mạnh về sản phẩm đại chúng như ChatGPT.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "weights": "closed",
+      "categories": ["text", "image"],
+      "models": [
+        { "name": "GPT-6 Astra", "kind": "text", "date": "2026-09-03", "note": "Model mạnh nhất, ngữ cảnh khoảng 1 triệu token", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "GPT-6 Sol", "kind": "text", "date": "2026-09-22", "note": "Chuyên code và agent, rẻ hơn", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "GPT-6 Luna", "kind": "text", "date": "2026-09-22", "note": "Nhanh, tiết kiệm", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "GPT-6.1 Sol", "kind": "text", "date": "2026-09-29", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        {
+          "name": "GPT Image 2",
+          "kind": "image",
+          "strengths": { "text": "Hiểu lệnh dài và phức tạp, chữ trong ảnh tốt, chỉnh sửa qua hội thoại.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        { "name": "Sora", "kind": "video", "status": "discontinued", "note": "Đã đóng: app ngày 26/04/2026, API ngày 24/09/2026", "asOf": "2026-10-12", "source": "brief-2026-10-12" }
+      ],
+      "logo": { "pressKit": "https://openai.com/brand/" }
+    },
+    {
+      "id": "anthropic",
+      "name": "Anthropic",
+      "country": "us",
+      "philosophy": {
+        "text": "An toàn là trọng tâm; Claude được huấn luyện theo một “bản hiến pháp” (Constitutional AI) giải thích cách cư xử và lý do. Anthropic tạo ra MCP (chuẩn giúp AI kết nối với công cụ).",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "weights": "closed",
+      "categories": ["text"],
+      "models": [
+        { "name": "Claude Fable 5.1", "kind": "text", "date": "2026-09-01", "note": "Bậc cao nhất; dòng Mythos chỉ dành cho tổ chức được kiểm duyệt", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Claude Opus 5.5", "kind": "text", "date": "2026-09-22", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Claude Sonnet 5.5", "kind": "text", "date": "2026-09-28", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Claude Haiku 5.5", "kind": "text", "date": "2026-10-07", "note": "Nhanh, rẻ nhất", "asOf": "2026-10-12", "source": "brief-2026-10-12" }
+      ],
+      "logo": { "simpleIcons": "anthropic" }
+    },
+    {
+      "id": "google-deepmind",
+      "name": "Google DeepMind",
+      "country": "uk-us",
+      "philosophy": {
+        "text": "“Giải bài toán trí tuệ” để thúc đẩy khoa học (như AlphaFold), rồi đưa AI vào hệ sinh thái Google.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "weights": "mixed",
+      "categories": ["text", "image", "video"],
+      "models": [
+        { "name": "Gemini 4 Argon", "kind": "text", "date": "2026-09-30", "note": "Mạnh nhất; hiện chỉ mở cho đối tác an ninh mạng (chương trình Fairwind)", "openWeights": false, "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Gemini 3.8 Flash", "kind": "text", "date": "2026-09-02", "note": "Bản phổ biến", "openWeights": false, "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Gemma 4", "kind": "text", "date": "2026-04-02", "note": "Mở trọng số", "openWeights": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        {
+          "name": "Nano Banana 2",
+          "kind": "image",
+          "date": "2026-02-26",
+          "note": "Tên kỹ thuật: Gemini 3.1 Flash Image",
+          "strengths": { "text": "Chỉnh sửa ảnh, giữ nhân vật/sản phẩm đồng nhất, ghép nhiều ảnh tham chiếu.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        {
+          "name": "Nano Banana Pro",
+          "kind": "image",
+          "note": "Tên kỹ thuật: Gemini 3 Pro Image",
+          "strengths": { "text": "Chỉnh sửa ảnh, giữ nhân vật/sản phẩm đồng nhất, ghép nhiều ảnh tham chiếu.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        {
+          "name": "Veo 3.1",
+          "kind": "video",
+          "strengths": { "text": "Chân thực, có âm thanh, dễ tiếp cận.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        {
+          "name": "Gemini Omni Flash",
+          "kind": "video",
+          "date": "2026-06-30",
+          "verify": true,
+          "strengths": { "text": "Chỉnh sửa video bằng hội thoại.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": { "simpleIcons": "deepmind" }
+    },
+    {
+      "id": "xai",
+      "name": "xAI",
+      "country": "us",
+      "philosophy": {
+        "text": "AI “tìm kiếm sự thật tối đa”, nhằm hiểu vũ trụ; gắn với mạng xã hội X.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "weights": "closed",
+      "categories": ["text", "image", "video"],
+      "models": [
+        { "name": "Grok 4.7", "kind": "text", "date": "2026-09-21", "note": "Mạnh nhất hiện tại", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Grok 4.6", "kind": "text", "date": "2026-08-12", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Grok 5", "kind": "text", "status": "unreleased", "note": "Chưa phát hành", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Grok Imagine Image 2.0", "kind": "image", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Grok Imagine Video 1.5", "kind": "video", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "meta",
+      "name": "Meta",
+      "country": "us",
+      "philosophy": {
+        "text": "“Siêu trí tuệ cá nhân” cho người dùng Facebook, Instagram và WhatsApp.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "history": {
+        "text": "Trước đây nổi tiếng với dòng Llama mở trọng số. Năm 2025–2026 tái cấu trúc thành Meta Superintelligence Labs, do Alexandr Wang dẫn dắt.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "weights": "unknown",
+      "categories": ["text", "image", "video"],
+      "models": [
+        { "name": "Muse Spark", "kind": "text", "date": "2026-04", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Muse Spark 1.1", "kind": "text", "date": "2026-07-09", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Muse Image", "kind": "image", "date": "2026-07", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Muse Video", "kind": "video", "date": "2026-07", "asOf": "2026-10-12", "source": "brief-2026-10-12" }
+      ],
+      "logo": { "simpleIcons": "meta" }
+    },
+    {
+      "id": "microsoft",
+      "name": "Microsoft",
+      "country": "us",
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["image", "3d"],
+      "models": [
+        { "name": "MAI-Image-2.5", "kind": "image", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        {
+          "name": "TRELLIS.2",
+          "kind": "3d",
+          "date": "2025-12",
+          "note": "Mã nguồn mở, giấy phép MIT",
+          "openWeights": true,
+          "strengths": { "text": "Mở, tải về chạy trên máy của bạn.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek",
+      "country": "cn",
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["text"],
+      "models": [
+        { "name": "DeepSeek V4 Pro", "kind": "text", "date": "2026-08-13", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "DeepSeek V4.1 Flash", "kind": "text", "date": "2026-09-10", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" }
+      ],
+      "logo": { "simpleIcons": "deepseek" }
+    },
+    {
+      "id": "alibaba",
+      "name": "Alibaba",
+      "country": "cn",
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["text", "video"],
+      "models": [
+        { "name": "Qwen3.8-Max", "kind": "text", "date": "2026-09-02", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        {
+          "name": "Wan 3.0",
+          "kind": "video",
+          "date": "2026-08-24",
+          "verify": true,
+          "openWeights": true,
+          "strengths": { "text": "Mở trọng số, có âm thanh.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": { "simpleIcons": "alibabacloud" }
+    },
+    {
+      "id": "moonshot",
+      "name": "Moonshot",
+      "country": "cn",
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["text"],
+      "models": [
+        { "name": "Kimi K3", "kind": "text", "date": "2026-07-16", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" }
+      ],
+      "logo": { "simpleIcons": "moonshotai" }
+    },
+    {
+      "id": "zhipu",
+      "name": "Zhipu / Z.ai",
+      "country": "cn",
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["text"],
+      "models": [
+        { "name": "GLM-5.3", "kind": "text", "date": "2026-08-18", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" }
+      ],
+      "logo": { "simpleIcons": "zdotai" }
+    },
+    {
+      "id": "minimax",
+      "name": "MiniMax",
+      "country": "cn",
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["text", "video"],
+      "models": [
+        { "name": "MiniMax M3", "kind": "text", "date": "2026-06-01", "verify": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        {
+          "name": "Hailuo 3.0 (H3)",
+          "kind": "video",
+          "date": "2026-07-31",
+          "verify": true,
+          "strengths": { "text": "Video 2K, chuyển động người.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": { "simpleIcons": "minimax" }
+    },
+    {
+      "id": "bytedance",
+      "name": "ByteDance",
+      "country": "cn",
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["image", "video"],
+      "models": [
+        {
+          "name": "Seedream 5.0",
+          "kind": "image",
+          "strengths": { "text": "Chất lượng cao, chi phí cạnh tranh.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        {
+          "name": "Seedance 2.5",
+          "kind": "video",
+          "date": "2026-07-31",
+          "verify": true,
+          "note": "Truy cập giới hạn",
+          "strengths": { "text": "Video tới 30 giây 4K, dùng được nhiều ảnh tham chiếu.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": { "simpleIcons": "bytedance" }
+    },
+    {
+      "id": "kuaishou",
+      "name": "Kuaishou",
+      "country": "cn",
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["video"],
+      "models": [
+        {
+          "name": "Kling 3.0",
+          "kind": "video",
+          "date": "2026-02-05",
+          "verify": true,
+          "strengths": { "text": "Chuyển động người tốt, giá hợp lý.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        {
+          "name": "Kling 3.0 Turbo",
+          "kind": "video",
+          "date": "2026-06-17",
+          "verify": true,
+          "strengths": { "text": "Chuyển động người tốt, giá hợp lý.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": { "simpleIcons": "kuaishou" }
+    },
+    {
+      "id": "tencent",
+      "name": "Tencent",
+      "country": "cn",
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["3d"],
+      "models": [
+        { "name": "Hunyuan 3D 3.1", "kind": "3d", "date": "2026-01-28", "verify": true, "note": "Chỉ có bản online", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+        { "name": "Pixal3D", "kind": "3d", "date": "2026-05", "verify": true, "note": "Của Tencent ARC; mã nguồn mở, giấy phép MIT", "openWeights": true, "asOf": "2026-10-12", "source": "brief-2026-10-12" }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "midjourney",
+      "name": "Midjourney",
+      "country": null,
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["image"],
+      "models": [
+        {
+          "name": "Midjourney V8.2",
+          "kind": "image",
+          "note": "Bản mặc định từ 24/07/2026",
+          "strengths": { "text": "Thẩm mỹ, art direction (định hướng hình ảnh), moodboard.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "black-forest-labs",
+      "name": "Black Forest Labs",
+      "country": null,
+      "philosophy": null,
+      "weights": "mixed",
+      "categories": ["image"],
+      "models": [
+        {
+          "name": "Flux 2",
+          "kind": "image",
+          "note": "Các bản Pro, Max, Flex",
+          "strengths": { "text": "Kiểm soát tốt, hợp quy trình chuyên nghiệp; có bản mở.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "runway",
+      "name": "Runway",
+      "country": null,
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["video"],
+      "models": [
+        {
+          "name": "Runway Gen-4.5",
+          "kind": "video",
+          "strengths": { "text": "Điều khiển máy quay, hợp quy trình chuyên nghiệp.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "luma",
+      "name": "Luma",
+      "country": null,
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["video"],
+      "models": [
+        {
+          "name": "Luma Ray3.14",
+          "kind": "video",
+          "strengths": { "text": "Không khí điện ảnh, mạnh về image-to-video (biến ảnh tĩnh thành video).", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "meshy",
+      "name": "Meshy",
+      "country": null,
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["3d"],
+      "models": [
+        {
+          "name": "Meshy 7",
+          "kind": "3d",
+          "date": "2026-08-12",
+          "strengths": { "text": "Dùng online, texture (chất liệu bề mặt) đẹp.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "hyper3d",
+      "name": "Hyper3D",
+      "country": null,
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["3d"],
+      "models": [
+        {
+          "name": "Rodin Gen-2.5",
+          "kind": "3d",
+          "date": "2026-05-26",
+          "strengths": { "text": "Chất lượng cao, trả phí.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "tripo",
+      "name": "Tripo",
+      "country": null,
+      "philosophy": null,
+      "weights": "unknown",
+      "categories": ["3d"],
+      "models": [
+        {
+          "name": "Tripo P1.0 / H3.1",
+          "kind": "3d",
+          "date": "2026-03-09",
+          "strengths": { "text": "Nhanh.", "asOf": "2026-10-12", "source": "brief-2026-10-12", "kind": "opinion" },
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      ],
+      "logo": {}
+    },
+    {
+      "id": "elevenlabs",
+      "name": "ElevenLabs",
+      "country": null,
+      "philosophy": null,
+      "focus": { "text": "Giọng nói tạo bằng AI.", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+      "weights": "unknown",
+      "categories": ["audio"],
+      "models": [],
+      "logo": { "simpleIcons": "elevenlabs" }
+    },
+    {
+      "id": "suno",
+      "name": "Suno",
+      "country": null,
+      "philosophy": null,
+      "focus": { "text": "Nhạc tạo bằng AI.", "asOf": "2026-10-12", "source": "brief-2026-10-12" },
+      "weights": "unknown",
+      "categories": ["audio"],
+      "models": [],
+      "logo": { "simpleIcons": "suno" }
+    }
+  ]
+}

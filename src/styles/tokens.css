@@ -1,0 +1,126 @@
+/* Modern Zen — design tokens. Light = rice paper at dawn, dark = night garden, garden 6 = dusk. */
+:root {
+  color-scheme: light;
+  --paper: #f3efe6;
+  --paper-2: #ebe5d8;
+  --card: #faf8f3;
+  --ink: #1f1d1a;
+  --ink-2: #4b4741;
+  --ink-3: #7a746a;
+  --line: rgba(31, 29, 26, 0.12);
+  --line-2: rgba(31, 29, 26, 0.22);
+  --sand-line: rgba(31, 29, 26, 0.07);
+  --sand-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='22'%3E%3Cpath d='M0 11 Q30 5 60 11 T120 11 T180 11 T240 11' fill='none' stroke='black' stroke-width='1.2'/%3E%3C/svg%3E");
+  --moss: #56704a;
+  --moss-2: #7d9670;
+  --moss-soft: #e1e6d6;
+  --stone: #9c968b;
+  --stone-2: #c9c3b6;
+  --stone-3: #e4dfd4;
+  --vermilion: #c8402a;
+  --vermilion-soft: #f4dbd2;
+  --on-ink: #f6f3ec;
+  --glow: rgba(200, 64, 42, 0);
+  --glow-moss: rgba(86, 112, 74, 0);
+  --shadow-1: 0 1px 2px rgba(48, 38, 22, 0.05), 0 8px 26px rgba(48, 38, 22, 0.06);
+  --shadow-2: 0 2px 6px rgba(48, 38, 22, 0.07), 0 22px 54px rgba(48, 38, 22, 0.11);
+
+  /* Serif carries the voice (titles, insights, labels in the art); sans only for notes and small UI. */
+  --serif: 'Noto Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --rake: rgba(31, 29, 26, 0.15);
+  --umbra: #2a2620;
+  --moss-a: #7d9670;
+  --moss-b: #56704a;
+  --moss-c: #a9b99a;
+  --rock-hi: #eeeae1;
+  --rock-mid: #cdc7ba;
+  --rock-lo: #9a9488;
+  --rake-hi: rgba(255, 255, 255, 0.7);
+  --top: 64px;
+  --rail: 72px;
+
+  --gutter: clamp(16px, 4.2vw, 48px);
+  --wrap: 1180px;
+  --measure: 36rem;
+  --r-sm: 12px;
+  --r: 20px;
+  --r-lg: 30px;
+  --ease: cubic-bezier(0.22, 0.8, 0.2, 1);
+  --ease-soft: cubic-bezier(0.45, 0.05, 0.25, 1);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --paper: #0e1311;
+  --paper-2: #151c19;
+  --card: #18201c;
+  --ink: #ebe6da;
+  --ink-2: #bfb9ac;
+  --ink-3: #8c877c;
+  --line: rgba(235, 230, 218, 0.12);
+  --line-2: rgba(235, 230, 218, 0.24);
+  --sand-line: rgba(235, 230, 218, 0.05);
+  --moss: #93b382;
+  --moss-2: #6f8f60;
+  --moss-soft: #1f2a22;
+  --stone: #6c695f;
+  --stone-2: #4b4943;
+  --stone-3: #34352f;
+  --vermilion: #ef6b4d;
+  --vermilion-soft: #3b211b;
+  --on-ink: #0e1311;
+  --glow: rgba(239, 107, 77, 0.28);
+  --rake: rgba(0, 0, 0, 0.5);
+  --umbra: #000;
+  --moss-a: #4c6643;
+  --moss-b: #384d33;
+  --moss-c: #66845a;
+  --rock-hi: #8d897f;
+  --rock-mid: #5f5c55;
+  --rock-lo: #353430;
+  --rake-hi: rgba(235, 230, 218, 0.075);
+  --glow-moss: rgba(147, 179, 130, 0.2);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 26px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.35), 0 22px 54px rgba(0, 0, 0, 0.4);
+}
+
+/* Khu vườn 6 — "Tác động": cooler, reflective dusk; never alarming. */
+:root[data-garden='6'] {
+  --rock-hi: #e7eaed;
+  --rock-mid: #c3c9ce;
+  --rock-lo: #8d959b;
+  --paper: #eceef0;
+  --paper-2: #e1e5e9;
+  --card: #f6f7f8;
+  --ink: #1c2226;
+  --ink-2: #444d54;
+  --ink-3: #6f7a82;
+  --moss: #4d6e74;
+  --moss-2: #7898a0;
+  --moss-soft: #dbe5e7;
+  --stone: #8f979d;
+  --stone-2: #bfc6cb;
+  --stone-3: #dde2e6;
+  --vermilion: #b65a43;
+  --vermilion-soft: #f0dcd5;
+}
+:root[data-theme='dark'][data-garden='6'] {
+  --rock-hi: #7f888e;
+  --rock-mid: #545c62;
+  --rock-lo: #2e353a;
+  --paper: #0d1216;
+  --paper-2: #131a20;
+  --card: #172028;
+  --ink: #e4e8eb;
+  --ink-2: #b4bdc4;
+  --ink-3: #849099;
+  --moss: #86aab0;
+  --moss-2: #5f838a;
+  --moss-soft: #1a2a2f;
+  --stone: #5f676d;
+  --stone-2: #3f474d;
+  --stone-3: #2b3238;
+  --vermilion: #e07a5f;
+  --vermilion-soft: #3a2420;
+}

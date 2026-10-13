@@ -1,0 +1,34 @@
+{
+  "eyebrow": "Minh bạch nguồn",
+  "title": "Nguồn logo",
+  "lede": "Logo trong AI Zen là logo chính thức mới nhất của từng công ty và được giữ nguyên.",
+  "rules": [
+    "Nguồn: bộ tài liệu báo chí, website chính thức của công ty hoặc Wikimedia Commons. Mỗi file ghi rõ nơi lấy.",
+    "Không vẽ lại, không bóp méo: logo màu giữ màu gốc, logo một màu được tô đúng màu thương hiệu. Chuyển động chỉ diễn ra quanh logo.",
+    "Không tìm được file chính thức thì hiện tên công ty trong viên đá — không bao giờ tự chế biểu tượng."
+  ],
+  "gridTitle": "Các công ty trong khu vườn",
+  "loading": "Đang xếp đá…",
+  "count": "{logos} logo chính thức · {names} công ty hiển thị bằng tên",
+  "loadError": "Chưa tải được danh sách logo, nên mọi công ty đang hiển thị bằng tên.",
+  "originIcon": "Logo chính thức",
+  "originName": "Hiển thị bằng tên",
+  "iconTitle": "Biểu tượng: {title}",
+  "links": {
+    "source": "Nguồn file",
+    "guidelines": "Hướng dẫn thương hiệu",
+    "license": "Giấy phép riêng",
+    "pressKit": "Trang thương hiệu"
+  },
+  "linkLabel": "{label} của {name} (mở trong thẻ mới)",
+  "categories": {
+    "text": "Chữ",
+    "image": "Ảnh",
+    "video": "Video",
+    "3d": "3D",
+    "audio": "Âm thanh"
+  },
+  "note": "Logo và thương hiệu thuộc về chủ sở hữu tương ứng; dùng cho mục đích giáo dục.",
+  "generated": "Danh sách tạo từ {package} ngày {date}.",
+  "license": "Dùng cá nhân cho mục đích giáo dục; nhãn hiệu thuộc chủ sở hữu."
+}

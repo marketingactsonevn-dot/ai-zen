@@ -1,0 +1,210 @@
+{
+  "id": 4,
+  "kicker": "Câu chữ vỡ thành đá nhỏ; AI đọc, nhớ, tính tiền theo từng viên.",
+  "scenes": {
+    "shatter": {
+      "label": "Câu vỡ thành đá",
+      "prompt": "Chạm để vỡ câu",
+      "sample": "Chúc bạn một ngày vui vẻ!",
+      "breakAria": "Cắt câu “{s}” thành token",
+      "stonesAria": "Các viên đá token. Mũi tên trái, phải để chọn viên đá; Enter để tung nó lên.",
+      "stoneAria": "Token “{t}”, số {id}",
+      "count": "{n} token",
+      "sees": "AI chỉ thấy: {ids}",
+      "demo": "Bộ cắt mô phỏng gần đúng",
+      "live": "Câu được cắt thành {n} token: {list}.",
+      "placeholder": "Gõ câu của bạn…",
+      "inputAria": "Câu của bạn",
+      "drop": "Thả",
+      "insight": "AI không đọc chữ như ta: câu bị cắt thành token — những mảnh chữ nhỏ — rồi đổi thành con số.",
+      "detail": {
+        "text": "Với tiếng Anh, trung bình 1 token dài khoảng 4 ký tự, tức chừng ¾ một từ.",
+        "asOf": "2026-10-12",
+        "source": "t04-openai-tokens"
+      }
+    },
+    "compare": {
+      "label": "Tiếng Việt và tiếng Anh",
+      "prompt": "Chạm để so sánh",
+      "breakAria": "Cắt cả hai câu thành token để so sánh",
+      "vi": "Tiếng Việt",
+      "en": "Tiếng Anh",
+      "token": "token",
+      "next": "Câu khác",
+      "nextAria": "Đổi sang cặp câu khác",
+      "demo": "Bộ cắt mô phỏng gần đúng",
+      "live": "Tiếng Việt: {vi} token. Tiếng Anh: {en} token.",
+      "pairs": [
+        [
+          "Hôm nay trời đẹp quá.",
+          "The weather is lovely today."
+        ],
+        [
+          "Son này giữ màu suốt tám tiếng.",
+          "This lipstick lasts eight hours."
+        ],
+        [
+          "Cảm ơn bạn đã đặt hàng.",
+          "Thank you for your order."
+        ]
+      ],
+      "insight": {
+        "text": "Cùng một ý, tiếng Việt thường bị cắt thành nhiều token hơn tiếng Anh: tốn chỗ và tốn phí hơn một chút.",
+        "asOf": "2026-10-12",
+        "source": "t04-petrov-2023"
+      },
+      "detail": {
+        "text": "Bộ cắt ở đây chỉ mô phỏng; mỗi mô hình cắt theo cách riêng, nên con số thật sẽ khác.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      }
+    },
+    "bowl": {
+      "label": "Bát ngữ cảnh",
+      "prompt": "Bấm “Nhắn tiếp”",
+      "send": "Nhắn tiếp",
+      "again": "Trò chuyện lại",
+      "sizeAria": "Cỡ cửa sổ ngữ cảnh",
+      "sizes": [
+        {
+          "id": "s",
+          "label": "Nhỏ",
+          "aria": "Bát nhỏ"
+        },
+        {
+          "id": "l",
+          "label": "Lớn",
+          "aria": "Bát lớn"
+        },
+        {
+          "id": "m",
+          "label": "~1 triệu",
+          "aria": "Bát khoảng 1 triệu token"
+        }
+      ],
+      "you": "Bạn",
+      "ai": "AI",
+      "messages": [
+        {
+          "who": "you",
+          "text": "Chào, mình tên Lan."
+        },
+        {
+          "who": "ai",
+          "text": "Chào Lan, rất vui!"
+        },
+        {
+          "who": "you",
+          "text": "Viết caption cho son mới."
+        },
+        {
+          "who": "ai",
+          "text": "Môi đỏ, tự tin cả ngày."
+        },
+        {
+          "who": "you",
+          "text": "Thêm giọng vui hơn nhé."
+        },
+        {
+          "who": "ai",
+          "text": "Đỏ rực, cười thật tươi!"
+        },
+        {
+          "who": "you",
+          "text": "Mình tên gì nhỉ?"
+        }
+      ],
+      "name": "Lan",
+      "forgot": "Xin lỗi, mình không thấy tên bạn.",
+      "remember": "Bạn tên Lan.",
+      "fill": "Trong bát: {n} / {cap} token",
+      "million": "~1 triệu",
+      "outside": "AI không còn thấy",
+      "liveMsg": "{who}: {text}",
+      "liveOut": "{n} token cũ nhất đã rơi ra ngoài bát.",
+      "art": "Một chiếc bát đá đựng các viên đá token của cuộc trò chuyện.",
+      "pages": {
+        "text": "≈ vài nghìn trang sách",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "windowFact": {
+        "text": "GPT-6 Astra (OpenAI, 03/09/2026) nhận khoảng 1 triệu token ngữ cảnh.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": "Ngữ cảnh (context window) là “trí nhớ làm việc” của AI: đầy thì phần cũ nhất rơi ra, AI không còn thấy.",
+      "detail": {
+        "text": "Tùy ứng dụng: có nơi cắt bỏ phần đầu, có nơi tóm tắt lại. Thói quen tốt: chat quá dài thì tóm ý chính, mở cuộc mới.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "scale": {
+      "label": "Cân token",
+      "prompt": "Gửi một câu hỏi",
+      "ask": "Gửi câu hỏi",
+      "doc": "Kèm tài liệu dài",
+      "answer": "AI trả lời",
+      "reset": "Cân lại",
+      "question": "Viết 2 caption cho son mới.",
+      "reply": "Môi đỏ, tự tin cả ngày. Đỏ rực, cười thật tươi!",
+      "docTitle": "Tài liệu sản phẩm",
+      "inLabel": "Bạn gửi vào",
+      "outLabel": "AI viết ra",
+      "bill": "Hóa đơn",
+      "art": "Một chiếc cân: đĩa trái đựng token bạn gửi vào, đĩa phải đựng token AI viết ra, bên cạnh là chồng xu hóa đơn.",
+      "tilt": {
+        "left": "Đĩa “gửi vào” đang nặng hơn.",
+        "right": "Đĩa “viết ra” đang nặng hơn.",
+        "even": "Hai đĩa gần cân bằng."
+      },
+      "insight": {
+        "text": "Token là đơn vị tính tiền của AI: tính cả chữ bạn gửi vào lẫn chữ AI viết ra.",
+        "asOf": "2026-10-12",
+        "source": "t04-openai-pricing"
+      },
+      "detail": {
+        "text": "Ở nhiều dịch vụ, token AI viết ra đắt hơn token gửi vào. Thói quen tốt: hỏi gọn, chỉ dán phần tài liệu cần.",
+        "asOf": "2026-10-12",
+        "source": "t04-openai-pricing"
+      }
+    }
+  },
+  "quiz": {
+    "q": "Trò chuyện thật dài, vì sao AI có thể “quên” điều bạn nói đầu tiên?",
+    "options": [
+      "Vượt quá cửa sổ ngữ cảnh",
+      "AI cố tình phớt lờ bạn",
+      "Mạng internet bị chậm",
+      "AI hết pin giữa chừng"
+    ],
+    "answer": 0,
+    "explain": "Ngữ cảnh chỉ chứa được một số token nhất định; khi đầy, phần cũ nhất có thể rơi ra ngoài."
+  },
+  "summary": "AI đọc chữ theo token — trí nhớ và chi phí đều đếm bằng token.",
+  "sources": {
+    "t04-openai-tokens": {
+      "title": "What are tokens and how to count them?",
+      "publisher": "OpenAI Help Center",
+      "url": "https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them",
+      "note": "Quy tắc ước lượng thô cho văn bản tiếng Anh."
+    },
+    "t04-petrov-2023": {
+      "title": "Language Model Tokenizers Introduce Unfairness Between Languages",
+      "publisher": "Petrov, La Malfa, Torr, Bibi · NeurIPS 2023 (arXiv)",
+      "date": "2023-05",
+      "url": "https://arxiv.org/abs/2305.15425",
+      "note": "Cùng một nội dung dịch sang các ngôn ngữ khác nhau có thể cần số token chênh lệch nhiều lần."
+    },
+    "t04-openai-pricing": {
+      "title": "API Pricing",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/api/pricing/",
+      "note": "Giá niêm yết theo số token đầu vào và đầu ra (trên 1 triệu token). Các hãng khác tính theo cách tương tự."
+    }
+  }
+}

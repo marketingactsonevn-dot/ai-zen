@@ -1,0 +1,128 @@
+{
+  "id": 10,
+  "kicker": "Chữ hóa thành giọng, đá hóa thành nốt nhạc trên dòng suối.",
+  "scenes": {
+    "voice": {
+      "label": "Chữ thành giọng",
+      "prompt": "Chọn một giọng đọc",
+      "art": "Một câu chữ bên mặt hồ. Khi được đọc, sóng âm mọc lên như hàng lau mực, soi bóng xuống nước.",
+      "voicesLabel": "Giọng đọc",
+      "readAs": "Đọc câu bằng giọng {name}",
+      "voices": [
+        "Trầm ấm",
+        "Trong trẻo",
+        "Thì thầm"
+      ],
+      "langLabel": "Thứ tiếng của câu",
+      "langs": [
+        {
+          "name": "Tiếng Việt",
+          "lang": "vi",
+          "text": "Sáng nay sương tan, mời bạn một chén trà."
+        },
+        {
+          "name": "English",
+          "lang": "en",
+          "text": "The morning mist is gone, come have some tea."
+        }
+      ],
+      "same": "Cùng một giọng, khác thứ tiếng",
+      "brand": {
+        "text": "Ví dụ công cụ giọng nói AI: ElevenLabs",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": "Text-to-speech là AI đọc chữ thành giọng: nó học cách người thật ngắt nghỉ, nhấn nhá, nên nghe rất tự nhiên.",
+      "detail": "Chọn được giọng, cảm xúc, tốc độ. Luôn nghe lại trước khi dùng: AI có thể đọc sai tên riêng, con số.",
+      "dubInsight": "Lồng tiếng bằng AI: giữ nguyên chất giọng, nói sang thứ tiếng khác.",
+      "dubDetail": "Nhờ người rành thứ tiếng đó nghe lại: AI có thể dịch sai ý, nhất là câu đùa và thành ngữ."
+    },
+    "consent": {
+      "label": "Nhân bản giọng",
+      "prompt": "Chạm để sao chép giọng",
+      "owner": "Giọng thật của Lan",
+      "name": "Lan",
+      "copy": "Bản sao bằng AI",
+      "copyAria": "Dùng AI sao chép giọng của Lan",
+      "waiting": "Chưa được phép",
+      "askPrompt": "Xin phép Lan trước",
+      "slip": [
+        "Lan đồng ý",
+        "cho dùng giọng"
+      ],
+      "ask": "Xin phép Lan",
+      "seal": "Lan",
+      "tag": "Giọng AI",
+      "art": "Hai vòng sóng giọng nói như hai vân tay: bên trái là giọng thật của Lan, bên phải là bản sao bằng AI.",
+      "insight": "Giọng nói là của riêng mỗi người: luôn xin phép chủ giọng, và ghi rõ “giọng AI”.",
+      "detail": {
+        "text": "Chỉ cần một đoạn ghi âm ngắn là giả được giọng. Nghe “người thân” gọi xin tiền gấp? Đừng tin giọng nói: gọi lại số quen để kiểm tra.",
+        "asOf": "2026-10-12",
+        "source": "ftc-voice-2023"
+      }
+    },
+    "stream": {
+      "label": "Suối nhạc",
+      "prompt": "Chọn một lời mô tả",
+      "group": "Lời mô tả gửi AI soạn nhạc",
+      "art": "Dòng suối năm vạch như khuông nhạc, cây trúc đứng bên bờ. Mỗi viên đá là một nốt, trôi qua cây trúc thì vang lên.",
+      "moods": [
+        {
+          "name": "Thiền",
+          "rest": "sáo trúc, chậm rãi"
+        },
+        {
+          "name": "Vui tươi",
+          "rest": "đàn tranh, nắng sớm"
+        },
+        {
+          "name": "Mưa đêm",
+          "rest": "dương cầm, buồn nhẹ"
+        }
+      ],
+      "melody": "giai điệu",
+      "harmony": "hòa âm",
+      "brand": {
+        "text": "Ví dụ công cụ nhạc AI: Suno",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": "Mô tả bằng lời — thể loại, cảm xúc, nhạc cụ — AI soạn cả giai điệu, hòa âm, có khi cả lời hát.",
+      "detail": "Mỗi lần tạo thường ra một bản khác. Nghe vài bản, chọn bản hợp ý, rồi chỉnh lời mô tả cho sát hơn.",
+      "mark": "©",
+      "rightsInsight": "Nhạc AI học từ nhạc thật, nên có tranh chấp bản quyền. Dùng để kinh doanh? Đọc kỹ điều khoản.",
+      "rightsDetail": {
+        "text": "Năm 2024, các hãng thu âm lớn kiện Suno, cáo buộc dùng nhạc có bản quyền để huấn luyện AI.",
+        "asOf": "2026-10-12",
+        "source": "riaa-suno-2024"
+      }
+    }
+  },
+  "quiz": {
+    "q": "Muốn dùng AI nhân bản giọng một đồng nghiệp, việc đầu tiên là gì?",
+    "options": [
+      "Ghi âm lén cho thật tự nhiên",
+      "Xin phép chính người đó",
+      "Chọn công cụ đắt nhất",
+      "Không cần gì, giọng ai cũng dùng được"
+    ],
+    "answer": 1,
+    "explain": "Giọng nói gắn với một con người thật: cần họ đồng ý, và khi đăng nhớ ghi rõ là giọng AI."
+  },
+  "summary": "Dùng giọng, nhạc AI: xin phép, tôn trọng bản quyền, ghi rõ là AI.",
+  "sources": {
+    "ftc-voice-2023": {
+      "title": "Scammers use AI to enhance their family emergency schemes",
+      "publisher": "Ủy ban Thương mại Liên bang Mỹ (FTC) · Consumer Alert",
+      "url": "https://consumer.ftc.gov/consumer-alerts/2023/03/scammers-use-ai-enhance-their-family-emergency-schemes",
+      "date": "2023-03-20",
+      "note": "FTC viết: kẻ gian chỉ cần một đoạn ghi âm ngắn giọng người thân; lời khuyên là đừng tin giọng nói, hãy gọi lại số bạn biết chắc để kiểm tra."
+    },
+    "riaa-suno-2024": {
+      "title": "Record Companies Bring Landmark Cases for Responsible AI Against Suno and Udio in Boston and New York Federal Courts, Respectively",
+      "publisher": "RIAA (Hiệp hội Công nghiệp Ghi âm Mỹ)",
+      "date": "2024-06-24",
+      "note": "Sony Music, Universal Music và Warner Records đứng đơn. Đây là cáo buộc trong vụ kiện, không phải phán quyết của tòa. Cập nhật (cần kiểm chứng): Warner Music đã dàn xếp với Suno (11/2025); Universal và Sony vẫn theo kiện theo tin giữa 2026."
+    }
+  }
+}

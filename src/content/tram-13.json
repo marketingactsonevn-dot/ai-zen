@@ -1,0 +1,218 @@
+{
+  "id": 13,
+  "kicker": "Mỗi loại AI một lối đá: cùng một ấm trà, năm cách ra lệnh.",
+  "summary": "Mỗi loại AI một công thức riêng, nhưng chung một gốc: tả thật cụ thể điều mình muốn.",
+  "quiz": {
+    "q": "Prompt video nào dễ ra một cảnh đẹp nhất?",
+    "options": [
+      "Rót trà, dạo vườn, hoàng hôn, logo bay",
+      "Cận cảnh rót trà, máy đẩy chậm, 8 giây",
+      "Video về trà thật đẹp, thật xịn"
+    ],
+    "answer": 1,
+    "explain": "Một prompt nên là một cảnh quay: một hành động chính, nói rõ máy quay và thời lượng."
+  },
+  "ui": {
+    "promptLabel": "Prompt ví dụ",
+    "vagueLabel": "Prompt mơ hồ",
+    "clearLabel": "Prompt rõ ràng",
+    "compare": "So sánh hai prompt",
+    "vague": "Mơ hồ",
+    "clear": "Rõ ràng",
+    "mistakes": "Lỗi hay gặp",
+    "stones": "Các viên đá của công thức. Chạm để đặt xuống hoặc nhấc lên.",
+    "added": "Đã thêm {name}: {frag}",
+    "removed": "Đã nhấc viên đá {name}",
+    "showVague": "Đang xem prompt mơ hồ và kết quả của nó",
+    "showClear": "Đang xem prompt rõ ràng và kết quả của nó",
+    "more": "Xem cả prompt",
+    "less": "Thu gọn"
+  },
+  "scenes": {
+    "text": {
+      "label": "AI chữ",
+      "prompt": "Đặt từng viên đá",
+      "artLabel": "Câu trả lời của AI chữ, đổi theo từng phần của prompt",
+      "phrases": false,
+      "bad": {
+        "text": "Viết bài về trà.",
+        "mistakes": ["Không nói ai đọc, để làm gì", "Không đưa tài liệu hay ví dụ"]
+      },
+      "slots": [
+        { "name": "Vai trò", "frag": "Bạn là người viết quảng cáo." },
+        { "name": "Bối cảnh", "frag": "Người đọc: dân văn phòng bận rộn; mục tiêu: rủ họ thử trà." },
+        { "name": "Nhiệm vụ", "frag": "Viết bài mời thử trà Mây mới." },
+        { "name": "Dữ liệu, ví dụ", "frag": "Dựa vào tài liệu và bài mẫu kèm theo." },
+        { "name": "Ràng buộc", "frag": "Dưới 80 chữ, giọng ấm, không phóng đại." },
+        { "name": "Định dạng", "frag": "Bài đăng ngắn có tiêu đề; cho 3 phương án." },
+        { "name": "Hỏi lại", "frag": "Trước khi viết: bạn cần thêm thông tin gì?", "key": true }
+      ],
+      "words": {
+        "source": "Tài liệu",
+        "sample": "Bài mẫu",
+        "ask": ["Giá bán bao nhiêu?", "Ưu đãi tới ngày nào?"],
+        "options": ["A", "B", "C"],
+        "legendQ": "bịa thông tin",
+        "legendEx": "phóng đại"
+      },
+      "insight": "Giao việc cho AI chữ như cho người mới: đủ vai trò, bối cảnh, việc, tài liệu, giới hạn, định dạng.",
+      "detail": "Mẹo: đưa tài liệu gốc, cho bài mẫu để bắt giọng, xin vài phương án, và hỏi “bạn cần thêm thông tin gì?”."
+    },
+    "image": {
+      "label": "AI ảnh",
+      "prompt": "Đặt từng viên đá",
+      "artLabel": "Bức ảnh AI vẽ, rõ dần theo từng phần của prompt",
+      "phrases": true,
+      "bad": {
+        "text": "Vẽ ấm trà thật đẹp.",
+        "mistakes": ["Chữ “đẹp” không tả được gì", "Thiếu ánh sáng, góc máy, khung"]
+      },
+      "slots": [
+        { "name": "Chủ thể", "frag": "ấm trà gốm men xanh rêu" },
+        { "name": "Hành động, bố cục", "frag": "hơi nước bay, đặt lệch phải" },
+        { "name": "Bối cảnh", "frag": "bàn gỗ cạnh cửa sổ tròn" },
+        { "name": "Phong cách", "frag": "tranh thủy mặc tối giản" },
+        { "name": "Ánh sáng", "frag": "nắng sớm xiên qua cửa sổ" },
+        { "name": "Ống kính, góc máy", "frag": "cận cảnh, ngang tầm mắt" },
+        { "name": "Màu sắc", "frag": "tông giấy kem, điểm đỏ son" },
+        { "name": "Chữ trong ảnh", "frag": "chữ “Trà Mây” ở góc trái" },
+        { "name": "Tỉ lệ khung", "frag": "khung dọc 4:5" }
+      ],
+      "words": {
+        "brand": "Trà Mây",
+        "ways": "Hai cách viết cùng một prompt",
+        "sentence": "Thành câu",
+        "keywords": "Từ khóa",
+        "sentenceText": "Tranh thủy mặc tối giản: ấm trà gốm men xanh rêu đặt lệch phải trên bàn gỗ cạnh cửa sổ tròn, hơi nước bay lên. Nắng sớm xiên vào; cận cảnh, ngang tầm mắt; tông giấy kem, điểm đỏ son. Góc trái có chữ “Trà Mây”. Khung dọc 4:5.",
+        "keywordsText": "ấm trà gốm men rêu, hơi nước, lệch phải, bàn gỗ, cửa sổ tròn, thủy mặc tối giản, nắng sớm, cận cảnh, kem và đỏ son, chữ “Trà Mây” --ar 4:5",
+        "sentenceFor": "Hợp AI ảnh dạng trò chuyện",
+        "keywordsFor": "Kiểu Midjourney cũng nhận từ khóa ngắn và tham số"
+      },
+      "insight": "Điều không tả, AI ảnh tự đoán. Hãy tả: chủ thể, bối cảnh, phong cách, ánh sáng, góc máy, màu, chữ, khung.",
+      "detail": {
+        "text": "Loại trò chuyện hợp câu đầy đủ; kiểu Midjourney cũng nhận từ khóa và tham số. Đưa ảnh tham chiếu để giữ đồng nhất; sửa từng chỗ, đừng viết lại.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "paramFact": {
+        "text": "--ar 4:5 là tham số tỉ lệ khung của Midjourney.",
+        "asOf": "2026-10-12",
+        "source": "t13-mj-ar"
+      }
+    },
+    "video": {
+      "label": "AI video",
+      "prompt": "Đặt từng viên đá",
+      "artLabel": "Khung quay video, rõ dần theo từng phần của prompt",
+      "phrases": true,
+      "bad": {
+        "text": "Video trà: rót trà, dạo vườn, hoàng hôn, logo bay.",
+        "mistakes": ["Nhồi bốn hành động một lần", "Không nói máy quay, thời lượng"]
+      },
+      "slots": [
+        { "name": "Loại cảnh", "frag": "cận cảnh" },
+        { "name": "Chủ thể", "frag": "ấm gốm men rêu và chén trà" },
+        { "name": "Một hành động chính", "frag": "rót trà chậm vào chén", "key": true },
+        { "name": "Chuyển động máy quay", "frag": "máy quay đẩy chậm vào" },
+        { "name": "Bối cảnh", "frag": "bàn gỗ, vườn tre phía sau" },
+        { "name": "Ánh sáng, không khí", "frag": "nắng sớm, hơi nước mờ" },
+        { "name": "Âm thanh, lời thoại", "frag": "tiếng nước rót, chim hót xa" },
+        { "name": "Thời lượng", "frag": "dài 8 giây" }
+      ],
+      "words": {
+        "first": "Khung đầu: ảnh đã duyệt",
+        "shot": "Cảnh 1",
+        "next": ["Cảnh 2", "Cảnh 3"],
+        "end": "8 giây"
+      },
+      "insight": "Mỗi prompt video là một cảnh quay: một hành động chính, máy quay rõ, có âm thanh và thời lượng.",
+      "detail": "Bắt đầu từ ảnh đã duyệt để giữ đúng sản phẩm, nhân vật. Mỗi prompt một cảnh, rồi ghép các cảnh lại."
+    },
+    "model": {
+      "label": "AI 3D",
+      "prompt": "Đặt từng viên đá",
+      "artLabel": "Mô hình 3D chiếc ấm trà. Kéo, hoặc dùng phím mũi tên, để xoay.",
+      "phrases": false,
+      "bad": {
+        "text": "Làm 3D cái ấm này.",
+        "mistakes": ["Ảnh nền rối, nhiều đồ vật", "Không nói dùng vào việc gì"]
+      },
+      "slots": [
+        { "name": "Ảnh đầu vào sạch", "frag": "Ảnh ấm trà nền trơn, đủ sáng." },
+        { "name": "Chất liệu", "frag": "Chất liệu {mat}." },
+        { "name": "Mục đích", "frag": "Dùng cho {use}." },
+        { "name": "Số đa giác", "frag": "{budget}." },
+        { "name": "PBR", "frag": "Kèm vật liệu PBR." },
+        { "name": "Dọn trong Blender", "frag": "Sau đó tôi dọn lại trong Blender.", "key": true }
+      ],
+      "materials": [
+        { "id": "glass", "name": "Thủy tinh", "frag": "thủy tinh trong" },
+        { "id": "matte", "name": "Nhựa nhám", "frag": "nhựa nhám" },
+        { "id": "metal", "name": "Kim loại", "frag": "kim loại xước nhẹ" }
+      ],
+      "uses": [
+        { "id": "game", "name": "Game", "frag": "game, kiểu low-poly (ít mặt, nhẹ máy)", "budget": "Dưới 2.000 tam giác" },
+        { "id": "render", "name": "Render", "frag": "ảnh render quảng cáo", "budget": "Chi tiết cao, bề mặt mịn" }
+      ],
+      "words": {
+        "input": "Ảnh đầu vào",
+        "matGroup": "Chọn chất liệu",
+        "useGroup": "Chọn mục đích",
+        "pbr": ["Màu gốc", "Độ nhám", "Kim loại", "Gồ ghề"],
+        "tris": "{n} tam giác",
+        "noGl": "Trình duyệt này không hiển thị được 3D.",
+        "angle": "Góc xoay {n} độ"
+      },
+      "insight": "AI 3D cần ảnh sạch, chất liệu và mục đích rõ; mô hình tạo ra thường vẫn phải dọn lại.",
+      "detail": {
+        "text": "Đa giác: các mặt nhỏ ghép thành vật. PBR: vật liệu mô phỏng ánh sáng, gồm ảnh màu, độ nhám, kim loại, gồ ghề. Blender: phần mềm 3D miễn phí.",
+        "asOf": "2026-10-12",
+        "source": "t13-blender"
+      }
+    },
+    "agent": {
+      "label": "AI agent",
+      "prompt": "Đặt từng viên đá",
+      "artLabel": "Khu vườn nơi agent làm việc, đổi theo từng phần của prompt",
+      "phrases": false,
+      "bad": {
+        "text": "Lo vụ phản hồi khách giúp tôi.",
+        "mistakes": ["Không nói thế nào là xong", "Không giới hạn quyền làm gì"]
+      },
+      "slots": [
+        { "name": "Mục tiêu", "frag": "Tổng hợp phản hồi khách tuần này." },
+        { "name": "Khi nào là xong", "frag": "Xong khi có 5 ý chính, kèm trích dẫn." },
+        { "name": "Được làm gì", "frag": "Được đọc email và bảng đánh giá." },
+        { "name": "Phải hỏi trước", "frag": "Hỏi tôi trước khi gửi hay xóa gì.", "key": true },
+        { "name": "Để kết quả ở đâu", "frag": "Lưu vào thư mục “Báo cáo tuần”." }
+      ],
+      "words": {
+        "run": "Cho agent chạy",
+        "again": "Chạy lại",
+        "ask": "Gửi bản tóm tắt cho cả nhóm?",
+        "yes": "Đồng ý gửi",
+        "no": "Chưa gửi",
+        "folder": "Báo cáo tuần",
+        "team": "Cả nhóm",
+        "sent": "Agent đã gửi bản tóm tắt sau khi bạn đồng ý.",
+        "held": "Agent giữ lại, không gửi gì cả."
+      },
+      "insight": "Giao việc cho agent: mục tiêu, khi nào xong, được làm gì, phải hỏi gì, để kết quả ở đâu.",
+      "detail": "Agent tự làm nhiều bước, nên giới hạn quyền và điểm dừng để hỏi ý bạn là chỗ quan trọng nhất."
+    }
+  },
+  "sources": {
+    "t13-mj-ar": {
+      "title": "Aspect Ratio",
+      "publisher": "Tài liệu hướng dẫn của Midjourney",
+      "url": "https://docs.midjourney.com/hc/en-us/articles/31894244298125-Aspect-Ratio",
+      "note": "Thêm --ar (hoặc --aspect) sau prompt để đặt tỉ lệ khung, ví dụ --ar 4:5 cho khung dọc. Trang tài liệu không ghi ngày đăng."
+    },
+    "t13-blender": {
+      "title": "About Blender",
+      "publisher": "Blender Foundation",
+      "url": "https://www.blender.org/about/",
+      "note": "Blender là phần mềm 3D miễn phí, mã nguồn mở. Phần giải thích đa giác và PBR là diễn giải của AI Zen; việc phải dọn mô hình AI tạo ra lấy theo dữ liệu tra cứu của dự án (12/10/2026)."
+    }
+  }
+}

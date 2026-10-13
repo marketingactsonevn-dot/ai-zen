@@ -1,0 +1,200 @@
+{
+  "id": 9,
+  "kicker": "From one flat photo, AI sculpts a koi that can swim.",
+  "scenes": {
+    "pipeline": {
+      "label": "Six steps to a shape",
+      "prompt": "Spin it, then continue",
+      "aria": "A 3D koi model. Drag or use the arrow keys to rotate it.",
+      "valueText": "Rotated {deg} degrees",
+      "stepsLabel": "Six steps of AI 3D creation",
+      "stepAria": "Step {n}: {name}",
+      "of": "{n} / 6",
+      "orText": "or: “red and white koi, long fins”",
+      "back": "Back side: not in the photo",
+      "steps": [
+        {
+          "name": "Photo or text",
+          "short": "Photo / text",
+          "caption": "You give it a photo or a short description. A photo is flat: one side only."
+        },
+        {
+          "name": "Many views (multi-view)",
+          "short": "Many views",
+          "caption": "AI guesses the object from the front, back, top and sides — even parts the photo doesn’t show."
+        },
+        {
+          "name": "Build the shape (mesh)",
+          "short": "Shape",
+          "caption": "The views join into a 3D shape: a shell made of many tiny triangles."
+        },
+        {
+          "name": "Add materials (texture, PBR)",
+          "short": "Materials",
+          "caption": "Texture is the image wrapped around it; PBR adds roughness and bumps so light looks real."
+        },
+        {
+          "name": "Clean mesh, add bones",
+          "short": "Mesh & bones",
+          "caption": "Retopology: tidy a messy mesh into a clean one. Rig: add a skeleton so it can move."
+        },
+        {
+          "name": "Put it to use",
+          "short": "Put it to use",
+          "caption": "Export a 3D file: keep editing in Blender, drop it into a game, or view it in AR."
+        }
+      ],
+      "maps": {
+        "label": "View each material layer",
+        "items": [
+          "All",
+          "Color",
+          "Roughness",
+          "Bumps"
+        ]
+      },
+      "uses": {
+        "label": "Where to use it",
+        "items": [
+          {
+            "name": "Blender",
+            "note": {
+              "text": "Blender: free, open-source 3D software for refining the model.",
+              "asOf": "2026-10-12",
+              "source": "t09-blender"
+            }
+          },
+          {
+            "name": "Game",
+            "note": "In a game: a clean mesh with bones, so the fish can swim."
+          },
+          {
+            "name": "AR",
+            "note": "AR (augmented reality): the fish appears on a real table through your phone camera."
+          }
+        ]
+      },
+      "insight": "AI builds 3D like an assembly line: guess the views, shape the form, add materials, then tidy up for use.",
+      "detail": "What the photo doesn’t show, AI must guess — so the back is sometimes wrong. A 3D artist still needs to check.",
+      "noWebgl": "Still image: six steps turn a koi photo into a 3D model."
+    },
+    "splats": {
+      "label": "Sprinkled from real photos",
+      "prompt": "Shoot around the lantern",
+      "title": "A sibling technique",
+      "aria": "A stone lantern built from soft, blurry dabs of color. Drag or use the arrow keys to walk around it.",
+      "valueText": "Standing at {deg} degrees",
+      "shutter": "Take a photo from this angle",
+      "count": "{n}/8 photos",
+      "more": "Walk to an unshot side",
+      "insight": {
+        "text": "Gaussian splatting builds 3D from many real photos taken around an object: countless soft dabs of color layered together.",
+        "asOf": "2026-10-12",
+        "source": "t09-3dgs"
+      },
+      "detail": "Unlike AI 3D generation, splats only record what was photographed. Any angle not shot stays blurry or empty.",
+      "noWebgl": "Still image: a stone lantern emerges from soft dabs of color, pieced together from many photos around it."
+    },
+    "input": {
+      "label": "A good input photo",
+      "prompt": "Fix each photo flaw",
+      "photo": "Your photo",
+      "result": "The AI’s 3D version",
+      "group": "The photo’s flaws",
+      "status": "Fixed {n}/4",
+      "fixes": [
+        {
+          "flaw": "Busy background",
+          "fix": "Plain background"
+        },
+        {
+          "flaw": "Shot at an angle",
+          "fix": "Shot head-on"
+        },
+        {
+          "flaw": "Tail cut off",
+          "fix": "Whole object in frame"
+        },
+        {
+          "flaw": "Blocked, glare",
+          "fix": "Clean, clear photo"
+        }
+      ],
+      "fixAria": "Flaw: “{flaw}”. Tap to fix it: {fix}",
+      "fixedAria": "Fixed: {fix}",
+      "insight": "A good photo for 3D AI: clean, clear, shot head-on, plain background, nothing cut off.",
+      "detail": {
+        "text": "The AI’s version usually still needs fixing in Blender (3D modeling software) before real use.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "noWebgl": "Still image: a clear, head-on photo on a plain background gives a cleaner 3D result."
+    },
+    "models": {
+      "label": "The 3D workshops",
+      "prompt": "Tap each stone",
+      "group": "Notable AI 3D models",
+      "released": "Released {date}",
+      "items": [
+        {
+          "company": "meshy",
+          "model": "Meshy 7"
+        },
+        {
+          "company": "hyper3d",
+          "model": "Rodin Gen-2.5"
+        },
+        {
+          "company": "tripo",
+          "model": "Tripo P1.0 / H3.1"
+        },
+        {
+          "company": "tencent",
+          "model": "Hunyuan 3D 3.1"
+        },
+        {
+          "company": "tencent",
+          "model": "Pixal3D"
+        },
+        {
+          "company": "microsoft",
+          "model": "TRELLIS.2"
+        }
+      ],
+      "insight": "Each tool shines in its own way. Try a few with the same photo, then compare the results.",
+      "detail": "The strengths noted here are general opinions; AI changes weekly, so they may be out of date.",
+      "groups": [
+        "Use online",
+        "Open source, download"
+      ]
+    }
+  },
+  "quiz": {
+    "q": "Why should a photo for 3D AI be clear, head-on and show the whole object?",
+    "options": [
+      "So the file is smaller",
+      "So AI has less hidden stuff to guess",
+      "So AI runs faster",
+      "Because blurry photos are banned"
+    ],
+    "answer": 1,
+    "explain": "AI must guess whatever the photo doesn’t show; the clearer and fuller the photo, the fewer wrong guesses."
+  },
+  "summary": "3D AI guesses hidden sides, shapes the form, adds materials — people still tidy up.",
+  "sources": {
+    "t09-3dgs": {
+      "title": "3D Gaussian Splatting for Real-Time Radiance Field Rendering",
+      "publisher": "Kerbl, Kopanas, Leimkühler, Drettakis · ACM Transactions on Graphics (SIGGRAPH 2023)",
+      "date": "2023-07",
+      "url": "https://arxiv.org/abs/2308.04079",
+      "note": "The paper that introduced Gaussian splatting."
+    },
+    "t09-blender": {
+      "title": "About Blender",
+      "publisher": "Blender Foundation",
+      "url": "https://www.blender.org/about/",
+      "note": "The Blender Foundation’s about page: Blender is free, open-source 3D software."
+    }
+  }
+}

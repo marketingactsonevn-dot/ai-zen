@@ -1,0 +1,163 @@
+{
+  "id": 14,
+  "kicker": "Bộ não trong bình chỉ biết nói. Gắn tay chân, nó bắt đầu làm.",
+  "scenes": {
+    "jar": {
+      "label": "Bộ não trong bình",
+      "prompt": "Thử gắn tay chân",
+      "art": "Bình minh trên vườn cát. Một bộ não trong bình thủy tinh chỉ thả ra những bong bóng chữ. Quanh bình, trên các phiến đá: trình duyệt, tệp, lịch và hộp thư, nằm ngoài tầm với.",
+      "attach": "Gắn tay chân",
+      "again": "Đặt lại vào bình",
+      "before": "Chatbot không công cụ: chỉ trả lời bằng chữ",
+      "after": "Agent: tự dùng công cụ",
+      "tools": [
+        "Trình duyệt",
+        "Tệp",
+        "Lịch",
+        "Thư"
+      ],
+      "done": "Bốn nét mực vươn ra: mở trình duyệt, lấy tệp, khoanh lịch họp, gửi thư.",
+      "insight": "Không có công cụ, chatbot chỉ trả lời bằng chữ. Agent là mô hình AI gắn công cụ, tự làm được việc.",
+      "detail": "Thay vì chỉ cách mở lịch, agent tự mở lịch, tìm giờ trống, đặt họp. Nhiều ứng dụng chat nay cũng đã gắn sẵn vài công cụ."
+    },
+    "anatomy": {
+      "label": "Giải phẫu một agent",
+      "prompt": "Chạm từng bộ phận",
+      "art": "Sơ đồ một agent trong khu vườn: bộ não ngồi sau bàn làm việc, bốn cánh tay mực cầm công cụ, hai ngọn đèn, cuộn giấy kế hoạch và hàng rào.",
+      "group": "Các bộ phận của agent",
+      "parts": [
+        {
+          "id": "brain",
+          "name": "Bộ não",
+          "sub": "mô hình AI",
+          "text": "Đọc tình hình, suy nghĩ, rồi quyết định bước làm tiếp theo."
+        },
+        {
+          "id": "hands",
+          "name": "Tay chân",
+          "sub": "công cụ (tools)",
+          "text": "Tìm trên web, đọc tệp, gửi thư, bấm nút… để làm thật, không chỉ nói."
+        },
+        {
+          "id": "short",
+          "name": "Đèn giấy",
+          "sub": "trí nhớ ngắn hạn",
+          "text": "Những gì có trong cuộc trò chuyện này. Xong việc là đèn tắt."
+        },
+        {
+          "id": "long",
+          "name": "Đèn đá",
+          "sub": "trí nhớ dài hạn",
+          "text": "Ghi chú, hồ sơ được lưu lại; lần sau agent mở ra đọc tiếp."
+        },
+        {
+          "id": "plan",
+          "name": "Cuộn giấy",
+          "sub": "lập kế hoạch",
+          "text": "Chia mục tiêu lớn thành các bước nhỏ, làm lần lượt, đánh dấu từng bước."
+        },
+        {
+          "id": "env",
+          "name": "Bàn làm việc",
+          "sub": "môi trường làm việc",
+          "text": "Nơi agent ra tay: máy tính, trình duyệt, thư mục tệp."
+        },
+        {
+          "id": "fence",
+          "name": "Hàng rào",
+          "sub": "an toàn",
+          "text": "Quyền hạn: chỉ làm việc được phép. Xác nhận: việc lớn phải hỏi bạn trước."
+        }
+      ],
+      "insight": "Một agent gồm bộ não, tay chân, trí nhớ và kế hoạch, làm việc bên trong một hàng rào an toàn.",
+      "detail": "Thiếu hàng rào, agent có thể làm nhầm việc lớn. Hãy cấp quyền vừa đủ và bắt nó hỏi trước khi gửi, xoá hay trả tiền."
+    },
+    "loop": {
+      "label": "Vòng lặp của agent",
+      "prompt": "Bước theo vòng đá",
+      "art": "Một vòng đá trên cát cào. Ở giữa vòng: mục tiêu và báo cáo. Quanh vòng là bốn viên: lập kế hoạch, hành động, quan sát kết quả, tự sửa.",
+      "step": "Bước tiếp",
+      "again": "Đi lại từ đầu",
+      "round": "Vòng {n}",
+      "repeat": "lặp lại",
+      "task": "Họp team · thứ Sáu",
+      "slots": [
+        "9:00",
+        "14:00"
+      ],
+      "stones": {
+        "goal": "Mục tiêu",
+        "plan": "Lập kế hoạch",
+        "act": "Hành động",
+        "observe": "Quan sát kết quả",
+        "fix": "Tự sửa",
+        "report": "Báo cáo"
+      },
+      "steps": [
+        {
+          "at": "goal",
+          "text": "Đặt lịch họp team vào thứ Sáu, sao cho cả 5 người dự được."
+        },
+        {
+          "at": "plan",
+          "text": "Chia nhỏ: xem lịch từng người, chọn giờ, rồi mới gửi lời mời."
+        },
+        {
+          "at": "act",
+          "text": "Mở lịch, thử giữ chỗ 9 giờ sáng thứ Sáu."
+        },
+        {
+          "at": "observe",
+          "text": "Lịch báo: An bận lúc 9 giờ. Chưa đạt mục tiêu."
+        },
+        {
+          "at": "fix",
+          "text": "Bỏ giờ 9:00. Phải tìm giờ mà cả 5 người cùng trống."
+        },
+        {
+          "at": "plan",
+          "text": "Kế hoạch mới: thử 14 giờ chiều thứ Sáu."
+        },
+        {
+          "at": "act",
+          "text": "Giữ chỗ 14 giờ thứ Sáu trên lịch."
+        },
+        {
+          "at": "observe",
+          "text": "Cả 5 người đều trống lúc 14 giờ. Đạt mục tiêu."
+        },
+        {
+          "at": "report",
+          "text": "Báo lại bạn: đã giữ 14 giờ. Bạn đồng ý thì mới gửi lời mời."
+        }
+      ],
+      "insight": {
+        "text": "Agent làm theo vòng: lên kế hoạch, làm, xem kết quả, tự sửa — lặp tới khi xong rồi báo cáo.",
+        "asOf": "2026-10-12",
+        "source": "anthropic-agents-2024"
+      },
+      "detail": "Mẹo giao việc: nói rõ mục tiêu, thế nào là “xong”, và việc nào agent phải hỏi bạn trước."
+    }
+  },
+  "quiz": {
+    "q": "Điều gì biến một chatbot thành agent?",
+    "options": [
+      "Trả lời dài và hay hơn",
+      "Được gắn công cụ để tự làm việc",
+      "Có giọng nói dễ nghe",
+      "Không bao giờ mắc lỗi"
+    ],
+    "answer": 1,
+    "explain": "Agent là mô hình AI có công cụ, kế hoạch và vòng lặp tự sửa, nên làm được việc chứ không chỉ nói."
+  },
+  "summary": "Agent là bộ não AI được gắn tay chân: tự làm, xem kết quả, tự sửa, rồi báo cáo.",
+  "sources": {
+    "anthropic-agents-2024": {
+      "title": "Building effective agents",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "date": "2024-12-19",
+      "note": "Bài viết mô tả agent là mô hình ngôn ngữ tự dùng công cụ, dựa vào kết quả nhận về từ môi trường, chạy theo vòng lặp."
+    }
+  }
+}

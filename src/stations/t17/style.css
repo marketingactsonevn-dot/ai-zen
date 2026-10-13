@@ -1,0 +1,1434 @@
+/* Trạm 17 — Bản đồ các công ty AI: a dusk stone garden, every company an island. */
+.t17 {
+  position: absolute;
+  inset: 0;
+  --mist: var(--paper);
+  -webkit-tap-highlight-color: transparent;
+}
+:root[data-theme='dark'] .t17 {
+  --mist: color-mix(in srgb, var(--ink) 7%, var(--paper));
+}
+:is(.t17, .t17c) svg text {
+  font-family: var(--serif);
+}
+:is(.t17, .t17c) .k { fill: var(--ink); }
+:is(.t17, .t17c) .k2 { fill: var(--ink-2); }
+:is(.t17, .t17c) .k3 { fill: var(--ink-3); }
+:is(.t17, .t17c) .m { fill: var(--moss); }
+:is(.t17, .t17c) .v { fill: var(--vermilion); }
+:is(.t17, .t17c) .sh { fill: var(--ink); }
+:is(.t17, .t17c) .edge { fill: var(--ink); }
+:is(.t17, .t17c) .rim { fill: var(--card); }
+:is(.t17, .t17c) .st-f { fill: color-mix(in srgb, var(--stone) 80%, var(--ink)); }
+:is(.t17, .t17c) .gs0 { stop-color: var(--stone-3); }
+:is(.t17, .t17c) .gs1 { stop-color: var(--stone); }
+:is(.t17, .t17c) .gl0 { stop-color: var(--vermilion); stop-opacity: 0.22; }
+:is(.t17, .t17c) .gl1 { stop-color: var(--vermilion); stop-opacity: 0; }
+:is(.t17, .t17c) .wm0 { stop-color: var(--card); stop-opacity: 0.85; }
+:is(.t17, .t17c) .wm1 { stop-color: var(--card); stop-opacity: 0; }
+:is(.t17, .t17c) .rk { fill: none; stroke: var(--rake); stroke-width: 1.15; }
+:is(.t17, .t17c) .rk-hi { fill: none; stroke: var(--rake-hi); stroke-width: 1.05; }
+:root[data-theme='dark'] .t17 {
+  --rake-hi: color-mix(in srgb, var(--ink) 15%, transparent);
+}
+:root[data-theme='dark'] :is(.t17, .t17c) .sh { fill: var(--paper); }
+:root[data-theme='dark'] :is(.t17, .t17c) .edge { fill: var(--ink-2); fill-opacity: 0.45; }
+:root[data-theme='dark'] :is(.t17, .t17c) .rim { fill: var(--ink-2); fill-opacity: 0.35; }
+:root[data-theme='dark'] :is(.t17, .t17c) .st-f { fill: color-mix(in srgb, var(--stone-3) 70%, var(--paper)); }
+:root[data-theme='dark'] :is(.t17, .t17c) .gs0 { stop-color: var(--stone); }
+:root[data-theme='dark'] :is(.t17, .t17c) .gs1 { stop-color: var(--stone-3); }
+:root[data-theme='dark'] :is(.t17, .t17c) .wm0 { stop-color: var(--ink); stop-opacity: 0.06; }
+:root[data-theme='dark'] :is(.t17, .t17c) .wm1 { stop-color: var(--ink); stop-opacity: 0; }
+:root[data-theme='dark'] :is(.t17, .t17c) .gl0 { stop-opacity: 0.32; }
+:root[data-theme='dark'] .t17-isle .dabs { opacity: 0.5; }
+:root[data-theme='dark'] .t17-peb .m { opacity: 0.45; }
+:root[data-theme='dark'] .t17-isle .m { fill: var(--moss-2); }
+
+/* the logo stones sit in the garden as pale river stones rather than glossy badges; at night they dim to
+   a soft grey so they do not glare (the face stays light enough for dark marks — the mark itself is untouched) */
+:is(.t17, .t17c) .logo-stone {
+  --ls-face: color-mix(in srgb, var(--card) 58%, var(--stone-3));
+  --ls-edge: color-mix(in srgb, var(--stone-2) 80%, var(--stone));
+}
+:root[data-theme='dark'] :is(.t17, .t17c) .logo-stone {
+  --ls-face: color-mix(in srgb, var(--ink) 62%, var(--stone));
+  --ls-edge: color-mix(in srgb, var(--ink) 34%, var(--stone));
+}
+:root[data-theme='dark'] :is(.t17, .t17c) .ls-body {
+  border-color: transparent;
+  box-shadow:
+    inset 0 -5px 10px -6px rgba(0, 0, 0, 0.45),
+    0 0 calc(var(--ls-size) * 0.3) 0 color-mix(in srgb, var(--moss) 12%, transparent);
+}
+
+/* raked sand floats in mist: it fades out toward every edge of the scene */
+.t17-sandsvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 62% 64% at 50% 54%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 64% at 50% 54%, #000 62%, transparent 100%);
+}
+
+/* the far shore at dusk: ridges and a low sun (a pale moon at night) */
+.t17-ridge path { fill: var(--ink); }
+.t17-sun { fill: var(--vermilion); opacity: 0.16; }
+.t17-halo { opacity: 0.5; }
+:root[data-theme='dark'] .t17-sun { fill: var(--ink); opacity: 0.1; }
+:root[data-theme='dark'] .t17-halo { opacity: 0.25; }
+
+/* drifting dusk mist */
+.t17-mist {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.t17-mist i {
+  position: absolute;
+  left: -20%;
+  width: 70%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) 70%, transparent), transparent);
+  animation: t17-drift 28s ease-in-out infinite alternate;
+}
+.t17-mist i:nth-child(1) { top: 18%; }
+.t17-mist i:nth-child(2) { top: 48%; left: 40%; animation-duration: 37s; animation-direction: alternate-reverse; }
+.t17-mist i:nth-child(3) { top: 74%; left: 6%; width: 60%; animation-duration: 46s; }
+@keyframes t17-drift {
+  from { transform: translateX(-8%); }
+  to { transform: translateX(10%); }
+}
+
+/* small sans pill: the data date */
+.t17-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+  color: var(--ink-3);
+  font: 400 0.72rem/1.4 var(--sans);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.t17-badge.in-card {
+  position: static;
+}
+
+/* "verify" mark: a small hollow ring after a name, and its one-line legend */
+.t17-vf {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-left: 0.3em;
+  vertical-align: 0.12em;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.3px currentColor;
+  opacity: 0.75;
+}
+.t17-legend {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font: 400 0.7rem/1.3 var(--sans);
+  color: var(--ink-3);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.6s;
+  pointer-events: none;
+}
+.t17-legend .t17-vf {
+  margin: 0;
+  vertical-align: 0;
+}
+.t17-legend.on {
+  opacity: 1;
+}
+
+/* chips: the kinds of work */
+.t17-chips {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 4;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 62%, transparent);
+  border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+.t17m-cats {
+  display: flex;
+  gap: 2px;
+}
+.t17-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font: 400 0.95rem/1 var(--serif);
+  transition: background-color 0.45s var(--ease), color 0.35s, box-shadow 0.45s var(--ease);
+}
+.t17-chip:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--paper-2) 80%, transparent);
+}
+.t17-chip[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  color: var(--paper);
+  box-shadow: var(--shadow-1);
+}
+.t17-glyph {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: currentColor;
+  opacity: 0.85;
+}
+
+/* ───────── Scene 1 · the archipelago ───────── */
+.t17m-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t17m-rip ellipse {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.2;
+}
+.t17m-rip ellipse.t17m-drop {
+  stroke: var(--ink-3);
+  stroke-width: 1;
+}
+.t17m-sand {
+  -webkit-mask-image: radial-gradient(ellipse 62% 62% at 50% 52%, #000 56%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 62% at 50% 52%, #000 56%, transparent 100%);
+}
+.t17m-g {
+  transition: opacity 1.1s var(--ease-soft);
+}
+.t17m-g.dim {
+  opacity: 0.3;
+}
+.t17m-field {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+}
+.t17m-puff {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) 82%, transparent) 30%, transparent);
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-soft);
+}
+.t17m-puff.on {
+  opacity: 1;
+}
+.t17m-isle {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  touch-action: manipulation;
+  z-index: var(--z, 1);
+}
+.t17m-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  transition: opacity 1s var(--ease-soft), translate 1s var(--ease), filter 1s var(--ease-soft);
+  transition-delay: var(--d, 0s);
+}
+.t17m-isle .logo-stone {
+  --ls-size: var(--sz, 48px);
+}
+.t17m-name,
+.t17m-cap {
+  max-width: var(--cw, 8em);
+  font: 400 var(--fs, 12px)/1.15 var(--serif);
+  text-align: center;
+  text-wrap: balance;
+  /* a dense paper halo: the island's shore stroke must never cut through a name */
+  text-shadow: 0 0 2px var(--paper), 0 0 2px var(--paper), 0 0 4px var(--paper), 0 0 8px var(--paper);
+}
+.t17m-name {
+  color: var(--ink-2);
+  transition: opacity 0.6s;
+}
+.t17m-isle.named .t17m-name,
+.t17m-isle.has-cap .t17m-name {
+  display: none;
+}
+.t17m-cap {
+  display: none;
+  width: max-content;
+  translate: var(--cs, 0px) 0;
+  color: var(--ink);
+  animation: t17-in 0.8s var(--ease) both;
+}
+.t17m-isle.has-cap .t17m-cap {
+  display: block;
+}
+.t17m-isle.ghost .t17m-cap {
+  color: var(--ink-3);
+}
+@keyframes t17-in {
+  from { opacity: 0; }
+}
+.t17m.filtering .t17m-isle:not(.lit):not(.ghost) .t17m-in {
+  opacity: 0.2;
+  translate: 0 5px;
+  filter: grayscale(0.7) blur(0.4px);
+}
+.t17m.filtering .t17m-isle:not(.lit):not(.ghost) .t17m-name {
+  opacity: 0;
+}
+.t17m.filtering .t17m-isle.ghost .t17m-in {
+  opacity: 0.6;
+  filter: grayscale(1);
+}
+.t17m.filtering .t17m-isle:is(.lit, .ghost) {
+  z-index: calc(var(--z, 1) + 1000);
+}
+.t17m-more {
+  font: 400 0.7rem/1 var(--sans);
+  color: var(--ink-3);
+}
+.t17m-isle:focus-visible {
+  outline: none;
+}
+.t17m-isle:focus-visible .ls-body {
+  outline: 1.5px solid var(--vermilion);
+  outline-offset: 4px;
+}
+
+/* the region words: inscriptions on the sand beside each cluster's nearest island (also a filter) */
+.t17m-regs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t17m-reg {
+  position: absolute;
+  z-index: 3;
+  padding: 2px 4px 6px;
+  border: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--ink) 52%, transparent);
+  font: 300 clamp(1.05rem, 1.7vw, 1.4rem)/1.1 var(--serif);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  pointer-events: auto;
+  text-shadow: 0 0 10px var(--paper), 0 0 3px var(--paper);
+  transition: color 0.5s;
+}
+/* a 44px hit area around the short word */
+.t17m-reg::before {
+  content: '';
+  position: absolute;
+  inset: -8px -6px;
+}
+/* a tapered brush stroke under the word */
+.t17m-reg::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 55%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 55%, transparent);
+  transition: opacity 0.5s, background-color 0.5s;
+}
+.t17m-reg:hover {
+  color: var(--ink-2);
+}
+.t17m-reg[aria-pressed='true'] {
+  color: var(--ink);
+}
+.t17m-reg[aria-pressed='true']::after {
+  background: var(--vermilion);
+  opacity: 1;
+}
+.t17m-reg:focus-visible {
+  outline: 1.5px solid var(--vermilion);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.t17m-note {
+  position: absolute;
+  z-index: 5;
+  width: max-content;
+  max-width: min(640px, 94%);
+  translate: -50% 0;
+  text-align: center;
+  pointer-events: none;
+}
+.t17m-note-t {
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  font: 400 0.86rem/1.4 var(--serif);
+  color: var(--ink-2);
+  pointer-events: auto;
+}
+.t17m.wide .t17m-note-t {
+  white-space: nowrap;
+}
+.t17m-note-t.sans {
+  font: 400 0.78rem/1.4 var(--sans);
+  color: var(--ink-3);
+}
+.t17m:not(.wide) .t17m-note-t {
+  border-radius: 12px;
+}
+/* the date and the verify legend, at the foot of the map */
+.t17m-foot {
+  position: absolute;
+  z-index: 4;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.t17m-foot .t17-badge {
+  position: static;
+}
+.t17m > .t17-legend {
+  position: absolute;
+  z-index: 5;
+  right: 2px;
+}
+/* the weights lens: inside the chip bar on wide screens, two pebbles at the foot on a phone */
+.t17m-wts {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.t17-chips .t17m-wts {
+  padding-left: 8px;
+  margin-left: 2px;
+  border-left: 1px solid var(--line);
+}
+.t17m-wlab {
+  margin-right: 4px;
+  font: 400 0.72rem/1 var(--sans);
+  color: var(--ink-3);
+}
+.t17m-wchip {
+  position: relative;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font: 400 0.92rem/1 var(--serif);
+  transition: background-color 0.45s var(--ease), color 0.35s, border-color 0.35s;
+}
+.t17m-wchip:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--paper-2) 80%, transparent);
+}
+.t17m-wchip[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  color: var(--paper);
+}
+.t17m > .t17m-wts {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  bottom: 0;
+}
+.t17m > .t17m-wts .t17m-wchip {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 48% 52% 45% 55% / 55% 50% 50% 45%;
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+}
+.t17m > .t17m-wts .t17m-wchip[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  border-color: transparent;
+}
+.t17m > .t17m-wts .t17m-wchip::after {
+  content: '';
+  position: absolute;
+  inset: -5px -2px;
+}
+
+.t17m.compact .t17-chips {
+  padding: 2px;
+}
+.t17m.compact .t17-chip,
+.t17m.compact .t17m-wchip {
+  position: relative;
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 0.84rem;
+}
+/* a 44px touch target around the slimmer chip */
+.t17m.compact .t17-chip::after,
+.t17m.compact .t17-chips .t17m-wchip::after {
+  content: '';
+  position: absolute;
+  inset: -5px 0;
+}
+.t17m.compact .t17-glyph,
+.t17m.compact .t17m-name,
+.t17m.bare .t17m-name,
+.t17m.compact .t17m-wlab {
+  display: none;
+}
+.t17m.compact .t17m-reg {
+  font-size: 0.95rem;
+}
+.t17m.compact .t17m-cap {
+  line-height: 1.05;
+}
+@media (max-width: 480px) {
+  .t17-chips .t17-glyph {
+    display: none;
+  }
+  .t17-chip {
+    padding: 0 10px;
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 360px) {
+  .t17-chip {
+    padding: 0 8px;
+  }
+}
+
+/* ───────── The card ───────── */
+.t17c-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--paper) 55%, transparent);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+.t17c {
+  position: absolute;
+  z-index: 21;
+  top: calc(var(--top) + 4px);
+  right: var(--gutter);
+  width: min(470px, 50%);
+  max-height: calc(100% - var(--top) - var(--rail) - env(safe-area-inset-bottom) - 12px);
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 14px;
+  border-radius: var(--r-lg);
+  /* rice paper: a faint warm wash in one corner, a cooler one in the other */
+  background:
+    radial-gradient(120% 70% at 92% 0%, color-mix(in srgb, var(--paper-2) 75%, transparent), transparent 62%),
+    radial-gradient(90% 60% at 0% 100%, color-mix(in srgb, var(--moss-soft) 45%, transparent), transparent 70%),
+    var(--card);
+  box-shadow: var(--shadow-2), inset 0 0 0 1px var(--line);
+  overflow: hidden;
+}
+.t17c-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.t17c-head > div {
+  flex: 1;
+  min-width: 0;
+}
+.t17c-name {
+  margin: 0;
+  font: 400 clamp(1.25rem, 2vw, 1.55rem)/1.15 var(--serif);
+  outline: none;
+}
+.t17c-meta {
+  margin: 3px 0 0;
+  font: 400 0.76rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.t17c-rule {
+  display: block;
+  width: 100%;
+  height: 7px;
+  margin: 10px 0 0;
+  opacity: 0.4;
+}
+.t17c-x {
+  position: relative;
+  flex: none;
+  align-self: flex-start;
+  width: 44px;
+  height: 44px;
+  margin: -6px -10px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-2);
+}
+.t17c-x span::before,
+.t17c-x span::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 50%;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  rotate: 45deg;
+}
+.t17c-x span::after {
+  rotate: -45deg;
+}
+.t17c-x:hover {
+  background: var(--paper-2);
+}
+.t17c-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 10px 0 2px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  /* when the words run longer than the card, they fade at the foot instead of ending on a hard edge */
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 14px), transparent);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 14px), transparent);
+}
+.t17c-k {
+  margin: 0 0 3px;
+  font: 400 0.72rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.t17c-hint2 {
+  opacity: 0.85;
+}
+.t17c-t {
+  margin: 0;
+  font: 400 0.95rem/1.48 var(--serif);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.t17c-hist .t17c-t {
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
+.t17c-none {
+  color: var(--ink-3);
+  font-size: 0.86rem;
+}
+/* the cairn leads: big stones, names beside them */
+.t17c-cairnart {
+  position: relative;
+  margin: 2px 0 4px;
+}
+.t17c-cairnart svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  overflow: visible;
+}
+.t17c-lab {
+  position: absolute;
+  translate: 0 -50%;
+  display: grid;
+  font: 400 0.98rem/1.2 var(--serif);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.t17c-lab2 {
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+.t17-lead {
+  fill: none;
+  stroke: var(--line-2);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.t17-ghost {
+  opacity: 0.38;
+  filter: grayscale(1);
+}
+.t17c-rest {
+  display: grid;
+  gap: 4px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  font: 400 0.86rem/1.35 var(--serif);
+  color: var(--ink-2);
+}
+.t17c-rest li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.t17c-rest .t17-glyph {
+  width: 15px;
+  height: 15px;
+  align-self: center;
+  fill: var(--ink-3);
+}
+.t17c-kind {
+  flex: none;
+  min-width: 3.6em;
+  font: 400 0.72rem/1 var(--sans);
+  color: var(--ink-3);
+}
+/* release dots: a row of pebbles, each tied to its day on the axis */
+.t17c-tl {
+  display: grid;
+}
+.t17c-say {
+  min-height: 1.5em;
+}
+.t17c-hint {
+  margin: 0;
+  font: 400 0.76rem/1.4 var(--sans);
+  color: var(--ink-3);
+}
+.t17c-say-t {
+  margin: 0;
+  font: 400 0.86rem/1.4 var(--serif);
+  color: var(--ink-2);
+}
+.t17c-track {
+  position: relative;
+  height: 56px;
+}
+.t17c-tlsvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t17c-axis {
+  fill-opacity: 0.5;
+}
+.t17c-tick {
+  stroke: var(--line-2);
+  stroke-width: 1;
+}
+.t17c-now {
+  stroke: var(--vermilion);
+  stroke-width: 1.5;
+}
+.t17c-leader {
+  fill: none;
+  stroke: var(--line-2);
+  stroke-width: 1;
+}
+.t17c-pin {
+  fill: var(--ink-3);
+}
+.t17c-dot {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+.t17c-dot::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 11px;
+  height: 10px;
+  translate: -50% -50%;
+  border-radius: 50% 46% 52% 48%;
+  background: var(--ink-2);
+  transition: scale 0.4s var(--ease), background-color 0.4s;
+}
+.t17c-dot.verify::before {
+  background: var(--card);
+  box-shadow: inset 0 0 0 1.5px var(--ink-2);
+}
+.t17c-dot.gone::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.3px var(--stone);
+  border-radius: 50%;
+}
+.t17c-dot:hover::before {
+  scale: 1.25;
+}
+.t17c-dot.on::before {
+  scale: 1.45;
+  background: var(--vermilion);
+  box-shadow: none;
+}
+.t17c-dot:focus-visible {
+  outline: 1.5px solid var(--vermilion);
+  outline-offset: -8px;
+}
+.t17c-ends {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4px;
+  font: 400 0.66rem/1 var(--sans);
+  color: var(--ink-3);
+}
+.t17c-ends .now {
+  color: var(--vermilion);
+}
+.t17c-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+@media (max-width: 640px) {
+  .t17c {
+    left: var(--gutter);
+    width: auto;
+    padding: 14px 16px 12px;
+  }
+  .t17c-body {
+    gap: 11px;
+  }
+  .t17c-t {
+    font-size: 0.9rem;
+    line-height: 1.42;
+  }
+  .t17c-lab {
+    font-size: 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t17-mist i {
+    animation: none;
+  }
+  .t17m-in,
+  .t17m-g,
+  .t17m-puff,
+  .t17m-cap {
+    transition: none;
+    animation: none;
+  }
+}
+:root[data-quality='low'] .t17-mist i {
+  animation: none;
+}
+
+/* ───────── Scene 2 · the fence and the house ───────── */
+.t17g-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t17g-front {
+  z-index: 3;
+}
+:is(.t17, .t17c) .st { fill: var(--stone-2); }
+:is(.t17, .t17c) .pap { fill: var(--card); }
+:is(.t17, .t17c) .floor { fill: var(--card); fill-opacity: 0.38; }
+:root[data-theme='dark'] :is(.t17, .t17c) .floor { fill: var(--ink); fill-opacity: 0.04; }
+:root[data-theme='dark'] :is(.t17, .t17c) .pap { fill: color-mix(in srgb, var(--ink) 10%, var(--card)); }
+.t17g-doorlit {
+  fill: var(--vermilion);
+  fill-opacity: 0.32;
+}
+.t17g-lantern {
+  fill: var(--vermilion);
+  filter: drop-shadow(0 0 4px var(--vermilion));
+}
+.t17g-group {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t17g-stone {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  touch-action: none;
+  cursor: grab;
+  pointer-events: auto;
+}
+/* closed stones carry their names above, clear of the front fence */
+.t17g-stone.up {
+  flex-direction: column-reverse;
+}
+.t17g-stone.held {
+  cursor: grabbing;
+  z-index: 6;
+}
+.t17g-stone.home {
+  z-index: 4;
+}
+.t17g-name {
+  line-height: 14px;
+  transition: opacity 0.6s;
+  font: 400 0.82rem/1.15 var(--serif);
+  color: var(--ink-2);
+  white-space: nowrap;
+  text-shadow: 0 0 6px var(--paper), 0 0 3px var(--paper), 0 0 1px var(--paper);
+}
+.t17g-stone:focus-visible {
+  outline: none;
+}
+.t17g-stone:focus-visible .ls-body {
+  outline: 1.5px solid var(--vermilion);
+  outline-offset: 4px;
+}
+.t17g-lab {
+  position: absolute;
+  z-index: 5;
+  margin: 0;
+  font: 400 0.9rem/1.25 var(--serif);
+  color: var(--ink-2);
+  white-space: nowrap;
+  text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-soft);
+}
+.t17g-lab.on {
+  opacity: 1;
+}
+.t17g-lab[data-anchor='top'] { translate: -50% 0; }
+.t17g-lab[data-anchor='bottom'] { translate: -50% -100%; }
+.t17g-lab[data-anchor='left'] { translate: 0 -50%; }
+.t17g-lab[data-anchor='right'] { translate: -100% -50%; }
+.t17g:not(.wide) .t17g-lab:is(.fence, .note) { display: none; }
+.t17g-stone.home .t17g-name { opacity: 0; }
+.t17g-lab.note {
+  font-size: 0.86rem;
+}
+.t17g-lab.weights {
+  color: var(--ink-3);
+  font-size: 0.86rem;
+}
+.t17g-say {
+  position: absolute;
+  z-index: 5;
+  translate: -50% 0;
+  text-align: center;
+}
+.t17g-say-n {
+  margin: 2px 0 0;
+  font: 400 0.8rem/1.4 var(--sans);
+  color: var(--ink-3);
+}
+.t17g-say-t {
+  margin: 0;
+  font: 300 clamp(1.02rem, 1.7vw, 1.3rem)/1.45 var(--serif);
+  color: var(--ink);
+  text-wrap: balance;
+}
+.t17g-legend {
+  position: absolute;
+  z-index: 5;
+  right: 0;
+  top: 0;
+}
+.t17g:not(.wide) .t17g-legend {
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t17g-lab {
+    transition: none;
+  }
+}
+
+/* ───────── Scene 3 · the cairn ───────── */
+.t17l-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t17l-picks {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 4;
+  translate: -50% 0;
+  display: flex;
+  gap: clamp(4px, 2vw, 22px);
+}
+.t17l-pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 64px;
+  padding: 2px 4px 4px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--ink-3);
+  font: 400 0.8rem/1.2 var(--serif);
+  white-space: nowrap;
+  transition: color 0.4s;
+}
+.t17l-pick .logo-stone {
+  transition: opacity 0.5s, filter 0.5s;
+  opacity: 0.55;
+  filter: grayscale(0.6);
+}
+.t17l-pick:hover .logo-stone,
+.t17l-pick[aria-pressed='true'] .logo-stone {
+  opacity: 1;
+  filter: none;
+}
+.t17l-pick[aria-pressed='true'] {
+  color: var(--ink);
+}
+.t17l-pick > span:last-child {
+  position: relative;
+}
+.t17l-pick[aria-pressed='true'] > span:last-child::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--vermilion);
+}
+.t17l-pick:focus-visible {
+  outline: 1.5px solid var(--vermilion);
+  outline-offset: 2px;
+}
+.t17l-line { fill-opacity: 0.55; }
+.t17l-sel {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.3;
+}
+.t17l-thud {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.1;
+}
+.t17l-hits {
+  position: absolute;
+  inset: 0;
+}
+.t17l-hit {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  touch-action: manipulation;
+}
+.t17l-name {
+  position: absolute;
+  left: var(--lx, 100%);
+  top: var(--ly, 50%);
+  translate: 0 -0.62em;
+  display: grid;
+  font: 400 clamp(0.92rem, 1.4vw, 1.12rem)/1.2 var(--serif);
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: color 0.4s;
+}
+.t17l:not(.wide) .t17l-name {
+  max-width: var(--nw, 12em);
+  white-space: normal;
+  text-wrap: balance;
+}
+.t17l-name2 {
+  font-size: 0.8em;
+  color: var(--ink-3);
+}
+.t17l-name::before {
+  content: '';
+  position: absolute;
+  right: calc(100% + 6px);
+  top: 0.62em;
+  width: 18px;
+  border-top: 1px dashed var(--line-2);
+  opacity: 0;
+}
+.t17l-hit:hover .t17l-name,
+.t17l-hit.on .t17l-name {
+  color: var(--ink);
+}
+.t17l-hit.on .t17l-name::before {
+  border-top: 1.5px solid var(--vermilion);
+  opacity: 1;
+}
+.t17l-hit:focus-visible {
+  outline: none;
+}
+.t17l-hit:focus-visible .t17l-name {
+  outline: 1.5px solid var(--vermilion);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.t17l-scale {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  translate: -100% -50%;
+  font: 400 0.84rem/1.2 var(--serif);
+  color: var(--ink-3);
+  white-space: nowrap;
+  text-align: right;
+  transition: top 0.9s var(--ease), left 0.9s var(--ease);
+}
+.t17l-scale:nth-of-type(3) {
+  color: var(--ink-2);
+}
+.t17l-say {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  gap: 6px;
+}
+.t17l-say-t {
+  margin: 0;
+  font: 300 clamp(1rem, 1.6vw, 1.22rem)/1.45 var(--serif);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.t17l-aside {
+  position: absolute;
+  z-index: 3;
+}
+.t17l-aside-t {
+  margin: 0;
+  font: 400 0.78rem/1.4 var(--sans);
+  color: var(--ink-3);
+}
+.t17l:not(.wide) .t17l-aside {
+  text-align: center;
+}
+.t17l-legend {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+}
+/* a short landscape screen: the facts column reaches the floor, so the key moves under the scale */
+@media (max-height: 520px) {
+  .t17l.wide .t17l-legend {
+    right: auto;
+    left: 0;
+  }
+}
+.t17l:not(.wide) .t17l-say {
+  text-align: center;
+}
+.t17l:not(.wide) .t17l-name {
+  font-size: 0.9rem;
+}
+.t17l:not(.wide) .t17l-scale {
+  font-size: 0.78rem;
+}
+.t17l:not(.wide) .t17l-pick {
+  min-width: 0;
+  font-size: 0.74rem;
+}
+.t17l:not(.wide) .t17l-say-t {
+  font-size: 0.95rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t17l-scale { transition: none; }
+}
+
+/* ───────── Scene 4 · two islands, overlapping ripples ───────── */
+.t17x-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t17x-meet {
+  fill: var(--vermilion);
+  fill-opacity: 0.05;
+}
+.t17x-rip {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.2;
+}
+.t17x-stone {
+  position: absolute;
+  z-index: 2;
+  translate: -50% -50%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  touch-action: manipulation;
+}
+.t17x-stone:focus-visible {
+  outline: none;
+}
+.t17x-stone:focus-visible .ls-body {
+  outline: 1.5px solid var(--vermilion);
+  outline-offset: 4px;
+}
+.t17x-peb {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 12px 0 9px;
+  translate: -50% 0;
+  border-radius: 48% 52% 45% 55% / 55% 50% 50% 45%;
+  background: radial-gradient(120% 110% at 34% 24%, var(--card), var(--stone-3));
+  border: 1px solid var(--line);
+  box-shadow: 0 3px 8px -4px rgba(0, 0, 0, 0.25);
+  color: var(--ink);
+  font: 400 0.88rem/1 var(--serif);
+  white-space: nowrap;
+  transition: left 1s var(--ease), top 1s var(--ease), opacity 0.8s, scale 0.8s var(--ease);
+  animation: t17-rise 1s var(--ease) calc(0.6s + var(--i, 0) * 0.08s) backwards;
+}
+@keyframes t17-rise {
+  from {
+    opacity: 0;
+  }
+}
+.t17x-peb .t17-glyph {
+  width: 15px;
+  height: 15px;
+}
+.t17x-peb[data-zone='none'] {
+  opacity: 0.32;
+  scale: 0.86;
+  box-shadow: none;
+  background: transparent;
+  border-style: dashed;
+}
+/* before the first turn, what neither company does stays under the sand */
+.t17x:not(.told) .t17x-peb[data-zone='none'] {
+  opacity: 0;
+  scale: 0.6;
+}
+.t17x-peb[data-zone='both'] {
+  border-color: color-mix(in srgb, var(--vermilion) 45%, var(--line));
+}
+.t17x-both {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  translate: -50% 0;
+  font: 400 0.8rem/1 var(--serif);
+  color: var(--vermilion);
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+.t17x-both.on,
+.t17x-none.on {
+  opacity: 1;
+}
+.t17x-none {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  translate: -50% 0;
+  font: 400 0.68rem/1 var(--sans);
+  color: var(--ink-3);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.8s, top 1s var(--ease);
+}
+.t17x-col {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  gap: 4px;
+  text-align: center;
+  transition: top 1s var(--ease);
+}
+/* the arrows never move: they hold the two ends of a fixed row, the name takes the middle */
+.t17x-head {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+}
+.t17x-name {
+  margin: 0;
+  min-width: 0;
+  font: 400 clamp(1.08rem, 1.8vw, 1.4rem)/1.2 var(--serif);
+  text-wrap: balance;
+}
+.t17x-nav {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-3);
+  transition: color 0.3s, background-color 0.3s;
+}
+.t17x-nav:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--paper-2) 80%, transparent);
+}
+.t17x-text {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  text-align: center;
+  transition: opacity 0.9s var(--ease-soft), visibility 0.9s, top 1s var(--ease);
+}
+.t17x:not(.told) .t17x-text,
+.t17x-text.mute {
+  opacity: 0;
+  visibility: hidden;
+}
+.t17x.short .t17x-text {
+  gap: 2px;
+}
+/* a short landscape screen keeps the motto and the facts; who it suits stays in the company's card */
+.t17x.short .t17x-fit {
+  display: none;
+}
+.t17x-motto {
+  margin: 0;
+  font: 400 clamp(0.95rem, 1.3vw, 1.08rem)/1.35 var(--serif);
+  color: var(--ink-2);
+}
+.t17x-w {
+  margin: 0;
+  font: 400 0.74rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.t17x-w:empty {
+  display: none;
+}
+.t17x-fit {
+  max-width: 22rem;
+  margin-top: 4px;
+}
+.t17x-fit-t {
+  margin: 0;
+  font: 400 0.9rem/1.42 var(--serif);
+  color: var(--ink);
+  text-wrap: balance;
+}
+.t17x-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.t17x .t17-badge {
+  top: 0;
+  right: 0;
+  bottom: auto;
+}
+.t17x.short .t17x-col {
+  gap: 2px;
+}
+.t17x.short .t17x-name {
+  font-size: 1rem;
+}
+.t17x.short .t17x-motto,
+.t17x.short .t17x-fit-t {
+  font-size: 0.82rem;
+}
+.t17x.short .t17x-peb {
+  height: 26px;
+  font-size: 0.8rem;
+}
+.t17x.short .t17-badge {
+  top: auto;
+  bottom: 0;
+  left: 50%;
+  right: auto;
+  translate: -50% 0;
+}
+.t17x:not(.wide) .t17x-name {
+  font-size: 1rem;
+}
+.t17x:not(.wide) .t17x-fit-t {
+  font-size: 0.84rem;
+}
+.t17x:not(.wide) .t17x-motto {
+  font-size: 0.88rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t17x-peb,
+  .t17x-col,
+  .t17x-text {
+    transition: none;
+    animation: none;
+  }
+}

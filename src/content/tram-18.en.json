@@ -1,0 +1,376 @@
+{
+  "id": 18,
+  "kicker": "The garden at dusk: for every impact, a good habit.",
+  "scenes": {
+    "power": {
+      "label": "Power and water",
+      "prompt": "Tap to run it",
+      "art": "Ink painting at dusk: power lines carry electricity from the grid into a data center full of servers, next to two cooling towers steaming beside a lake.",
+      "run": "Run the data center",
+      "running": "The data center is running",
+      "labels": {
+        "grid": "Power from the grid",
+        "heat": "Servers heat up",
+        "steam": "Water evaporates to cool them"
+      },
+      "years": "Choose a year",
+      "chart": "Electricity used by data centers in a year",
+      "share": "≈ 1.5% of the world’s electricity",
+      "forecast": "forecast",
+      "unit": "1 TWh = 1 billion kWh",
+      "v2024": {
+        "text": "415 TWh",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      },
+      "v2030": {
+        "text": "≈ 945 TWh",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai",
+        "kind": "prediction"
+      },
+      "japan": {
+        "text": "≈ all of Japan’s electricity today",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      },
+      "insight2024": {
+        "text": "In 2024, data centers used about 415 TWh — roughly 1.5% of the world’s electricity.",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      },
+      "detail2024": {
+        "text": "The US accounts for about 45%, China 25%, Europe 15%. 1 TWh is 1 billion kWh.",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      },
+      "insight2030": {
+        "text": "By 2030, data centers may need about 945 TWh — more than double, a little more than all of Japan uses today.",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai",
+        "kind": "prediction"
+      },
+      "detail2030": {
+        "text": "According to the IEA (International Energy Agency) forecast, AI is the main driver of this growth.",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      }
+    },
+    "drops": {
+      "label": "One question",
+      "labelMany": "Multiply it",
+      "prompt": "Tap to ask a question",
+      "multiply": "Drag to multiply",
+      "art": "Ink painting: a bamboo spout drips onto a lotus leaf — five drops of water for one question.",
+      "artMany": "Ink painting: as the questions multiply, five drops become a glass, a wooden bathtub, then a pond.",
+      "ask": "Send a question and see the water used",
+      "head": {
+        "text": "One text prompt to Gemini — a middle-of-the-road (median) one",
+        "asOf": "2026-10-12",
+        "source": "google-ai-inference"
+      },
+      "times": {
+        "text": "Multiplied up from Google’s figure",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "slider": "Number of questions",
+      "stops": [
+        "1 query",
+        "1 thousand",
+        "1 million",
+        "1 billion"
+      ],
+      "stopsAria": [
+        "1 question",
+        "1 thousand questions",
+        "1 million questions",
+        "1 billion questions"
+      ],
+      "vessels": [
+        "≈ 5 drops of water",
+        "≈ 1 glass of water",
+        "≈ 1 bathtub",
+        "≈ 1 small pond"
+      ],
+      "metrics": [
+        {
+          "name": "Electricity",
+          "values": [
+            "0.24 Wh",
+            "240 Wh",
+            "240 kWh",
+            "240 MWh"
+          ],
+          "notes": [
+            "≈ under 9 seconds of TV",
+            "≈ 0.24 kWh on a power bill",
+            "= 240 kWh on a power bill",
+            "= 240,000 kWh on a power bill"
+          ]
+        },
+        {
+          "name": "Water",
+          "values": [
+            "0.26 mL",
+            "260 mL",
+            "260 liters",
+            "260 m³"
+          ],
+          "notes": [
+            "≈ 5 drops",
+            "≈ 1 glass of water",
+            "≈ 1 bathtub",
+            "≈ a 10 × 10 m pond, 2.6 m deep"
+          ]
+        },
+        {
+          "name": "Emissions",
+          "values": [
+            "0.03 g",
+            "30 g",
+            "30 kg",
+            "30 tonnes"
+          ],
+          "notes": [
+            "CO2e: greenhouse gases counted as CO2",
+            "CO2e: greenhouse gases counted as CO2",
+            "CO2e: greenhouse gases counted as CO2",
+            "CO2e: greenhouse gases counted as CO2"
+          ]
+        }
+      ],
+      "caveatsTitle": "Read these numbers with care",
+      "caveats": [
+        {
+          "text": "Self-reported by Google, not independently verified.",
+          "asOf": "2026-10-12",
+          "source": "google-ai-inference"
+        },
+        {
+          "text": "Leaves out training, your own device, and the water used to make electricity.",
+          "asOf": "2026-10-12",
+          "source": "google-ai-paper"
+        },
+        {
+          "text": "Some experts criticize how this was calculated.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        {
+          "text": "Images, and video above all, cost far more than text.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12",
+          "kind": "opinion"
+        }
+      ],
+      "insightOne": {
+        "text": "Per Google, one text prompt to Gemini uses about 0.24 Wh of electricity and 0.26 mL of water — about 5 drops.",
+        "asOf": "2026-10-12",
+        "source": "google-ai-inference"
+      },
+      "detailOne": {
+        "text": "0.24 Wh is like watching TV for under 9 seconds — Google’s own comparison.",
+        "asOf": "2026-10-12",
+        "source": "google-ai-inference"
+      },
+      "habitsTitle": "Good habits",
+      "habits": [
+        "Ask short and clear — less redoing",
+        "Don’t mass-generate images and videos you don’t need",
+        "Small job, small model (the light version)"
+      ],
+      "insight": "One question is tiny, but multiplied by billions it becomes a whole pond.",
+      "where": {
+        "text": "It also depends on where the data center is: its power source, and whether the area has water to spare or too little.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "think": {
+      "label": "Think first",
+      "prompt": "Think for 2 minutes first",
+      "art": "Ink painting: an incense stick in a stone bowl, smoke rising. When it burns down, 2 minutes are up.",
+      "question": "How could our weekly team meeting be shorter and still work well?",
+      "yours": "Your ideas",
+      "placeholder": "Jot down a few ideas, one per line…",
+      "start": "Light the incense · 2 min",
+      "timer": "{m}:{s} left",
+      "timerAria": "{m} minutes {s} seconds left",
+      "done": "2 minutes are up",
+      "reveal": "See the AI’s suggestions",
+      "skip": "Skip",
+      "veil": "The AI’s suggestions wait in the mist",
+      "ai": "The AI’s suggestions",
+      "aiItems": [
+        "Send the agenda a day ahead",
+        "Each person updates in 2 minutes max",
+        "Items that are just updates go by message",
+        "Agree on owners and deadlines before leaving"
+      ],
+      "compare": "Which idea did only you come up with? Ask the AI to challenge that very idea.",
+      "habitTitle": "Good habit",
+      "habit": "Think first — ask AI after",
+      "habitSub": "Use AI to challenge your thinking, not just to do the work for you.",
+      "insight": {
+        "text": "An MIT study (2025, small sample, not peer-reviewed): writing essays with ChatGPT, brains worked less and people recalled their essays worse.",
+        "asOf": "2026-10-12",
+        "source": "mit-brain-chatgpt"
+      },
+      "detail": {
+        "text": "A survey of 319 knowledge workers (Microsoft Research × Carnegie Mellon): the more they trusted AI, the less critical thinking; thinking shifted from “doing” to “checking”.",
+        "asOf": "2026-10-12",
+        "source": "chi-2025-critical"
+      }
+    },
+    "stones": {
+      "label": "Stone garden",
+      "prompt": "Tap a stone",
+      "art": "A raked-sand stone garden with nine stones; each stone is one impact of AI on people and society.",
+      "group": "Nine impacts of AI on people and society",
+      "riskTitle": "Impact",
+      "habitTitle": "Good habit",
+      "flip": "Flip to see the good habit",
+      "back": "Flip back",
+      "count": "{n}/9 flipped",
+      "close": "Put the card away, back to the garden",
+      "islands": [
+        "Yourself",
+        "Information",
+        "Society"
+      ],
+      "items": [
+        {
+          "id": "lazy",
+          "name": "Lazy thinking",
+          "risk": "Used to letting AI think for us, we slowly skip the step of thinking for ourselves.",
+          "habit": "Think first — ask AI after; have AI challenge your ideas, not just do the work."
+        },
+        {
+          "id": "skill",
+          "name": "Dependence & lost skills",
+          "risk": "Hand everything to AI, and our core skills slowly fade.",
+          "habit": "Keep your core skills in shape: now and then, do the whole thing yourself, start to finish."
+        },
+        {
+          "id": "fake",
+          "name": "Misinformation & deepfakes",
+          "risk": "AI can make up details; deepfakes — fake images, voices, videos — look more real every day.",
+          "habit": "Check sources before you believe or share; label content made with AI."
+        },
+        {
+          "id": "copyright",
+          "name": "Copyright & creators",
+          "risk": "AI learns from many people’s work; creators’ rights are still being argued over.",
+          "habit": "Respect creators, don’t copy a style to profit from it, read the commercial terms."
+        },
+        {
+          "id": "jobs",
+          "name": "Jobs are changing",
+          "risk": {
+            "text": "Work is shifting more than vanishing outright — this is still being debated.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12",
+            "kind": "opinion"
+          },
+          "habit": "Learn new skills: handing work to AI, checking its results, critical thinking."
+        },
+        {
+          "id": "privacy",
+          "name": "Privacy",
+          "risk": "What you paste into AI may be stored on the provider’s servers.",
+          "habit": "Don’t paste customer data, passwords or confidential documents into AI."
+        },
+        {
+          "id": "bias",
+          "name": "Bias",
+          "risk": "AI learns from human data, so it can repeat human prejudices.",
+          "habit": "Read results with a critical eye; ask for several different viewpoints."
+        },
+        {
+          "id": "bond",
+          "name": "Emotional attachment to AI",
+          "risk": "AI is always there, always agreeable — it’s easy to get too attached.",
+          "habit": "Treat AI as a tool; it can’t replace relationships with real people."
+        },
+        {
+          "id": "power",
+          "name": "Concentration of power",
+          "risk": {
+            "text": "A handful of companies hold most of the infrastructure for building the biggest AIs.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12",
+            "kind": "opinion"
+          },
+          "habit": "Support transparency laws and open source; don’t depend on a single provider."
+        }
+      ],
+      "insight": "Every impact comes with a good habit: understand the risks so you can use AI with a steadier hand."
+    },
+    "dawn": {
+      "label": "Dawn",
+      "prompt": "Drop a pebble",
+      "art": "Ink painting: a garden pond at daybreak, two pebbles on the bank — one a good habit, one a bad habit.",
+      "group": "Two pebbles on the edge of the pond",
+      "good": "Good habit",
+      "bad": "Bad habit",
+      "goodAria": "Drop the good-habit pebble into the pond",
+      "badAria": "Drop the bad-habit pebble into the pond",
+      "goodDone": "Small ripples spread across the pond, and lotuses bloom.",
+      "badDone": "A small dot of ink spreads across the whole pond.",
+      "next": "Drop the other one",
+      "insight": "AI is an amplifier — it amplifies both our good habits and our bad ones.",
+      "detail": "Bring good habits with you: think first, ask briefly, verify, keep data private — then let AI multiply them."
+    }
+  },
+  "quiz": {
+    "q": "Per Google, one text prompt to Gemini uses about 5 drops of water. What’s the best way to read that?",
+    "options": [
+      "So AI costs almost nothing",
+      "Tiny, but huge times billions",
+      "The figure includes training",
+      "Making video costs about the same"
+    ],
+    "answer": 1,
+    "explain": "Each query is tiny, but multiplied by billions it gets big — and this figure doesn’t even include training."
+  },
+  "summary": "Use AI concisely, think first and verify — because AI amplifies all of our habits.",
+  "sources": {
+    "iea-energy-ai": {
+      "title": "Energy and AI",
+      "publisher": "IEA — International Energy Agency",
+      "url": "https://www.iea.org/reports/energy-and-ai",
+      "date": "2025-04",
+      "note": "The IEA’s base-case scenario; the 2030 figures are forecasts."
+    },
+    "google-ai-inference": {
+      "title": "Measuring the environmental impact of AI inference",
+      "publisher": "Google Cloud Blog — Amin Vahdat, Jeff Dean",
+      "url": "https://cloud.google.com/blog/products/infrastructure/measuring-the-environmental-impact-of-ai-inference",
+      "date": "2025-08",
+      "note": "Self-reported by Google; the figures have not been independently verified by a third party."
+    },
+    "google-ai-paper": {
+      "title": "Measuring the environmental impact of delivering AI at Google Scale",
+      "publisher": "Elsworth et al. (Google) — arXiv 2508.15734",
+      "url": "https://arxiv.org/abs/2508.15734",
+      "date": "2025-08-21",
+      "note": "Counts only answering prompts: excludes training and users’ devices; water counts only cooling at the data center."
+    },
+    "mit-brain-chatgpt": {
+      "title": "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task",
+      "publisher": "Kosmyna et al., MIT Media Lab — arXiv 2506.08872",
+      "url": "https://arxiv.org/abs/2506.08872",
+      "date": "2025-06-10",
+      "note": "Preprint, not peer-reviewed; 54 participants."
+    },
+    "chi-2025-critical": {
+      "title": "The Impact of Generative AI on Critical Thinking: Self-Reported Reductions in Cognitive Effort and Confidence Effects From a Survey of Knowledge Workers",
+      "publisher": "Lee et al., Microsoft Research × Carnegie Mellon — CHI 2025 (ACM)",
+      "url": "https://doi.org/10.1145/3706598.3713778",
+      "date": "2025-04",
+      "note": "A survey of 319 knowledge workers covering 936 real examples of AI use."
+    }
+  }
+}

@@ -1,0 +1,404 @@
+{
+  "id": 7,
+  "kicker": "The mist slowly clears, and a picture appears just as you described it.",
+  "scenes": {
+    "diffuse": {
+      "label": "Mist into a painting",
+      "prompt": "Drag to remove noise",
+      "promptLabel": "Description",
+      "pick": "Change description",
+      "slider": "Denoising step",
+      "stepOf": "step {n}/50",
+      "noise": "noise",
+      "image": "image",
+      "play": "Run step by step",
+      "replay": "Replay from noise",
+      "canvas": "The painting slowly emerges from noise, following: {prompt}",
+      "note": "Simulation — no real AI is called",
+      "same": "Same noise, different description: a different painting.",
+      "prompts": [
+        {
+          "short": "Temple under the moon",
+          "text": "A temple on a cliff, red moon, early mist, ink wash painting"
+        },
+        {
+          "short": "Boat on a lake",
+          "text": "A small boat on a still lake, a leaning pine, red sun"
+        },
+        {
+          "short": "Koi, lotus leaves",
+          "text": "Two koi swimming under lotus leaves, seen from above"
+        }
+      ],
+      "insight": {
+        "text": "The model learns to remove noise step by step; your description guides every step.",
+        "asOf": "2026-10-12",
+        "source": "ldm-2022"
+      },
+      "detail": {
+        "text": "Technical name: diffusion. While learning, the AI sees huge numbers of images sprinkled with noise and practices guessing the noise so it can remove it.",
+        "asOf": "2026-10-12",
+        "source": "ddpm-2020"
+      }
+    },
+    "chat": {
+      "label": "Editing by chatting",
+      "prompt": "Tap a message",
+      "image": "A painting of a girl in an ao dai and a conical hat, by a lotus pond",
+      "first": "Paint a girl in an ao dai and a conical hat, standing by a lotus pond.",
+      "firstReply": "Here’s your painting.",
+      "you": "You",
+      "ai": "AI",
+      "suggest": "Suggested messages",
+      "send": "Send: {text}",
+      "typing": "AI is editing the image",
+      "note": "Simulated conversation",
+      "written": "Happy spring",
+      "edits": [
+        {
+          "id": "bg",
+          "say": "Change the background to pink, keep the model as is.",
+          "reply": "Done. Only the background changed; the model stays the same."
+        },
+        {
+          "id": "text",
+          "say": "Add the words “Happy spring” in the top corner.",
+          "reply": "Text added. Do check every letter."
+        },
+        {
+          "id": "dress",
+          "say": "Make the ao dai white.",
+          "reply": "Dress color changed; background and text stay the same."
+        }
+      ],
+      "insight": {
+        "text": "Many new image AIs live inside chatbots: they follow long prompts, render text better, and edit part by part via chat.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "These are called natively multimodal models: one brain that both reads text and draws images. Examples: GPT Image 2, Nano Banana 2.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "concepts": {
+      "label": "Ten concept stones",
+      "prompt": "Tap each stone",
+      "group": "Image-making concepts",
+      "idle": "Each stone is a button you’ll come across",
+      "groups": [
+        {
+          "name": "Create",
+          "items": [
+            {
+              "id": "t2i",
+              "name": "Text to image",
+              "term": "text-to-image",
+              "say": "Type a description; AI paints a brand-new image from scratch."
+            },
+            {
+              "id": "i2i",
+              "name": "Image to image",
+              "term": "image-to-image",
+              "say": "Give it a base image; AI repaints it the way you ask."
+            }
+          ]
+        },
+        {
+          "name": "Edit",
+          "items": [
+            {
+              "id": "inpaint",
+              "name": "Fix one area",
+              "term": "inpainting",
+              "say": "Circle an area; AI repaints just that spot."
+            },
+            {
+              "id": "outpaint",
+              "name": "Extend the frame",
+              "term": "outpainting",
+              "say": "AI keeps painting past the edges, widening the frame."
+            },
+            {
+              "id": "upscale",
+              "name": "Sharpen & enlarge",
+              "term": "upscale",
+              "say": "Raises resolution: a bigger image that stays sharp."
+            }
+          ]
+        },
+        {
+          "name": "Keep it consistent",
+          "items": [
+            {
+              "id": "ref",
+              "name": "Reference image",
+              "term": "reference · style reference",
+              "say": "Give a sample image so AI follows its style, colors and layout."
+            },
+            {
+              "id": "char",
+              "name": "Consistent character",
+              "term": "character consistency",
+              "say": "Keeps the same face and outfit across many different images."
+            },
+            {
+              "id": "seed",
+              "name": "Seed",
+              "term": "seed",
+              "say": "The code for the starting noise: same seed, same words, a near-identical image."
+            }
+          ]
+        },
+        {
+          "name": "Frame & filter",
+          "items": [
+            {
+              "id": "aspect",
+              "name": "Aspect ratio",
+              "term": "aspect ratio",
+              "say": "Square, landscape or portrait: choose first, and AI composes to fit."
+            },
+            {
+              "id": "neg",
+              "name": "Negative prompt",
+              "term": "negative prompt",
+              "say": "Spell out what you don’t want: stray text, blur, warped hands."
+            }
+          ]
+        }
+      ],
+      "art": {
+        "words": "peak, red moon, boat",
+        "sketch": "sketch",
+        "result": "result",
+        "ref": "sample",
+        "seedA": "seed 42",
+        "seedB": "seed 7",
+        "ratios": [
+          "1:1",
+          "16:9",
+          "9:16"
+        ],
+        "neg": "no: stray text, blur",
+        "x4": "×4"
+      },
+      "insight": "Each tool names them a little differently, but know these ten buttons and most tools will feel less strange."
+    },
+    "models": {
+      "label": "Standout brushes",
+      "prompt": "Tap a stone",
+      "needsLabel": "What you need",
+      "gardenLabel": "Standout image-generation models",
+      "by": "by {company}",
+      "pickModel": "View {name}",
+      "asOf": "As of Oct 12, 2026",
+      "needs": [
+        {
+          "id": "text",
+          "name": "Text in images, long prompts",
+          "short": "Text in images",
+          "models": [
+            "gpt"
+          ]
+        },
+        {
+          "id": "edit",
+          "name": "Editing, keeping characters",
+          "short": "Keep characters",
+          "models": [
+            "nano"
+          ]
+        },
+        {
+          "id": "art",
+          "name": "Aesthetics, moodboards",
+          "short": "Aesthetics",
+          "models": [
+            "mj"
+          ]
+        },
+        {
+          "id": "ctrl",
+          "name": "Control, open weights",
+          "short": "Open weights",
+          "models": [
+            "flux"
+          ]
+        },
+        {
+          "id": "cost",
+          "name": "High quality, good price",
+          "short": "Good price",
+          "models": [
+            "seedream"
+          ]
+        }
+      ],
+      "models": [
+        {
+          "id": "gpt",
+          "company": "openai",
+          "names": [
+            "GPT Image 2"
+          ],
+          "label": "GPT Image 2"
+        },
+        {
+          "id": "nano",
+          "company": "google-deepmind",
+          "names": [
+            "Nano Banana 2",
+            "Nano Banana Pro"
+          ],
+          "label": "Nano Banana 2 · Pro"
+        },
+        {
+          "id": "mj",
+          "company": "midjourney",
+          "names": [
+            "Midjourney V8.2"
+          ],
+          "label": "Midjourney V8.2"
+        },
+        {
+          "id": "flux",
+          "company": "black-forest-labs",
+          "names": [
+            "Flux 2"
+          ],
+          "label": "Flux 2"
+        },
+        {
+          "id": "seedream",
+          "company": "bytedance",
+          "names": [
+            "Seedream 5.0"
+          ],
+          "label": "Seedream 5.0"
+        },
+        {
+          "id": "grok",
+          "company": "xai",
+          "names": [
+            "Grok Imagine Image 2.0"
+          ],
+          "label": "Grok Imagine Image 2.0"
+        },
+        {
+          "id": "mai",
+          "company": "microsoft",
+          "names": [
+            "MAI-Image-2.5"
+          ],
+          "label": "MAI-Image-2.5"
+        }
+      ],
+      "newModel": {
+        "text": "A new model; there’s no shared verdict on its strengths yet, and details still need checking.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "verify": true
+      },
+      "insight": {
+        "text": "No model is best at everything: choose by the job, try a few, and keep up to date.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "The strengths listed here are general assessments as of Oct 12, 2026; AI changes week by week.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "recipe": {
+      "label": "Image prompt recipe",
+      "prompt": "Tap to add each part",
+      "group": "Parts of an image prompt",
+      "stripLabel": "Your prompt",
+      "empty": "Nothing yet: tap a stone below",
+      "canvas": "The painting changes with the prompt: {prompt}",
+      "parts": [
+        {
+          "id": "subject",
+          "name": "Subject",
+          "say": "a white cat"
+        },
+        {
+          "id": "pose",
+          "name": "Composition",
+          "say": "sitting in a round window frame"
+        },
+        {
+          "id": "place",
+          "name": "Setting",
+          "say": "in a quiet tea room"
+        },
+        {
+          "id": "style",
+          "name": "Style",
+          "say": "ink wash painting"
+        },
+        {
+          "id": "light",
+          "name": "Lighting",
+          "say": "slanting early sunlight"
+        },
+        {
+          "id": "lens",
+          "name": "Camera angle",
+          "say": "close-up, eye level"
+        },
+        {
+          "id": "color",
+          "name": "Color",
+          "say": "rice-paper tones, vermilion accents"
+        },
+        {
+          "id": "text",
+          "name": "Text in image",
+          "say": "the word “An” (peace), top corner"
+        },
+        {
+          "id": "ratio",
+          "name": "Aspect ratio",
+          "say": "portrait frame 4:5"
+        }
+      ],
+      "written": "An",
+      "insight": "Describe it like briefing a photographer: subject, setting, style, light, camera angle, color, text, frame.",
+      "detail": "Edit step by step instead of rewriting from scratch; use reference images to stay consistent. The full recipe is in Station 13."
+    }
+  },
+  "quiz": {
+    "q": "How does a diffusion image AI create a picture?",
+    "options": [
+      "Stitches together images found online",
+      "Removes noise step by step, guided by your words",
+      "Finds the most similar image in a library",
+      "Colors in a ready-made sketch"
+    ],
+    "answer": 1,
+    "explain": "It starts from random noise and removes it step by step, steering toward a match with the words you wrote."
+  },
+  "summary": "AI paints by removing noise step by step, guided by your words; describe clearly and you get what you meant.",
+  "sources": {
+    "ddpm-2020": {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "publisher": "J. Ho, A. Jain, P. Abbeel · arXiv:2006.11239",
+      "url": "https://arxiv.org/abs/2006.11239",
+      "date": "2020-06",
+      "note": "The foundational paper for making images by removing noise step by step."
+    },
+    "ldm-2022": {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "publisher": "R. Rombach et al. · arXiv:2112.10752",
+      "url": "https://arxiv.org/abs/2112.10752",
+      "date": "2021-12",
+      "note": "The basis of Stable Diffusion: your description guides each denoising step. The pictures on this page are simulations for learning."
+    }
+  }
+}

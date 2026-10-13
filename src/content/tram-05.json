@@ -1,0 +1,838 @@
+{
+  "id": 5,
+  "kicker": "Một câu hỏi đi qua vườn đá, rồi trở về thành từng nét chữ.",
+  "journey": [
+    "Cắt token",
+    "Embedding",
+    "Attention",
+    "Chữ tiếp theo",
+    "Viết ra"
+  ],
+  "sheet": {
+    "name": "Lời dặn ẩn",
+    "title": "System prompt",
+    "text": "Bạn là trợ lý thân thiện. Trả lời ngắn gọn, lịch sự, bằng tiếng Việt.",
+    "count": "≈ 20 token"
+  },
+  "questions": [
+    {
+      "text": "Son màu nào hợp da ngăm?",
+      "tokens": [
+        [
+          "Son",
+          31872
+        ],
+        [
+          " màu",
+          6052
+        ],
+        [
+          " nào",
+          4170
+        ],
+        [
+          " hợp",
+          9438
+        ],
+        [
+          " da",
+          2815
+        ],
+        [
+          " ng",
+          911
+        ],
+        [
+          "ăm",
+          19307
+        ],
+        [
+          "?",
+          30
+        ]
+      ],
+      "words": [
+        "son",
+        "màu",
+        "nào",
+        "hợp",
+        "da",
+        "ngăm"
+      ],
+      "attn": [
+        [],
+        [
+          [
+            0,
+            0.5
+          ]
+        ],
+        [
+          [
+            1,
+            0.8
+          ],
+          [
+            0,
+            0.2
+          ]
+        ],
+        [
+          [
+            2,
+            0.7
+          ],
+          [
+            1,
+            0.3
+          ]
+        ],
+        [
+          [
+            1,
+            0.6
+          ],
+          [
+            2,
+            0.45
+          ],
+          [
+            3,
+            0.2
+          ]
+        ],
+        [
+          [
+            4,
+            0.6
+          ],
+          [
+            1,
+            0.35
+          ]
+        ],
+        [
+          [
+            5,
+            0.7
+          ],
+          [
+            4,
+            0.2
+          ]
+        ],
+        [
+          [
+            6,
+            0.9
+          ],
+          [
+            5,
+            0.7
+          ],
+          [
+            2,
+            0.25
+          ]
+        ],
+        [
+          [
+            3,
+            0.6
+          ],
+          [
+            4,
+            0.55
+          ],
+          [
+            1,
+            0.5
+          ],
+          [
+            7,
+            0.4
+          ],
+          [
+            5,
+            0.35
+          ],
+          [
+            0,
+            0.45
+          ]
+        ]
+      ],
+      "hint": 7,
+      "next": {
+        "lead": [
+          "Da",
+          " ng",
+          "ăm",
+          " rất",
+          " hợp",
+          " son",
+          " màu"
+        ],
+        "cands": [
+          {
+            "w": "đỏ gạch",
+            "p": 38
+          },
+          {
+            "w": "cam đất",
+            "p": 24
+          },
+          {
+            "w": "nâu",
+            "p": 16
+          },
+          {
+            "w": "hồng đào",
+            "p": 11
+          },
+          {
+            "w": "đỏ rượu",
+            "p": 8
+          },
+          {
+            "w": "xanh lá",
+            "p": 0.4
+          }
+        ],
+        "tail": [
+          ".",
+          " Hãy",
+          " thử",
+          " một",
+          " lớp",
+          " mỏng",
+          " trên",
+          " môi",
+          " trước",
+          ",",
+          " rồi",
+          " tô",
+          " đậm",
+          " dần",
+          " nhé",
+          "!"
+        ]
+      }
+    },
+    {
+      "text": "Mèo kén ăn, nên làm gì?",
+      "tokens": [
+        [
+          "M",
+          44
+        ],
+        [
+          "èo",
+          11645
+        ],
+        [
+          " kén",
+          27841
+        ],
+        [
+          " ăn",
+          3917
+        ],
+        [
+          ",",
+          11
+        ],
+        [
+          " nên",
+          5162
+        ],
+        [
+          " làm",
+          1874
+        ],
+        [
+          " gì",
+          2290
+        ],
+        [
+          "?",
+          30
+        ]
+      ],
+      "words": [
+        "mèo",
+        "kén",
+        "ăn",
+        "nên",
+        "làm",
+        "gì"
+      ],
+      "attn": [
+        [],
+        [
+          [
+            0,
+            0.5
+          ]
+        ],
+        [
+          [
+            1,
+            0.95
+          ]
+        ],
+        [
+          [
+            2,
+            0.6
+          ],
+          [
+            1,
+            0.5
+          ]
+        ],
+        [
+          [
+            3,
+            0.85
+          ],
+          [
+            2,
+            0.55
+          ],
+          [
+            1,
+            0.4
+          ]
+        ],
+        [
+          [
+            4,
+            0.5
+          ],
+          [
+            3,
+            0.3
+          ]
+        ],
+        [
+          [
+            4,
+            0.45
+          ],
+          [
+            2,
+            0.4
+          ],
+          [
+            0,
+            0.3
+          ]
+        ],
+        [
+          [
+            6,
+            0.8
+          ],
+          [
+            2,
+            0.3
+          ]
+        ],
+        [
+          [
+            7,
+            0.8
+          ],
+          [
+            6,
+            0.5
+          ],
+          [
+            4,
+            0.3
+          ]
+        ],
+        [
+          [
+            8,
+            0.6
+          ],
+          [
+            6,
+            0.45
+          ],
+          [
+            2,
+            0.55
+          ],
+          [
+            3,
+            0.5
+          ],
+          [
+            4,
+            0.5
+          ],
+          [
+            0,
+            0.45
+          ]
+        ]
+      ],
+      "hint": 4,
+      "next": {
+        "lead": [
+          "Bạn",
+          " thử",
+          " cho",
+          " bé",
+          " ăn"
+        ],
+        "cands": [
+          {
+            "w": "pate",
+            "p": 30
+          },
+          {
+            "w": "cá hấp",
+            "p": 22
+          },
+          {
+            "w": "ít một",
+            "p": 18
+          },
+          {
+            "w": "đúng giờ",
+            "p": 14
+          },
+          {
+            "w": "hạt mới",
+            "p": 10
+          },
+          {
+            "w": "bánh kem",
+            "p": 0.5
+          }
+        ],
+        "tail": [
+          ",",
+          " chia",
+          " bữa",
+          " nhỏ",
+          ".",
+          " Nếu",
+          " bé",
+          " bỏ",
+          " ăn",
+          " lâu",
+          ",",
+          " hãy",
+          " hỏi",
+          " bác",
+          " sĩ",
+          " thú",
+          " y",
+          "."
+        ]
+      }
+    },
+    {
+      "text": "Trời mưa, uống gì cho ấm?",
+      "tokens": [
+        [
+          "Tr",
+          2898
+        ],
+        [
+          "ời",
+          17790
+        ],
+        [
+          " mưa",
+          21460
+        ],
+        [
+          ",",
+          11
+        ],
+        [
+          " uống",
+          14228
+        ],
+        [
+          " gì",
+          2290
+        ],
+        [
+          " cho",
+          1150
+        ],
+        [
+          " ấm",
+          23015
+        ],
+        [
+          "?",
+          30
+        ]
+      ],
+      "words": [
+        "trời",
+        "mưa",
+        "uống",
+        "gì",
+        "cho",
+        "ấm"
+      ],
+      "attn": [
+        [],
+        [
+          [
+            0,
+            0.5
+          ]
+        ],
+        [
+          [
+            1,
+            0.95
+          ]
+        ],
+        [
+          [
+            2,
+            0.7
+          ],
+          [
+            1,
+            0.6
+          ]
+        ],
+        [
+          [
+            3,
+            0.5
+          ],
+          [
+            2,
+            0.2
+          ]
+        ],
+        [
+          [
+            3,
+            0.45
+          ],
+          [
+            0,
+            0.25
+          ]
+        ],
+        [
+          [
+            5,
+            0.85
+          ],
+          [
+            3,
+            0.2
+          ]
+        ],
+        [
+          [
+            6,
+            0.5
+          ],
+          [
+            5,
+            0.45
+          ]
+        ],
+        [
+          [
+            3,
+            0.75
+          ],
+          [
+            5,
+            0.55
+          ],
+          [
+            7,
+            0.35
+          ],
+          [
+            2,
+            0.3
+          ]
+        ],
+        [
+          [
+            6,
+            0.6
+          ],
+          [
+            5,
+            0.55
+          ],
+          [
+            8,
+            0.5
+          ],
+          [
+            3,
+            0.5
+          ],
+          [
+            0,
+            0.45
+          ]
+        ]
+      ],
+      "hint": 8,
+      "next": {
+        "lead": [
+          "Tr",
+          "ời",
+          " mưa",
+          ",",
+          " một",
+          " tách"
+        ],
+        "cands": [
+          {
+            "w": "trà gừng",
+            "p": 36
+          },
+          {
+            "w": "cà phê",
+            "p": 24
+          },
+          {
+            "w": "ca cao",
+            "p": 16
+          },
+          {
+            "w": "sữa nóng",
+            "p": 12
+          },
+          {
+            "w": "trà sữa",
+            "p": 8
+          },
+          {
+            "w": "nước đá",
+            "p": 0.4
+          }
+        ],
+        "tail": [
+          " là",
+          " đủ",
+          " ấm",
+          " người",
+          ".",
+          " Nhâm",
+          " nhi",
+          " chậm",
+          " rãi",
+          ",",
+          " ngắm",
+          " mưa",
+          " rơi",
+          " nhé",
+          "."
+        ]
+      }
+    }
+  ],
+  "scenes": {
+    "cut": {
+      "label": "Cắt thành token",
+      "prompt": "Vuốt ngang để cắt",
+      "aria": "Câu hỏi của bạn: {q}. Bấm để cắt thành token.",
+      "alts": "Đổi câu hỏi",
+      "altPick": "Gửi câu khác: {q}",
+      "done": "Câu đã được cắt thành {n} token, mỗi token có một mã số.",
+      "sheetAria": "Mở lời dặn ẩn (system prompt)",
+      "sheetClose": "Gấp lời dặn ẩn lại",
+      "insight": "Câu được cắt thành token — mẩu chữ nhỏ, mỗi mẩu mang một mã số. AI chỉ làm việc với các con số.",
+      "detail": {
+        "text": "Cách cắt và các mã số ở đây là mô phỏng gần đúng; mỗi AI có bộ cắt riêng. Trạm 4 kể kỹ hơn.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "sheetCap": "Ứng dụng kẹp tờ này trước câu của bạn: bạn không thấy, nhưng AI đọc.",
+      "own": "Viết câu của bạn",
+      "ownAria": "Viết một câu hỏi của riêng bạn để cắt thành token",
+      "ownPlaceholder": "Gõ câu hỏi của bạn…",
+      "ownSend": "Cắt câu này",
+      "ownCancel": "Thôi, quay lại các câu mẫu",
+      "ownNote": "Cách cắt mô phỏng gần đúng · các bước sau dùng câu mẫu “{q}”",
+      "sheetDetail": "Lời dặn ẩn cũng là token, đi trước câu của bạn. Vì thế cùng một AI, ở mỗi ứng dụng lại có giọng và quy tắc riêng."
+    },
+    "space": {
+      "label": "Embedding",
+      "prompt": "Kéo xoay, chạm một chữ",
+      "aria": "Không gian ý nghĩa ba chiều. Kéo, hoặc dùng phím mũi tên, để xoay.",
+      "wordAria": "Xem các chữ ở gần “{w}”",
+      "near": "“{w}” ở gần: {list}",
+      "clusters": [
+        {
+          "name": "Làm đẹp",
+          "words": [
+            "son",
+            "phấn",
+            "má hồng",
+            "kem nền",
+            "mascara",
+            "da"
+          ]
+        },
+        {
+          "name": "Màu sắc",
+          "words": [
+            "màu",
+            "đỏ",
+            "hồng",
+            "nâu",
+            "cam",
+            "ngăm"
+          ]
+        },
+        {
+          "name": "Thú cưng",
+          "words": [
+            "mèo",
+            "chó",
+            "cún",
+            "thỏ",
+            "hamster"
+          ]
+        },
+        {
+          "name": "Ăn uống",
+          "words": [
+            "ăn",
+            "uống",
+            "kén",
+            "trà",
+            "cà phê",
+            "sữa",
+            "cơm"
+          ]
+        },
+        {
+          "name": "Thời tiết",
+          "words": [
+            "trời",
+            "mưa",
+            "nắng",
+            "bão",
+            "gió",
+            "ấm",
+            "lạnh"
+          ]
+        },
+        {
+          "name": "Từ nhỏ hay gặp",
+          "words": [
+            "nào",
+            "gì",
+            "nên",
+            "làm",
+            "hợp",
+            "cho",
+            "sao"
+          ]
+        }
+      ],
+      "insight": "Embedding: mỗi token thành một dãy số như tọa độ; chữ gần nghĩa nằm gần nhau — son cạnh phấn, mèo cạnh chó.",
+      "detail": {
+        "text": "GPT-3 (2020) dùng một dãy 12.288 con số cho mỗi token. Ở đây thu gọn còn 3 chiều để mắt người nhìn được.",
+        "asOf": "2026-10-12",
+        "source": "t05-gpt3"
+      },
+      "noWebgl": "Bản tĩnh: các chữ gần nghĩa tụ lại thành từng cụm."
+    },
+    "threads": {
+      "label": "Attention",
+      "prompt": "Chạm một chữ",
+      "aria": "Các token của câu hỏi. Chọn một token để xem nó chú ý tới đâu.",
+      "tokAria": "Token “{w}”",
+      "caption": "“{w}” nhìn kỹ nhất: {list}",
+      "insight": "Attention (sự chú ý): mỗi token nhìn lại các chữ trước nó để hiểu mình. Sợi mực càng đậm, nhìn càng kỹ.",
+      "detail": {
+        "text": "Attention là trái tim của Transformer, kiến trúc công bố năm 2017 trong bài “Attention Is All You Need”.",
+        "asOf": "2026-10-12",
+        "source": "t05-transformer"
+      }
+    },
+    "odds": {
+      "label": "Chữ tiếp theo",
+      "prompt": "Bốc thử một chữ",
+      "prompt2": "Kéo thanh độ sáng tạo",
+      "you": "Bạn",
+      "ai": "AI",
+      "temp": "Độ sáng tạo",
+      "tempAria": "Độ sáng tạo (temperature)",
+      "tempValue": "{t} — {mood}",
+      "low": "chắc chắn",
+      "mid": "vừa phải",
+      "high": "bay bổng",
+      "draw": "Bốc một chữ",
+      "candsLabel": "Khả năng của từng chữ",
+      "result": "AI bốc được “{w}”, khả năng {p}.",
+      "insight": "AI chấm khả năng từng chữ, rồi bốc thăm. “Độ sáng tạo” (temperature) thấp: chọn chữ chắc; cao: dám chọn chữ lạ.",
+      "detail": {
+        "text": "Việc cần chính xác như số liệu, tóm tắt thì nên để thấp; cần ý tưởng mới thì cao hơn — rồi tự chọn lọc.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "write": {
+      "label": "Viết ra từng chữ",
+      "prompt": "Chạm để viết tiếp",
+      "step": "Viết tiếp",
+      "auto": "Tự viết",
+      "pause": "Dừng",
+      "again": "Viết lại",
+      "end": "hết",
+      "endCaption": "AI đoán ra dấu “hết” thì dừng.",
+      "loopAria": "Vòng lặp: chữ mới được nối vào câu, rồi cả hành trình chạy lại.",
+      "inputAria": "Đầu vào hiện tại: {n} token",
+      "added": "AI viết thêm “{w}”.",
+      "insight": "AI viết từng token: chữ vừa viết được nối vào câu, rồi cả hành trình chạy lại để đoán chữ kế tiếp.",
+      "detail": "Vì thế câu trả lời hiện ra dần dần — và câu trả lời càng dài càng tốn nhiều token hơn."
+    }
+  },
+  "quiz": {
+    "q": "Khi trả lời, AI tạo ra câu chữ thế nào?",
+    "options": [
+      "Viết cả câu cùng một lúc",
+      "Đoán từng token, nối dần",
+      "Chép câu có sẵn trên mạng",
+      "Nhờ người trực tổng đài"
+    ],
+    "answer": 1,
+    "explain": "AI đoán token kế tiếp, nối vào câu, rồi lặp lại cho tới khi đoán ra dấu “hết”."
+  },
+  "summary": "Câu được cắt thành token, đổi thành số, các chữ nhìn nhau, rồi AI viết từng chữ.",
+  "sources": {
+    "t05-transformer": {
+      "title": "Attention Is All You Need",
+      "publisher": "Vaswani và cộng sự · arXiv",
+      "date": "2017-06-12",
+      "url": "https://arxiv.org/abs/1706.03762"
+    },
+    "t05-gpt3": {
+      "title": "Language Models are Few-Shot Learners",
+      "publisher": "Brown và cộng sự (OpenAI) · arXiv",
+      "date": "2020-05-28",
+      "url": "https://arxiv.org/abs/2005.14165",
+      "note": "Bảng 2.1: bản GPT-3 175 tỉ tham số có độ dài vector (d_model) là 12.288."
+    }
+  }
+}

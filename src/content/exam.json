@@ -1,0 +1,220 @@
+{
+  "title": "Bài thi cuối",
+  "intro": {
+    "title": "Bài thi cuối",
+    "meta": "10 câu · khoảng 5 phút",
+    "line": "Mười viên đá, mỗi viên một câu hỏi. Đi hết lối để nhận chứng nhận.",
+    "start": "Bước qua cổng",
+    "resume": "Xem lại chứng nhận · {score}/10",
+    "art": "Cổng đá giữa vườn lúc bình minh; lối mười viên đá dẫn qua cổng về phía mặt trời."
+  },
+  "quiz": {
+    "count": "Câu {n}/{total}",
+    "status": "Câu {n} trên {total}.",
+    "group": "Các đáp án",
+    "keys": "Chọn bằng chuột, chạm, hoặc phím 1 đến {n}.",
+    "right": "Chính xác.",
+    "wrong": "Chưa đúng.",
+    "answerIs": "Đáp án đúng: {a}.",
+    "next": "Câu tiếp",
+    "finish": "Xem kết quả",
+    "hint": "Chọn một viên đá"
+  },
+  "questions": [
+    {
+      "topic": "Token",
+      "station": 4,
+      "art": "token",
+      "q": "AI đọc câu chữ — và tính tiền — theo đơn vị nào?",
+      "options": [
+        "Theo số trang văn bản",
+        "Theo token — mảnh chữ nhỏ",
+        "Theo số phút trò chuyện",
+        "Theo số câu hỏi gửi đi"
+      ],
+      "answer": 1,
+      "explain": "AI cắt chữ thành token; trí nhớ của cuộc trò chuyện và chi phí đều được đếm bằng token."
+    },
+    {
+      "topic": "Cách chatbot viết",
+      "station": 5,
+      "art": "write",
+      "q": "Hỏi cùng một câu hai lần, chatbot trả lời hơi khác nhau. Vì sao?",
+      "options": [
+        "Nó học thêm sau mỗi câu hỏi",
+        "Đường truyền mạng chập chờn",
+        "Nó chọn từng chữ theo xác suất",
+        "Nó cố ý đổi cho đỡ nhàm"
+      ],
+      "answer": 2,
+      "explain": "Chatbot đoán từng token kế tiếp theo xác suất; một chút ngẫu nhiên khiến mỗi lần viết ra hơi khác."
+    },
+    {
+      "topic": "Ảo giác & kiểm chứng",
+      "station": 6,
+      "art": "moon",
+      "q": "AI trích một điều luật nghe rất chắc chắn cho hợp đồng của bạn. Nên làm gì?",
+      "options": [
+        "Mở văn bản gốc để đối chiếu",
+        "Dán thẳng vào hợp đồng",
+        "Hỏi lại AI: “Bạn chắc chưa?”",
+        "Thêm chữ “chính xác” vào prompt"
+      ],
+      "answer": 0,
+      "explain": "AI có thể “ảo giác” — bịa rất tự tin; điều quan trọng phải đối chiếu với nguồn gốc."
+    },
+    {
+      "topic": "AI tạo ảnh",
+      "station": 7,
+      "art": "mist",
+      "q": "AI tạo ảnh kiểu khuếch tán (diffusion) bắt đầu từ đâu?",
+      "options": [
+        "Một bức ảnh mẫu có sẵn",
+        "Ảnh ghép từ nhiều ảnh trên mạng",
+        "Một bản phác thảo nét chì",
+        "Một màn nhiễu lấm tấm"
+      ],
+      "answer": 3,
+      "explain": "Nó gỡ nhiễu từng bước theo lời mô tả — như sương tan dần cho bức tranh hiện ra."
+    },
+    {
+      "topic": "AI tạo video",
+      "station": 8,
+      "art": "frames",
+      "q": "Vì sao video AI đôi khi bị méo tay, chữ rung, vật biến dạng?",
+      "options": [
+        "Máy quay ảo của AI bị rung",
+        "Khó giữ đồng nhất qua từng khung hình",
+        "Video bị nén khi tải lên mạng",
+        "AI cố ý tạo hiệu ứng lạ"
+      ],
+      "answer": 1,
+      "explain": "AI video gỡ nhiễu cả một khối khung hình; giữ tay, chữ, đồ vật khớp nhau theo thời gian vẫn là phần khó."
+    },
+    {
+      "topic": "AI nào cho việc nào",
+      "station": 11,
+      "art": "desks",
+      "q": "Cần một chai serum 3D để khách tự xoay trên web. Giao việc cho AI nào?",
+      "options": [
+        "AI viết chữ (LLM)",
+        "AI tạo ảnh",
+        "AI tạo 3D",
+        "AI tạo video"
+      ],
+      "answer": 2,
+      "explain": "Mỗi loại AI một chuyên môn: vật xoay được cần khối 3D — và thường vẫn cần người dọn lại cho chỉn chu."
+    },
+    {
+      "topic": "Công thức prompt",
+      "station": 12,
+      "art": "cairn",
+      "q": "Bạn nhờ AI viết email cho khách. Thêm gì giúp kết quả tốt nhất?",
+      "options": [
+        "Ai đọc, mục tiêu, giọng văn, độ dài",
+        "Lời dặn “viết thật hay, thật chuyên nghiệp”",
+        "Mật khẩu email để AI tự gửi",
+        "Thật nhiều chữ in hoa cho rõ ý"
+      ],
+      "answer": 0,
+      "explain": "Nói rõ như giao việc cho người mới: vai trò, bối cảnh, nhiệm vụ, ràng buộc, định dạng — và đừng đưa dữ liệu nhạy cảm vào."
+    },
+    {
+      "topic": "Agent & chốt duyệt",
+      "station": 15,
+      "art": "lantern",
+      "q": "Agent dọn thư mục chung và sắp xóa 200 tệp. Bước tiếp theo nên là gì?",
+      "options": [
+        "Cứ xóa, vì đã được giao việc",
+        "Xóa trước, báo bạn sau",
+        "Nhờ agent khác kiểm tra hộ",
+        "Dừng lại chờ bạn duyệt danh sách"
+      ],
+      "answer": 3,
+      "explain": "Agent tự làm được nhiều bước, nhưng việc khó rút lại — xóa, gửi, trả tiền — nên có chốt để người duyệt."
+    },
+    {
+      "topic": "MCP",
+      "station": 16,
+      "art": "plug",
+      "q": "MCP giúp gì cho một AI agent?",
+      "options": [
+        "Một chuẩn chung để nối vào ứng dụng",
+        "Một mô hình AI mới mạnh hơn",
+        "Một cách lưu mật khẩu an toàn",
+        "Một bộ lọc chặn lỗi của AI"
+      ],
+      "answer": 0,
+      "explain": "MCP như cổng USB-C: một chuẩn chung để AI nối vào Drive, Gmail, Figma… — nhớ chỉ cấp quyền vừa đủ."
+    },
+    {
+      "topic": "Thói quen tốt",
+      "station": 18,
+      "art": "drop",
+      "q": "Thói quen nào giúp dùng AI vừa tiết kiệm, vừa giữ đầu óc sắc bén?",
+      "options": [
+        "Tạo thật nhiều bản rồi chọn",
+        "Tự nghĩ trước, rồi hỏi gọn và rõ",
+        "Giao AI nghĩ hộ cho nhanh",
+        "Luôn chọn model lớn nhất"
+      ],
+      "answer": 1,
+      "explain": "Mỗi lượt hỏi tốn điện, nước — nhân hàng tỷ lượt thì lớn; tự nghĩ trước còn giữ cho ta không lười tư duy."
+    }
+  ],
+  "result": {
+    "eyebrow": "Kết quả",
+    "scoreLabel": "câu đúng",
+    "scoreAria": "{n} trên {total} câu đúng.",
+    "bands": [
+      {
+        "min": 10,
+        "text": "Trọn vẹn mười viên đá. Bạn đã hiểu khu vườn rất kỹ."
+      },
+      {
+        "min": 8,
+        "text": "Rất vững. Chỉ còn vài viên đá đáng ghé lại."
+      },
+      {
+        "min": 5,
+        "text": "Bạn đã nắm được lối đi. Dạo lại vài trạm sẽ vững hơn."
+      },
+      {
+        "min": 0,
+        "text": "Khởi đầu nào cũng vậy. Dạo lại các trạm, rồi thử lần nữa."
+      }
+    ],
+    "review": "Ghé lại để vững hơn",
+    "reviewLink": "Trạm {n}: {topic}",
+    "cert": "Nhận chứng nhận",
+    "again": "Làm lại bài thi",
+    "reviewTip": "Trạm {n} · {topic}"
+  },
+  "cert": {
+    "heading": "Chứng nhận của bạn",
+    "nameLabel": "Tên trên chứng nhận",
+    "placeholder": "Nhập tên của bạn",
+    "download": "Tải ảnh PNG",
+    "needName": "Nhập tên để tải ảnh.",
+    "ready": "Ảnh 1600 × 1131, sẵn sàng để chia sẻ.",
+    "saved": "Đã tải ảnh xuống.",
+    "again": "Làm lại bài thi",
+    "garden": "Về vườn",
+    "file": "chung-nhan-ai-zen",
+    "alt": "Chứng nhận AI Zen trao cho {name}, bài thi cuối {score}/10, ngày {date}.",
+    "title": "Chứng nhận",
+    "presented": "Trao cho",
+    "line1": "đã đi hết 18 trạm của AI Zen —",
+    "line2": "Hiểu AI để dùng AI đúng cách",
+    "scoreLabel": "Bài thi cuối",
+    "date": "Ngày {date}",
+    "seal": [
+      "AI",
+      "Zen"
+    ],
+    "brand": "AI Zen",
+    "namePlaceholder": "Tên của bạn",
+    "line1Exam": "đã hoàn thành bài thi cuối của AI Zen —",
+    "journey": "Bạn đã ghé {n}/{total} trạm. Đi đủ các trạm, chứng nhận sẽ ghi trọn hành trình."
+  }
+}

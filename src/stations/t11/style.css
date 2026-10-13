@@ -1,0 +1,898 @@
+/* Trạm 11 — phòng giao việc: a room at dawn with six desks, task slips in a lacquer tray, stones on a raked bed */
+.t11 {
+  position: absolute;
+  inset: 0;
+}
+.t11 .k { fill: var(--ink); }
+.t11 .k2 { fill: var(--ink-2); }
+.t11 .k3 { fill: var(--ink-3); }
+.t11 .p { fill: var(--paper); }
+.t11 .card { fill: var(--card); }
+.t11 .st { fill: var(--stone-2); }
+/* heavy masses (camera bodies, the brush pot, the turntable): full ink by day */
+.t11 .m { fill: var(--ink); }
+.t11 .m2 { fill: var(--ink-2); }
+/* vermilion is the moment of attention; once a job is done it cools to ink or moss */
+.t11 .v { fill: var(--vermilion); transition: fill 1.6s var(--ease-soft); }
+.t11 .v.cool { fill: var(--ink-3); }
+.t11 .shade { fill: var(--ink); fill-opacity: 0.12; }
+.t11 .skin { fill: var(--moss-2); fill-opacity: 0.5; }
+.t11 .hl { fill: var(--paper); fill-opacity: 0.4; }
+.t11-glint { fill: var(--card); }
+.t11-breath { fill: var(--ink-3); }
+.t11 .v-m {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+}
+.t11-wire {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 0.8;
+  stroke-linecap: round;
+}
+.t11-wire ellipse { stroke-opacity: 0.4; }
+.t11-route {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.1;
+  stroke-dasharray: 0.5 5;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.t11-frame {
+  fill: var(--card);
+  stroke: var(--ink-2);
+  stroke-width: 0.9;
+}
+.t11 .rk { fill: none; stroke: var(--rake); stroke-width: 1.1; }
+.t11 .rk-hi { fill: none; stroke: var(--rake-hi); stroke-width: 1; }
+.t11 .ripple { fill: none; stroke: var(--vermilion); stroke-width: 1.1; }
+/* the room: dawn sky and a pale sun outside, light falling on the floor */
+.t11 .sky { fill: var(--card); fill-opacity: 0.85; }
+.t11 .sun { fill: var(--vermilion-soft); }
+.t11 .bm0 { stop-color: var(--card); stop-opacity: 0.95; }
+.t11 .bm1 { stop-color: var(--card); stop-opacity: 0; }
+.t11 .washi { fill: var(--card); fill-opacity: 0.4; }
+.t11 .bed { fill: var(--paper-2); fill-opacity: 0.7; }
+.t11 .moss { fill: var(--moss-2); fill-opacity: 0.2; }
+
+/* night garden: masses sink to a mid ink with a soft pale edge; the brightest value stays for lines */
+:root[data-theme='dark'] .t11 {
+  --rake-hi: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+:root[data-theme='dark'] .t11 .m {
+  fill: color-mix(in srgb, var(--ink) 30%, var(--paper));
+  stroke: color-mix(in srgb, var(--ink) 50%, transparent);
+  stroke-width: 0.9;
+}
+:root[data-theme='dark'] .t11 .m2 {
+  fill: color-mix(in srgb, var(--ink) 44%, var(--paper));
+  stroke: color-mix(in srgb, var(--ink) 36%, transparent);
+  stroke-width: 0.7;
+}
+:root[data-theme='dark'] .t11 .hl { fill: var(--ink); fill-opacity: 0.32; }
+:root[data-theme='dark'] .t11-glint { fill: var(--ink); }
+:root[data-theme='dark'] .t11 .shade { fill: var(--paper); fill-opacity: 0.5; }
+:root[data-theme='dark'] .t11 .skin { fill: var(--moss); fill-opacity: 0.32; }
+:root[data-theme='dark'] .t11 .v:not(.cool) { filter: drop-shadow(0 0 4px var(--glow)); }
+:root[data-theme='dark'] .t11 .sky { fill: var(--ink); fill-opacity: 0.045; }
+:root[data-theme='dark'] .t11 .sun { fill: var(--ink); fill-opacity: 0.2; }
+:root[data-theme='dark'] .t11 .bm0 { stop-color: var(--ink); stop-opacity: 0.06; }
+:root[data-theme='dark'] .t11 .bm1 { stop-color: var(--ink); }
+:root[data-theme='dark'] .t11 .washi { fill: var(--ink); fill-opacity: 0.022; }
+:root[data-theme='dark'] .t11 .bed { fill: var(--card); fill-opacity: 0.55; }
+:root[data-theme='dark'] .t11 .moss { fill: var(--moss); fill-opacity: 0.16; }
+/* logo stones keep a light face for dark marks, a little dimmer so they don't outshine the garden */
+:root[data-theme='dark'] .t11 .logo-stone {
+  --ls-face: color-mix(in srgb, var(--ink) 82%, var(--paper));
+  --ls-edge: color-mix(in srgb, var(--ink) 52%, var(--paper));
+}
+
+/* ───────── the room ───────── */
+.t11-room {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  will-change: transform;
+}
+.t11-mist {
+  position: absolute;
+  z-index: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 88%, transparent), color-mix(in srgb, var(--paper) 0%, transparent));
+  opacity: calc(0.9 - var(--i) * 0.2);
+  pointer-events: none;
+  will-change: transform;
+}
+:root[data-theme='dark'] .t11-mist {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--ink) 9%, transparent), transparent);
+}
+.t11-floor {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+/* a desk: the drawing, a name under the table, a pool of light on the floor when it is working */
+.t11-desk,
+.t11-gdesk {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: none;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.t11-dsvg {
+  position: absolute;
+  left: calc((100% - var(--w)) / 2);
+  top: 0;
+  width: var(--w);
+  height: calc(var(--w) * 0.75);
+  overflow: visible;
+  opacity: calc(0.7 + 0.3 * var(--d, 1));
+  transition: translate 0.6s var(--ease), opacity 0.9s var(--ease-soft), scale 0.5s var(--ease);
+}
+.t11-desk:is(:hover, :focus-visible) .t11-dsvg,
+.t11-gdesk:is(:hover, :focus-visible) .t11-dsvg {
+  translate: 0 -3px;
+}
+.t11-desk.cur .t11-dsvg,
+.t11-gdesk.got .t11-dsvg,
+.t11-desk:is(:hover, :focus-visible) .t11-dsvg,
+.t11-gdesk:is(:hover, :focus-visible, .over) .t11-dsvg {
+  opacity: 1;
+}
+.t11-dname {
+  position: absolute;
+  left: -30%;
+  right: -30%;
+  top: calc(var(--w) * 0.75 * 0.935);
+  text-align: center;
+  white-space: nowrap;
+  font: 500 clamp(0.86rem, 1.25vw, 1.04rem) / 1.3 var(--serif);
+  color: var(--ink);
+}
+.t11-desk:not(.awake) .t11-dname {
+  visibility: hidden;
+}
+.t11-glow {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--w) * 0.75 * 0.6);
+  width: calc(var(--w) * 1.05);
+  height: calc(var(--w) * 0.75 * 0.42);
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--card) 100%, transparent), color-mix(in srgb, var(--card) 0%, transparent));
+  opacity: 0;
+  pointer-events: none;
+}
+:root[data-theme='dark'] .t11-glow {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--ink) 10%, transparent), transparent);
+}
+.t11-desk .t11-glow {
+  transition: opacity 1.2s var(--ease-soft);
+}
+.t11-desk.cur .t11-glow {
+  opacity: 1;
+}
+
+/* ───────── Scene 1 · the team ───────── */
+.t11-cap {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 2px 14px 6px;
+  font: 400 clamp(0.94rem, 1.4vw, 1.12rem) / 1.45 var(--serif);
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
+  pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 78%, transparent), color-mix(in srgb, var(--paper) 0%, transparent));
+}
+.t11-cap:empty,
+.t11-cap:has(.t11-cap-role:empty) {
+  visibility: hidden;
+}
+.t11-cap-role {
+  display: block;
+  margin-bottom: 1px;
+  font: 500 clamp(1rem, 1.55vw, 1.22rem) / 1.3 var(--serif);
+  color: var(--ink);
+}
+.t11-cap-text {
+  display: block;
+}
+.t11-lead {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t11-team.short .t11-cap {
+  font-size: 0.84rem;
+  line-height: 1.32;
+}
+.t11-team.short .t11-cap-role {
+  display: inline;
+  font-size: 0.9rem;
+}
+.t11-team.short .t11-cap-role::after {
+  content: ' · ';
+  color: var(--ink-3);
+}
+.t11-team.short .t11-cap-text {
+  display: inline;
+}
+.t11-team.short .t11-dname,
+.t11-game.short .t11-dname {
+  font-size: 0.78rem;
+}
+
+/* ───────── Scene 2 · hand out the work ───────── */
+.t11-tray {
+  position: absolute;
+  z-index: 6;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  padding: 14px 0 22px;
+}
+.t11-game.finished .t11-tray {
+  visibility: hidden;
+  transition: visibility 0s linear 1s;
+}
+.t11-inbox {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 206px));
+  gap: clamp(8px, 1.6vh, 16px) clamp(10px, 1.4vw, 20px);
+  justify-content: center;
+  width: 100%;
+  padding-inline: clamp(24px, 6%, 80px);
+}
+.t11-game:is(.narrow, .side) .t11-inbox {
+  grid-template-columns: repeat(2, minmax(0, 200px));
+  padding-inline: 18px;
+}
+.t11-slot {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 58px;
+}
+.t11-game.short .t11-slot {
+  min-height: 44px;
+}
+.t11-game.short .t11-tray {
+  padding: 8px 0 14px;
+}
+.t11-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 1px 1px color-mix(in srgb, var(--ink) 10%, transparent)) drop-shadow(0 6px 10px color-mix(in srgb, var(--ink) 8%, transparent));
+}
+.t11-card.dragging {
+  z-index: 30;
+  cursor: grabbing;
+}
+:root[data-theme='dark'] .t11-card {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5)) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.45));
+}
+/* a washi slip: soft fibres, a deckled bottom edge */
+.t11-card-in {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 10px 28px 12px 18px;
+  background:
+    radial-gradient(120% 90% at 0% 0%, transparent 60%, color-mix(in srgb, var(--paper-2) 70%, transparent)),
+    var(--card);
+  clip-path: polygon(0 1px, 100% 0, 100% calc(100% - 3px), 93% 100%, 86% calc(100% - 2px), 78% 100%, 66% calc(100% - 3px), 55% calc(100% - 1px), 44% 100%, 31% calc(100% - 3px), 20% 100%, 9% calc(100% - 2px), 0 100%);
+  rotate: var(--tilt, 0deg);
+  text-align: left;
+  font: 400 clamp(0.88rem, 1.15vw, 1.06rem) / 1.32 var(--serif);
+  color: var(--ink);
+  transition: translate 0.45s var(--ease), rotate 0.45s var(--ease), background-color 0.3s;
+}
+.t11-card-in::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--ink-3);
+  opacity: 0.45;
+}
+.t11-card:hover .t11-card-in {
+  translate: 0 -3px;
+}
+.t11-card.picked .t11-card-in {
+  translate: 0 -6px;
+  rotate: 0deg;
+  background: color-mix(in srgb, var(--vermilion) 7%, var(--card));
+}
+.t11-card.picked .t11-card-in::before {
+  width: 3px;
+  background: var(--vermilion);
+  opacity: 1;
+}
+.t11-card.dragging .t11-card-in {
+  rotate: 0deg;
+}
+.t11-trayart {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t11 .tr-floor { fill: var(--ink); fill-opacity: 0.06; }
+.t11 .tr-lip { fill: var(--ink); fill-opacity: 0.08; }
+:root[data-theme='dark'] .t11 .tr-floor { fill: var(--ink); fill-opacity: 0.045; }
+:root[data-theme='dark'] .t11 .tr-lip { fill: #000; fill-opacity: 0.4; }
+.t11-seal {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  margin-top: -6.5px;
+  border-radius: 3px 2px 3px 2px;
+  border: 1.5px solid var(--vermilion);
+  opacity: 0;
+  scale: 0.4;
+  transition: opacity 0.25s, scale 0.35s var(--ease);
+}
+.t11-card.placed .t11-seal {
+  opacity: 1;
+  scale: 1;
+  background: color-mix(in srgb, var(--vermilion) 22%, transparent);
+}
+.t11-left {
+  position: absolute;
+  z-index: 1;
+  right: 4px;
+  top: 0;
+  white-space: nowrap;
+  margin: 0;
+  font: 400 0.76rem/1.2 var(--sans);
+  color: var(--ink-3);
+}
+.t11-note {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  max-width: 36rem;
+  min-height: 2.9em;
+  margin: 0 auto;
+  padding: 0 12px;
+  text-align: center;
+  font: 400 clamp(0.92rem, 1.35vw, 1.06rem) / 1.42 var(--serif);
+  color: var(--ink-2);
+  text-wrap: balance;
+  pointer-events: none;
+}
+.t11-game.side .t11-card-in {
+  min-height: 40px;
+  padding: 7px 20px 9px 15px;
+  font-size: 0.82rem;
+  line-height: 1.26;
+}
+.t11-game.short .t11-left {
+  display: none;
+}
+.t11-game.side .t11-tray,
+.t11-game.side .t11-note {
+  right: auto;
+}
+.t11-game.side .t11-note {
+  margin: 0;
+}
+.t11-game.short .t11-note {
+  min-height: 2.6em;
+  font-size: 0.84rem;
+  line-height: 1.3;
+}
+/* the mat on the floor under each desk: where a slip can land */
+.t11-mat {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--w) * 0.75 * 0.885);
+  width: calc(var(--w) * 0.86);
+  height: calc(var(--w) * 0.75 * 0.085);
+  translate: -50% 0;
+  border-radius: 50%;
+  border: 1.5px dashed transparent;
+  transition: border-color 0.35s, background-color 0.35s;
+  pointer-events: none;
+}
+.t11-game:is(.armed, .dragging) .t11-mat {
+  border-color: var(--line-2);
+}
+.t11-gdesk.over .t11-mat,
+.t11-game.armed .t11-gdesk:is(:hover, :focus-visible) .t11-mat {
+  border-style: solid;
+  border-color: var(--vermilion);
+  background: color-mix(in srgb, var(--vermilion) 7%, transparent);
+}
+.t11-gdesk.over .t11-dsvg {
+  scale: 1.04;
+}
+.t11-gdesk.got .t11-glow {
+  opacity: 0.6;
+}
+.t11-game.finished .t11-glow {
+  opacity: 1;
+}
+.t11-tally .v {
+  fill: var(--vermilion);
+}
+
+/* the seal pressed when every slip has found its desk */
+.t11-sealbox {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  right: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+.t11-hanko {
+  width: var(--seal, 96px);
+  height: var(--seal, 96px);
+}
+.t11-hanko svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t11 .hk-body { fill: var(--vermilion); }
+:root[data-theme='dark'] .t11 .hk-body { fill: color-mix(in srgb, var(--vermilion) 78%, var(--paper)); }
+.t11 .hk-bleed { fill: var(--vermilion); fill-opacity: 0.2; }
+.t11 .hk-cut { fill: var(--paper); fill-opacity: 0.88; }
+.t11 .hk-word {
+  fill: var(--paper);
+  font: 500 30px var(--serif);
+}
+/* at night the seal glows: its cut border and word in pale ink, a soft halo of attention */
+:root[data-theme='dark'] .t11 :is(.hk-word, .hk-cut) { fill: color-mix(in srgb, var(--ink) 88%, var(--vermilion)); fill-opacity: 1; }
+:root[data-theme='dark'] .t11-hanko svg { filter: drop-shadow(0 0 14px var(--glow)); }
+.t11-hanko-cap {
+  margin: 0;
+  font: 400 clamp(1rem, 1.6vw, 1.22rem) / 1.3 var(--serif);
+  color: var(--ink);
+}
+
+/* ───────── Scene 3 · who is good at what ───────── */
+.t11-cmp {
+  display: grid;
+  gap: 10px clamp(12px, 2vw, 28px);
+  grid-template-columns: auto minmax(0, 1fr) minmax(250px, 29%);
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'tabs lane card'
+    'tabs legend card';
+}
+.t11-cmp[data-mode='tall'] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'tabs' 'lane' 'legend';
+  row-gap: 6px;
+}
+.t11-cmp.short {
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    'tabs lane'
+    'tabs legend';
+  row-gap: 2px;
+}
+.t11-tabs {
+  grid-area: tabs;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+.t11-cmp[data-mode='tall'] .t11-tabs {
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 0;
+}
+.t11-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 56px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  color: var(--ink-3);
+  -webkit-tap-highlight-color: transparent;
+}
+.t11-glyph {
+  width: 72px;
+  height: 49px;
+}
+.t11-tab .t11-glyph {
+  opacity: 0.42;
+  transition: opacity 0.5s var(--ease), translate 0.5s var(--ease);
+}
+.t11-tab:hover .t11-glyph {
+  opacity: 0.7;
+}
+.t11-tab-name {
+  font: 400 0.86rem/1.2 var(--serif);
+}
+.t11-tab[aria-selected='true'] {
+  color: var(--ink);
+}
+.t11-tab[aria-selected='true'] .t11-glyph {
+  opacity: 1;
+  translate: 0 -2px;
+}
+.t11-tab::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  width: 18px;
+  height: 2px;
+  margin-left: -9px;
+  border-radius: 2px;
+  background: var(--ink-2);
+  opacity: 0;
+  scale: 0.3 1;
+  transition: opacity 0.4s, scale 0.5s var(--ease);
+}
+.t11-tab[aria-selected='true']::after {
+  opacity: 1;
+  scale: 1 1;
+}
+.t11-cmp[data-mode='tall'] .t11-tab {
+  min-width: 0;
+  padding: 4px 4px 6px;
+}
+.t11-cmp[data-mode='tall'] .t11-glyph {
+  width: 46px;
+  height: 31px;
+}
+.t11-lane {
+  grid-area: lane;
+  position: relative;
+  min-height: 0;
+}
+/* short screens: while the bed slides a picked stone clear of the card, it fades out at the lane's edges */
+.t11-cmp.panned .t11-lane {
+  overflow: clip;
+  mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+}
+.t11-sand {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t11-stones {
+  position: absolute;
+  inset: 12px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  align-items: flex-start;
+  row-gap: calc(var(--sz, 48px) * 0.36);
+}
+.t11-cmp.short .t11-stones {
+  inset: 6px 0 0;
+  row-gap: calc(var(--sz, 48px) * 0.2);
+}
+.t11-stones > .t11-stone {
+  flex: 0 0 calc(100% / var(--cols, 4));
+}
+.t11-stone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--sz, 48px) * 0.14 + 3px);
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 2px;
+  border: 0;
+  border-radius: 16px;
+  background: none;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.t11-cmp.short .t11-stone {
+  padding: 3px 1px;
+  gap: 4px;
+}
+/* stepping stones: every other column sits a little lower */
+.t11-stone.low {
+  margin-top: calc(var(--sz, 48px) * 0.3);
+}
+.t11-stone .logo-stone {
+  transition: translate 0.7s var(--ease);
+}
+.t11-stone.sel .logo-stone {
+  translate: 0 -6px;
+}
+.t11-stone.gone .logo-stone,
+.t11-stone.gone .t11-sname {
+  opacity: 0.45;
+}
+.t11-sname {
+  max-width: none;
+  white-space: nowrap;
+  font: 400 var(--fs, 0.88rem) / 1.2 var(--serif);
+  color: var(--ink-2);
+  text-align: center;
+  transition: color 0.4s;
+}
+.t11-stone.sel .t11-sname {
+  color: var(--ink);
+}
+/* open / closed: three shapes, not three shades */
+.t11-dot {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  border-radius: 50%;
+  vertical-align: 0;
+}
+.t11-dot.closed { background: var(--ink-2); }
+.t11-dot.open { border: 2px solid var(--moss); }
+.t11-dot.unknown { border: 1.5px dashed var(--ink-3); }
+.t11-legend {
+  grid-area: legend;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 16px;
+  margin: 0;
+  font: 400 0.76rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.t11-asof::before {
+  content: '·';
+  margin-right: 16px;
+}
+/* the model card: a washi slip with a deckled top and a brushed hairline edge */
+.t11-mcard {
+  grid-area: card;
+  position: relative;
+  z-index: 3;
+  align-self: center;
+  padding: clamp(14px, 2.2vh, 22px) clamp(14px, 1.6vw, 22px) clamp(12px, 2vh, 20px);
+  isolation: isolate;
+}
+.t11-mcard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(130% 80% at 100% 100%, transparent 55%, color-mix(in srgb, var(--paper) 50%, transparent)),
+    var(--paper-2);
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  clip-path: polygon(0 4px, 7% 1px, 15% 3px, 24% 0, 33% 3px, 44% 1px, 53% 4px, 63% 1px, 74% 3px, 83% 0, 92% 3px, 100% 1px, 100% 100%, 0 100%);
+  filter: url(#ink-rough);
+}
+:root[data-theme='dark'] .t11-mcard::before {
+  background: var(--card);
+}
+/* the lane's own desk, waiting: no card yet, just the worker */
+.t11-mcard.is-intro::before {
+  display: none;
+}
+.t11-intro {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  text-align: center;
+}
+.t11-intro .t11-glyph {
+  width: min(190px, 100%);
+  height: auto;
+  aspect-ratio: 170 / 116;
+  margin-bottom: 8px;
+}
+.t11-intro-name {
+  margin: 0;
+  font: 500 clamp(1.05rem, 1.6vw, 1.3rem) / 1.25 var(--serif);
+  color: var(--ink);
+}
+.t11-intro-role {
+  margin: 0;
+  font: 300 clamp(0.9rem, 1.2vw, 1.02rem) / 1.35 var(--serif);
+  color: var(--ink-2);
+}
+.t11-cmp[data-mode='tall'] .t11-mcard {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 14px 44px 12px 14px;
+}
+.t11-cmp:is([data-mode='tall'], .short) .t11-mcard:not(.is-intro) {
+  filter: drop-shadow(0 10px 18px color-mix(in srgb, var(--ink) 10%, transparent));
+}
+.t11-cmp:is([data-mode='tall'], .short) .t11-mcard.is-intro {
+  display: none;
+}
+.t11-mclose {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-3);
+  font: 300 1.4rem/1 var(--serif);
+}
+.t11-mclose:hover {
+  color: var(--ink);
+}
+.t11-mhead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding-right: 28px;
+}
+.t11-mname {
+  margin: 0;
+  font: 500 clamp(1.02rem, 1.5vw, 1.22rem) / 1.2 var(--serif);
+  color: var(--ink);
+}
+.t11-mmaker {
+  margin: 3px 0 0;
+  font: 400 0.8rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.t11-rows {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+.t11-row {
+  display: grid;
+  grid-template-columns: 5.6em minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+}
+.t11-row dt {
+  font: 400 0.76rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.t11-row dd {
+  margin: 0;
+  font: 400 clamp(0.86rem, 1.15vw, 0.96rem) / 1.4 var(--serif);
+  color: var(--ink);
+}
+.t11-multi {
+  display: grid;
+  gap: 2px;
+}
+.t11-cmp[data-mode='tall'] .t11-mhead {
+  margin-bottom: 6px;
+}
+.t11-cmp[data-mode='tall'] .t11-mhead .logo-stone {
+  --ls-size: 30px !important;
+}
+.t11-cmp[data-mode='tall'] .t11-rows {
+  gap: 3px;
+}
+.t11-cmp.short .t11-glyph {
+  width: 40px;
+  height: 27px;
+}
+.t11-cmp.short .t11-tab {
+  min-height: 0;
+  padding: 2px 6px 4px;
+}
+.t11-cmp.short .t11-tab-name {
+  font-size: 0.74rem;
+}
+.t11-cmp.short .t11-mcard {
+  position: absolute;
+  width: min(330px, 46%);
+  padding: 10px 40px 8px 12px;
+}
+.t11-cmp.short .t11-mhead {
+  margin-bottom: 4px;
+}
+.t11-cmp.short .t11-mhead .logo-stone {
+  display: none;
+}
+.t11-cmp.short .t11-mname {
+  font-size: 0.95rem;
+}
+.t11-cmp.short .t11-mmaker {
+  margin-top: 0;
+  font-size: 0.72rem;
+}
+.t11-cmp.short .t11-rows {
+  gap: 2px;
+}
+.t11-cmp.short .t11-row {
+  grid-template-columns: 4.8em minmax(0, 1fr);
+  gap: 6px;
+}
+.t11-cmp.short .t11-row dt {
+  font-size: 0.68rem;
+}
+.t11-cmp.short .t11-row dd {
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+.t11-cmp[data-mode='tall'] .t11-asof {
+  flex-basis: 100%;
+  text-align: center;
+}
+.t11-cmp[data-mode='tall'] .t11-asof::before {
+  content: none;
+}
+.t11-cmp.short .t11-asof {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t11 *,
+  .t11 *::before,
+  .t11 *::after {
+    transition: none !important;
+  }
+}
+
+.t11 :is(.t11-desk, .t11-gdesk, .t11-stone, .t11-tab):focus-visible {
+  border-radius: 18px;
+  outline-offset: 2px;
+}

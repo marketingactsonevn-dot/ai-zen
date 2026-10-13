@@ -1,0 +1,361 @@
+{
+  "id": 8,
+  "kicker": "Mist clears from a whole stack of frames, all at once.",
+  "summary": "Video AI denoises a whole block of frames at once; staying consistent is hard, and it’s very costly.",
+  "quiz": {
+    "q": "To keep a character identical across many clips, what’s the surest way?",
+    "options": [
+      "Write a very long, detailed prompt",
+      "Start from an approved image",
+      "Make one very long video in one go",
+      "Turn off sound while generating"
+    ],
+    "answer": 1,
+    "explain": "An approved image already locks in the face, outfit and product; AI only needs to add motion."
+  },
+  "scenes": {
+    "block": {
+      "label": "A block of time",
+      "prompt": "Drag to denoise",
+      "art": "A stack of see-through frames lined up in time, all grainy noise at first. Drag and the frames clear together into a scene of egrets flying over a lake at dawn.",
+      "slider": "Denoising step",
+      "step": "step {n} / {max}",
+      "first": "first frame",
+      "last": "last frame",
+      "time": "time",
+      "play": "Stack into a video",
+      "unplay": "Open the block again",
+      "noWebgl": "This browser can’t show the 3D scene yet.",
+      "insight": "Video AI denoises a whole block of frames at once, so the frames line up into smooth motion.",
+      "detail": {
+        "text": "Like image AI, but with time added: every second holds dozens of frames, so making video usually takes far more computing than images or text.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      }
+    },
+    "glitch": {
+      "label": "Why videos glitch",
+      "prompt": "Tap the glitch",
+      "group": "Three clips, each hiding one glitch",
+      "found": "Found: {name}",
+      "clips": [
+        {
+          "id": "cup",
+          "name": "Teacup",
+          "aria": "Teacup clip. Tap or press Enter to look for the glitch.",
+          "found": "The teacup changes shape"
+        },
+        {
+          "id": "hand",
+          "name": "Waving hand",
+          "aria": "Waving hand clip. Tap or press Enter to look for the glitch.",
+          "found": "The hand grows a sixth finger"
+        },
+        {
+          "id": "sign",
+          "name": "Shop sign",
+          "aria": "Tea shop sign clip. Tap or press Enter to look for the glitch.",
+          "found": "Letters jump and change",
+          "word": "Tea Shop",
+          "variants": [
+            "Tea Shoq",
+            "Tae Shop",
+            "Tea Sbop",
+            "Tca Shqp"
+          ]
+        }
+      ],
+      "insight": "A video is many frames that must match; staying consistent over time is hard, so objects, hands and text easily go wrong.",
+      "detail": "Good habit: keep clips short, one action per clip; check hands, text and logos closely; if something’s off, regenerate."
+    },
+    "concepts": {
+      "label": "Seven ways to steer",
+      "prompt": "Tap a stone",
+      "group": "Seven video AI concepts",
+      "screen": "Screen illustrating the selected concept",
+      "items": [
+        {
+          "id": "t2v",
+          "name": "Text → video",
+          "term": "text-to-video",
+          "caption": "Type one description; AI builds a whole clip out of a mist of noise.",
+          "words": [
+            "“A white egret over the lake at dawn”"
+          ]
+        },
+        {
+          "id": "i2v",
+          "name": "Image → video",
+          "term": "image-to-video",
+          "caption": "Start from an approved image: the surest way to keep characters and products consistent.",
+          "words": [
+            "approved image"
+          ]
+        },
+        {
+          "id": "ff",
+          "name": "First – last frame",
+          "term": "first / last frame",
+          "caption": "Give AI the first and last frames; it draws the motion in between.",
+          "words": [
+            "first",
+            "last",
+            "AI draws the middle"
+          ]
+        },
+        {
+          "id": "cam",
+          "name": "Camera",
+          "term": "camera control",
+          "caption": "Direct the camera: pan, push in, pull out.",
+          "words": [
+            "pan",
+            "push in",
+            "pull out"
+          ]
+        },
+        {
+          "id": "audio",
+          "name": "Native audio",
+          "term": "native audio",
+          "caption": "Dialogue, sound effects and music are generated with the picture, in sync.",
+          "words": [
+            "picture",
+            "sound"
+          ]
+        },
+        {
+          "id": "len",
+          "name": "Length limit",
+          "term": "duration limit",
+          "caption": "Each generation makes only a short clip; long videos are many clips joined together.",
+          "words": [
+            "one generation",
+            "added on"
+          ]
+        },
+        {
+          "id": "motion",
+          "name": "Motion reference",
+          "term": "motion reference",
+          "caption": "Give a sample clip; your character repeats exactly that movement.",
+          "words": [
+            "sample clip",
+            "your character"
+          ]
+        }
+      ],
+      "insight": "Each stone is one way to “steer” video AI; starting from an approved image is the steadiest.",
+      "detail": "Good habit: start from an approved image, then add camera moves and sound; change only one thing at a time."
+    },
+    "models": {
+      "label": "Standout models",
+      "prompt": "Pick a need",
+      "pond": "Standout video models",
+      "needsGroup": "What kind of video do you need?",
+      "modelAria": "{name} by {maker}: see strengths",
+      "close": "Close card",
+      "needs": [
+        {
+          "id": "sound",
+          "name": "With sound"
+        },
+        {
+          "id": "people",
+          "name": "People in motion"
+        },
+        {
+          "id": "camera",
+          "name": "Camera"
+        },
+        {
+          "id": "chat",
+          "name": "Edit with words"
+        },
+        {
+          "id": "open",
+          "name": "Open weights"
+        },
+        {
+          "id": "cinema",
+          "name": "Cinematic look"
+        },
+        {
+          "id": "long",
+          "name": "Long video"
+        }
+      ],
+      "models": [
+        {
+          "company": "google-deepmind",
+          "model": "Veo 3.1",
+          "name": "Veo 3.1",
+          "needs": [
+            "sound"
+          ]
+        },
+        {
+          "company": "google-deepmind",
+          "model": "Gemini Omni Flash",
+          "name": "Gemini Omni Flash",
+          "needs": [
+            "chat"
+          ]
+        },
+        {
+          "company": "kuaishou",
+          "model": "Kling 3.0",
+          "name": "Kling 3.0 / 3.0 Turbo",
+          "needs": [
+            "people"
+          ],
+          "also": "Kling 3.0 Turbo",
+          "alsoLabel": "Turbo"
+        },
+        {
+          "company": "bytedance",
+          "model": "Seedance 2.5",
+          "name": "Seedance 2.5",
+          "needs": [
+            "long"
+          ]
+        },
+        {
+          "company": "alibaba",
+          "model": "Wan 3.0",
+          "name": "Wan 3.0",
+          "needs": [
+            "open",
+            "sound"
+          ]
+        },
+        {
+          "company": "minimax",
+          "model": "Hailuo 3.0 (H3)",
+          "name": "Hailuo 3.0",
+          "needs": [
+            "people"
+          ]
+        },
+        {
+          "company": "runway",
+          "model": "Runway Gen-4.5",
+          "name": "Runway Gen-4.5",
+          "needs": [
+            "camera"
+          ]
+        },
+        {
+          "company": "luma",
+          "model": "Luma Ray3.14",
+          "name": "Luma Ray3.14",
+          "needs": [
+            "cinema"
+          ]
+        }
+      ],
+      "insight": {
+        "text": "There’s no “best” video model: choose by the job — people in motion, sound, camera, or open weights.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "detail": "“Open weights”: anyone can download the model and run it on their own machine. Models change weekly, so try a few with the same prompt."
+    },
+    "prompt": {
+      "label": "Writing video prompts",
+      "prompt": "Stack stones into a prompt",
+      "screen": "A paper screen showing the clip being built: a wooden bridge over a misty lake; each prompt part you add changes the scene.",
+      "group": "Five parts of a video prompt",
+      "parts": [
+        {
+          "id": "subject",
+          "name": "Subject",
+          "words": "A girl in a conical hat"
+        },
+        {
+          "id": "action",
+          "name": "Action",
+          "words": "slowly crossing a wooden bridge"
+        },
+        {
+          "id": "camera",
+          "name": "Camera",
+          "words": "camera pushes in closer"
+        },
+        {
+          "id": "light",
+          "name": "Light",
+          "words": "early sun, thin mist"
+        },
+        {
+          "id": "sound",
+          "name": "Sound",
+          "words": "a distant temple bell"
+        }
+      ],
+      "rule": "One scene · one action · short clip",
+      "insight": "A good video prompt covers it all: who, doing what, how the camera moves, light, sound — one scene per clip.",
+      "detail": "Write it like a director briefing the camera operator. For a long video, make it scene by scene and join them; change one part at a time to see its effect."
+    },
+    "sora": {
+      "label": "The Sora story",
+      "prompt": "Drag through 2026",
+      "art": "A paper screen named Sora in a night garden, with a row of small lanterns beside it — the apps that use Sora. Drag through 2026 to watch them go out one by one.",
+      "slider": "Day of 2026",
+      "year": "2026",
+      "screen": "Sora",
+      "lanterns": "apps using the API",
+      "events": [
+        {
+          "day": "2026-04-26",
+          "title": "App closed",
+          "fact": {
+            "text": "Apr 26, 2026: OpenAI shut down the Sora app.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          },
+          "short": {
+            "text": "Apr 26, 2026 · app closed",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          }
+        },
+        {
+          "day": "2026-09-24",
+          "title": "API closed",
+          "fact": {
+            "text": "Sep 24, 2026: OpenAI also shut down the API, the gateway other software used to reach Sora.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          },
+          "short": {
+            "text": "Sep 24, 2026 · API closed",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          }
+        }
+      ],
+      "reasons": [
+        "Very costly to run",
+        "Copyright & deepfakes"
+      ],
+      "reasonFact": {
+        "text": "Main reasons: far too costly to run, plus copyright and deepfake (fake videos of real people) problems.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": {
+        "text": "The lesson: video AI is very costly to run and brings real legal problems with it.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "detail": "Good habit: make videos only when needed; don’t use real people’s faces or voices without permission; clearly label AI-made content.",
+      "month": "{n}",
+      "dateFmt": "{m}/{d}/2026"
+    }
+  },
+  "sources": {}
+}

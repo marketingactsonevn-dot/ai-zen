@@ -1,0 +1,222 @@
+{
+  "id": 1,
+  "kicker": "From countless grains of data sand, a “brain” slowly takes shape.",
+  "scenes": {
+    "brain": {
+      "label": "A brain of light",
+      "prompt": "Touch and hold",
+      "again": "Hold a little longer",
+      "aria": "Gather the sand into a brain",
+      "help": "Press and hold, or hold Space or Enter, to gather the sand into a brain; hold again to scatter it back into sand. The “Sand – Brain” slider moves back and forth. Drag or use the arrow keys to turn the brain.",
+      "done": "The grains have gathered into a “brain” made of threads of light.",
+      "insight": "AI is software doing tasks that seem to need a mind; today it mostly teaches itself from mountains of data.",
+      "detail": "The “brain” here is just a metaphor: AI isn’t a living brain, but software running on computers.",
+      "noWebgl": "Still image: grains of data sand gathering into a “brain”.",
+      "scrub": {
+        "label": "Slide between sand and brain",
+        "sand": "Sand",
+        "brain": "Brain"
+      }
+    },
+    "ladder": {
+      "label": "One task, four ways",
+      "prompt": "Tap to open the letter",
+      "walk": "Drag the stone right",
+      "pathLabel": "Four ways a computer answers the same letter. Use the arrow keys to step from stone to stone.",
+      "startLabel": "The customer’s letter",
+      "openLabel": "Open the customer’s letter",
+      "question": [
+        "Is Brick Red still in stock?",
+        "Will it suit darker skin?"
+      ],
+      "eras": [
+        {
+          "name": "Traditional software",
+          "rules": [
+            "price",
+            "returns",
+            "in stock"
+          ],
+          "stamp": [
+            "Form",
+            "3"
+          ],
+          "ghost": "darker skin?",
+          "insight": "Traditional software only follows “if… then…” rules that people wrote in advance.",
+          "milestone": {
+            "text": "In the 1980s, “expert systems” — software running on many “if… then…” rules drawn from experts’ knowledge — were a popular kind of AI.",
+            "asOf": "2026-10-12",
+            "source": "t01-expert-system"
+          }
+        },
+        {
+          "name": "Machine Learning",
+          "baskets": [
+            "Inquiry",
+            "Complaint",
+            "Other"
+          ],
+          "insight": "Machine learning: the computer studies lots of examples that come with answers, then finds the patterns itself.",
+          "milestone": {
+            "text": "In 1959, Arthur Samuel (IBM) published a checkers program that got better the more it played — an early work using the phrase “machine learning”.",
+            "asOf": "2026-10-12",
+            "source": "t01-samuel-1959"
+          }
+        },
+        {
+          "name": "Deep Learning",
+          "layers": [
+            "words",
+            "phrases",
+            "intent",
+            "conclusion"
+          ],
+          "understood": [
+            "in stock?",
+            "suits darker skin?"
+          ],
+          "insight": "Deep learning uses networks with many layers; each layer picks up a deeper level of meaning.",
+          "milestone": {
+            "text": "In 2012, the AlexNet network won the ImageNet image-recognition contest by a wide margin, kicking off the deep learning wave.",
+            "asOf": "2026-10-12",
+            "source": "t01-alexnet"
+          }
+        },
+        {
+          "name": "Generative AI",
+          "reply": "Hi there! Brick Red is still in stock. On darker skin, a thin coat looks lovely.",
+          "seal": "Draft",
+          "insight": "Generative AI doesn’t just sort things — it creates new content, and you give the final approval.",
+          "milestone": {
+            "text": "In 2017, “Attention Is All You Need” introduced the Transformer — the foundation of most large language models (LLMs) behind today’s AI chatbots.",
+            "asOf": "2026-10-12",
+            "source": "t01-transformer"
+          }
+        }
+      ],
+      "final": "Over time, people write fewer rules and machines learn more from data — but a human still needs to check.",
+      "finalDetail": "Generative AI can still get things wrong or make things up, so read it over before sending it to a customer."
+    },
+    "nextWord": {
+      "label": "Guess the next word",
+      "prompt": "Drag a stone into place",
+      "stonesLabel": "Choose the next word",
+      "pick": "Choose “{w}”",
+      "result": "Odds for each word (illustrative): {list}.",
+      "next": "Next sentence",
+      "again": "Play again",
+      "roundOf": "Sentence {n}/{total}",
+      "insight": "AI writes by repeatedly guessing a likely next word — something it learned from huge amounts of text.",
+      "regen": "Many words fit, so AI may pick a different one — that’s why each “regenerate” usually gives you a new sentence.",
+      "note": {
+        "text": "The numbers are just an illustration to help you picture it, not measured from any real AI model.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "rounds": [
+        {
+          "prompt": "Have a nice",
+          "choices": [
+            {
+              "w": "weekend",
+              "p": 31
+            },
+            {
+              "w": "keyboard",
+              "p": 0.1
+            },
+            {
+              "w": "day",
+              "p": 46
+            },
+            {
+              "w": "trip",
+              "p": 12
+            }
+          ]
+        },
+        {
+          "prompt": "Free shipping on all",
+          "choices": [
+            {
+              "w": "weekends",
+              "p": 2
+            },
+            {
+              "w": "orders",
+              "p": 94
+            },
+            {
+              "w": "planets",
+              "p": 0.5
+            },
+            {
+              "w": "boats",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "prompt": "This lipstick makes your lips look",
+          "choices": [
+            {
+              "w": "plump",
+              "p": 16
+            },
+            {
+              "w": "alluring",
+              "p": 24
+            },
+            {
+              "w": "fresh",
+              "p": 11
+            },
+            {
+              "w": "radiant",
+              "p": 19
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "quiz": {
+    "q": "How is machine learning different from traditional software?",
+    "options": [
+      "It runs much faster",
+      "It learns from examples",
+      "It has feelings and awareness",
+      "It needs no data"
+    ],
+    "answer": 1,
+    "explain": "Machine learning finds patterns in examples on its own, instead of only following rules people wrote in advance."
+  },
+  "summary": "Today’s AI mostly learns from data; chatbots write by guessing the next word.",
+  "sources": {
+    "t01-expert-system": {
+      "title": "Expert system",
+      "publisher": "Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Expert_system",
+      "note": "Free encyclopedia article on expert systems."
+    },
+    "t01-samuel-1959": {
+      "title": "Some Studies in Machine Learning Using the Game of Checkers",
+      "publisher": "Arthur L. Samuel · IBM Journal of Research and Development",
+      "date": "1959-07",
+      "url": "https://doi.org/10.1147/rd.33.0210"
+    },
+    "t01-alexnet": {
+      "title": "AlexNet",
+      "publisher": "Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/AlexNet",
+      "note": "The network by Krizhevsky, Sutskever and Hinton that won the 2012 ImageNet contest (ILSVRC)."
+    },
+    "t01-transformer": {
+      "title": "Attention Is All You Need",
+      "publisher": "Vaswani et al. · arXiv",
+      "date": "2017-06-12",
+      "url": "https://arxiv.org/abs/1706.03762"
+    }
+  }
+}

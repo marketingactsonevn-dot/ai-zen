@@ -1,0 +1,494 @@
+{
+  "id": 11,
+  "kicker": "AI là một đội ngũ nhân sự: mỗi bàn một chuyên môn.",
+  "scenes": {
+    "team": {
+      "label": "Đội ngũ AI",
+      "prompt": "Chạm từng bàn làm việc",
+      "group": "Sáu bàn làm việc của đội AI",
+      "deskAria": "Bàn {name}",
+      "insight": "AI không phải một người biết tuốt mà là cả một đội: mỗi loại giỏi một việc.",
+      "detail": "LLM làm việc chủ yếu bằng chữ; agent là LLM được cấp thêm công\u00a0cụ để tự làm nhiều bước.",
+      "desks": {
+        "text": {
+          "name": "Chữ · LLM",
+          "role": "Người viết & nhà phân tích",
+          "caption": "LLM, mô hình ngôn ngữ lớn: viết, lên chiến lược, phân tích, làm thư ký."
+        },
+        "image": {
+          "name": "AI ảnh",
+          "role": "Họa sĩ & nhiếp ảnh gia",
+          "caption": "Vẽ key visual, minh họa, ảnh sản phẩm từ một câu mô tả."
+        },
+        "video": {
+          "name": "AI video",
+          "role": "Quay phim & dựng phim",
+          "caption": "Quay và dựng clip ngắn từ chữ, hoặc làm ảnh tĩnh chuyển động."
+        },
+        "3d": {
+          "name": "AI 3D",
+          "role": "Thợ dựng mô hình",
+          "caption": "Biến một bức ảnh hay câu chữ thành khối xoay được mọi phía."
+        },
+        "voice": {
+          "name": "Giọng nói",
+          "role": "Phát thanh viên",
+          "caption": "Đọc lời, lồng tiếng, biến chữ thành giọng nói tự nhiên."
+        },
+        "agent": {
+          "name": "Agent",
+          "role": "Trợ lý tự đi làm việc",
+          "caption": "Agent, hay tác tử: AI được cấp công\u00a0cụ, tự làm nhiều bước thay bạn."
+        }
+      }
+    },
+    "game": {
+      "label": "Giao việc",
+      "prompt": "Kéo việc vào đúng bàn",
+      "inbox": "Hộp việc cần giao",
+      "desks": "Các bàn nhận việc",
+      "card": "Việc: {task}. Nhấn để chọn, rồi chọn một bàn.",
+      "picked": "Đã chọn “{task}”. Giờ chọn một bàn.",
+      "noCard": "Chọn một việc trước đã.",
+      "right": "Đúng bàn: {desk} nhận “{task}”.",
+      "left": "còn {n} việc",
+      "done": "Xong cả {n} việc",
+      "insight": "Giao đúng bàn là một nửa; nửa còn lại là bạn kiểm tra kết quả như một trưởng phòng.",
+      "detail": "Việc lớn thường cần nhiều bàn: LLM viết kịch bản, AI video quay, AI giọng nói đọc lời.",
+      "tasks": [
+        {
+          "text": "Viết caption cho bài đăng",
+          "desk": "text",
+          "why": "Caption là chữ: việc của LLM, người viết trong đội.",
+          "near": {
+            "agent": "Agent làm được, nhưng chỉ cần viết chữ thì giao LLM là gọn nhất."
+          }
+        },
+        {
+          "text": "Phân tích file Excel doanh số",
+          "desk": "text",
+          "why": "Đọc số liệu rồi rút ra nhận xét là sở trường của LLM, nhà phân tích của đội."
+        },
+        {
+          "text": "Làm key visual cho chiến dịch",
+          "desk": "image",
+          "why": "Key visual là một bức ảnh tĩnh: giao cho họa sĩ AI ảnh.",
+          "near": {
+            "video": "AI video làm hình chuyển động; một bức ảnh tĩnh thì giao AI ảnh là hợp."
+          }
+        },
+        {
+          "text": "Quay video sản phẩm 8\u00a0giây",
+          "desk": "video",
+          "why": "Hình chuyển động theo thời gian cần AI video, người quay và dựng phim.",
+          "near": {
+            "image": "AI ảnh chỉ tạo một khung hình tĩnh; 8\u00a0giây chuyển động là việc của AI video."
+          }
+        },
+        {
+          "text": "Dựng mô hình 3D chai serum",
+          "desk": "3d",
+          "why": "Một khối xoay được mọi phía là việc của thợ dựng mô hình AI 3D.",
+          "near": {
+            "image": "Ảnh chỉ thấy một góc; mô hình 3D thì xoay xem được mọi phía."
+          }
+        },
+        {
+          "text": "Đọc lồng tiếng cho clip",
+          "desk": "voice",
+          "why": "Đọc thành tiếng là việc của AI giọng nói, phát thanh viên của đội.",
+          "near": {
+            "text": "LLM viết lời được, nhưng đọc thành tiếng cần AI giọng nói.",
+            "video": "Vài AI video tạo kèm âm thanh, nhưng lồng giọng đọc riêng là sở trường của AI giọng nói."
+          }
+        },
+        {
+          "text": "Tự đặt lịch họp, gửi email",
+          "desk": "agent",
+          "why": "Tự mở lịch, tự bấm gửi là nhiều bước có dùng công\u00a0cụ: việc của agent.",
+          "near": {
+            "text": "LLM soạn email được, nhưng tự đặt lịch và bấm gửi cần agent có công\u00a0cụ."
+          }
+        },
+        {
+          "text": "Báo cáo tự động mỗi sáng",
+          "desk": "agent",
+          "why": "Tự đi lấy số liệu rồi gửi báo cáo mỗi sáng là việc của agent, trợ lý tự làm.",
+          "near": {
+            "text": "LLM viết báo cáo hay, nhưng tự đi gom số liệu mỗi sáng cần agent."
+          }
+        }
+      ],
+      "seal": "Xong"
+    },
+    "compare": {
+      "label": "Ai giỏi việc gì",
+      "prompt": "Chạm một viên đá",
+      "tabs": "Loại AI",
+      "stones": "Các model trong nhóm {lane}",
+      "stoneAria": "{model}, của {maker}, {status}",
+      "asOf": "Cập nhật đến 12/10/2026",
+      "rows": {
+        "maker": "Hãng",
+        "strengths": "Thế mạnh",
+        "note": "Ghi chú",
+        "focus": "Chuyên về",
+        "weights": "Đóng / mở",
+        "access": "Truy cập",
+        "date": "Ra mắt"
+      },
+      "none": "—",
+      "weights": {
+        "closed": "Đóng: không tải mô hình về được",
+        "open": "Mở trọng số: tải về tự chạy được"
+      },
+      "legend": {
+        "closed": "Đóng",
+        "open": "Mở",
+        "unknown": "Chưa rõ"
+      },
+      "insight": {
+        "text": "Không có AI giỏi nhất mọi việc: mỗi model mạnh một kiểu, nên thử vài cái trên chính việc của bạn.",
+        "asOf": "2026-10-12",
+        "source": "t11-editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Danh sách và thế mạnh ghi đến 12/10/2026; AI đổi theo tuần, nên kiểm tra lại trước khi chọn.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "lanes": [
+        {
+          "id": "text",
+          "name": "Chữ",
+          "items": [
+            {
+              "company": "openai",
+              "models": [
+                "GPT-6 Astra"
+              ]
+            },
+            {
+              "company": "anthropic",
+              "models": [
+                "Claude Fable 5.1"
+              ],
+              "note": {
+                "text": "Bậc cao nhất của Claude",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Gemini 3.8 Flash"
+              ]
+            },
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Gemma 4"
+              ]
+            },
+            {
+              "company": "xai",
+              "models": [
+                "Grok 4.7"
+              ]
+            },
+            {
+              "company": "meta",
+              "models": [
+                "Muse Spark 1.1"
+              ]
+            },
+            {
+              "company": "deepseek",
+              "models": [
+                "DeepSeek V4 Pro"
+              ]
+            },
+            {
+              "company": "alibaba",
+              "models": [
+                "Qwen3.8-Max"
+              ]
+            },
+            {
+              "company": "moonshot",
+              "models": [
+                "Kimi K3"
+              ]
+            },
+            {
+              "company": "zhipu",
+              "models": [
+                "GLM-5.3"
+              ]
+            },
+            {
+              "company": "minimax",
+              "models": [
+                "MiniMax M3"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "image",
+          "name": "Ảnh",
+          "items": [
+            {
+              "company": "openai",
+              "models": [
+                "GPT Image 2"
+              ]
+            },
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Nano Banana 2",
+                "Nano Banana Pro"
+              ],
+              "name": "Nano Banana 2 / Pro"
+            },
+            {
+              "company": "midjourney",
+              "models": [
+                "Midjourney V8.2"
+              ]
+            },
+            {
+              "company": "black-forest-labs",
+              "models": [
+                "Flux 2"
+              ],
+              "weights": {
+                "text": "Có bản mở",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              },
+              "open": true
+            },
+            {
+              "company": "bytedance",
+              "models": [
+                "Seedream 5.0"
+              ]
+            },
+            {
+              "company": "xai",
+              "models": [
+                "Grok Imagine Image 2.0"
+              ]
+            },
+            {
+              "company": "microsoft",
+              "models": [
+                "MAI-Image-2.5"
+              ]
+            },
+            {
+              "company": "meta",
+              "models": [
+                "Muse Image"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "video",
+          "name": "Video",
+          "items": [
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Veo 3.1"
+              ]
+            },
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Gemini Omni Flash"
+              ]
+            },
+            {
+              "company": "kuaishou",
+              "models": [
+                "Kling 3.0",
+                "Kling 3.0 Turbo"
+              ],
+              "name": "Kling 3.0 / Turbo"
+            },
+            {
+              "company": "bytedance",
+              "models": [
+                "Seedance 2.5"
+              ],
+              "access": {
+                "text": "Truy cập giới hạn",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "alibaba",
+              "models": [
+                "Wan 3.0"
+              ]
+            },
+            {
+              "company": "minimax",
+              "models": [
+                "Hailuo 3.0 (H3)"
+              ]
+            },
+            {
+              "company": "runway",
+              "models": [
+                "Runway Gen-4.5"
+              ]
+            },
+            {
+              "company": "luma",
+              "models": [
+                "Luma Ray3.14"
+              ]
+            },
+            {
+              "company": "xai",
+              "models": [
+                "Grok Imagine Video 1.5"
+              ]
+            },
+            {
+              "company": "meta",
+              "models": [
+                "Muse Video"
+              ]
+            },
+            {
+              "company": "openai",
+              "models": [
+                "Sora"
+              ],
+              "access": {
+                "text": "Đã ngừng hoạt động: app từ 26/04/2026, API từ 24/09/2026",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            }
+          ]
+        },
+        {
+          "id": "3d",
+          "name": "3D",
+          "items": [
+            {
+              "company": "meshy",
+              "models": [
+                "Meshy 7"
+              ],
+              "access": {
+                "text": "Dùng online",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "hyper3d",
+              "models": [
+                "Rodin Gen-2.5"
+              ],
+              "access": {
+                "text": "Trả phí",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "tripo",
+              "models": [
+                "Tripo P1.0 / H3.1"
+              ]
+            },
+            {
+              "company": "tencent",
+              "models": [
+                "Hunyuan 3D 3.1"
+              ],
+              "access": {
+                "text": "Chỉ có bản online",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "microsoft",
+              "models": [
+                "TRELLIS.2"
+              ],
+              "access": {
+                "text": "Tải về, chạy trên máy của bạn",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              },
+              "weights": {
+                "text": "Mã nguồn mở, giấy phép MIT",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "tencent",
+              "models": [
+                "Pixal3D"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "voice",
+          "name": "Âm thanh",
+          "items": [
+            {
+              "company": "elevenlabs",
+              "models": []
+            },
+            {
+              "company": "suno",
+              "models": []
+            }
+          ]
+        }
+      ],
+      "close": "Đóng thẻ này",
+      "status": {
+        "closed": "mô hình đóng",
+        "open": "có bản mở",
+        "unknown": "chưa rõ đóng hay mở"
+      }
+    }
+  },
+  "quiz": {
+    "q": "Việc nào cần agent chứ không chỉ LLM?",
+    "options": [
+      "Viết caption bài đăng",
+      "Tóm tắt một báo cáo",
+      "Tự đặt lịch họp, gửi thư mời",
+      "Dịch một đoạn văn"
+    ],
+    "answer": 2,
+    "explain": "Ba việc kia chỉ cần viết chữ; tự mở lịch và bấm gửi cần agent có công\u00a0cụ."
+  },
+  "summary": "Giao việc cho AI như giao cho một đội: đúng người, rõ việc, rồi tự kiểm tra lại.",
+  "sources": {
+    "t11-editorial": {
+      "title": "Diễn giải của AI Zen",
+      "publisher": "AI Zen",
+      "note": "Nhận định chung để học, không phải kết quả đo hay xếp hạng."
+    }
+  }
+}

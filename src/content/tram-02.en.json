@@ -1,0 +1,131 @@
+{
+  "id": 2,
+  "kicker": "AI isn’t one machine — it’s a whole tree with many branches.",
+  "summary": "AI is a tree with many branches; chatbots are just one small twig.",
+  "quiz": {
+    "q": "Your next TikTok video always seems oddly perfect for you. Which branch picks it?",
+    "options": [
+      "Recognition / classification AI",
+      "Recommendation AI",
+      "Generative AI",
+      "Robots / physical AI"
+    ],
+    "answer": 1,
+    "explain": "That’s recommendation AI: it doesn’t make new videos, it picks from existing ones the video you’re most likely to keep watching."
+  },
+  "scenes": {
+    "seed": {
+      "label": "Plant a seed",
+      "prompt": "Tap to water",
+      "water": "Water the seed",
+      "again": "Water the tree again",
+      "art": "Ink painting: a shallow bonsai pot, a seed resting on the soil, raked sand below, a pale sun behind.",
+      "rootLabel": "machine learning",
+      "insight": "Most AI you meet every day grows from one root: machine learning — computers drawing patterns from many examples.",
+      "detail": "Unlike regular software, no one writes each rule by hand, so it guesses very well but is sometimes wrong."
+    },
+    "branches": {
+      "label": "The branches",
+      "prompt": "Tap a crown of leaves",
+      "art": "Ink painting: a bonsai with four leafy crowns, each one a family of AI; tap a crown and an ink-drawn fruit hangs down: a persimmon with an eye, a bunch of berries with one ripe red, a small robot arm picking fruit. The top crown is generative AI: a young apricot-blossom branch grows six flowers, and tapping each one makes the brush paint a small picture.",
+      "padAria": "{name} crown — see explanation",
+      "twigAria": "{name} flower on the young generative AI branch — see explanation",
+      "done": "One root, many branches",
+      "families": [
+        {
+          "id": "recog",
+          "short": "Recognition AI",
+          "name": "Recognition / classification AI",
+          "insight": "Recognition AI looks, listens, then files things in the right box — like unlocking your phone with your face, or filtering spam.",
+          "detail": "It creates nothing new; it just answers: what is this, who is it, what kind is it."
+        },
+        {
+          "id": "rec",
+          "short": "Recommendation AI",
+          "name": "Recommendation AI",
+          "insight": {
+            "text": "Recommendation AI guesses what you’ll probably like next — like your next TikTok video, or a product on Shopee.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          },
+          "detail": {
+            "text": "TikTok says it picks videos based on what you like, share, comment on and watch to the end.",
+            "asOf": "2026-10-12",
+            "source": "tiktok-foryou"
+          }
+        },
+        {
+          "id": "gen",
+          "short": "Generative AI",
+          "name": "Generative AI",
+          "insight": "Generative AI makes something new: type a description, get back text or an image that never existed before.",
+          "detail": "The chatbot you use is just one twig on this branch, alongside images, video, audio, 3D and code."
+        },
+        {
+          "id": "robot",
+          "short": "Robot",
+          "name": "Robots / physical AI",
+          "insight": "Robots are AI with a body: they see through cameras, move around, grab things — like a robot vacuum dodging chair legs.",
+          "detail": "Robot arms in warehouses do the same: recognize an item, then grab it in the right place."
+        }
+      ],
+      "twigs": [
+        {
+          "id": "text",
+          "name": "Text (LLM)",
+          "insight": "An LLM — large language model — reads huge amounts of text to learn how to keep writing, one small piece at a time.",
+          "detail": {
+            "text": "ChatGPT, a chatbot on this branch, launched on November 30, 2022.",
+            "asOf": "2026-10-12",
+            "source": "openai-chatgpt"
+          }
+        },
+        {
+          "id": "image",
+          "name": "Images",
+          "insight": "Turns a description into a brand-new image, or edits part of an existing one.",
+          "detail": "Example: type “a cat in a conical hat by a lotus pond” and get back an image that never existed."
+        },
+        {
+          "id": "video",
+          "name": "Video",
+          "insight": "Makes a short video clip from a description, or from a single photo.",
+          "detail": "Example: turn a product photo into a short ad clip."
+        },
+        {
+          "id": "audio",
+          "name": "Sound, music, voice",
+          "insight": "Reads text aloud in a natural voice, composes music, or makes sound effects for video.",
+          "detail": "Example: turn an article into a read-aloud that sounds like a podcast."
+        },
+        {
+          "id": "3d",
+          "name": "3D models",
+          "insight": "Creates 3D objects you can spin to see from every side, from a description or a photo.",
+          "detail": "Example: from a photo of a chair, make a 3D model to try out in a virtual room."
+        },
+        {
+          "id": "code",
+          "name": "Code (programming)",
+          "insight": "Writes and fixes code — the lines of instructions behind software, apps and websites.",
+          "detail": "Example: describe an event sign-up page in words, and AI writes the code for you."
+        }
+      ]
+    }
+  },
+  "sources": {
+    "openai-chatgpt": {
+      "title": "Introducing ChatGPT",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/chatgpt/",
+      "date": "2022-11-30"
+    },
+    "tiktok-foryou": {
+      "title": "How TikTok recommends videos #ForYou",
+      "publisher": "TikTok Newsroom",
+      "url": "https://newsroom.tiktok.com/how-tiktok-recommends-videos-for-you?lang=en",
+      "date": "2020-06-18",
+      "note": "TikTok’s own post explaining how it picks videos for the For You page."
+    }
+  }
+}

@@ -1,0 +1,1020 @@
+/* Trạm 8 — a block of time · glitches · concept stones · the rock garden of models · the prompt stones · the Sora story */
+.t08 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+}
+.t08 .k { fill: var(--ink); }
+.t08 .k2 { fill: var(--ink-2); }
+.t08 .k3 { fill: var(--ink-3); }
+.t08 .card { fill: var(--card); }
+.t08 .m { fill: var(--moss); }
+.t08 .v { fill: var(--vermilion); }
+.t08 .sh { fill: var(--ink); }
+.t08 .rim { fill: var(--card); fill-opacity: 0.7; }
+.t08 .wood { fill: color-mix(in srgb, var(--stone-2) 70%, var(--card)); }
+.t08 .hat { fill: color-mix(in srgb, var(--stone-2) 55%, var(--card)); }
+.t08 .peb { fill: var(--stone-3); }
+.t08 .face { fill: color-mix(in srgb, var(--stone-2) 55%, var(--card)); }
+:root[data-theme='dark'] .t08 .sh { fill: var(--umbra); }
+:root[data-theme='dark'] .t08 .rim { fill: var(--ink-2); fill-opacity: 0.25; }
+:root[data-theme='dark'] .t08 .wood { fill: color-mix(in srgb, var(--stone) 60%, var(--card)); }
+:root[data-theme='dark'] .t08 .hat { fill: color-mix(in srgb, var(--stone) 70%, var(--ink)); }
+:root[data-theme='dark'] .t08 .peb { fill: var(--stone-2); }
+.t08 .t08-svgt {
+  font-family: var(--serif);
+  font-weight: 400;
+}
+.t08 .t08-mask {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.t08 .t08-line {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+.t08 .t08-thread {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.t08-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.5em 1.2em;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  color: var(--ink);
+  font: 400 0.98rem/1.2 var(--serif);
+  white-space: nowrap;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.t08-btn:hover {
+  border-color: var(--vermilion);
+}
+.t08-nowebgl {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--ink-2);
+  font: 300 1.1rem/1.4 var(--serif);
+}
+
+/* ───────── Scene 1 · the block of time ───────── */
+.t08b {
+  display: flex;
+  flex-direction: column;
+}
+.t08b-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.t08b-stage {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: ew-resize;
+}
+.t08b-stage.dragging {
+  cursor: grabbing;
+}
+.t08b-stage .stage-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* the raked sand dissolves into the page instead of ending at the canvas edge */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(transparent, #000 6%, #000 88%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(transparent, #000 6%, #000 88%, transparent);
+  mask-composite: intersect;
+}
+.t08b-over {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.t08b-lab {
+  position: absolute;
+  font: 400 clamp(0.82rem, 1.1vw, 0.98rem)/1 var(--serif);
+  color: var(--ink-2);
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-6px, calc(-100% - 10px));
+}
+.t08b-lab:nth-of-type(2) {
+  transform: translate(calc(-100% + 6px), calc(-100% - 10px));
+}
+.t08b-lab.under {
+  transform: translate(calc(-100% + 6px), 10px);
+}
+.t08b-time {
+  color: var(--ink-3);
+  transform-origin: 50% 0;
+}
+.t08b-ctrl {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 18px;
+  padding: 6px 0 2px;
+}
+.t08b-range {
+  flex: 1 1 240px;
+  max-width: 380px;
+}
+.t08b-count {
+  min-width: 7.5em;
+  font: 400 0.84rem/1 var(--sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+
+/* ───────── Scene 2 · spot the glitch ───────── */
+.t08g {
+  display: grid;
+  place-items: center;
+}
+.t08g-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: 6px var(--gap, 20px);
+  max-width: 100%;
+}
+.t08g.tall .t08g-grid {
+  max-width: calc(var(--cw) * 2 + var(--gap) + 2px);
+}
+.t08g-cell {
+  width: var(--cw, 300px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  translate: 0 var(--dy, 0px);
+}
+.t08g-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  cursor: crosshair;
+  box-shadow: var(--shadow-1);
+  transition: box-shadow 0.5s var(--ease), translate 0.5s var(--ease);
+}
+.t08g-card:hover {
+  translate: 0 -2px;
+  box-shadow: var(--shadow-2);
+}
+.t08g-card.found {
+  cursor: default;
+}
+.t08g-card:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 4px;
+}
+.t08g-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+.t08g-film {
+  fill: var(--paper-2);
+}
+.t08g-holes {
+  fill: var(--ink-3);
+  fill-opacity: 0.32;
+}
+.t08g-ghost {
+  fill: var(--vermilion);
+}
+.t08g-word {
+  font-family: var(--serif);
+  font-weight: 500;
+  fill: var(--ink);
+}
+.t08g-miss {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.4;
+}
+.t08g-bar {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(var(--cw, 300px) * 11 / 240 + 7px);
+  height: 2px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+  pointer-events: none;
+}
+.t08g-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px;
+  background: var(--vermilion);
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+.found .t08g-mark {
+  opacity: 0.9;
+}
+.t08g-head {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+.found .t08g-head {
+  background: var(--vermilion);
+}
+.t08g-name {
+  display: block;
+  max-width: 100%;
+  min-height: 28px;
+  margin: 6px 0 0;
+  font: 400 clamp(0.82rem, 1.2vw, 1.05rem)/1.25 var(--serif);
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
+}
+.t08g-name.found {
+  color: var(--ink);
+}
+.t08g-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 8px 0.18em 0;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: var(--stone-2);
+  transition: background-color 0.6s;
+}
+.t08g-name.found .t08g-dot {
+  background: var(--vermilion);
+}
+
+/* ───────── Scene 3 · concept stones ───────── */
+.t08c {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap, 28px);
+}
+.t08c.tall {
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+}
+.t08c-screenwrap {
+  flex: none;
+  width: var(--sw, 560px);
+}
+.t08c-screen {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--ink) 10%, transparent));
+}
+.t08c-side {
+  flex: none;
+  width: var(--side, 360px);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.t08c.tall .t08c-side {
+  flex: none;
+  gap: 10px;
+}
+.t08c-caption {
+  min-height: 6.6em;
+}
+.t08c.tall .t08c-caption {
+  min-height: 5.4em;
+  text-align: center;
+}
+.t08c-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+}
+.t08c.tall .t08c-head {
+  justify-content: center;
+}
+.t08c-title {
+  margin: 0;
+  font: 400 clamp(1.15rem, 1.8vw, 1.5rem)/1.2 var(--serif);
+  color: var(--ink);
+}
+.t08c-term {
+  font: 400 0.8rem/1.2 var(--sans);
+  color: var(--ink-3);
+}
+.t08c-cap p {
+  margin: 6px 0 0;
+  font: 300 clamp(0.98rem, 1.3vw, 1.12rem)/1.45 var(--serif);
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.t08c-stones {
+  position: relative;
+  flex: none;
+  width: 100%;
+}
+.t08c-stone {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 46%;
+  background: none;
+  color: var(--ink);
+  transition: translate 0.5s var(--ease);
+}
+.t08c-stone:hover {
+  translate: 0 -2px;
+}
+.t08c-peb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transition: filter 0.5s;
+}
+.t08c-peb .peb {
+  transition: fill 0.5s;
+}
+.t08c-stone.seen .t08c-peb .peb {
+  fill: color-mix(in srgb, var(--moss-soft) 70%, var(--stone-3));
+}
+.t08c-stone[aria-pressed='true'] .t08c-peb .peb {
+  fill: var(--card);
+}
+.t08c-stone[aria-pressed='true'] .t08c-peb {
+  filter: drop-shadow(0 0 0.5px var(--vermilion)) drop-shadow(0 0 7px color-mix(in srgb, var(--vermilion) 26%, transparent));
+}
+.t08c-name {
+  position: relative;
+  display: block;
+  width: max-content;
+  font: 400 0.96rem/1.15 var(--serif);
+  white-space: nowrap;
+  text-align: center;
+}
+.t08c:not(.zig) .t08c-name {
+  white-space: normal;
+  text-wrap: balance;
+  font-size: 0.86rem;
+  line-height: 1.14;
+}
+.t08c-stone[aria-pressed='true'] .t08c-name::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--vermilion);
+}
+.t08c-stone:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+.t08c.short .t08c-caption {
+  min-height: 0;
+}
+.t08c.short .t08c-cap p {
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+@media (max-width: 560px) {
+  .t08c:not(.zig) .t08c-name {
+    font-size: 0.8rem;
+    line-height: 1.12;
+  }
+  .t08c-cap p {
+    font-size: 0.92rem;
+    line-height: 1.38;
+  }
+}
+
+/* ───────── Scene 4 · rocks in a raked dry garden ───────── */
+.t08m-sand {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.t08m .rake {
+  fill: var(--ink-3);
+  fill-opacity: 0.32;
+}
+.t08m .ring {
+  fill: var(--ink-3);
+  fill-opacity: 0.5;
+}
+:root[data-theme='dark'] .t08m .rake {
+  fill-opacity: 0.12;
+}
+:root[data-theme='dark'] .t08m .ring {
+  fill-opacity: 0.2;
+}
+.t08m-halo {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
+}
+.t08m-halo.hit {
+  opacity: 0.9;
+}
+.t08m-wave {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+.t08m-pond {
+  position: absolute;
+  inset: 0;
+}
+/* GSAP moves the spot; CSS moves the button inside it (never the same element) */
+.t08m-spot {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.t08m-model {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 40%;
+  background: none;
+  color: var(--ink);
+  translate: 0 calc(var(--lift, 0px) * -1);
+  transition: translate 0.9s var(--ease), opacity 0.9s var(--ease);
+}
+.t08m-rock {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+  transition: scale 0.7s var(--ease);
+  transform-origin: 50% 100%;
+}
+.t08m-model:hover .t08m-rock {
+  scale: 1.03;
+}
+.t08m .rk-body { fill: var(--rock-mid); }
+.t08m .rk-face { fill: var(--rock-hi); fill-opacity: 0.92; }
+.t08m .rk-lo { fill: var(--rock-lo); }
+.t08m .rk-line { fill: var(--ink-2); fill-opacity: 0.62; }
+.t08m .rk-sh { fill: var(--umbra); fill-opacity: 0.16; }
+.t08m .mo1 { fill: var(--moss-a); fill-opacity: 0.85; }
+.t08m .mo2 { fill: var(--moss-b); fill-opacity: 0.75; }
+/* night garden: pale, moonlit stones (so every mark stays legible), soft moss glow underneath */
+:root[data-theme='dark'] .t08m .rk-body { fill: color-mix(in srgb, var(--ink) 42%, var(--rock-mid)); }
+:root[data-theme='dark'] .t08m .rk-face { fill: color-mix(in srgb, var(--ink) 84%, var(--rock-hi)); }
+:root[data-theme='dark'] .t08m .rk-line { fill: var(--rock-lo); fill-opacity: 0.8; }
+:root[data-theme='dark'] .t08m .rk-lo { fill: var(--rock-lo); }
+:root[data-theme='dark'] .t08m .rk-sh { fill-opacity: 0.55; }
+:root[data-theme='dark'] .t08m .mo1 { fill: var(--moss-c); }
+/* the logo, laid straight onto the rock: no badge of its own */
+.t08m-model .logo-stone {
+  position: absolute;
+  translate: -50% -50%;
+}
+.t08m-model .ls-body {
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.t08m-model .ls-shadow,
+.t08m-model .ls-ripple {
+  display: none;
+}
+:root[data-theme='dark'] .t08m-model .ls-body {
+  box-shadow: none;
+}
+.t08m-name {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 7px);
+  width: max-content;
+  max-width: var(--namew, 160px);
+  translate: -50% 0;
+  font: 400 var(--fs, 14px)/1.2 var(--serif);
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
+  text-shadow: 0 0 4px var(--paper), 0 0 9px var(--paper), 0 0 2px var(--paper);
+  transition: color 0.8s;
+}
+.t08m-model.up .t08m-name {
+  top: auto;
+  bottom: calc(100% + 4px);
+}
+.t08m-model.small .logo-stone[data-kind='name'] {
+  visibility: hidden;
+}
+.t08m.flat .t08m-needs {
+  bottom: 8px;
+  gap: 0;
+}
+.t08m.flat .t08m-need {
+  gap: 3px;
+  padding: 0 4px 0 2px;
+  font-size: 0.78rem;
+}
+.t08m.flat .t08m-peb {
+  width: 19px;
+  height: 13px;
+}
+.t08m-model.dim {
+  opacity: 0.36;
+}
+.t08m-model.match {
+  --lift: 4px;
+}
+.t08m-model.match .t08m-name {
+  color: var(--vermilion);
+}
+.t08m-model[aria-expanded='true'] .t08m-name {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--vermilion);
+  text-underline-offset: 0.3em;
+}
+.t08m-model:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 6px;
+}
+/* the needs: small flat pebbles along the lower edge of the sand; a chosen one is stamped vermilion */
+.t08m-needs {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 6px;
+}
+.t08m-need {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 0 10px 0 6px;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  color: var(--ink-2);
+  font: 400 0.92rem/1.15 var(--serif);
+  white-space: nowrap;
+  translate: 0 var(--dy, 0px);
+  transition: color 0.35s;
+}
+.t08m-need:hover,
+.t08m-need[aria-pressed='true'] {
+  color: var(--ink);
+}
+.t08m-peb {
+  width: 26px;
+  height: 18px;
+  flex: none;
+  overflow: visible;
+  transition: scale 0.5s var(--ease);
+}
+.t08m-need:hover .t08m-peb {
+  scale: 1.08;
+}
+.t08m-peb .peb {
+  fill: var(--stone-2);
+  transition: fill 0.4s;
+}
+:root[data-theme='dark'] .t08m-peb .peb {
+  fill: var(--stone);
+}
+.t08m-peb .seal {
+  fill: var(--vermilion);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+.t08m-need[aria-pressed='true'] .seal {
+  opacity: 0.95;
+}
+.t08m-need:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 0;
+}
+.t08m-card {
+  position: absolute;
+  z-index: 6;
+  padding: 14px 40px 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow: var(--shadow-2);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.t08m-cname {
+  margin: 0 0 4px;
+  font: 500 1.08rem/1.2 var(--serif);
+  color: var(--ink);
+}
+.t08m-meta {
+  margin: 0 0 6px;
+  font: 400 0.8rem/1.4 var(--sans);
+  color: var(--ink-3);
+}
+.t08m-str {
+  margin: 0;
+  font: 300 1rem/1.45 var(--serif);
+  color: var(--ink-2);
+}
+.t08m-x {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-3);
+  font: 300 1.3rem/1 var(--sans);
+}
+.t08m-x:hover {
+  color: var(--ink);
+}
+/* narrow: the pebble sits above its word, four and three to a row */
+@media (max-width: 600px) {
+  .t08m-needs {
+    gap: 0 2px;
+    bottom: 10px;
+  }
+  .t08m-need {
+    flex-direction: column;
+    gap: 1px;
+    padding: 3px 5px;
+    font-size: 0.8rem;
+  }
+  .t08m-peb {
+    width: 22px;
+    height: 15px;
+  }
+}
+
+/* ───────── Scene 5 · building a video prompt from stones ───────── */
+.t08p {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap, 12px);
+}
+.t08p-screenwrap {
+  flex: none;
+  width: var(--sw, 560px);
+}
+/* short, wide screens: screen on the left; line and stones stacked in a column beside it */
+.t08p.side {
+  display: grid;
+  grid-template-columns: var(--sw) var(--col);
+  grid-template-rows: auto auto;
+  align-content: center;
+  justify-content: center;
+  column-gap: 24px;
+  row-gap: var(--gap);
+}
+.t08p.side .t08p-screenwrap {
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+.t08p.side .t08p-linewrap {
+  align-self: end;
+}
+.t08p-screen {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--ink) 10%, transparent));
+}
+.t08p-linewrap {
+  position: relative;
+  flex: none;
+  display: grid;
+  align-content: end;
+  max-width: 100%;
+}
+.t08p-line {
+  margin: 0;
+  padding: 0 4px 6px;
+  font: 400 clamp(0.92rem, 1.5vw, 1.12rem)/1.4 var(--serif);
+  color: var(--ink);
+  text-align: center;
+  text-wrap: balance;
+}
+.t08p-frag {
+  transition: color 1.2s var(--ease);
+}
+.t08p-frag.fresh {
+  color: var(--vermilion);
+}
+.t08p-sep {
+  color: var(--ink-3);
+}
+.t08p-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  margin-left: 3px;
+  vertical-align: -0.15em;
+  background: var(--vermilion);
+  animation: t08p-blink 1.1s steps(2, jump-none) infinite;
+}
+@keyframes t08p-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t08p-caret {
+    animation: none;
+  }
+}
+.t08p-rail {
+  display: block;
+  width: 100%;
+  height: 8px;
+}
+.t08p-stones {
+  position: relative;
+  flex: none;
+  width: 100%;
+}
+.t08p-stone {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 46%;
+  background: none;
+  color: var(--ink);
+  transition: translate 0.5s var(--ease);
+}
+.t08p-stone:hover {
+  translate: 0 -2px;
+}
+.t08p-stone:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+.t08p-peb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t08p-peb .peb,
+.t08p-peb .rim,
+.t08p-peb .sh {
+  transition: opacity 0.6s var(--ease);
+}
+.t08p-peb .imp {
+  fill: var(--ink-3);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+/* set into the line: only its imprint stays in the sand */
+.t08p-stone[aria-pressed='true'] .peb,
+.t08p-stone[aria-pressed='true'] .rim,
+.t08p-stone[aria-pressed='true'] .sh {
+  opacity: 0;
+}
+.t08p-stone[aria-pressed='true'] .imp {
+  opacity: 0.55;
+}
+.t08p-stone[aria-pressed='true'] .t08p-name {
+  color: var(--ink-3);
+}
+.t08p-name {
+  position: relative;
+  display: block;
+  width: max-content;
+  font: 400 0.96rem/1.15 var(--serif);
+  text-align: center;
+  text-wrap: balance;
+  transition: color 0.6s;
+}
+.t08p.narrow .t08p-name {
+  font-size: 0.86rem;
+}
+.t08p-fly {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  width: 12px;
+  height: 9px;
+  margin: -4.5px 0 0 -6px;
+  border-radius: 50% 46% 52% 48%;
+  background: var(--vermilion);
+  pointer-events: none;
+}
+
+/* ───────── Scene 5 · the Sora story ───────── */
+.t08s-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t08s .gl0 { stop-color: var(--vermilion); stop-opacity: 0.34; }
+.t08s .gl1 { stop-color: var(--vermilion); stop-opacity: 0.12; }
+.t08s .gl2 { stop-color: var(--vermilion); stop-opacity: 0; }
+:root[data-theme='dark'] .t08s .gl0 { stop-opacity: 0.55; }
+:root[data-theme='dark'] .t08s .gl1 { stop-opacity: 0.2; }
+.t08s .screen {
+  fill: var(--card);
+  transition: fill 1.4s;
+}
+.t08s .screen.off {
+  fill: color-mix(in srgb, var(--stone-2) 45%, var(--paper));
+}
+:root[data-theme='dark'] .t08s .screen.off {
+  fill: color-mix(in srgb, var(--stone-3) 70%, var(--paper));
+}
+.t08s .t08s-plaque {
+  fill: var(--ink);
+  font-weight: 500;
+  transition: fill 1.4s;
+}
+.t08s .t08s-plaque.off {
+  fill: var(--ink-3);
+}
+.t08s .lan {
+  fill: color-mix(in srgb, var(--vermilion) 30%, var(--card));
+  transition: fill 1s;
+}
+.t08s .lan.off {
+  fill: var(--stone-3);
+}
+.t08s .t08s-ev {
+  transition: opacity 0.4s, transform 0.4s;
+}
+.t08s .t08s-ev.hide {
+  opacity: 0;
+}
+.t08s-story {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3em;
+  overflow: hidden;
+  text-align: center;
+  font-size: var(--sfs, 16px);
+}
+.t08s-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font: 400 1.25em/1.2 var(--serif);
+  color: var(--ink);
+}
+/* a dab of vermilion ink: uneven round, denser where the brush pressed */
+.t08s-seal {
+  width: 0.55em;
+  height: 0.5em;
+  border-radius: 54% 46% 50% 50% / 48% 56% 44% 52%;
+  background: radial-gradient(circle at 42% 58%, var(--vermilion) 52%, color-mix(in srgb, var(--vermilion) 72%, transparent) 100%);
+  rotate: -12deg;
+}
+.t08s-fact {
+  margin: 0;
+  max-width: 30em;
+  font: 400 1em/1.42 var(--serif);
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+.t08s-dates {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.1em 1.2em;
+  margin-bottom: 0.2em;
+  font: 400 0.9em/1.3 var(--serif);
+  color: var(--ink-2);
+}
+.t08s-when {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+.t08s-when .t08s-seal {
+  width: 0.5em;
+  height: 0.5em;
+}
+.t08s-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.2em 1.1em;
+}
+.t08s-reason {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font: 400 1.08em/1.2 var(--serif);
+  color: var(--ink);
+}
+.t08s-reason svg {
+  width: 2.1em;
+  height: 1.25em;
+  flex: none;
+}
+.t08s.short .t08s-months,
+.t08s.short .t08s-reason > span {
+  display: none;
+}
+.t08s-range {
+  position: absolute;
+  z-index: 3;
+}
+.t08s-date {
+  position: absolute;
+  z-index: 3;
+  translate: -50% 0;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  font: 400 0.76rem/1.2 var(--sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.t08s-months {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14px;
+  pointer-events: none;
+}
+.t08s-months span {
+  position: absolute;
+  translate: 2px 0;
+  font: 400 0.7rem/1 var(--sans);
+  color: var(--ink-3);
+}
+@media (max-width: 560px) {
+  .t08s-months span:nth-child(even) {
+    visibility: hidden;
+  }
+}

@@ -1,0 +1,404 @@
+{
+  "id": 7,
+  "kicker": "Sương mù tan dần, bức tranh hiện ra theo lời bạn tả.",
+  "scenes": {
+    "diffuse": {
+      "label": "Sương tan thành tranh",
+      "prompt": "Kéo để gỡ nhiễu",
+      "promptLabel": "Lời mô tả",
+      "pick": "Đổi lời mô tả",
+      "slider": "Bước khử nhiễu",
+      "stepOf": "bước {n}/50",
+      "noise": "nhiễu",
+      "image": "ảnh",
+      "play": "Chạy từng bước",
+      "replay": "Chạy lại từ nhiễu",
+      "canvas": "Bức tranh hiện dần từ nhiễu, theo lời: {prompt}",
+      "note": "Mô phỏng, không gọi AI thật",
+      "same": "Cùng một đám nhiễu, khác lời mô tả: ra bức tranh khác.",
+      "prompts": [
+        {
+          "short": "Chùa dưới trăng",
+          "text": "Ngôi chùa trên vách núi, trăng đỏ, sương sớm, tranh thủy mặc"
+        },
+        {
+          "short": "Thuyền trên hồ",
+          "text": "Thuyền nhỏ trên hồ lặng, cây thông nghiêng, mặt trời đỏ"
+        },
+        {
+          "short": "Cá chép, lá sen",
+          "text": "Hai con cá chép bơi dưới lá sen, nhìn từ trên xuống"
+        }
+      ],
+      "insight": {
+        "text": "Mô hình học gỡ nhiễu từng bước; lời mô tả dẫn hướng cho mỗi bước gỡ.",
+        "asOf": "2026-10-12",
+        "source": "ldm-2022"
+      },
+      "detail": {
+        "text": "Tên kỹ thuật: diffusion (khuếch tán). Khi học, AI xem rất nhiều ảnh bị rắc nhiễu và tập đoán phần nhiễu để gỡ ra.",
+        "asOf": "2026-10-12",
+        "source": "ddpm-2020"
+      }
+    },
+    "chat": {
+      "label": "Sửa ảnh bằng trò chuyện",
+      "prompt": "Chạm một lời nhắn",
+      "image": "Bức tranh cô gái mặc áo dài, đội nón lá, bên hồ sen",
+      "first": "Vẽ cô gái mặc áo dài, đội nón lá, đứng bên hồ sen.",
+      "firstReply": "Đây là bức tranh của bạn.",
+      "you": "Bạn",
+      "ai": "AI",
+      "suggest": "Gợi ý lời nhắn",
+      "send": "Gửi: {text}",
+      "typing": "AI đang sửa ảnh",
+      "note": "Mô phỏng cuộc trò chuyện",
+      "written": "Xuân an lành",
+      "edits": [
+        {
+          "id": "bg",
+          "say": "Đổi nền sang màu hồng, giữ nguyên người mẫu.",
+          "reply": "Xong. Chỉ đổi nền, người mẫu giữ nguyên."
+        },
+        {
+          "id": "text",
+          "say": "Thêm dòng chữ “Xuân an lành” ở góc trên.",
+          "reply": "Đã thêm chữ. Bạn nhớ soát lại từng dấu nhé."
+        },
+        {
+          "id": "dress",
+          "say": "Đổi áo dài sang màu trắng.",
+          "reply": "Đã đổi màu áo; nền và chữ giữ nguyên."
+        }
+      ],
+      "insight": {
+        "text": "Nhiều AI ảnh mới nằm ngay trong chatbot: hiểu lệnh dài, viết chữ trong ảnh tốt hơn, sửa từng phần qua trò chuyện.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Gọi là mô hình đa phương thức gốc: một bộ não vừa đọc chữ vừa vẽ ảnh. Ví dụ: GPT Image 2, Nano Banana 2.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "concepts": {
+      "label": "Mười viên đá khái niệm",
+      "prompt": "Chạm vào từng viên đá",
+      "group": "Các khái niệm khi tạo ảnh",
+      "idle": "Mỗi viên đá là một nút bạn sẽ gặp",
+      "groups": [
+        {
+          "name": "Tạo ảnh",
+          "items": [
+            {
+              "id": "t2i",
+              "name": "Chữ thành ảnh",
+              "term": "text-to-image",
+              "say": "Gõ lời mô tả, AI vẽ ra một ảnh mới từ đầu."
+            },
+            {
+              "id": "i2i",
+              "name": "Ảnh thành ảnh",
+              "term": "image-to-image",
+              "say": "Đưa một ảnh làm gốc, AI vẽ lại theo lời bạn."
+            }
+          ]
+        },
+        {
+          "name": "Sửa ảnh",
+          "items": [
+            {
+              "id": "inpaint",
+              "name": "Sửa một vùng",
+              "term": "inpainting",
+              "say": "Khoanh một vùng, AI chỉ vẽ lại đúng chỗ đó."
+            },
+            {
+              "id": "outpaint",
+              "name": "Mở rộng khung",
+              "term": "outpainting",
+              "say": "AI vẽ tiếp ra ngoài mép, nới rộng khung ảnh."
+            },
+            {
+              "id": "upscale",
+              "name": "Phóng to nét",
+              "term": "upscale",
+              "say": "Tăng độ phân giải: ảnh lớn hơn mà vẫn sắc nét."
+            }
+          ]
+        },
+        {
+          "name": "Giữ đồng nhất",
+          "items": [
+            {
+              "id": "ref",
+              "name": "Ảnh tham chiếu",
+              "term": "reference · style reference",
+              "say": "Đưa ảnh mẫu để AI theo phong cách, màu sắc, bố cục."
+            },
+            {
+              "id": "char",
+              "name": "Nhân vật đồng nhất",
+              "term": "character consistency",
+              "say": "Giữ cùng gương mặt, trang phục qua nhiều ảnh khác nhau."
+            },
+            {
+              "id": "seed",
+              "name": "Seed",
+              "term": "seed",
+              "say": "Mã đám nhiễu gốc: cùng seed, cùng lời, ảnh ra gần giống."
+            }
+          ]
+        },
+        {
+          "name": "Khung và lọc",
+          "items": [
+            {
+              "id": "aspect",
+              "name": "Tỉ lệ khung",
+              "term": "aspect ratio",
+              "say": "Khung vuông, ngang hay dọc: chọn trước, AI bố cục theo."
+            },
+            {
+              "id": "neg",
+              "name": "Prompt phủ định",
+              "term": "negative prompt",
+              "say": "Ghi rõ điều không muốn thấy: chữ lạ, nét nhòe, tay méo."
+            }
+          ]
+        }
+      ],
+      "art": {
+        "words": "núi, trăng đỏ, thuyền",
+        "sketch": "phác thảo",
+        "result": "kết quả",
+        "ref": "ảnh mẫu",
+        "seedA": "seed 42",
+        "seedB": "seed 7",
+        "ratios": [
+          "1:1",
+          "16:9",
+          "9:16"
+        ],
+        "neg": "không: chữ lạ, nét nhòe",
+        "x4": "×4"
+      },
+      "insight": "Tên gọi mỗi công cụ hơi khác, nhưng biết mười nút này, bạn sẽ bớt bỡ ngỡ với hầu hết công cụ."
+    },
+    "models": {
+      "label": "Những cây cọ nổi bật",
+      "prompt": "Chạm một viên đá",
+      "needsLabel": "Việc bạn cần",
+      "gardenLabel": "Các mô hình tạo ảnh nổi bật",
+      "by": "của {company}",
+      "pickModel": "Xem {name}",
+      "asOf": "Cập nhật đến 12/10/2026",
+      "needs": [
+        {
+          "id": "text",
+          "name": "Chữ trong ảnh, lệnh dài",
+          "short": "Chữ trong ảnh",
+          "models": [
+            "gpt"
+          ]
+        },
+        {
+          "id": "edit",
+          "name": "Sửa ảnh, giữ nhân vật",
+          "short": "Giữ nhân vật",
+          "models": [
+            "nano"
+          ]
+        },
+        {
+          "id": "art",
+          "name": "Thẩm mỹ, moodboard",
+          "short": "Thẩm mỹ",
+          "models": [
+            "mj"
+          ]
+        },
+        {
+          "id": "ctrl",
+          "name": "Kiểm soát, có bản mở",
+          "short": "Có bản mở",
+          "models": [
+            "flux"
+          ]
+        },
+        {
+          "id": "cost",
+          "name": "Chất lượng cao, giá tốt",
+          "short": "Giá tốt",
+          "models": [
+            "seedream"
+          ]
+        }
+      ],
+      "models": [
+        {
+          "id": "gpt",
+          "company": "openai",
+          "names": [
+            "GPT Image 2"
+          ],
+          "label": "GPT Image 2"
+        },
+        {
+          "id": "nano",
+          "company": "google-deepmind",
+          "names": [
+            "Nano Banana 2",
+            "Nano Banana Pro"
+          ],
+          "label": "Nano Banana 2 · Pro"
+        },
+        {
+          "id": "mj",
+          "company": "midjourney",
+          "names": [
+            "Midjourney V8.2"
+          ],
+          "label": "Midjourney V8.2"
+        },
+        {
+          "id": "flux",
+          "company": "black-forest-labs",
+          "names": [
+            "Flux 2"
+          ],
+          "label": "Flux 2"
+        },
+        {
+          "id": "seedream",
+          "company": "bytedance",
+          "names": [
+            "Seedream 5.0"
+          ],
+          "label": "Seedream 5.0"
+        },
+        {
+          "id": "grok",
+          "company": "xai",
+          "names": [
+            "Grok Imagine Image 2.0"
+          ],
+          "label": "Grok Imagine Image 2.0"
+        },
+        {
+          "id": "mai",
+          "company": "microsoft",
+          "names": [
+            "MAI-Image-2.5"
+          ],
+          "label": "MAI-Image-2.5"
+        }
+      ],
+      "newModel": {
+        "text": "Mẫu mới; điểm mạnh chưa có đánh giá chung, thông tin còn cần kiểm chứng.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "verify": true
+      },
+      "insight": {
+        "text": "Không có model giỏi nhất mọi việc: chọn theo việc cần làm, thử vài cái, và cập nhật thường xuyên.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Điểm mạnh ghi ở đây là đánh giá chung, tính đến 12/10/2026; AI thay đổi theo tuần.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "recipe": {
+      "label": "Công thức prompt ảnh",
+      "prompt": "Chạm để thêm từng phần",
+      "group": "Các phần của một prompt ảnh",
+      "stripLabel": "Prompt của bạn",
+      "empty": "Chưa có gì: chạm một viên đá bên dưới",
+      "canvas": "Bức tranh thay đổi theo prompt: {prompt}",
+      "parts": [
+        {
+          "id": "subject",
+          "name": "Chủ thể",
+          "say": "một chú mèo trắng"
+        },
+        {
+          "id": "pose",
+          "name": "Bố cục",
+          "say": "ngồi giữa khung cửa tròn"
+        },
+        {
+          "id": "place",
+          "name": "Bối cảnh",
+          "say": "trong phòng trà yên tĩnh"
+        },
+        {
+          "id": "style",
+          "name": "Phong cách",
+          "say": "tranh thủy mặc"
+        },
+        {
+          "id": "light",
+          "name": "Ánh sáng",
+          "say": "nắng sớm xiên qua"
+        },
+        {
+          "id": "lens",
+          "name": "Góc máy",
+          "say": "cận cảnh, ngang tầm mắt"
+        },
+        {
+          "id": "color",
+          "name": "Màu sắc",
+          "say": "tông giấy dó, điểm đỏ son"
+        },
+        {
+          "id": "text",
+          "name": "Chữ trong ảnh",
+          "say": "chữ “An” ở góc trên"
+        },
+        {
+          "id": "ratio",
+          "name": "Tỉ lệ khung",
+          "say": "khung dọc 4:5"
+        }
+      ],
+      "written": "An",
+      "insight": "Tả như giao việc cho nhiếp ảnh gia: chủ thể, bối cảnh, phong cách, ánh sáng, góc máy, màu, chữ, khung.",
+      "detail": "Sửa từng bước thay vì viết lại từ đầu; dùng ảnh tham chiếu để giữ đồng nhất. Công thức đầy đủ ở Trạm 13."
+    }
+  },
+  "quiz": {
+    "q": "AI tạo ảnh kiểu khuếch tán (diffusion) vẽ ra ảnh bằng cách nào?",
+    "options": [
+      "Ghép các ảnh có sẵn trên mạng",
+      "Gỡ nhiễu từng bước theo lời mô tả",
+      "Tìm ảnh giống nhất trong kho",
+      "Tô màu lên bản phác thảo có sẵn"
+    ],
+    "answer": 1,
+    "explain": "Nó bắt đầu từ nhiễu ngẫu nhiên rồi gỡ dần từng bước, theo hướng khớp với câu chữ bạn viết."
+  },
+  "summary": "AI vẽ ảnh bằng cách gỡ nhiễu từng bước theo lời bạn tả; tả rõ thì ảnh đúng ý.",
+  "sources": {
+    "ddpm-2020": {
+      "title": "Denoising Diffusion Probabilistic Models",
+      "publisher": "J. Ho, A. Jain, P. Abbeel · arXiv:2006.11239",
+      "url": "https://arxiv.org/abs/2006.11239",
+      "date": "2020-06",
+      "note": "Bài báo nền tảng của cách tạo ảnh bằng gỡ nhiễu từng bước."
+    },
+    "ldm-2022": {
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "publisher": "R. Rombach và cộng sự · arXiv:2112.10752",
+      "url": "https://arxiv.org/abs/2112.10752",
+      "date": "2021-12",
+      "note": "Nền tảng của Stable Diffusion: lời mô tả dẫn đường cho từng bước gỡ nhiễu. Hình trên trang này là mô phỏng để học."
+    }
+  }
+}

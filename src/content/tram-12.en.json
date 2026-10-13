@@ -1,0 +1,168 @@
+{
+  "id": 12,
+  "kicker": "Six stones make a path; the clearer the request, the brighter the lantern.",
+  "scenes": {
+    "path": {
+      "label": "Stone path to the lantern",
+      "prompt": "Drag stones onto the path",
+      "group": "The six stones of a prompt. Drag, or tap each one, to place it on the path.",
+      "place": "Place the “{name}” stone on the path",
+      "again": "{name}: already on the path, tap to read again",
+      "meter": "clarity",
+      "level": "Lantern lit {n}/{total}.",
+      "art": "A stone lantern on raked sand. Each stone placed on the path makes it glow brighter.",
+      "blocks": [
+        {
+          "id": "role",
+          "name": "Role",
+          "title": "Role",
+          "hint": "who the AI plays",
+          "example": "“You are a copywriter for a Vietnamese lipstick brand.”"
+        },
+        {
+          "id": "context",
+          "name": "Context",
+          "title": "Context",
+          "hint": "who reads it, and why",
+          "example": "“Readers: busy women aged 20–30. Goal: launch a new lipstick.”"
+        },
+        {
+          "id": "task",
+          "name": "Task",
+          "title": "Task",
+          "hint": "one clear verb",
+          "example": "“Write 2 Facebook captions.”"
+        },
+        {
+          "id": "data",
+          "name": "Data / examples",
+          "title": "Data / examples",
+          "hint": "raw facts and a sample line",
+          "example": "“Brick Red matte lipstick, soft on the lips. Sample voice: ‘Warm lips for chilly days.’”"
+        },
+        {
+          "id": "rules",
+          "name": "Constraints",
+          "title": "Constraints",
+          "hint": "length, tone, no-gos",
+          "example": "“Each line under 20 words, warm tone, never use the word ‘best’.”"
+        },
+        {
+          "id": "format",
+          "name": "Format",
+          "title": "Output format",
+          "hint": "what the answer looks like",
+          "example": "“Return 2 lines, each with 1 hashtag.”"
+        }
+      ],
+      "insight": "A clear prompt (your request to AI) has six parts: role, context, task, data, constraints, format.",
+      "detail": "You don’t always need all six. But the more important the task, the more context and examples help."
+    },
+    "compare": {
+      "label": "Two requests",
+      "prompt": "Tap the middle stone",
+      "send": "Send both requests to the same AI",
+      "sendText": "Send",
+      "weakTitle": "A sloppy request",
+      "strongTitle": "A clear request",
+      "ask": "You type",
+      "reply": "AI replies",
+      "waiting": "waiting to send",
+      "showPrompt": "See full text",
+      "hidePrompt": "Collapse",
+      "flagNote": "Problems",
+      "weakPrompt": "Write a lipstick caption.",
+      "weakReply": [
+        {
+          "t": "New lipstick just in! "
+        },
+        {
+          "t": "Gorgeous color, super premium feel",
+          "flag": "vague"
+        },
+        {
+          "t": ", "
+        },
+        {
+          "t": "the best on the market",
+          "flag": "overclaim"
+        },
+        {
+          "t": ". Buy now before it sells out!"
+        }
+      ],
+      "strongReply": [
+        "Brick Red: matte yet soft — warm lips all through a busy day. #BrickRed",
+        "Chilly afternoon? One swipe of Brick Red is warmth enough. #MatteBrickRed"
+      ],
+      "done": "The AI has answered both requests.",
+      "insight": "Same AI: a sloppy request gets a vague answer, a clear one gets exactly what you need.",
+      "detail": {
+        "text": "Both answers are pre-written examples; a real AI may answer a little differently each time.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      }
+    },
+    "rules": {
+      "label": "Six golden rules",
+      "prompt": "Tap each stone",
+      "group": "Six golden rules, one stone each",
+      "open": "Open rule {n}",
+      "count": "{n}/{total}",
+      "items": [
+        {
+          "id": "clear",
+          "short": "Be clear",
+          "title": "Be as clear as briefing a new hire",
+          "example": "AI doesn’t know your company, customers or taste — tell it everything."
+        },
+        {
+          "id": "example",
+          "short": "Give examples",
+          "title": "Give examples",
+          "example": "Paste a sample you like; AI will pick up its voice."
+        },
+        {
+          "id": "steps",
+          "short": "Break it up",
+          "title": "Break big jobs into small steps",
+          "example": "Outline first, write next, edit last — one step per turn."
+        },
+        {
+          "id": "loop",
+          "short": "Iterate",
+          "title": "Ask back, go a few rounds",
+          "example": "Ask: “What else do you need to know?”, then refine over a few turns."
+        },
+        {
+          "id": "check",
+          "short": "Self-check",
+          "title": "Ask AI to check itself",
+          "example": "“Review this for me: what might be wrong or made up?”"
+        },
+        {
+          "id": "private",
+          "short": "Keep private",
+          "title": "Don’t share sensitive data",
+          "example": "Passwords, card numbers, customer records: keep them out, or hide names before pasting."
+        }
+      ],
+      "insight": "Few people write a great prompt on the first try: be clear, give samples, split steps, refine, keep private data private.",
+      "detail": "Small tip: end your prompt with “Before answering, review your work and ask me if anything is missing.”"
+    }
+  },
+  "quiz": {
+    "q": "To get the caption you want from AI, what should you do?",
+    "options": [
+      "Just type “write a lipstick caption”",
+      "Give a role, context, examples, constraints",
+      "Paste the whole customer phone list",
+      "Write as much as possible, longer is better"
+    ],
+    "answer": 1,
+    "explain": "A complete request tells AI who reads it, what’s needed and what to avoid; sensitive data stays with you."
+  },
+  "summary": "Ask AI like you’d brief a new hire: be clear, give examples, set limits.",
+  "sources": {}
+}

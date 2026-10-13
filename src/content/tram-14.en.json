@@ -1,0 +1,163 @@
+{
+  "id": 14,
+  "kicker": "A brain in a jar can only talk. Give it hands, and it starts doing.",
+  "scenes": {
+    "jar": {
+      "label": "Brain in a jar",
+      "prompt": "Try giving it hands",
+      "art": "Dawn over a sand garden. A brain in a glass jar only lets out bubbles of words. Around the jar, on flat stones: a browser, files, a calendar and an inbox, all out of reach.",
+      "attach": "Attach hands",
+      "again": "Back into the jar",
+      "before": "Chatbot without tools: answers in words only",
+      "after": "Agent: uses tools by itself",
+      "tools": [
+        "Browser",
+        "Files",
+        "Calendar",
+        "Mail"
+      ],
+      "done": "Four ink strokes reach out: open the browser, fetch a file, circle a meeting, send an email.",
+      "insight": "Without tools, a chatbot only answers in words. An agent is an AI model with tools, so it gets work done.",
+      "detail": "Instead of telling you how to open the calendar, an agent opens it, finds a free slot, books the meeting. Many chat apps now have some tools built in."
+    },
+    "anatomy": {
+      "label": "Anatomy of an agent",
+      "prompt": "Tap each part",
+      "art": "A diagram of an agent in the garden: a brain seated at a desk, four ink arms holding tools, two lanterns, a scroll of plans and a fence.",
+      "group": "Parts of an agent",
+      "parts": [
+        {
+          "id": "brain",
+          "name": "Brain",
+          "sub": "AI model",
+          "text": "Reads the situation, thinks, then decides the next step."
+        },
+        {
+          "id": "hands",
+          "name": "Hands",
+          "sub": "tools",
+          "text": "Searches the web, reads files, sends emails, clicks buttons… to actually do things, not just talk."
+        },
+        {
+          "id": "short",
+          "name": "Paper lantern",
+          "sub": "short-term memory",
+          "text": "Whatever is in this conversation. When the job is done, the lantern goes out."
+        },
+        {
+          "id": "long",
+          "name": "Stone lantern",
+          "sub": "long-term memory",
+          "text": "Saved notes and files; next time, the agent opens them and picks up where it left off."
+        },
+        {
+          "id": "plan",
+          "name": "Scroll",
+          "sub": "planning",
+          "text": "Breaks a big goal into small steps, does them in order, ticks each one off."
+        },
+        {
+          "id": "env",
+          "name": "Desk",
+          "sub": "work environment",
+          "text": "Where the agent gets to work: a computer, a browser, file folders."
+        },
+        {
+          "id": "fence",
+          "name": "Fence",
+          "sub": "safety",
+          "text": "Permissions: it only does what is allowed. Confirmation: big actions must ask you first."
+        }
+      ],
+      "insight": "An agent has a brain, hands, memory and a plan, all working inside a safety fence.",
+      "detail": "Without a fence, an agent can get big things wrong. Give it just enough access, and make it ask before sending, deleting or paying."
+    },
+    "loop": {
+      "label": "The agent loop",
+      "prompt": "Walk the stone ring",
+      "art": "A ring of stones on raked sand. In the middle: the goal and the report. Around the ring, four stones: plan, act, check the result, self-correct.",
+      "step": "Next step",
+      "again": "Start over",
+      "round": "Round {n}",
+      "repeat": "repeat",
+      "task": "Team meeting · Friday",
+      "slots": [
+        "9:00",
+        "14:00"
+      ],
+      "stones": {
+        "goal": "Goal",
+        "plan": "Plan",
+        "act": "Act",
+        "observe": "Check result",
+        "fix": "Self-correct",
+        "report": "Report"
+      },
+      "steps": [
+        {
+          "at": "goal",
+          "text": "Book a team meeting on Friday that all 5 people can attend."
+        },
+        {
+          "at": "plan",
+          "text": "Break it down: check each calendar, pick a time, and only then send invites."
+        },
+        {
+          "at": "act",
+          "text": "Open the calendar, try holding 9:00 on Friday morning."
+        },
+        {
+          "at": "observe",
+          "text": "The calendar says: An is busy at 9:00. Goal not met yet."
+        },
+        {
+          "at": "fix",
+          "text": "Drop 9:00. Need a time when all 5 people are free."
+        },
+        {
+          "at": "plan",
+          "text": "New plan: try 14:00 on Friday afternoon."
+        },
+        {
+          "at": "act",
+          "text": "Hold 14:00 on Friday in the calendar."
+        },
+        {
+          "at": "observe",
+          "text": "All 5 people are free at 14:00. Goal met."
+        },
+        {
+          "at": "report",
+          "text": "Report back: 14:00 is on hold. Invites go out only once you agree."
+        }
+      ],
+      "insight": {
+        "text": "An agent works in a loop: plan, act, check the result, self-correct — repeat until done, then report.",
+        "asOf": "2026-10-12",
+        "source": "anthropic-agents-2024"
+      },
+      "detail": "Tip for handing off work: state the goal clearly, what “done” looks like, and what the agent must ask you first."
+    }
+  },
+  "quiz": {
+    "q": "What turns a chatbot into an agent?",
+    "options": [
+      "Longer, better answers",
+      "Tools to do the work itself",
+      "A pleasant voice",
+      "Never making mistakes"
+    ],
+    "answer": 1,
+    "explain": "An agent is an AI model with tools, a plan and a self-correcting loop, so it gets things done, not just talks."
+  },
+  "summary": "An agent is an AI brain with hands: it acts, checks the result, fixes itself, then reports.",
+  "sources": {
+    "anthropic-agents-2024": {
+      "title": "Building effective agents",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "date": "2024-12-19",
+      "note": "Describes agents as language models that use tools on their own, guided by feedback from their environment, running in a loop."
+    }
+  }
+}

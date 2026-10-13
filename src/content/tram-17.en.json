@@ -1,0 +1,601 @@
+{
+  "id": 17,
+  "kicker": "Each AI company is a stone island in a sea of sand.",
+  "summary": "Each AI company is an island: choose by the work you need, closed or open, and a size that’s just enough.",
+  "quiz": {
+    "q": "What does “open weights” mean?",
+    "options": [
+      "You can download and run it yourself",
+      "It’s free to use forever",
+      "Only usable in the company’s app",
+      "It’s the company’s strongest model"
+    ],
+    "answer": 0,
+    "explain": "Weights are the model’s learned “brain”; open means anyone can download it and run it themselves."
+  },
+  "badge": "Updated to {date}",
+  "regions": {
+    "us": "US",
+    "cn": "China",
+    "other": "Other"
+  },
+  "countries": {
+    "us": "US",
+    "uk-us": "US / UK",
+    "cn": "China",
+    "none": "Country not given in the data"
+  },
+  "cats": {
+    "text": "Text",
+    "image": "Image",
+    "video": "Video",
+    "3d": "3D",
+    "audio": "Audio"
+  },
+  "weights": {
+    "closed": "Closed weights",
+    "mixed": "Both closed and open versions"
+  },
+  "status": {
+    "discontinued": "discontinued",
+    "unreleased": "unreleased"
+  },
+  "companies": {
+    "openai": {
+      "motto": {
+        "text": "AGI that benefits everyone",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Beginners who want one all-round assistant for text and images.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "anthropic": {
+      "motto": {
+        "text": "Safety at the core",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Organizations that value safety and AI that behaves by clear principles.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "google-deepmind": {
+      "motto": {
+        "text": "Solve intelligence",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "People already at home in Google’s ecosystem who need text, images and video.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "xai": {
+      "motto": {
+        "text": "Maximum truth-seeking",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "X users who want text, images and video in one place.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "meta": {
+      "motto": {
+        "text": "Personal superintelligence",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "People who use Facebook, Instagram or WhatsApp every day.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "microsoft": {
+      "motto": {
+        "text": "Images: MAI; 3D: open-source TRELLIS.2",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "People who make images; people who want to run 3D on their own machine.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "deepseek": {
+      "fit": {
+        "text": "People who need an efficient text model at low cost.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "alibaba": {
+      "fit": {
+        "text": "People who need text models, plus open-weight video with sound.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "moonshot": {
+      "fit": {
+        "text": "People who want another text-model option beyond the US labs.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "zhipu": {
+      "fit": {
+        "text": "People who want another text-model option beyond the US labs.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "minimax": {
+      "fit": {
+        "text": "People making videos of people in motion who also need a text model.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "bytedance": {
+      "fit": {
+        "text": "People making ad images and videos who need high quality at a fair price.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "kuaishou": {
+      "fit": {
+        "text": "People making videos of people in motion at a fair price.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "tencent": {
+      "fit": {
+        "text": "3D makers: one version to use online, one open version to download.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "midjourney": {
+      "motto": {
+        "text": "Aesthetics, visual direction",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Designers and anyone who needs beautiful images, moodboards, visual direction.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "black-forest-labs": {
+      "motto": {
+        "text": "Fine control, open versions too",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Studios and professionals who need tight control over images.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "runway": {
+      "motto": {
+        "text": "Camera control",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Filmmakers and pro video makers who need camera control.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "luma": {
+      "motto": {
+        "text": "Cinematic feel",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "People who want to turn still images into video with a cinematic feel.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "meshy": {
+      "motto": {
+        "text": "Online, beautiful materials",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "People who need 3D models with nice surfaces, right in the browser.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "hyper3d": {
+      "motto": {
+        "text": "High quality, paid",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "People who need high-quality 3D models and are willing to pay.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "tripo": {
+      "motto": {
+        "text": "Fast 3D",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "People who need a rough 3D draft fast to test ideas.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "elevenlabs": {
+      "motto": {
+        "text": "AI-made voices",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "People who need AI voiceovers and dubbing.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "suno": {
+      "motto": {
+        "text": "AI-made music",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "People who need background music or want to try making music with AI.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    }
+  },
+  "regionMotto": {
+    "cn": {
+      "text": "Low cost, high efficiency",
+      "asOf": "2026-10-12",
+      "source": "brief-2026-10-12"
+    }
+  },
+  "card": {
+    "label": "{name} card",
+    "close": "Close card",
+    "philosophy": "Philosophy",
+    "regionPhilosophy": "Shared philosophy of Chinese labs",
+    "focus": "Focus",
+    "strengths": "Strengths · {model}",
+    "history": "Earlier",
+    "ladder": "Models",
+    "ladderHint": "big stone: {big} · small stone: {small}",
+    "noModels": "The data names only the company, not its models.",
+    "timeline": "Launches",
+    "timelineGroup": "Model launch dates",
+    "start": "12/2025",
+    "dot": "{name}, {date}",
+    "now": "now",
+    "fit": "Good for",
+    "kinds": {
+      "text": "Text",
+      "image": "Image",
+      "video": "Video",
+      "3d": "3D",
+      "audio": "Audio"
+    },
+    "tlHint": "Tap a dot to see the name and date",
+    "closed": "{label}, {date}"
+  },
+  "scenes": {
+    "map": {
+      "label": "The archipelago",
+      "prompt": "Pick a kind of work",
+      "region": "Map of AI companies. Each island is a company; tap one to open its card.",
+      "filters": "Filter by kind of work",
+      "regionGroup": "Filter by region",
+      "island": "{name}: open card",
+      "regionNote": {
+        "cn": {
+          "text": "Shared philosophy: low cost, high efficiency, mostly open weights.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        "other": "The data doesn’t give these companies’ countries"
+      },
+      "weightsGroup": "Filter by weights",
+      "weightsLabel": "Weights",
+      "weightsChips": {
+        "closed": "Closed",
+        "open": "Open"
+      },
+      "weightsNote": {
+        "closed": "Closed weights: can’t be downloaded, online use only (app, web, API)",
+        "open": "Open weights: download and run on your own machine"
+      },
+      "insight": {
+        "text": "A few companies do text, images and video; many others go deep on one area like video, 3D or voice.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "detail": {
+        "text": "AI changes by the week, so check each company’s official site before you choose.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "gate": {
+      "label": "Closed or open",
+      "prompt": "Try taking a stone home",
+      "region": "A fenced garden: closed-weight models inside, open-weight models outside. Tap or drag a stone to your machine.",
+      "home": "Your machine",
+      "fence": "The company’s garden",
+      "gateLabel": "Online only: app, web, API",
+      "homeLabel": "Download, run on your machine",
+      "weightsLabel": "Weights: the model’s learned “brain”",
+      "closedGroup": "Closed-weight models",
+      "openGroup": "Open-weight models",
+      "take": "Take {model} to your machine",
+      "back": "Put {model} back",
+      "tryClosed": "Try taking {model} out of the garden",
+      "closed": [
+        {
+          "id": "openai",
+          "model": "GPT-6"
+        },
+        {
+          "id": "anthropic",
+          "model": "Claude"
+        },
+        {
+          "id": "google-deepmind",
+          "model": "Gemini"
+        },
+        {
+          "id": "xai",
+          "model": "Grok"
+        }
+      ],
+      "open": [
+        {
+          "id": "google-deepmind",
+          "model": "Gemma 4"
+        },
+        {
+          "id": "alibaba",
+          "model": "Wan 3.0"
+        },
+        {
+          "id": "microsoft",
+          "model": "TRELLIS.2"
+        },
+        {
+          "id": "tencent",
+          "model": "Pixal3D"
+        },
+        {
+          "id": "black-forest-labs",
+          "model": "Flux 2",
+          "fact": "Black Forest Labs’ Flux 2 has an open-weights version."
+        }
+      ],
+      "closedFact": {
+        "text": "{model} by {company}: closed weights, can’t be downloaded.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "openFact": {
+        "text": "{model} by {company}: open weights.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": "Open weights: download the learned “brain” to your machine. Closed: online only, through an app, the web or an API.",
+      "detail": {
+        "text": "Chinese labs: low cost, high efficiency, mostly open weights, so they spread fast around the world.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "ladder": {
+      "label": "The model ladder",
+      "prompt": "Tap each stone",
+      "group": "Pick a company",
+      "region": "A stack of one company’s models: the big stone at the bottom is the most capable, the small stone on top is fast and cheap.",
+      "scale": [
+        "Fast, cheap",
+        "Balanced",
+        "Most capable"
+      ],
+      "stone": "{name}: see launch date",
+      "companies": [
+        {
+          "id": "openai",
+          "tiers": [
+            [
+              "GPT-6 Astra"
+            ],
+            [
+              "GPT-6 Sol",
+              "GPT-6.1 Sol"
+            ],
+            [
+              "GPT-6 Luna"
+            ]
+          ]
+        },
+        {
+          "id": "anthropic",
+          "tiers": [
+            [
+              "Claude Fable 5.1"
+            ],
+            [
+              "Claude Opus 5.5"
+            ],
+            [
+              "Claude Sonnet 5.5"
+            ],
+            [
+              "Claude Haiku 5.5"
+            ]
+          ]
+        },
+        {
+          "id": "google-deepmind",
+          "tiers": [
+            [
+              "Gemini 4 Argon"
+            ],
+            [
+              "Gemini 3.8 Flash"
+            ]
+          ],
+          "scale": [
+            "Everyday version",
+            "Most capable"
+          ]
+        },
+        {
+          "id": "deepseek",
+          "tiers": [
+            [
+              "DeepSeek V4 Pro"
+            ],
+            [
+              "DeepSeek V4.1 Flash"
+            ]
+          ],
+          "scale": [
+            "Lighter",
+            "Larger"
+          ],
+          "note": {
+            "text": "The data doesn’t rank these two; the order is a guess from the names Pro and Flash.",
+            "asOf": "2026-10-12",
+            "source": "editorial",
+            "kind": "opinion"
+          }
+        }
+      ],
+      "insight": "Each company has several sizes: big stones are strong but slow, pricey; small ones fast, cheap. Small job, small stone.",
+      "detail": {
+        "text": "For example: to summarize one email, a small model is enough; analyzing a long contract calls for a big one.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      }
+    },
+    "compare": {
+      "label": "Compare two islands",
+      "prompt": "Swap the two stones",
+      "region": "Compare two companies: the ripples of two stones overlap, and in the middle is what both can do.",
+      "prev": "Switch to the previous company",
+      "next": "Switch to the next company",
+      "side": [
+        "Left: {name}",
+        "Right: {name}"
+      ],
+      "shared": "Both",
+      "only": "Only {name}",
+      "none": "Not found in the data",
+      "doing": "Can do",
+      "pair": [
+        "openai",
+        "google-deepmind"
+      ],
+      "note": "A qualitative comparison only, no scores",
+      "insight": {
+        "text": "There’s no “best” company: compare by the work you need, how the company thinks, closed or open — not by scores.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "stone": "{name}: tap to switch company"
+    }
+  },
+  "sources": {
+    "t17-fit": {
+      "title": "AI Zen’s “good for” suggestions",
+      "publisher": "AI Zen",
+      "date": "2026-10-12",
+      "note": "A general judgment based on the strengths listed in the dataset of 12 October 2026; not a ranking or a benchmark."
+    }
+  },
+  "closures": {
+    "openai": [
+      {
+        "date": "2026-04-26",
+        "label": "Sora app closed",
+        "fact": {
+          "text": "The Sora app closed on 26 April 2026.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      },
+      {
+        "date": "2026-09-24",
+        "label": "Sora API closed",
+        "fact": {
+          "text": "The Sora API closed on 24 September 2026.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      }
+    ]
+  }
+}

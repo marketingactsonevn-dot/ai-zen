@@ -1,0 +1,291 @@
+{
+  "title": "Glossary",
+  "kicker": "{n} stones, one term each — tap to read the meaning",
+  "searchLabel": "Search terms",
+  "placeholder": "Search: token, MCP, hallucination…",
+  "clear": "Clear search",
+  "count": "{n} terms",
+  "countFiltered": "{n}/{total} stones match",
+  "empty": "No stones match yet — try another word",
+  "fieldLabel": "Terms, arranged by the six gardens",
+  "gardenGroup": "Garden {n} · {name}",
+  "stoneLabel": "{term} — {vi} · Station {n}",
+  "see": "See Station {n}",
+  "seen": "visited",
+  "close": "Close",
+  "keys": "Arrow keys move between stones, Enter opens",
+  "defMatch": "matched in the meaning",
+  "akaMatch": "matched via “{w}”",
+  "terms": [
+    {
+      "id": "llm",
+      "term": "LLM",
+      "full": "Large Language Model",
+      "vi": "the word brain",
+      "aka": [
+        "chatbot"
+      ],
+      "def": "AI that reads huge amounts of text to learn to guess the next word — the brain of chatbots.",
+      "station": 2,
+      "key": true
+    },
+    {
+      "id": "rsi",
+      "term": "RSI",
+      "full": "Recursive Self-Improvement",
+      "vi": "AI improving AI",
+      "def": "AI helps research and improve AI itself, a loop that could speed up — still just an idea.",
+      "station": 3,
+      "kind": "prediction"
+    },
+    {
+      "id": "agi",
+      "term": "AGI",
+      "full": "Artificial General Intelligence",
+      "vi": "general AI",
+      "def": "AI that can do most mental work at a human level. There's no agreed definition yet.",
+      "station": 3,
+      "kind": "prediction",
+      "key": true
+    },
+    {
+      "id": "asi",
+      "term": "ASI",
+      "full": "Artificial Superintelligence",
+      "vi": "smarter-than-human AI",
+      "def": "AI far beyond humans in most fields — only a prediction; no one knows for sure when.",
+      "station": 3,
+      "kind": "prediction"
+    },
+    {
+      "id": "token",
+      "term": "token",
+      "vi": "word piece",
+      "def": "Small pieces of text AI cuts sentences into to read and write; also the unit you pay by.",
+      "station": 4,
+      "key": true
+    },
+    {
+      "id": "context-window",
+      "term": "context window",
+      "vi": "working memory",
+      "aka": [
+        "memory",
+        "context length"
+      ],
+      "def": "The most tokens AI can see at once; go past it and the oldest part is forgotten.",
+      "station": 4
+    },
+    {
+      "id": "system-prompt",
+      "term": "system prompt",
+      "vi": "standing instructions",
+      "aka": [
+        "hidden instructions"
+      ],
+      "def": "A hidden instruction sheet the app gives AI before your message: role, tone, what's off-limits.",
+      "station": 5
+    },
+    {
+      "id": "training",
+      "term": "training",
+      "vi": "teaching the model",
+      "aka": [
+        "pre-training",
+        "learning"
+      ],
+      "def": "The stage where AI reads tons of data and slowly adjusts itself — like shaping a bonsai.",
+      "station": 6
+    },
+    {
+      "id": "fine-tuning",
+      "term": "fine-tuning",
+      "vi": "extra specialist training",
+      "def": "Teaching a trained model more with your own data so it excels at one task — like pruning a bonsai.",
+      "station": 6
+    },
+    {
+      "id": "inference",
+      "term": "inference",
+      "vi": "running the model to answer",
+      "def": "When a fully trained AI is used to answer you — each question is one run.",
+      "station": 6
+    },
+    {
+      "id": "reasoning",
+      "term": "reasoning",
+      "vi": "step-by-step thinking",
+      "aka": [
+        "deduction",
+        "thinking",
+        "scratchpad"
+      ],
+      "def": "AI drafts step by step before answering: slower and uses more tokens, but better at hard problems.",
+      "station": 6
+    },
+    {
+      "id": "hallucination",
+      "term": "hallucination",
+      "vi": "AI making things up",
+      "def": "When AI confidently says something wrong or made up. Good habit: verify what matters.",
+      "station": 6
+    },
+    {
+      "id": "rag",
+      "term": "RAG",
+      "full": "Retrieval-Augmented Generation",
+      "vi": "look it up, then answer",
+      "aka": [
+        "web search"
+      ],
+      "def": "AI checks documents or the web before answering, instead of relying only on what it learned.",
+      "station": 6
+    },
+    {
+      "id": "multimodal",
+      "term": "multimodal",
+      "vi": "many kinds of input",
+      "def": "One model that understands many formats at once: text, images, sound, sometimes even video.",
+      "station": 6
+    },
+    {
+      "id": "diffusion",
+      "term": "diffusion",
+      "vi": "step-by-step denoising",
+      "aka": [
+        "mist"
+      ],
+      "def": "How AI makes images: start from grainy noise and clean it step by step to fit the description — like mist clearing.",
+      "station": 7,
+      "key": true
+    },
+    {
+      "id": "seed",
+      "term": "seed",
+      "vi": "random starting number",
+      "def": "The starting number for the noise. Keep the same seed and prompt and you usually get a near-identical image.",
+      "station": 7
+    },
+    {
+      "id": "inpainting",
+      "term": "inpainting",
+      "vi": "fixing one area of an image",
+      "def": "AI repaints an area you select and leaves the rest untouched. Example: change the shirt, keep the face.",
+      "station": 7
+    },
+    {
+      "id": "image-to-video",
+      "term": "image-to-video",
+      "vi": "turning a picture into video",
+      "def": "AI takes an existing image and sets it in motion, helping keep characters and products consistent.",
+      "station": 8
+    },
+    {
+      "id": "mesh",
+      "term": "mesh",
+      "vi": "polygon net",
+      "def": "A 3D shell built from lots of small polygon faces that make up an object's shape.",
+      "station": 9
+    },
+    {
+      "id": "pbr",
+      "term": "PBR",
+      "full": "Physically Based Rendering",
+      "vi": "physics-based materials",
+      "aka": [
+        "texture"
+      ],
+      "def": "Materials that follow the physics of light: metal, wood, matte plastic look real under many kinds of lighting.",
+      "station": 9
+    },
+    {
+      "id": "prompt",
+      "term": "prompt",
+      "vi": "your request",
+      "aka": [
+        "command"
+      ],
+      "def": "The request you send to AI. Write it clearly, like briefing a new hire, and results get better.",
+      "station": 12,
+      "key": true
+    },
+    {
+      "id": "agent",
+      "term": "agent",
+      "vi": "AI with hands and feet",
+      "aka": [
+        "autonomous AI",
+        "assistant"
+      ],
+      "def": "AI with “hands and feet”: it makes a plan, uses tools, and takes many steps to reach a goal.",
+      "station": 14,
+      "key": true
+    },
+    {
+      "id": "mcp",
+      "term": "MCP",
+      "full": "Model Context Protocol",
+      "vi": "a universal plug",
+      "aka": [
+        "USB-C",
+        "protocol"
+      ],
+      "def": "A shared standard plug between AI and apps, like USB-C: one plug type, works in many places.",
+      "station": 16,
+      "key": true,
+      "fact": {
+        "text": "Anthropic announced it in late 2024; many big companies now support it, and a neutral body under the Linux Foundation runs it.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    {
+      "id": "skill",
+      "term": "skill",
+      "vi": "a how-to handbook",
+      "aka": [
+        "know-how"
+      ],
+      "def": "A how-to handbook AI opens only when needed: steps, templates, tips for one kind of task.",
+      "station": 16
+    },
+    {
+      "id": "plugin",
+      "term": "plugin",
+      "vi": "add-on pack",
+      "def": "A one-time install for AI that bundles skills, connections and shortcuts.",
+      "station": 16
+    },
+    {
+      "id": "a2a",
+      "term": "A2A",
+      "full": "Agent2Agent",
+      "vi": "agents talking to agents",
+      "def": "A shared standard for agents to talk and hand off work to each other, like a common language.",
+      "station": 16
+    },
+    {
+      "id": "prompt-injection",
+      "term": "prompt injection",
+      "vi": "planted instructions",
+      "aka": [
+        "injected commands",
+        "tricking agents"
+      ],
+      "def": "Commands hidden in web pages, emails or documents to trick an agent. Defense: give few permissions, confirm key actions.",
+      "station": 16
+    },
+    {
+      "id": "open-weight",
+      "term": "open-weight",
+      "vi": "downloadable model",
+      "aka": [
+        "open model",
+        "open source"
+      ],
+      "def": "A model whose weights — its learned “brain” — are public, so you can download and run it, license permitting.",
+      "station": 17,
+      "key": true
+    }
+  ]
+}

@@ -1,0 +1,536 @@
+/* Trạm 3 — handscroll · mist · raked sand */
+.t3 {
+  position: absolute;
+  inset: 0;
+  --mist: var(--paper);
+}
+:root[data-theme='dark'] .t3 {
+  --mist: color-mix(in srgb, var(--ink) 9%, var(--paper));
+}
+.t3 .k { fill: var(--ink); }
+.t3 .k2 { fill: var(--ink-2); }
+.t3 .k3 { fill: var(--ink-3); }
+.t3 .p { fill: var(--paper); }
+.t3 .card { fill: var(--card); }
+.t3 .m { fill: var(--moss); }
+.t3 .v { fill: var(--vermilion); }
+.t3 .st { fill: var(--stone-2); }
+/* the shadow side of a stone stays dark in both themes (ink turns light at night) */
+.t3 .sh { fill: var(--ink); }
+.t3 .rim { fill: var(--card); }
+.t3 .river { fill: var(--ink-2); fill-opacity: 0.72; }
+.t3 .gs0 { stop-color: var(--stone-3); }
+.t3 .gs1 { stop-color: var(--stone); }
+.t3 .sun { fill: var(--vermilion); fill-opacity: 0.88; }
+.t3 .st-f { fill: color-mix(in srgb, var(--stone) 82%, var(--ink)); }
+.t3 .sky0 { stop-color: var(--ink); stop-opacity: 0; }
+.t3 .sky1 { stop-color: var(--ink); stop-opacity: 0.07; }
+.t3 .t3-mist { fill: var(--moon, var(--card)); }
+.t3 .board { fill: var(--ink-2); }
+.t3 .chalk { fill: var(--paper); }
+.t3 .ev { fill-rule: evenodd; }
+.t3 .snow { fill: var(--ink-3); opacity: 0.6; }
+.t3 .wl { fill-opacity: 0.6; }
+/* night: the live strokes glow softly instead of chalk-white */
+:root[data-theme='dark'] .t3 .v-art .k { fill: color-mix(in srgb, var(--ink) 80%, var(--paper)); }
+:root[data-theme='dark'] .t3 .wl { fill-opacity: 0.35; }
+:root[data-theme='dark'] .t3 .board { fill: var(--moss-soft); }
+:root[data-theme='dark'] .t3 .sh { fill: var(--paper); }
+.t3 .sun-glow { fill: var(--glow); }
+:root[data-theme='dark'] .t3 .sun { fill-opacity: 0.85; }
+:root[data-theme='dark'] .t3 .st-f { fill: color-mix(in srgb, var(--stone-3) 65%, var(--paper)); }
+:root[data-theme='dark'] .t3 .sky1 { stop-color: var(--ink); stop-opacity: 0.08; }
+:root[data-theme='dark'] .t3 .rim { fill: var(--ink-2); fill-opacity: 0.4; }
+:root[data-theme='dark'] .t3 .river { fill: var(--ink-3); fill-opacity: 0.6; }
+:root[data-theme='dark'] .t3 .gs0 { stop-color: var(--stone); }
+:root[data-theme='dark'] .t3 .gs1 { stop-color: var(--stone-3); }
+:root[data-theme='dark'] .t3 .chalk { fill: var(--ink); }
+.t3 .v-m {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+}
+.t3 .v-t {
+  font-family: var(--serif);
+  font-weight: 400;
+}
+
+/* ───────── Scene 1 · the handscroll ───────── */
+.t3s-view {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  /* soft side edges, and past the last milestone the whole scroll fades into the paper: mist */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(90deg, #000 var(--mist, 200vw), rgba(0, 0, 0, 0.08) calc(var(--mist, 200vw) + var(--ramp, 400px)), transparent calc(var(--mist, 200vw) + var(--ramp, 400px) * 1.5));
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(90deg, #000 var(--mist, 200vw), rgba(0, 0, 0, 0.08) calc(var(--mist, 200vw) + var(--ramp, 400px)), transparent calc(var(--mist, 200vw) + var(--ramp, 400px) * 1.5));
+  mask-composite: intersect;
+}
+.t3s-view.dragging {
+  cursor: grabbing;
+}
+/* keyboard focus: a quiet vermilion line under the scroll and a glowing bead, not a box */
+.t3s-view:focus-visible {
+  outline: none;
+}
+.t3s:has(> .t3s-view:focus-visible)::after {
+  content: '';
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--vermilion) 18%, var(--vermilion) 82%, transparent);
+  pointer-events: none;
+}
+.t3s:has(> .t3s-view:focus-visible) .t3s-bead {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--vermilion) 22%, transparent), 0 0 14px 2px color-mix(in srgb, var(--vermilion) 45%, transparent);
+}
+.t3s-layer,
+.t3s-near {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  overflow: visible;
+}
+.t3s-layer {
+  pointer-events: none;
+  will-change: transform;
+}
+.t3s-strip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  will-change: transform;
+}
+.t3s-pic {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+.t3s-labs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t3s-lab {
+  position: absolute;
+  text-align: center;
+  pointer-events: auto;
+  cursor: auto;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.t3s-lab[aria-hidden='true'] {
+  pointer-events: none;
+}
+.t3s.side .t3s-lab {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+.t3s-year {
+  position: absolute;
+  margin: 0;
+  font: 300 1em/1 var(--serif);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--ink) 15%, transparent);
+  pointer-events: none;
+}
+/* "1974 · 1987": the separator stays quiet */
+.t3s-dot {
+  margin: 0 0.12em;
+  opacity: 0.5;
+}
+.t3s.side .t3s-year {
+  position: static;
+  margin-bottom: 0.08em;
+  color: color-mix(in srgb, var(--ink) 30%, transparent);
+}
+.t3s-title {
+  margin: 0 0 0.25em;
+  font: 400 clamp(1.15rem, 1.7vw, 1.55rem)/1.25 var(--serif);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.t3s-cap {
+  margin: 0;
+  font: 400 clamp(0.95rem, 1.15vw, 1.06rem)/1.5 var(--serif);
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+.t3s.side .t3s-title {
+  font-size: 1.1rem;
+}
+.t3s.side .t3s-cap {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.t3s-nav {
+  position: absolute;
+  z-index: 2;
+  top: calc(42% - 22px);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  color: var(--ink-2);
+  transition: opacity 0.4s, transform 0.4s var(--ease), border-color 0.3s;
+}
+.t3s-nav:hover {
+  border-color: var(--ink-3);
+  transform: scale(1.06);
+}
+.t3s-nav.prev {
+  left: -6px;
+}
+.t3s-nav.next {
+  right: -6px;
+}
+.t3s-nav.off {
+  opacity: 0.2;
+  pointer-events: none;
+}
+.t3s.side .t3s-nav {
+  top: calc(50% - 30px);
+}
+.t3s-prog {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  pointer-events: none;
+  width: min(300px, 62%);
+  height: 14px;
+  transform: translateX(-50%);
+}
+.t3s-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--line-2);
+}
+.t3s-prog i {
+  position: absolute;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  border-radius: 50%;
+  background: var(--stone-2);
+  transition: background-color 0.5s;
+}
+.t3s-prog i.on {
+  background: var(--ink-3);
+}
+.t3s-bead {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 6px;
+  margin: -3px -9px;
+  border-radius: 50% 46% 52% 48%;
+  background: var(--vermilion);
+}
+
+/* ───────── Scene 2 · stepping stones into mist ───────── */
+.t3f-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.t3f-band {
+  position: absolute;
+  left: -30%;
+  width: 160%;
+  height: 30%;
+  top: calc(58% + var(--i) * 14%);
+  pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--mist) 80%, transparent), transparent 75%);
+  animation: t3-drift calc(24s + var(--i) * 9s) ease-in-out infinite alternate;
+  will-change: transform;
+}
+.t3f.wide .t3f-band {
+  left: -14%;
+  width: 72%;
+  top: calc(30% + var(--i) * 16%);
+  height: 26%;
+}
+@keyframes t3-drift {
+  from { transform: translateX(-7%); }
+  to { transform: translateX(7%); }
+}
+.t3f-patch {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) calc(44% + var(--d) * 7%), transparent) 35%, transparent);
+}
+.t3f {
+  --moon: var(--card);
+  --moon-0: var(--card);
+  --veil: var(--card);
+}
+:root[data-theme='dark'] .t3f {
+  --moon: color-mix(in srgb, var(--ink) 14%, var(--paper));
+  --moon-0: color-mix(in srgb, var(--ink) 25%, var(--paper));
+  --veil: color-mix(in srgb, var(--ink) 46%, var(--paper));
+}
+.t3f-cover .f1 { fill-opacity: 0.1; }
+.t3f-cover .f2 { fill-opacity: 0.16; }
+:root[data-theme='dark'] .t3f-cover .f1 { fill-opacity: 0.34; }
+:root[data-theme='dark'] .t3f-cover .f2 { fill-opacity: 0.6; }
+/* the moon is a soft wash with no rim: its edge melts into the washed sky around it */
+.t3f-moon {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--moon-0) 0%, var(--moon) 58%, color-mix(in srgb, var(--moon) 60%, transparent) 86%, transparent 100%);
+  -webkit-mask-image: radial-gradient(closest-side, #000 80%, transparent 99%);
+  mask-image: radial-gradient(closest-side, #000 80%, transparent 99%);
+}
+/* night: a clean rim and, until the first stone is touched, a lit moon with glowing mist (never a grey lens);
+   once a vision is shown the light dims a little so the pale strokes read */
+:root[data-theme='dark'] .t3f-moon {
+  background: radial-gradient(closest-side, var(--moon-0), var(--moon) 80%);
+  -webkit-mask-image: radial-gradient(closest-side, #000 95%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 95%, transparent 100%);
+}
+:root[data-theme='dark'] .t3f-moon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--ink) 40%, var(--paper)), color-mix(in srgb, var(--ink) 31%, var(--paper)) 75%, color-mix(in srgb, var(--ink) 26%, var(--paper)));
+  transition: opacity 1.4s var(--ease);
+}
+:root[data-theme='dark'] .t3f.open .t3f-moon::before {
+  opacity: 0;
+}
+.t3f-pic {
+  position: absolute;
+  inset: 9%;
+  width: 82%;
+  height: 82%;
+  overflow: visible;
+}
+/* before any stone is touched: a ridge and a pine bough, half hidden behind drifting mist */
+.t3f-cover {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t3f-cover svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.t3f-cover i {
+  position: absolute;
+  width: 110%;
+  height: 36%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--veil) 90%, transparent) 40%, transparent);
+  animation: t3-veil 14s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.t3f-cover i:nth-child(2) { left: -34%; top: 6%; }
+.t3f-cover i:nth-child(3) { left: 26%; top: 38%; animation-duration: 18s; animation-direction: alternate-reverse; }
+.t3f-cover i:nth-child(4) { left: -14%; top: 70%; animation-duration: 22s; }
+@keyframes t3-veil {
+  from { transform: translateX(-12%); }
+  to { transform: translateX(12%); }
+}
+.t3f-text {
+  position: absolute;
+  text-align: center;
+}
+.t3f.short .t3f-text {
+  transform: translateY(-50%);
+  text-align: left;
+}
+.t3f.short .t3f-name {
+  font-size: 1.1rem;
+}
+.t3f.short .t3f-cap {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.t3f-name {
+  margin: 0 0 0.25em;
+  font: 400 clamp(1.15rem, 2vw, 1.6rem)/1.25 var(--serif);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.t3f-cap {
+  margin: 0;
+  font: 400 clamp(0.95rem, 1.2vw, 1.08rem)/1.5 var(--serif);
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+.t3f-stone {
+  position: absolute;
+  touch-action: manipulation;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  transition: background-color 0.4s;
+}
+.t3f-stone.next::after {
+  content: '';
+  position: absolute;
+  inset: 16% 2%;
+  border-radius: 50%;
+  border: 1.5px solid var(--vermilion);
+  opacity: 0;
+  animation: t3-call 2.8s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes t3-call {
+  0% { transform: scale(0.85); opacity: 0.75; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.t3f-ridges {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+.t3f-ring {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.4;
+}
+
+/* ───────── Scene 3 · three stones on raked sand ───────── */
+.t3v-sand {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(180deg, #000 92%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(180deg, #000 92%, transparent);
+  mask-composite: intersect;
+}
+.t3v {
+  /* the glow under a lifted stone: dawn light by day, moonlight at night */
+  --t3glow: color-mix(in srgb, var(--vermilion) 10%, transparent);
+}
+:root[data-theme='dark'] .t3v {
+  --t3glow: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.t3v .rk {
+  fill: none;
+  stroke: var(--rake);
+  stroke-width: 1.2;
+}
+.t3v .rk-hi {
+  fill: none;
+  stroke: var(--rake-hi);
+  stroke-width: 1.1;
+}
+.t3 .edge { fill: var(--ink); }
+.t3v .pool0 { stop-color: var(--card); stop-opacity: 0.75; }
+.t3v .pool1 { stop-color: var(--card); stop-opacity: 0; }
+:root[data-theme='dark'] .t3 .edge { fill: var(--ink-2); fill-opacity: 0.45; }
+/* night: moonlight pooled on the sand so the raked grooves still read */
+:root[data-theme='dark'] .t3v {
+  --rake-hi: color-mix(in srgb, var(--ink) 16%, transparent);
+}
+:root[data-theme='dark'] .t3v-wall { opacity: 0.6; }
+:root[data-theme='dark'] .t3v .pool0 { stop-color: var(--ink); stop-opacity: 0.07; }
+:root[data-theme='dark'] .t3v .pool1 { stop-color: var(--ink); stop-opacity: 0; }
+.t3v-rip ellipse {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.2;
+}
+.t3v-text {
+  position: absolute;
+  text-align: center;
+}
+.t3v-view {
+  margin: 0;
+  font: 300 clamp(1.1rem, 2vw, 1.5rem)/1.45 var(--serif);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.t3v-stone {
+  position: absolute;
+  touch-action: manipulation;
+  padding: 0;
+  border: 0;
+  border-radius: 40%;
+  background: transparent;
+}
+.t3v-name {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font: 400 clamp(0.92rem, 1.3vw, 1.08rem)/1.2 var(--serif);
+  color: var(--ink-2);
+  opacity: 0;
+  transition: opacity 0.9s var(--ease), color 0.5s;
+}
+.t3v-stone.heard .t3v-name {
+  opacity: 1;
+}
+.t3v-stone[aria-pressed='true'] .t3v-name {
+  color: var(--ink);
+}
+.t3v-stone[aria-pressed='true'] .t3v-name::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--vermilion);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t3f-band,
+  .t3f-cover i,
+  .t3f-stone.next::after {
+    animation: none;
+  }
+  .t3f-stone.next::after {
+    opacity: 0.6;
+  }
+  .t3f-moon::before {
+    transition: none;
+  }
+}
+:root[data-quality='low'] .t3f-band,
+:root[data-quality='low'] .t3f-cover i {
+  animation: none;
+}
+.t3 .t3-trail {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-opacity: 0.55;
+}

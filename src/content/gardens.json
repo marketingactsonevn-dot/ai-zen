@@ -1,0 +1,70 @@
+{
+  "gardens": [
+    {
+      "id": 1,
+      "name": "Nền tảng",
+      "tagline": "AI là gì, từ đâu tới, đang đi về đâu",
+      "motif": "sand",
+      "stations": [
+        { "id": 1, "title": "AI là gì?", "teaser": "Cùng một việc, bốn cách máy tính làm" },
+        { "id": 2, "title": "Cây gia phả AI", "teaser": "Các nhánh AI và ví dụ quen thuộc" },
+        { "id": 3, "title": "Lịch sử & lộ trình tương lai", "teaser": "Từ 1950 tới màn sương phía trước" }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Bộ não chữ (LLM)",
+      "tagline": "Bên trong một chatbot khi bạn gõ câu hỏi",
+      "motif": "brush",
+      "stations": [
+        { "id": 4, "title": "Token", "teaser": "Câu chữ vỡ thành những viên đá" },
+        { "id": 5, "title": "Hành trình một câu hỏi", "teaser": "Từ token tới chữ tiếp theo" },
+        { "id": 6, "title": "AI “tư duy” thế nào", "teaser": "Huấn luyện, giấy nháp, bịa và tra cứu" }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Xưởng sáng tạo",
+      "tagline": "Ảnh, video, 3D, âm thanh — và giao việc cho đúng AI",
+      "motif": "mist",
+      "stations": [
+        { "id": 7, "title": "AI tạo ảnh hoạt động thế nào", "teaser": "Sương mù tan dần thành hình" },
+        { "id": 8, "title": "AI tạo video hoạt động thế nào", "teaser": "Khử nhiễu cả một khối khung hình" },
+        { "id": 9, "title": "AI tạo 3D hoạt động thế nào", "teaser": "Từ một tấm ảnh tới mô hình xoay được" },
+        { "id": 10, "title": "Âm thanh, giọng nói, nhạc", "teaser": "Giọng đọc, nhân bản giọng, sáng tác nhạc" },
+        { "id": 11, "title": "Phòng giao việc", "teaser": "AI nào giỏi việc gì" }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Nghệ thuật ra lệnh",
+      "tagline": "Viết prompt như giao việc cho người mới",
+      "motif": "blocks",
+      "stations": [
+        { "id": 12, "title": "Công thức prompt chung", "teaser": "Xếp đá thành một yêu cầu rõ ràng" },
+        { "id": 13, "title": "Prompt theo từng loại AI", "teaser": "Chữ, ảnh, video, 3D, agent" }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "AI Agent",
+      "tagline": "Bộ não có tay chân",
+      "motif": "lantern",
+      "stations": [
+        { "id": 14, "title": "Agent là gì", "teaser": "Gắn tay chân cho bộ não" },
+        { "id": 15, "title": "Các loại agent & mức tự chủ", "teaser": "Từ trả lời tới tự đặt mục tiêu" },
+        { "id": 16, "title": "MCP, Skills, Plugins, A2A, Hooks", "teaser": "Ổ cắm chuẩn chung cho AI" }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Bản đồ & tác động",
+      "tagline": "Các công ty AI, và cái giá thật của mỗi câu hỏi",
+      "motif": "dusk",
+      "stations": [
+        { "id": 17, "title": "Bản đồ các công ty AI", "teaser": "Mỗi công ty là một hòn đảo đá" },
+        { "id": 18, "title": "Tác động: hiểu để dùng đúng", "teaser": "Điện, nước, tư duy — và thói quen tốt" }
+      ]
+    }
+  ]
+}

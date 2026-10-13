@@ -1,0 +1,196 @@
+{
+  "id": 15,
+  "kicker": "Đèn lồng là bạn; agent đi xa tới đâu tùy quyền bạn trao.",
+  "summary": "Trao agent quyền vừa đủ; việc không rút lại được thì để nó hỏi bạn trước.",
+  "quiz": {
+    "q": "Agent đã xem lịch và soạn xong email mời họp. Lúc nào nó nên dừng lại hỏi bạn?",
+    "options": [
+      "Trước khi xem lịch",
+      "Trước khi gửi email đi",
+      "Không cần hỏi gì cả",
+      "Sau khi đã gửi xong"
+    ],
+    "answer": 1,
+    "explain": "Xem lịch hay soạn nháp đều sửa được; email đã gửi thì không rút lại được."
+  },
+  "scenes": {
+    "autonomy": {
+      "label": "Mức tự chủ",
+      "prompt": "Kéo để trao quyền",
+      "slider": "Mức tự chủ của agent",
+      "valueText": "Mức {n}: {name}",
+      "level": "Mức {n}",
+      "you": "Bạn",
+      "agent": "Agent",
+      "goal": "Mục tiêu lớn",
+      "report": "Báo cáo",
+      "scale": {
+        "text": "Thang 5 mức do AI Zen đặt ra để dễ hình dung",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "art": "Đèn lồng đá là bạn, đốm sáng đỏ là agent. Mức tự chủ càng cao, agent càng đi xa khỏi ánh đèn.",
+      "levels": [
+        {
+          "name": "Trả lời",
+          "does": "Bạn hỏi, nó đáp. Mọi bước vẫn do bạn tự làm.",
+          "example": "Ví dụ: hỏi cách viết một công thức Excel."
+        },
+        {
+          "name": "Gợi ý",
+          "does": "Nó vạch sẵn vài lối; bạn chọn một lối rồi tự đi.",
+          "example": "Ví dụ: đề xuất ba khung giờ họp để bạn chọn."
+        },
+        {
+          "name": "Làm khi được duyệt từng bước",
+          "does": "Mỗi bước nó hỏi “làm tiếp nhé?”, bạn gật thì mới làm.",
+          "example": "Ví dụ: sửa từng dòng bảng giá, chờ bạn bấm đồng ý."
+        },
+        {
+          "name": "Tự làm, báo cáo cuối",
+          "does": "Bạn giao cả việc; nó tự đi hết lối rồi báo lại.",
+          "example": "Ví dụ: đọc 30 email khách hàng, tổng hợp thành một bản báo cáo."
+        },
+        {
+          "name": "Tự đặt mục tiêu con",
+          "does": "Bạn chỉ nêu đích lớn; nó tự chia việc nhỏ, tự mở lối mới.",
+          "example": "Ví dụ: “chuẩn bị hội thảo”, nó tự lập danh sách việc rồi làm dần."
+        }
+      ],
+      "insight": "Tự chủ càng cao, agent càng đi xa tầm mắt bạn: tiện hơn, nhưng cần ranh giới và kiểm tra kỹ.",
+      "detail": "Mẹo: chọn mức thấp nhất đủ cho việc. Việc càng quan trọng, càng nên để agent hỏi bạn nhiều hơn.",
+      "ask": "Làm tiếp nhé?"
+    },
+    "kinds": {
+      "label": "Các loại agent",
+      "prompt": "Chạm vào từng viên đá",
+      "group": "Sáu loại agent",
+      "exampleLabel": "Ví dụ",
+      "items": [
+        {
+          "id": "chat",
+          "name": "Trợ lý chat có công cụ",
+          "what": "Trò chuyện như chatbot, nhưng biết tự dùng công cụ: tra web, đọc file, tính toán.",
+          "example": "Hỏi “mai Đà Lạt có mưa không?”, nó tự tra web rồi trả lời."
+        },
+        {
+          "id": "flow",
+          "name": "Workflow tự động",
+          "what": "Workflow là quy trình vạch sẵn: các bước cố định, lần nào cũng chạy y hệt.",
+          "example": "Có đơn hàng mới → gửi email cảm ơn → ghi vào bảng tính."
+        },
+        {
+          "id": "code",
+          "name": "Agent lập trình",
+          "what": "Coding agent: tự viết code, chạy thử, thấy lỗi thì tự sửa.",
+          "example": "Tả một trang đăng ký sự kiện, nó dựng thành trang web chạy được."
+        },
+        {
+          "id": "computer",
+          "name": "Agent dùng máy tính",
+          "what": "Computer-use, browser agent: tự nhìn màn hình, rê chuột, bấm và gõ như người.",
+          "example": "Mở trình duyệt, điền form đặt phòng họp, so giá vé máy bay."
+        },
+        {
+          "id": "research",
+          "name": "Agent nghiên cứu",
+          "what": "Research agent: đọc nhiều nguồn, so sánh, rồi viết báo cáo có ghi nguồn.",
+          "example": "Tìm hiểu năm đối thủ, tổng hợp thành một bảng so sánh."
+        },
+        {
+          "id": "team",
+          "name": "Nhóm nhiều agent",
+          "what": "Multi-agent: một agent trưởng chia việc cho các agent con, rồi gom kết quả.",
+          "example": "Một agent tìm số liệu, một agent viết, một agent soát lỗi."
+        }
+      ],
+      "insight": "Workflow đi theo lối vạch sẵn; agent tự chọn bước đi. Hãy chọn loại vừa đủ cho việc của bạn.",
+      "detail": "Việc lặp lại y hệt mỗi ngày thì workflow rẻ và chắc hơn; việc cần suy nghĩ, xoay xở mới cần agent."
+    },
+    "sim": {
+      "label": "Thử giao việc",
+      "prompt": "Giao việc cho agent",
+      "region": "Mô phỏng: agent lên lịch họp và soạn email nhắc",
+      "taskLabel": "Việc bạn giao",
+      "task": "Lên lịch họp với team và gửi email nhắc",
+      "start": "Giao việc",
+      "steps": [
+        "Hiểu việc",
+        "Xem lịch",
+        "Soạn email",
+        "Hỏi ý bạn",
+        "Gửi"
+      ],
+      "stepsLabel": "Lối đi của agent",
+      "planTitle": "Agent lập kế hoạch",
+      "plan": [
+        "Xem lịch của 4 người",
+        "Tìm 30 phút cả nhóm trống",
+        "Soạn email mời họp",
+        "Hỏi bạn trước khi gửi"
+      ],
+      "calTitle": "Agent xem lịch · Thứ Năm",
+      "people": [
+        "Lan",
+        "Minh",
+        "Hà",
+        "Bạn"
+      ],
+      "hours": [
+        "9h",
+        "10h",
+        "11h",
+        "12h",
+        "13h",
+        "14h",
+        "15h",
+        "16h"
+      ],
+      "found": "Cả 4 người cùng trống: Thứ Năm, 14:00",
+      "draftTitle": "Agent soạn email",
+      "to": "Gửi tới",
+      "subjectLabel": "Chủ đề",
+      "subject": "Họp nhóm 30 phút · Thứ Năm 14:00",
+      "body": [
+        "Chào cả nhóm,",
+        "Mời mọi người họp 30 phút để chốt kế hoạch tháng tới.",
+        "Cảm ơn!"
+      ],
+      "recipients": [
+        "Lan · nhóm mình",
+        "Hà · nhóm mình"
+      ],
+      "wrong": "Minh · công ty đối tác",
+      "right": "Minh · nhóm mình",
+      "note": "Danh bạ có hai người tên Minh; mình đã chọn người đầu tiên.",
+      "checkTitle": "Agent dừng lại, chờ bạn",
+      "stone": {
+        "text": "Viên đá buộc dây đặt trên lối đá vườn trà Nhật nhắc khách: xin đừng đi lối này.",
+        "asOf": "2026-10-12",
+        "source": "t15-sekimori"
+      },
+      "approve": "Duyệt & gửi",
+      "edit": "Sửa trước",
+      "editHint": "Chạm vào người nhận cần sửa",
+      "swap": "Đổi {from} thành {to}",
+      "sentWrong": "Đã gửi, cả Minh bên đối tác. Thư đi rồi, không rút lại được.",
+      "sentRight": "Đã gửi đúng ba người trong nhóm. Lịch họp đã chốt.",
+      "retry": "Thử lại từ trạm hỏi ý",
+      "again": "Chạy lại từ đầu",
+      "insight": "Để agent tự xem, tự soạn; nhưng gửi đi, trả tiền, xóa dữ liệu thì cho nó dừng lại hỏi bạn.",
+      "detail": "Những việc ấy khó rút lại. Agent có thể nhầm người, nhầm giờ; vài giây đọc lại giúp bạn tránh rắc rối.",
+      "next": "Tiếp",
+      "partner": "Đối tác",
+      "team": "Nhóm mình"
+    }
+  },
+  "sources": {
+    "t15-sekimori": {
+      "title": "Japanese Garden Dictionary — barrier stone (関守石 sekimori ishi)",
+      "publisher": "Nara National Research Institute for Cultural Properties (Nabunken); Ono Kenkichi & Walter Edwards",
+      "date": "2010",
+      "url": "https://www.nabunken.go.jp/org/bunka/jgd/pages/BarrierStone.html"
+    }
+  }
+}

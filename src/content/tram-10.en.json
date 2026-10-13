@@ -1,0 +1,128 @@
+{
+  "id": 10,
+  "kicker": "Words become voices; stones become notes on a stream.",
+  "scenes": {
+    "voice": {
+      "label": "Text to voice",
+      "prompt": "Pick a voice",
+      "art": "A sentence beside a pond. As it is read aloud, sound waves rise like ink reeds, mirrored in the water.",
+      "voicesLabel": "Voices",
+      "readAs": "Read the sentence in the voice: {name}",
+      "voices": [
+        "Deep & warm",
+        "Clear & bright",
+        "Whisper"
+      ],
+      "langLabel": "Language of the sentence",
+      "langs": [
+        {
+          "name": "Tiếng Việt",
+          "lang": "vi",
+          "text": "Sáng nay sương tan, mời bạn một chén trà."
+        },
+        {
+          "name": "English",
+          "lang": "en",
+          "text": "The morning mist is gone, come have some tea."
+        }
+      ],
+      "same": "Same voice, different language",
+      "brand": {
+        "text": "Example AI voice tool: ElevenLabs",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": "Text-to-speech is AI reading text aloud: it learns how real people pause and stress words, so it sounds natural.",
+      "detail": "You can pick the voice, emotion and speed. Always listen before using it: AI may misread names and numbers.",
+      "dubInsight": "AI dubbing: the same voice, speaking another language.",
+      "dubDetail": "Ask a fluent speaker to check it: AI can get the meaning wrong, especially jokes and idioms."
+    },
+    "consent": {
+      "label": "Voice cloning",
+      "prompt": "Tap to copy the voice",
+      "owner": "Lan’s real voice",
+      "name": "Lan",
+      "copy": "AI copy",
+      "copyAria": "Use AI to copy Lan’s voice",
+      "waiting": "No permission yet",
+      "askPrompt": "Ask Lan first",
+      "slip": [
+        "Lan agrees",
+        "to share her voice"
+      ],
+      "ask": "Ask Lan",
+      "seal": "Lan",
+      "tag": "AI voice",
+      "art": "Two voice rings like two fingerprints: on the left, Lan’s real voice; on the right, the AI copy.",
+      "insight": "A voice belongs to its owner: always ask their permission, and clearly label it “AI voice”.",
+      "detail": {
+        "text": "A short recording is enough to fake a voice. A “relative” calls asking for money urgently? Don’t trust the voice: call back a number you know.",
+        "asOf": "2026-10-12",
+        "source": "ftc-voice-2023"
+      }
+    },
+    "stream": {
+      "label": "Music stream",
+      "prompt": "Pick a description",
+      "group": "Descriptions for the music AI",
+      "art": "A stream with five lines like a musical staff, bamboo on the bank. Each stone is a note that sings as it drifts past the bamboo.",
+      "moods": [
+        {
+          "name": "Zen",
+          "rest": "bamboo flute, slow"
+        },
+        {
+          "name": "Cheerful",
+          "rest": "zither, morning sun"
+        },
+        {
+          "name": "Night rain",
+          "rest": "piano, softly sad"
+        }
+      ],
+      "melody": "melody",
+      "harmony": "harmony",
+      "brand": {
+        "text": "Example AI music tool: Suno",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": "Describe it in words — genre, mood, instruments — and AI writes the melody, harmony, sometimes even lyrics.",
+      "detail": "Each run usually gives a different track. Listen to a few, pick the one you like, then sharpen your description.",
+      "mark": "©",
+      "rightsInsight": "AI music learns from real music, so there are copyright disputes. Using it for business? Read the terms carefully.",
+      "rightsDetail": {
+        "text": "In 2024, major record labels sued Suno, alleging it used copyrighted music to train its AI.",
+        "asOf": "2026-10-12",
+        "source": "riaa-suno-2024"
+      }
+    }
+  },
+  "quiz": {
+    "q": "You want AI to clone a coworker’s voice. What comes first?",
+    "options": [
+      "Record them secretly so it sounds natural",
+      "Ask that person for permission",
+      "Pick the priciest tool",
+      "Nothing, anyone’s voice is fair game"
+    ],
+    "answer": 1,
+    "explain": "A voice belongs to a real person: you need their consent, and when you post, label it as an AI voice."
+  },
+  "summary": "Using AI voices and music: ask permission, respect copyright, label it as AI.",
+  "sources": {
+    "ftc-voice-2023": {
+      "title": "Scammers use AI to enhance their family emergency schemes",
+      "publisher": "U.S. Federal Trade Commission (FTC) · Consumer Alert",
+      "url": "https://consumer.ftc.gov/consumer-alerts/2023/03/scammers-use-ai-enhance-their-family-emergency-schemes",
+      "date": "2023-03-20",
+      "note": "The FTC writes: scammers need only a short clip of a loved one’s voice; its advice is not to trust the voice, but to call back a number you know for sure."
+    },
+    "riaa-suno-2024": {
+      "title": "Record Companies Bring Landmark Cases for Responsible AI Against Suno and Udio in Boston and New York Federal Courts, Respectively",
+      "publisher": "RIAA (Recording Industry Association of America)",
+      "date": "2024-06-24",
+      "note": "Filed by Sony Music, Universal Music and Warner Records. These are allegations in a lawsuit, not a court ruling. Update (needs checking): Warner Music settled with Suno (Nov 2025); Universal and Sony were still pursuing the case per mid-2026 reports."
+    }
+  }
+}

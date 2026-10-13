@@ -1,0 +1,352 @@
+/* ───────── Logo stone ─────────
+   A pale pebble that carries an official mark untouched. The face stays light in both themes so dark
+   marks remain visible: light mode uses the card/stone tokens, the night garden uses the (light) ink tokens. */
+.logo-stone {
+  --ls-size: 72px;
+  --ls-face: var(--card);
+  --ls-edge: var(--stone-3);
+  --ls-text: var(--ink);
+  --ls-ring: var(--ink);
+  --ls-under: var(--ink);
+  --ls-radius: 48% 52% 45% 55% / 55% 50% 50% 45%;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--ls-size) * 1.28);
+  height: var(--ls-size);
+  isolation: isolate;
+  vertical-align: middle;
+}
+:root[data-theme='dark'] .logo-stone {
+  --ls-face: var(--ink);
+  --ls-edge: var(--ink-2);
+  --ls-text: var(--on-ink);
+  --ls-under: var(--on-ink);
+}
+.logo-stone[data-shape='1'] {
+  --ls-radius: 55% 45% 52% 48% / 50% 56% 44% 50%;
+}
+.logo-stone[data-shape='2'] {
+  --ls-radius: 50% 50% 46% 54% / 46% 52% 48% 54%;
+}
+.logo-stone[data-shape='3'] {
+  --ls-radius: 44% 56% 50% 50% / 52% 46% 54% 48%;
+}
+
+.ls-body {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 13%;
+  border-radius: var(--ls-radius);
+  border: 1px solid var(--line);
+  background: radial-gradient(120% 110% at 34% 24%, var(--ls-face) 0%, var(--ls-face) 34%, var(--ls-edge) 100%);
+  box-shadow: inset 0 -4px 10px -6px color-mix(in srgb, var(--ls-under) 22%, transparent);
+  transition: scale 0.6s var(--ease), box-shadow 0.6s var(--ease);
+}
+:root[data-theme='dark'] .ls-body {
+  /* night garden: the stone catches a soft moss glow */
+  box-shadow:
+    inset 0 -4px 10px -6px color-mix(in srgb, var(--ls-under) 30%, transparent),
+    0 0 calc(var(--ls-size) * 0.4) 0 var(--glow-moss);
+}
+
+/* the simple-icons shape, unaltered, painted in its recorded brand colour (set inline from logos.json) */
+.ls-mark {
+  display: block;
+  height: 44%;
+  aspect-ratio: 1;
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
+  pointer-events: none;
+  forced-color-adjust: none;
+}
+/* official colour artwork: shown untouched, contained in the stone */
+.ls-mark.is-image {
+  height: 50%;
+  aspect-ratio: 1;
+  background: center / contain no-repeat;
+  -webkit-mask: none;
+  mask: none;
+}
+.ls-mark.is-wordmark {
+  width: 74%;
+  height: 34%;
+  aspect-ratio: auto;
+}
+/* name badges: type never drops below 11px — a long name widens the stone instead */
+.logo-stone[data-kind='name'] {
+  width: auto;
+  min-width: calc(var(--ls-size) * 1.28);
+  max-width: calc(var(--ls-size) * 2);
+}
+.logo-stone[data-kind='name'] > .ls-body {
+  padding-inline: calc(var(--ls-size) * 0.16);
+}
+.ls-name {
+  display: block;
+  max-width: 100%;
+  color: var(--ls-text);
+  font: 500 max(11px, calc(var(--ls-size) * var(--ls-fs, 0.18))) / 1.08 var(--serif);
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: normal;
+}
+.ls-body > * {
+  animation: ls-in 0.9s var(--ease) both;
+}
+
+/* soft ground shadow that breathes with the float */
+.ls-shadow {
+  position: absolute;
+  z-index: 0;
+  left: 14%;
+  right: 14%;
+  bottom: -9%;
+  height: 16%;
+  border-radius: 50%;
+  background: var(--ls-under);
+  opacity: 0.13;
+  filter: blur(5px);
+}
+:root[data-theme='dark'] .ls-shadow {
+  opacity: 0.55;
+}
+
+/* ink ripple rings — drawn behind the stone, never on the mark */
+.ls-ripple {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.ls-ripple::before,
+.ls-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--ls-ring);
+  opacity: 0;
+  transform: scale(0.94);
+}
+.ls-ripple::after {
+  --ls-d: 1.3s;
+}
+
+/* idle float — on the stone, not the logo */
+.logo-stone[data-float] > .ls-body {
+  animation: ls-float 6.8s var(--ease-soft) var(--ls-delay, 0s) infinite;
+}
+.logo-stone[data-float] > .ls-shadow {
+  animation: ls-shadow 6.8s var(--ease-soft) var(--ls-delay, 0s) infinite;
+}
+
+/* hover / focus: lift a little and let ink rings spread outward */
+.logo-stone:hover > .ls-body,
+.ls-host:is(:hover, :focus-within) .ls-body,
+:is(a, button):is(:hover, :focus-visible) .ls-body {
+  scale: 1.04;
+}
+.logo-stone:hover > .ls-ripple::before,
+.logo-stone:hover > .ls-ripple::after,
+.ls-host:is(:hover, :focus-within) .ls-ripple::before,
+.ls-host:is(:hover, :focus-within) .ls-ripple::after,
+:is(a, button):is(:hover, :focus-visible) .ls-ripple::before,
+:is(a, button):is(:hover, :focus-visible) .ls-ripple::after {
+  animation: ls-ripple 2.6s var(--ease-soft) var(--ls-d, 0s) infinite;
+}
+
+@keyframes ls-in {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+}
+@keyframes ls-float {
+  50% {
+    translate: 0 calc(var(--ls-size) * -0.045);
+  }
+}
+@keyframes ls-shadow {
+  50% {
+    scale: 0.86 0.9;
+  }
+}
+@keyframes ls-ripple {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  18% {
+    opacity: 0.32;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-stone *,
+  .logo-stone *::before,
+  .logo-stone *::after {
+    animation: none !important;
+  }
+  /* still show the state change — a single still ring instead of a moving ripple */
+  .logo-stone:hover > .ls-ripple::before,
+  .ls-host:is(:hover, :focus-within) .ls-ripple::before,
+  :is(a, button):is(:hover, :focus-visible) .ls-ripple::before {
+    opacity: 0.28;
+    transform: scale(1.18);
+  }
+  .ls-body {
+    transition: none;
+  }
+}
+
+/* ───────── #/logos — "Nguồn logo" credits page ───────── */
+.lp-head {
+  padding: clamp(36px, 8vh, 96px) 0 clamp(26px, 5vh, 56px);
+  border-bottom: 1px solid var(--line);
+}
+.lp-head h1 {
+  margin-bottom: 0.35em;
+}
+.lp-lede {
+  max-width: var(--measure);
+  font: 400 clamp(1.08rem, 1.8vw, 1.3rem)/1.55 var(--serif);
+  color: var(--ink-2);
+  margin: 0 0 1.4rem;
+}
+.lp-rules {
+  display: grid;
+  gap: 10px;
+  max-width: 44rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rule;
+}
+.lp-rules li {
+  position: relative;
+  padding-left: 2.1rem;
+  color: var(--ink-2);
+  font-size: 0.98rem;
+}
+.lp-rules li::before {
+  counter-increment: rule;
+  content: counter(rule);
+  position: absolute;
+  left: 0;
+  top: 0.12em;
+  display: grid;
+  place-items: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 48% 52% 45% 55% / 55% 50% 50% 45%;
+  background: var(--stone-3);
+  color: var(--ink-2);
+  font: 500 0.78rem/1 var(--serif);
+}
+
+.lp-grid-section {
+  padding-top: clamp(40px, 8vh, 90px);
+}
+.lp-count {
+  color: var(--ink-2);
+  margin-bottom: clamp(18px, 3vh, 28px);
+}
+.lp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: clamp(12px, 1.8vw, 20px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  height: 100%;
+  padding: 18px 18px 14px;
+  border-radius: var(--r);
+  background: var(--card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-1);
+  transition: border-color 0.3s, box-shadow 0.45s var(--ease);
+}
+.lp-item:hover,
+.lp-item:focus-within {
+  border-color: var(--line-2);
+  box-shadow: var(--shadow-2);
+}
+.lp-item h3 {
+  margin: 0 0 0.15em;
+  font-size: 1.12rem;
+}
+.lp-cats,
+.lp-title {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+.lp-origin {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.45em 0 0.1em;
+  max-width: 100%;
+  padding: 0.14em 0.65em;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: 1px solid var(--line-2);
+  color: var(--ink-2);
+  font: 500 0.74rem/1.45 var(--sans);
+}
+.lp-item[data-origin='simple-icons'] .lp-origin {
+  border-color: var(--moss-2);
+  color: var(--moss);
+}
+.lp-links {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 14px;
+  margin: 0;
+}
+.lp-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
+.lp-links a:hover {
+  color: var(--ink);
+}
+
+.lp-note {
+  margin-top: clamp(40px, 8vh, 90px);
+  display: grid;
+  gap: 6px;
+}
+.lp-note-main {
+  margin: 0;
+  font: 400 clamp(1.1rem, 2vw, 1.35rem)/1.45 var(--serif);
+  color: var(--ink);
+}
+.lp-note-meta {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.86rem;
+}
+.lp-back {
+  margin-top: clamp(28px, 5vh, 48px);
+}

@@ -1,0 +1,34 @@
+{
+  "eyebrow": "Source transparency",
+  "title": "Logo sources",
+  "lede": "Logos in AI Zen are each company's latest official logo, left unchanged.",
+  "rules": [
+    "Source: the company's press kit, official website or Wikimedia Commons. Each file names where it came from.",
+    "No redrawing, no distorting: colour logos keep their own colours; single-colour marks are tinted in the brand colour. Motion happens only around the logo.",
+    "No official file? The company name appears on the stone — we never invent an icon."
+  ],
+  "gridTitle": "Companies in the garden",
+  "loading": "Arranging stones…",
+  "count": "{logos} official logos · {names} companies shown by name",
+  "loadError": "Couldn't load the logo list, so every company is shown by name.",
+  "originIcon": "Official logo",
+  "originName": "Shown by name",
+  "iconTitle": "Icon: {title}",
+  "links": {
+    "source": "File source",
+    "guidelines": "Brand guidelines",
+    "license": "Separate license",
+    "pressKit": "Brand page"
+  },
+  "linkLabel": "{label} for {name} (opens in a new tab)",
+  "categories": {
+    "text": "Text",
+    "image": "Image",
+    "video": "Video",
+    "3d": "3D",
+    "audio": "Audio"
+  },
+  "note": "Logos and trademarks belong to their respective owners; used for educational purposes.",
+  "generated": "List generated from {package} on {date}.",
+  "license": "Private educational use; trademarks belong to their owners."
+}

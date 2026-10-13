@@ -1,0 +1,429 @@
+/* Trạm 14 — Agent là gì: brain in a jar · anatomy garden · stone loop */
+.t14 {
+  position: absolute;
+  inset: 0;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.t14-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+}
+.t14 .k { fill: var(--ink); }
+.t14 .k2 { fill: var(--ink-2); }
+.t14 .k3 { fill: var(--ink-3); }
+.t14 .p { fill: var(--paper); }
+.t14 .card { fill: var(--card); }
+.t14 .v { fill: var(--vermilion); }
+.t14 .m { fill: var(--moss); }
+.t14 .m2 { fill: var(--moss-2); }
+/* the ink arms: one stroke colour, softer at night so they glow rather than shine */
+.t14 .arm { fill: var(--ink); }
+.t14 .arm-w { fill: var(--ink); fill-opacity: 0.12; }
+.t14 .shd { fill: var(--ink); fill-opacity: 0.13; }
+.t14 .rim { fill: var(--card); fill-opacity: 0.75; }
+.t14 .edge { fill: var(--ink); fill-opacity: 0.42; }
+/* dawn: a pale vermilion sun by day, a pale moon at night; ridges fade down into mist */
+.t14 .sun0 { stop-color: var(--vermilion); stop-opacity: 0.1; }
+.t14 .sun1 { stop-color: var(--vermilion); stop-opacity: 0.14; }
+.t14 .sun2 { stop-color: var(--vermilion); stop-opacity: 0.2; }
+.t14 .sun3 { stop-color: var(--vermilion); stop-opacity: 0; }
+.t14 .halo0 { stop-color: var(--vermilion); stop-opacity: 0.05; }
+.t14 .halo1 { stop-color: var(--vermilion); stop-opacity: 0; }
+.t14 .rdg0 { stop-color: var(--ink); stop-opacity: 0.12; }
+.t14 .rdg1 { stop-color: var(--ink); stop-opacity: 0.025; }
+.t14 .mist0 { stop-color: var(--paper); stop-opacity: 0; }
+.t14 .mist1 { stop-color: var(--paper); stop-opacity: 0.92; }
+.t14 .hi { fill: #fff; fill-opacity: 0.85; }
+.t14 .glass { fill: var(--card); fill-opacity: 0.32; }
+.t14 .bfill { fill: color-mix(in srgb, var(--card) 70%, var(--vermilion-soft)); }
+.t14 .st-t { fill: var(--stone-3); }
+.t14 .st-f { fill: var(--stone-2); }
+.t14 .stn { fill: var(--stone-2); }
+.t14 .wood { fill: color-mix(in srgb, var(--stone) 55%, var(--ink-2)); }
+.t14 .lamp { fill: color-mix(in srgb, var(--card) 55%, var(--vermilion-soft)); }
+.t14 .lampwin { fill: color-mix(in srgb, var(--vermilion-soft) 70%, var(--card)); }
+.t14 .ring-v { fill: none; stroke: var(--vermilion); stroke-width: 2; }
+.t14 .ripple { fill: none; stroke: var(--vermilion); stroke-width: 1.4; }
+.t14 .rk { fill: none; stroke: var(--rake); stroke-width: 1.2; }
+.t14 .rk-hi { fill: none; stroke: var(--rake-hi); stroke-width: 1.2; }
+.t14 .gl0 { stop-color: var(--vermilion); stop-opacity: 0.16; }
+.t14 .gl1 { stop-color: var(--vermilion); stop-opacity: 0.05; }
+.t14 .gl2 { stop-color: var(--vermilion); stop-opacity: 0; }
+.t14 .lp0 { stop-color: var(--vermilion); stop-opacity: 0.22; }
+.t14 .lp1 { stop-color: var(--vermilion); stop-opacity: 0; }
+.t14-m {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+:root[data-theme='dark'] .t14 .hi { fill: var(--ink); fill-opacity: 0.28; }
+:root[data-theme='dark'] .t14 .glass { fill: var(--ink); fill-opacity: 0.04; }
+:root[data-theme='dark'] .t14 .bfill { fill: color-mix(in srgb, var(--card) 80%, var(--vermilion)); }
+:root[data-theme='dark'] .t14 .st-t { fill: var(--stone); }
+:root[data-theme='dark'] .t14 .st-f { fill: var(--stone-3); }
+:root[data-theme='dark'] .t14 .stn { fill: var(--stone); }
+:root[data-theme='dark'] .t14 .wood { fill: var(--stone-2); }
+:root[data-theme='dark'] .t14 .lamp { fill: color-mix(in srgb, var(--vermilion) 30%, var(--card)); }
+:root[data-theme='dark'] .t14 .lampwin { fill: color-mix(in srgb, var(--vermilion) 45%, var(--card)); }
+:root[data-theme='dark'] .t14 .gl0 { stop-opacity: 0.3; }
+:root[data-theme='dark'] .t14 .arm { fill: var(--ink-2); fill-opacity: 0.8; }
+:root[data-theme='dark'] .t14 .arm-w { fill: var(--vermilion); fill-opacity: 0.08; }
+:root[data-theme='dark'] .t14 .shd { fill: #000; fill-opacity: 0.3; }
+:root[data-theme='dark'] .t14 .rim { fill: var(--ink); fill-opacity: 0.12; }
+:root[data-theme='dark'] .t14 .edge { fill: var(--ink-2); fill-opacity: 0.22; }
+:root[data-theme='dark'] .t14 .sun0,
+:root[data-theme='dark'] .t14 .sun1,
+:root[data-theme='dark'] .t14 .sun2,
+:root[data-theme='dark'] .t14 .sun3,
+:root[data-theme='dark'] .t14 .halo0,
+:root[data-theme='dark'] .t14 .halo1 { stop-color: var(--ink); }
+:root[data-theme='dark'] .t14 .sun0 { stop-opacity: 0.07; }
+:root[data-theme='dark'] .t14 .sun1 { stop-opacity: 0.09; }
+:root[data-theme='dark'] .t14 .sun2 { stop-opacity: 0.13; }
+:root[data-theme='dark'] .t14 .halo0 { stop-opacity: 0.04; }
+:root[data-theme='dark'] .t14 .rdg0 { stop-opacity: 0.09; }
+:root[data-theme='dark'] .t14 .rdg1 { stop-opacity: 0.02; }
+:root[data-theme='dark'] .t14 .gl1 { stop-opacity: 0.1; }
+:root[data-theme='dark'] .t14 .lp0 { stop-opacity: 0.42; }
+
+/* in-picture words: serif, quiet */
+.t14-cap,
+.t14-tlab {
+  position: absolute;
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--ink-2);
+  white-space: nowrap;
+  pointer-events: none;
+  translate: -50% 0;
+}
+.t14-cap {
+  color: var(--ink);
+  transition: opacity 0.5s;
+}
+.t14-tlab {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease) 1.4s;
+}
+.t14-jar.on .t14-tlab {
+  opacity: 1;
+}
+
+/* the seal button: a small vermilion hanko dot + serif words on a paper pill */
+.t14-seal {
+  position: absolute;
+  translate: -50% 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px var(--pad, 20px) 6px calc(var(--pad, 20px) * 0.7);
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: var(--shadow-1);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  touch-action: manipulation;
+  transition: border-color 0.3s, box-shadow 0.4s, scale 0.4s var(--ease);
+}
+.t14-seal:hover {
+  border-color: var(--ink-3);
+  box-shadow: var(--shadow-2), 0 0 0 3px color-mix(in srgb, var(--vermilion) 10%, transparent);
+  scale: 1.02;
+}
+.t14-seal:active {
+  scale: 0.98;
+}
+.t14-seal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--vermilion);
+  rotate: 8deg;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--vermilion) 18%, transparent);
+}
+.t14-jar.on .t14-seal-dot {
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--ink-3);
+}
+
+/* ───────── Scene 2 · anatomy ───────── */
+.t14-part {
+  transition: opacity 0.7s var(--ease), filter 0.7s var(--ease);
+}
+.t14-ana.picked .t14-part:not(.sel) {
+  opacity: 0.38;
+}
+.t14-ana.picked .t14-part.sel {
+  filter: drop-shadow(0 0 10px var(--glow));
+}
+.t14-hot {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  touch-action: manipulation;
+}
+.t14-hot:focus-visible {
+  outline: 1.5px dashed var(--vermilion);
+  outline-offset: 2px;
+  border-radius: 18px;
+}
+/* an unread part: a slow vermilion seed */
+.t14-seed {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--vermilion);
+  pointer-events: none;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--vermilion) 45%, transparent);
+  animation: t14-seed 2.6s ease-out infinite;
+  transition: opacity 0.5s, scale 0.5s var(--ease);
+}
+.t14-seed.read {
+  opacity: 0;
+  scale: 0.2;
+}
+@keyframes t14-seed {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--vermilion) 45%, transparent); }
+  70%, 100% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--vermilion) 0%, transparent); }
+}
+.t14-lab {
+  position: absolute;
+  margin: 0;
+  max-width: var(--lw, 15rem);
+  pointer-events: none;
+  font-family: var(--serif);
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.t14-lab.read {
+  opacity: 1;
+}
+.t14-ana .t14-lab.read:not(.sel) {
+  padding: 3px 8px 4px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.t14-ana.compact .t14-lab:not(.sel) .t14-lab-sub {
+  display: none;
+}
+.t14-ana.tiny .t14-lab.read:not(.sel),
+.t14-ana .t14-lab.read.under {
+  opacity: 0;
+}
+.t14 .sw0 { stop-color: var(--paper-2); stop-opacity: 0; }
+.t14 .sw1 { stop-color: var(--paper-2); stop-opacity: 0.7; }
+.t14-lab-name {
+  display: block;
+  font-weight: 500;
+  font-size: var(--fs, 1rem);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.t14-lab-sub {
+  display: block;
+  font-weight: 300;
+  font-size: calc(var(--fs, 1rem) * 0.86);
+  line-height: 1.25;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.t14-lab-text {
+  display: none;
+  margin-top: 6px;
+  font-weight: 300;
+  font-size: calc(var(--fs, 1rem) * 0.92);
+  line-height: 1.4;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+/* the picked part's label opens into a paper slip */
+.t14-lab.sel {
+  z-index: 3;
+  padding: 10px 14px 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-2);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  width: max-content;
+}
+.t14-lab.sel .t14-lab-text {
+  display: block;
+}
+.t14-lab.sel .t14-lab-name::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 2px;
+  rotate: 8deg;
+  vertical-align: 0.1em;
+  background: var(--vermilion);
+}
+
+/* ───────── Scene 3 · the loop ───────── */
+.t14-loop-cap {
+  position: absolute;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: 'slip btn' 'words words';
+  align-items: center;
+  justify-items: start;
+  gap: 12px 16px;
+}
+.t14-loop-cap.stack {
+  grid-template-columns: 1fr;
+  grid-template-areas: 'slip' 'btn' 'words';
+  gap: 16px;
+}
+.t14-slip { grid-area: slip; }
+.t14-loop-words { grid-area: words; }
+.t14-loop-cap > .t14-seal { grid-area: btn; }
+/* the words come after the first press: the picture speaks first */
+.t14-loop-words {
+  min-width: 0;
+  opacity: 0;
+  translate: 0 6px;
+  transition: opacity 0.9s var(--ease), translate 0.9s var(--ease);
+}
+.t14-loop.started .t14-loop-words {
+  opacity: 1;
+  translate: none;
+}
+.t14-loop-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0 0 4px;
+}
+.t14-loop-name {
+  font: 500 var(--fs, 1.2rem)/1.2 var(--serif);
+  color: var(--ink);
+}
+.t14-loop-round {
+  font: 400 0.78rem/1 var(--sans);
+  color: var(--ink-3);
+}
+.t14-loop-round:empty {
+  display: none;
+}
+.t14-loop-text {
+  margin: 0;
+  min-height: 4.2em;
+  font: 300 calc(var(--fs, 1.2rem) * 0.88)/1.42 var(--serif);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.t14-loop-cap .t14-seal {
+  position: relative;
+  translate: none;
+  font-size: clamp(13px, calc(var(--fs, 18px) * 0.85), 17px);
+}
+.t14-slip {
+  flex: none;
+  display: block;
+  width: var(--sw, 150px);
+  height: auto;
+  max-width: none;
+  overflow: visible;
+  filter: drop-shadow(0 6px 14px rgba(48, 38, 22, 0.08));
+}
+.t14-slip .frame { fill: var(--card); stroke: var(--line-2); stroke-width: 1; }
+.t14-slip .ttl { font-family: var(--serif); font-weight: 500; fill: var(--ink); }
+.t14-slip .time { font-family: var(--sans); font-weight: 400; fill: var(--ink-2); }
+.t14-slip .rule { stroke: var(--line); stroke-width: 1; }
+.t14-slip .ok { fill: var(--moss); }
+.t14-slip .busy { fill: var(--vermilion); }
+.t14-slip .free { fill: var(--stone-2); }
+.t14-slip .band { fill: var(--ink); fill-opacity: 0.08; }
+.t14-slip .strike { fill: none; stroke: var(--ink-2); stroke-width: 2.4; stroke-linecap: round; }
+.t14-slip .tick { fill: none; stroke: var(--moss); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.t14-slip .seal-tick { fill: none; stroke: var(--card); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.t14-slip circle,
+.t14-slip rect,
+.t14-slip path {
+  transition: opacity 0.6s var(--ease), fill 0.6s;
+}
+:root[data-theme='dark'] .t14-slip .band { fill-opacity: 0.12; }
+.t14-stone-lab {
+  position: absolute;
+  margin: 0;
+  translate: -50% 0;
+  font: 400 var(--fs, 0.95rem)/1.2 var(--serif);
+  color: var(--ink-2);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: color 0.5s;
+}
+.t14-stone-lab.here {
+  color: var(--ink);
+  font-weight: 500;
+}
+.t14-repeat {
+  position: absolute;
+  margin: 0;
+  font: 300 var(--fs, 0.85rem)/1 var(--serif);
+  color: var(--ink-3);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.t14-stone-hit {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  translate: -50% -50%;
+  touch-action: manipulation;
+}
+.t14 .path { fill: none; stroke: var(--ink); stroke-opacity: 0.16; stroke-width: 1.4; stroke-dasharray: 1 7; stroke-linecap: round; }
+.t14 .chev-l { fill: none; stroke: var(--ink-3); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.t14 .walker { fill: var(--ink); }
+.t14 .walker-glow { fill: var(--vermilion); fill-opacity: 0.22; }
+.t14 .foot { fill: var(--ink); fill-opacity: 0.32; }
+.t14 .halo { fill: var(--vermilion); fill-opacity: 0.06; stroke: var(--vermilion); stroke-width: 1.2; stroke-dasharray: 2 5; stroke-linecap: round; }
+.t14-halo {
+  animation: t14-halo 2.4s ease-in-out infinite;
+}
+@keyframes t14-halo {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.95; }
+}
+:root[data-theme='dark'] .t14 .walker-glow { fill-opacity: 0.32; }
+
+@media (prefers-reduced-motion: reduce) {
+  .t14-seed,
+  .t14-halo {
+    animation: none;
+  }
+  .t14-loop-words {
+    transition: none;
+  }
+}

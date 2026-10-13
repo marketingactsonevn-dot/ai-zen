@@ -1,0 +1,1185 @@
+/* Bài thi cuối — a stone gate at dawn, ten stepping stones, an ensō, and a rice-paper certificate. */
+.ex {
+  --ex-a0: var(--rock-hi);
+  --ex-a1: var(--stone-3);
+  --ex-a2: var(--stone-2);
+  --ex-light: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container: exam / size;
+}
+:root[data-theme='dark'] .ex {
+  --ex-a0: color-mix(in srgb, var(--stone-2) 82%, var(--ink));
+  --ex-a1: var(--stone-2);
+  --ex-a2: var(--stone-3);
+  --ex-light: rgba(255, 255, 255, 0.07);
+}
+.ex-defs {
+  position: absolute;
+}
+.ex-g0 {
+  stop-color: var(--rock-hi);
+}
+.ex-g1 {
+  stop-color: var(--rock-mid);
+}
+.ex-g2 {
+  stop-color: var(--rock-lo);
+}
+.ex-a0 {
+  stop-color: var(--ex-a0);
+}
+.ex-a1 {
+  stop-color: var(--ex-a1);
+}
+.ex-a2 {
+  stop-color: var(--ex-a2);
+}
+.ex-s0 {
+  stop-color: var(--vermilion);
+  stop-opacity: 0.85;
+}
+.ex-s1 {
+  stop-color: var(--vermilion);
+  stop-opacity: 0.32;
+}
+.ex-s2 {
+  stop-color: var(--vermilion);
+  stop-opacity: 0;
+}
+.ex-sand,
+.ex-fx {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.ex-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: var(--top) var(--gutter) max(14px, env(safe-area-inset-bottom));
+}
+.ex h1:focus-visible,
+.ex h2:focus-visible {
+  outline: none;
+}
+
+/* ───────── intro: the gate ───────── */
+.ex-intro {
+  display: grid;
+  align-items: center;
+  justify-items: start;
+}
+.ex-intro-art {
+  position: absolute;
+  inset: 0;
+}
+.ex-gate {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.g-sun {
+  fill: var(--vermilion);
+  opacity: 0.2;
+}
+.g-halo {
+  fill: var(--vermilion);
+  opacity: 0.07;
+  filter: blur(22px);
+}
+/* night garden: the sun becomes a soft glow rather than a flat disc */
+:root[data-theme='dark'] .g-sun {
+  fill: url(#ex-sun);
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  transform-box: fill-box;
+  transform-origin: center;
+  scale: 1.7;
+}
+:root[data-theme='dark'] .g-halo {
+  fill: var(--glow);
+  opacity: 1;
+  mix-blend-mode: screen;
+}
+.g-mtn {
+  fill: var(--ink);
+  filter: url(#ink-wash);
+}
+.g-mtn.far {
+  opacity: 0.055;
+}
+.g-mtn.near {
+  opacity: 0.09;
+}
+.g-hz path {
+  fill: var(--ink);
+  opacity: 0.2;
+}
+.g-gate {
+  filter: url(#ink-rough);
+}
+.g-ink {
+  fill: var(--ink);
+  opacity: 0.84;
+}
+/* the darker rim where wet ink gathers, and the paler wash pooled inside */
+.g-edge {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  opacity: 0.55;
+}
+.g-inner {
+  fill: var(--paper);
+  opacity: 0.13;
+  filter: url(#ink-wash);
+}
+:root[data-theme='dark'] .g-gate {
+  opacity: 0.72;
+  filter: url(#ink-rough) drop-shadow(0 0 6px var(--glow));
+}
+:root[data-theme='dark'] .g-ink {
+  fill: var(--ink-2);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .g-inner {
+  opacity: 0.22;
+}
+.g-birds path {
+  fill: var(--ink);
+  opacity: 0.55;
+}
+.g-bleed {
+  fill: var(--ink);
+  opacity: 0.16;
+  filter: url(#ink-wash);
+  transform: translate(1.5px, 2px);
+}
+.g-dry {
+  fill: var(--paper);
+  opacity: 0.72;
+}
+.g-shadow {
+  fill: var(--umbra);
+  opacity: 0.06;
+  filter: blur(2.5px);
+}
+.g-plaque-bg {
+  fill: var(--ink);
+  opacity: 0.92;
+}
+.g-rim {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.g-seal {
+  fill: var(--vermilion);
+}
+.g-sbody {
+  fill: url(#ex-stg);
+}
+.g-srim {
+  fill: none;
+  stroke: var(--rock-lo);
+  stroke-width: 0.9;
+  opacity: 0.8;
+}
+.g-cshadow {
+  fill: var(--umbra);
+  opacity: 0.2;
+  filter: blur(3px);
+}
+.g-shi {
+  fill: var(--rock-hi);
+  opacity: 0.55;
+  filter: blur(2px);
+}
+.g-here {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ex-here 3s var(--ease-soft) 3.8s infinite backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-here,
+  .ex-ps.is-now::before {
+    animation: none !important;
+    opacity: 0.8;
+  }
+}
+@keyframes ex-here {
+  0% {
+    transform: scale(0.75);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+.ex-mist {
+  position: absolute;
+  height: 30%;
+  top: calc(var(--hz, 50%) - 15%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 94%, transparent), transparent);
+  pointer-events: none;
+  animation: ex-drift 34s ease-in-out infinite alternate;
+}
+.ex-mist.m1 {
+  left: -18%;
+  width: 72%;
+}
+.ex-mist.m2 {
+  right: -22%;
+  width: 70%;
+  top: calc(var(--hz, 50%) - 11%);
+  animation-duration: 41s;
+  animation-direction: alternate-reverse;
+}
+.ex-mist.m3 {
+  left: 22%;
+  width: 60%;
+  height: 18%;
+  top: calc(var(--hz, 50%) - 4%);
+  opacity: 0.85;
+  animation-duration: 47s;
+}
+@keyframes ex-drift {
+  to {
+    translate: 9% -6%;
+  }
+}
+.ex-intro-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: min(26rem, 34cqw);
+}
+.ex-intro-title {
+  margin: 0;
+  font: 300 clamp(2.3rem, min(6.2cqw, 10cqh), 4.6rem) / 1.04 var(--serif);
+  letter-spacing: -0.02em;
+}
+.ex-intro-meta {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 400 0.9rem/1.3 var(--sans);
+  color: var(--ink-2);
+}
+.ex-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--vermilion);
+}
+.ex-intro-line {
+  margin: 4px 0 10px;
+  max-width: 22rem;
+  font: 300 clamp(1rem, 1.5cqw, 1.22rem) / 1.55 var(--serif);
+  color: var(--ink-2);
+}
+.ex-intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+@container exam (max-aspect-ratio: 100/105) {
+  .ex-intro {
+    align-items: end;
+    justify-items: center;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+  .ex-intro-copy {
+    justify-items: center;
+    text-align: center;
+    max-width: 26rem;
+    gap: 10px;
+  }
+  .ex-intro-copy::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -56px -50vw -40px;
+    background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--paper) 86%, transparent) 46%);
+    pointer-events: none;
+  }
+  .ex-intro-title {
+    font-size: clamp(2.2rem, 11cqw, 3.4rem);
+  }
+  .ex-intro-actions {
+    justify-content: center;
+  }
+}
+@container exam (max-height: 520px) {
+  .ex-intro-copy {
+    gap: 8px;
+  }
+  .ex-intro-line {
+    margin-bottom: 4px;
+  }
+}
+
+/* ───────── quiz: the path, then a picture and its question, the stones ───────── */
+.ex-quiz {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.ex-path {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+.ex-ps {
+  --S: 26px;
+  position: relative;
+  flex: none;
+  width: calc(var(--S) * var(--s));
+  height: calc(var(--S) * var(--s) * 0.72);
+  margin-inline: calc(6px * var(--gap));
+  translate: 0 var(--dy);
+  rotate: calc(var(--rot) * 0.4);
+  border-radius: 52% 48% 46% 54% / 58% 54% 46% 42%;
+  box-shadow: inset 0 0 0 1.2px var(--line-2);
+  transition: background 0.7s var(--ease), box-shadow 0.7s var(--ease), scale 0.7s var(--ease), filter 0.7s;
+}
+.ex-ps.is-now {
+  background: radial-gradient(ellipse at 36% 28%, var(--rock-hi), var(--rock-mid) 72%, var(--rock-lo));
+  box-shadow: 0 2px 0 -1px color-mix(in srgb, var(--rock-lo) 80%, transparent), 0 5px 10px rgba(0, 0, 0, 0.12);
+}
+.ex-ps.is-now:not(.is-right):not(.is-wrong)::before {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--vermilion);
+  animation: ex-pulse 2.6s var(--ease-soft) infinite;
+}
+@keyframes ex-pulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+.ex-ps.is-right {
+  background: radial-gradient(ellipse at 38% 30%, color-mix(in srgb, var(--moss-soft) 70%, var(--stone-3)), color-mix(in srgb, var(--moss-2) 70%, var(--stone-2)) 82%);
+  box-shadow: 0 2px 0 -1px color-mix(in srgb, var(--moss) 60%, transparent), 0 4px 9px rgba(0, 0, 0, 0.12);
+}
+.ex-ps.is-wrong {
+  background: radial-gradient(ellipse at 40% 30%, var(--stone-2), var(--stone) 90%);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.28);
+  scale: 0.8;
+  filter: saturate(0.4);
+}
+
+.ex-qbody {
+  display: grid;
+  min-height: 0;
+}
+/* landscape: the picture is the scene on the left; the question and its stones on the right */
+.ex-qbox {
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1fr);
+  column-gap: clamp(24px, 4.5cqw, 84px);
+  align-items: center;
+  min-height: 0;
+}
+.ex-qart {
+  display: grid;
+  place-items: center;
+  justify-self: end;
+  width: min(100%, 680px, 96cqh);
+  min-height: 0;
+}
+.ex-emblem {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 168 / 108;
+  overflow: visible;
+}
+/* the question grows upward, so the stones keep the same place from one question to the next */
+.ex-main {
+  align-self: stretch;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto minmax(96px, auto) minmax(0, 0.4fr);
+  justify-items: start;
+  min-height: 0;
+  max-width: 44rem;
+}
+.ex-qhead {
+  align-self: end;
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding-bottom: clamp(16px, 3cqh, 30px);
+}
+.em-g {
+  filter: url(#ink-rough);
+}
+.em-pool {
+  fill: var(--ink-3);
+  opacity: 0.075;
+  filter: url(#ink-wash);
+}
+:root[data-theme='dark'] .em-pool {
+  fill: var(--ink);
+  opacity: 0.05;
+}
+.em-ink {
+  fill: var(--ink);
+}
+.em-rim {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.72;
+}
+.em-wash {
+  fill: var(--ink-3);
+  opacity: 0.22;
+}
+.em-wet {
+  fill: var(--ink-3);
+  opacity: 0.4;
+  filter: url(#ink-wash);
+}
+.em-drop {
+  opacity: 0.3;
+}
+.em-stone {
+  fill: var(--stone-2);
+}
+.em-paper {
+  fill: var(--paper);
+}
+.em-mist {
+  fill: var(--paper);
+  opacity: 0.95;
+  filter: url(#ink-wash);
+}
+.em-ver {
+  fill: var(--vermilion);
+}
+.em-halo {
+  filter: blur(3px);
+}
+/* the seated socket glows as light behind the ring, not as a flat disc */
+.s-glow {
+  filter: blur(7px);
+}
+.em-moss {
+  fill: var(--moss-2);
+}
+.em-thread,
+.em-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.em-thread {
+  stroke: var(--vermilion);
+  stroke-width: 1.3;
+}
+.em-line {
+  stroke: var(--ink);
+  stroke-width: 0.9;
+  opacity: 0.5;
+}
+.ex-count {
+  margin: 0;
+  font: 400 0.8rem/1.2 var(--sans);
+  color: var(--ink-3);
+  letter-spacing: 0.01em;
+}
+.ex-q {
+  margin: 0;
+  max-width: 34rem;
+  font: 300 clamp(1.3rem, min(2.6cqw, 4.4cqh), 2.35rem) / 1.3 var(--serif);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.ex-stones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, min(300px, 21cqw)));
+  gap: clamp(10px, 1.8cqh, 18px) clamp(14px, 2cqw, 28px);
+  padding-bottom: 12px;
+}
+.ex-stone {
+  position: relative;
+  min-width: 0;
+  min-height: clamp(62px, 12cqh, 112px);
+  margin-top: var(--dy);
+  padding: 0;
+  border: 0;
+  border-radius: 46%;
+  background: none;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+.ex-stone-in {
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 3px;
+  min-height: inherit;
+  padding: 12px 24px 18px;
+  transition: translate 0.5s var(--ease), opacity 0.7s var(--ease), filter 0.7s;
+}
+.ex-stone-art {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: calc(100% + 6px);
+  height: calc(100% + 12px);
+  overflow: visible;
+}
+.ex-key,
+.ex-stone-text {
+  position: relative;
+}
+.ex-key {
+  font: 500 0.68rem/1 var(--sans);
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+}
+.ex-stone-text {
+  font: 400 clamp(0.92rem, 1.15cqw, 1.12rem) / 1.32 var(--serif);
+  text-wrap: balance;
+}
+.ex-stone:not([aria-disabled]) {
+  cursor: pointer;
+}
+.ex-stone:not([aria-disabled]):hover .ex-stone-in {
+  translate: 0 -4px;
+}
+.ex-stone:focus-visible {
+  outline: none;
+}
+.ex-stone:focus-visible::after {
+  content: '';
+  position: absolute;
+  inset: -8px -8px -4px;
+  border-radius: 50%;
+  border: 2px solid var(--vermilion);
+  pointer-events: none;
+}
+.st-body {
+  fill: url(#ex-sta);
+}
+.st-shadow {
+  fill: var(--umbra);
+  opacity: 0.22;
+  filter: blur(5px);
+  transition: opacity 0.8s;
+}
+.st-light {
+  fill: var(--ex-light);
+  filter: blur(6px);
+}
+.st-shade {
+  fill: var(--umbra);
+  opacity: 0.07;
+  filter: blur(6px);
+}
+.st-grain {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.07;
+  vector-effect: non-scaling-stroke;
+}
+.st-moss {
+  fill: var(--moss-2);
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
+}
+.st-rim {
+  fill: none;
+  stroke: var(--line-2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: stroke 0.6s, stroke-width 0.6s;
+}
+.ex-stone.is-right .st-moss {
+  opacity: 0.34;
+}
+.ex-stone.is-right .st-rim {
+  stroke: var(--moss);
+  stroke-width: 1.8;
+}
+.ex-stone.is-right .ex-key {
+  color: var(--moss);
+}
+.ex-stone.is-wrong .ex-stone-in {
+  opacity: 0.8;
+  filter: saturate(0.3) brightness(0.86);
+}
+.ex-stone.is-wrong .st-shadow {
+  opacity: 0.06;
+}
+.ex-stone.is-wrong .ex-stone-text {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: var(--vermilion);
+}
+.ex-stone.is-dim .ex-stone-in {
+  opacity: 0.4;
+}
+/* night garden: the wrong stone visibly sinks into the sand, still more legible than the dimmed ones */
+:root[data-theme='dark'] .ex-stone.is-wrong .ex-stone-in {
+  opacity: 0.86;
+  filter: brightness(0.72);
+}
+:root[data-theme='dark'] .ex-stone.is-wrong .st-rim {
+  stroke: var(--vermilion);
+  stroke-width: 1.4;
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .ex-stone.is-wrong .st-shade {
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .ex-stone.is-dim .ex-stone-in {
+  opacity: 0.32;
+}
+
+.ex-feed {
+  align-self: start;
+  display: flex;
+  align-items: center;
+  gap: 14px 24px;
+  width: 100%;
+  padding-top: 10px;
+}
+.ex-hint {
+  margin: 0;
+  font: 400 0.82rem/1.3 var(--sans);
+  color: var(--ink-3);
+  opacity: 0.8;
+}
+.ex-explain {
+  margin: 0;
+  font: 300 clamp(1rem, 1.4cqw, 1.22rem) / 1.5 var(--serif);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.ex-verdict {
+  font-weight: 400;
+}
+.ex-verdict.ok {
+  color: var(--moss);
+}
+.ex-verdict.no {
+  color: var(--ink-3);
+}
+.ex-next {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 18px 0 22px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: var(--card);
+  color: var(--ink);
+  font: 400 1rem/1 var(--serif);
+  box-shadow: var(--shadow-1);
+  transition: border-color 0.3s, box-shadow 0.35s, translate 0.35s var(--ease);
+}
+.ex-next:hover {
+  border-color: var(--ink);
+  translate: 0 -1px;
+  box-shadow: var(--shadow-2);
+}
+.ex-next .icon {
+  color: var(--vermilion);
+}
+
+/* portrait: the picture on top, the question under it, the stones above the explanation */
+@container exam (max-aspect-ratio: 100/105) {
+  .ex-qbox {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(96px, 1fr) auto auto minmax(var(--feed-h, 96px), auto);
+    align-items: stretch;
+    justify-items: center;
+  }
+  .ex-main {
+    display: contents;
+  }
+  .ex-qart {
+    justify-self: center;
+    width: auto;
+    height: 100%;
+    max-height: 300px;
+  }
+  .ex-emblem {
+    width: auto;
+    height: 100%;
+    max-width: calc(100cqw - 2 * var(--gutter));
+  }
+  .ex-qhead {
+    justify-items: center;
+    text-align: center;
+    padding: 8px 0 clamp(12px, 2.2cqh, 22px);
+  }
+  .ex-stones {
+    justify-content: center;
+  }
+  .ex-feed {
+    max-width: 36rem;
+  }
+}
+/* narrow: answers become flat stepping slabs, one under another */
+@container exam (max-width: 639px) {
+  .ex-qbox {
+    --feed-h: 104px;
+  }
+  .ex-stones {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 8px;
+    width: 100%;
+    padding-bottom: 4px;
+  }
+  .ex-stone {
+    width: min(100% - 18px, 440px);
+    min-height: 50px;
+    margin: 0;
+    translate: var(--dx) 0;
+    border-radius: 999px;
+  }
+  .ex-stone-in {
+    grid-template-columns: auto 1fr;
+    place-items: center start;
+    gap: 12px;
+    padding: 11px 24px 12px 22px;
+    text-align: left;
+  }
+  .ex-stone-art {
+    height: calc(100% + 8px);
+  }
+  .ex-stone-text {
+    font-size: 0.96rem;
+  }
+  .ex-ps {
+    --S: 22px;
+    margin-inline: calc(4px * var(--gap));
+  }
+  .ex-path {
+    height: 40px;
+  }
+  .ex-stone:focus-visible::after {
+    inset: -6px;
+    border-radius: 999px;
+  }
+  .ex-q {
+    font-size: clamp(1.12rem, 5.2cqw, 1.45rem);
+  }
+  .ex-feed {
+    gap: 12px;
+    padding-top: 8px;
+  }
+  .ex-explain {
+    font-size: 0.95rem;
+    line-height: 1.42;
+  }
+  .ex-next {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+  }
+  .ex-next .label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+/* short landscape screens */
+@container exam (max-height: 520px) and (min-aspect-ratio: 100/105) {
+  .ex-path {
+    height: 34px;
+  }
+  .ex-main {
+    grid-template-rows: minmax(0, 1fr) auto minmax(70px, auto) minmax(0, 0.15fr);
+  }
+  .ex-qhead {
+    gap: 4px;
+    padding-bottom: 10px;
+  }
+  .ex-q {
+    font-size: 1.1rem;
+  }
+  .ex-stones {
+    gap: 8px 14px;
+    padding-bottom: 6px;
+  }
+  .ex-stone {
+    min-height: 54px;
+    margin-top: calc(var(--dy) * 0.4);
+  }
+  .ex-stone-in {
+    padding: 8px 18px 12px;
+  }
+  .ex-stone-text {
+    font-size: 0.86rem;
+  }
+  .ex-explain {
+    font-size: 0.9rem;
+    line-height: 1.38;
+  }
+  .ex-feed {
+    padding-top: 4px;
+  }
+}
+
+/* ───────── result: the stones gather around the ensō ───────── */
+.ex-result {
+  display: grid;
+}
+.ex-res {
+  display: grid;
+  grid-template-columns: auto minmax(0, 27rem);
+  justify-content: center;
+  align-items: center;
+  gap: clamp(28px, 5.5cqw, 96px);
+  min-height: 0;
+}
+.ex-res-artbox {
+  container-type: size;
+  width: min(480px, 44cqw);
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+}
+.ex-res-art {
+  position: relative;
+  width: min(100cqw, 100cqh);
+  aspect-ratio: 1;
+}
+.ex-res-enso {
+  position: absolute;
+  inset: 9%;
+  width: 82%;
+  height: 82%;
+  -webkit-mask-image: conic-gradient(from -42deg, #000 0deg, #000 var(--sweep, 372deg), transparent calc(var(--sweep, 372deg) + 12deg));
+  mask-image: conic-gradient(from -42deg, #000 0deg, #000 var(--sweep, 372deg), transparent calc(var(--sweep, 372deg) + 12deg));
+}
+.ex-res-score {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: baseline;
+  container-type: inline-size;
+}
+.ex-res-n {
+  font: 300 22cqw/1 var(--serif);
+  letter-spacing: -0.03em;
+}
+.ex-res-of {
+  font: 300 7cqw/1 var(--serif);
+  color: var(--ink-3);
+  margin-left: 0.15em;
+}
+.ex-res-l {
+  flex-basis: 100%;
+  text-align: center;
+  margin-top: 0.4em;
+  font: 400 max(0.78rem, 3.3cqw) / 1.2 var(--sans);
+  color: var(--ink-3);
+}
+.ex-rs {
+  position: absolute;
+  width: 8%;
+  aspect-ratio: 1.38;
+  translate: -50% -50%;
+  rotate: var(--rot);
+  border-radius: 52% 48% 46% 54% / 58% 54% 46% 42%;
+  background: radial-gradient(ellipse at 36% 28%, var(--rock-hi), var(--rock-mid) 72%, var(--rock-lo));
+  box-shadow: 0 2px 0 -1px color-mix(in srgb, var(--rock-lo) 80%, transparent), 0 5px 10px rgba(0, 0, 0, 0.12);
+}
+.ex-rs.is-right {
+  background: radial-gradient(ellipse at 38% 30%, color-mix(in srgb, var(--moss-soft) 70%, var(--stone-3)), color-mix(in srgb, var(--moss-2) 70%, var(--stone-2)) 82%);
+}
+.ex-rs.is-wrong {
+  background: radial-gradient(ellipse at 40% 30%, var(--stone-2), var(--stone) 90%);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.28);
+  scale: 0.78;
+}
+.ex-res-copy {
+  display: grid;
+  justify-items: start;
+  gap: clamp(12px, 2.2cqh, 18px);
+}
+.ex-eyebrow {
+  margin: 0;
+  font: 400 0.84rem/1 var(--sans);
+  color: var(--vermilion);
+}
+.ex-res-msg {
+  margin: 0;
+  font: 300 clamp(1.3rem, min(2.6cqw, 4.6cqh), 2.2rem) / 1.3 var(--serif);
+  text-wrap: balance;
+}
+.ex-review {
+  display: grid;
+  gap: 4px;
+}
+.ex-review-label {
+  margin: 0;
+  min-height: 1.3em;
+  font: 400 0.8rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.ex-review-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2px;
+  margin-left: -4px;
+}
+/* a small numbered stone; the tap target stays 44px */
+.ex-rev {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--ink-2);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.ex-rev-n {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 28px;
+  translate: 0 var(--dy);
+  rotate: var(--rot);
+  border-radius: 52% 48% 46% 54% / 58% 54% 46% 42%;
+  background: radial-gradient(ellipse at 36% 28%, var(--rock-hi), var(--rock-mid) 75%, var(--rock-lo));
+  box-shadow: 0 2px 0 -1px color-mix(in srgb, var(--rock-lo) 80%, transparent), 0 4px 8px rgba(0, 0, 0, 0.1);
+  font: 500 0.74rem/1 var(--sans);
+  transition: translate 0.35s var(--ease), box-shadow 0.35s;
+}
+.ex-rev:hover .ex-rev-n,
+.ex-rev:focus-visible .ex-rev-n {
+  translate: 0 calc(var(--dy) - 3px);
+  box-shadow: 0 2px 0 -1px color-mix(in srgb, var(--rock-lo) 80%, transparent), 0 8px 14px rgba(0, 0, 0, 0.14);
+}
+.ex-rev:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: -2px;
+}
+.ex-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+@container exam (max-aspect-ratio: 100/105) {
+  .ex-res {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    justify-items: center;
+    align-items: stretch;
+    text-align: center;
+    gap: clamp(10px, 2.4cqh, 28px);
+    padding-bottom: 6px;
+  }
+  .ex-res-artbox {
+    width: 100%;
+  }
+  .ex-res-art {
+    width: min(100cqw, 100cqh, 340px);
+  }
+  .ex-res-copy {
+    justify-items: center;
+    gap: 10px;
+  }
+  .ex-res-msg {
+    font-size: clamp(1.15rem, 5.4cqw, 1.6rem);
+  }
+  .ex-review {
+    justify-items: center;
+  }
+  .ex-review-list,
+  .ex-res-copy .ex-actions {
+    justify-content: center;
+  }
+  .ex-review-list {
+    margin: 0;
+  }
+}
+@container exam (max-height: 520px) {
+  .ex-res-copy {
+    gap: 9px;
+  }
+  .ex-res-msg {
+    font-size: 1.2rem;
+  }
+}
+
+/* ───────── certificate ───────── */
+.ex-cert {
+  display: grid;
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+}
+.ex-cert-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 20rem);
+  align-items: center;
+  gap: clamp(20px, 4cqw, 60px);
+  min-height: 0;
+  padding-top: 12px;
+}
+.ex-cert-view {
+  container-type: size;
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+}
+.ex-cert-paper {
+  width: min(100cqw, 100cqh * 1.4147);
+  aspect-ratio: 1600 / 1131;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(40, 30, 15, 0.1), 0 22px 60px rgba(40, 30, 15, 0.2);
+}
+:root[data-theme='dark'] .ex-cert-paper {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 22px 70px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+.ex-cert-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+}
+.ex-cert-side {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+.ex-cert-h {
+  margin: 0 0 4px;
+  font: 300 clamp(1.45rem, 2.4cqw, 2.05rem) / 1.2 var(--serif);
+}
+.ex-name-label {
+  font: 400 0.8rem/1.2 var(--sans);
+  color: var(--ink-3);
+}
+.ex-name-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 2px;
+  border: 0;
+  border-bottom: 1.5px solid var(--line-2);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 400 1.1rem/1.2 var(--sans);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.ex-name-input::placeholder {
+  color: var(--ink-3);
+  opacity: 0.8;
+}
+.ex-name-input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--vermilion);
+  box-shadow: 0 1.5px 0 var(--vermilion);
+}
+.ex-dl-wrap {
+  margin-top: 6px;
+}
+.ex-dl.is-off {
+  opacity: 0.45;
+}
+.ex-dl-ico {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ex-cert-hint {
+  margin: 0;
+  min-height: 1.4em;
+  font: 400 0.8rem/1.4 var(--sans);
+  color: var(--ink-3);
+}
+.ex-cert-note {
+  margin: -4px 0 0;
+  max-width: 19rem;
+  font: 400 0.78rem/1.45 var(--sans);
+  color: var(--ink-3);
+}
+.ex-cert-more {
+  margin-top: 4px;
+}
+.ex-cert-more .btn {
+  min-height: 44px;
+  padding: 0.55em 1.1em;
+  font-size: 0.9rem;
+}
+@container exam (max-aspect-ratio: 100/105) {
+  .ex-cert-grid {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: 18px;
+  }
+  .ex-cert-view {
+    container-type: normal;
+    height: auto;
+  }
+  .ex-cert-paper {
+    width: 100%;
+  }
+  .ex-cert-side {
+    gap: 9px;
+  }
+}
+@container exam (max-height: 520px) {
+  .ex-cert-side {
+    gap: 7px;
+  }
+  .ex-cert-h {
+    font-size: 1.3rem;
+  }
+}

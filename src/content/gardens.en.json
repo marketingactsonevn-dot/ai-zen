@@ -1,0 +1,142 @@
+{
+  "gardens": [
+    {
+      "id": 1,
+      "name": "Foundations",
+      "tagline": "What AI is, where it came from, where it's going",
+      "motif": "sand",
+      "stations": [
+        {
+          "id": 1,
+          "title": "What is AI?",
+          "teaser": "One task, four ways a computer does it"
+        },
+        {
+          "id": 2,
+          "title": "The AI family tree",
+          "teaser": "AI's branches and familiar examples"
+        },
+        {
+          "id": 3,
+          "title": "History & the road ahead",
+          "teaser": "From 1950 into the mist ahead"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "The word brain (LLM)",
+      "tagline": "Inside a chatbot when you type a question",
+      "motif": "brush",
+      "stations": [
+        {
+          "id": 4,
+          "title": "Token",
+          "teaser": "Sentences break into stones"
+        },
+        {
+          "id": 5,
+          "title": "A question's journey",
+          "teaser": "From tokens to the next word"
+        },
+        {
+          "id": 6,
+          "title": "How AI “thinks”",
+          "teaser": "Training, scratchpads, making up and looking up"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "The creative workshop",
+      "tagline": "Images, video, 3D, sound — and the right AI for each job",
+      "motif": "mist",
+      "stations": [
+        {
+          "id": 7,
+          "title": "How image AI works",
+          "teaser": "Mist slowly clears into a picture"
+        },
+        {
+          "id": 8,
+          "title": "How video AI works",
+          "teaser": "Denoising a whole block of frames"
+        },
+        {
+          "id": 9,
+          "title": "How 3D AI works",
+          "teaser": "From one photo to a model you can spin"
+        },
+        {
+          "id": 10,
+          "title": "Sound, voice, music",
+          "teaser": "Narration, voice cloning, making music"
+        },
+        {
+          "id": 11,
+          "title": "The assignment room",
+          "teaser": "Which AI is good at what"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "The art of asking",
+      "tagline": "Write prompts like briefing a new hire",
+      "motif": "blocks",
+      "stations": [
+        {
+          "id": 12,
+          "title": "The basic prompt recipe",
+          "teaser": "Stack stones into a clear request"
+        },
+        {
+          "id": 13,
+          "title": "Prompts for each kind of AI",
+          "teaser": "Text, image, video, 3D, agent"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "AI Agent",
+      "tagline": "A brain with hands and feet",
+      "motif": "lantern",
+      "stations": [
+        {
+          "id": 14,
+          "title": "What is an agent",
+          "teaser": "Giving the brain hands and feet"
+        },
+        {
+          "id": 15,
+          "title": "Kinds of agents & autonomy",
+          "teaser": "From answering to setting its own goals"
+        },
+        {
+          "id": 16,
+          "title": "MCP, Skills, Plugins, A2A, Hooks",
+          "teaser": "A standard plug for AI"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Map & impact",
+      "tagline": "The AI companies, and the real cost of each question",
+      "motif": "dusk",
+      "stations": [
+        {
+          "id": 17,
+          "title": "Map of AI companies",
+          "teaser": "Each company is a stone island"
+        },
+        {
+          "id": 18,
+          "title": "Impact: understand to use well",
+          "teaser": "Power, water, thinking — and good habits"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,376 @@
+{
+  "id": 18,
+  "kicker": "Vườn lúc hoàng hôn: mỗi tác động, một thói quen tốt.",
+  "scenes": {
+    "power": {
+      "label": "Điện và nước",
+      "prompt": "Chạm để vận hành",
+      "art": "Tranh mực lúc hoàng hôn: cột điện dẫn điện từ lưới vào một trung tâm dữ liệu đầy máy chủ, bên cạnh hai tháp làm mát bốc hơi nước bên hồ.",
+      "run": "Vận hành trung tâm dữ liệu",
+      "running": "Trung tâm dữ liệu đang chạy",
+      "labels": {
+        "grid": "Điện từ lưới",
+        "heat": "Máy chủ nóng lên",
+        "steam": "Nước bốc hơi để làm mát"
+      },
+      "years": "Chọn năm",
+      "chart": "Điện mà các trung tâm dữ liệu dùng trong một năm",
+      "share": "≈ 1,5% điện thế giới",
+      "forecast": "dự báo",
+      "unit": "1 TWh = 1 tỷ số điện (kWh)",
+      "v2024": {
+        "text": "415 TWh",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      },
+      "v2030": {
+        "text": "≈ 945 TWh",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai",
+        "kind": "prediction"
+      },
+      "japan": {
+        "text": "≈ điện cả nước Nhật Bản hôm nay",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      },
+      "insight2024": {
+        "text": "Năm 2024, các trung tâm dữ liệu dùng khoảng 415 TWh — chừng 1,5% lượng điện cả thế giới.",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      },
+      "detail2024": {
+        "text": "Mỹ chiếm khoảng 45%, Trung Quốc 25%, châu Âu 15%. 1 TWh là 1 tỷ số điện (kWh).",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      },
+      "insight2030": {
+        "text": "Đến 2030, trung tâm dữ liệu có thể cần khoảng 945 TWh — hơn gấp đôi, nhỉnh hơn cả nước Nhật hôm nay.",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai",
+        "kind": "prediction"
+      },
+      "detail2030": {
+        "text": "Theo dự báo của IEA (Cơ quan Năng lượng Quốc tế), AI là động lực chính của mức tăng này.",
+        "asOf": "2026-10-12",
+        "source": "iea-energy-ai"
+      }
+    },
+    "drops": {
+      "label": "Một câu hỏi",
+      "labelMany": "Nhân lên",
+      "prompt": "Chạm để hỏi một câu",
+      "multiply": "Kéo để nhân lên",
+      "art": "Tranh mực: ống tre nhỏ giọt xuống lá sen — năm giọt nước cho một câu hỏi.",
+      "artMany": "Tranh mực: nhân số lượt hỏi lên, năm giọt nước thành một ly, một bồn tắm gỗ, rồi một cái ao.",
+      "ask": "Gửi một câu hỏi và xem lượng nước",
+      "head": {
+        "text": "Một câu hỏi chữ cho Gemini — loại ở mức giữa (trung vị)",
+        "asOf": "2026-10-12",
+        "source": "google-ai-inference"
+      },
+      "times": {
+        "text": "Nhân lên từ số của Google",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "slider": "Số lượt hỏi",
+      "stops": [
+        "1 lượt",
+        "1 nghìn",
+        "1 triệu",
+        "1 tỷ"
+      ],
+      "stopsAria": [
+        "1 lượt hỏi",
+        "1 nghìn lượt hỏi",
+        "1 triệu lượt hỏi",
+        "1 tỷ lượt hỏi"
+      ],
+      "vessels": [
+        "≈ 5 giọt nước",
+        "≈ 1 ly nước",
+        "≈ 1 bồn tắm",
+        "≈ 1 cái ao nhỏ"
+      ],
+      "metrics": [
+        {
+          "name": "Điện",
+          "values": [
+            "0,24 Wh",
+            "240 Wh",
+            "240 kWh",
+            "240 MWh"
+          ],
+          "notes": [
+            "≈ bật TV chưa tới 9 giây",
+            "≈ 0,24 số điện",
+            "= 240 số điện",
+            "= 240 nghìn số điện"
+          ]
+        },
+        {
+          "name": "Nước",
+          "values": [
+            "0,26 mL",
+            "260 mL",
+            "260 lít",
+            "260 m³"
+          ],
+          "notes": [
+            "≈ 5 giọt",
+            "≈ 1 ly nước",
+            "≈ 1 bồn tắm",
+            "≈ ao 10 × 10 m, sâu 2,6 m"
+          ]
+        },
+        {
+          "name": "Khí thải",
+          "values": [
+            "0,03 g",
+            "30 g",
+            "30 kg",
+            "30 tấn"
+          ],
+          "notes": [
+            "CO2e: khí nhà kính quy đổi",
+            "CO2e: khí nhà kính quy đổi",
+            "CO2e: khí nhà kính quy đổi",
+            "CO2e: khí nhà kính quy đổi"
+          ]
+        }
+      ],
+      "caveatsTitle": "Lưu ý khi đọc số này",
+      "caveats": [
+        {
+          "text": "Google tự công bố, chưa được kiểm chứng độc lập.",
+          "asOf": "2026-10-12",
+          "source": "google-ai-inference"
+        },
+        {
+          "text": "Chưa tính huấn luyện, máy của bạn, nước làm ra điện.",
+          "asOf": "2026-10-12",
+          "source": "google-ai-paper"
+        },
+        {
+          "text": "Một số chuyên gia phê bình cách tính này.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        {
+          "text": "Ảnh, nhất là video, tốn hơn chữ rất nhiều.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12",
+          "kind": "opinion"
+        }
+      ],
+      "insightOne": {
+        "text": "Theo Google, một câu hỏi chữ cho Gemini tốn khoảng 0,24 Wh điện và 0,26 mL nước — chừng 5 giọt.",
+        "asOf": "2026-10-12",
+        "source": "google-ai-inference"
+      },
+      "detailOne": {
+        "text": "0,24 Wh tương đương bật TV chưa tới 9 giây — theo chính cách so sánh của Google.",
+        "asOf": "2026-10-12",
+        "source": "google-ai-inference"
+      },
+      "habitsTitle": "Thói quen tốt",
+      "habits": [
+        "Hỏi gọn và rõ — đỡ phải làm lại",
+        "Không tạo hàng loạt ảnh, video thừa",
+        "Việc nhỏ thì dùng model nhỏ (bản nhẹ)"
+      ],
+      "insight": "Một câu hỏi rất nhỏ, nhưng nhân với hàng tỷ lượt thì thành cả một cái ao.",
+      "where": {
+        "text": "Còn tùy nơi đặt trung tâm dữ liệu: nguồn điện nào, vùng dư hay thiếu nước.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "think": {
+      "label": "Nghĩ trước",
+      "prompt": "Nghĩ trước 2 phút",
+      "art": "Tranh mực: một nén nhang cắm trong bát đá, khói bay lên. Nhang cháy hết là tròn 2 phút.",
+      "question": "Làm sao để cuộc họp tuần của nhóm ngắn hơn mà vẫn hiệu quả?",
+      "yours": "Ý của bạn",
+      "placeholder": "Ghi vài ý, mỗi dòng một ý…",
+      "start": "Châm nhang · 2 phút",
+      "timer": "Còn {m}:{s}",
+      "timerAria": "Còn {m} phút {s} giây",
+      "done": "Đủ 2 phút",
+      "reveal": "Xem gợi ý của AI",
+      "skip": "Bỏ qua",
+      "veil": "Gợi ý của AI đang chờ trong sương",
+      "ai": "Gợi ý của AI",
+      "aiItems": [
+        "Gửi chương trình họp trước một ngày",
+        "Mỗi người cập nhật tối đa 2 phút",
+        "Việc chỉ cần báo cáo thì nhắn tin",
+        "Chốt người làm và hạn chót trước khi về"
+      ],
+      "compare": "Ý nào chỉ bạn nghĩ ra? Hãy nhờ AI phản biện chính ý đó.",
+      "habitTitle": "Thói quen tốt",
+      "habit": "Tự nghĩ trước — hỏi AI sau",
+      "habitSub": "Dùng AI để phản biện, không chỉ để làm hộ.",
+      "insight": {
+        "text": "Nghiên cứu MIT (2025, mẫu nhỏ, chưa bình duyệt): viết luận nhờ ChatGPT, não ít được huy động, nhớ bài kém hơn.",
+        "asOf": "2026-10-12",
+        "source": "mit-brain-chatgpt"
+      },
+      "detail": {
+        "text": "Khảo sát 319 người làm việc trí óc (Microsoft Research × ĐH Carnegie Mellon): càng tin AI, càng ít nghĩ phản biện; việc nghĩ chuyển từ “làm” sang “kiểm tra”.",
+        "asOf": "2026-10-12",
+        "source": "chi-2025-critical"
+      }
+    },
+    "stones": {
+      "label": "Vườn đá",
+      "prompt": "Chạm một viên đá",
+      "art": "Vườn đá cát cào với chín viên đá; mỗi viên là một tác động của AI lên con người và xã hội.",
+      "group": "Chín tác động của AI lên con người và xã hội",
+      "riskTitle": "Tác động",
+      "habitTitle": "Thói quen tốt",
+      "flip": "Lật xem thói quen tốt",
+      "back": "Lật lại",
+      "count": "{n}/9 đã lật",
+      "close": "Cất thẻ, xem lại vườn đá",
+      "islands": [
+        "Bản thân",
+        "Thông tin",
+        "Xã hội"
+      ],
+      "items": [
+        {
+          "id": "lazy",
+          "name": "Lười tư duy",
+          "risk": "Quen để AI nghĩ hộ, ta dần bỏ qua bước tự suy nghĩ.",
+          "habit": "Tự nghĩ trước — hỏi AI sau; nhờ AI phản biện, không chỉ làm hộ."
+        },
+        {
+          "id": "skill",
+          "name": "Phụ thuộc & mất kỹ năng",
+          "risk": "Việc gì cũng giao AI, kỹ năng cốt lõi của ta dần mai một.",
+          "habit": "Giữ “cơ bắp” kỹ năng cốt lõi: thỉnh thoảng tự làm từ đầu đến cuối."
+        },
+        {
+          "id": "fake",
+          "name": "Thông tin sai & deepfake",
+          "risk": "AI có thể bịa chi tiết; deepfake — ảnh, giọng, video giả — ngày càng giống thật.",
+          "habit": "Kiểm chứng nguồn trước khi tin hay chia sẻ; ghi nhãn nội dung làm bằng AI."
+        },
+        {
+          "id": "copyright",
+          "name": "Bản quyền & người sáng tạo",
+          "risk": "AI học từ tác phẩm của nhiều người; quyền lợi tác giả còn đang tranh cãi.",
+          "habit": "Tôn trọng tác giả, không nhái phong cách để trục lợi, đọc điều khoản thương mại."
+        },
+        {
+          "id": "jobs",
+          "name": "Việc làm thay đổi",
+          "risk": {
+            "text": "Công việc chuyển dịch nhiều hơn là biến mất hẳn — điều này còn đang tranh luận.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12",
+            "kind": "opinion"
+          },
+          "habit": "Học kỹ năng mới: giao việc cho AI, kiểm định kết quả, tư duy phản biện."
+        },
+        {
+          "id": "privacy",
+          "name": "Quyền riêng tư",
+          "risk": "Thứ bạn dán vào AI có thể được lưu trên máy chủ nhà cung cấp.",
+          "habit": "Không dán dữ liệu khách hàng, mật khẩu hay tài liệu mật vào AI."
+        },
+        {
+          "id": "bias",
+          "name": "Thiên kiến",
+          "risk": "AI học từ dữ liệu của con người nên có thể lặp lại định kiến.",
+          "habit": "Đọc kết quả bằng con mắt phản biện; hỏi thêm nhiều góc nhìn khác nhau."
+        },
+        {
+          "id": "bond",
+          "name": "Gắn bó cảm xúc với AI",
+          "risk": "AI luôn sẵn sàng, luôn chiều ý — dễ khiến ta gắn bó quá mức.",
+          "habit": "Xem AI là công cụ; nó không thay được quan hệ với người thật."
+        },
+        {
+          "id": "power",
+          "name": "Tập trung quyền lực",
+          "risk": {
+            "text": "Một vài công ty nắm phần lớn hạ tầng để làm ra những AI lớn nhất.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12",
+            "kind": "opinion"
+          },
+          "habit": "Ủng hộ luật minh bạch và mã nguồn mở; đừng phụ thuộc một nhà cung cấp."
+        }
+      ],
+      "insight": "Mỗi tác động đều có một thói quen tốt đi kèm: hiểu rủi ro để dùng AI vững vàng hơn."
+    },
+    "dawn": {
+      "label": "Bình minh",
+      "prompt": "Thả một viên sỏi",
+      "art": "Tranh mực: hồ nước trong vườn lúc rạng đông, hai viên sỏi bên bờ — một viên thói quen tốt, một viên thói quen xấu.",
+      "group": "Hai viên sỏi bên bờ hồ",
+      "good": "Thói quen tốt",
+      "bad": "Thói quen xấu",
+      "goodAria": "Thả viên sỏi thói quen tốt xuống hồ",
+      "badAria": "Thả viên sỏi thói quen xấu xuống hồ",
+      "goodDone": "Gợn sóng nhỏ lan ra khắp hồ, sen nở theo.",
+      "badDone": "Một chấm mực nhỏ loang ra khắp hồ.",
+      "next": "Thả viên còn lại",
+      "insight": "AI là công cụ khuếch đại — khuếch đại cả thói quen tốt lẫn thói quen xấu của chúng ta.",
+      "detail": "Mang theo thói quen tốt: tự nghĩ trước, hỏi gọn, kiểm chứng, giữ dữ liệu riêng — rồi để AI nhân chúng lên."
+    }
+  },
+  "quiz": {
+    "q": "Theo Google, một câu hỏi chữ cho Gemini tốn khoảng 5 giọt nước. Hiểu thế nào là đúng nhất?",
+    "options": [
+      "Vậy AI gần như không tốn gì",
+      "Nhỏ, nhưng nhân hàng tỷ lượt thì lớn",
+      "Con số đã gồm cả việc huấn luyện",
+      "Tạo video cũng chỉ tốn chừng ấy"
+    ],
+    "answer": 1,
+    "explain": "Mỗi lượt rất nhỏ, nhưng nhân với hàng tỷ lượt thì thành lớn — và con số này còn chưa tính huấn luyện."
+  },
+  "summary": "Dùng AI gọn, tự nghĩ trước và kiểm chứng — vì AI khuếch đại mọi thói quen của ta.",
+  "sources": {
+    "iea-energy-ai": {
+      "title": "Energy and AI",
+      "publisher": "IEA — Cơ quan Năng lượng Quốc tế",
+      "url": "https://www.iea.org/reports/energy-and-ai",
+      "date": "2025-04",
+      "note": "Kịch bản cơ sở của IEA; số năm 2030 là dự báo."
+    },
+    "google-ai-inference": {
+      "title": "Measuring the environmental impact of AI inference",
+      "publisher": "Google Cloud Blog — Amin Vahdat, Jeff Dean",
+      "url": "https://cloud.google.com/blog/products/infrastructure/measuring-the-environmental-impact-of-ai-inference",
+      "date": "2025-08",
+      "note": "Google tự công bố; số liệu chưa được bên thứ ba độc lập kiểm chứng."
+    },
+    "google-ai-paper": {
+      "title": "Measuring the environmental impact of delivering AI at Google Scale",
+      "publisher": "Elsworth và cộng sự (Google) — arXiv 2508.15734",
+      "url": "https://arxiv.org/abs/2508.15734",
+      "date": "2025-08-21",
+      "note": "Chỉ tính khâu trả lời câu hỏi: không gồm huấn luyện, thiết bị người dùng; nước chỉ tính phần làm mát tại trung tâm dữ liệu."
+    },
+    "mit-brain-chatgpt": {
+      "title": "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task",
+      "publisher": "Kosmyna và cộng sự, MIT Media Lab — arXiv 2506.08872",
+      "url": "https://arxiv.org/abs/2506.08872",
+      "date": "2025-06-10",
+      "note": "Bản thảo (preprint), chưa bình duyệt; 54 người tham gia."
+    },
+    "chi-2025-critical": {
+      "title": "The Impact of Generative AI on Critical Thinking: Self-Reported Reductions in Cognitive Effort and Confidence Effects From a Survey of Knowledge Workers",
+      "publisher": "Lee và cộng sự, Microsoft Research × Carnegie Mellon — CHI 2025 (ACM)",
+      "url": "https://doi.org/10.1145/3706598.3713778",
+      "date": "2025-04",
+      "note": "Khảo sát 319 người làm việc trí óc với 936 ví dụ dùng AI thật."
+    }
+  }
+}

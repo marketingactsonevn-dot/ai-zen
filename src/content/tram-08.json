@@ -1,0 +1,361 @@
+{
+  "id": 8,
+  "kicker": "Sương tan trên cả một chồng khung hình, cùng một lúc.",
+  "summary": "Video AI khử nhiễu cả khối khung hình một lúc; khó giữ đồng nhất, lại rất tốn kém.",
+  "quiz": {
+    "q": "Muốn nhân vật giống hệt nhau qua nhiều clip, cách chắc nhất là gì?",
+    "options": [
+      "Viết prompt thật dài, thật chi tiết",
+      "Bắt đầu từ một ảnh đã duyệt",
+      "Tạo một video thật dài một lần",
+      "Tắt âm thanh khi tạo video"
+    ],
+    "answer": 1,
+    "explain": "Ảnh đã duyệt giữ sẵn khuôn mặt, trang phục, sản phẩm; AI chỉ cần thêm chuyển động."
+  },
+  "scenes": {
+    "block": {
+      "label": "Khối thời gian",
+      "prompt": "Kéo để khử nhiễu",
+      "art": "Một chồng khung hình trong suốt xếp nối nhau theo thời gian, ban đầu toàn hạt nhiễu. Kéo để các khung cùng rõ dần thành cảnh cò bay qua hồ lúc bình minh.",
+      "slider": "Bước khử nhiễu",
+      "step": "bước {n} / {max}",
+      "first": "khung đầu",
+      "last": "khung cuối",
+      "time": "thời gian",
+      "play": "Xếp thành video",
+      "unplay": "Mở lại khối",
+      "noWebgl": "Trình duyệt này chưa hiển thị được cảnh 3D.",
+      "insight": "AI video khử nhiễu cả một khối khung hình cùng lúc, nên các khung khớp nhau thành chuyển động.",
+      "detail": {
+        "text": "Giống AI ảnh nhưng thêm chiều thời gian: mỗi giây có hàng chục khung, nên tạo video thường tốn máy hơn ảnh và chữ rất nhiều.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      }
+    },
+    "glitch": {
+      "label": "Vì sao video lỗi",
+      "prompt": "Chạm vào chỗ lỗi",
+      "group": "Ba đoạn phim, mỗi đoạn giấu một lỗi",
+      "found": "Đã tìm thấy: {name}",
+      "clips": [
+        {
+          "id": "cup",
+          "name": "Chén trà",
+          "aria": "Đoạn phim chén trà. Chạm hoặc nhấn Enter để soi lỗi.",
+          "found": "Chén trà tự đổi hình"
+        },
+        {
+          "id": "hand",
+          "name": "Bàn tay vẫy",
+          "aria": "Đoạn phim bàn tay vẫy. Chạm hoặc nhấn Enter để soi lỗi.",
+          "found": "Bàn tay mọc ngón thứ sáu"
+        },
+        {
+          "id": "sign",
+          "name": "Biển hiệu",
+          "aria": "Đoạn phim biển hiệu quán trà. Chạm hoặc nhấn Enter để soi lỗi.",
+          "found": "Chữ tự nhảy, tự đổi",
+          "word": "Tiệm Trà",
+          "variants": [
+            "Tiệm Trả",
+            "Tiêm Tra",
+            "Tiệm Tbà",
+            "Tlệm Trá"
+          ]
+        }
+      ],
+      "insight": "Video là rất nhiều khung phải khớp nhau; giữ đồng nhất suốt thời gian rất khó, nên vật, tay, chữ dễ sai.",
+      "detail": "Thói quen tốt: giữ clip ngắn, mỗi clip một hành động; soi kỹ tay, chữ, logo; lỗi thì tạo lại."
+    },
+    "concepts": {
+      "label": "Bảy cách cầm lái",
+      "prompt": "Chạm một viên đá",
+      "group": "Bảy khái niệm của AI video",
+      "screen": "Màn hình minh họa khái niệm đang chọn",
+      "items": [
+        {
+          "id": "t2v",
+          "name": "Chữ → video",
+          "term": "text-to-video",
+          "caption": "Gõ một câu mô tả, AI dựng cả đoạn phim từ màn sương nhiễu.",
+          "words": [
+            "“Cò trắng bay qua hồ lúc bình minh”"
+          ]
+        },
+        {
+          "id": "i2v",
+          "name": "Ảnh → video",
+          "term": "image-to-video",
+          "caption": "Bắt đầu từ một ảnh đã duyệt: cách giữ nhân vật, sản phẩm đồng nhất nhất.",
+          "words": [
+            "ảnh đã duyệt"
+          ]
+        },
+        {
+          "id": "ff",
+          "name": "Khung đầu – cuối",
+          "term": "first / last frame",
+          "caption": "Đưa AI khung đầu và khung cuối; nó tự vẽ chuyển động ở giữa.",
+          "words": [
+            "đầu",
+            "cuối",
+            "AI vẽ phần giữa"
+          ]
+        },
+        {
+          "id": "cam",
+          "name": "Máy quay",
+          "term": "camera control",
+          "caption": "Ra lệnh cho máy quay: lia ngang, đẩy lại gần, kéo ra xa.",
+          "words": [
+            "lia ngang",
+            "đẩy lại gần",
+            "kéo ra xa"
+          ]
+        },
+        {
+          "id": "audio",
+          "name": "Âm thanh gốc",
+          "term": "native audio",
+          "caption": "Lời thoại, tiếng động, nhạc nền sinh cùng lúc với hình, khớp nhau.",
+          "words": [
+            "hình",
+            "tiếng"
+          ]
+        },
+        {
+          "id": "len",
+          "name": "Giới hạn độ dài",
+          "term": "duration limit",
+          "caption": "Mỗi lần tạo chỉ được một đoạn ngắn; video dài là nhiều đoạn ghép lại.",
+          "words": [
+            "một lần tạo",
+            "ghép thêm"
+          ]
+        },
+        {
+          "id": "motion",
+          "name": "Mẫu chuyển động",
+          "term": "motion reference",
+          "caption": "Đưa một clip mẫu; nhân vật của bạn làm lại đúng động tác đó.",
+          "words": [
+            "clip mẫu",
+            "nhân vật của bạn"
+          ]
+        }
+      ],
+      "insight": "Mỗi viên đá là một cách “cầm lái” AI video; bắt đầu từ ảnh đã duyệt là cách chắc tay nhất.",
+      "detail": "Thói quen tốt: đi từ ảnh đã duyệt, rồi mới thêm máy quay, âm thanh; mỗi lần chỉ đổi một thứ."
+    },
+    "models": {
+      "label": "Các model nổi bật",
+      "prompt": "Chọn một nhu cầu",
+      "pond": "Các model video nổi bật",
+      "needsGroup": "Bạn cần video thế nào?",
+      "modelAria": "{name} của {maker}: xem điểm mạnh",
+      "close": "Đóng thẻ",
+      "needs": [
+        {
+          "id": "sound",
+          "name": "Có âm thanh"
+        },
+        {
+          "id": "people",
+          "name": "Người cử động"
+        },
+        {
+          "id": "camera",
+          "name": "Máy quay"
+        },
+        {
+          "id": "chat",
+          "name": "Sửa bằng lời"
+        },
+        {
+          "id": "open",
+          "name": "Mở trọng số"
+        },
+        {
+          "id": "cinema",
+          "name": "Chất điện ảnh"
+        },
+        {
+          "id": "long",
+          "name": "Video dài"
+        }
+      ],
+      "models": [
+        {
+          "company": "google-deepmind",
+          "model": "Veo 3.1",
+          "name": "Veo 3.1",
+          "needs": [
+            "sound"
+          ]
+        },
+        {
+          "company": "google-deepmind",
+          "model": "Gemini Omni Flash",
+          "name": "Gemini Omni Flash",
+          "needs": [
+            "chat"
+          ]
+        },
+        {
+          "company": "kuaishou",
+          "model": "Kling 3.0",
+          "name": "Kling 3.0 / 3.0 Turbo",
+          "needs": [
+            "people"
+          ],
+          "also": "Kling 3.0 Turbo",
+          "alsoLabel": "Turbo"
+        },
+        {
+          "company": "bytedance",
+          "model": "Seedance 2.5",
+          "name": "Seedance 2.5",
+          "needs": [
+            "long"
+          ]
+        },
+        {
+          "company": "alibaba",
+          "model": "Wan 3.0",
+          "name": "Wan 3.0",
+          "needs": [
+            "open",
+            "sound"
+          ]
+        },
+        {
+          "company": "minimax",
+          "model": "Hailuo 3.0 (H3)",
+          "name": "Hailuo 3.0",
+          "needs": [
+            "people"
+          ]
+        },
+        {
+          "company": "runway",
+          "model": "Runway Gen-4.5",
+          "name": "Runway Gen-4.5",
+          "needs": [
+            "camera"
+          ]
+        },
+        {
+          "company": "luma",
+          "model": "Luma Ray3.14",
+          "name": "Luma Ray3.14",
+          "needs": [
+            "cinema"
+          ]
+        }
+      ],
+      "insight": {
+        "text": "Không có model video “giỏi nhất”: chọn theo việc — người chuyển động, âm thanh, máy quay hay mở trọng số.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "detail": "“Mở trọng số”: ai cũng tải model về chạy trên máy riêng được. Model đổi theo tuần, nên thử vài cái cùng một prompt."
+    },
+    "prompt": {
+      "label": "Cách viết prompt video",
+      "prompt": "Xếp đá thành câu lệnh",
+      "screen": "Màn hình giấy chiếu đoạn phim đang dựng: cây cầu gỗ trên hồ trong sương; mỗi phần prompt thêm vào làm cảnh thay đổi.",
+      "group": "Năm phần của một prompt video",
+      "parts": [
+        {
+          "id": "subject",
+          "name": "Chủ thể",
+          "words": "Cô gái đội nón lá"
+        },
+        {
+          "id": "action",
+          "name": "Hành động",
+          "words": "chậm rãi đi qua cầu gỗ"
+        },
+        {
+          "id": "camera",
+          "name": "Máy quay",
+          "words": "máy quay đẩy lại gần"
+        },
+        {
+          "id": "light",
+          "name": "Ánh sáng",
+          "words": "nắng sớm, sương mỏng"
+        },
+        {
+          "id": "sound",
+          "name": "Âm thanh",
+          "words": "tiếng chuông chùa xa"
+        }
+      ],
+      "rule": "Một cảnh · một hành động · clip ngắn",
+      "insight": "Prompt video tốt kể đủ: ai, làm gì, máy quay ra sao, ánh sáng, âm thanh — mỗi clip một cảnh.",
+      "detail": "Viết như đạo diễn dặn người quay phim. Muốn video dài thì tạo từng cảnh rồi ghép; đổi từng phần một để thấy tác dụng."
+    },
+    "sora": {
+      "label": "Câu chuyện Sora",
+      "prompt": "Kéo qua năm 2026",
+      "art": "Một màn chiếu giấy mang tên Sora giữa vườn đêm, bên cạnh hàng đèn lồng nhỏ là các ứng dụng dùng Sora. Kéo dọc năm 2026 để xem chúng lần lượt tắt.",
+      "slider": "Ngày trong năm 2026",
+      "year": "2026",
+      "screen": "Sora",
+      "lanterns": "ứng dụng dùng API",
+      "events": [
+        {
+          "day": "2026-04-26",
+          "title": "Đóng app",
+          "fact": {
+            "text": "26/04/2026: OpenAI đóng ứng dụng Sora.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          },
+          "short": {
+            "text": "26/04/2026 · đóng app",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          }
+        },
+        {
+          "day": "2026-09-24",
+          "title": "Đóng API",
+          "fact": {
+            "text": "24/09/2026: OpenAI đóng luôn API, cổng để phần mềm khác dùng Sora.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          },
+          "short": {
+            "text": "24/09/2026 · đóng API",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          }
+        }
+      ],
+      "reasons": [
+        "Chạy rất tốn kém",
+        "Bản quyền & deepfake"
+      ],
+      "reasonFact": {
+        "text": "Lý do chính: chạy quá tốn kém, vướng bản quyền và deepfake (video giả người thật).",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": {
+        "text": "Bài học: video AI rất tốn kém để vận hành và kéo theo những vấn đề pháp lý có thật.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "detail": "Thói quen tốt: chỉ tạo video khi cần; không dùng mặt, giọng người thật khi chưa xin phép; ghi rõ nội dung do AI tạo.",
+      "month": "T{n}",
+      "dateFmt": "{d}/{m}/2026"
+    }
+  },
+  "sources": {}
+}

@@ -1,0 +1,322 @@
+{
+  "id": 3,
+  "kicker": "An ink scroll from 1950 to today, then a stone path into the mist.",
+  "summary": "Over 70 years and a few winters, AI reached chatbots and agents; mist still lies ahead.",
+  "quiz": {
+    "q": "Which of these is still a prediction that hasn’t happened?",
+    "options": [
+      "Deep Blue beats Kasparov",
+      "The Transformer paper comes out",
+      "ChatGPT launches",
+      "Superintelligence (ASI) surpasses humans"
+    ],
+    "answer": 3,
+    "explain": "ASI is still a hypothesis; the other three happened in 1997, 2017 and November 2022."
+  },
+  "scenes": {
+    "scroll": {
+      "label": "The scroll",
+      "prompt": "Drag to unroll the scroll",
+      "region": "A scroll of AI history. Drag, scroll the mouse wheel or use the left and right arrow keys to move between milestones.",
+      "prev": "Previous milestone",
+      "next": "Next milestone",
+      "status": "{year}: {title}",
+      "insight": {
+        "text": "Over 70 years: small steps, a few winters, then a very fast speed-up.",
+        "asOf": "2026-10-12",
+        "source": "t3-scroll"
+      },
+      "art": {
+        "mark": "?",
+        "words": [
+          "The",
+          "cat",
+          "is",
+          "asleep"
+        ],
+        "steps": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "events": [
+        {
+          "year": "1950",
+          "title": "The Turing test",
+          "caption": {
+            "text": "Alan Turing asked, “Can machines think?” and proposed a test.",
+            "asOf": "2026-10-12",
+            "source": "turing-1950"
+          }
+        },
+        {
+          "year": "1956",
+          "title": "AI officially becomes a field",
+          "caption": {
+            "text": "A summer workshop at Dartmouth College (USA) launched the field of artificial intelligence.",
+            "asOf": "2026-10-12",
+            "source": "dartmouth-1955"
+          }
+        },
+        {
+          "year": "1974 · 1987",
+          "title": "The AI winters",
+          "caption": {
+            "text": "Twice, around 1974 and 1987, hopes outran results, and money and interest in AI dropped sharply.",
+            "asOf": "2026-10-12",
+            "source": "wiki-ai-winter"
+          }
+        },
+        {
+          "year": "1997",
+          "title": "Deep Blue beats Kasparov",
+          "caption": {
+            "text": "IBM’s Deep Blue computer beat world chess champion Garry Kasparov.",
+            "asOf": "2026-10-12",
+            "source": "ibm-deepblue"
+          }
+        },
+        {
+          "year": "2012",
+          "title": "Deep learning takes off",
+          "caption": {
+            "text": "AlexNet learned from over a million images and won an image-recognition contest by a wide margin.",
+            "asOf": "2026-10-12",
+            "source": "alexnet-2012"
+          }
+        },
+        {
+          "year": "2016",
+          "title": "AlphaGo beats Lee Sedol",
+          "caption": {
+            "text": "DeepMind’s AlphaGo beat top Go player Lee Sedol 4–1 in Seoul.",
+            "asOf": "2026-10-12",
+            "source": "wiki-alphago-lee"
+          }
+        },
+        {
+          "year": "2017",
+          "title": "The Transformer arrives",
+          "caption": {
+            "text": "The paper “Attention Is All You Need”: the machine “pays attention” to every word at once.",
+            "asOf": "2026-10-12",
+            "source": "vaswani-2017"
+          }
+        },
+        {
+          "year": "2020",
+          "title": "GPT-3",
+          "caption": {
+            "text": "OpenAI unveiled GPT-3: with just a few examples, it could handle quite a lot of new tasks.",
+            "asOf": "2026-10-12",
+            "source": "brown-2020"
+          }
+        },
+        {
+          "year": "11/2022",
+          "title": "ChatGPT launches",
+          "caption": {
+            "text": "Nov 30, 2022: ChatGPT launched — chat with AI in plain words, and anyone can try it.",
+            "asOf": "2026-10-12",
+            "source": "openai-chatgpt"
+          }
+        },
+        {
+          "year": "2024",
+          "title": "AI thinks before it speaks",
+          "caption": {
+            "text": "Reasoning models like OpenAI o1 “think” step by step before answering.",
+            "asOf": "2026-10-12",
+            "source": "openai-o1"
+          }
+        },
+        {
+          "year": "2025–2026",
+          "title": "AI agents and the MCP standard",
+          "caption": {
+            "text": "AI agents carry out many steps on their own; MCP became a shared standard for connecting AI to tools.",
+            "asOf": "2026-10-12",
+            "source": "lf-aaif"
+          }
+        }
+      ]
+    },
+    "future": {
+      "label": "Ahead",
+      "prompt": "Tap to part the mist",
+      "group": "Five stones in the mist, from near to far",
+      "stone": "Clear the mist from stone {n}",
+      "insight": "These are ideas and predictions, not events; the further from today, the thicker the mist.",
+      "steps": [
+        {
+          "title": "AI agents working for hours",
+          "caption": {
+            "text": "Hand over a big goal; the agent splits up the work, uses tools, and keeps going for hours.",
+            "asOf": "2026-10-12",
+            "source": "t3-concepts",
+            "kind": "prediction"
+          }
+        },
+        {
+          "title": "AI as “inventor”",
+          "caption": {
+            "text": "AI forms its own hypotheses, runs experiments, and discovers new things like medicines or materials.",
+            "asOf": "2026-10-12",
+            "source": "t3-concepts",
+            "kind": "prediction"
+          }
+        },
+        {
+          "title": "RSI: recursive self-improvement",
+          "caption": {
+            "text": "AI helps improve AI itself; each better version improves faster: a speed-up loop.",
+            "asOf": "2026-10-12",
+            "source": "t3-concepts",
+            "kind": "prediction"
+          }
+        },
+        {
+          "title": "AGI: general AI",
+          "caption": {
+            "text": "Can do most thinking work the way humans can. There’s no agreed definition yet.",
+            "asOf": "2026-10-12",
+            "source": "wiki-agi",
+            "kind": "prediction"
+          }
+        },
+        {
+          "title": "ASI: superintelligence",
+          "caption": {
+            "text": "Far beyond the best humans in nearly every field. For now, only a hypothesis.",
+            "asOf": "2026-10-12",
+            "source": "t3-concepts",
+            "kind": "prediction"
+          }
+        }
+      ]
+    },
+    "views": {
+      "label": "Points of view",
+      "prompt": "Tap each stone",
+      "group": "Three views on AI’s future",
+      "insight": "No one knows the timing for sure. Hear all three sides and trust information with sources.",
+      "items": [
+        {
+          "name": "Optimistic",
+          "view": {
+            "text": "It’s coming soon, and the benefits will be huge: curing diseases, speeding up science.",
+            "asOf": "2026-10-12",
+            "source": "editorial",
+            "kind": "opinion"
+          }
+        },
+        {
+          "name": "Cautious",
+          "view": {
+            "text": "AI is getting stronger fast, so we need safety and clear rules first.",
+            "asOf": "2026-10-12",
+            "source": "editorial",
+            "kind": "opinion"
+          }
+        },
+        {
+          "name": "Skeptical",
+          "view": {
+            "text": "It’s still far off: today’s AI is good at stringing words together but doesn’t truly understand the world.",
+            "asOf": "2026-10-12",
+            "source": "editorial",
+            "kind": "opinion"
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "t3-scroll": {
+      "title": "Milestones on the scroll",
+      "publisher": "Compiled by AI Zen",
+      "note": "Counted from Turing’s paper (1950) to 2026. Each milestone’s source is under the ⓘ button on the scroll."
+    },
+    "lf-aaif": {
+      "title": "Linux Foundation Announces the Formation of the Agentic AI Foundation (AAIF)",
+      "publisher": "The Linux Foundation",
+      "url": "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
+      "date": "2025-12-09",
+      "note": "The Linux Foundation formed the Agentic AI Foundation, a neutral body; Anthropic’s MCP is one of its three founding projects."
+    },
+    "t3-concepts": {
+      "title": "Ideas being discussed about AI’s future",
+      "publisher": "Compiled by AI Zen",
+      "note": "Describes ideas and predictions for learning, not events that have happened."
+    },
+    "turing-1950": {
+      "title": "Computing Machinery and Intelligence",
+      "publisher": "A. M. Turing · Mind, vol. 59, no. 236",
+      "url": "https://doi.org/10.1093/mind/LIX.236.433",
+      "date": "1950-10"
+    },
+    "dartmouth-1955": {
+      "title": "A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence",
+      "publisher": "J. McCarthy, M. Minsky, N. Rochester, C. Shannon",
+      "url": "https://doi.org/10.1609/aimag.v27i4.1904",
+      "date": "1955-08-31",
+      "note": "The name “artificial intelligence” comes from this proposal (1955); the workshop took place in summer 1956. The link is the reprint in AI Magazine, vol. 27, no. 4 (2006)."
+    },
+    "wiki-ai-winter": {
+      "title": "AI winter",
+      "publisher": "Wikipedia (English)",
+      "url": "https://en.wikipedia.org/wiki/AI_winter",
+      "note": "Free encyclopedia. The dates of the winters are only estimates."
+    },
+    "ibm-deepblue": {
+      "title": "Deep Blue",
+      "publisher": "IBM",
+      "url": "https://www.ibm.com/history/deep-blue",
+      "note": "In the May 1997 rematch, Deep Blue won 3.5–2.5."
+    },
+    "alexnet-2012": {
+      "title": "ImageNet Classification with Deep Convolutional Neural Networks",
+      "publisher": "A. Krizhevsky, I. Sutskever, G. E. Hinton · NeurIPS (NIPS) 2012",
+      "url": "https://papers.nips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html",
+      "date": "2012",
+      "note": "The model learned from 1.2 million images; at ILSVRC-2012, its top-5 error was 15.3% vs 26.2% for the runner-up."
+    },
+    "wiki-alphago-lee": {
+      "title": "AlphaGo versus Lee Sedol",
+      "publisher": "Wikipedia (English)",
+      "url": "https://en.wikipedia.org/wiki/AlphaGo_versus_Lee_Sedol",
+      "note": "A five-game match, March 9–15, 2016, in Seoul."
+    },
+    "vaswani-2017": {
+      "title": "Attention Is All You Need",
+      "publisher": "A. Vaswani et al. · arXiv:1706.03762",
+      "url": "https://arxiv.org/abs/1706.03762",
+      "date": "2017-06"
+    },
+    "brown-2020": {
+      "title": "Language Models are Few-Shot Learners",
+      "publisher": "T. B. Brown et al. · arXiv:2005.14165",
+      "url": "https://arxiv.org/abs/2005.14165",
+      "date": "2020-05-28"
+    },
+    "openai-chatgpt": {
+      "title": "Introducing ChatGPT",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/chatgpt/",
+      "date": "2022-11-30"
+    },
+    "openai-o1": {
+      "title": "Learning to reason with LLMs",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/learning-to-reason-with-llms/",
+      "date": "2024-09-12"
+    },
+    "wiki-agi": {
+      "title": "Artificial general intelligence",
+      "publisher": "Wikipedia (English)",
+      "url": "https://en.wikipedia.org/wiki/Artificial_general_intelligence",
+      "note": "There is no AGI definition everyone agrees on, and estimates of “when” vary widely."
+    }
+  }
+}

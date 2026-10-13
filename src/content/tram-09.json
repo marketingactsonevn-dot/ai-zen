@@ -1,0 +1,200 @@
+{
+  "id": 9,
+  "kicker": "Từ một tấm ảnh phẳng, AI nặn nên chú cá koi biết bơi.",
+  "scenes": {
+    "pipeline": {
+      "label": "Sáu bước thành hình",
+      "prompt": "Xoay thử, rồi đi tiếp",
+      "aria": "Mô hình cá koi ba chiều. Kéo hoặc dùng phím mũi tên để xoay.",
+      "valueText": "Đã xoay {deg} độ",
+      "stepsLabel": "Sáu bước AI tạo 3D",
+      "stepAria": "Bước {n}: {name}",
+      "of": "{n} / 6",
+      "orText": "hoặc: “koi trắng đỏ, vây dài”",
+      "back": "Mặt sau: ảnh không có",
+      "steps": [
+        {
+          "name": "Ảnh hoặc chữ",
+          "short": "Ảnh / chữ",
+          "caption": "Bạn đưa vào một tấm ảnh hoặc một câu mô tả. Ảnh phẳng, chỉ một mặt."
+        },
+        {
+          "name": "Nhiều góc nhìn (multi-view)",
+          "short": "Nhiều góc nhìn",
+          "caption": "AI đoán vật từ phía trước, sau, trên, hai bên — kể cả phần ảnh không có."
+        },
+        {
+          "name": "Dựng khối (mesh)",
+          "short": "Dựng khối",
+          "caption": "Ghép các góc nhìn thành khối 3D: một lớp vỏ gồm rất nhiều tam giác nhỏ."
+        },
+        {
+          "name": "Phủ chất liệu (texture, PBR)",
+          "short": "Chất liệu",
+          "caption": "Texture là lớp ảnh bọc ngoài; PBR thêm độ nhám, vân nổi cho ánh sáng thật."
+        },
+        {
+          "name": "Dọn lưới, gắn xương",
+          "short": "Lưới & xương",
+          "caption": "Retopology: dọn lưới rối thành lưới gọn. Rig: gắn bộ xương để vật cử động được."
+        },
+        {
+          "name": "Đem ra dùng",
+          "short": "Đem ra dùng",
+          "caption": "Xuất thành tệp 3D: chỉnh tiếp trong Blender, đưa vào game, hoặc xem bằng AR."
+        }
+      ],
+      "maps": {
+        "label": "Xem từng lớp chất liệu",
+        "items": [
+          "Tất cả",
+          "Màu",
+          "Độ nhám",
+          "Vân nổi"
+        ]
+      },
+      "uses": {
+        "label": "Dùng ở đâu",
+        "items": [
+          {
+            "name": "Blender",
+            "note": {
+              "text": "Blender: phần mềm 3D miễn phí, mã nguồn mở, để chỉnh lại mô hình.",
+              "asOf": "2026-10-12",
+              "source": "t09-blender"
+            }
+          },
+          {
+            "name": "Game",
+            "note": "Trong game: lưới gọn, có xương nên cá bơi được."
+          },
+          {
+            "name": "AR",
+            "note": "AR (thực tế tăng cường): cá hiện trên bàn thật qua camera điện thoại."
+          }
+        ]
+      },
+      "insight": "AI dựng 3D theo dây chuyền: đoán các góc nhìn, nặn khối, phủ chất liệu, rồi dọn gọn để dùng được.",
+      "detail": "Phần ảnh không có, AI phải đoán — nên mặt sau đôi khi sai. Người làm 3D vẫn cần kiểm tra lại.",
+      "noWebgl": "Hình tĩnh: sáu bước biến một tấm ảnh cá koi thành mô hình 3D."
+    },
+    "splats": {
+      "label": "Rắc từ ảnh thật",
+      "prompt": "Bấm chụp quanh đèn đá",
+      "title": "Kỹ thuật anh em",
+      "aria": "Ngọn đèn đá dựng từ các vệt màu mờ. Kéo hoặc dùng phím mũi tên để đi vòng quanh.",
+      "valueText": "Đứng ở góc {deg} độ",
+      "shutter": "Chụp một tấm từ góc này",
+      "count": "{n}/8 ảnh",
+      "more": "Sang phía chưa chụp",
+      "insight": {
+        "text": "Gaussian splatting dựng 3D từ nhiều ảnh chụp thật quanh vật: hàng loạt vệt màu mờ chồng lên nhau.",
+        "asOf": "2026-10-12",
+        "source": "t09-3dgs"
+      },
+      "detail": "Khác AI tạo 3D: splat chỉ ghi lại thứ đã chụp. Góc nào chưa chụp, chỗ đó còn mờ hoặc trống.",
+      "noWebgl": "Hình tĩnh: ngọn đèn đá hiện ra từ những vệt màu mờ, ghép từ nhiều ảnh chụp quanh nó."
+    },
+    "input": {
+      "label": "Ảnh đầu vào tốt",
+      "prompt": "Sửa từng lỗi của ảnh",
+      "photo": "Ảnh bạn đưa",
+      "result": "Bản 3D AI dựng",
+      "group": "Các lỗi của tấm ảnh",
+      "status": "Đã sửa {n}/4",
+      "fixes": [
+        {
+          "flaw": "Nền rối",
+          "fix": "Nền trơn"
+        },
+        {
+          "flaw": "Chụp xiên",
+          "fix": "Chụp chính diện"
+        },
+        {
+          "flaw": "Mất đuôi",
+          "fix": "Đủ trọn vật"
+        },
+        {
+          "flaw": "Bị che, lóa",
+          "fix": "Ảnh sạch, rõ"
+        }
+      ],
+      "fixAria": "Lỗi “{flaw}”. Bấm để sửa thành: {fix}",
+      "fixedAria": "Đã sửa: {fix}",
+      "insight": "Ảnh tốt cho AI 3D: sạch, rõ, chụp chính diện, nền trơn, không bị cắt mất phần nào.",
+      "detail": {
+        "text": "Bản AI dựng thường vẫn cần chỉnh lại trong Blender (phần mềm dựng 3D) trước khi dùng thật.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "noWebgl": "Hình tĩnh: ảnh rõ, chính diện, nền trơn cho ra bản 3D gọn hơn."
+    },
+    "models": {
+      "label": "Các xưởng 3D",
+      "prompt": "Chạm từng viên đá",
+      "group": "Các mô hình AI tạo 3D đáng chú ý",
+      "released": "Ra mắt {date}",
+      "items": [
+        {
+          "company": "meshy",
+          "model": "Meshy 7"
+        },
+        {
+          "company": "hyper3d",
+          "model": "Rodin Gen-2.5"
+        },
+        {
+          "company": "tripo",
+          "model": "Tripo P1.0 / H3.1"
+        },
+        {
+          "company": "tencent",
+          "model": "Hunyuan 3D 3.1"
+        },
+        {
+          "company": "tencent",
+          "model": "Pixal3D"
+        },
+        {
+          "company": "microsoft",
+          "model": "TRELLIS.2"
+        }
+      ],
+      "insight": "Mỗi công cụ mạnh một kiểu. Hãy thử vài công cụ với cùng một ảnh rồi so kết quả.",
+      "detail": "Nhận xét điểm mạnh ở đây là đánh giá chung; AI cập nhật theo tuần nên có thể đã đổi.",
+      "groups": [
+        "Dùng online",
+        "Mã nguồn mở, tải về"
+      ]
+    }
+  },
+  "quiz": {
+    "q": "Vì sao ảnh đưa cho AI 3D nên rõ, chính diện, đủ trọn vật?",
+    "options": [
+      "Để tệp ảnh nhẹ hơn",
+      "Để AI đỡ phải đoán phần khuất",
+      "Để AI chạy nhanh hơn",
+      "Vì ảnh mờ bị cấm dùng"
+    ],
+    "answer": 1,
+    "explain": "AI phải tự đoán những gì ảnh không cho thấy; ảnh càng rõ và đủ, phần đoán càng ít sai."
+  },
+  "summary": "AI tạo 3D đoán mặt khuất, nặn khối, phủ chất liệu — người vẫn dọn lại.",
+  "sources": {
+    "t09-3dgs": {
+      "title": "3D Gaussian Splatting for Real-Time Radiance Field Rendering",
+      "publisher": "Kerbl, Kopanas, Leimkühler, Drettakis · ACM Transactions on Graphics (SIGGRAPH 2023)",
+      "date": "2023-07",
+      "url": "https://arxiv.org/abs/2308.04079",
+      "note": "Bài báo giới thiệu kỹ thuật Gaussian splatting."
+    },
+    "t09-blender": {
+      "title": "About Blender",
+      "publisher": "Blender Foundation",
+      "url": "https://www.blender.org/about/",
+      "note": "Trang giới thiệu của Blender Foundation: Blender là phần mềm 3D miễn phí, mã nguồn mở."
+    }
+  }
+}

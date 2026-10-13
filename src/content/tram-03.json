@@ -1,0 +1,322 @@
+{
+  "id": 3,
+  "kicker": "Cuộn tranh mực từ 1950 tới hôm nay, rồi lối đá vào sương.",
+  "summary": "Hơn 70 năm, qua vài mùa đông, AI tới chatbot và agent; phía trước còn sương mù.",
+  "quiz": {
+    "q": "Điều nào dưới đây vẫn là dự đoán, chưa xảy ra?",
+    "options": [
+      "Deep Blue thắng Kasparov",
+      "Bài báo Transformer ra đời",
+      "ChatGPT ra mắt",
+      "Siêu trí tuệ (ASI) vượt con người"
+    ],
+    "answer": 3,
+    "explain": "ASI mới là giả thuyết; ba điều kia đã xảy ra vào năm 1997, 2017 và 11/2022."
+  },
+  "scenes": {
+    "scroll": {
+      "label": "Cuộn tranh",
+      "prompt": "Kéo để mở cuộn tranh",
+      "region": "Cuộn tranh lịch sử AI. Kéo, lăn chuột hoặc dùng phím mũi tên trái, phải để đi qua từng mốc.",
+      "prev": "Mốc trước",
+      "next": "Mốc sau",
+      "status": "{year}: {title}",
+      "insight": {
+        "text": "Hơn 70 năm: những bước nhỏ, vài mùa đông, rồi tăng tốc rất nhanh.",
+        "asOf": "2026-10-12",
+        "source": "t3-scroll"
+      },
+      "art": {
+        "mark": "?",
+        "words": [
+          "Con",
+          "mèo",
+          "đang",
+          "ngủ"
+        ],
+        "steps": [
+          "1",
+          "2",
+          "3"
+        ]
+      },
+      "events": [
+        {
+          "year": "1950",
+          "title": "Phép thử Turing",
+          "caption": {
+            "text": "Alan Turing hỏi “Máy có thể suy nghĩ không?” và đề xuất một phép thử.",
+            "asOf": "2026-10-12",
+            "source": "turing-1950"
+          }
+        },
+        {
+          "year": "1956",
+          "title": "Ngành AI chính thức ra đời",
+          "caption": {
+            "text": "Hội thảo mùa hè ở Đại học Dartmouth (Mỹ) mở ra ngành trí tuệ nhân tạo.",
+            "asOf": "2026-10-12",
+            "source": "dartmouth-1955"
+          }
+        },
+        {
+          "year": "1974 · 1987",
+          "title": "Những mùa đông AI",
+          "caption": {
+            "text": "Hai lần, khoảng năm 1974 và 1987: kỳ vọng vượt kết quả, tiền và sự quan tâm cho AI giảm mạnh.",
+            "asOf": "2026-10-12",
+            "source": "wiki-ai-winter"
+          }
+        },
+        {
+          "year": "1997",
+          "title": "Deep Blue thắng Kasparov",
+          "caption": {
+            "text": "Máy tính Deep Blue của IBM thắng nhà vô địch cờ vua thế giới Garry Kasparov.",
+            "asOf": "2026-10-12",
+            "source": "ibm-deepblue"
+          }
+        },
+        {
+          "year": "2012",
+          "title": "Học sâu bùng nổ",
+          "caption": {
+            "text": "AlexNet tự học từ hơn một triệu ảnh, thắng cách biệt cuộc thi nhận diện ảnh.",
+            "asOf": "2026-10-12",
+            "source": "alexnet-2012"
+          }
+        },
+        {
+          "year": "2016",
+          "title": "AlphaGo thắng Lee Sedol",
+          "caption": {
+            "text": "AlphaGo của DeepMind thắng kỳ thủ cờ vây hàng đầu Lee Sedol 4–1 tại Seoul.",
+            "asOf": "2026-10-12",
+            "source": "wiki-alphago-lee"
+          }
+        },
+        {
+          "year": "2017",
+          "title": "Transformer ra đời",
+          "caption": {
+            "text": "Bài báo “Attention Is All You Need”: máy “chú ý” tới mọi từ cùng lúc.",
+            "asOf": "2026-10-12",
+            "source": "vaswani-2017"
+          }
+        },
+        {
+          "year": "2020",
+          "title": "GPT-3",
+          "caption": {
+            "text": "OpenAI công bố GPT-3: chỉ cần vài ví dụ là làm được khá nhiều việc mới.",
+            "asOf": "2026-10-12",
+            "source": "brown-2020"
+          }
+        },
+        {
+          "year": "11/2022",
+          "title": "ChatGPT ra mắt",
+          "caption": {
+            "text": "30/11/2022: ChatGPT ra mắt, trò chuyện với AI bằng câu chữ thường, ai cũng thử được.",
+            "asOf": "2026-10-12",
+            "source": "openai-chatgpt"
+          }
+        },
+        {
+          "year": "2024",
+          "title": "AI nghĩ trước khi nói",
+          "caption": {
+            "text": "Mô hình suy luận như OpenAI o1 “nghĩ” từng bước rồi mới trả lời.",
+            "asOf": "2026-10-12",
+            "source": "openai-o1"
+          }
+        },
+        {
+          "year": "2025–2026",
+          "title": "AI Agent và chuẩn MCP",
+          "caption": {
+            "text": "AI Agent tự làm nhiều bước; MCP thành chuẩn chung nối AI với các công cụ.",
+            "asOf": "2026-10-12",
+            "source": "lf-aaif"
+          }
+        }
+      ]
+    },
+    "future": {
+      "label": "Phía trước",
+      "prompt": "Chạm để vén sương",
+      "group": "Năm viên đá trong sương, từ gần tới xa",
+      "stone": "Vén sương viên đá {n}",
+      "insight": "Đây là khái niệm và dự đoán, chưa phải sự kiện; càng xa hiện tại, sương càng dày.",
+      "steps": [
+        {
+          "title": "AI Agent làm việc nhiều giờ",
+          "caption": {
+            "text": "Giao một mục tiêu lớn; Agent tự chia việc, dùng công cụ, làm liền nhiều giờ.",
+            "asOf": "2026-10-12",
+            "source": "t3-concepts",
+            "kind": "prediction"
+          }
+        },
+        {
+          "title": "AI “nhà phát minh”",
+          "caption": {
+            "text": "AI tự đặt giả thuyết, thử nghiệm, tìm ra điều mới như thuốc hay vật liệu.",
+            "asOf": "2026-10-12",
+            "source": "t3-concepts",
+            "kind": "prediction"
+          }
+        },
+        {
+          "title": "RSI: tự cải tiến đệ quy",
+          "caption": {
+            "text": "AI giúp cải tiến chính AI; bản tốt hơn cải tiến nhanh hơn: vòng tăng tốc.",
+            "asOf": "2026-10-12",
+            "source": "t3-concepts",
+            "kind": "prediction"
+          }
+        },
+        {
+          "title": "AGI: AI tổng quát",
+          "caption": {
+            "text": "Làm được hầu hết việc trí óc như con người. Chưa có định nghĩa thống nhất.",
+            "asOf": "2026-10-12",
+            "source": "wiki-agi",
+            "kind": "prediction"
+          }
+        },
+        {
+          "title": "ASI: siêu trí tuệ",
+          "caption": {
+            "text": "Vượt xa người giỏi nhất ở gần như mọi lĩnh vực. Hiện chỉ là giả thuyết.",
+            "asOf": "2026-10-12",
+            "source": "t3-concepts",
+            "kind": "prediction"
+          }
+        }
+      ]
+    },
+    "views": {
+      "label": "Các góc nhìn",
+      "prompt": "Chạm vào từng viên đá",
+      "group": "Ba góc nhìn về tương lai AI",
+      "insight": "Chưa ai biết chắc thời điểm. Hãy nghe cả ba phía và tin vào thông tin có nguồn.",
+      "items": [
+        {
+          "name": "Lạc quan",
+          "view": {
+            "text": "Sắp tới rồi, và lợi ích sẽ rất lớn: chữa bệnh, đẩy nhanh khoa học.",
+            "asOf": "2026-10-12",
+            "source": "editorial",
+            "kind": "opinion"
+          }
+        },
+        {
+          "name": "Thận trọng",
+          "view": {
+            "text": "AI mạnh lên nhanh, nên cần an toàn và luật lệ rõ ràng trước đã.",
+            "asOf": "2026-10-12",
+            "source": "editorial",
+            "kind": "opinion"
+          }
+        },
+        {
+          "name": "Hoài nghi",
+          "view": {
+            "text": "Còn rất xa: AI hiện tại giỏi nối chữ nhưng chưa thực sự hiểu thế giới.",
+            "asOf": "2026-10-12",
+            "source": "editorial",
+            "kind": "opinion"
+          }
+        }
+      ]
+    }
+  },
+  "sources": {
+    "t3-scroll": {
+      "title": "Các mốc trên cuộn tranh",
+      "publisher": "AI Zen tổng hợp",
+      "note": "Tính từ bài báo của Turing (1950) tới 2026. Nguồn của từng mốc nằm ở nút ⓘ trên cuộn tranh."
+    },
+    "lf-aaif": {
+      "title": "Linux Foundation Announces the Formation of the Agentic AI Foundation (AAIF)",
+      "publisher": "The Linux Foundation",
+      "url": "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
+      "date": "2025-12-09",
+      "note": "Linux Foundation lập Agentic AI Foundation, một tổ chức trung lập; MCP của Anthropic là một trong ba dự án sáng lập."
+    },
+    "t3-concepts": {
+      "title": "Các khái niệm đang được bàn về tương lai AI",
+      "publisher": "AI Zen tổng hợp",
+      "note": "Mô tả khái niệm và dự đoán để học, không phải sự kiện đã xảy ra."
+    },
+    "turing-1950": {
+      "title": "Computing Machinery and Intelligence",
+      "publisher": "A. M. Turing · tạp chí Mind, tập 59, số 236",
+      "url": "https://doi.org/10.1093/mind/LIX.236.433",
+      "date": "1950-10"
+    },
+    "dartmouth-1955": {
+      "title": "A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence",
+      "publisher": "J. McCarthy, M. Minsky, N. Rochester, C. Shannon",
+      "url": "https://doi.org/10.1609/aimag.v27i4.1904",
+      "date": "1955-08-31",
+      "note": "Cái tên “artificial intelligence” có từ bản đề xuất này (1955); hội thảo diễn ra mùa hè 1956. Đường dẫn là bản in lại trên AI Magazine, tập 27, số 4 (2006)."
+    },
+    "wiki-ai-winter": {
+      "title": "AI winter",
+      "publisher": "Wikipedia (tiếng Anh)",
+      "url": "https://en.wikipedia.org/wiki/AI_winter",
+      "note": "Bách khoa mở. Mốc thời gian các mùa đông chỉ là ước lượng."
+    },
+    "ibm-deepblue": {
+      "title": "Deep Blue",
+      "publisher": "IBM",
+      "url": "https://www.ibm.com/history/deep-blue",
+      "note": "Trận tái đấu tháng 5/1997, Deep Blue thắng 3,5–2,5."
+    },
+    "alexnet-2012": {
+      "title": "ImageNet Classification with Deep Convolutional Neural Networks",
+      "publisher": "A. Krizhevsky, I. Sutskever, G. E. Hinton · NeurIPS (NIPS) 2012",
+      "url": "https://papers.nips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html",
+      "date": "2012",
+      "note": "Mô hình học từ 1,2 triệu ảnh; ở cuộc thi ILSVRC-2012, lỗi top-5 là 15,3% so với 26,2% của đội về nhì."
+    },
+    "wiki-alphago-lee": {
+      "title": "AlphaGo versus Lee Sedol",
+      "publisher": "Wikipedia (tiếng Anh)",
+      "url": "https://en.wikipedia.org/wiki/AlphaGo_versus_Lee_Sedol",
+      "note": "Trận 5 ván, 9–15/3/2016 tại Seoul."
+    },
+    "vaswani-2017": {
+      "title": "Attention Is All You Need",
+      "publisher": "A. Vaswani và cộng sự · arXiv:1706.03762",
+      "url": "https://arxiv.org/abs/1706.03762",
+      "date": "2017-06"
+    },
+    "brown-2020": {
+      "title": "Language Models are Few-Shot Learners",
+      "publisher": "T. B. Brown và cộng sự · arXiv:2005.14165",
+      "url": "https://arxiv.org/abs/2005.14165",
+      "date": "2020-05-28"
+    },
+    "openai-chatgpt": {
+      "title": "Introducing ChatGPT",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/chatgpt/",
+      "date": "2022-11-30"
+    },
+    "openai-o1": {
+      "title": "Learning to reason with LLMs",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/learning-to-reason-with-llms/",
+      "date": "2024-09-12"
+    },
+    "wiki-agi": {
+      "title": "Artificial general intelligence",
+      "publisher": "Wikipedia (tiếng Anh)",
+      "url": "https://en.wikipedia.org/wiki/Artificial_general_intelligence",
+      "note": "Chưa có một định nghĩa AGI được mọi người thống nhất, và các ước tính “khi nào” chênh nhau rất xa."
+    }
+  }
+}

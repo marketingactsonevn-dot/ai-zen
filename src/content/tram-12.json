@@ -1,0 +1,168 @@
+{
+  "id": 12,
+  "kicker": "Sáu viên đá xếp thành lối; lời nhờ càng rõ, đèn càng sáng.",
+  "scenes": {
+    "path": {
+      "label": "Lối đá tới đèn",
+      "prompt": "Kéo đá ra lối đi",
+      "group": "Sáu viên đá của một prompt. Kéo, hoặc bấm từng viên để đặt lên lối đi.",
+      "place": "Đặt viên “{name}” lên lối đi",
+      "again": "{name}: đã nằm trên lối, bấm để đọc lại",
+      "meter": "độ rõ",
+      "level": "Đèn sáng {n}/{total}.",
+      "art": "Một chiếc đèn lồng đá trên nền cát cào. Mỗi viên đá đặt lên lối đi làm đèn sáng thêm.",
+      "blocks": [
+        {
+          "id": "role",
+          "name": "Vai trò",
+          "title": "Vai trò",
+          "hint": "AI đóng vai ai",
+          "example": "“Bạn là người viết quảng cáo cho một hãng son Việt.”"
+        },
+        {
+          "id": "context",
+          "name": "Bối cảnh",
+          "title": "Bối cảnh",
+          "hint": "ai đọc, để làm gì",
+          "example": "“Người đọc: nữ 20–30 tuổi, bận rộn. Mục tiêu: ra mắt son mới.”"
+        },
+        {
+          "id": "task",
+          "name": "Nhiệm vụ",
+          "title": "Nhiệm vụ",
+          "hint": "một động từ rõ ràng",
+          "example": "“Hãy viết 2 caption Facebook.”"
+        },
+        {
+          "id": "data",
+          "name": "Dữ liệu / ví dụ",
+          "title": "Dữ liệu / ví dụ",
+          "hint": "nguyên liệu và câu mẫu",
+          "example": "“Son lì Đỏ Gạch, mềm môi. Giọng mẫu: ‘Môi ấm cho ngày se lạnh.’”"
+        },
+        {
+          "id": "rules",
+          "name": "Ràng buộc",
+          "title": "Ràng buộc",
+          "hint": "độ dài, giọng, điều cấm",
+          "example": "“Mỗi dòng dưới 20 chữ, giọng ấm áp, không dùng chữ ‘nhất’.”"
+        },
+        {
+          "id": "format",
+          "name": "Định dạng",
+          "title": "Định dạng đầu ra",
+          "hint": "trả về trông ra sao",
+          "example": "“Trả về 2 dòng, mỗi dòng kèm 1 hashtag.”"
+        }
+      ],
+      "insight": "Prompt (lời nhờ AI) rõ ràng gồm sáu phần: vai trò, bối cảnh, nhiệm vụ, dữ liệu, ràng buộc, định dạng.",
+      "detail": "Không phải lúc nào cũng cần đủ sáu. Nhưng việc càng quan trọng, càng nên thêm bối cảnh và ví dụ."
+    },
+    "compare": {
+      "label": "Hai lời nhờ",
+      "prompt": "Chạm viên đá ở giữa",
+      "send": "Gửi cả hai lời nhờ cho cùng một AI",
+      "sendText": "Gửi",
+      "weakTitle": "Lời nhờ sơ sài",
+      "strongTitle": "Lời nhờ rõ ràng",
+      "ask": "Bạn gõ",
+      "reply": "AI trả lời",
+      "waiting": "chờ gửi",
+      "showPrompt": "Xem nguyên văn",
+      "hidePrompt": "Thu gọn",
+      "flagNote": "Chỗ chưa ổn",
+      "weakPrompt": "Viết caption son.",
+      "weakReply": [
+        {
+          "t": "Son mới về! Màu "
+        },
+        {
+          "t": "siêu đẹp, chất siêu xịn",
+          "flag": "chung chung"
+        },
+        {
+          "t": ", "
+        },
+        {
+          "t": "tốt nhất thị trường",
+          "flag": "nói quá"
+        },
+        {
+          "t": ". Mua ngay kẻo hết!"
+        }
+      ],
+      "strongReply": [
+        "Đỏ Gạch lì mà mềm — môi ấm suốt một ngày bận rộn. #DoGach",
+        "Chiều se lạnh, một nét Đỏ Gạch là đủ ấm. #SonLiDoGach"
+      ],
+      "done": "AI đã trả lời cả hai lời nhờ.",
+      "insight": "Cùng một AI: lời nhờ sơ sài cho câu chung chung, lời nhờ rõ ràng cho đúng thứ bạn cần.",
+      "detail": {
+        "text": "Hai câu trả lời là ví dụ viết sẵn để minh họa; AI thật mỗi lần trả lời có thể hơi khác.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      }
+    },
+    "rules": {
+      "label": "Sáu quy tắc vàng",
+      "prompt": "Chạm từng viên đá",
+      "group": "Sáu quy tắc vàng, mỗi quy tắc là một viên đá",
+      "open": "Mở quy tắc {n}",
+      "count": "{n}/{total}",
+      "items": [
+        {
+          "id": "clear",
+          "short": "Nói rõ",
+          "title": "Nói rõ như giao việc cho người mới",
+          "example": "AI không biết công ty, khách hàng hay gu của bạn — hãy kể đủ."
+        },
+        {
+          "id": "example",
+          "short": "Cho ví dụ",
+          "title": "Cho ví dụ",
+          "example": "Dán một mẫu bạn thích; AI sẽ bắt giọng theo mẫu đó."
+        },
+        {
+          "id": "steps",
+          "short": "Chia nhỏ",
+          "title": "Chia việc lớn thành bước nhỏ",
+          "example": "Dàn ý trước, viết sau, sửa cuối — mỗi lượt một bước."
+        },
+        {
+          "id": "loop",
+          "short": "Lặp vòng",
+          "title": "Hỏi lại, lặp nhiều vòng",
+          "example": "Hỏi: “Bạn cần thêm thông tin gì?”, rồi sửa dần qua vài lượt."
+        },
+        {
+          "id": "check",
+          "short": "Tự kiểm tra",
+          "title": "Yêu cầu AI tự kiểm tra",
+          "example": "“Rà lại giúp tôi: chỗ nào có thể sai hoặc bịa?”"
+        },
+        {
+          "id": "private",
+          "short": "Giữ kín",
+          "title": "Không đưa dữ liệu nhạy cảm",
+          "example": "Mật khẩu, số thẻ, hồ sơ khách: giữ lại, hoặc che tên trước khi dán."
+        }
+      ],
+      "insight": "Ít ai viết prompt hay ngay lần đầu: nói rõ, cho mẫu, chia bước, sửa vài vòng, giữ kín dữ liệu riêng.",
+      "detail": "Mẹo nhỏ: cuối prompt thêm câu “Trước khi trả lời, hãy tự rà lại và hỏi tôi nếu còn thiếu thông tin.”"
+    }
+  },
+  "quiz": {
+    "q": "Muốn AI viết caption đúng ý, nên làm gì?",
+    "options": [
+      "Chỉ gõ “viết caption son”",
+      "Nêu vai trò, bối cảnh, ví dụ, ràng buộc",
+      "Dán cả danh sách số điện thoại khách",
+      "Viết thật dài, càng nhiều chữ càng tốt"
+    ],
+    "answer": 1,
+    "explain": "Lời nhờ đủ phần giúp AI hiểu ai đọc, cần gì, tránh gì; còn dữ liệu nhạy cảm thì nên giữ lại."
+  },
+  "summary": "Nhờ AI như giao việc cho người mới: nói rõ, cho ví dụ, đặt giới hạn.",
+  "sources": {}
+}

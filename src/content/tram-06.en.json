@@ -1,0 +1,205 @@
+{
+  "id": 6,
+  "kicker": "A bonsai reads a whole library, gets pruned, and only then learns to answer.",
+  "summary": "AI guesses from what it has learned — let it look things up, and check for yourself.",
+  "quiz": {
+    "q": "AI gives an important number with total confidence. What should you do?",
+    "options": [
+      "Trust it — it sounds so sure",
+      "Check it against a trusted source",
+      "Ask the exact same question again",
+      "Ignore it, AI always gets numbers wrong"
+    ],
+    "answer": 1,
+    "explain": "AI can make things up very confidently; for anything important, open the source or cross-check one more place."
+  },
+  "scenes": {
+    "life": {
+      "label": "A tree’s life",
+      "art": "Ink painting: a young tree on a rock in a sand garden. A cloud of words rains down from above and the tree grows fast and wild; then it is pruned to a scroll of principles; finally the tree answers a question.",
+      "hold": "Hold to rain words",
+      "holdAria": "Hold to rain words onto the tree (or hold the space bar)",
+      "prune": "Prune three stray branches",
+      "ask": "Ask the tree something",
+      "steps": [
+        {
+          "label": "Read",
+          "aria": "Step 1: pre-training — reading a mountain of text"
+        },
+        {
+          "label": "Prune",
+          "aria": "Step 2: fine-tuning — pruning"
+        },
+        {
+          "label": "Answer",
+          "aria": "Step 3: answering (inference)"
+        }
+      ],
+      "cloud": "a huge pile of text",
+      "shoots": [
+        "rambling",
+        "rude",
+        "helps do harm"
+      ],
+      "shootAria": "Prune the “{name}” branch",
+      "scroll": "principles",
+      "rules": [
+        "helpful",
+        "honest",
+        "harmless"
+      ],
+      "shears": "human feedback",
+      "question": "“Write me a New Year wish”",
+      "askAria": "Ask the tree: write me a New Year wish",
+      "answer": "“Peace, prosperity, and may all your wishes come true!”",
+      "insights": [
+        {
+          "text": "Pre-training: AI reads a huge pile of text to learn to guess the next word — it knows a lot, but grows wild.",
+          "detail": "For example: books, web pages, code… Afterwards it continues text very well but doesn’t yet behave like an assistant."
+        },
+        {
+          "text": "Fine-tuning: people score answers and write principles, pruning it into a more helpful, safer assistant.",
+          "detail": {
+            "text": "For example: Anthropic trains Claude with a “constitution” (Constitutional AI) that explains how to behave and why.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          }
+        },
+        {
+          "text": "Answering (inference): the shaped tree simply answers with what it learned — it doesn’t grow while you chat.",
+          "detail": "To teach it something new, you retrain it, or put documents right into the question — like the lookup scene ahead."
+        }
+      ],
+      "holdMore": "Hold a little longer"
+    },
+    "think": {
+      "label": "Scratch paper",
+      "art": "A still life on a low wooden table: a small sheet for answering right away, a large scratch sheet for writing step by step. Beside each sheet sit an incense burner (time) and a dish of pebbles (tokens).",
+      "prompt": "Try both ways",
+      "question": "A pen and an eraser cost $11. The pen costs $10 more than the eraser. How much is the eraser?",
+      "fast": "Answer now",
+      "slow": "Think first",
+      "fastAria": "Let the AI answer right away",
+      "slowAria": "Let the AI work it out step by step, then answer",
+      "fastAnswer": "Eraser: $1",
+      "steps": [
+        "pen = eraser + 10",
+        "2 × eraser + 10 = 11",
+        "2 × eraser = 1 → 0.5",
+        "Check: 0.5 + 10.5 = 11"
+      ],
+      "slowAnswer": "Eraser: 50 cents",
+      "time": "time",
+      "cost": "tokens",
+      "again": "Try the other way",
+      "insight": "Thinking mode: AI drafts step by step before answering — more tokens and time, but fewer mistakes on hard problems.",
+      "detail": {
+        "text": "Models that “think” before answering appeared in 2024. Easy tasks don’t need it switched on — it only costs more.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "hallu": {
+      "label": "The cracked stone",
+      "art": "A stream with three stepping stones, each carrying one claim from the AI’s answer. One is a fake stone the AI placed where it didn’t know; tap it and it cracks and sinks.",
+      "prompt": "Tap each stone",
+      "question": "Q: Who made ChatGPT, and when did it launch?",
+      "stones": [
+        {
+          "text": "made by OpenAI",
+          "aria": "Test the claim: ChatGPT was made by OpenAI",
+          "ok": true,
+          "note": {
+            "text": "solid — sourced",
+            "asOf": "2026-10-12",
+            "source": "openai-chatgpt"
+          }
+        },
+        {
+          "text": "launched Mar 2021",
+          "aria": "Test the claim: launched in March 2021",
+          "ok": false
+        },
+        {
+          "text": "built on GPT models",
+          "aria": "Test the claim: built on GPT models",
+          "ok": true,
+          "note": {
+            "text": "solid — sourced",
+            "asOf": "2026-10-12",
+            "source": "openai-chatgpt"
+          }
+        }
+      ],
+      "gap": "where the AI didn’t know",
+      "fixed": "Nov 30, 2022",
+      "fixedNote": {
+        "text": "the real date — sourced",
+        "asOf": "2026-10-12",
+        "source": "openai-chatgpt"
+      },
+      "insight": "AI can make things up very confidently to fill gaps — this is called “hallucination”. For anything important, verify.",
+      "detail": "Good habit: ask for sources, open them and read, cross-check one more place — especially numbers, names and dates."
+    },
+    "rag": {
+      "label": "The lookup lantern",
+      "art": "A stone lantern (the AI’s memory) and a small library across the gravel path. The AI can answer right away, or bring documents back to the lantern first and then answer.",
+      "prompt": "Try both ways",
+      "question": "Q: How long is our company’s Lunar New Year break?",
+      "memory": "Answer from memory",
+      "lookup": "Look it up first",
+      "memoryAria": "Let the AI answer from what it already remembers",
+      "lookupAria": "Let the AI search the company documents, then answer",
+      "lantern": "the AI’s context",
+      "guess": "Probably about 7 days…",
+      "guessNote": "a guess based on what’s typical",
+      "shelves": [
+        "Company docs",
+        "Web"
+      ],
+      "answer": "9 days off, from the 27th of the 12th lunar month.",
+      "cite": "[1] HR handbook, section 3.2",
+      "citeNote": "a source you can check",
+      "again": "Try the other way",
+      "insight": "Lookup (RAG): AI finds relevant documents, puts them into its context, then answers — with a source you can check.",
+      "detail": "Web search works the same way: AI reads a few fresh pages before answering. Its built-in memory may be outdated or incomplete."
+    },
+    "pond": {
+      "label": "One pond, three streams",
+      "art": "Three streams — text, images, sound — flow into one pond, like a single model that can read many kinds of data. At the bottom of the pond, a mist still lingers.",
+      "prompt": "Open all three streams",
+      "streams": [
+        {
+          "label": "text",
+          "aria": "Open the text stream"
+        },
+        {
+          "label": "images",
+          "aria": "Open the image stream"
+        },
+        {
+          "label": "sound",
+          "aria": "Open the sound stream"
+        }
+      ],
+      "model": "one model",
+      "diveAria": "Look down to the bottom of the pond",
+      "surfaceAria": "Back to the surface",
+      "patterns": "patterns",
+      "unknown": "still being researched",
+      "insight": "Multimodal AI reads text, images and sound in one single model — three streams, one pond.",
+      "detail": "For example: snap a photo of a bill and say “split it evenly between 4 people” — AI reads the photo, hears you, and does the math.",
+      "deep": "AI is superb at spotting patterns, but it doesn’t “understand” the way people do. What goes on inside models is still being researched.",
+      "deepDetail": "Scientists are “peering” inside models — this is called interpretability — but much is still unclear."
+    }
+  },
+  "sources": {
+    "openai-chatgpt": {
+      "title": "Introducing ChatGPT",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/chatgpt/",
+      "date": "2022-11-30",
+      "note": "OpenAI introduced ChatGPT on November 30, 2022, fine-tuned from a model in the GPT-3.5 series."
+    }
+  }
+}

@@ -1,0 +1,106 @@
+/* Trạm 2 — Cây gia phả AI. Everything is painted on the canvas; this is the overlay (hit areas and the few words). */
+.t02-art {
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.t02-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  touch-action: manipulation;
+}
+
+/* invisible hit areas over painted things (the pot, the foliage pads, the blossoms) */
+.t02-hit {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  touch-action: manipulation;
+}
+.t02-hit:focus-visible {
+  outline: 1.5px dashed var(--vermilion);
+  outline-offset: 3px;
+}
+.t02-water {
+  border-radius: 40% 40% 24% 24%;
+}
+.t02-bud {
+  width: 48px;
+  height: 48px;
+  z-index: 3;
+}
+.t02-bud[hidden] {
+  display: none;
+}
+
+/* the words that belong to the picture: brushed in serif, on a soft paper wash so no rake line runs through them */
+.t02-root,
+.t02-label,
+.t02-pcap,
+.t02-done {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  pointer-events: none;
+  font-family: var(--serif);
+  white-space: nowrap;
+  background: radial-gradient(closest-side, var(--paper) 62%, color-mix(in srgb, var(--paper) 0%, transparent));
+}
+.t02-root[hidden],
+.t02-label[hidden],
+.t02-pcap[hidden],
+.t02-done[hidden] {
+  display: none;
+}
+
+/* scene 1 — the root's name, at the end of an ink leader from the roots */
+.t02-root {
+  padding: 0.2em 0.5em 0.3em 0.25em;
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+/* scene 2 — family names beside their plaques */
+.t02-label {
+  padding: 0.3em 0.4em;
+  transform: translateY(-50%);
+  font-weight: 400;
+  font-size: clamp(0.95rem, 1.25vw, 1.1rem);
+  line-height: 1.25;
+  color: var(--ink-3);
+  transition: color 0.6s var(--ease);
+}
+.t02-label.left {
+  text-align: right;
+}
+.t02-label.on {
+  color: var(--ink);
+}
+
+/* the name of the medium, under the little picture the brush painted */
+.t02-pcap {
+  padding: 0.1em 0.5em;
+  transform: translateX(-50%);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--ink-2);
+}
+
+.t02-done {
+  padding: 0.1em 0.5em;
+  font-weight: 300;
+  font-size: clamp(1.15rem, 2.2vw, 1.9rem);
+  line-height: 1.2;
+  color: var(--ink-2);
+}
+.t02-done.center {
+  transform: translateX(-50%);
+}
+.t02-done.small {
+  font-size: 1.05rem;
+}

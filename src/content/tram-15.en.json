@@ -1,0 +1,196 @@
+{
+  "id": 15,
+  "kicker": "The lantern is you; how far the agent goes depends on the power you give it.",
+  "summary": "Give an agent just enough power; for anything you can’t undo, have it ask you first.",
+  "quiz": {
+    "q": "The agent has checked calendars and drafted the invite email. When should it stop and ask you?",
+    "options": [
+      "Before checking calendars",
+      "Before sending the email",
+      "No need to ask at all",
+      "After it has been sent"
+    ],
+    "answer": 1,
+    "explain": "Checking calendars or drafting can be fixed; a sent email can’t be taken back."
+  },
+  "scenes": {
+    "autonomy": {
+      "label": "Levels of autonomy",
+      "prompt": "Drag to hand over control",
+      "slider": "The agent’s autonomy level",
+      "valueText": "Level {n}: {name}",
+      "level": "Level {n}",
+      "you": "You",
+      "agent": "Agent",
+      "goal": "Big goal",
+      "report": "Report",
+      "scale": {
+        "text": "A 5-level scale made by AI Zen to make it easy to picture",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "art": "The stone lantern is you, the red spark is the agent. The higher its autonomy, the farther the agent strays from the lantern’s light.",
+      "levels": [
+        {
+          "name": "Answer",
+          "does": "You ask, it answers. You still do every step yourself.",
+          "example": "Example: asking how to write an Excel formula."
+        },
+        {
+          "name": "Suggest",
+          "does": "It sketches a few paths; you pick one and walk it yourself.",
+          "example": "Example: proposing three meeting times for you to choose from."
+        },
+        {
+          "name": "Acts with step-by-step approval",
+          "does": "At each step it asks “shall I go on?”, and acts only when you nod.",
+          "example": "Example: editing a price list line by line, waiting for you to approve."
+        },
+        {
+          "name": "Works alone, reports at the end",
+          "does": "You hand over the whole job; it walks the whole path, then reports back.",
+          "example": "Example: reading 30 customer emails and summing them up in one report."
+        },
+        {
+          "name": "Sets its own sub-goals",
+          "does": "You name only the big goal; it splits the work and opens new paths on its own.",
+          "example": "Example: “prepare the workshop” — it makes a task list and works through it."
+        }
+      ],
+      "insight": "The more autonomy, the farther the agent goes from your sight: handier, but it needs boundaries and careful checks.",
+      "detail": "Tip: pick the lowest level that gets the job done. The more important the task, the more the agent should ask you.",
+      "ask": "Shall I go on?"
+    },
+    "kinds": {
+      "label": "Kinds of agents",
+      "prompt": "Tap each stone",
+      "group": "Six kinds of agents",
+      "exampleLabel": "Example",
+      "items": [
+        {
+          "id": "chat",
+          "name": "Chat assistant with tools",
+          "what": "Chats like a chatbot, but can use tools on its own: search the web, read files, do math.",
+          "example": "Ask “will it rain in Da Lat tomorrow?” and it searches the web, then answers."
+        },
+        {
+          "id": "flow",
+          "name": "Automated workflow",
+          "what": "A workflow is a pre-drawn route: fixed steps that run exactly the same every time.",
+          "example": "New order → send a thank-you email → log it in a spreadsheet."
+        },
+        {
+          "id": "code",
+          "name": "Coding agent",
+          "what": "A coding agent writes code, runs it, and fixes the errors it finds.",
+          "example": "Describe an event sign-up page, and it builds a working website."
+        },
+        {
+          "id": "computer",
+          "name": "Computer-use agent",
+          "what": "Computer-use and browser agents look at the screen, move the mouse, click and type like a person.",
+          "example": "Open a browser, fill in a meeting-room booking form, compare flight prices."
+        },
+        {
+          "id": "research",
+          "name": "Research agent",
+          "what": "A research agent reads many sources, compares them, then writes a report that cites them.",
+          "example": "Look into five competitors and sum them up in one comparison table."
+        },
+        {
+          "id": "team",
+          "name": "Team of agents",
+          "what": "Multi-agent: a lead agent splits the work among sub-agents, then gathers the results.",
+          "example": "One agent finds the numbers, one writes, one checks for mistakes."
+        }
+      ],
+      "insight": "A workflow follows a pre-drawn path; an agent chooses its own steps. Pick the kind that’s just enough for your job.",
+      "detail": "For the same job every day, a workflow is cheaper and steadier; you only need an agent when the work takes thinking and adapting."
+    },
+    "sim": {
+      "label": "Try handing off a task",
+      "prompt": "Give the agent a task",
+      "region": "Simulation: an agent schedules a meeting and drafts a reminder email",
+      "taskLabel": "Your task",
+      "task": "Schedule a team meeting and send a reminder email",
+      "start": "Hand it over",
+      "steps": [
+        "Understand",
+        "Check calendars",
+        "Draft email",
+        "Ask you",
+        "Send"
+      ],
+      "stepsLabel": "The agent’s path",
+      "planTitle": "The agent makes a plan",
+      "plan": [
+        "Check the calendars of 4 people",
+        "Find 30 minutes when everyone is free",
+        "Draft the invite email",
+        "Ask you before sending"
+      ],
+      "calTitle": "The agent checks calendars · Thursday",
+      "people": [
+        "Lan",
+        "Minh",
+        "Hà",
+        "You"
+      ],
+      "hours": [
+        "9am",
+        "10am",
+        "11am",
+        "12pm",
+        "1pm",
+        "2pm",
+        "3pm",
+        "4pm"
+      ],
+      "found": "All 4 people are free: Thursday, 2pm",
+      "draftTitle": "The agent drafts an email",
+      "to": "To",
+      "subjectLabel": "Subject",
+      "subject": "30-min team meeting · Thursday 2pm",
+      "body": [
+        "Hi team,",
+        "Let’s meet for 30 minutes to lock in next month’s plan.",
+        "Thanks!"
+      ],
+      "recipients": [
+        "Lan · our team",
+        "Hà · our team"
+      ],
+      "wrong": "Minh · partner company",
+      "right": "Minh · our team",
+      "note": "There are two people named Minh in the contacts; I picked the first one.",
+      "checkTitle": "The agent stops and waits for you",
+      "stone": {
+        "text": "In Japanese tea gardens, a rope-tied stone set on the stepping path tells guests: please don’t go this way.",
+        "asOf": "2026-10-12",
+        "source": "t15-sekimori"
+      },
+      "approve": "Approve & send",
+      "edit": "Edit first",
+      "editHint": "Tap the recipient that needs fixing",
+      "swap": "Change {from} to {to}",
+      "sentWrong": "Sent, Minh at the partner company included. Once it’s gone, it can’t be taken back.",
+      "sentRight": "Sent to the right three people on the team. The meeting is set.",
+      "retry": "Retry from the ask-you stop",
+      "again": "Run again from the start",
+      "insight": "Let the agent check and draft on its own; but for sending, paying or deleting data, have it stop and ask you.",
+      "detail": "Those things are hard to undo. An agent can pick the wrong person or the wrong time; a few seconds of review saves you trouble.",
+      "next": "Next",
+      "partner": "Partner",
+      "team": "Our team"
+    }
+  },
+  "sources": {
+    "t15-sekimori": {
+      "title": "Japanese Garden Dictionary — barrier stone (関守石 sekimori ishi)",
+      "publisher": "Nara National Research Institute for Cultural Properties (Nabunken); Ono Kenkichi & Walter Edwards",
+      "date": "2010",
+      "url": "https://www.nabunken.go.jp/org/bunka/jgd/pages/BarrierStone.html"
+    }
+  }
+}

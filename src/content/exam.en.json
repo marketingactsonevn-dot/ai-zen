@@ -1,0 +1,220 @@
+{
+  "title": "Final exam",
+  "intro": {
+    "title": "Final exam",
+    "meta": "10 questions · about 5 minutes",
+    "line": "Ten stones, one question each. Walk the whole path to earn your certificate.",
+    "start": "Step through the gate",
+    "resume": "View your certificate · {score}/10",
+    "art": "A stone gate in the garden at dawn; a path of ten stones leads through it toward the sun."
+  },
+  "quiz": {
+    "count": "Question {n}/{total}",
+    "status": "Question {n} of {total}.",
+    "group": "Answers",
+    "keys": "Choose with mouse, touch, or keys 1 to {n}.",
+    "right": "Correct.",
+    "wrong": "Not quite.",
+    "answerIs": "Correct answer: {a}.",
+    "next": "Next question",
+    "finish": "See results",
+    "hint": "Pick a stone"
+  },
+  "questions": [
+    {
+      "topic": "Token",
+      "station": 4,
+      "art": "token",
+      "q": "What unit does AI read text in — and charge by?",
+      "options": [
+        "By pages of text",
+        "By tokens — small word pieces",
+        "By minutes of chatting",
+        "By questions sent"
+      ],
+      "answer": 1,
+      "explain": "AI cuts text into tokens; a chat's memory and its cost are both counted in tokens."
+    },
+    {
+      "topic": "How chatbots write",
+      "station": 5,
+      "art": "write",
+      "q": "Ask a chatbot the same thing twice and the answers differ a bit. Why?",
+      "options": [
+        "It learns more after each question",
+        "A shaky network connection",
+        "It picks each word by probability",
+        "It changes things on purpose to avoid boredom"
+      ],
+      "answer": 2,
+      "explain": "A chatbot guesses each next token by probability; a little randomness makes every answer slightly different."
+    },
+    {
+      "topic": "Hallucination & checking",
+      "station": 6,
+      "art": "moon",
+      "q": "AI quotes a law for your contract and sounds very sure. What should you do?",
+      "options": [
+        "Open the original text to compare",
+        "Paste it straight into the contract",
+        "Ask the AI: “Are you sure?”",
+        "Add the word “accurate” to the prompt"
+      ],
+      "answer": 0,
+      "explain": "AI can “hallucinate” — make things up very confidently; check anything important against the original source."
+    },
+    {
+      "topic": "Image AI",
+      "station": 7,
+      "art": "mist",
+      "q": "Where does a diffusion image AI start from?",
+      "options": [
+        "A ready-made sample photo",
+        "A collage of images from the web",
+        "A pencil sketch",
+        "A screen of speckled noise"
+      ],
+      "answer": 3,
+      "explain": "It removes noise step by step to fit the description — like mist clearing to reveal a painting."
+    },
+    {
+      "topic": "Video AI",
+      "station": 8,
+      "art": "frames",
+      "q": "Why does AI video sometimes show warped hands, jittery text, melting objects?",
+      "options": [
+        "The AI's virtual camera shakes",
+        "It's hard to stay consistent frame to frame",
+        "The video gets compressed on upload",
+        "The AI adds odd effects on purpose"
+      ],
+      "answer": 1,
+      "explain": "Video AI denoises a whole block of frames; keeping hands, text and objects matching over time is still the hard part."
+    },
+    {
+      "topic": "Which AI for which job",
+      "station": 11,
+      "art": "desks",
+      "q": "You need a 3D serum bottle shoppers can spin on the web. Which AI gets the job?",
+      "options": [
+        "Text AI (LLM)",
+        "Image AI",
+        "3D AI",
+        "Video AI"
+      ],
+      "answer": 2,
+      "explain": "Each kind of AI has its specialty: an object you can spin needs a 3D model — and usually still needs a person to tidy it up."
+    },
+    {
+      "topic": "The prompt recipe",
+      "station": 12,
+      "art": "cairn",
+      "q": "You ask AI to write an email to a client. What helps most?",
+      "options": [
+        "Who'll read it, the goal, tone, length",
+        "The line “make it great and very professional”",
+        "Your email password so AI can send it",
+        "Lots of capital letters to be clear"
+      ],
+      "answer": 0,
+      "explain": "Be clear, like briefing a new hire: role, context, task, limits, format — and keep sensitive data out."
+    },
+    {
+      "topic": "Agents & approval checkpoints",
+      "station": 15,
+      "art": "lantern",
+      "q": "An agent tidying a shared folder is about to delete 200 files. What should come next?",
+      "options": [
+        "Just delete — it was given the job",
+        "Delete first, tell you later",
+        "Ask another agent to check",
+        "Stop and wait for you to approve the list"
+      ],
+      "answer": 3,
+      "explain": "Agents can take many steps on their own, but hard-to-undo actions — deleting, sending, paying — need a checkpoint for a person to approve."
+    },
+    {
+      "topic": "MCP",
+      "station": 16,
+      "art": "plug",
+      "q": "How does MCP help an AI agent?",
+      "options": [
+        "A shared standard for connecting to apps",
+        "A newer, more powerful AI model",
+        "A safe way to store passwords",
+        "A filter that blocks AI's mistakes"
+      ],
+      "answer": 0,
+      "explain": "MCP is like USB-C: one shared standard for AI to plug into Drive, Gmail, Figma… — grant only the access it needs."
+    },
+    {
+      "topic": "Good habits",
+      "station": 18,
+      "art": "drop",
+      "q": "Which habit keeps AI use thrifty and your mind sharp?",
+      "options": [
+        "Generate lots of versions, then pick",
+        "Think first, then ask short and clear",
+        "Let AI do the thinking to go faster",
+        "Always pick the biggest model"
+      ],
+      "answer": 1,
+      "explain": "Every question costs power and water — times billions, that adds up; thinking first also keeps our minds from going lazy."
+    }
+  ],
+  "result": {
+    "eyebrow": "Results",
+    "scoreLabel": "correct",
+    "scoreAria": "{n} of {total} correct.",
+    "bands": [
+      {
+        "min": 10,
+        "text": "All ten stones. You know this garden well."
+      },
+      {
+        "min": 8,
+        "text": "Very solid. Just a few stones worth revisiting."
+      },
+      {
+        "min": 5,
+        "text": "You've found the path. Revisiting a few stations will make it stick."
+      },
+      {
+        "min": 0,
+        "text": "Every beginning looks like this. Stroll back through the stations, then try again."
+      }
+    ],
+    "review": "Revisit to make it stick",
+    "reviewLink": "Station {n}: {topic}",
+    "cert": "Get your certificate",
+    "again": "Retake the exam",
+    "reviewTip": "Station {n} · {topic}"
+  },
+  "cert": {
+    "heading": "Your certificate",
+    "nameLabel": "Name on the certificate",
+    "placeholder": "Enter your name",
+    "download": "Download PNG",
+    "needName": "Enter a name to download.",
+    "ready": "1600 × 1131 image, ready to share.",
+    "saved": "Image downloaded.",
+    "again": "Retake the exam",
+    "garden": "Back to the garden",
+    "file": "ai-zen-certificate",
+    "alt": "AI Zen certificate for {name}, final exam {score}/10, dated {date}.",
+    "title": "Certificate",
+    "presented": "Presented to",
+    "line1": "has walked all 18 stations of AI Zen —",
+    "line2": "Understand AI to use it well",
+    "scoreLabel": "Final exam",
+    "date": "Dated {date}",
+    "seal": [
+      "AI",
+      "Zen"
+    ],
+    "brand": "AI Zen",
+    "namePlaceholder": "Your name",
+    "line1Exam": "has completed the AI Zen final exam —",
+    "journey": "You've visited {n}/{total} stations. Visit them all and the certificate will record the whole journey."
+  }
+}

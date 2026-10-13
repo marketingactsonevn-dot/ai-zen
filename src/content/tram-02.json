@@ -1,0 +1,131 @@
+{
+  "id": 2,
+  "kicker": "AI không phải một cỗ máy, mà là cả một cái cây nhiều cành.",
+  "summary": "AI là một cây nhiều cành; chatbot chỉ là một nhánh con.",
+  "quiz": {
+    "q": "Video TikTok tiếp theo cứ hợp gu bạn đến lạ. Việc chọn video đó thuộc cành nào?",
+    "options": [
+      "AI nhận diện / phân loại",
+      "AI gợi ý",
+      "AI tạo sinh",
+      "Robot / AI vật lý"
+    ],
+    "answer": 1,
+    "explain": "Đó là AI gợi ý: nó không tạo video mới, mà chọn trong kho có sẵn video bạn dễ xem tiếp nhất."
+  },
+  "scenes": {
+    "seed": {
+      "label": "Gieo hạt",
+      "prompt": "Chạm để tưới",
+      "water": "Tưới nước cho hạt giống",
+      "again": "Tưới thêm cho cây",
+      "art": "Tranh mực: một chậu bonsai cạn, hạt giống nằm trên đất, nền cát cào, mặt trời nhạt phía sau.",
+      "rootLabel": "học máy",
+      "insight": "Phần lớn AI bạn gặp hằng ngày mọc từ một gốc: học máy — máy tự rút quy luật từ nhiều ví dụ.",
+      "detail": "Khác phần mềm thông thường: không ai viết sẵn từng luật, nên nó đoán rất giỏi nhưng vẫn có lúc sai."
+    },
+    "branches": {
+      "label": "Các nhánh",
+      "prompt": "Chạm vào một tán lá",
+      "art": "Tranh mực: cây bonsai bốn tán lá, mỗi tán là một họ AI; chạm vào tán, một thứ quả vẽ mực treo ra: quả hồng có con mắt, chùm quả mọng có một quả chín đỏ, cánh tay máy nhỏ hái quả. Tán trên cùng là AI tạo sinh: một cành mai non mọc ra với sáu bông hoa, chạm vào mỗi bông thì cây bút vẽ một bức tranh nhỏ.",
+      "padAria": "Tán lá {name} — xem giải thích",
+      "twigAria": "Bông hoa {name} trên cành non của AI tạo sinh — xem giải thích",
+      "done": "Một gốc, nhiều cành",
+      "families": [
+        {
+          "id": "recog",
+          "short": "AI nhận diện",
+          "name": "AI nhận diện / phân loại",
+          "insight": "AI nhận diện nhìn, nghe rồi xếp vào đúng ngăn — như mở khóa điện thoại bằng khuôn mặt, hay lọc thư rác.",
+          "detail": "Nó không tạo ra gì mới, chỉ trả lời: đây là gì, là ai, thuộc loại nào."
+        },
+        {
+          "id": "rec",
+          "short": "AI gợi ý",
+          "name": "AI gợi ý",
+          "insight": {
+            "text": "AI gợi ý đoán thứ bạn dễ thích tiếp theo — như video kế tiếp trên TikTok, món hàng trên Shopee.",
+            "asOf": "2026-10-12",
+            "source": "brief-2026-10-12"
+          },
+          "detail": {
+            "text": "TikTok cho biết họ chọn video dựa trên những gì bạn thích, chia sẻ, bình luận và xem hết.",
+            "asOf": "2026-10-12",
+            "source": "tiktok-foryou"
+          }
+        },
+        {
+          "id": "gen",
+          "short": "AI tạo sinh",
+          "name": "AI tạo sinh",
+          "insight": "AI tạo sinh tạo ra cái mới: gõ một câu mô tả, nhận về đoạn văn hay bức ảnh chưa từng có.",
+          "detail": "Chatbot bạn hay dùng chỉ là một nhánh con của cành này, bên cạnh ảnh, video, âm thanh, 3D và code."
+        },
+        {
+          "id": "robot",
+          "short": "Robot",
+          "name": "Robot / AI vật lý",
+          "insight": "Robot là AI có thân thể: nhìn bằng camera, tự đi lại, cầm nắm — như robot hút bụi né chân ghế.",
+          "detail": "Cánh tay robot trong kho hàng cũng vậy: nhận ra món đồ rồi gắp đúng chỗ."
+        }
+      ],
+      "twigs": [
+        {
+          "id": "text",
+          "name": "Chữ (LLM)",
+          "insight": "LLM — mô hình ngôn ngữ lớn — đọc rất nhiều văn bản để học cách viết tiếp, từng mẩu chữ một.",
+          "detail": {
+            "text": "ChatGPT, một chatbot thuộc nhánh này, ra mắt ngày 30/11/2022.",
+            "asOf": "2026-10-12",
+            "source": "openai-chatgpt"
+          }
+        },
+        {
+          "id": "image",
+          "name": "Ảnh",
+          "insight": "Biến một câu mô tả thành bức ảnh mới, hoặc sửa một phần trong ảnh có sẵn.",
+          "detail": "Ví dụ: gõ “con mèo đội nón lá bên hồ sen”, nhận về một bức ảnh chưa từng có."
+        },
+        {
+          "id": "video",
+          "name": "Video",
+          "insight": "Tạo một đoạn video ngắn từ câu mô tả, hoặc từ một tấm ảnh.",
+          "detail": "Ví dụ: biến ảnh sản phẩm thành một clip quảng cáo ngắn."
+        },
+        {
+          "id": "audio",
+          "name": "Âm thanh, nhạc, giọng nói",
+          "insight": "Đọc chữ thành giọng nói tự nhiên, sáng tác nhạc, hoặc tạo tiếng động cho video.",
+          "detail": "Ví dụ: chuyển một bài viết thành bản đọc nghe như podcast."
+        },
+        {
+          "id": "3d",
+          "name": "Mô hình 3D",
+          "insight": "Tạo vật thể 3D xoay xem được mọi phía, từ một câu mô tả hoặc một tấm ảnh.",
+          "detail": "Ví dụ: từ ảnh chụp một chiếc ghế, tạo mô hình 3D để đặt thử vào phòng ảo."
+        },
+        {
+          "id": "code",
+          "name": "Code (mã lập trình)",
+          "insight": "Viết và sửa mã lập trình — những dòng lệnh làm nên phần mềm, ứng dụng, trang web.",
+          "detail": "Ví dụ: mô tả bằng lời một trang đăng ký sự kiện, AI viết mã cho bạn."
+        }
+      ]
+    }
+  },
+  "sources": {
+    "openai-chatgpt": {
+      "title": "Introducing ChatGPT",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/chatgpt/",
+      "date": "2022-11-30"
+    },
+    "tiktok-foryou": {
+      "title": "How TikTok recommends videos #ForYou",
+      "publisher": "TikTok Newsroom",
+      "url": "https://newsroom.tiktok.com/how-tiktok-recommends-videos-for-you?lang=en",
+      "date": "2020-06-18",
+      "note": "Bài TikTok tự giải thích cách chọn video cho trang Dành cho bạn."
+    }
+  }
+}

@@ -1,0 +1,379 @@
+{
+  "id": 13,
+  "kicker": "Each kind of AI has its own stone path: one teapot, five ways to ask.",
+  "summary": "Each kind of AI has its own recipe, but one shared root: describe exactly what you want.",
+  "quiz": {
+    "q": "Which video prompt is most likely to give one great shot?",
+    "options": [
+      "Pour tea, garden stroll, sunset, flying logo",
+      "Close-up of tea pouring, slow push-in, 8 seconds",
+      "A really beautiful, really premium tea video"
+    ],
+    "answer": 1,
+    "explain": "One prompt should be one shot: one main action, with the camera and length spelled out."
+  },
+  "ui": {
+    "promptLabel": "Example prompt",
+    "vagueLabel": "Vague prompt",
+    "clearLabel": "Clear prompt",
+    "compare": "Compare the two prompts",
+    "vague": "Vague",
+    "clear": "Clear",
+    "mistakes": "Common mistakes",
+    "stones": "The recipe’s stones. Tap one to set it down or lift it up.",
+    "added": "Added {name}: {frag}",
+    "removed": "Lifted the {name} stone",
+    "showVague": "Showing the vague prompt and its result",
+    "showClear": "Showing the clear prompt and its result",
+    "more": "See full prompt",
+    "less": "Collapse"
+  },
+  "scenes": {
+    "text": {
+      "label": "Text AI",
+      "prompt": "Place each stone",
+      "artLabel": "The text AI’s answer, changing with each part of the prompt",
+      "phrases": false,
+      "bad": {
+        "text": "Write a post about tea.",
+        "mistakes": [
+          "Doesn’t say who reads it or why",
+          "No source material or examples"
+        ]
+      },
+      "slots": [
+        {
+          "name": "Role",
+          "frag": "You are a copywriter."
+        },
+        {
+          "name": "Context",
+          "frag": "Readers: busy office workers; goal: get them to try the tea."
+        },
+        {
+          "name": "Task",
+          "frag": "Write a post inviting them to try the new Cloud Tea."
+        },
+        {
+          "name": "Data, examples",
+          "frag": "Use the attached source and sample post."
+        },
+        {
+          "name": "Constraints",
+          "frag": "Under 80 words, warm tone, no exaggeration."
+        },
+        {
+          "name": "Format",
+          "frag": "A short post with a headline; give 3 options."
+        },
+        {
+          "name": "Ask back",
+          "frag": "Before writing: what else do you need to know?",
+          "key": true
+        }
+      ],
+      "words": {
+        "source": "Source",
+        "sample": "Sample",
+        "ask": [
+          "What’s the price?",
+          "Deal ends when?"
+        ],
+        "options": [
+          "A",
+          "B",
+          "C"
+        ],
+        "legendQ": "made-up facts",
+        "legendEx": "exaggeration"
+      },
+      "insight": "Brief text AI like a new hire: give the role, context, task, sources, limits and format.",
+      "detail": "Tip: share the source material, give a sample to match the voice, ask for a few options, and ask “what else do you need to know?”."
+    },
+    "image": {
+      "label": "Image AI",
+      "prompt": "Place each stone",
+      "artLabel": "The AI’s picture, growing clearer with each part of the prompt",
+      "phrases": true,
+      "bad": {
+        "text": "Draw a really pretty teapot.",
+        "mistakes": [
+          "The word “pretty” describes nothing",
+          "No lighting, camera angle or frame"
+        ]
+      },
+      "slots": [
+        {
+          "name": "Subject",
+          "frag": "a moss-green glazed ceramic teapot"
+        },
+        {
+          "name": "Action, composition",
+          "frag": "steam rising, set off to the right"
+        },
+        {
+          "name": "Setting",
+          "frag": "a wooden table by a round window"
+        },
+        {
+          "name": "Style",
+          "frag": "minimalist ink-wash painting"
+        },
+        {
+          "name": "Lighting",
+          "frag": "early sun slanting through the window"
+        },
+        {
+          "name": "Lens, camera angle",
+          "frag": "close-up, eye level"
+        },
+        {
+          "name": "Color",
+          "frag": "cream paper tones, vermilion accents"
+        },
+        {
+          "name": "Text in the image",
+          "frag": "the words “Cloud Tea” in the left corner"
+        },
+        {
+          "name": "Aspect ratio",
+          "frag": "vertical 4:5 frame"
+        }
+      ],
+      "words": {
+        "brand": "Cloud Tea",
+        "ways": "Two ways to write the same prompt",
+        "sentence": "Sentences",
+        "keywords": "Keywords",
+        "sentenceText": "Minimalist ink-wash painting: a moss-green glazed ceramic teapot set off to the right on a wooden table by a round window, steam rising. Early sun slants in; close-up, eye level; cream paper tones, vermilion accents. The words “Cloud Tea” in the left corner. Vertical 4:5 frame.",
+        "keywordsText": "moss-glazed ceramic teapot, steam, off-right, wooden table, round window, minimalist ink wash, early sun, close-up, cream and vermilion, text “Cloud Tea” --ar 4:5",
+        "sentenceFor": "Suits chat-style image AI",
+        "keywordsFor": "Midjourney-style tools also take short keywords and parameters"
+      },
+      "insight": "What you don’t describe, image AI guesses. Describe: subject, setting, style, lighting, angle, color, text, frame.",
+      "detail": {
+        "text": "Chat-style tools like full sentences; Midjourney-style ones also take keywords and parameters. Add reference images for consistency; fix one spot at a time, don’t rewrite.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "paramFact": {
+        "text": "--ar 4:5 is Midjourney’s aspect-ratio parameter.",
+        "asOf": "2026-10-12",
+        "source": "t13-mj-ar"
+      }
+    },
+    "video": {
+      "label": "Video AI",
+      "prompt": "Place each stone",
+      "artLabel": "The video frame, growing clearer with each part of the prompt",
+      "phrases": true,
+      "bad": {
+        "text": "Tea video: pour tea, garden stroll, sunset, flying logo.",
+        "mistakes": [
+          "Four actions crammed into one",
+          "No camera move or length given"
+        ]
+      },
+      "slots": [
+        {
+          "name": "Shot type",
+          "frag": "close-up"
+        },
+        {
+          "name": "Subject",
+          "frag": "a moss-glazed ceramic teapot and a tea cup"
+        },
+        {
+          "name": "One main action",
+          "frag": "slowly pouring tea into the cup",
+          "key": true
+        },
+        {
+          "name": "Camera movement",
+          "frag": "camera slowly pushes in"
+        },
+        {
+          "name": "Setting",
+          "frag": "wooden table, bamboo garden behind"
+        },
+        {
+          "name": "Light, mood",
+          "frag": "early sun, soft haze of steam"
+        },
+        {
+          "name": "Sound, dialogue",
+          "frag": "sound of pouring, distant birdsong"
+        },
+        {
+          "name": "Length",
+          "frag": "8 seconds long"
+        }
+      ],
+      "words": {
+        "first": "First frame: approved image",
+        "shot": "Shot 1",
+        "next": [
+          "Shot 2",
+          "Shot 3"
+        ],
+        "end": "8 sec"
+      },
+      "insight": "Each video prompt is one shot: one main action, clear camera work, plus sound and length.",
+      "detail": "Start from an approved image to keep the product and characters right. One prompt per shot, then join the shots."
+    },
+    "model": {
+      "label": "3D AI",
+      "prompt": "Place each stone",
+      "artLabel": "A 3D teapot model. Drag, or use the arrow keys, to rotate it.",
+      "phrases": false,
+      "bad": {
+        "text": "Make this teapot 3D.",
+        "mistakes": [
+          "Busy background, lots of objects",
+          "Doesn’t say what it’s for"
+        ]
+      },
+      "slots": [
+        {
+          "name": "Clean input photo",
+          "frag": "A well-lit teapot photo on a plain background."
+        },
+        {
+          "name": "Material",
+          "frag": "Material: {mat}."
+        },
+        {
+          "name": "Purpose",
+          "frag": "For {use}."
+        },
+        {
+          "name": "Polygon count",
+          "frag": "{budget}."
+        },
+        {
+          "name": "PBR",
+          "frag": "Include PBR materials."
+        },
+        {
+          "name": "Clean up in Blender",
+          "frag": "I’ll clean it up in Blender afterward.",
+          "key": true
+        }
+      ],
+      "materials": [
+        {
+          "id": "glass",
+          "name": "Glass",
+          "frag": "clear glass"
+        },
+        {
+          "id": "matte",
+          "name": "Matte plastic",
+          "frag": "matte plastic"
+        },
+        {
+          "id": "metal",
+          "name": "Metal",
+          "frag": "lightly scratched metal"
+        }
+      ],
+      "uses": [
+        {
+          "id": "game",
+          "name": "Game",
+          "frag": "a game, low-poly style (few faces, light to run)",
+          "budget": "Under 2,000 triangles"
+        },
+        {
+          "id": "render",
+          "name": "Render",
+          "frag": "an ad render",
+          "budget": "High detail, smooth surfaces"
+        }
+      ],
+      "words": {
+        "input": "Input photo",
+        "matGroup": "Choose a material",
+        "useGroup": "Choose a purpose",
+        "pbr": [
+          "Base color",
+          "Roughness",
+          "Metallic",
+          "Bumps"
+        ],
+        "tris": "{n} triangles",
+        "noGl": "This browser can’t display 3D.",
+        "angle": "Rotated {n} degrees"
+      },
+      "insight": "3D AI needs a clean photo, a clear material and purpose; the model it makes usually still needs cleanup.",
+      "detail": {
+        "text": "Polygons: small faces that make up an object. PBR: materials that mimic light, with color, roughness, metallic and bump maps. Blender: free 3D software.",
+        "asOf": "2026-10-12",
+        "source": "t13-blender"
+      }
+    },
+    "agent": {
+      "label": "AI agent",
+      "prompt": "Place each stone",
+      "artLabel": "The garden where the agent works, changing with each part of the prompt",
+      "phrases": false,
+      "bad": {
+        "text": "Handle the customer feedback for me.",
+        "mistakes": [
+          "Doesn’t say what “done” means",
+          "No limits on what it may do"
+        ]
+      },
+      "slots": [
+        {
+          "name": "Goal",
+          "frag": "Summarize this week’s customer feedback."
+        },
+        {
+          "name": "When it’s done",
+          "frag": "Done when you have 5 key points, with quotes."
+        },
+        {
+          "name": "What it may do",
+          "frag": "You may read emails and the review sheet."
+        },
+        {
+          "name": "Ask first",
+          "frag": "Ask me before sending or deleting anything.",
+          "key": true
+        },
+        {
+          "name": "Where results go",
+          "frag": "Save to the “Weekly report” folder."
+        }
+      ],
+      "words": {
+        "run": "Run the agent",
+        "again": "Run again",
+        "ask": "Send the summary to the whole team?",
+        "yes": "Yes, send",
+        "no": "Not yet",
+        "folder": "Weekly report",
+        "team": "Whole team",
+        "sent": "The agent sent the summary after you agreed.",
+        "held": "The agent held back and sent nothing."
+      },
+      "insight": "Brief an agent with: the goal, when it’s done, what it may do, what to ask first, where results go.",
+      "detail": "An agent takes many steps on its own, so limits and check-ins to ask you matter most."
+    }
+  },
+  "sources": {
+    "t13-mj-ar": {
+      "title": "Aspect Ratio",
+      "publisher": "Midjourney documentation",
+      "url": "https://docs.midjourney.com/hc/en-us/articles/31894244298125-Aspect-Ratio",
+      "note": "Add --ar (or --aspect) after the prompt to set the aspect ratio, e.g. --ar 4:5 for a vertical frame. The docs page shows no publish date."
+    },
+    "t13-blender": {
+      "title": "About Blender",
+      "publisher": "Blender Foundation",
+      "url": "https://www.blender.org/about/",
+      "note": "Blender is free, open-source 3D software. The polygon and PBR explanations are AI Zen’s own; the need to clean up AI-made models comes from the project’s research notes (Oct 12, 2026)."
+    }
+  }
+}

@@ -1,0 +1,494 @@
+{
+  "id": 11,
+  "kicker": "AI is a whole staff: each desk has its own specialty.",
+  "scenes": {
+    "team": {
+      "label": "The AI team",
+      "prompt": "Tap each desk",
+      "group": "The AI team’s six desks",
+      "deskAria": "{name} desk",
+      "insight": "AI isn’t one know-it-all but a whole team: each kind is good at one job.",
+      "detail": "An LLM works mostly with text; an agent is an LLM given extra tools to do several steps on its own.",
+      "desks": {
+        "text": {
+          "name": "Text · LLM",
+          "role": "Writer & analyst",
+          "caption": "LLM, a large language model: writes, plans strategy, analyzes, takes notes."
+        },
+        "image": {
+          "name": "Image AI",
+          "role": "Painter & photographer",
+          "caption": "Makes key visuals, illustrations and product shots from one description."
+        },
+        "video": {
+          "name": "Video AI",
+          "role": "Filmmaker & editor",
+          "caption": "Shoots and edits short clips from text, or makes still images move."
+        },
+        "3d": {
+          "name": "3D AI",
+          "role": "Model maker",
+          "caption": "Turns a photo or text into a shape you can spin any way."
+        },
+        "voice": {
+          "name": "Voice",
+          "role": "Announcer",
+          "caption": "Reads scripts, dubs, turns text into a natural voice."
+        },
+        "agent": {
+          "name": "Agent",
+          "role": "Self-starting assistant",
+          "caption": "An agent: AI given tools, doing several steps for you on its own."
+        }
+      }
+    },
+    "game": {
+      "label": "Hand out tasks",
+      "prompt": "Match tasks to desks",
+      "inbox": "Tasks to hand out",
+      "desks": "Desks taking tasks",
+      "card": "Task: {task}. Press to pick it, then choose a desk.",
+      "picked": "Picked “{task}”. Now choose a desk.",
+      "noCard": "Pick a task first.",
+      "right": "Right desk: {desk} takes “{task}”.",
+      "left": "{n} tasks left",
+      "done": "All {n} tasks done",
+      "insight": "The right desk is half the job; the other half is checking the results like a manager.",
+      "detail": "Big jobs often need several desks: the LLM writes the script, video AI films, voice AI reads the lines.",
+      "tasks": [
+        {
+          "text": "Write a caption for a post",
+          "desk": "text",
+          "why": "A caption is text: a job for the LLM, the team’s writer.",
+          "near": {
+            "agent": "An agent could do it, but for plain writing the LLM is simplest."
+          }
+        },
+        {
+          "text": "Analyze a sales Excel file",
+          "desk": "text",
+          "why": "Reading numbers and drawing insights is the strength of the LLM, the team’s analyst."
+        },
+        {
+          "text": "Make a key visual for a campaign",
+          "desk": "image",
+          "why": "A key visual is a still image: give it to the image AI painter.",
+          "near": {
+            "video": "Video AI makes moving pictures; a still image suits image AI."
+          }
+        },
+        {
+          "text": "Shoot an 8 second product video",
+          "desk": "video",
+          "why": "Pictures moving over time need video AI, the filmmaker and editor.",
+          "near": {
+            "image": "Image AI makes just one still frame; 8 seconds of motion is a job for video AI."
+          }
+        },
+        {
+          "text": "Build a 3D model of a serum bottle",
+          "desk": "3d",
+          "why": "A shape you can spin any way is a job for the 3D AI model maker.",
+          "near": {
+            "image": "A photo shows one angle; a 3D model can be turned to see every side."
+          }
+        },
+        {
+          "text": "Record a voice-over for a clip",
+          "desk": "voice",
+          "why": "Reading aloud is a job for voice AI, the team’s announcer.",
+          "near": {
+            "text": "The LLM can write the words, but reading them aloud needs voice AI.",
+            "video": "Some video AIs add sound, but a separate voice-over is voice AI’s strength."
+          }
+        },
+        {
+          "text": "Book a meeting, send emails itself",
+          "desk": "agent",
+          "why": "Opening the calendar and pressing send on its own takes several steps with tools: an agent’s job.",
+          "near": {
+            "text": "The LLM can draft the email, but booking and sending on its own needs an agent with tools."
+          }
+        },
+        {
+          "text": "An automatic report every morning",
+          "desk": "agent",
+          "why": "Fetching the numbers and sending a report every morning is a job for the agent, the self-starting assistant.",
+          "near": {
+            "text": "The LLM writes good reports, but gathering the numbers every morning on its own needs an agent."
+          }
+        }
+      ],
+      "seal": "Done"
+    },
+    "compare": {
+      "label": "Who’s good at what",
+      "prompt": "Tap a stone",
+      "tabs": "Kinds of AI",
+      "stones": "Models in the {lane} group",
+      "stoneAria": "{model}, by {maker}, {status}",
+      "asOf": "Updated to Oct 12, 2026",
+      "rows": {
+        "maker": "Maker",
+        "strengths": "Strengths",
+        "note": "Note",
+        "focus": "Focus",
+        "weights": "Closed / open",
+        "access": "Access",
+        "date": "Released"
+      },
+      "none": "—",
+      "weights": {
+        "closed": "Closed: the model can’t be downloaded",
+        "open": "Open weights: download and run it yourself"
+      },
+      "legend": {
+        "closed": "Closed",
+        "open": "Open",
+        "unknown": "Unclear"
+      },
+      "insight": {
+        "text": "No AI is best at everything: each model has its own strengths, so try a few on your own work.",
+        "asOf": "2026-10-12",
+        "source": "t11-editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "List and strengths as of Oct 12, 2026; AI changes weekly, so double-check before choosing.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "lanes": [
+        {
+          "id": "text",
+          "name": "Text",
+          "items": [
+            {
+              "company": "openai",
+              "models": [
+                "GPT-6 Astra"
+              ]
+            },
+            {
+              "company": "anthropic",
+              "models": [
+                "Claude Fable 5.1"
+              ],
+              "note": {
+                "text": "Claude’s top tier",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Gemini 3.8 Flash"
+              ]
+            },
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Gemma 4"
+              ]
+            },
+            {
+              "company": "xai",
+              "models": [
+                "Grok 4.7"
+              ]
+            },
+            {
+              "company": "meta",
+              "models": [
+                "Muse Spark 1.1"
+              ]
+            },
+            {
+              "company": "deepseek",
+              "models": [
+                "DeepSeek V4 Pro"
+              ]
+            },
+            {
+              "company": "alibaba",
+              "models": [
+                "Qwen3.8-Max"
+              ]
+            },
+            {
+              "company": "moonshot",
+              "models": [
+                "Kimi K3"
+              ]
+            },
+            {
+              "company": "zhipu",
+              "models": [
+                "GLM-5.3"
+              ]
+            },
+            {
+              "company": "minimax",
+              "models": [
+                "MiniMax M3"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "image",
+          "name": "Image",
+          "items": [
+            {
+              "company": "openai",
+              "models": [
+                "GPT Image 2"
+              ]
+            },
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Nano Banana 2",
+                "Nano Banana Pro"
+              ],
+              "name": "Nano Banana 2 / Pro"
+            },
+            {
+              "company": "midjourney",
+              "models": [
+                "Midjourney V8.2"
+              ]
+            },
+            {
+              "company": "black-forest-labs",
+              "models": [
+                "Flux 2"
+              ],
+              "weights": {
+                "text": "Has an open version",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              },
+              "open": true
+            },
+            {
+              "company": "bytedance",
+              "models": [
+                "Seedream 5.0"
+              ]
+            },
+            {
+              "company": "xai",
+              "models": [
+                "Grok Imagine Image 2.0"
+              ]
+            },
+            {
+              "company": "microsoft",
+              "models": [
+                "MAI-Image-2.5"
+              ]
+            },
+            {
+              "company": "meta",
+              "models": [
+                "Muse Image"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "video",
+          "name": "Video",
+          "items": [
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Veo 3.1"
+              ]
+            },
+            {
+              "company": "google-deepmind",
+              "models": [
+                "Gemini Omni Flash"
+              ]
+            },
+            {
+              "company": "kuaishou",
+              "models": [
+                "Kling 3.0",
+                "Kling 3.0 Turbo"
+              ],
+              "name": "Kling 3.0 / Turbo"
+            },
+            {
+              "company": "bytedance",
+              "models": [
+                "Seedance 2.5"
+              ],
+              "access": {
+                "text": "Limited access",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "alibaba",
+              "models": [
+                "Wan 3.0"
+              ]
+            },
+            {
+              "company": "minimax",
+              "models": [
+                "Hailuo 3.0 (H3)"
+              ]
+            },
+            {
+              "company": "runway",
+              "models": [
+                "Runway Gen-4.5"
+              ]
+            },
+            {
+              "company": "luma",
+              "models": [
+                "Luma Ray3.14"
+              ]
+            },
+            {
+              "company": "xai",
+              "models": [
+                "Grok Imagine Video 1.5"
+              ]
+            },
+            {
+              "company": "meta",
+              "models": [
+                "Muse Video"
+              ]
+            },
+            {
+              "company": "openai",
+              "models": [
+                "Sora"
+              ],
+              "access": {
+                "text": "Shut down: app since Apr 26, 2026, API since Sep 24, 2026",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            }
+          ]
+        },
+        {
+          "id": "3d",
+          "name": "3D",
+          "items": [
+            {
+              "company": "meshy",
+              "models": [
+                "Meshy 7"
+              ],
+              "access": {
+                "text": "Online",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "hyper3d",
+              "models": [
+                "Rodin Gen-2.5"
+              ],
+              "access": {
+                "text": "Paid",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "tripo",
+              "models": [
+                "Tripo P1.0 / H3.1"
+              ]
+            },
+            {
+              "company": "tencent",
+              "models": [
+                "Hunyuan 3D 3.1"
+              ],
+              "access": {
+                "text": "Online only",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "microsoft",
+              "models": [
+                "TRELLIS.2"
+              ],
+              "access": {
+                "text": "Download and run on your own computer",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              },
+              "weights": {
+                "text": "Open source, MIT license",
+                "asOf": "2026-10-12",
+                "source": "brief-2026-10-12"
+              }
+            },
+            {
+              "company": "tencent",
+              "models": [
+                "Pixal3D"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "voice",
+          "name": "Audio",
+          "items": [
+            {
+              "company": "elevenlabs",
+              "models": []
+            },
+            {
+              "company": "suno",
+              "models": []
+            }
+          ]
+        }
+      ],
+      "close": "Close this card",
+      "status": {
+        "closed": "closed model",
+        "open": "has an open version",
+        "unknown": "unclear if closed or open"
+      }
+    }
+  },
+  "quiz": {
+    "q": "Which task needs an agent, not just an LLM?",
+    "options": [
+      "Write a post caption",
+      "Summarize a report",
+      "Book a meeting and send invites itself",
+      "Translate a paragraph"
+    ],
+    "answer": 2,
+    "explain": "The other three only need writing; opening a calendar and pressing send on its own needs an agent with tools."
+  },
+  "summary": "Give AI work like you’d give it to a team: the right member, a clear task, then check it yourself.",
+  "sources": {
+    "t11-editorial": {
+      "title": "AI Zen’s interpretation",
+      "publisher": "AI Zen",
+      "note": "General views for learning, not measured results or rankings."
+    }
+  }
+}

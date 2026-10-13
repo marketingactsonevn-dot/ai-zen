@@ -1,0 +1,210 @@
+{
+  "id": 4,
+  "kicker": "Sentences break into little stones; AI reads, remembers and charges by the stone.",
+  "scenes": {
+    "shatter": {
+      "label": "Sentences into stones",
+      "prompt": "Tap to break the sentence",
+      "sample": "Have a wonderful day!",
+      "breakAria": "Split “{s}” into tokens",
+      "stonesAria": "Token stones. Left and right arrows choose a stone; Enter tosses it up.",
+      "stoneAria": "Token “{t}”, number {id}",
+      "count": "{n} tokens",
+      "sees": "AI only sees: {ids}",
+      "demo": "Rough simulated tokenizer",
+      "live": "The sentence was split into {n} tokens: {list}.",
+      "placeholder": "Type your own sentence…",
+      "inputAria": "Your sentence",
+      "drop": "Drop",
+      "insight": "AI doesn’t read like we do: sentences are cut into tokens — small pieces of text — then turned into numbers.",
+      "detail": {
+        "text": "In English, one token is about 4 characters on average — roughly ¾ of a word.",
+        "asOf": "2026-10-12",
+        "source": "t04-openai-tokens"
+      }
+    },
+    "compare": {
+      "label": "Vietnamese and English",
+      "prompt": "Tap to compare",
+      "breakAria": "Split both sentences into tokens to compare",
+      "vi": "Vietnamese",
+      "en": "English",
+      "token": "token",
+      "next": "Another sentence",
+      "nextAria": "Switch to another sentence pair",
+      "demo": "Rough simulated tokenizer",
+      "live": "Vietnamese: {vi} tokens. English: {en} tokens.",
+      "pairs": [
+        [
+          "Hôm nay trời đẹp quá.",
+          "The weather is lovely today."
+        ],
+        [
+          "Son này giữ màu suốt tám tiếng.",
+          "This lipstick lasts eight hours."
+        ],
+        [
+          "Cảm ơn bạn đã đặt hàng.",
+          "Thank you for your order."
+        ]
+      ],
+      "insight": {
+        "text": "The same idea in Vietnamese is often cut into more tokens than in English: it takes a bit more room and costs a bit more.",
+        "asOf": "2026-10-12",
+        "source": "t04-petrov-2023"
+      },
+      "detail": {
+        "text": "This tokenizer is only a simulation; every model splits text its own way, so real numbers will differ.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      }
+    },
+    "bowl": {
+      "label": "The context bowl",
+      "prompt": "Press “Send next”",
+      "send": "Send next",
+      "again": "Chat again",
+      "sizeAria": "Context window size",
+      "sizes": [
+        {
+          "id": "s",
+          "label": "Small",
+          "aria": "Small bowl"
+        },
+        {
+          "id": "l",
+          "label": "Large",
+          "aria": "Large bowl"
+        },
+        {
+          "id": "m",
+          "label": "~1 million",
+          "aria": "Bowl of about 1 million tokens"
+        }
+      ],
+      "you": "You",
+      "ai": "AI",
+      "messages": [
+        {
+          "who": "you",
+          "text": "Hi, my name is Lan."
+        },
+        {
+          "who": "ai",
+          "text": "Hi Lan, nice to meet you!"
+        },
+        {
+          "who": "you",
+          "text": "Write a caption for my new lipstick."
+        },
+        {
+          "who": "ai",
+          "text": "Red lips, confident all day."
+        },
+        {
+          "who": "you",
+          "text": "Make it more playful, please."
+        },
+        {
+          "who": "ai",
+          "text": "Bold red, big bright smile!"
+        },
+        {
+          "who": "you",
+          "text": "What is my name again?"
+        }
+      ],
+      "name": "Lan",
+      "forgot": "Sorry, I can no longer see your name.",
+      "remember": "Your name is Lan.",
+      "fill": "In the bowl: {n} / {cap} tokens",
+      "million": "~1 million",
+      "outside": "Out of AI’s sight",
+      "liveMsg": "{who}: {text}",
+      "liveOut": "The {n} oldest tokens fell out of the bowl.",
+      "art": "A stone bowl holding the conversation’s token stones.",
+      "pages": {
+        "text": "≈ a few thousand book pages",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "windowFact": {
+        "text": "GPT-6 Astra (OpenAI, Sep 3, 2026) takes about 1 million tokens of context.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": "The context window is AI’s “working memory”: when it’s full, the oldest part falls out and AI can’t see it anymore.",
+      "detail": {
+        "text": "It depends on the app: some cut off the beginning, others summarize it. Good habit: when a chat runs long, sum up the key points and start a new one.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "scale": {
+      "label": "The token scale",
+      "prompt": "Send a question",
+      "ask": "Send question",
+      "doc": "Attach a long document",
+      "answer": "AI replies",
+      "reset": "Weigh again",
+      "question": "Write 2 captions for a new lipstick.",
+      "reply": "Red lips, confident all day. Bold red, big bright smile!",
+      "docTitle": "Product sheet",
+      "inLabel": "You send in",
+      "outLabel": "AI writes out",
+      "bill": "Bill",
+      "art": "A balance scale: the left pan holds the tokens you send in, the right pan holds the tokens AI writes out, with a stack of bill coins beside it.",
+      "tilt": {
+        "left": "The “send in” pan is heavier.",
+        "right": "The “writes out” pan is heavier.",
+        "even": "The two pans are nearly balanced."
+      },
+      "insight": {
+        "text": "Tokens are how AI is billed: both the text you send in and the text AI writes out count.",
+        "asOf": "2026-10-12",
+        "source": "t04-openai-pricing"
+      },
+      "detail": {
+        "text": "With many services, tokens AI writes out cost more than tokens you send in. Good habit: ask briefly and paste only the parts you need.",
+        "asOf": "2026-10-12",
+        "source": "t04-openai-pricing"
+      }
+    }
+  },
+  "quiz": {
+    "q": "In a very long chat, why might AI “forget” what you said first?",
+    "options": [
+      "It went past the context window",
+      "AI is ignoring you on purpose",
+      "The internet is slow",
+      "AI ran out of battery midway"
+    ],
+    "answer": 0,
+    "explain": "The context window only holds a set number of tokens; when it’s full, the oldest part can fall out."
+  },
+  "summary": "AI reads text as tokens — both memory and cost are counted in tokens.",
+  "sources": {
+    "t04-openai-tokens": {
+      "title": "What are tokens and how to count them?",
+      "publisher": "OpenAI Help Center",
+      "url": "https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them",
+      "note": "A rough rule of thumb for English text."
+    },
+    "t04-petrov-2023": {
+      "title": "Language Model Tokenizers Introduce Unfairness Between Languages",
+      "publisher": "Petrov, La Malfa, Torr, Bibi · NeurIPS 2023 (arXiv)",
+      "date": "2023-05",
+      "url": "https://arxiv.org/abs/2305.15425",
+      "note": "The same content translated into different languages can need several times more or fewer tokens."
+    },
+    "t04-openai-pricing": {
+      "title": "API Pricing",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/api/pricing/",
+      "note": "Listed prices per input and output token (per 1 million tokens). Other companies charge in a similar way."
+    }
+  }
+}

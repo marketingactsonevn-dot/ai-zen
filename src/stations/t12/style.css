@@ -1,0 +1,864 @@
+/* Trạm 12 — Công thức prompt chung: lantern · two requests · the rule garden */
+.t12 {
+  position: absolute;
+  inset: 0;
+  --lvl: 0;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ───────── shared ink ───────── */
+.t12 .t12-trees { fill: var(--moss); opacity: 0.16; }
+.t12 .t12-wall { fill: var(--stone-3); fill-opacity: 0.75; }
+.t12 .t12-stain { fill: var(--ink); opacity: 0.07; }
+.t12 .t12-wallshade { fill: var(--ink); fill-opacity: 0.05; }
+.t12 .t12-cap { fill: var(--ink); fill-opacity: 0.22; }
+.t12 .t12-wallfoot { fill: var(--ink); fill-opacity: 0.12; }
+:root[data-theme='dark'] .t12 .t12-trees { opacity: 0.26; }
+:root[data-theme='dark'] .t12 .t12-wall { fill: var(--stone-3); fill-opacity: 0.55; }
+:root[data-theme='dark'] .t12 .t12-stain { fill: #000; opacity: 0.2; }
+:root[data-theme='dark'] .t12 .t12-wallshade { fill: #000; fill-opacity: 0.2; }
+:root[data-theme='dark'] .t12 .t12-cap { fill: var(--stone); fill-opacity: 0.45; }
+:root[data-theme='dark'] .t12 .t12-wallfoot { fill: var(--stone); fill-opacity: 0.25; }
+.t12 .t12-over { fill: var(--moss); opacity: 0.2; }
+:root[data-theme='dark'] .t12 .t12-over { opacity: 0.3; }
+.t12 .t12-hill { fill: var(--ink); fill-opacity: 0.05; }
+.t12 .t12-hedge { fill: var(--moss); fill-opacity: 0.2; }
+.t12 .t12-rake { fill: var(--rake); }
+.t12 .t12-rake-hi { fill: var(--rake-hi); }
+.t12 .t12-ring { fill: var(--ink); fill-opacity: 0.2; }
+:root[data-theme='dark'] .t12 .t12-hill { fill-opacity: 0.07; }
+:root[data-theme='dark'] .t12 .t12-hedge { fill-opacity: 0.3; }
+:root[data-theme='dark'] .t12 .t12-ring { fill-opacity: 0.14; }
+
+.t12 .t12-moss-a { fill: var(--moss-2); fill-opacity: 0.32; }
+.t12 .t12-moss-b { fill: var(--moss); fill-opacity: 0.22; }
+.t12 .t12-moss-t { fill: var(--moss); opacity: 0.7; }
+:root[data-theme='dark'] .t12 .t12-moss-t { fill: var(--moss-2); opacity: 0.45; }
+.t12 .t12-peb { fill: var(--stone-2); }
+.t12 .t12-peb-s { fill: var(--ink); fill-opacity: 0.4; }
+:root[data-theme='dark'] .t12 .t12-moss-a { fill: var(--moss-2); fill-opacity: 0.3; }
+:root[data-theme='dark'] .t12 .t12-moss-b { fill: var(--moss); fill-opacity: 0.18; }
+:root[data-theme='dark'] .t12 .t12-peb-s { fill: #000; }
+
+/* ───────── word stones ───────── */
+.t12 .t12-stone {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+  border-radius: 40%;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.t12 .t12-stone::after {
+  content: '';
+  position: absolute;
+  inset: -6px -2px;
+}
+.t12 .t12-stone.dragging {
+  z-index: 400 !important;
+  cursor: grabbing;
+}
+.t12 .t12-stone.placed {
+  cursor: pointer;
+}
+.t12 .t12-stone.flying {
+  z-index: 300 !important;
+}
+.t12 .t12-stone-body {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 46px;
+  padding: 0.55em 1.3em 0.72em;
+  transition: scale 0.5s var(--ease), translate 0.5s var(--ease);
+}
+.t12 .t12-stone.dragging .t12-stone-body {
+  scale: 1.07;
+  translate: 0 -6px;
+}
+.t12 .t12-stone-art {
+  position: absolute;
+  inset: -2px -5px -8px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  max-width: none;
+  overflow: visible;
+  transition: scale 1s var(--ease), translate 1s var(--ease);
+}
+.t12 .t12-stone.placed .t12-stone-art {
+  scale: 1.04 0.88;
+}
+.t12 .t12-word {
+  position: relative;
+  font: 400 var(--t12-fs, 1.12rem) / 1.15 var(--serif);
+  white-space: nowrap;
+  transition: scale 0.9s var(--ease);
+}
+.t12 .t12-st-shadow { fill: var(--ink); fill-opacity: 0.13; filter: url(#ink-wash); }
+.t12 .t12-st-base { fill: var(--stone-2); transition: fill 1.2s; }
+.t12 .t12-st-hi { fill: var(--stone-3); fill-opacity: 0.9; transition: fill 1.2s; }
+.t12 .t12-st-low { fill: var(--stone); fill-opacity: 0.35; }
+.t12 .t12-st-rim { fill: var(--ink); fill-opacity: 0.72; transition: fill-opacity 0.6s; }
+.t12 .t12-st-lit { fill: var(--ink-2); fill-opacity: 0.3; }
+:root[data-theme='dark'] .t12 .t12-st-shadow { fill: #000; fill-opacity: 0.45; }
+:root[data-theme='dark'] .t12 .t12-st-base { fill: var(--stone-3); }
+:root[data-theme='dark'] .t12 .t12-st-hi { fill: var(--stone-2); }
+:root[data-theme='dark'] .t12 .t12-st-rim { fill: #000; fill-opacity: 0.6; }
+:root[data-theme='dark'] .t12 .t12-st-lit { fill: var(--ink-2); fill-opacity: 0.32; }
+.t12 .t12-stone:hover .t12-st-rim,
+.t12 .t12-stone:focus-visible .t12-st-rim {
+  fill-opacity: 0.95;
+}
+.t12 .t12-stone:focus-visible {
+  outline: none;
+}
+.t12 .t12-stone:focus-visible .t12-stone-body::after {
+  content: '';
+  position: absolute;
+  inset: -6px -8px -10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--vermilion);
+  pointer-events: none;
+}
+
+/* ───────── Scene 1 · the lantern path ───────── */
+.t12p-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+.t12 .t12-l-cast { fill: var(--ink); fill-opacity: 0.16; }
+.t12 .t12-l-body { fill: var(--stone-2); }
+.t12 .t12-l-top { fill: var(--stone-3); }
+.t12 .t12-l-shade { fill: var(--ink); fill-opacity: 0.17; }
+.t12 .t12-l-dry { fill: var(--ink); fill-opacity: 0.2; }
+.t12 .t12-l-ink { fill: var(--ink); fill-opacity: 0.84; }
+.t12 .t12-l-ink2 { fill: var(--ink); fill-opacity: 0.45; }
+.t12 .t12-l-carve { fill: var(--ink); fill-opacity: 0.5; }
+.t12 .t12-l-moss { fill: var(--moss); fill-opacity: 0.6; }
+.t12 .t12-l-gleam { fill: var(--card); fill-opacity: 0.55; }
+.t12 .t12-void { fill: var(--ink); fill-opacity: 0.9; }
+.t12 .t12-flame-o { fill: var(--vermilion); }
+.t12 .t12-flame-i { fill: var(--card); fill-opacity: 0.9; }
+:root[data-theme='dark'] .t12 .t12-l-cast { fill: #000; fill-opacity: 0.5; }
+:root[data-theme='dark'] .t12 .t12-l-body { fill: var(--stone-2); }
+:root[data-theme='dark'] .t12 .t12-l-top { fill: var(--stone); }
+:root[data-theme='dark'] .t12 .t12-l-shade { fill: #000; fill-opacity: 0.4; }
+:root[data-theme='dark'] .t12 .t12-l-dry { fill: #000; fill-opacity: 0.35; }
+:root[data-theme='dark'] .t12 .t12-l-ink { fill: var(--ink-2); fill-opacity: 0.55; }
+:root[data-theme='dark'] .t12 .t12-l-ink2 { fill: var(--ink-2); fill-opacity: 0.3; }
+:root[data-theme='dark'] .t12 .t12-l-carve { fill: #000; fill-opacity: 0.5; }
+:root[data-theme='dark'] .t12 .t12-l-gleam { fill-opacity: 0.25; }
+:root[data-theme='dark'] .t12 .t12-void { fill: #050807; fill-opacity: 0.95; }
+:root[data-theme='dark'] .t12 .t12-flame-i { fill: var(--ink); }
+
+.t12 .t12-halo,
+.t12 .t12-pool {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.t12 .t12-halo {
+  opacity: calc(var(--lvl) * 0.38);
+  scale: calc(0.5 + var(--lvl) * 0.55);
+}
+.t12 .t12-pool {
+  opacity: calc(var(--lvl) * 0.32);
+  scale: calc(0.45 + var(--lvl) * 0.55);
+}
+.t12 .t12-spill {
+  opacity: calc(var(--lvl) * 0.45);
+  mix-blend-mode: multiply;
+}
+:root[data-theme='dark'] .t12 .t12-halo { opacity: calc(var(--lvl) * 0.85); }
+:root[data-theme='dark'] .t12 .t12-pool { opacity: calc(var(--lvl) * 0.55); }
+:root[data-theme='dark'] .t12 .t12-spill { opacity: calc(var(--lvl) * 0.6); mix-blend-mode: screen; }
+
+.t12p .t12p-hollow {
+  fill: var(--ink-3);
+  fill-opacity: 0.3;
+  transition: fill 0.4s, fill-opacity 0.4s;
+}
+.t12p .t12p-hollow.next {
+  fill: var(--vermilion);
+  fill-opacity: 0.55;
+}
+.t12p .t12p-hollow.hot {
+  fill-opacity: 1;
+}
+
+.t12p-stones {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t12p.lit .t12-stone.placed .t12-st-hi {
+  fill: color-mix(in srgb, var(--vermilion) 14%, var(--stone-3));
+}
+:root[data-theme='dark'] .t12p.lit .t12-stone.placed .t12-st-hi {
+  fill: color-mix(in srgb, var(--vermilion) 16%, var(--stone-2));
+}
+.t12p[data-mode='land'] {
+  --t12-fs: clamp(1.12rem, 1.42vw, 1.65rem);
+}
+.t12p[data-mode='port'] {
+  --t12-fs: 0.94rem;
+}
+.t12p[data-mode='port'] .t12-word,
+.t12p[data-wrap='true'] .t12-word {
+  max-width: 5.6em;
+  white-space: normal;
+  text-align: center;
+  text-wrap: balance;
+}
+.t12p[data-mode='port'] .t12-stone-body {
+  min-height: 42px;
+  padding: 0.5em 1em 0.62em;
+}
+.t12p[data-mode='compact'] {
+  --t12-fs: 0.92rem;
+}
+.t12p[data-mode='compact'] .t12-stone-body {
+  min-height: 44px;
+  padding: 0.42em 1em 0.55em;
+}
+
+.t12p-cap {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.t12p-cap.on {
+  opacity: 1;
+}
+.t12p-cap-t {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15em 0.7em;
+  margin: 0 0 0.35em;
+  font: 400 1rem/1.3 var(--serif);
+  color: var(--ink);
+}
+.t12p-cap-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  font: 400 0.8rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.t12p-cap-hint::before {
+  content: '';
+  width: 14px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--vermilion);
+}
+.t12p-cap-x {
+  margin: 0;
+  font: 300 clamp(1.05rem, 1.8vw, 1.5rem) / 1.42 var(--serif);
+  letter-spacing: -0.01em;
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+.t12p[data-mode='port'] .t12p-cap {
+  text-align: center;
+}
+.t12p[data-mode='port'] .t12p-cap-t {
+  justify-content: center;
+  font-size: 0.92rem;
+}
+.t12p[data-mode='port'] .t12p-cap-x {
+  font-size: 0.98rem;
+}
+.t12p[data-mode='compact'] .t12p-cap-t {
+  margin-bottom: 0.15em;
+  font-size: 0.86rem;
+}
+.t12p[data-mode='compact'] .t12p-cap-x {
+  font-size: 0.9rem;
+  line-height: 1.32;
+}
+/* a very short screen: slimmer stones (the hit area stays 44px), name and example on one line */
+.t12p[data-tight='true'] .t12-stone-body {
+  min-height: 36px;
+  padding: 0.3em 0.95em 0.42em;
+}
+/* a very short screen: name and example on one line, the hint left out */
+.t12p[data-tight='true'] .t12p-cap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+}
+.t12p[data-tight='true'] .t12p-cap-t {
+  flex: none;
+  margin: 0;
+}
+.t12p[data-tight='true'] .t12p-cap-hint {
+  display: none;
+}
+
+.t12p-meter {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  translate: -50% 0;
+  pointer-events: none;
+}
+.t12p-meter[hidden] {
+  display: none;
+}
+.t12p-pips {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.t12p-pips i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-3);
+  opacity: 0.55;
+  transition: background-color 0.9s, border-color 0.9s, box-shadow 0.9s, opacity 0.9s;
+}
+.t12p-pips i.on {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  opacity: 1;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--vermilion) 16%, transparent), 0 0 10px var(--glow);
+}
+.t12p-meter-l {
+  font: 400 0.72rem/1 var(--sans);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+/* ───────── Scene 2 · two requests ───────── */
+.t12c {
+  bottom: auto;
+  --fs: 15px;
+  --artH: 240px;
+}
+.t12c-cols {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  column-gap: clamp(10px, 2.2vw, 36px);
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.t12c-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.t12c-art {
+  flex: none;
+  width: 100%;
+  height: var(--artH);
+  overflow: visible;
+}
+.t12c .weak .t12c-art {
+  scale: -1 1;
+}
+.t12c-label {
+  flex: none;
+  padding: 2px 0 calc(var(--fs) * 0.7);
+  text-align: center;
+}
+.t12c-title {
+  margin: 0;
+  font: 400 calc(var(--fs) * 1.05) / 1.25 var(--serif);
+  color: var(--ink);
+}
+.t12c-ask {
+  margin: 0.15em 0 0;
+  font: 300 var(--fs) / 1.35 var(--serif);
+  color: var(--ink-2);
+}
+.t12c-more {
+  position: relative;
+  margin-top: 0.1em;
+  padding: 0.2em 0.4em;
+  border: 0;
+  background: none;
+  font: 400 calc(var(--fs) * 0.78) / 1.3 var(--sans);
+  color: var(--ink-3);
+  text-decoration: underline;
+  text-decoration-color: var(--line-2);
+  text-underline-offset: 0.25em;
+}
+.t12c-more::after {
+  content: '';
+  position: absolute;
+  inset: -10px -6px;
+}
+.t12c-more:hover {
+  color: var(--ink);
+}
+.t12c-paper {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--fs) * 0.85) calc(var(--fs) * 1.05) calc(var(--fs) * 0.7);
+}
+.t12c-sheet {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 10px 14px rgba(48, 38, 22, 0.05));
+}
+.t12c-sheet-p { fill: var(--card); }
+.t12c-sheet-e { fill: none; stroke: var(--ink); stroke-opacity: 0.1; stroke-width: 1; }
+:root[data-theme='dark'] .t12c-sheet { filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.3)); }
+:root[data-theme='dark'] .t12c-sheet-e { stroke-opacity: 0.08; }
+.t12c-from {
+  position: relative;
+  flex: none;
+  margin: 0 0 0.55em;
+  font: 400 calc(var(--fs) * 0.72) / 1.2 var(--sans);
+  color: var(--ink-3);
+}
+.t12c-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.t12c-reply {
+  margin: 0;
+  font: 300 var(--fs) / 1.55 var(--serif);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.weak .t12c-reply {
+  line-height: 1.85;
+}
+.t12c-line {
+  margin: 0 0 0.55em;
+}
+.t12c-tag {
+  color: var(--moss);
+  white-space: nowrap;
+}
+.t12c-flag {
+  position: relative;
+  margin: 0 0.3em;
+  white-space: nowrap;
+}
+.t12c-loop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+  fill: var(--vermilion);
+  fill-opacity: 0.8;
+  pointer-events: none;
+}
+.t12c-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 1.1em;
+  margin: 0.5em 0 0;
+  font: 400 calc(var(--fs) * 0.8) / 1.3 var(--serif);
+  color: var(--vermilion);
+}
+.t12c-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+.t12c-note i {
+  width: 1.15em;
+  height: 0.62em;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  rotate: -8deg;
+}
+.t12c:not(.sent) .t12c-reply,
+.t12c:not(.sent) .t12c-notes,
+.t12c:not(.sent) .t12c-loop {
+  visibility: hidden;
+}
+.t12c-mist {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.t12c-mist svg {
+  position: absolute;
+  filter: blur(1.5px);
+  left: 7%;
+  top: 24%;
+  width: 86%;
+  height: 64%;
+  overflow: visible;
+}
+.t12c-fog {
+  fill: var(--paper);
+  fill-opacity: 0.75;
+}
+:root[data-theme='dark'] .t12c-fog {
+  fill: var(--ink);
+  fill-opacity: 0.06;
+}
+.t12c-wait {
+  position: relative;
+  font: 400 calc(var(--fs) * 0.74) / 1 var(--sans);
+  color: var(--ink-3);
+}
+.t12c-step .t12-st-shadow {
+  filter: none;
+}
+.t12c.sent .strong .t12c-step .t12-st-hi {
+  fill: color-mix(in srgb, var(--vermilion) 14%, var(--stone-3));
+}
+:root[data-theme='dark'] .t12c.sent .strong .t12c-step .t12-st-hi {
+  fill: color-mix(in srgb, var(--vermilion) 16%, var(--stone-2));
+}
+
+.t12c .t12c-send {
+  position: relative;
+  align-self: start;
+  margin-top: calc(var(--artH) * 0.9);
+  translate: 0 -50%;
+  cursor: pointer;
+  touch-action: manipulation;
+  z-index: 2;
+}
+.t12c .t12c-send .t12-stone-body {
+  min-height: 52px;
+  padding: 0.6em 1.5em 0.75em;
+}
+.t12c-ripple {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t12c-ripple i {
+  position: absolute;
+  inset: 4px 0 0;
+  border: 1.5px solid var(--vermilion);
+  border-radius: 50%;
+  opacity: 0;
+}
+.t12c:not(.sent) .t12c-send::before {
+  content: '';
+  position: absolute;
+  inset: -7px -9px -4px;
+  border: 1px solid var(--vermilion);
+  border-radius: 50%;
+  opacity: 0;
+  animation: t12-call 2.8s 1.2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes t12-call {
+  0% { opacity: 0.6; scale: 0.9; }
+  100% { opacity: 0; scale: 1.35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t12c:not(.sent) .t12c-send::before { animation: none; opacity: 0.4; }
+}
+
+.t12c-pop {
+  --pk: 1;
+  --pfs: 16px;
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: 0;
+  translate: -50% 0;
+  width: min(760px, 100%);
+  max-height: var(--popMax, 100%);
+  display: grid;
+  align-content: start;
+  gap: calc(var(--pfs) * 0.7);
+  padding: calc(var(--pfs) * 0.7) calc(var(--pfs) * 1.3) calc(var(--pfs) * 1.1);
+  overflow: hidden auto;
+}
+.t12c-pop > :not(.t12c-sheet) {
+  position: relative;
+}
+.t12c-pop .t12c-sheet {
+  filter: drop-shadow(0 16px 28px rgba(48, 38, 22, 0.14));
+}
+:root[data-theme='dark'] .t12c-pop .t12c-sheet {
+  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.5));
+}
+.t12c-pop[hidden] {
+  display: none;
+}
+.t12c-pop-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.t12c-pop-h {
+  margin: 0;
+  font: 400 calc(var(--pfs) * 1.08) / 1.25 var(--serif);
+  color: var(--ink);
+}
+.t12c-pop ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--pfs) * 0.75) calc(var(--pfs) * 1.6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.t12c[data-mode='port'] .t12c-pop ol {
+  grid-template-columns: minmax(0, 1fr);
+}
+.t12c[data-mode='compact'] .t12c-pop {
+  width: 100%;
+}
+.t12c[data-mode='compact'] .t12c-pop ol {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.t12c-pop li {
+  display: grid;
+  gap: 0.15em;
+  align-content: start;
+}
+.t12c-pop-n {
+  font: 400 calc(var(--pfs) * 0.84) / 1.2 var(--serif);
+  color: var(--vermilion);
+}
+.t12c-pop-x {
+  font: 300 var(--pfs) / 1.4 var(--serif);
+  color: var(--ink);
+}
+.t12c-close {
+  flex: none;
+  min-height: 44px;
+  padding: 0.3em 1.1em;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: transparent;
+  font: 400 13px / 1 var(--sans);
+  color: var(--ink-2);
+}
+.t12c-close:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+/* portrait: the two gardens side by side, the stone between them on the ground */
+.t12c[data-mode='port'] .t12c-cols {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 10px;
+}
+.t12c[data-mode='port'] .t12c-send {
+  position: absolute;
+  left: 50%;
+  margin: 0;
+  translate: -50% -50%;
+}
+.t12c[data-mode='port'] .t12c-paper {
+  margin-top: 60px;
+}
+.t12c[data-mode='port'] .t12c-send {
+  --t12-fs: 0.95rem;
+}
+.t12c[data-mode='port'] .t12c-send .t12-stone-body {
+  min-height: 44px;
+  padding: 0.4em 1em 0.55em;
+}
+.t12c[data-mode='port'] .t12c-paper {
+  padding: calc(var(--fs) * 0.75) calc(var(--fs) * 0.8) calc(var(--fs) * 0.6);
+}
+
+/* short landscape: the request sits above its garden, the reply sheet beside them takes the full height */
+.t12c[data-mode='compact'] .t12c-col {
+  display: grid;
+  grid-template-columns: minmax(0, 0.36fr) minmax(0, 0.64fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: 'label paper' 'art paper';
+  column-gap: 8px;
+}
+.t12c[data-mode='compact'] .t12c-art {
+  grid-area: art;
+  height: 100%;
+  min-height: 0;
+}
+.t12c[data-mode='compact'] .t12c-label {
+  grid-area: label;
+  padding: 0;
+}
+.t12c[data-mode='compact'] .t12c-title {
+  font-size: 12.5px;
+}
+.t12c[data-mode='compact'] .t12c-ask {
+  font-size: 11.5px;
+}
+.t12c[data-mode='compact'] .t12c-more {
+  font-size: 11px;
+}
+.t12c[data-mode='compact'] .t12c-paper {
+  grid-area: paper;
+  padding: 8px 10px;
+}
+.t12c[data-mode='compact'] .t12c-from {
+  display: none;
+}
+.t12c[data-mode='compact'] .weak .t12c-reply {
+  line-height: 1.62;
+}
+.t12c[data-mode='compact'] .t12c-line {
+  margin-bottom: 0.3em;
+  line-height: 1.42;
+}
+.t12c[data-mode='compact'] .t12c-send {
+  align-self: center;
+  margin: 0;
+  translate: none;
+}
+
+/* ───────── Scene 3 · the rule garden ───────── */
+.t12r {
+  bottom: auto;
+  --fs: 15px;
+}
+.t12r-bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.t12r .t12p-cap {
+  top: 0;
+  text-align: center;
+}
+.t12r .t12p-cap-t {
+  justify-content: center;
+}
+.t12r[data-mode='port'] .t12p-cap-t {
+  font-size: 0.92rem;
+}
+.t12r[data-mode='port'] .t12p-cap-x {
+  font-size: 0.98rem;
+}
+.t12r[data-mode='compact'] .t12p-cap-t {
+  margin-bottom: 0.1em;
+  font-size: 0.84rem;
+}
+.t12r[data-mode='compact'] .t12p-cap-x {
+  font-size: 0.88rem;
+  line-height: 1.3;
+}
+.t12r-grid {
+  position: absolute;
+  inset: 0;
+}
+.t12r-cell {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+.t12r-art {
+  height: var(--artH);
+  width: auto;
+  aspect-ratio: 136 / 70;
+  max-width: none;
+  overflow: visible;
+  transition: translate 0.6s var(--ease);
+}
+.t12r-cell:not(.open):hover .t12r-art {
+  translate: 0 -3px;
+}
+.t12r-title {
+  max-width: 100%;
+  font: 400 var(--fs) / 1.3 var(--serif);
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+}
+.t12r-cell.open .t12r-title {
+  opacity: 1;
+}
+.t12r-cell.next::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(var(--artH) * 0.52);
+  width: calc(var(--artH) * 1.2);
+  height: calc(var(--artH) * 0.42);
+  translate: -50% -50%;
+  border: 1px solid var(--vermilion);
+  border-radius: 50%;
+  opacity: 0;
+  animation: t12-call 2.8s 0.8s ease-out infinite;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t12r-cell.next::after { animation: none; opacity: 0.4; }
+}
+.t12r-cell:hover .t12-st-rim,
+.t12r-cell:focus-visible .t12-st-rim {
+  fill-opacity: 0.95;
+}
+.t12r .t12-st-shadow { filter: none; }
+.t12r .t12-ring { fill-opacity: 0.18; }
+.t12r .t12r-ghost { fill: none; stroke: var(--ink-3); stroke-width: 1.1; stroke-dasharray: 2.5 3; }
+.t12r .t12r-arc { fill: none; stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 1 1; }
+.t12r .t12r-arc-h { fill: var(--ink-3); }
+.t12r .t12r-crack { fill: var(--ink); fill-opacity: 0.7; }
+.t12r .t12r-dot { fill: var(--vermilion); }
+.t12r .t12r-moss { fill: var(--moss-2); fill-opacity: 0.55; filter: url(#ink-wash); }
+:root[data-theme='dark'] .t12r .t12r-moss { fill: var(--moss-2); fill-opacity: 0.45; }
+.t12r .t12r-water { fill: var(--ink); fill-opacity: 0.8; }
+.t12r .t12r-wring { fill: none; stroke: var(--paper); stroke-width: 0.7; }
+.t12r .t12r-moon ellipse { fill: var(--card); }
+.t12r .t12r-drop { fill: var(--ink-2); }
+.t12r .t12r-cane { fill: var(--stone-2); }
+.t12r .t12r-cane-h { fill: var(--stone-3); fill-opacity: 0.9; }
+.t12r .t12r-cane-e { fill: var(--ink); fill-opacity: 0.5; }
+.t12r .t12r-cane-m { fill: var(--moss); fill-opacity: 0.28; filter: url(#ink-wash); }
+.t12r .t12r-node { fill: var(--ink); fill-opacity: 0.6; }
+.t12r .t12r-cut { fill: var(--ink); fill-opacity: 0.8; }
+:root[data-theme='dark'] .t12r .t12r-cane { fill: var(--stone-2); }
+:root[data-theme='dark'] .t12r .t12r-cane-h { fill: var(--stone); fill-opacity: 0.7; }
+:root[data-theme='dark'] .t12r .t12r-cane-e,
+:root[data-theme='dark'] .t12r .t12r-node,
+:root[data-theme='dark'] .t12r .t12r-cut { fill: #000; fill-opacity: 0.7; }
+/* the sekimori rope: black palm rope in both themes (a pale rim keeps it visible at night) */
+.t12r .t12r-rope { fill: none; stroke: var(--umbra); stroke-width: 2.1; stroke-linecap: round; stroke-dasharray: 1 1; }
+.t12r .t12r-knot .t12r-rope { stroke-dasharray: none; }
+.t12r .t12r-rope-rim { fill: none; stroke: none; stroke-width: 3.4; stroke-linecap: round; }
+.t12r .t12r-knot-w { fill: var(--umbra); }
+:root[data-theme='dark'] .t12r .t12r-rope-rim { stroke: var(--stone); stroke-opacity: 0.55; }
+
+:root[data-theme='dark'] .t12r .t12r-water { fill: #050807; fill-opacity: 0.9; }
+:root[data-theme='dark'] .t12r .t12r-wring { stroke: var(--ink-2); }
+:root[data-theme='dark'] .t12r .t12r-moon ellipse { fill: var(--ink); filter: drop-shadow(0 0 3px var(--glow-moss)); }
+:root[data-theme='dark'] .t12r .t12-ring { fill-opacity: 0.12; }

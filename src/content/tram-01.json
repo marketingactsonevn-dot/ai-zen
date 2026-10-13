@@ -1,0 +1,222 @@
+{
+  "id": 1,
+  "kicker": "Từ vô số hạt cát dữ liệu, một “bộ não” dần thành hình.",
+  "scenes": {
+    "brain": {
+      "label": "Bộ não ánh sáng",
+      "prompt": "Chạm và giữ",
+      "again": "Giữ lâu thêm chút nữa",
+      "aria": "Gom hạt cát thành bộ não",
+      "help": "Nhấn giữ, hoặc giữ phím cách hay Enter, để gom cát thành bộ não; giữ lần nữa để rã lại thành cát. Thanh “Cát – Bộ não” tua qua lại được. Kéo hoặc dùng phím mũi tên để xoay bộ não.",
+      "done": "Các hạt đã gom thành một “bộ não” bằng sợi ánh sáng.",
+      "insight": "AI là phần mềm làm những việc tưởng như cần trí óc; nay chủ yếu tự học từ vô số dữ liệu.",
+      "detail": "“Bộ não” ở đây chỉ là ẩn dụ: AI không phải bộ óc sinh học, mà là phần mềm chạy trên máy tính.",
+      "noWebgl": "Hình tĩnh: những hạt cát dữ liệu gom lại thành một “bộ não”.",
+      "scrub": {
+        "label": "Tua giữa cát và bộ não",
+        "sand": "Cát",
+        "brain": "Bộ não"
+      }
+    },
+    "ladder": {
+      "label": "Một việc, bốn cách",
+      "prompt": "Chạm để mở thư",
+      "walk": "Kéo viên đá sang phải",
+      "pathLabel": "Bốn cách máy tính trả lời cùng một lá thư. Dùng phím mũi tên để đi qua từng viên đá.",
+      "startLabel": "Lá thư của khách",
+      "openLabel": "Mở lá thư của khách",
+      "question": [
+        "Son Đỏ Gạch còn không?",
+        "Da ngăm hợp không?"
+      ],
+      "eras": [
+        {
+          "name": "Máy tính truyền thống",
+          "rules": [
+            "giá",
+            "đổi trả",
+            "còn hàng"
+          ],
+          "stamp": [
+            "Mẫu",
+            "3"
+          ],
+          "ghost": "da ngăm?",
+          "insight": "Máy tính truyền thống chỉ làm theo luật “nếu… thì…” do người viết sẵn.",
+          "milestone": {
+            "text": "Thập niên 1980, “hệ chuyên gia” — phần mềm chạy bằng rất nhiều luật “nếu… thì…” soạn từ kiến thức của chuyên gia — là một dạng AI phổ biến.",
+            "asOf": "2026-10-12",
+            "source": "t01-expert-system"
+          }
+        },
+        {
+          "name": "Machine Learning",
+          "baskets": [
+            "Hỏi hàng",
+            "Khiếu nại",
+            "Khác"
+          ],
+          "insight": "Machine learning (học máy): máy xem thật nhiều ví dụ có sẵn đáp án, rồi tự tìm ra quy luật.",
+          "milestone": {
+            "text": "Năm 1959, Arthur Samuel (IBM) công bố chương trình cờ đam tự chơi giỏi dần lên — một công trình sớm dùng cụm từ “machine learning”.",
+            "asOf": "2026-10-12",
+            "source": "t01-samuel-1959"
+          }
+        },
+        {
+          "name": "Deep Learning",
+          "layers": [
+            "chữ",
+            "cụm từ",
+            "ý định",
+            "kết luận"
+          ],
+          "understood": [
+            "còn hàng?",
+            "hợp da ngăm?"
+          ],
+          "insight": "Deep learning (học sâu) dùng mạng nhiều lớp; mỗi lớp nhận ra một tầng ý nghĩa sâu hơn.",
+          "milestone": {
+            "text": "Năm 2012, mạng AlexNet thắng cuộc thi nhận diện ảnh ImageNet với cách biệt lớn, mở đầu làn sóng deep learning.",
+            "asOf": "2026-10-12",
+            "source": "t01-alexnet"
+          }
+        },
+        {
+          "name": "AI tạo sinh",
+          "reply": "Chào chị! Đỏ Gạch vẫn còn ạ. Da ngăm thoa mỏng sẽ rất hợp.",
+          "seal": "Bản nháp",
+          "insight": "AI tạo sinh không chỉ phân loại mà tạo ra nội dung mới — còn bạn là người duyệt cuối.",
+          "milestone": {
+            "text": "Năm 2017, “Attention Is All You Need” giới thiệu Transformer — nền móng của hầu hết các mô hình ngôn ngữ lớn (LLM) đứng sau chatbot AI ngày nay.",
+            "asOf": "2026-10-12",
+            "source": "t01-transformer"
+          }
+        }
+      ],
+      "final": "Càng về sau, người viết ít luật hơn, máy tự học từ dữ liệu nhiều hơn — nhưng vẫn cần người kiểm tra.",
+      "finalDetail": "AI tạo sinh vẫn có thể viết sai hoặc bịa thông tin, nên hãy đọc lại trước khi gửi cho khách."
+    },
+    "nextWord": {
+      "label": "Đoán chữ tiếp theo",
+      "prompt": "Kéo đá vào chỗ trống",
+      "stonesLabel": "Chọn chữ tiếp theo",
+      "pick": "Chọn chữ “{w}”",
+      "result": "Khả năng mỗi chữ (minh họa): {list}.",
+      "next": "Câu tiếp",
+      "again": "Chơi lại",
+      "roundOf": "Câu {n}/{total}",
+      "insight": "AI viết bằng cách liên tục đoán chữ tiếp theo có khả năng cao — điều nó học từ rất nhiều văn bản.",
+      "regen": "Nhiều chữ cùng hợp lý, AI có thể chọn khác — nên mỗi lần bấm “tạo lại” bạn thường nhận một câu khác.",
+      "note": {
+        "text": "Các con số chỉ là minh họa để dễ hình dung, không đo từ mô hình AI cụ thể nào.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "rounds": [
+        {
+          "prompt": "Chúc bạn một ngày",
+          "choices": [
+            {
+              "w": "tốt lành",
+              "p": 31
+            },
+            {
+              "w": "bàn phím",
+              "p": 0.1
+            },
+            {
+              "w": "vui vẻ",
+              "p": 46
+            },
+            {
+              "w": "mới",
+              "p": 12
+            }
+          ]
+        },
+        {
+          "prompt": "Miễn phí vận",
+          "choices": [
+            {
+              "w": "tải",
+              "p": 2
+            },
+            {
+              "w": "chuyển",
+              "p": 94
+            },
+            {
+              "w": "động",
+              "p": 0.5
+            },
+            {
+              "w": "hành",
+              "p": 1
+            }
+          ]
+        },
+        {
+          "prompt": "Son mới giúp đôi môi thêm",
+          "choices": [
+            {
+              "w": "căng mọng",
+              "p": 16
+            },
+            {
+              "w": "quyến rũ",
+              "p": 24
+            },
+            {
+              "w": "tươi tắn",
+              "p": 11
+            },
+            {
+              "w": "rạng rỡ",
+              "p": 19
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "quiz": {
+    "q": "Học máy (machine learning) khác phần mềm truyền thống ở đâu?",
+    "options": [
+      "Chạy nhanh hơn hẳn",
+      "Tự học từ ví dụ",
+      "Có ý thức và cảm xúc",
+      "Không cần dữ liệu"
+    ],
+    "answer": 1,
+    "explain": "Học máy tự tìm quy luật từ ví dụ, thay vì chỉ làm theo luật người viết sẵn."
+  },
+  "summary": "AI ngày nay chủ yếu tự học từ dữ liệu; chatbot viết bằng cách đoán chữ tiếp theo.",
+  "sources": {
+    "t01-expert-system": {
+      "title": "Expert system",
+      "publisher": "Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Expert_system",
+      "note": "Bách khoa toàn thư mở, mục về hệ chuyên gia."
+    },
+    "t01-samuel-1959": {
+      "title": "Some Studies in Machine Learning Using the Game of Checkers",
+      "publisher": "Arthur L. Samuel · IBM Journal of Research and Development",
+      "date": "1959-07",
+      "url": "https://doi.org/10.1147/rd.33.0210"
+    },
+    "t01-alexnet": {
+      "title": "AlexNet",
+      "publisher": "Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/AlexNet",
+      "note": "Mạng của Krizhevsky, Sutskever và Hinton, thắng cuộc thi ImageNet (ILSVRC) năm 2012."
+    },
+    "t01-transformer": {
+      "title": "Attention Is All You Need",
+      "publisher": "Vaswani và cộng sự · arXiv",
+      "date": "2017-06-12",
+      "url": "https://arxiv.org/abs/1706.03762"
+    }
+  }
+}

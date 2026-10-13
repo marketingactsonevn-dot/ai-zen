@@ -1,0 +1,601 @@
+{
+  "id": 17,
+  "kicker": "Mỗi công ty AI là một hòn đảo đá giữa biển cát.",
+  "summary": "Mỗi hãng AI là một hòn đảo: chọn theo việc cần làm, đóng hay mở, và cỡ vừa đủ.",
+  "quiz": {
+    "q": "“Mở trọng số” nghĩa là gì?",
+    "options": [
+      "Tải về, chạy trên máy mình được",
+      "Được dùng miễn phí mãi mãi",
+      "Chỉ dùng qua app của hãng",
+      "Là model mạnh nhất của hãng"
+    ],
+    "answer": 0,
+    "explain": "Trọng số là phần “não” model đã học; mở nghĩa là ai cũng tải về tự chạy được."
+  },
+  "badge": "Cập nhật đến {date}",
+  "regions": {
+    "us": "Mỹ",
+    "cn": "Trung Quốc",
+    "other": "Khác"
+  },
+  "countries": {
+    "us": "Mỹ",
+    "uk-us": "Mỹ / Anh",
+    "cn": "Trung Quốc",
+    "none": "Dữ liệu không ghi quốc gia"
+  },
+  "cats": {
+    "text": "Chữ",
+    "image": "Ảnh",
+    "video": "Video",
+    "3d": "3D",
+    "audio": "Âm thanh"
+  },
+  "weights": {
+    "closed": "Đóng trọng số",
+    "mixed": "Có cả bản đóng và bản mở"
+  },
+  "status": {
+    "discontinued": "đã đóng",
+    "unreleased": "chưa phát hành"
+  },
+  "companies": {
+    "openai": {
+      "motto": {
+        "text": "AGI có ích cho mọi người",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Người mới bắt đầu, cần một trợ lý đa năng cho chữ và ảnh.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "anthropic": {
+      "motto": {
+        "text": "An toàn là trọng tâm",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Tổ chức coi trọng an toàn và cách AI cư xử có nguyên tắc rõ ràng.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "google-deepmind": {
+      "motto": {
+        "text": "Giải bài toán trí tuệ",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Người đã quen hệ sinh thái Google, cần cả chữ, ảnh và video.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "xai": {
+      "motto": {
+        "text": "Tìm kiếm sự thật tối đa",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Người dùng mạng X, muốn chữ, ảnh, video ở cùng một nơi.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "meta": {
+      "motto": {
+        "text": "Siêu trí tuệ cá nhân",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Người dùng Facebook, Instagram, WhatsApp hằng ngày.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "microsoft": {
+      "motto": {
+        "text": "Ảnh MAI; 3D TRELLIS.2 mã nguồn mở",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Người cần tạo ảnh; người muốn tự chạy 3D trên máy mình.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "deepseek": {
+      "fit": {
+        "text": "Người cần một model chữ hiệu quả với chi phí thấp.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "alibaba": {
+      "fit": {
+        "text": "Người cần model chữ, và video mở trọng số có âm thanh.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "moonshot": {
+      "fit": {
+        "text": "Người muốn thêm một lựa chọn model chữ ngoài các hãng Mỹ.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "zhipu": {
+      "fit": {
+        "text": "Người muốn thêm một lựa chọn model chữ ngoài các hãng Mỹ.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "minimax": {
+      "fit": {
+        "text": "Người làm video có người chuyển động, cần thêm model chữ.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "bytedance": {
+      "fit": {
+        "text": "Người làm ảnh, video quảng cáo cần chất lượng cao, giá hợp lý.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "kuaishou": {
+      "fit": {
+        "text": "Người làm video có người chuyển động, cần giá hợp lý.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "tencent": {
+      "fit": {
+        "text": "Người làm 3D: một bản dùng online, một bản mở tải về.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "midjourney": {
+      "motto": {
+        "text": "Thẩm mỹ, định hướng hình ảnh",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Designer, người cần ảnh đẹp, moodboard, định hướng hình ảnh.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "black-forest-labs": {
+      "motto": {
+        "text": "Kiểm soát tốt, có bản mở",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Studio, người làm chuyên nghiệp cần kiểm soát ảnh chặt chẽ.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "runway": {
+      "motto": {
+        "text": "Điều khiển máy quay",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Người làm phim, video chuyên nghiệp cần điều khiển máy quay.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "luma": {
+      "motto": {
+        "text": "Không khí điện ảnh",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Người muốn biến ảnh tĩnh thành video có không khí điện ảnh.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "meshy": {
+      "motto": {
+        "text": "Dùng online, chất liệu đẹp",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Người cần mô hình 3D có bề mặt đẹp, dùng ngay trên web.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "hyper3d": {
+      "motto": {
+        "text": "Chất lượng cao, trả phí",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Người cần mô hình 3D chất lượng cao, sẵn sàng trả phí.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "tripo": {
+      "motto": {
+        "text": "Tạo 3D nhanh",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12",
+        "kind": "opinion"
+      },
+      "fit": {
+        "text": "Người cần ra bản 3D nháp thật nhanh để thử ý tưởng.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "elevenlabs": {
+      "motto": {
+        "text": "Giọng nói tạo bằng AI",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Người cần giọng đọc, lồng tiếng bằng AI.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    },
+    "suno": {
+      "motto": {
+        "text": "Nhạc tạo bằng AI",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "fit": {
+        "text": "Người cần nhạc nền, muốn thử sáng tác nhạc bằng AI.",
+        "asOf": "2026-10-12",
+        "source": "t17-fit",
+        "kind": "opinion"
+      }
+    }
+  },
+  "regionMotto": {
+    "cn": {
+      "text": "Chi phí thấp, hiệu quả cao",
+      "asOf": "2026-10-12",
+      "source": "brief-2026-10-12"
+    }
+  },
+  "card": {
+    "label": "Thẻ của {name}",
+    "close": "Đóng thẻ",
+    "philosophy": "Triết lý",
+    "regionPhilosophy": "Triết lý chung các hãng Trung Quốc",
+    "focus": "Chuyên về",
+    "strengths": "Thế mạnh · {model}",
+    "history": "Trước đây",
+    "ladder": "Các model",
+    "ladderHint": "đá to: {big} · đá nhỏ: {small}",
+    "noModels": "Dữ liệu chỉ ghi tên hãng, không ghi tên model.",
+    "timeline": "Ra mắt",
+    "timelineGroup": "Mốc ra mắt các model",
+    "start": "12/2025",
+    "dot": "{name}, {date}",
+    "now": "nay",
+    "fit": "Hợp với ai",
+    "kinds": {
+      "text": "Chữ",
+      "image": "Ảnh",
+      "video": "Video",
+      "3d": "3D",
+      "audio": "Âm thanh"
+    },
+    "tlHint": "Chạm một chấm để xem tên và ngày",
+    "closed": "{label}, {date}"
+  },
+  "scenes": {
+    "map": {
+      "label": "Quần đảo",
+      "prompt": "Chọn một loại việc",
+      "region": "Bản đồ các công ty AI. Mỗi hòn đảo là một công ty, chạm để mở thẻ.",
+      "filters": "Lọc theo loại việc",
+      "regionGroup": "Lọc theo vùng",
+      "island": "{name}: mở thẻ",
+      "regionNote": {
+        "cn": {
+          "text": "Triết lý chung: chi phí thấp, hiệu quả cao, phần lớn mở trọng số.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        },
+        "other": "Dữ liệu không ghi quốc gia của các hãng này"
+      },
+      "weightsGroup": "Lọc theo trọng số",
+      "weightsLabel": "Trọng số",
+      "weightsChips": {
+        "closed": "Đóng",
+        "open": "Mở"
+      },
+      "weightsNote": {
+        "closed": "Đóng trọng số: không tải về được, chỉ dùng trực tuyến (app, web, API)",
+        "open": "Mở trọng số: tải về, tự chạy trên máy mình"
+      },
+      "insight": {
+        "text": "Vài hãng làm đủ chữ, ảnh, video; nhiều hãng khác chuyên sâu một mảng như video, 3D hay giọng nói.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "detail": {
+        "text": "AI thay đổi theo tuần, nên trước khi chọn hãy xem lại trang chính thức của từng hãng.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "gate": {
+      "label": "Đóng hay mở",
+      "prompt": "Thử mang đá về nhà",
+      "region": "Khu vườn có rào: model đóng trọng số ở trong, model mở trọng số ở ngoài. Chạm hoặc kéo một viên đá về máy của bạn.",
+      "home": "Máy của bạn",
+      "fence": "Vườn của hãng",
+      "gateLabel": "Chỉ dùng trực tuyến: app, web, API",
+      "homeLabel": "Tải về, chạy trên máy bạn",
+      "weightsLabel": "Trọng số: “não” model đã học",
+      "closedGroup": "Model đóng trọng số",
+      "openGroup": "Model mở trọng số",
+      "take": "Mang {model} về máy của bạn",
+      "back": "Trả {model} về chỗ cũ",
+      "tryClosed": "Thử mang {model} ra khỏi vườn",
+      "closed": [
+        {
+          "id": "openai",
+          "model": "GPT-6"
+        },
+        {
+          "id": "anthropic",
+          "model": "Claude"
+        },
+        {
+          "id": "google-deepmind",
+          "model": "Gemini"
+        },
+        {
+          "id": "xai",
+          "model": "Grok"
+        }
+      ],
+      "open": [
+        {
+          "id": "google-deepmind",
+          "model": "Gemma 4"
+        },
+        {
+          "id": "alibaba",
+          "model": "Wan 3.0"
+        },
+        {
+          "id": "microsoft",
+          "model": "TRELLIS.2"
+        },
+        {
+          "id": "tencent",
+          "model": "Pixal3D"
+        },
+        {
+          "id": "black-forest-labs",
+          "model": "Flux 2",
+          "fact": "Flux 2 của Black Forest Labs có bản mở trọng số."
+        }
+      ],
+      "closedFact": {
+        "text": "{model} của {company}: đóng trọng số, không tải về được.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "openFact": {
+        "text": "{model} của {company}: mở trọng số.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      },
+      "insight": "Mở trọng số: tải “bộ não” đã học về máy mình. Đóng: chỉ dùng trực tuyến qua app, web, API.",
+      "detail": {
+        "text": "Các hãng Trung Quốc: chi phí thấp, hiệu quả cao, phần lớn mở trọng số nên lan tỏa nhanh ra toàn cầu.",
+        "asOf": "2026-10-12",
+        "source": "brief-2026-10-12"
+      }
+    },
+    "ladder": {
+      "label": "Bậc thang model",
+      "prompt": "Chạm vào từng viên đá",
+      "group": "Chọn một hãng",
+      "region": "Chồng đá các model của một hãng: đá to ở dưới là bản mạnh nhất, đá nhỏ trên đỉnh là bản nhanh, rẻ.",
+      "scale": [
+        "Nhanh, rẻ",
+        "Cân bằng",
+        "Mạnh nhất"
+      ],
+      "stone": "{name}: xem ngày ra mắt",
+      "companies": [
+        {
+          "id": "openai",
+          "tiers": [
+            [
+              "GPT-6 Astra"
+            ],
+            [
+              "GPT-6 Sol",
+              "GPT-6.1 Sol"
+            ],
+            [
+              "GPT-6 Luna"
+            ]
+          ]
+        },
+        {
+          "id": "anthropic",
+          "tiers": [
+            [
+              "Claude Fable 5.1"
+            ],
+            [
+              "Claude Opus 5.5"
+            ],
+            [
+              "Claude Sonnet 5.5"
+            ],
+            [
+              "Claude Haiku 5.5"
+            ]
+          ]
+        },
+        {
+          "id": "google-deepmind",
+          "tiers": [
+            [
+              "Gemini 4 Argon"
+            ],
+            [
+              "Gemini 3.8 Flash"
+            ]
+          ],
+          "scale": [
+            "Bản phổ biến",
+            "Mạnh nhất"
+          ]
+        },
+        {
+          "id": "deepseek",
+          "tiers": [
+            [
+              "DeepSeek V4 Pro"
+            ],
+            [
+              "DeepSeek V4.1 Flash"
+            ]
+          ],
+          "scale": [
+            "Nhẹ hơn",
+            "Lớn hơn"
+          ],
+          "note": {
+            "text": "Dữ liệu không xếp bậc hai bản này; thứ tự đoán theo tên gọi Pro và Flash.",
+            "asOf": "2026-10-12",
+            "source": "editorial",
+            "kind": "opinion"
+          }
+        }
+      ],
+      "insight": "Mỗi hãng có nhiều cỡ model: đá to mạnh nhưng chậm, đắt; đá nhỏ nhanh, rẻ. Việc nhỏ, chọn đá nhỏ.",
+      "detail": {
+        "text": "Ví dụ: tóm tắt một email thì bản nhỏ là đủ; phân tích hợp đồng dài mới cần bản lớn.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "illustration"
+      }
+    },
+    "compare": {
+      "label": "So sánh hai đảo",
+      "prompt": "Đổi viên đá hai bên",
+      "region": "So sánh hai hãng: gợn sóng của hai viên đá chồng lên nhau, ở giữa là việc cả hai cùng làm.",
+      "prev": "Đổi sang hãng trước",
+      "next": "Đổi sang hãng sau",
+      "side": [
+        "Bên trái: {name}",
+        "Bên phải: {name}"
+      ],
+      "shared": "Cả hai",
+      "only": "Chỉ {name}",
+      "none": "Không thấy trong dữ liệu",
+      "doing": "Làm được",
+      "pair": [
+        "openai",
+        "google-deepmind"
+      ],
+      "note": "Chỉ so sánh định tính, không chấm điểm",
+      "insight": {
+        "text": "Không có hãng “tốt nhất”: so theo việc bạn cần, cách hãng nghĩ, đóng hay mở, không theo điểm số.",
+        "asOf": "2026-10-12",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "stone": "{name}: chạm để đổi hãng"
+    }
+  },
+  "sources": {
+    "t17-fit": {
+      "title": "Gợi ý “hợp với ai” của AI Zen",
+      "publisher": "AI Zen",
+      "date": "2026-10-12",
+      "note": "Đánh giá chung dựa trên thế mạnh ghi trong bộ dữ liệu ngày 12/10/2026; không phải bảng xếp hạng hay điểm chuẩn."
+    }
+  },
+  "closures": {
+    "openai": [
+      {
+        "date": "2026-04-26",
+        "label": "Sora đóng app",
+        "fact": {
+          "text": "Sora đóng app ngày 26/04/2026.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      },
+      {
+        "date": "2026-09-24",
+        "label": "Sora đóng API",
+        "fact": {
+          "text": "Sora đóng API ngày 24/09/2026.",
+          "asOf": "2026-10-12",
+          "source": "brief-2026-10-12"
+        }
+      }
+    ]
+  }
+}
