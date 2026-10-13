@@ -1,0 +1,261 @@
+{
+ "generatedAt": "2026-10-13",
+ "package": "official brand assets (press kits, official sites, Wikimedia Commons)",
+ "license": "Trademarks belong to their owners; used privately for education.",
+ "items": {
+  "meshy": {
+   "name": "Meshy",
+   "title": "Meshy",
+   "file": "meshy.svg",
+   "origin": "official",
+   "source": "https://www.meshy.ai/media-kit",
+   "fileUrl": "https://cdn.meshy.ai/landing-assets/media-kit/meshy-logo-128px-accent.svg",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#1f1d1a"
+  },
+  "hyper3d": {
+   "name": "Hyper3D",
+   "title": "Hyper3D",
+   "file": "hyper3d.png",
+   "origin": "official",
+   "source": "https://hyper3d.ai/ (header logo /_astro/logo.BuaY5JSh.png, 64px; Discord invite discord.com/invite/AhYWCT8WNH linked from the site footer)",
+   "fileUrl": "https://cdn.discordapp.com/icons/1081850106770362419/6e1361e6897077f3ddbc13925b18c7a0.png?size=1024",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#000000"
+  },
+  "tripo": {
+   "name": "Tripo",
+   "title": "Tripo",
+   "file": "tripo.svg",
+   "origin": "official",
+   "source": "https://studio.tripo3d.ai/ (official Tripo Studio favicon; tripo3d.ai/tripo3d.com use the same mark)",
+   "fileUrl": "https://studio.tripo3d.ai/favicon.svg",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#1f1d1a"
+  },
+  "elevenlabs": {
+   "name": "ElevenLabs",
+   "title": "ElevenLabs",
+   "file": "elevenlabs.svg",
+   "origin": "official",
+   "source": "https://elevenlabs.io/brand",
+   "fileUrl": "https://11labs-nonprd-15f22c1d.s3.eu-west-3.amazonaws.com/a2ea339b-8b5e-41bb-b706-24eda8a4c9e3/elevenlabs-symbol.svg",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#000000"
+  },
+  "suno": {
+   "name": "Suno",
+   "title": "Suno",
+   "file": "suno.svg",
+   "origin": "official",
+   "source": "https://suno.com/",
+   "fileUrl": "https://suno.com/ (inline header <svg aria-label=\"Suno logo\" viewBox=\"0 0 606 149\">, extracted)",
+   "mode": "mask",
+   "kind": "wordmark",
+   "hex": "#000000"
+  },
+  "kuaishou": {
+   "name": "Kuaishou",
+   "title": "Kuaishou",
+   "file": "kuaishou.png",
+   "origin": "official",
+   "source": "https://www.kuaishou.com/official/material-lib",
+   "fileUrl": "https://static.yximgs.com/udata/pkg/frontend-explore/material-lib-www/pure-logo-1.png",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#FF4906"
+  },
+  "tencent": {
+   "name": "Tencent",
+   "title": "Tencent",
+   "file": "tencent.svg",
+   "origin": "official",
+   "source": "https://www.tencent.com/en-us/",
+   "fileUrl": "https://www.tencent.com/wp-content/themes/tencent-web/assets/favicon/safari-pinned-tab.svg",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#0052D9"
+  },
+  "midjourney": {
+   "name": "Midjourney",
+   "title": "Midjourney",
+   "file": "midjourney.svg",
+   "origin": "official",
+   "source": "https://commons.wikimedia.org/wiki/File:Midjourney_Emblem.svg",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/24/Midjourney_Emblem.svg",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#000000"
+  },
+  "black-forest-labs": {
+   "name": "Black Forest Labs",
+   "title": "Black Forest Labs",
+   "file": "black-forest-labs.svg",
+   "origin": "official",
+   "source": "https://bfl.ai/brand",
+   "fileUrl": "https://bfl.ai/brand/symbol-black.svg",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#07130E"
+  },
+  "runway": {
+   "name": "Runway",
+   "title": "Runway",
+   "file": "runway.svg",
+   "origin": "official",
+   "source": "https://runway.com/brand-guidelines",
+   "fileUrl": "https://runway.com/assets/Runway-Brand-Guidelines.zip#Runway%20Brand%20Guidelines/Runway_Black_Symbol_SVG.svg",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#000000"
+  },
+  "luma": {
+   "name": "Luma",
+   "title": "Luma",
+   "file": "luma.svg",
+   "origin": "official",
+   "source": "https://lumalabs.ai/",
+   "fileUrl": "https://lumalabs.ai/images/brand/luma-ai/logo-black.svg",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#000000"
+  },
+  "openai": {
+   "name": "OpenAI",
+   "title": "OpenAI",
+   "file": "openai.svg",
+   "origin": "official",
+   "source": "https://commons.wikimedia.org/wiki/File:OpenAI_logo_2025_(symbol).svg",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/66/OpenAI_logo_2025_%28symbol%29.svg",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#000000"
+  },
+  "anthropic": {
+   "name": "Anthropic",
+   "title": "Anthropic",
+   "file": "anthropic.svg",
+   "origin": "official",
+   "source": "https://www.anthropic.com/press-kit",
+   "fileUrl": "https://www-cdn.anthropic.com/ae59ca4ca194dac9c9dc3bc78c5829468cb0e8af.zip#Anthropic media resources/Anthropic logos/Anthropic logos/2 Anthropic symbol/SVG/Anthropic symbol - Slate.svg",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#141413"
+  },
+  "google-deepmind": {
+   "name": "Google DeepMind",
+   "title": "Google DeepMind",
+   "file": "google-deepmind.svg",
+   "origin": "official",
+   "source": "https://deepmind.google/",
+   "fileUrl": "https://storage.googleapis.com/gdm-deepmind-com-prod-public/icons/google_deepmind_48dp.svg",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#4285F4"
+  },
+  "xai": {
+   "name": "xAI",
+   "title": "xAI",
+   "file": "xai.svg",
+   "origin": "official",
+   "source": "https://x.ai/",
+   "fileUrl": "https://x.ai/ (inline <svg> home-link logo in site header, viewBox 40 0 2176 831)",
+   "mode": "mask",
+   "kind": "wordmark",
+   "hex": "#000000"
+  },
+  "meta": {
+   "name": "Meta",
+   "title": "Meta",
+   "file": "meta.svg",
+   "origin": "official",
+   "source": "https://commons.wikimedia.org/wiki/File:Meta_Platforms_logo.svg",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Meta_Platforms_logo.svg",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#1f1d1a"
+  },
+  "microsoft": {
+   "name": "Microsoft",
+   "title": "Microsoft",
+   "file": "microsoft.svg",
+   "origin": "official",
+   "source": "https://commons.wikimedia.org/wiki/File:Microsoft_logo.svg",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#1f1d1a"
+  },
+  "deepseek": {
+   "name": "DeepSeek",
+   "title": "DeepSeek",
+   "file": "deepseek.svg",
+   "origin": "official",
+   "source": "https://www.deepseek.com/",
+   "fileUrl": "https://www.deepseek.com/ (inline header <svg viewBox='0 0 143 23'>, whale path inside clip0_logo; same artwork as https://upload.wikimedia.org/wikipedia/commons/9/95/DeepSeek-icon.svg)",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#4D6BFE"
+  },
+  "alibaba": {
+   "name": "Alibaba",
+   "title": "Qwen",
+   "file": "alibaba.svg",
+   "origin": "official",
+   "source": "https://chat.qwen.ai/",
+   "fileUrl": "https://assets.alicdn.com/g/qwenweb/qwen-chat-fe/0.3.17/static/images/qwen-logo.svg",
+   "mode": "mask",
+   "kind": "symbol",
+   "hex": "#082DFF"
+  },
+  "moonshot": {
+   "name": "Moonshot",
+   "title": "Kimi",
+   "file": "moonshot.svg",
+   "origin": "official",
+   "source": "https://www.kimi.com/en/resources/kimi-brand",
+   "fileUrl": "https://kimi-file.kimi.ai/prod-chat-kimi/kfs/4/1/2026-08-12/1d9u74p1l51jas5cp5oq0?response-content-disposition=attachment%3Bfilename%3Dkimi-logo-assets.zip (file inside the zip: KIMI-logos/Logomark/SVG/Logomark_Light.svg)",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#1f1d1a"
+  },
+  "zhipu": {
+   "name": "Zhipu / Z.ai",
+   "title": "Z.ai",
+   "file": "zhipu.svg",
+   "origin": "official",
+   "source": "https://z.ai/",
+   "fileUrl": "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#2D2D2D"
+  },
+  "minimax": {
+   "name": "MiniMax",
+   "title": "MiniMax",
+   "file": "minimax.svg",
+   "origin": "official",
+   "source": "https://github.com/MiniMax-AI/MiniMax-01/blob/main/figures/minimax.svg",
+   "fileUrl": "https://raw.githubusercontent.com/MiniMax-AI/MiniMax-01/main/figures/minimax.svg",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#E73562"
+  },
+  "bytedance": {
+   "name": "ByteDance",
+   "title": "ByteDance",
+   "file": "bytedance.svg",
+   "origin": "official",
+   "source": "https://commons.wikimedia.org/wiki/File:ByteDance_logo_English.svg",
+   "fileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/07/ByteDance_logo_English.svg",
+   "mode": "image",
+   "kind": "symbol",
+   "hex": "#3C8CFF"
+  }
+ },
+ "missing": []
+}
