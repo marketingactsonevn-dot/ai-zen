@@ -49,6 +49,19 @@ Logo và thương hiệu thuộc về chủ sở hữu tương ứng; dùng cho 
   - `dispose()` trả context ngay (`forceContextLoss`).
   - Shader được biên dịch bất đồng bộ trước frame đầu.
 - **Tải trước:** bản đồ rảnh → tải trạm kế + three.js (trừ khi tiết kiệm dữ liệu / 2g / 3g); chạm/rê vào đá → tải trạm đó; scene ensō → tải trạm sau.
+- **Mount scene ≤ 50 ms ở CPU 4×** (lỗi Phần 1 phải sửa lại 22 file, A.10):
+  - Việc nặng (vẽ canvas, dựng nhiều SVG, tạo WebGL) viết thành generator và chạy bằng `sliced()` (`src/core/chunk.ts`), `sync: ctx.reduced`. Hoặc dời `layout()` sang rAF đầu tiên.
+  - Chỉ **lần vẽ đầu** được hiện dần. Vẽ lại (layout lại, đổi theme) thì vẽ một lượt, hoặc vẽ vào canvas tách rời rồi `drawImage`. Không xoá canvas đang hiện rồi vẽ dần (đá nhấp nháy).
+  - Mọi việc hoãn (rAF, `requestIdleCallback`, `sliced`) đăng ký huỷ bằng `ctx.onCleanup` ngay lúc tạo.
+  - `onPrefs` / listener đăng ký **trước** `yield` đầu tiên, nếu không đổi theme giữa chừng sẽ bị mất.
+  - `onPrefs` chạy cả khi đổi âm thanh / quality: so màu cũ trước khi vẽ lại.
+  - `aria-live` chỉ gắn sau khi đã điền nội dung lần đầu, nếu không trình đọc màn hình đọc lại mỗi lần vào scene.
+  - `ResizeObserver` luôn báo lần đầu: đừng gọi `layout()` thêm lần nữa trong cùng frame.
+  - Bảng noise / sprite / gradient dựng một lần ở module, không dựng lại mỗi lần gọi. Lần `measureText` đầu của mỗi font tốn ~25 ms: làm ấm trong `requestIdleCallback`.
+- **Trạm mới chỉ xong khi** (B.8):
+  - `npm run build && node scripts/perf-walk.mjs --only c --stations N-N`: không long task, không frame > 50 ms khi vào trạm và khi chuyển scene.
+  - `--passes 2`: heap lượt 2 không tăng, WebGL ≤ 1, rAF loop = số loop của scene hiện tại.
+  - `perf-shots` ở `high` và `low` nhìn đúng; chạy được ở `calm` + `low` + reduced motion.
 
 ## Deploy
 
