@@ -1,0 +1,248 @@
+{
+  "title": "Bài thi Vườn Trăng",
+  "intro": {
+    "title": "Bài thi Vườn Trăng",
+    "meta": "12 câu · khoảng 6 phút",
+    "line": "Mười hai viên đá dưới trăng, mỗi viên một câu hỏi. Đi hết lối để nhận chứng nhận Vườn Trăng.",
+    "start": "Bước qua cổng",
+    "resume": "Xem lại chứng nhận · {score}/12",
+    "art": "Cổng đá giữa vườn trong đêm trăng; lối mười hai viên đá dẫn qua cổng về phía vầng trăng."
+  },
+  "quiz": {
+    "count": "Câu {n}/{total}",
+    "status": "Câu {n} trên {total}.",
+    "group": "Các đáp án",
+    "keys": "Chọn bằng chuột, chạm, hoặc phím 1 đến {n}.",
+    "right": "Chính xác.",
+    "wrong": "Chưa đúng.",
+    "answerIs": "Đáp án đúng: {a}.",
+    "next": "Câu tiếp",
+    "finish": "Xem kết quả",
+    "hint": "Chọn một viên đá"
+  },
+  "questions": [
+    {
+      "topic": "Đọc tin AI",
+      "station": 19,
+      "art": "moon",
+      "q": "Hãng AI viết: “Mô hình của chúng tôi đã tìm ra hàng nghìn lỗ hổng nghiêm trọng.” Câu này là gì?",
+      "options": [
+        "Sự thật đã kiểm chứng",
+        "Quan điểm",
+        "Dự đoán",
+        "Công ty tự công bố"
+      ],
+      "answer": 3,
+      "explain": "Con số do chính hãng nêu (◇). Mozilla xác nhận một phần: Firefox 150 vá 271 lỗi; phần còn lại chờ bên ngoài kiểm."
+    },
+    {
+      "topic": "AI làm toán",
+      "station": 20,
+      "art": "token",
+      "q": "Lean đã kiểm xong một chứng minh do AI viết. Con người vẫn phải làm gì?",
+      "options": [
+        "Tính lại từng bước bằng tay",
+        "Kiểm đề cho máy có khớp đề thật",
+        "Không cần làm gì nữa",
+        "Dịch chứng minh ra cho chắc"
+      ],
+      "answer": 1,
+      "explain": "Lean kiểm logic từng bước rất chắc. Nhưng đề cho máy mà lệch đề thật, máy vẫn chấp nhận: người phải kiểm ý nghĩa."
+    },
+    {
+      "topic": "Diễn giải được AI",
+      "station": 23,
+      "art": "cairn",
+      "q": "Neel Nanda (2025): nên coi diễn giải là một lớp trong nhiều lớp phòng vệ, vẫn rất đáng làm. Câu này là gì?",
+      "options": [
+        "Sự thật đã kiểm chứng",
+        "Quan điểm",
+        "Dự đoán",
+        "Công ty tự công bố"
+      ],
+      "answer": 1,
+      "explain": "Đánh giá và lời khuyên của một chuyên gia: có lập luận, nhưng không phải số đo hay sự kiện."
+    },
+    {
+      "topic": "Thói nịnh của AI",
+      "station": 24,
+      "art": "drop",
+      "q": "Bạn hỏi AI “Kế hoạch kinh doanh của tôi ổn chứ?” và nó khen hết lời. Nên làm gì tiếp?",
+      "options": [
+        "Bảo nó nêu 3 điểm yếu lớn nhất",
+        "Làm theo, AI vốn khách quan",
+        "Hỏi lại đúng câu cũ",
+        "Bỏ qua, AI không hiểu kinh doanh"
+      ],
+      "answer": 0,
+      "explain": "Mô hình học từ điểm chấm của con người nên dễ nịnh. Yêu cầu phản biện cụ thể để nghe phần nói thật."
+    },
+    {
+      "topic": "Ba tầng cảm xúc",
+      "station": 25,
+      "art": "moon",
+      "q": "Anthropic thấy 171 “khái niệm cảm xúc” trong Claude, làm đổi hành vi của nó. Phát hiện này ở tầng nào?",
+      "options": [
+        "Chữ AI viết ra",
+        "Trạng thái chức năng",
+        "Trải nghiệm: AI cảm thấy",
+        "Cả ba tầng, đã chứng minh"
+      ],
+      "answer": 1,
+      "explain": "Trạng thái bên trong làm đổi hành vi là tầng 2, do chính hãng công bố. Tầng 3 — có cảm thấy không — chưa ai đo được."
+    },
+    {
+      "topic": "Luật không bạo hành AI",
+      "station": 26,
+      "art": "write",
+      "q": "Chính sách mới của Anthropic cấm “lạm dụng hoặc tàn nhẫn kéo dài và vô cớ” với mô hình. Việc nào bị cấm?",
+      "options": [
+        "Bực mình mắng AI trả lời sai",
+        "Truyện u tối có AI bị hành hạ",
+        "Lăng mạ AI hàng giờ, vô cớ",
+        "Dồn AI vào thế khó để kiểm thử"
+      ],
+      "answer": 2,
+      "explain": "Luật chỉ nhắm ca cực đoan, kéo dài, vô cớ. Bực bội thường ngày, sáng tác u tối, kiểm thử đều không tính."
+    },
+    {
+      "topic": "Mở hay đóng",
+      "station": 30,
+      "art": "plug",
+      "q": "Muốn AI tóm tắt hồ sơ khách hàng mà dữ liệu không rời máy công ty. Chọn gì?",
+      "options": [
+        "Chatbot miễn phí bất kỳ",
+        "Model đóng, gọi qua API",
+        "Model có rào, cấp hạn chế",
+        "Model mở trọng số, chạy tại chỗ"
+      ],
+      "answer": 3,
+      "explain": "Model mở trọng số chạy tại chỗ thì dữ liệu ở lại trong máy; vẫn phải đọc giấy phép xem có được dùng kinh doanh."
+    },
+    {
+      "topic": "Đọc model card",
+      "station": 31,
+      "art": "write",
+      "q": "Dùng model trên Hugging Face làm quảng cáo cho khách: dòng nào trên model card cho biết có được phép?",
+      "options": [
+        "Giấy phép (license)",
+        "Lượt tải tháng trước",
+        "Số tham số",
+        "Định dạng file"
+      ],
+      "answer": 0,
+      "explain": "Giấy phép quy định được dùng, sửa, bán lại tới đâu. Lượt tải chỉ nói độ phổ biến; số tham số, định dạng nói độ nặng."
+    },
+    {
+      "topic": "Cấp quyền cho agent",
+      "station": 33,
+      "art": "lantern",
+      "q": "Agent mỗi sáng tóm tắt email mới rồi nhắn riêng cho bạn qua Telegram. Cấp quyền nào là đủ?",
+      "options": [
+        "Đọc, gửi, xoá email + chạy lệnh",
+        "Toàn quyền, để nó tự xoay xở",
+        "Thêm thẻ để nó tự mua công cụ",
+        "Chỉ đọc email + nhắn cho bạn"
+      ],
+      "answer": 3,
+      "explain": "Quyền tối thiểu: việc này chỉ cần đọc thư và nhắn cho bạn. Xoá, chạy lệnh, tiêu tiền chỉ thêm rủi ro nếu agent bị lừa."
+    },
+    {
+      "topic": "Chọn công nghệ cho game",
+      "station": 36,
+      "art": "frames",
+      "q": "Bạn muốn làm game 2D trên web: nhiều màn, nhân vật sprite, có va chạm. Dặn AI thế nào hợp nhất?",
+      "options": [
+        "“Dùng Godot 4, xuất app iOS.”",
+        "“Dùng Three.js với ánh sáng 3D.”",
+        "“Dùng Phaser + Vite.”",
+        "Không dặn gì, để AI tự chọn"
+      ],
+      "answer": 2,
+      "explain": "Phaser làm sẵn màn chơi, sprite, va chạm cho game 2D trên web. Godot hợp game lớn cần xuất app; Three.js dành cho 3D."
+    },
+    {
+      "topic": "Dự đoán về AI",
+      "station": 38,
+      "art": "mist",
+      "q": "METR: nếu đà hiện nay giữ nguyên, AI có thể tự làm những dự án dài cả tháng trước năm 2030. Câu này là gì?",
+      "options": [
+        "Sự thật đã kiểm chứng",
+        "Quan điểm",
+        "Dự đoán",
+        "Công ty tự công bố"
+      ],
+      "answer": 2,
+      "explain": "Số đo độ dài tác vụ tới hôm nay là dữ kiện; kéo đường xu hướng tới 2030 là dự đoán. Xu hướng có thể đổi, thước đo cũng có giới hạn."
+    },
+    {
+      "topic": "Chọn đồ nghề",
+      "station": 39,
+      "art": "desks",
+      "q": "Chủ shop, laptop thường, chưa muốn tốn tiền, muốn làm ảnh sản phẩm nhanh hơn. Bắt đầu từ đâu?",
+      "options": [
+        "Chatbot và app ảnh bản miễn phí",
+        "Mua card đồ hoạ mạnh",
+        "Tự huấn luyện model ảnh riêng",
+        "Để agent tự tạo và tự đăng ảnh"
+      ],
+      "answer": 0,
+      "explain": "Bắt đầu nhỏ, đúng việc, đúng ngân sách; kiểm quyền trước khi đăng, và việc đăng công khai vẫn để người duyệt."
+    }
+  ],
+  "result": {
+    "eyebrow": "Kết quả",
+    "scoreLabel": "câu đúng",
+    "scoreAria": "{n} trên {total} câu đúng.",
+    "bands": [
+      {
+        "min": 12,
+        "text": "Trọn vẹn mười hai viên đá. Bạn đã đi Vườn Trăng rất kỹ."
+      },
+      {
+        "min": 9,
+        "text": "Rất vững. Chỉ còn vài viên đá đáng ghé lại."
+      },
+      {
+        "min": 6,
+        "text": "Bạn đã nắm được lối đi. Dạo lại vài trạm sẽ vững hơn."
+      },
+      {
+        "min": 0,
+        "text": "Đêm đầu nào cũng vậy. Dạo lại các trạm, rồi thử lần nữa."
+      }
+    ],
+    "review": "Ghé lại để vững hơn",
+    "reviewLink": "Trạm {n}: {topic}",
+    "cert": "Nhận chứng nhận",
+    "again": "Làm lại bài thi",
+    "reviewTip": "Trạm {n} · {topic}"
+  },
+  "cert": {
+    "heading": "Chứng nhận Vườn Trăng",
+    "nameLabel": "Tên trên chứng nhận",
+    "placeholder": "Nhập tên của bạn",
+    "download": "Tải ảnh PNG",
+    "needName": "Nhập tên để tải ảnh.",
+    "ready": "Ảnh 1600 × 1131, sẵn sàng để chia sẻ.",
+    "saved": "Đã tải ảnh xuống.",
+    "again": "Làm lại bài thi",
+    "garden": "Về Vườn Trăng",
+    "file": "chung-nhan-ai-zen-vuon-trang",
+    "alt": "Chứng nhận Vườn Trăng của AI Zen trao cho {name}, bài thi {score}/12, ngày {date}.",
+    "title": "Vườn Trăng",
+    "presented": "Trao cho",
+    "line1": "đã đi hết 21 trạm Vườn Trăng của AI Zen —",
+    "line2": "Hiểu sâu, thấy rộng, tự tay làm",
+    "scoreLabel": "Bài thi Vườn Trăng",
+    "date": "Ngày {date}",
+    "seal": [
+      "Zen",
+      "II"
+    ],
+    "brand": "AI Zen",
+    "namePlaceholder": "Tên của bạn",
+    "line1Exam": "đã hoàn thành bài thi Vườn Trăng của AI Zen —",
+    "journey": "Bạn đã ghé {n}/{total} trạm Vườn Trăng. Đi đủ các trạm, chứng nhận sẽ ghi trọn hành trình."
+  }
+}

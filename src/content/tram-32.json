@@ -1,0 +1,306 @@
+{
+  "id": 32,
+  "kicker": "Thắp đèn trong nhà mình — không cần xin lửa hàng xóm.",
+  "summary": "AI không chỉ ở trên mây — một chiếc laptop tốt đã đủ thắp một ngọn đèn AI riêng.",
+  "takeaways": ["t32-ram-table", "t32-lmstudio-start", "t32-ollama-commands"],
+  "quiz": {
+    "q": "Máy bạn có 16 GB RAM, lần đầu chạy AI trên máy. Nên thử model nào trước?",
+    "options": [
+      "Model 70B bản gốc, càng to càng giỏi",
+      "Model khoảng 8B, bản nén 4-bit",
+      "Model 32B bản gốc 16-bit",
+      "Tải thật nhiều model rồi chạy cùng lúc"
+    ],
+    "answer": 1,
+    "explain": "Bản 8B nén 4-bit nặng khoảng 4–5 GB, vừa bàn 16 GB và còn chỗ cho máy thở. Bản 32B hay 70B sẽ tràn bàn."
+  },
+  "scenes": {
+    "scale": {
+      "label": "Cán cân",
+      "art": "Một chiếc cân đòn treo trên cành thông già. Đĩa trái là ngọn đèn dầu trong căn nhà nhỏ của bạn; đĩa phải là đám mây bạc che nửa vầng trăng. Người xem đặt từng quả cân đá lên đĩa nào, cán cân nghiêng về phía ấy.",
+      "prompt": "Đặt quả cân lên đĩa",
+      "aria": "Cán cân: chạy AI trên máy mình hay trên mây. Đặt từng quả cân về phía nó nghiêng",
+      "sides": [
+        { "id": "local", "name": "Đèn trong nhà (local)", "aria": "Đĩa chạy trên máy mình" },
+        { "id": "cloud", "name": "Đèn trên mây (cloud)", "aria": "Đĩa chạy trên máy chủ của nhà cung cấp" }
+      ],
+      "weights": [
+        { "id": "privacy", "label": "Riêng tư", "side": "local", "why": "Câu hỏi và tài liệu có thể ở lại trên máy bạn." },
+        { "id": "offline", "label": "Chạy khi mất mạng", "side": "local", "why": "Tải model một lần, sau đó không cần internet." },
+        { "id": "fee", "label": "Không phí theo lượt", "side": "local", "why": "Bạn trả bằng máy và tiền điện, không trả theo token." },
+        { "id": "quality", "label": "Chất lượng cao nhất", "side": "cloud", "why": "Model lớn nhất thường chỉ có trên mây, hoặc cần máy rất mạnh." },
+        { "id": "light", "label": "Máy yếu vẫn dùng được", "side": "cloud", "why": "Máy chủ gánh phần nặng, máy bạn chỉ gửi và nhận chữ." },
+        { "id": "update", "label": "Luôn có bản mới", "side": "cloud", "why": "Nhà cung cấp tự nâng cấp; chạy local thì bạn tự tải bản mới." }
+      ],
+      "weightAria": "Đặt quả cân “{label}” lên đĩa {side}",
+      "right": "Đúng phía.",
+      "wrong": "Quả cân này nghiêng về phía bên kia.",
+      "insight": {
+        "text": "Chạy AI trên máy mình (local AI) có thể hoàn toàn không cần mạng sau khi tải model; đổi lại, máy phải đủ mạnh.",
+        "asOf": "2026-10-15",
+        "source": "t32-lmstudio-docs"
+      },
+      "detail": {
+        "text": "Riêng tư còn tuỳ công cụ: Ollama có cả model chạy trên máy lẫn model chạy trên mây (cần API key). Xem kỹ trước khi đưa dữ liệu nhạy cảm.",
+        "asOf": "2026-10-15",
+        "source": "t32-ollama-quickstart"
+      }
+    },
+    "table": {
+      "label": "Model vừa cái bàn",
+      "art": "Một chiếc bàn trà thấp kê dưới khung cửa tròn đón trăng; mặt bàn là RAM của máy bạn. Người xem đặt lên bàn những bó cuộn giấy to nhỏ — mỗi bó một model; bó quá to tràn khỏi mép bàn, cuộn giấy lăn xuống chiếu.",
+      "prompt": "Đặt model lên bàn",
+      "aria": "Mô phỏng: đặt model lên mặt bàn RAM để xem vừa hay tràn",
+      "ramLabel": "RAM máy bạn",
+      "ramOptions": [8, 16, 32, 64],
+      "ramText": "{n} GB",
+      "bitsLabel": "Bản model",
+      "bits": [
+        { "id": "b16", "label": "Bản gốc 16-bit" },
+        { "id": "q4", "label": "Bản nén 4-bit (Q4)" }
+      ],
+      "models": [
+        { "id": "3b", "label": "3B", "params": 3, "gb16": 6, "gbQ4": 1.7 },
+        { "id": "8b", "label": "8B", "params": 8, "gb16": 16, "gbQ4": 4.5 },
+        { "id": "14b", "label": "14B", "params": 14, "gb16": 28, "gbQ4": 7.9 },
+        { "id": "32b", "label": "32B", "params": 32, "gb16": 64, "gbQ4": 18 },
+        { "id": "70b", "label": "70B", "params": 70, "gb16": 140, "gbQ4": 39.4 }
+      ],
+      "fitRule": { "roomy": 0.45, "tight": 0.75 },
+      "states": {
+        "roomy": "Vừa bàn — còn chỗ cho app khác",
+        "tight": "Chật — đóng bớt app, hỏi ngắn lại",
+        "spill": "Tràn bàn — máy sẽ rất chậm hoặc không chạy nổi"
+      },
+      "sizeText": "≈ {gb} GB",
+      "modelAria": "Đặt model {label} ({gb} GB) lên bàn {ram} GB",
+      "rule": {
+        "text": "Quy tắc ngón tay cái của AI Zen: file model nên chiếm dưới khoảng một nửa RAM; phần còn lại cho hệ điều hành, app và ngữ cảnh.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Lượng tử hoá (quantization) giống nén ảnh: bản 4-bit nhẹ khoảng 3,5 lần bản 16-bit, đổi lại mất chút độ chính xác.",
+        "asOf": "2026-10-15",
+        "source": "t32-hf-gguf"
+      },
+      "detail": {
+        "text": "Ước nhanh: số tỷ tham số × số bit ÷ 8 ≈ số GB. Ví dụ: 8B ở mức 4,5 bit ≈ 4,5 GB.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "note": "Máy có card đồ hoạ rời thì xét thêm bộ nhớ của card (VRAM); Mac Apple Silicon dùng chung RAM cho cả CPU và GPU.",
+      "takeaway": "t32-ram-table"
+    },
+    "lamps": {
+      "label": "Ba ngọn đèn",
+      "art": "Ba ngọn đèn trên kệ gỗ trong căn phòng tối: một đèn lồng giấy có nắp mở sẵn, một đèn dầu phải tự tay khêu bấc, và một ngọn lửa trần trong chụp kính — chính ngọn lửa cháy bên trong nhiều chiếc đèn khác.",
+      "prompt": "Chạm từng ngọn đèn",
+      "aria": "Ba công cụ chạy AI trên máy: LM Studio, Ollama, llama.cpp",
+      "lampAria": "Thắp đèn {name}",
+      "docLabel": "Tài liệu chính thức",
+      "changeNote": "Giá & tính năng thay đổi thường xuyên — kiểm tra trang chính thức.",
+      "lamps": [
+        {
+          "id": "lmstudio",
+          "name": "LM Studio",
+          "kind": "App có giao diện",
+          "what": "Tìm và tải model ngay trong app (qua Hugging Face), trò chuyện, đính kèm tài liệu, bật server cục bộ cho app khác gọi vào.",
+          "fit": "Hợp người mới, thích bấm hơn gõ lệnh.",
+          "doc": "https://lmstudio.ai/docs/app",
+          "fact": {
+            "text": "LM Studio chạy được hoàn toàn offline khi đã có model; chạy file GGUF qua llama.cpp, và MLX trên Mac Apple Silicon.",
+            "asOf": "2026-10-15",
+            "source": "t32-lmstudio-docs"
+          }
+        },
+        {
+          "id": "ollama",
+          "name": "Ollama",
+          "kind": "Dòng lệnh + cổng nội bộ",
+          "what": "Một lệnh để tải và chạy model; app khác trên máy gọi vào qua địa chỉ localhost:11434.",
+          "fit": "Hợp khi muốn nối AI trên máy với app, workflow, agent.",
+          "doc": "https://docs.ollama.com/quickstart",
+          "fact": {
+            "text": "Ollama phục vụ model trên máy tại localhost:11434, có cả cổng kiểu OpenAI để app khác dùng lại dễ dàng.",
+            "asOf": "2026-10-15",
+            "source": "t32-ollama-quickstart"
+          }
+        },
+        {
+          "id": "llamacpp",
+          "name": "llama.cpp",
+          "kind": "Lõi bên dưới",
+          "what": "Thư viện C/C++ chạy model ngay trên máy. Định dạng GGUF do chính tác giả llama.cpp phát triển.",
+          "fit": "Hợp người thích tự tay tinh chỉnh; nhiều app khác dùng nó làm lõi.",
+          "doc": "https://github.com/ggml-org/llama.cpp",
+          "fact": {
+            "text": "llama.cpp mã nguồn mở (giấy phép MIT), chạy trên CPU, GPU và Apple Silicon, nén model từ 1,5 đến 8 bit.",
+            "asOf": "2026-10-15",
+            "source": "t32-llamacpp"
+          },
+          "update": {
+            "text": "Tháng 2/2026, đội phát triển llama.cpp (ggml) gia nhập Hugging Face; hai bên cam kết giữ dự án mở và do cộng đồng dẫn dắt.",
+            "asOf": "2026-10-15",
+            "source": "t32-hf-ggml",
+            "claimBy": "Hugging Face"
+          }
+        }
+      ],
+      "steps": {
+        "steps": [
+          {
+            "label": "Tải LM Studio từ trang chính thức",
+            "detail": "Vào lmstudio.ai, chọn đúng bản cho Mac, Windows hay Linux.",
+            "why": "Bản cài trôi nổi có thể kèm mã độc."
+          },
+          {
+            "label": "Chọn một model nhỏ vừa RAM",
+            "detail": "Tìm trong app, chọn bản GGUF 4-bit cỡ 1–8B; đọc model card và giấy phép.",
+            "why": "Model vừa bàn chạy mượt; to quá sẽ tràn."
+          },
+          {
+            "label": "Tải về một lần",
+            "detail": "Chờ tải xong; từ đây không cần mạng vẫn chạy được.",
+            "why": "Model nằm hẳn trên máy bạn."
+          },
+          {
+            "label": "Mở khung chat, thử câu quen",
+            "detail": "Hỏi việc bạn đã biết đáp án để thấy model mạnh, yếu ở đâu.",
+            "why": "Biết giới hạn trước khi giao việc thật."
+          }
+        ],
+        "takeaway": "t32-lmstudio-start"
+      },
+      "stepAria": "Đặt bước {n}: {label}",
+      "wrongHint": "Chưa tới bước này — ngọn đèn cần thứ tự.",
+      "done": "Đèn đã thắp.",
+      "insight": {
+        "text": "Ba ngọn đèn cùng đọc một loại dầu: LM Studio, Ollama và llama.cpp đều chạy được file model GGUF tải từ Hugging Face.",
+        "asOf": "2026-10-15",
+        "source": "t32-hf-gguf"
+      },
+      "detail": "Giá & tính năng thay đổi thường xuyên — luôn kiểm tra trang chính thức trước khi cài."
+    },
+    "scroll": {
+      "label": "Cuộn lệnh",
+      "art": "Một cuộn thư pháp treo trên vách tre, mở dần từ trên xuống dưới ánh đèn dầu. Mỗi dòng mực là một câu lệnh; bên lề có nét chú thích nhỏ như lời thầy đồ dặn học trò.",
+      "prompt": "Mở cuộn lệnh",
+      "aria": "Cuộn mã: bốn lệnh Ollama cơ bản, có chú thích bên cạnh",
+      "code": {
+        "lang": "bash",
+        "code": "ollama pull gemma4:e2b\nollama run gemma4:e2b\nollama list\ncurl http://localhost:11434/api/chat -d '{\"model\": \"gemma4:e2b\", \"messages\": [{\"role\": \"user\", \"content\": \"Chào bạn\"}], \"stream\": false}'",
+        "notes": [
+          { "line": 1, "text": "Tải model về máy. Chỉ lần này cần mạng; bản mẫu này nặng khoảng 7 GB." },
+          { "line": 2, "text": "Mở khung chat ngay trong terminal. Gõ /bye để thoát." },
+          { "line": 3, "text": "Xem các model đang nằm trên máy bạn." },
+          { "line": 4, "text": "App khác gọi model qua cổng nội bộ, không cần API key." }
+        ]
+      },
+      "modelNote": "Tên model lấy từ ví dụ trong tài liệu Ollama và sẽ đổi theo thời gian; tra tên mới trong thư viện Ollama trước khi chạy.",
+      "insight": {
+        "text": "Với Ollama, lệnh “ollama run” vừa tải model vừa mở khung trò chuyện ngay trên máy bạn.",
+        "asOf": "2026-10-15",
+        "source": "t32-ollama-quickstart"
+      },
+      "detail": {
+        "text": "Model trên máy gọi qua localhost không cần API key; model trên mây của Ollama thì cần key và gửi dữ liệu đi.",
+        "asOf": "2026-10-15",
+        "source": "t32-ollama-quickstart"
+      },
+      "takeaway": "t32-ollama-commands"
+    },
+    "circle": {
+      "label": "Bốn hòn đá bên hồ",
+      "art": "Bốn hòn đá ngồi quanh mặt hồ tròn in trăng như bốn người bạn bàn chuyện khuya. Mỗi hòn đá giữ một chiếc đèn nhỏ; chạm vào, đèn sáng và bóng đá in dài trên mặt nước.",
+      "prompt": "Nghe từng hòn đá",
+      "aria": "Vòng đá góc nhìn: người làm sáng tạo, marketing nên chạy AI trên máy hay trên mây?",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Người giữ dữ liệu khách hàng",
+            "view": {
+              "text": "Hợp đồng, số điện thoại, hồ sơ khách: chạy trên máy để dữ liệu không phải gửi lên máy chủ của ai khác.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Người cần chất lượng cao nhất",
+            "view": {
+              "text": "Bản thảo quan trọng, việc khó: model lớn trên mây thường vẫn giỏi hơn model vừa với một chiếc laptop.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Người tính chi phí theo tháng",
+            "view": {
+              "text": "Dùng nhiều mỗi ngày thì chạy trên máy đỡ phí theo lượt; dùng thưa thì gói trên mây có khi rẻ hơn mua máy mới.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Người học để hiểu",
+            "view": {
+              "text": "Tự chạy một model nhỏ giúp thấy tận mắt: AI là một file, có kích thước, có tốc độ, có giới hạn.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "Đồng ý: không có lựa chọn đúng cho mọi việc. Khác nhau ở độ nhạy cảm dữ liệu, chất lượng cần có và ngân sách.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Nhiều người dùng cả hai: việc nhạy cảm chạy trên máy, việc cần giỏi nhất gửi lên mây — chọn có ý thức từng lần.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "t32-lmstudio-docs": {
+      "title": "LM Studio Docs — Welcome to LM Studio",
+      "publisher": "LM Studio",
+      "url": "https://lmstudio.ai/docs/app",
+      "note": "“LM Studio can operate entirely offline, just make sure to get some model files first.” Giá & tính năng thay đổi thường xuyên."
+    },
+    "t32-ollama-quickstart": {
+      "title": "Ollama Quickstart",
+      "publisher": "Ollama",
+      "url": "https://docs.ollama.com/quickstart",
+      "note": "Ví dụ lệnh ollama pull/run gemma4:e2b; API cục bộ tại localhost:11434; model cloud cần OLLAMA_API_KEY. Tên model đổi theo thời gian."
+    },
+    "t32-hf-gguf": {
+      "title": "GGUF",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/gguf",
+      "note": "Bảng kiểu lượng tử hoá: Q4_K ≈ 4,5 bit mỗi trọng số (16 ÷ 4,5 ≈ 3,5 lần nhẹ hơn bản 16-bit). Liệt kê llama.cpp, LM Studio, GPT4All, Ollama là công cụ dùng GGUF."
+    },
+    "t32-hf-ggml": {
+      "title": "GGML and llama.cpp join HF to ensure the long-term progress of Local AI",
+      "publisher": "Hugging Face Blog",
+      "url": "https://huggingface.co/blog/ggml-joins-hf",
+      "date": "2026-02-20"
+    },
+    "t32-llamacpp": {
+      "title": "llama.cpp — LLM inference in C/C++",
+      "publisher": "ggml-org (GitHub)",
+      "url": "https://github.com/ggml-org/llama.cpp",
+      "note": "Giấy phép MIT; hỗ trợ lượng tử hoá 1,5–8 bit; chạy trên CPU, Apple Silicon, GPU NVIDIA/AMD và nhiều backend khác."
+    }
+  }
+}

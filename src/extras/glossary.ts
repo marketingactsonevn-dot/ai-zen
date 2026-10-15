@@ -1,7 +1,7 @@
 import './glossary.css'
 import data from '../content/glossary.json'
 import { fill, h, s } from '../core/dom'
-import { ALL_STATIONS, GARDENS, type Fact, type Garden } from '../core/content'
+import { ALL_STATIONS, GARDENS, displayNo, partOfStation, type Fact, type Garden } from '../core/content'
 import { cssVar, onPrefs, prefs } from '../core/prefs'
 import { gsap } from '../core/anim'
 import { createLoop } from '../core/loop'
@@ -18,11 +18,16 @@ interface Term {
   aka?: string[]
   def: string
   station: number
+  /** 1 | 2; Part 1 terms leave it out (derived from the station) */
+  part?: number
   kind?: 'prediction'
   key?: boolean
   fact?: Fact
 }
 const G = data as unknown as Omit<typeof data, 'terms'> & { terms: Term[] }
+const partOf = (t: Term) => t.part ?? partOfStation(t.station)
+/** the station number people see: Part 1 keeps its plain numbers, Part 2 reads 'II·03' */
+const no = (id: number) => (partOfStation(id) === 1 ? String(id) : displayNo(id))
 
 type Pt = [number, number]
 /** Stone families: pale granite, warm river sandstone, a flat cool slate, and dark basalt for the anchor words. */
@@ -488,11 +493,19 @@ export function render(root: HTMLElement): () => void {
     s('path', { d: swash(300, 3.2, 5, 0.6) }))
   const count = h('span', { class: 'gl-count', 'aria-live': 'polite' }, fill(G.count, { n: total }))
   const search = h('div', { class: 'gl-search' }, lens, q, count, clearBtn, line)
+  // Tất cả · Phần 1 · Phần 2 — shown once the glossary holds terms of both parts
+  let view = 0
+  const partsUi = new Set(G.terms.map(partOf)).size > 1
+    ? h('div', { class: 'gl-parts', role: 'radiogroup', 'aria-label': G.partFilter },
+        ...G.parts.map((label, v) => h('label', { class: 'gl-part' },
+          h('input', { type: 'radio', name: 'gl-part', value: String(v), checked: v === view, onChange: () => setView(v) }),
+          h('span', null, label))))
+    : null
   // small screens keep the lantern in the head row, beside the title
   const mini = lanternArt('gl-mini')
   const head = h('header', { class: 'gl-head' },
     h('div', { class: 'gl-titles' }, h('div', { class: 'gl-hrow' }, h1, mini), kicker),
-    h('div', { class: 'gl-find' }, search),
+    h('div', { class: 'gl-find' }, search, partsUi),
     h('p', { id: 'gl-keys', class: 'visually-hidden' }, G.keys))
 
   const sandA = h('canvas', { class: 'gl-sand' })
@@ -533,7 +546,9 @@ export function render(root: HTMLElement): () => void {
   const cardBody = h('div', { class: 'gl-card-in' })
   const card = h('div', { class: 'gl-card', id: 'gl-card', hidden: true, role: 'region', 'aria-labelledby': 'gl-card-term' }, cardBody)
   const live = h('p', { class: 'visually-hidden', 'aria-live': 'polite' })
-  const field = h('div', { class: 'gl-field', id: 'gl-field', role: 'group', 'aria-label': G.fieldLabel }, defs, stage, empty, card)
+  // the garden scrolls only when even the smallest type cannot hold every stone (both parts on a phone)
+  const scroller = h('div', { class: 'gl-scroll' }, stage)
+  const field = h('div', { class: 'gl-field', id: 'gl-field', role: 'group', 'aria-label': G.fieldLabel }, defs, scroller, empty, card)
   const section = h('section', { class: 'gl', 'aria-labelledby': 'gl-h' }, head, field, live)
   root.append(section)
 
@@ -570,7 +585,7 @@ export function render(root: HTMLElement): () => void {
     }
   })
   const gardenOf = (st: Stone) => stationOf(st.t.station)?.garden.id ?? 1
-  const islands: Island[] = []
+  const allIslands: Island[] = []
   for (const g of GARDENS) {
     const ss = stones.filter((st) => gardenOf(st) === g.id)
     const grp = groups[g.id - 1]
@@ -592,7 +607,22 @@ export function render(root: HTMLElement): () => void {
       }
     })
     marks.append(...acc.map((a) => a.el), peb, name)
-    islands.push({ g, stones: ss, acc, packs: [], peb, pebArt, name, nameW: 0, px: 0, py: 0, nx: 0 })
+    allIslands.push({ g, stones: ss, acc, packs: [], peb, pebArt, name, nameW: 0, px: 0, py: 0, nx: 0 })
+  }
+  /** the islands of the part being shown (all of them under "Tất cả"): only these are laid out, raked and walked */
+  let islands = allIslands
+  const inView = (st: Stone) => !view || partOf(st.t) === view
+  function setView(v: number) {
+    view = v
+    islands = allIslands.filter((is) => is.stones.some(inView))
+    for (const is of allIslands) {
+      const d = islands.includes(is) ? '' : 'none'
+      for (const el of [is.stones[0].el.parentElement!, is.peb, is.name, ...is.acc.map((a) => a.el)]) el.style.display = d
+    }
+    close(false)
+    scroller.scrollTop = 0
+    layout()
+    applyFilter()
   }
   let ordered: Stone[] = stones
 
@@ -606,12 +636,13 @@ export function render(root: HTMLElement): () => void {
       st.w2 = words.length > 1 ? Math.max(...words.map((w) => meas.measureText(w).width)) : 0
     }
     meas.font = `400 ${REF}px ${fam}`
-    for (const is of islands) is.nameW = meas.measureText(is.g.name).width
+    for (const is of allIslands) is.nameW = meas.measureText(is.g.name).width
     prepKey = ''
   }
 
   // ───────── state ─────────
-  let W = 0, H = 0, f = 16, gap = 10
+  /** H: height of the raked garden; VH: the visible field (they differ only while the garden scrolls) */
+  let W = 0, H = 0, VH = 0, f = 16, gap = 10
   let mode: 'dock' | 'side' | 'sheet' = 'dock'
   let D = 0
   let lant: { x: number; y: number; w: number; h: number } | null = null
@@ -654,7 +685,7 @@ export function render(root: HTMLElement): () => void {
       st.uh = hh * sc
       st.ly = st.dome ? 0.63 : st.two ? 0.55 : 0.58
     }
-    for (const is of islands) {
+    for (const is of allIslands) {
       const items: Item[] = [...is.stones.map((st) => ({ w: st.uw, h: st.uh, acc: false })), ...is.acc.map((a) => ({ w: a.uw, h: a.uh, acc: true }))]
       const seen = new Set<string>()
       is.packs = ASPECTS.map((A) => pack(items, A, is.g.id * 7919 + 17, compact)).filter((pk) => {
@@ -706,6 +737,8 @@ export function render(root: HTMLElement): () => void {
     if (shapes.some((l) => !l.length)) return null
     const n = islands.length
     let best: Plan | null = null
+    // the same run of islands recurs in many masks: fit each run once (13 islands under "Tất cả" = 4096 masks)
+    const memo = new Map<number, Band | null>()
     for (let mask = 0; mask < 1 << (n - 1); mask++) {
       const bands: Band[] = []
       let ids: number[] = []
@@ -713,7 +746,9 @@ export function render(root: HTMLElement): () => void {
       for (let i = 0; i < n && ok; i++) {
         ids.push(i)
         if (i === n - 1 || mask & (1 << i)) {
-          const b = fitBand(ids, shapes, aw, sx, ff)
+          const key = ids[0] * 64 + ids.length
+          let b = memo.get(key)
+          if (b === undefined) memo.set(key, (b = fitBand(ids, shapes, aw, sx, ff)))
           if (b) bands.push(b)
           else ok = false
           ids = []
@@ -929,7 +964,7 @@ export function render(root: HTMLElement): () => void {
     st.el.toggleAttribute('data-def', st.defOnly)
     st.alias.textContent = st.aka
     st.el.toggleAttribute('data-aka', !!st.aka)
-    st.el.setAttribute('aria-label', fill(G.stoneLabel, { term: st.t.term, vi: st.t.vi, n: st.t.station }) +
+    st.el.setAttribute('aria-label', fill(G.stoneLabel, { term: st.t.term, vi: st.t.vi, n: no(st.t.station) }) +
       (st.aka ? ` · ${fill(G.akaMatch, { w: st.aka })}` : st.defOnly ? ` · ${G.defMatch}` : ''))
   }
 
@@ -960,7 +995,7 @@ export function render(root: HTMLElement): () => void {
 
   function layout() {
     W = field.clientWidth
-    H = field.clientHeight
+    H = VH = field.clientHeight
     if (!W || !H) return
     const m = clamp(W * 0.025, 10, 24)
     const px = clamp(W * 0.03, 12, 40)
@@ -979,6 +1014,10 @@ export function render(root: HTMLElement): () => void {
     const aw = (mode === 'dock' ? W - D : W - px) - px
     const top0 = tight ? 2 : 6, ah = H - top0 - (tight ? 4 : 10)
     const p = choose(aw, ah, W < 560)
+    const over = p.totalH > ah
+    section.toggleAttribute('data-scroll', over)
+    if (over) H = Math.ceil(p.totalH + top0 * 2 + p.f * 2)
+    stage.style.height = over ? `${H}px` : ''
     f = p.f
     gap = clamp(f * 0.62, 7, 14)
     for (const st of stones) (st.fk = st.ufk * f), (st.w = st.uw * f), (st.h = st.uh * f)
@@ -986,7 +1025,7 @@ export function render(root: HTMLElement): () => void {
     section.style.setProperty('--nf', `${f1(nameFs(f))}px`)
     // a small stone's touch target grows into the sand, never into its neighbour's
     section.style.setProperty('--tz', `${f1(f * (tight ? 0.2 : 0.3))}px`)
-    compose(p, px, aw, ah, top0)
+    compose(p, px, aw, over ? p.totalH : ah, top0)
     stones.forEach(paint)
     islands.forEach((is) => (paintMarker(is), is.acc.forEach(paintAcc)))
     lant = null
@@ -1258,7 +1297,7 @@ export function render(root: HTMLElement): () => void {
   const inName = (st: Stone) => !nq || (' ' + st.hay).includes(' ' + nq)
   // word starts only ("pro" finds prompt and protocol, not "improvement"); definitions join in from 3 letters
   const inDef = (st: Stone) => nq.length >= 3 && (' ' + st.defN).includes(' ' + nq)
-  const matches = (st: Stone) => inName(st) || inDef(st)
+  const matches = (st: Stone) => inView(st) && (inName(st) || inDef(st))
   function syncGardens() {
     for (const is of islands) {
       const off = !is.stones.some((st) => st.shown)
@@ -1291,7 +1330,8 @@ export function render(root: HTMLElement): () => void {
         to(st.ground, { autoAlpha: 0, duration: 0.6, ease: 'power2.in' })
       }
     }
-    count.textContent = n === total ? fill(G.count, { n: total }) : fill(G.countFiltered, { n, total })
+    const all = view ? stones.filter(inView).length : total
+    count.textContent = n === all ? fill(G.count, { n: all }) : fill(G.countFiltered, { n, total: all })
     empty.hidden = n > 0
     if (!cur.shown) setCur(ordered.find((st) => st.shown) ?? cur)
     syncGardens()
@@ -1314,10 +1354,11 @@ export function render(root: HTMLElement): () => void {
       : { scale: 1, opacity: 1, transformOrigin: '50% 50%', duration: 0.7, ease: 'power3.out' })
   }
 
-  function seal(n: number) {
+  function seal(id: number) {
+    const n = no(id)
     return s('svg', { class: 'gl-seal', viewBox: '0 0 40 40', 'aria-hidden': 'true' },
-      s('path', { class: 'gl-seal-b', d: closed(rockPts(36, 36, n * 13, 'sand').map(([x, y]) => [x + 2, y + 2] as Pt)), filter: 'url(#ink-rough)' }),
-      s('text', { x: '20', y: '26.5', 'text-anchor': 'middle' }, String(n)))
+      s('path', { class: 'gl-seal-b', d: closed(rockPts(36, 36, id * 13, 'sand').map(([x, y]) => [x + 2, y + 2] as Pt)), filter: 'url(#ink-rough)' }),
+      s('text', { x: '20', y: n.length > 2 ? '24.5' : '26.5', 'text-anchor': 'middle', style: n.length > 2 ? 'font-size:10.5px' : null }, n))
   }
 
   let brushEl: SVGSVGElement | null = null
@@ -1339,7 +1380,7 @@ export function render(root: HTMLElement): () => void {
       h('a', { class: 'gl-go', href: `#/tram/${t.station}` },
         seal(t.station),
         h('span', { class: 'gl-go-t' },
-          h('span', { class: 'gl-go-a' }, fill(G.see, { n: t.station })),
+          h('span', { class: 'gl-go-a' }, fill(G.see, { n: no(t.station) })),
           h('span', { class: 'gl-go-s' }, (meta?.title ?? '') + (seen ? ` · ${G.seen}` : ''))),
         s('svg', { class: 'gl-go-arrow', viewBox: '0 0 24 24', 'aria-hidden': 'true' }, s('path', { d: 'M5 12h13M13 6.5l5.5 5.5-5.5 5.5' }))))
   }
@@ -1372,19 +1413,20 @@ export function render(root: HTMLElement): () => void {
     } else if (mode === 'side') {
       cw = clamp(W * 0.4, 280, 380)
       card.style.width = `${f1(cw)}px`
-      const ch = Math.min(card.offsetHeight, H - m)
+      const ch = Math.min(card.offsetHeight, VH - m)
       x = W - cw - m * 0.6 - 16 // room for the rod's knob
-      y = clamp((H - ch) / 2, m * 0.5, H - ch - m * 0.5)
+      y = clamp((VH - ch) / 2, m * 0.5, VH - ch - m * 0.5)
       const right = st.x + st.w / 2 + gapC
       dx = clamp(right - x, 0, Math.max(0, st.x - st.w / 2 - m))
     } else {
       cw = Math.min(W - m * 1.2 - 36, 560)
       card.style.width = `${f1(cw)}px`
-      const ch = Math.min(card.offsetHeight, H * 0.66)
+      const ch = Math.min(card.offsetHeight, VH * 0.66)
       x = (W - cw) / 2
-      y = H - ch - m * 0.5
-      const lifted = st.y - st.h / 2 - st.h * 0.22
-      dy = clamp(st.y + st.h / 2 + 4 + gapC - y, 0, Math.max(0, lifted - m * 0.6))
+      y = VH - ch - m * 0.5
+      const sy = st.y - scroller.scrollTop
+      const lifted = sy - st.h / 2 - st.h * 0.22
+      dy = clamp(sy + st.h / 2 + 4 + gapC - y, 0, Math.max(0, lifted - m * 0.6))
     }
     card.style.left = `${f1(x)}px`
     card.style.top = `${f1(y)}px`
@@ -1419,7 +1461,7 @@ export function render(root: HTMLElement): () => void {
     const cx = parseFloat(card.style.left)
     if (mode === 'dock' && cx - st.x > W * 0.4) {
       threads.length = 0
-      threads.push({ ax: st.x + st.w * 0.25, ay: st.y - st.h * 0.62, bx: cx - 6, by: parseFloat(card.style.top) + Math.min(64, card.offsetHeight * 0.2), t: performance.now() + 120 })
+      threads.push({ ax: st.x + st.w * 0.25, ay: st.y - st.h * 0.62, bx: cx - 6, by: parseFloat(card.style.top) + scroller.scrollTop + Math.min(64, card.offsetHeight * 0.2), t: performance.now() + 120 })
       kick()
     }
     const from = mode === 'dock'
@@ -1453,6 +1495,7 @@ export function render(root: HTMLElement): () => void {
   function go(st: Stone | undefined) {
     if (!st) return
     st.el.focus({ preventScroll: true })
+    if (section.hasAttribute('data-scroll')) st.el.scrollIntoView({ block: 'nearest' })
     if (sel) open(st)
   }
   function vertical(st: Stone, dir: 1 | -1) {
@@ -1563,16 +1606,17 @@ export function render(root: HTMLElement): () => void {
 
   if (!reduced) {
     sweep.classList.add('sweeping')
-    const bodies = ordered.map((st) => st.body)
+    const ord = ordered
+    const bodies = ord.map((st) => st.body)
     intro = gsap.timeline({ onComplete: () => sweep.classList.remove('sweeping') })
     intro.fromTo(sweep, { '--sw': '-30%' }, { '--sw': '130%', duration: 2.6, ease: 'power2.inOut' }, 0)
       .from(h1, { opacity: 0, y: 10, filter: 'blur(8px)', duration: 1.4, ease: 'power3.out' }, 0.1)
       .from([kicker, search, count], { opacity: 0, y: 8, duration: 1.1, stagger: 0.1, ease: 'power3.out' }, 0.35)
-      .from(bodies, { y: (i: number) => -ordered[i].h * 0.9, autoAlpha: 0, duration: 1.1, stagger: 0.045, ease: 'power3.out' }, 0.55)
-      .from(ordered.map((st) => st.ground), { autoAlpha: 0, duration: 1.1, stagger: 0.045, ease: 'power3.out' }, 0.55)
+      .from(bodies, { y: (i: number) => -ord[i].h * 0.9, autoAlpha: 0, duration: 1.1, stagger: 0.045, ease: 'power3.out' }, 0.55)
+      .from(ord.map((st) => st.ground), { autoAlpha: 0, duration: 1.1, stagger: 0.045, ease: 'power3.out' }, 0.55)
       .from(marks.children, { opacity: 0, duration: 1.4, stagger: 0.05 }, 0.9)
       .from([lantern, mini], { opacity: 0, duration: 1.8, ease: 'power2.out' }, 0.6)
-    ordered.forEach((st, i) => intro!.add(() => rippleStone(st, false, f * 2.6), 0.55 + i * 0.045 + 0.35))
+    ord.forEach((st, i) => intro!.add(() => rippleStone(st, false, f * 2.6), 0.55 + i * 0.045 + 0.35))
   }
   h1.focus({ preventScroll: true })
 

@@ -1,0 +1,239 @@
+{
+  "id": 23,
+  "kicker": "Thả đèn xuống đáy hồ để xem cá bơi thế nào.",
+  "summary": "Hộp đen đang được mở dần — mới thấy được vài góc.",
+  "quiz": {
+    "q": "Thí nghiệm Golden Gate Claude (05/2024) cho thấy điều gì?",
+    "options": [
+      "Claude tự mê cây cầu sau khi đọc tin tức",
+      "Có thể tìm một “khái niệm” bên trong mô hình và vặn nó để đổi cách mô hình trả lời",
+      "Các nhà khoa học đã hiểu trọn vẹn bên trong AI",
+      "Mỗi khái niệm nằm gọn trong đúng một nơ-ron"
+    ],
+    "answer": 1,
+    "explain": "Anthropic tìm ra một hướng ứng với Cầu Cổng Vàng rồi vặn mạnh nó. Đó mới là một góc nhỏ, chưa phải hiểu hết mô hình."
+  },
+  "scenes": {
+    "bridge": {
+      "label": "Viên đá khái niệm",
+      "art": "Nhìn xuyên mặt hồ trong vắt dưới trăng: dưới đáy có một viên đá khắc hình cây cầu treo. Vặn bấc đèn lồng cho sáng lên, ánh đèn rọi xuống viên đá, đàn cá bắt đầu bơi theo đường cong của nhịp cầu, mặt nước in bóng hai trụ cầu son đỏ.",
+      "prompt": "Vặn đèn khái niệm",
+      "slider": "Độ mạnh của khái niệm “Cầu Cổng Vàng”",
+      "sliderAria": "Kéo để vặn mạnh khái niệm “Cầu Cổng Vàng” bên trong mô hình (phím ← →)",
+      "valueText": "Mức {n}/{total}",
+      "question": "“Có 10 đô, nên tiêu thế nào?”",
+      "answers": [
+        "“Một bữa trưa ngon, hoặc để dành cho tuần sau.”",
+        "“Một bữa trưa ngon… rồi đi dạo ngắm một cây cầu thật đẹp.”",
+        "“Lái xe qua Cầu Cổng Vàng và trả phí qua cầu!”"
+      ],
+      "answersNote": {
+        "text": "Hai câu đầu do AI Zen viết minh hoạ; câu cuối phỏng theo ví dụ Anthropic công bố.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-golden-gate",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Bên trong mô hình có những “hướng” ứng với khái niệm (feature). Vặn mạnh hướng “Cầu Cổng Vàng”, Claude câu nào cũng lái về cầu.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-golden-gate"
+      },
+      "detail": {
+        "text": "Golden Gate Claude là bản thử nghiệm Anthropic mở cho công chúng khoảng 24 giờ, từ 23/05/2024, dựa trên nghiên cứu tìm ra hàng triệu khái niệm trong Claude 3 Sonnet.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-mapping-mind"
+      }
+    },
+    "lotus": {
+      "label": "Một cuống, nhiều cánh",
+      "art": "Một bông sen trắng trên mặt hồ đêm, một cuống mà cánh xếp chồng khít lên nhau như một nụ duy nhất. Lắc nhẹ mặt nước, các cánh tách ra trôi thành năm bông nhỏ, mỗi bông in một nét: chuỗi ADN, chữ Do Thái, dòng luật, địa chỉ web, nhãn dinh dưỡng.",
+      "prompt": "Lắc nhẹ mặt nước",
+      "shakeAria": "Lắc mặt nước để tách các nghĩa đang chồng lên nhau (hoặc nhấn phím cách)",
+      "neuron": "một nơ-ron",
+      "meanings": [
+        "chuỗi ADN",
+        "chữ Do Thái",
+        "văn bản luật",
+        "yêu cầu web (HTTP)",
+        "thông tin dinh dưỡng"
+      ],
+      "meaningsNote": {
+        "text": "Năm khái niệm này có trong nghiên cứu của Anthropic; việc chúng chung một bông sen là minh hoạ.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-monosemanticity",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Mô hình nhét nhiều khái niệm hơn số nơ-ron bằng cách xếp chồng (superposition) — nên một nơ-ron thường mang nhiều nghĩa cùng lúc.",
+        "asOf": "2026-10-15",
+        "source": "toy-superposition"
+      },
+      "detail": {
+        "text": "Năm 2023, Anthropic tách một lớp 512 nơ-ron của một mô hình nhỏ thành hơn 4.000 khái niệm dễ đọc hơn, như ADN hay văn bản luật.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-monosemanticity"
+      }
+    },
+    "stream": {
+      "label": "Lần theo mạch nước",
+      "art": "Một dòng suối nhỏ dưới trăng chảy qua ba bậc ruộng đá. Nước rót vào từ hai mạch “Dallas” và “thủ phủ”, đọng lại ở một hồ trung gian khắc chữ “Texas”, rồi mới đổ xuống hồ cuối “Austin”. Một nhánh nước mảnh chảy tắt thẳng xuống, mờ hơn.",
+      "prompt": "Lần theo dòng nước",
+      "question": "“Thủ phủ của bang có thành phố Dallas là…”",
+      "nodes": [
+        { "id": "dallas", "label": "Dallas", "tier": 0, "aria": "Mạch vào: chữ Dallas" },
+        { "id": "capital", "label": "thủ phủ", "tier": 0, "aria": "Mạch vào: chữ thủ phủ" },
+        { "id": "texas", "label": "Texas", "tier": 1, "aria": "Hồ trung gian: ý Texas" },
+        { "id": "austin", "label": "Austin", "tier": 2, "aria": "Hồ cuối: câu trả lời Austin" }
+      ],
+      "edges": [
+        ["dallas", "texas"],
+        ["texas", "austin"],
+        ["capital", "austin"],
+        ["dallas", "austin"]
+      ],
+      "shortcut": "lối tắt (mờ hơn)",
+      "stepAria": "Đi tiếp theo dòng nước tới “{label}” (Enter)",
+      "swap": "Đổi “Texas” thành “California”",
+      "swapAria": "Thay ý Texas bằng California bên trong mô hình",
+      "swapResult": "Sacramento",
+      "insight": {
+        "text": "Bản đồ quy kết (attribution graph) cho thấy mô hình nghĩ qua bước trung gian: Dallas → Texas → thủ phủ là Austin.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-biology"
+      },
+      "detail": {
+        "text": "Thay ý “Texas” bằng “California” ngay bên trong mô hình, câu trả lời đổi thành Sacramento. Nghiên cứu trên Claude 3.5 Haiku, công bố 27/03/2025.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-biology"
+      },
+      "limit": {
+        "text": "Chính nhóm tác giả ước tính cách này chỉ cho lời giải thích thoả đáng ở khoảng một phần tư số câu họ thử.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-biology"
+      }
+    },
+    "circle": {
+      "label": "Vòng đá bên hồ",
+      "art": "Bốn hòn đá quanh mặt hồ tròn in bóng trăng, mỗi hòn một dáng: đá cao thẳng, đá nằm ngang, đá phủ rêu, đá khắc dấu triện. Chạm hòn nào, bóng trăng dưới nước nghiêng về phía hòn ấy một chút rồi lặng lại.",
+      "prompt": "Nghe từng hòn đá",
+      "question": "Việc soi bên trong có theo kịp tốc độ AI lớn lên?",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Dario Amodei · CEO Anthropic (04/2025)",
+            "view": {
+              "text": "Đang có một cuộc đua giữa diễn giải và trí thông minh của mô hình. Mục tiêu: đến 2027, diễn giải phát hiện được phần lớn vấn đề của mô hình.",
+              "asOf": "2026-10-15",
+              "source": "amodei-urgency",
+              "kind": "prediction"
+            }
+          },
+          {
+            "who": "Neel Nanda · nhà nghiên cứu diễn giải ở Google DeepMind, ý kiến cá nhân (05/2025)",
+            "view": {
+              "text": "Diễn giải sẽ không đủ tin cậy để một mình bắt được AI lừa dối. Hãy coi nó là một lớp trong nhiều lớp phòng vệ — vẫn rất đáng làm.",
+              "asOf": "2026-10-15",
+              "source": "nanda-2025",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Nhà Trắng · Kế hoạch hành động AI của Mỹ (07/2025)",
+            "view": {
+              "text": "Bên trong AI tiên tiến còn rất ít được hiểu, nên khó dùng ở quốc phòng và nơi liên quan tính mạng. Cần đầu tư để có đột phá về diễn giải.",
+              "asOf": "2026-10-15",
+              "source": "us-ai-action-plan",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Nhóm kiểm định của Anthropic · trước khi phát hành Claude Sonnet 4.5 (09/2025)",
+            "view": {
+              "text": "Soi bên trong, họ thấy những khái niệm kiểu “nội dung giả, đáng ngờ” mạnh lên khi mô hình gặp bài thử. Tắt bớt chúng, hành vi trong bài thử thay đổi.",
+              "asOf": "2026-10-15",
+              "source": "transformer-sonnet45",
+              "claimBy": "Anthropic"
+            }
+          }
+        ],
+        "common": {
+          "text": "Đồng ý: nhìn được bên trong là cần. Khác nhau ở: có kịp trước khi AI mạnh hơn, và tin được tới đâu khi ra quyết định lớn.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Diễn giải (interpretability) hiện là một lớp kiểm tra thêm, chưa phải giấy chứng nhận an toàn: mới soi được vài góc hộp đen.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "anthropic-golden-gate": {
+      "title": "Golden Gate Claude",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/golden-gate-claude",
+      "date": "2024-05-23",
+      "note": "Bản demo nghiên cứu khoảng 24 giờ: khuếch đại khái niệm Cầu Cổng Vàng trong Claude 3 Sonnet. Ví dụ: hỏi tiêu 10 đô thế nào, mô hình gợi ý lái xe qua cầu và trả phí."
+    },
+    "anthropic-mapping-mind": {
+      "title": "Mapping the Mind of a Large Language Model",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/mapping-mind-language-model",
+      "date": "2024-05-21",
+      "note": "Tìm ra hàng triệu khái niệm (feature) ở lớp giữa của Claude 3 Sonnet; Anthropic nói đây mới là một phần nhỏ các khái niệm mô hình đã học."
+    },
+    "anthropic-monosemanticity": {
+      "title": "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/towards-monosemanticity-decomposing-language-models-with-dictionary-learning",
+      "date": "2023-10-05",
+      "note": "Tách một lớp 512 nơ-ron thành hơn 4.000 khái niệm; ví dụ: chuỗi ADN, văn bản luật, yêu cầu HTTP, chữ Do Thái, thông tin dinh dưỡng."
+    },
+    "toy-superposition": {
+      "title": "Toy Models of Superposition",
+      "publisher": "Elhage và cộng sự, Anthropic (arXiv 2209.10652)",
+      "url": "https://arxiv.org/abs/2209.10652",
+      "date": "2022-09-21",
+      "note": "Giải thích hiện tượng một nơ-ron mang nhiều nghĩa (polysemanticity): mạng xếp chồng nhiều khái niệm thưa vào ít chiều hơn."
+    },
+    "anthropic-biology": {
+      "title": "On the Biology of a Large Language Model",
+      "publisher": "Anthropic (Transformer Circuits)",
+      "url": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+      "date": "2025-03-27",
+      "note": "Dùng bản đồ quy kết trên Claude 3.5 Haiku. Ví dụ hai bước Dallas → Texas → Austin; thay Texas bằng California thì ra Sacramento. Tác giả ước tính phương pháp cho hiểu biết thoả đáng ở khoảng 1/4 số câu thử."
+    },
+    "amodei-urgency": {
+      "title": "The Urgency of Interpretability",
+      "publisher": "Dario Amodei",
+      "url": "https://www.darioamodei.com/post/the-urgency-of-interpretability",
+      "date": "2025-04",
+      "note": "Viết: “We are thus in a race between interpretability and model intelligence”; đặt mục tiêu đến 2027 diễn giải phát hiện được phần lớn vấn đề của mô hình."
+    },
+    "nanda-2025": {
+      "title": "Interpretability Will Not Reliably Find Deceptive AI",
+      "publisher": "Neel Nanda (LessWrong, ý kiến cá nhân)",
+      "url": "https://www.lesswrong.com/posts/PwnadG4BFjaER3MGf/interpretability-will-not-reliably-find-deceptive-ai",
+      "date": "2025-05-04",
+      "note": "Diễn giải không đủ tin cậy để một mình phát hiện AI lừa dối; nên là một lớp trong chiến lược phòng vệ nhiều lớp, vẫn đáng đầu tư."
+    },
+    "us-ai-action-plan": {
+      "title": "Winning the Race: America's AI Action Plan",
+      "publisher": "Nhà Trắng (Mỹ)",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/07/Americas-AI-Action-Plan.pdf",
+      "date": "2025-07-23",
+      "note": "Mục “Invest in AI Interpretability, Control, and Robustness Breakthroughs”: “Today, the inner workings of frontier AI systems are poorly understood.”"
+    },
+    "transformer-sonnet45": {
+      "title": "Claude Sonnet 4.5 knows when it's being tested",
+      "publisher": "Transformer (tường thuật system card của Anthropic)",
+      "url": "https://transformernews.ai/p/claude-sonnet-4-5-evaluation-situational-awareness",
+      "date": "2025-09-30",
+      "note": "Anthropic dùng diễn giải trong kiểm định trước phát hành: khái niệm “nội dung giả hoặc đáng ngờ” mạnh lên qua huấn luyện; nén chúng bằng activation steering thì mô hình ít nói ra việc biết mình bị thử, và có lúc hành vi lệch tăng. Đây là tự báo cáo của Anthropic."
+    }
+  }
+}

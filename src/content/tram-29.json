@@ -1,0 +1,239 @@
+{
+  "id": 29,
+  "kicker": "Hồ lớn hút cạn nước của những giếng nhỏ.",
+  "summary": "AI không sống trên mây — nó tranh từng con chip nhớ với chiếc điện thoại trong túi bạn.",
+  "newsTags": ["bo-nho"],
+  "takeaways": ["t29-ram-mua-may"],
+  "quiz": {
+    "q": "Vì sao cơn sốt AI có thể làm điện thoại, laptop đắt hơn?",
+    "options": [
+      "Điện thoại phải gắn thêm chip AI riêng",
+      "Nhà máy dồn bộ nhớ cho trung tâm dữ liệu AI, phần cho máy cá nhân ít đi",
+      "Thuế nhập khẩu điện thoại tăng gấp đôi",
+      "Điện thoại có AI tốn điện hơn"
+    ],
+    "answer": 1,
+    "explain": "Các hãng lớn ký hợp đồng mua bộ nhớ dài hạn cho trung tâm dữ liệu; phần còn lại cho thiết bị tiêu dùng khan hiếm nên giá tăng."
+  },
+  "scenes": {
+    "desk": {
+      "label": "Bàn làm việc của AI",
+      "art": "Một chiếc bàn gỗ thấp dưới đèn lồng giữa vườn đêm. Người thư lại — con chip — ngồi giữa; bàn càng rộng, càng nhiều cuộn giấy được trải ra cùng lúc, tay bút chạy càng nhanh. Sát mép bàn là một chồng đĩa sứ mỏng xếp cao: bộ nhớ HBM.",
+      "prompt": "Kéo mặt bàn rộng ra",
+      "slider": "Độ rộng mặt bàn (bộ nhớ)",
+      "valueText": "Mặt bàn {n} GB",
+      "small": "Bàn chật: phải cất giấy vào kho rồi lấy ra, chậm hẳn",
+      "large": "Bàn rộng: mọi cuộn giấy trong tầm tay, chạy nhanh",
+      "stackLabel": "HBM · chồng chip nhớ sát bên chip",
+      "insights": [
+        {
+          "text": "RAM là mặt bàn nơi model bày dữ liệu ra làm việc. Bàn chật thì phải chạy đi lấy giấy liên tục, chậm hẳn.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "illustration"
+        },
+        {
+          "text": "Chip AI dùng bộ nhớ băng thông cao (HBM): nhiều lớp DRAM xếp chồng, đặt sát cạnh chip để dữ liệu chạy thật nhanh.",
+          "asOf": "2026-10-15",
+          "source": "t29-samsung-hbm"
+        }
+      ],
+      "detail": {
+        "text": "Ví dụ: một chip NVIDIA H200 có 141 GB bộ nhớ HBM3e, chuyển được 4,8 terabyte mỗi giây.",
+        "asOf": "2026-10-15",
+        "source": "t29-h200"
+      }
+    },
+    "wells": {
+      "label": "Hồ lớn hút giếng nhỏ",
+      "art": "Một hồ trăng rộng giữa vườn — trung tâm dữ liệu AI — được các mạch nước ngầm từ mọi phía đổ về. Ở rìa vườn, ba cái giếng nhỏ khắc chữ điện thoại, laptop, card đồ hoạ; mực nước tụt dần, gàu múc chạm đáy rêu.",
+      "prompt": "Mở cửa mạch nước",
+      "lake": "Trung tâm dữ liệu AI",
+      "gate": "Mở cửa mạch",
+      "gateAria": "Mở cửa mạch nước: xem bộ nhớ chảy về đâu",
+      "wells": [
+        { "id": "phone", "name": "Điện thoại" },
+        { "id": "laptop", "name": "Laptop" },
+        { "id": "gpu", "name": "Card đồ hoạ" }
+      ],
+      "wellAria": "Giếng {name}: mực nước còn {n} phần mười",
+      "facts": [
+        {
+          "text": "10/2025: SK hynix cho biết đã chốt khách cho toàn bộ sản lượng DRAM và NAND năm 2026, đàm phán HBM cũng đã xong.",
+          "asOf": "2026-10-15",
+          "source": "t29-skhynix-3q25",
+          "claimBy": "SK hynix"
+        },
+        {
+          "text": "12/2025: Micron đóng mảng Crucial bán RAM, ổ SSD cho người dùng, để dồn hàng cho khách lớn ở mảng tăng nhanh như AI.",
+          "asOf": "2026-10-15",
+          "source": "t29-micron-crucial"
+        }
+      ],
+      "insight": {
+        "text": "Nhà máy ưu tiên bộ nhớ cho trung tâm dữ liệu AI, nên phần còn lại cho điện thoại, laptop ngày càng ít.",
+        "asOf": "2026-10-15",
+        "source": "t29-jpm"
+      }
+    },
+    "bill": {
+      "label": "Hoá đơn đến tay ai",
+      "art": "Dải cát dài như một cuộn sổ sách trải dưới trăng. Kéo trăng sang phải, từng tờ hoá đơn giấy dó bay từ hồ lớn ra tận sạp điện thoại ở cổng vườn; mỗi mốc, tờ hoá đơn lại dài thêm một khúc.",
+      "prompt": "Kéo trăng theo dòng tin",
+      "sliderAria": "Kéo vầng trăng qua các mốc của cơn khát bộ nhớ",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2025-12-03",
+            "label": "Một thương hiệu rút lui",
+            "fact": {
+              "text": "Micron thông báo ngừng mảng Crucial; hàng cho người dùng chỉ giao tới hết 02/2026.",
+              "asOf": "2026-10-15",
+              "source": "t29-micron-crucial"
+            }
+          },
+          {
+            "date": "2026-02-26",
+            "label": "Dự báo cho điện thoại",
+            "fact": {
+              "text": "IDC dự báo năm 2026 lượng điện thoại bán ra giảm 12,9%, giá bán trung bình tăng 14% lên mức kỷ lục 523 USD.",
+              "asOf": "2026-10-15",
+              "source": "t29-idc",
+              "kind": "prediction"
+            }
+          },
+          {
+            "date": "2026-08-06",
+            "label": "Dự báo giá DRAM",
+            "fact": {
+              "text": "J.P. Morgan ước giá DRAM từ đầu 2024 tới cuối 2026 sẽ tăng hơn 400%, tức gấp hơn 5 lần.",
+              "asOf": "2026-10-15",
+              "source": "t29-jpm",
+              "kind": "prediction"
+            },
+            "compare": {
+              "before": "1 phần",
+              "after": "hơn 5 phần",
+              "beforeLabel": "Giá DRAM đầu 2024",
+              "afterLabel": "Ước tính cuối 2026"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Hôm nay",
+            "fact": {
+              "text": "Các ông lớn đám mây khoá nguồn bộ nhớ bằng hợp đồng dài hạn, có hợp đồng từ năm năm trở lên.",
+              "asOf": "2026-10-15",
+              "source": "t29-jpm"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "IDC dự báo giá bộ nhớ ổn định dần vào giữa 2027 nhưng khó quay về mức cũ; điện thoại dưới 100 USD có thể không còn lãi.",
+          "asOf": "2026-10-15",
+          "source": "t29-idc",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "“Lạm phát chip” (chipflation): bộ nhớ đắt lên đẩy giá điện thoại, máy tính lên — nối tiếp hoá đơn điện, nước ở trạm 18.",
+        "asOf": "2026-10-15",
+        "source": "t29-jpm"
+      },
+      "detail": {
+        "text": "Khi mua máy, hãy so cả giá lẫn dung lượng RAM: có máy giữ giá nhưng bớt RAM, có máy giữ RAM nhưng tăng giá.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      }
+    },
+    "refill": {
+      "label": "Giếng bao giờ đầy lại?",
+      "art": "Ba hòn đá đứng quanh một giếng cạn dưới trăng khuyết, mỗi hòn khắc một lời đoán về mùa mưa. Đáy giếng in bóng một vầng trăng méo, chưa rõ hình.",
+      "prompt": "Chạm từng hòn đá",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Nhà phân tích J.P. Morgan",
+            "view": {
+              "text": "Ngành bộ nhớ sẽ còn thiếu hàng nhiều năm; thị trường hay đánh giá thấp việc xây thêm nhà máy mất bao lâu.",
+              "asOf": "2026-10-15",
+              "source": "t29-jpm",
+              "kind": "prediction"
+            }
+          },
+          {
+            "who": "Nhà sản xuất SK hynix",
+            "view": {
+              "text": "Hãng đang mở rộng nhà máy M15X, chuyển nhanh sang công nghệ mới và tăng đầu tư năm 2026 để đáp ứng nhu cầu.",
+              "asOf": "2026-10-15",
+              "source": "t29-skhynix-3q25",
+              "claimBy": "SK hynix"
+            }
+          },
+          {
+            "who": "Hãng nghiên cứu IDC",
+            "view": {
+              "text": "Giá bộ nhớ sẽ ổn định dần vào giữa 2027; thị trường điện thoại hồi nhẹ năm đó rồi bật lại năm 2028.",
+              "asOf": "2026-10-15",
+              "source": "t29-idc",
+              "kind": "prediction"
+            }
+          }
+        ],
+        "common": {
+          "text": "Các bên đều thấy cơn thiếu chưa hết trong năm nay; họ khác nhau ở chỗ nhà máy mới kịp hạ nhiệt giá nhanh tới đâu.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Thiếu bộ nhớ kéo dài bao lâu vẫn là dự đoán: nhà máy mới cần nhiều năm, còn nhu cầu AI thì khó đoán.",
+        "asOf": "2026-10-15",
+        "source": "t29-jpm",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "t29-samsung-hbm": {
+      "title": "HBM (High Bandwidth Memory)",
+      "publisher": "Samsung Semiconductor",
+      "url": "https://semiconductor.samsung.com/dram/hbm/",
+      "note": "Trang sản phẩm của hãng; mô tả HBM là các lớp DRAM xếp chồng đặt cạnh bộ xử lý."
+    },
+    "t29-h200": {
+      "title": "NVIDIA H200 Tensor Core GPU — thông số",
+      "publisher": "NVIDIA",
+      "url": "https://www.nvidia.com/en-us/data-center/h200/",
+      "note": "Thông số kỹ thuật do hãng công bố (141 GB HBM3e, 4,8 TB/s)."
+    },
+    "t29-skhynix-3q25": {
+      "title": "SK hynix Announces 3Q25 Financial Results",
+      "publisher": "SK hynix (thông cáo qua PR Newswire)",
+      "date": "2025-10-29",
+      "url": "https://technode.global/prnasia/sk-hynix-announces-3q25-financial-results/",
+      "note": "Thông cáo của chính hãng: “đã đảm bảo nhu cầu của khách cho toàn bộ sản lượng DRAM và NAND năm sau”."
+    },
+    "t29-micron-crucial": {
+      "title": "Micron Announces Exit from Crucial Consumer Business",
+      "publisher": "Micron Technology (GlobeNewswire)",
+      "date": "2025-12-03",
+      "url": "https://micron.gcs-web.com/node/49841"
+    },
+    "t29-jpm": {
+      "title": "The AI-driven memory shortage",
+      "publisher": "J.P. Morgan Global Research",
+      "date": "2026-08-06",
+      "url": "https://www.jpmorgan.com/insights/global-research/artificial-intelligence/dram-memory-shortage-from-ai",
+      "note": "Mức tăng “hơn 400% từ đầu 2024 tới cuối 2026” là ước tính của ngân hàng, không phải giá đã đo."
+    },
+    "t29-idc": {
+      "title": "Thông cáo dự báo thị trường điện thoại 2026 (Worldwide Quarterly Mobile Phone Tracker)",
+      "publisher": "IDC",
+      "date": "2026-02-26",
+      "url": "https://www.idc.com/resource-center/press-releases/wwsmartphoneforecast4q25/"
+    }
+  }
+}

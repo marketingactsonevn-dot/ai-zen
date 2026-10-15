@@ -1,0 +1,58 @@
+/* B.7.3 confidence marks: a small ink sign after a Part 2 sentence; its legend opens like the source card. */
+.cmark-btn {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-2);
+  vertical-align: -0.04em;
+  transition: color 0.2s, transform 0.3s var(--ease);
+}
+.cmark-btn::after {
+  content: '';
+  position: absolute;
+  inset: -11px;
+}
+.cmark-btn[data-mark='claim'] {
+  color: var(--vermilion);
+}
+.cmark-btn:hover,
+.src.open > .cmark-btn {
+  color: var(--vermilion);
+  transform: scale(1.15);
+}
+.cmark-glyph {
+  width: 12px;
+  height: 12px;
+}
+.cmark-pop {
+  min-width: 15rem;
+}
+.cmark-legend {
+  display: grid;
+  gap: 3px;
+  margin: 2px 0;
+}
+.cmark-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.55;
+}
+.cmark-row[data-on] {
+  opacity: 1;
+  font-weight: 500;
+}
+.cmark-row .cmark-glyph {
+  flex: none;
+  width: 11px;
+  height: 11px;
+}
+.cmark-row[data-mark='claim'] .cmark-glyph {
+  color: color-mix(in srgb, var(--vermilion) 70%, var(--on-ink));
+}

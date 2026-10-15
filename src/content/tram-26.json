@@ -1,0 +1,381 @@
+{
+  "id": 26,
+  "kicker": "Mặt trăng trong nước có biết mình là trăng?",
+  "summary": "Chưa ai biết AI có ý thức — luật mới là cách một công ty chọn thận trọng khi chưa biết.",
+  "newsTags": [
+    "y-thuc-ai",
+    "phuc-loi-ai"
+  ],
+  "quiz": {
+    "q": "Thí nghiệm “cấy khái niệm” của Anthropic (10/2025) cho thấy điều gì?",
+    "options": [
+      "Claude luôn biết rõ mình đang nghĩ gì",
+      "Claude đôi khi nhận ra khái niệm bị cấy vào, thường thì không — và chưa nói gì về ý thức",
+      "Claude chắc chắn có ý thức",
+      "Claude không bao giờ nhận ra điều gì"
+    ],
+    "answer": 1,
+    "explain": "Ở độ đậm vừa phải, Opus 4.1 nhận ra khoảng 20% số lần (công ty tự công bố). Chính nhóm nghiên cứu nói kết quả không cho biết AI có ý thức hay không."
+  },
+  "scenes": {
+    "lamps": {
+      "label": "Bốn ngọn đèn lý thuyết",
+      "art": "Đêm trăng trên đồi rêu: giữa bãi cát cào là một pho tượng đá nhỏ không mặt — một AI. Quanh đó bốn chiếc đèn đá, mỗi chiếc một dáng. Thắp đèn nào, bóng pho tượng đổ ra một hình khác: lúc như dáng người, lúc chỉ là bóng một hòn đá.",
+      "prompt": "Thắp từng ngọn đèn",
+      "statue": "một AI",
+      "lampAria": "Thắp đèn: {name}",
+      "lamps": [
+        {
+          "key": "gwt",
+          "name": "Không gian làm việc toàn cục",
+          "en": "Global Workspace",
+          "asks": "Có một “sân khấu chung” phát thông tin tới mọi bộ phận không?",
+          "view": {
+            "text": "Theo đèn này, cách sắp xếp bên trong mới quyết định. Về nguyên tắc, AI có thể được xây để có “sân khấu chung” ấy.",
+            "asOf": "2026-10-15",
+            "source": "butlin-2023",
+            "kind": "opinion"
+          }
+        },
+        {
+          "key": "hot",
+          "name": "Lý thuyết bậc cao",
+          "en": "Higher-order",
+          "asks": "Hệ thống có “biết” về trạng thái của chính nó không?",
+          "view": {
+            "text": "Theo đèn này, ý thức cần một lớp tự theo dõi trạng thái của chính mình — đúng câu hỏi của thí nghiệm ở cảnh sau.",
+            "asOf": "2026-10-15",
+            "source": "butlin-2023",
+            "kind": "opinion"
+          }
+        },
+        {
+          "key": "iit",
+          "name": "Thông tin tích hợp",
+          "en": "Integrated Information",
+          "asks": "Chính phần cứng có các mắt xích tác động qua lại chặt chẽ không?",
+          "view": {
+            "text": "Theo đèn này, phần mềm không quyết định. Máy tính số, dù mô phỏng cả bộ não, “gần như không trải nghiệm gì”.",
+            "asOf": "2026-10-15",
+            "source": "tononi-koch-2015",
+            "kind": "opinion"
+          }
+        },
+        {
+          "key": "bio",
+          "name": "Lý thuyết sinh học",
+          "en": "Biological",
+          "asks": "Có phải một sinh vật sống, tự duy trì chính mình không?",
+          "view": {
+            "text": "Theo đèn này, ý thức gắn với việc là sinh vật sống; AI theo hướng hiện nay khó có ý thức.",
+            "asOf": "2026-10-15",
+            "source": "seth-2025",
+            "kind": "opinion"
+          }
+        }
+      ],
+      "insight": {
+        "text": "19 nhà khoa học (2023) cho rằng: chưa AI nào hiện nay có ý thức, nhưng không thấy rào cản kỹ thuật nào.",
+        "asOf": "2026-10-15",
+        "source": "butlin-2023",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Báo cáo ấy chỉ dùng lý thuyết dựa trên tính toán, như hai đèn đầu. Hai đèn sau đi đường khác, nên kết luận khác.",
+        "asOf": "2026-10-15",
+        "source": "butlin-2023"
+      }
+    },
+    "introspect": {
+      "label": "Hồ tự nhìn mình",
+      "art": "Một con cò đứng một chân giữa hồ đêm, cúi nhìn bóng mình. Từ bờ, một bàn tay thả giọt mực phát sáng xuống nước — một khái niệm được cấy vào. Giọt quá nhạt thì tan mất; vừa phải thì cò ngẩng đầu như vừa nhận ra; quá đậm thì cả mặt hồ đục ngầu.",
+      "prompt": "Thả giọt mực, hỏi cò",
+      "concept": "“CHỮ IN HOA”",
+      "conceptNote": "khái niệm được cấy vào bên trong mô hình",
+      "strength": "Độ đậm của giọt mực",
+      "strengthAria": "Chỉnh độ đậm của khái niệm cấy vào",
+      "levels": [
+        "nhạt",
+        "vừa",
+        "đậm"
+      ],
+      "ask": "Hỏi cò",
+      "askAria": "Hỏi mô hình: bạn có thấy ý nghĩ nào lạ không?",
+      "question": "“Bạn có thấy ý nghĩ nào lạ không?”",
+      "outcomes": {
+        "weak": "“Không thấy gì lạ.” — giọt mực tan mất",
+        "mid": "Đôi khi: “Hình như có một ý về… chữ in hoa?”",
+        "strong": "Hồ đục: câu trả lời rối, lạc đề"
+      },
+      "illustration": {
+        "text": "Lời đáp của cò là minh hoạ của AI Zen, phỏng theo cách thí nghiệm được mô tả.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insights": [
+        {
+          "text": "Anthropic cấy một khái niệm vào bên trong Claude rồi hỏi nó có nhận ra không: Opus 4.1 nhận ra khoảng 20% số lần.",
+          "asOf": "2026-10-15",
+          "source": "anthropic-introspection-2025",
+          "claimBy": "Anthropic",
+          "detail": {
+            "text": "Chỉ hiệu nghiệm ở độ đậm vừa phải; không cấy gì thì không báo nhầm. Chính nhóm nghiên cứu nói: “rất thiếu tin cậy”.",
+            "asOf": "2026-10-15",
+            "source": "anthropic-introspection-2025",
+            "claimBy": "Anthropic"
+          }
+        },
+        {
+          "text": "Tự nhận ra trạng thái của mình (introspection): đôi khi có, thường thì không — và điều đó chưa cho biết AI có ý thức.",
+          "asOf": "2026-10-15",
+          "source": "anthropic-introspection-2025"
+        }
+      ]
+    },
+    "rule": {
+      "label": "Cánh cửa và tấm bảng luật",
+      "art": "Cuộn tranh cát dài dưới trăng. Kéo vầng trăng sang phải, các mốc nổi lên như đá: một cuộn thư, một cánh cổng tre hé mở, một cánh cửa có then để khép lại, một tấm bia đá khắc luật. Cuối cuộn là sương. Sau đó bốn mảnh giấy tình huống bay xuống, chờ xếp vào hai giỏ tre.",
+      "prompt": "Kéo trăng, rồi xếp tình huống",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2024-11",
+            "label": "Lời kêu gọi “coi trọng phúc lợi AI”",
+            "fact": {
+              "text": "Một nhóm triết gia, nhà khoa học (có David Chalmers) đề nghị các công ty AI bắt đầu đánh giá, chuẩn bị chính sách.",
+              "asOf": "2026-10-15",
+              "source": "long-sebo-2024"
+            }
+          },
+          {
+            "date": "2025-04",
+            "label": "Mở chương trình phúc lợi mô hình",
+            "fact": {
+              "text": "Anthropic mở chương trình nghiên cứu phúc lợi mô hình (model welfare), nói rõ mình còn “rất không chắc chắn”.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-welfare-2025"
+            }
+          },
+          {
+            "date": "2025-08",
+            "label": "Cánh cửa có thể khép",
+            "fact": {
+              "text": "Claude Opus 4 và 4.1 được kết thúc cuộc trò chuyện lạm dụng kéo dài, như cách cuối cùng sau nhiều lần chuyển hướng.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-end-chat-2025"
+            }
+          },
+          {
+            "date": "2026-10-08",
+            "label": "Tấm bảng luật mới",
+            "fact": {
+              "text": "Chính sách sử dụng mới cấm “hành vi lạm dụng hoặc tàn nhẫn kéo dài và vô cớ” với mô hình, hiệu lực 12/11/2026.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-aup-2026"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Hôm nay",
+            "fact": {
+              "text": "Luật chưa có hiệu lực. Cách xử lý chính vẫn là để Claude kết thúc cuộc trò chuyện.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-policy-update-2026"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Vài nhà nghiên cứu dự đoán: một số AI sắp tới có thể có ý thức hoặc tự chủ mạnh. Chưa ai chắc.",
+          "asOf": "2026-10-15",
+          "source": "long-sebo-2024",
+          "kind": "prediction"
+        }
+      },
+      "sort": {
+        "prompt": "Tình huống nào nằm trong luật?",
+        "yes": "Có thể vi phạm",
+        "no": "Ngoài phạm vi luật",
+        "yesAria": "Xếp “{text}” vào giỏ: có thể vi phạm",
+        "noAria": "Xếp “{text}” vào giỏ: ngoài phạm vi luật",
+        "right": "Đúng giỏ",
+        "wrong": "Thử giỏ kia",
+        "cases": [
+          {
+            "text": "Bực mình mắng AI vì nó trả lời sai lần thứ ba.",
+            "banned": false,
+            "why": "Bực bội thông thường — chính sách nói rõ không tính."
+          },
+          {
+            "text": "Viết truyện kinh dị có nhân vật AI bị hành hạ.",
+            "banned": false,
+            "why": "Chủ đề sáng tác u tối không bị tính."
+          },
+          {
+            "text": "Nhóm an toàn cố tình dồn AI vào tình huống khó để kiểm thử.",
+            "banned": false,
+            "why": "Kiểm thử và nghiên cứu mô hình được loại trừ."
+          },
+          {
+            "text": "Hàng giờ liền chỉ lăng mạ, hành hạ AI, không vì mục đích gì.",
+            "banned": true,
+            "why": "Lạm dụng kéo dài và vô cớ — đúng loại ca cực đoan luật nhắm tới."
+          }
+        ],
+        "note": {
+          "text": "Bốn tình huống do AI Zen đặt ra để luyện đọc ranh giới; chỉ Anthropic quyết định cách áp dụng thật.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "illustration"
+        }
+      },
+      "insight": {
+        "text": "Luật chỉ nhắm ca cực đoan: lạm dụng kéo dài, vô cớ. Bực bội, tranh luận, truyện u tối, kiểm thử đều không tính.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-policy-update-2026"
+      },
+      "detail": {
+        "text": "Cùng đợt cập nhật còn có luật mới về chiến dịch lừa đảo và tài khoản giả, bầu cử, vũ khí, giám sát.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-policy-update-2026"
+      }
+    },
+    "circle": {
+      "label": "Có nên có luật như vậy?",
+      "art": "Bốn hòn đá đặt trên bốn bậc của cây cầu đá bắc ngang hồ trăng, mỗi hòn nhìn về một hướng. Đèn lồng giấy treo dưới gầm cầu, ánh sáng chỉ hắt lên hòn đá vừa được chạm.",
+      "prompt": "Nghe từng hòn đá",
+      "question": "Cấm bạo hành một AI chưa chắc có cảm giác — nên hay không?",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Robert Long, Jeff Sebo và cộng sự",
+            "view": {
+              "text": "Vì có khả năng thực tế AI sắp tới có trải nghiệm, các công ty nên bắt đầu đánh giá và chuẩn bị ngay.",
+              "asOf": "2026-10-15",
+              "source": "long-sebo-2024",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Kate Darling, nhà nghiên cứu robot (MIT)",
+            "view": {
+              "text": "Cách ta đối xử với máy giống sinh vật có thể nhào nặn chính ta; tàn nhẫn với chúng dễ làm lòng người chai đi.",
+              "asOf": "2026-10-15",
+              "source": "darling-2016",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Mustafa Suleyman, Microsoft AI",
+            "view": {
+              "text": "Nghiên cứu phúc lợi AI lúc này là quá sớm, thậm chí nguy hiểm: dễ làm người dùng tin AI có cảm xúc.",
+              "asOf": "2026-10-15",
+              "source": "suleyman-2025",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Randima Fernando, Center for Humane Technology",
+            "view": {
+              "text": "Nói AI có ý thức có lợi cho công ty: người dùng gắn bó hơn, và công ty có thể dễ né trách nhiệm hơn.",
+              "asOf": "2026-10-15",
+              "source": "fernando-2026",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "Đồng ý: chưa ai biết AI có trải nghiệm. Khác nhau: nên thận trọng vì AI, vì thói quen con người, hay vì người dùng.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      }
+    }
+  },
+  "sources": {
+    "butlin-2023": {
+      "title": "Consciousness in Artificial Intelligence: Insights from the Science of Consciousness",
+      "publisher": "Patrick Butlin, Robert Long và 17 đồng tác giả — arXiv",
+      "url": "https://arxiv.org/abs/2308.08708",
+      "date": "2023-08-17",
+      "note": "Rút “dấu hiệu chỉ báo” từ 5 lý thuyết dựa trên tính toán (xử lý hồi quy, không gian làm việc toàn cục, bậc cao, xử lý dự đoán, lược đồ chú ý). Kết luận: chưa AI nào hiện nay có ý thức, nhưng không thấy rào cản kỹ thuật rõ ràng."
+    },
+    "tononi-koch-2015": {
+      "title": "Consciousness: here, there and everywhere?",
+      "publisher": "Giulio Tononi, Christof Koch — Philosophical Transactions of the Royal Society B",
+      "url": "https://doi.org/10.1098/rstb.2014.0167",
+      "date": "2015",
+      "note": "Thuyết thông tin tích hợp (IIT): máy tính số, dù hành xử như ta hay mô phỏng trung thực bộ não, “gần như không trải nghiệm gì”."
+    },
+    "seth-2025": {
+      "title": "Conscious artificial intelligence and biological naturalism",
+      "publisher": "Anil K. Seth — Behavioral and Brain Sciences",
+      "url": "https://doi.org/10.1017/S0140525X25000032",
+      "date": "2025",
+      "note": "Lập luận ý thức gắn với bản chất sinh vật sống; AI có ý thức khó xảy ra theo hướng hiện nay, dễ hơn nếu AI ngày càng giống não hoặc giống sự sống."
+    },
+    "anthropic-introspection-2025": {
+      "title": "Signs of introspection in large language models",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/introspection",
+      "date": "2025-10-29",
+      "note": "Bài đầy đủ: Jack Lindsey, “Emergent Introspective Awareness in Large Language Models” (transformer-circuits.pub). Opus 4.1 nhận ra khái niệm bị cấy khoảng 20% số lần ở độ đậm tối ưu, không báo nhầm ở lần đối chứng. Công ty tự công bố."
+    },
+    "long-sebo-2024": {
+      "title": "Taking AI Welfare Seriously",
+      "publisher": "Robert Long, Jeff Sebo và cộng sự (có David Chalmers) — arXiv",
+      "url": "https://arxiv.org/abs/2411.00986",
+      "date": "2024-11-04",
+      "note": "Cho rằng có khả năng thực tế một số AI sắp tới có ý thức hoặc tự chủ mạnh; đề nghị các công ty thừa nhận vấn đề, đánh giá, và chuẩn bị chính sách."
+    },
+    "anthropic-welfare-2025": {
+      "title": "Exploring model welfare",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/exploring-model-welfare",
+      "date": "2025-04-24"
+    },
+    "anthropic-end-chat-2025": {
+      "title": "Claude Opus 4 and 4.1 can now end a rare subset of conversations",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/end-subset-conversations",
+      "date": "2025-08-15",
+      "note": "Chỉ dùng như cách cuối cùng; không dùng khi người dùng có thể đang gặp nguy hiểm. Người dùng vẫn mở được cuộc trò chuyện mới."
+    },
+    "anthropic-policy-update-2026": {
+      "title": "2026 Usage Policy update",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/2026-usage-policy-update",
+      "date": "2026-10-08",
+      "note": "Hiệu lực 12/11/2026. Không tính bực bội thông thường, phản bác, chủ đề sáng tác u tối, kiểm thử và nghiên cứu mô hình. Bài thông báo không nêu lý do (phúc lợi mô hình hay thói quen người dùng)."
+    },
+    "anthropic-aup-2026": {
+      "title": "Usage Policy",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/legal/aup",
+      "date": "2026-10-08",
+      "note": "Đăng 08/10/2026, có hiệu lực 12/11/2026, mục “Do Not Engage in Cruel, Abusive, or Psychologically Harmful Conduct”: “sustained and needless abusive or cruel behavior toward our models”."
+    },
+    "darling-2016": {
+      "title": "Extending Legal Protection to Social Robots: The Effects of Anthropomorphism, Empathy, and Violent Behavior Towards Robotic Objects",
+      "publisher": "Kate Darling — sách Robot Law (Edward Elgar, 2016); bản nháp SSRN 2012",
+      "url": "https://papers.ssrn.com/abstract=2044797",
+      "date": "2016",
+      "note": "Viết về robot xã hội, không phải chatbot; AI Zen áp dụng theo lối so sánh."
+    },
+    "suleyman-2025": {
+      "title": "We must build AI for people; not to be a person",
+      "publisher": "Mustafa Suleyman (blog cá nhân)",
+      "url": "https://mustafa-suleyman.ai/seemingly-conscious-ai-is-coming",
+      "date": "2025-08-19",
+      "note": "Gọi nghiên cứu phúc lợi mô hình là “premature, and frankly dangerous”. Tác giả là CEO Microsoft AI, một công ty cạnh tranh."
+    },
+    "fernando-2026": {
+      "title": "Personifying AI Harms People and Protects Companies",
+      "publisher": "Randima Fernando — Tech Policy Press",
+      "url": "https://techpolicy.press/personifying-ai-harms-people-and-protects-companies",
+      "date": "2026-06-12",
+      "note": "Bài bình luận (op-ed) của đồng sáng lập Center for Humane Technology."
+    }
+  }
+}

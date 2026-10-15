@@ -1,0 +1,386 @@
+{
+  "id": 39,
+  "kicker": "Học xong vườn người, về trồng vườn mình.",
+  "summary": "AI là khu vườn chung — còn cách bạn chăm nó là khu vườn riêng.",
+  "quiz": {
+    "q": "Bạn mới bắt đầu, dùng laptop thường, chưa muốn tốn tiền. Bước đầu hợp lý nhất là gì?",
+    "options": [
+      "Mua máy thật mạnh để chạy AI trên máy",
+      "Dùng bản miễn phí của một trợ lý chat, tập giao việc rõ và kiểm chứng",
+      "Đăng ký thật nhiều nền tảng cùng lúc",
+      "Chờ AI hoàn hảo rồi mới học"
+    ],
+    "answer": 1,
+    "explain": "Giao việc rõ và kiểm chứng là kỹ năng nền, dùng được với mọi công cụ. Thêm đồ nghề khi đã biết mình cần gì."
+  },
+  "takeaways": ["t39-week1", "t39-week2", "t39-week3", "t39-week4", "t39-30days"],
+  "scenes": {
+    "ask": {
+      "label": "Bốn câu hỏi bên hồ",
+      "art": "Bốn viên đá bước qua hồ lúc trăng vừa lặn, trời lam xám. Mỗi viên khắc một câu hỏi. Chọn một câu trả lời, gợn sóng lan ra từ viên đá và một chiếc đèn lồng nhỏ bên bờ bên kia sáng lên.",
+      "prompt": "Trả lời bốn câu hỏi",
+      "progress": "Câu {n}/4",
+      "optionAria": "{q} — {label}",
+      "change": "Đổi câu trả lời",
+      "privacy": "Câu trả lời chỉ lưu trong trình duyệt của bạn, không gửi đi đâu.",
+      "questions": [
+        {
+          "id": "role",
+          "q": "Bạn đang làm gì?",
+          "options": [
+            { "id": "creative", "label": "Sáng tạo: thiết kế, video, viết" },
+            { "id": "marketing", "label": "Marketing" },
+            { "id": "sales", "label": "Bán hàng, chủ shop" },
+            { "id": "student", "label": "Học sinh, sinh viên" },
+            { "id": "dev", "label": "Lập trình" },
+            { "id": "manager", "label": "Quản lý" }
+          ]
+        },
+        {
+          "id": "goal",
+          "q": "Bạn muốn AI giúp gì nhất?",
+          "options": [
+            { "id": "faster", "label": "Làm nhanh hơn việc đang làm" },
+            { "id": "new", "label": "Làm được thứ mới" },
+            { "id": "understand", "label": "Hiểu để quản lý, ra quyết định" }
+          ]
+        },
+        {
+          "id": "device",
+          "q": "Bạn dùng máy nào?",
+          "options": [
+            { "id": "phone", "label": "Chủ yếu điện thoại" },
+            { "id": "laptop", "label": "Laptop thường" },
+            { "id": "strong", "label": "Máy mạnh: nhiều RAM, có card đồ hoạ" }
+          ]
+        },
+        {
+          "id": "budget",
+          "q": "Ngân sách mỗi tháng?",
+          "options": [
+            { "id": "free", "label": "Miễn phí" },
+            { "id": "mid", "label": "Vừa phải" },
+            { "id": "invest", "label": "Sẵn sàng đầu tư" }
+          ]
+        }
+      ],
+      "insight": {
+        "text": "Bộ đồ nghề tốt bắt đầu từ việc của bạn, không phải từ danh sách công cụ đang nổi.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "kit": {
+      "label": "Bộ đồ nghề gợi ý",
+      "art": "Chiếc giỏ mây trên bàn gỗ ngoài hiên, sương sớm đọng trên nan. Theo từng câu trả lời, đồ nghề hiện dần trong giỏ: cây bút lông, ống bút vẽ, ngọn đèn dầu nhỏ, cái bào gỗ, cuộn giấy treo. Món nào không hợp thì mờ đi như bóng trăng.",
+      "prompt": "Mở giỏ đồ nghề",
+      "open": "Mở giỏ",
+      "empty": "Trả lời bốn câu hỏi bên hồ để giỏ tự xếp đồ.",
+      "revisit": "Nên xem lại",
+      "stationLink": "Trạm {n}",
+      "examplesLabel": "Ví dụ, không xếp hạng",
+      "docsLabel": "Trang chính thức",
+      "types": [
+        {
+          "id": "chat",
+          "name": "Trợ lý chat",
+          "what": "Hỏi, viết, tóm tắt, lên ý tưởng. Nền của mọi bộ đồ nghề.",
+          "examples": [
+            { "name": "ChatGPT", "source": "t39-chatgpt" },
+            { "name": "Claude", "source": "t39-claude" },
+            { "name": "Gemini", "source": "t39-gemini" }
+          ],
+          "stations": [6, 12, 19]
+        },
+        {
+          "id": "media",
+          "name": "Công cụ ảnh & video",
+          "what": "Tạo, sửa, phóng to ảnh; dựng video ngắn. Thường tính tiền theo credit.",
+          "examples": [
+            { "name": "Higgsfield", "source": "t39-higgsfield" },
+            { "name": "TopView", "source": "t39-topview" },
+            { "name": "Adobe Firefly", "source": "t39-firefly" },
+            { "name": "Canva", "source": "t39-canva" }
+          ],
+          "stations": [7, 8, 34]
+        },
+        {
+          "id": "local",
+          "name": "AI chạy trên máy",
+          "what": "Tải model mở về chạy ngay trên máy: riêng tư, dùng được khi mất mạng. Cần máy đủ RAM.",
+          "examples": [
+            { "name": "Ollama", "source": "t39-ollama" },
+            { "name": "LM Studio", "source": "t39-lmstudio" }
+          ],
+          "stations": [31, 32]
+        },
+        {
+          "id": "code",
+          "name": "Agent lập trình",
+          "what": "Bạn mô tả bằng lời; agent viết, chạy thử và sửa code. Hợp để làm mini app, game.",
+          "examples": [
+            { "name": "Claude Code", "source": "t39-claude-code" },
+            { "name": "Codex", "source": "t39-codex" },
+            { "name": "GitHub Copilot", "source": "t39-copilot" }
+          ],
+          "stations": [33, 36]
+        },
+        {
+          "id": "skill",
+          "name": "Skill & workflow",
+          "what": "Đóng gói việc lặp lại thành bản hướng dẫn gọi lại được (SKILL.md), rồi nối thành quy trình.",
+          "examples": [
+            { "name": "Chuẩn mở Agent Skills", "source": "t39-agentskills" },
+            { "name": "Skills trong Claude", "source": "t39-claude-skills" },
+            { "name": "Skills trong Codex", "source": "t39-codex-skills" }
+          ],
+          "stations": [16, 35]
+        }
+      ],
+      "rules": {
+        "role": {
+          "creative": ["chat", "media", "skill"],
+          "marketing": ["chat", "media", "skill"],
+          "sales": ["chat", "media"],
+          "student": ["chat", "skill"],
+          "dev": ["chat", "code", "skill"],
+          "manager": ["chat", "skill"]
+        },
+        "goal": {
+          "faster": { "add": ["skill"], "stations": [35] },
+          "new": { "add": ["media", "code"], "stations": [34, 36] },
+          "understand": { "add": [], "stations": [19, 30, 37, 38] }
+        },
+        "device": {
+          "phone": { "drop": ["local", "code"], "note": "Trên điện thoại: dùng app trợ lý chat và công cụ ảnh, video bản web hoặc app." },
+          "laptop": { "drop": [], "note": "Laptop thường chạy được model nhỏ; thử AI trên máy khi cần giữ dữ liệu riêng tư." },
+          "strong": { "add": ["local"], "note": "Máy mạnh: thử chạy model mở ngay trên máy, dữ liệu không rời khỏi máy." }
+        },
+        "budget": {
+          "free": { "note": "Hầu hết công cụ có gói miễn phí có giới hạn. Bắt đầu với một trợ lý chat là đủ." },
+          "mid": { "note": "Trả phí cho một công cụ bạn dùng nhiều nhất; tránh đăng ký tràn lan." },
+          "invest": { "note": "Đầu tư vào công cụ cho việc chính và vào thời gian học; theo dõi credit mỗi tháng." }
+        }
+      },
+      "priceNote": {
+        "text": "Giá & tính năng thay đổi thường xuyên; luôn kiểm tra trang chính thức trước khi trả tiền.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "insight": {
+        "text": "Chọn theo loại việc trước, tên công cụ sau: công cụ đổi theo tháng, còn việc của bạn ít đổi hơn.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "path": {
+      "label": "Lộ trình 30 ngày",
+      "art": "Lối bốn viên đá dẫn từ hiên nhà ra cổng vườn lúc rạng đông, trăng mỏng còn vương ở góc trời. Mỗi viên là một tuần. Đặt đúng thứ tự, tia nắng đầu tiên chạy dọc lối và đánh thức từng viên.",
+      "prompt": "Đặt bốn viên đá",
+      "keys": "Bấm phím 1 đến 4 để đặt đá theo thứ tự",
+      "stoneAria": "Tuần {n}: {label}",
+      "wrong": "Viên này cần nền của tuần trước.",
+      "done": "Lối đã sáng. Mỗi tuần có một thẻ mang về.",
+      "steps": {
+        "steps": [
+          {
+            "label": "Tuần 1 · Chat có kỷ luật",
+            "detail": "Mỗi ngày giao cho trợ lý chat một việc thật: nói rõ vai trò, bối cảnh, đầu ra; luôn kiểm chứng một chi tiết.",
+            "why": "Giao việc rõ và kiểm chứng là nền cho mọi công cụ khác."
+          },
+          {
+            "label": "Tuần 2 · Một asset hoàn chỉnh",
+            "detail": "Làm trọn một sản phẩm: ảnh, video ngắn hay bài đăng. Từ brief, nháp nhiều phương án, chọn, chỉnh, tới kiểm quyền và gắn nhãn AI.",
+            "why": "Đi hết một vòng mới thấy chỗ AI giúp được và chỗ cần tay bạn."
+          },
+          {
+            "label": "Tuần 3 · Biến việc lặp lại thành skill",
+            "detail": "Chọn một việc bạn làm hằng tuần, ghi lại các bước từ một lần làm tốt, nhờ AI viết thành SKILL.md, chạy thử ba lần.",
+            "why": "Từ đây AI nhớ cách làm của bạn, bạn không phải dặn lại mỗi ngày."
+          },
+          {
+            "label": "Tuần 4 · Tự làm một mini app",
+            "detail": "Viết spec một trang cho một app hay game nhỏ, nhờ agent lập trình dựng từng phần, chạy thử, sửa từng lỗi.",
+            "why": "Bạn dùng lại mọi thứ đã học: mô tả rõ, chia nhỏ, kiểm chứng, lưu lại."
+          }
+        ],
+        "takeaway": "t39-30days"
+      },
+      "weekCards": ["t39-week1", "t39-week2", "t39-week3", "t39-week4"],
+      "insight": {
+        "text": "Mỗi tuần một viên đá, viên sau đứng trên viên trước: kỷ luật, sản phẩm, nếp làm, rồi tự tay làm công cụ.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "advice": {
+      "label": "Học cho bền",
+      "art": "Ba đèn đá quanh một vũng nước nhỏ trong vườn rêu, mỗi đèn soi một góc mặt nước. Ở giữa, một chiếc lá trôi chậm; chạm đèn nào, chiếc lá xoay về phía ánh sáng ấy.",
+      "prompt": "Chạm từng ngọn đèn",
+      "group": "Ba góc nhìn về cách học cùng AI",
+      "stoneAria": "Góc nhìn: {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Ethan Mollick · giáo sư Wharton, 2023",
+            "view": {
+              "text": "Cứ đưa AI vào mọi phần công việc để tự thấy nó giỏi ở đâu, dở ở đâu; nhớ tôn trọng quy định, đạo đức và quyền riêng tư.",
+              "asOf": "2026-10-15",
+              "source": "t39-mollick",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Microsoft Research · khảo sát 319 người, 2025",
+            "view": {
+              "text": "Ai càng tin AI thì càng ít tự phản biện; ai tự tin vào chuyên môn của mình thì phản biện nhiều hơn. Đây là tương quan, theo lời người được hỏi.",
+              "asOf": "2026-10-15",
+              "source": "t39-chi"
+            }
+          },
+          {
+            "who": "MIT Media Lab · thí nghiệm 54 người, 2025",
+            "view": {
+              "text": "Nhóm viết luận bằng ChatGPT có kết nối não (đo EEG) yếu nhất, so với nhóm dùng công cụ tìm kiếm và nhóm tự viết. Nghiên cứu nhỏ, chưa bình duyệt.",
+              "asOf": "2026-10-15",
+              "source": "t39-mit"
+            }
+          }
+        ],
+        "common": {
+          "text": "Dùng AI nhiều để học nhanh, nhưng giữ phần tự nghĩ và tự kiểm chứng cho mình.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "AI là bạn đồng hành tốt khi bạn vẫn cầm lái: tự nghĩ trước, hỏi AI sau, rồi kiểm lại.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "enso": {
+      "label": "Ensō của bạn",
+      "art": "Vòng ensō vẽ bằng một nét lúc mặt trời lên. Trong vòng, những hòn đá bạn đã ghé xếp thành khu vườn riêng; vầng trăng nhạt dần ở góc trời, con dấu đỏ đóng phía dưới.",
+      "prompt": "Vẽ vòng ensō",
+      "draw": "Vẽ ensō",
+      "drawAria": "Vẽ vòng ensō tổng kết hành trình",
+      "visited": "{n}/21 trạm Vườn Trăng đã ghé",
+      "visitedAll": "{n}/39 trạm của cả hai khu vườn",
+      "copied": "{n} thẻ mang về đã sao chép",
+      "exam": "Bài thi Vườn Trăng",
+      "examAria": "Làm bài thi Vườn Trăng",
+      "toolkit": "Mở Túi đồ nghề",
+      "toolkitAria": "Mở Túi đồ nghề: mọi thẻ mang về của Phần 2",
+      "insight": {
+        "text": "Hành trình dưới trăng khép lại ở đây. Khu vườn tiếp theo là khu vườn bạn tự trồng, mỗi ngày một ít.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "t39-chatgpt": {
+      "title": "ChatGPT",
+      "publisher": "OpenAI",
+      "url": "https://chatgpt.com/"
+    },
+    "t39-claude": {
+      "title": "Claude — Trung tâm hỗ trợ",
+      "publisher": "Anthropic",
+      "url": "https://support.claude.com/"
+    },
+    "t39-gemini": {
+      "title": "Gemini — Trợ giúp",
+      "publisher": "Google",
+      "url": "https://support.google.com/gemini"
+    },
+    "t39-higgsfield": {
+      "title": "Higgsfield",
+      "publisher": "Higgsfield AI",
+      "url": "https://higgsfield.ai/"
+    },
+    "t39-topview": {
+      "title": "TopView",
+      "publisher": "TopView",
+      "url": "https://www.topview.ai/"
+    },
+    "t39-firefly": {
+      "title": "Adobe Firefly",
+      "publisher": "Adobe",
+      "url": "https://firefly.adobe.com/"
+    },
+    "t39-canva": {
+      "title": "Canva — Tạo ảnh bằng AI",
+      "publisher": "Canva",
+      "url": "https://www.canva.com/ai-image-generator/"
+    },
+    "t39-ollama": {
+      "title": "Ollama",
+      "publisher": "Ollama",
+      "url": "https://ollama.com/"
+    },
+    "t39-lmstudio": {
+      "title": "LM Studio",
+      "publisher": "LM Studio",
+      "url": "https://lmstudio.ai/"
+    },
+    "t39-claude-code": {
+      "title": "Claude Code — Tài liệu",
+      "publisher": "Anthropic",
+      "url": "https://code.claude.com/docs"
+    },
+    "t39-codex": {
+      "title": "Codex — Tài liệu",
+      "publisher": "OpenAI",
+      "url": "https://developers.openai.com/codex"
+    },
+    "t39-copilot": {
+      "title": "GitHub Copilot",
+      "publisher": "GitHub",
+      "url": "https://github.com/features/copilot"
+    },
+    "t39-agentskills": {
+      "title": "Agent Skills — Overview",
+      "publisher": "agentskills.io (chuẩn mở, do Anthropic khởi xướng)",
+      "url": "https://agentskills.io/home"
+    },
+    "t39-claude-skills": {
+      "title": "Agent Skills overview",
+      "publisher": "Anthropic",
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
+    },
+    "t39-codex-skills": {
+      "title": "Codex — Skills",
+      "publisher": "OpenAI",
+      "url": "https://developers.openai.com/codex/skills/"
+    },
+    "t39-mollick": {
+      "title": "On-boarding your AI Intern",
+      "publisher": "Ethan Mollick, One Useful Thing",
+      "url": "https://www.oneusefulthing.org/p/on-boarding-your-ai-intern",
+      "date": "2023-05-20"
+    },
+    "t39-chi": {
+      "title": "The Impact of Generative AI on Critical Thinking: Self-Reported Reductions in Cognitive Effort and Confidence Effects From a Survey of Knowledge Workers",
+      "publisher": "Hao-Ping Lee và cộng sự, Microsoft Research, CHI 2025",
+      "url": "https://www.microsoft.com/en-us/research/publication/the-impact-of-generative-ai-on-critical-thinking-self-reported-reductions-in-cognitive-effort-and-confidence-effects-from-a-survey-of-knowledge-workers/",
+      "date": "2025-04",
+      "note": "319 người làm việc trí óc, 936 ví dụ tự kể."
+    },
+    "t39-mit": {
+      "title": "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task",
+      "publisher": "Nataliya Kosmyna và cộng sự, MIT Media Lab, arXiv:2506.08872",
+      "url": "https://arxiv.org/abs/2506.08872",
+      "date": "2025-06-10",
+      "note": "Bản thảo trên arXiv, chưa thấy bình duyệt; 54 người tham gia, 18 người làm buổi thứ tư."
+    }
+  }
+}

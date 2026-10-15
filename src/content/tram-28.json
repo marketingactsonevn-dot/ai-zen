@@ -1,0 +1,364 @@
+{
+  "id": 28,
+  "kicker": "Thời đào vàng, người bán xẻng giàu trước.",
+  "summary": "Mỗi câu hỏi bạn gõ đều chạy trên chip của ai đó — và dòng tiền quanh chip ấy đang định hình cả ngành AI.",
+  "newsTags": ["nvidia", "dau-tu"],
+  "quiz": {
+    "q": "Đối thủ đã có chip mạnh, vì sao vẫn khó vượt NVIDIA?",
+    "options": [
+      "Chip NVIDIA rẻ nhất thị trường",
+      "Cả ngành đã quen viết phần mềm trên CUDA",
+      "Luật cấm dùng chip của hãng khác",
+      "Chip của hãng khác không chạy được AI"
+    ],
+    "answer": 1,
+    "explain": "Hào nước của NVIDIA là CUDA, nền tảng phần mềm có từ 2006. Đổi sang chip khác nghĩa là phải viết lại hoặc chuyển đổi rất nhiều mã."
+  },
+  "scenes": {
+    "gardeners": {
+      "label": "Một nghìn người làm vườn",
+      "art": "Tranh mực dưới trăng rằm: bên trái, một lão làm vườn xách bình tưới đi từng luống, bóng đổ dài trên lối đá. Bên phải, một nghìn ống tre nhỏ cùng nhỏ giọt xuống cả khu vườn một lúc; mặt nước phản chiếu trăng gợn lên cùng nhịp.",
+      "prompt": "Chọn cách tưới vườn",
+      "group": "Hai cách tưới cùng một khu vườn",
+      "one": "1 bình tưới · CPU",
+      "oneAria": "Tưới bằng một bình: vài lõi mạnh làm lần lượt từng việc",
+      "many": "1.000 ống tre · GPU",
+      "manyAria": "Tưới bằng một nghìn ống tre: hàng nghìn lõi nhỏ cùng làm một lúc",
+      "rows": "{n}/1.000 luống đã tưới",
+      "done": "Cả vườn đã đẫm nước",
+      "insight": {
+        "text": "GPU (bộ xử lý đồ hoạ) như nghìn người làm vườn cùng tưới một lúc: hợp với hàng tỷ phép tính nhỏ của AI.",
+        "asOf": "2026-10-15",
+        "source": "t28-cuda-guide"
+      },
+      "detail": "CPU vẫn cần cho việc điều phối, rẽ nhánh. Còn mạng nơ-ron chủ yếu là nhân rồi cộng những bảng số khổng lồ, chia nhỏ ra làm song song được."
+    },
+    "scaling": {
+      "label": "Lớn lên cần thêm xẻng",
+      "art": "Ba chiếc chum đá dưới ánh trăng: chum Dữ liệu, chum Kích thước, chum Tính toán. Một ống tre nhỏ xuống trăm giọt nước bạc; cây non giữa vườn chỉ vươn cao khi cả ba chum cùng đầy cân nhau, lệch một chum thì cây nghiêng.",
+      "prompt": "Chia 100 giọt nước",
+      "jars": [
+        { "id": "data", "name": "Dữ liệu", "aria": "Chum dữ liệu: số chữ model được đọc" },
+        { "id": "size", "name": "Kích thước", "aria": "Chum kích thước: số tham số của model" },
+        { "id": "compute", "name": "Tính toán", "aria": "Chum tính toán: số chip và giờ chạy" }
+      ],
+      "slider": "Chia giọt nước cho chum {name}",
+      "valueText": "{n} giọt cho {name}",
+      "remaining": "Còn {n} giọt",
+      "balanced": "Cây lớn đều",
+      "lopsided": "Cây nghiêng: chum {name} còn vơi",
+      "insights": [
+        {
+          "text": "Quy luật mở rộng (scaling laws): thêm dữ liệu, kích thước và sức tính thì model giỏi lên đều đặn, đoán trước được.",
+          "asOf": "2026-10-15",
+          "source": "t28-kaplan"
+        },
+        {
+          "text": "Năm 2022, Chinchilla (70 tỷ tham số, học 1.400 tỷ token) thắng Gopher lớn gấp 4: cân dữ liệu với kích thước mới hiệu quả.",
+          "asOf": "2026-10-15",
+          "source": "t28-chinchilla"
+        }
+      ],
+      "detail": "Vì đường cong này khá đều, nhiều công ty tin rằng thêm chip sẽ ra model giỏi hơn — nên họ mua chip không ngừng."
+    },
+    "moat": {
+      "label": "Hào nước quanh lâu đài",
+      "art": "Lâu đài đá trên một hòn đảo, quanh là hào nước đen in bóng trăng. Bắc qua hào là vô số cây cầu tre nhỏ — những dòng mã cả làng đã quen đi. Ở bờ xa, ba con thuyền treo đèn lồng riêng đang chèo tới.",
+      "prompt": "Chạm từng con thuyền",
+      "castle": "NVIDIA",
+      "moatLabel": "CUDA · phần mềm cả ngành đã quen",
+      "group": "Ba con thuyền đang vượt hào",
+      "boatAria": "Thuyền {name}: xem đối thủ này đang làm gì",
+      "boats": [
+        {
+          "id": "google",
+          "name": "Google · TPU",
+          "fact": {
+            "text": "10/2025: Anthropic công bố sẽ dùng tới một triệu chip TPU của Google, hơn 1 gigawatt công suất trong năm 2026.",
+            "asOf": "2026-10-15",
+            "source": "t28-anthropic-tpu",
+            "claimBy": "Anthropic"
+          }
+        },
+        {
+          "id": "amazon",
+          "name": "Amazon · Trainium",
+          "fact": {
+            "text": "02/2026: trong vòng gọi vốn mới, OpenAI đồng ý dùng 2 gigawatt sức tính chạy trên chip Trainium của Amazon.",
+            "asOf": "2026-10-15",
+            "source": "t28-ap-openai-round"
+          }
+        },
+        {
+          "id": "amd",
+          "name": "AMD · Instinct",
+          "fact": {
+            "text": "10/2025: AMD và OpenAI ký thoả thuận 6 gigawatt GPU; 1 gigawatt đầu tiên (MI450) bắt đầu từ nửa cuối 2026.",
+            "asOf": "2026-10-15",
+            "source": "t28-amd-openai",
+            "claimBy": "AMD, OpenAI"
+          }
+        }
+      ],
+      "insight": {
+        "text": "Hào nước của NVIDIA là CUDA: nền tảng phần mềm có từ 2006 mà cả ngành đã quen viết mã trên đó.",
+        "asOf": "2026-10-15",
+        "source": "t28-cuda-guide"
+      },
+      "detail": {
+        "text": "Có hãng AI lớn dùng song song nhiều loại chip: Anthropic cho biết họ dùng cả TPU, Trainium lẫn GPU NVIDIA.",
+        "asOf": "2026-10-15",
+        "source": "t28-anthropic-tpu"
+      }
+    },
+    "goldrush": {
+      "label": "Mùa đào vàng",
+      "art": "Một dải cát dài như cuộn tranh trải dưới trăng. Người xem kéo vầng trăng từ trái sang phải; mỗi mốc nổi lên như một tảng đá, còn đống xẻng bên lều người bán cứ cao dần thành ngọn đồi.",
+      "prompt": "Kéo trăng qua các mùa",
+      "sliderAria": "Kéo vầng trăng qua các mốc thời gian của NVIDIA",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2006-11",
+            "label": "CUDA ra đời",
+            "fact": {
+              "text": "NVIDIA giới thiệu CUDA: cách dùng GPU cho mọi phép tính, không chỉ để vẽ hình trong game.",
+              "asOf": "2026-10-15",
+              "source": "t28-cuda-guide"
+            }
+          },
+          {
+            "date": "2020-01",
+            "label": "Quy luật mở rộng",
+            "fact": {
+              "text": "Nhóm Kaplan (OpenAI) chỉ ra: model càng lớn, càng nhiều dữ liệu và sức tính thì lỗi đoán chữ càng giảm, theo đường cong đều.",
+              "asOf": "2026-10-15",
+              "source": "t28-kaplan"
+            }
+          },
+          {
+            "date": "2023-01",
+            "label": "Trước cơn sốt",
+            "fact": {
+              "text": "Năm tài chính kết thúc 01/2023, mảng trung tâm dữ liệu của NVIDIA thu 15,0 tỷ USD.",
+              "asOf": "2026-10-15",
+              "source": "t28-nvda-10k-fy23"
+            }
+          },
+          {
+            "date": "2025-10-29",
+            "label": "Mốc 5.000 tỷ",
+            "fact": {
+              "text": "NVIDIA thành công ty đầu tiên có giá trị thị trường vượt 5.000 tỷ USD.",
+              "asOf": "2026-10-15",
+              "source": "t28-5t"
+            }
+          },
+          {
+            "date": "2026-01",
+            "label": "Gấp gần 13 lần",
+            "fact": {
+              "text": "Năm tài chính 2026, trung tâm dữ liệu thu 193,7 tỷ USD, gần gấp 13 lần ba năm trước.",
+              "asOf": "2026-10-15",
+              "source": "t28-nvda-fy26"
+            },
+            "compare": {
+              "before": "15,0 tỷ USD",
+              "after": "193,7 tỷ USD",
+              "beforeLabel": "Năm tài chính 2023",
+              "afterLabel": "Năm tài chính 2026"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Hôm nay",
+            "fact": {
+              "text": "Báo cáo gần nhất (26/08/2026): một quý, trung tâm dữ liệu mang về 89 tỷ USD, tăng 117% so với cùng kỳ.",
+              "asOf": "2026-10-15",
+              "source": "t28-nvda-q2fy27"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Có nhà đầu tư dự đoán NVIDIA sẽ thành công ty 10.000 tỷ USD đầu tiên; chưa ai biết cơn sốt kéo dài bao lâu.",
+          "asOf": "2026-10-15",
+          "source": "t28-benzinga",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "Khoảng 9/10 doanh thu năm tài chính 2026 của NVIDIA đến từ trung tâm dữ liệu: người bán xẻng thu tiền trước.",
+        "asOf": "2026-10-15",
+        "source": "t28-nvda-fy26"
+      }
+    },
+    "loop": {
+      "label": "Vòng tiền tuần hoàn",
+      "art": "Bốn hòn đảo đá trên hồ trăng: NVIDIA, các công ty AI, trung tâm dữ liệu, nhà đầu tư. Một dòng nước bạc chảy vòng từ đảo này sang đảo kia rồi quay về chỗ cũ; quanh bờ, bốn hòn đá lặng lẽ đứng nhìn, mỗi hòn một lời bình.",
+      "prompt": "Lần theo dòng tiền",
+      "flowLabel": "Dòng tiền chảy vòng",
+      "flow": [
+        "NVIDIA rót vốn vào công ty AI",
+        "Công ty AI xây trung tâm dữ liệu",
+        "Trung tâm dữ liệu mua chip NVIDIA",
+        "Doanh thu NVIDIA tăng, lại có tiền rót vốn"
+      ],
+      "flowAria": "Bước {n} của vòng tiền: {text}",
+      "facts": [
+        {
+          "text": "02/2026: NVIDIA góp 30 tỷ USD vào vòng gọi vốn 110 tỷ USD của OpenAI, cùng Amazon và SoftBank.",
+          "asOf": "2026-10-15",
+          "source": "t28-ap-openai-round"
+        },
+        {
+          "text": "Cổ phần NVIDIA nắm ở các công ty chưa niêm yết tăng từ 22 lên 51 tỷ USD chỉ trong sáu tháng đầu 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-nvda-10q"
+        },
+        {
+          "text": "08/2026: NVIDIA bảo lãnh tới 105 tỷ USD cho việc xây trung tâm dữ liệu phục vụ một công ty con của OpenAI.",
+          "asOf": "2026-10-15",
+          "source": "t28-nvda-10q"
+        }
+      ],
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Nhà phân tích Wedbush",
+            "view": {
+              "text": "Các thương vụ này nằm “ngay giữa” chủ đề đầu tư vòng tròn, nhưng nếu thành công có thể thành hào bảo vệ cạnh tranh.",
+              "asOf": "2026-10-15",
+              "source": "t28-benzinga",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Chiến lược gia Global X",
+            "view": {
+              "text": "Việc NVIDIA tính bảo lãnh cho OpenAI càng làm căng thêm chuyện “nhà cung cấp tài trợ cho khách hàng” vốn đã gây tranh cãi.",
+              "asOf": "2026-10-15",
+              "source": "t28-asiae",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Jensen Huang, CEO NVIDIA",
+            "view": {
+              "text": "Tiền NVIDIA góp chỉ là một phần số vốn khách hàng phải huy động; ông gọi cáo buộc “vòng tròn” là vô căn cứ.",
+              "asOf": "2026-10-15",
+              "source": "t28-asiae",
+              "kind": "opinion",
+              "claimBy": "NVIDIA"
+            }
+          },
+          {
+            "who": "Ngân hàng Trung ương Anh",
+            "view": {
+              "text": "10/2025: định giá cổ phiếu, nhất là công ty công nghệ tập trung vào AI, có vẻ quá cao; rủi ro thị trường điều chỉnh mạnh đã tăng.",
+              "asOf": "2026-10-15",
+              "source": "t28-boe",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "Ai cũng thấy tiền đang chảy vòng giữa NVIDIA và khách hàng; họ khác nhau ở chỗ đó là hào bảo vệ hay mầm bong bóng.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "NVIDIA rót tiền vào chính khách hàng mua chip của mình: hào bảo vệ hay bong bóng, giới phân tích còn tranh cãi.",
+        "asOf": "2026-10-15",
+        "source": "t28-benzinga"
+      }
+    }
+  },
+  "sources": {
+    "t28-cuda-guide": {
+      "title": "CUDA C++ Programming Guide — Introduction (“In November 2006, NVIDIA introduced CUDA…”)",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/",
+      "note": "Tài liệu chính thức của hãng; giải thích vì sao GPU dành nhiều bóng bán dẫn cho tính toán song song."
+    },
+    "t28-kaplan": {
+      "title": "Scaling Laws for Neural Language Models (Kaplan et al.)",
+      "publisher": "arXiv:2001.08361 (OpenAI)",
+      "date": "2020-01-23",
+      "url": "https://arxiv.org/abs/2001.08361"
+    },
+    "t28-chinchilla": {
+      "title": "Training Compute-Optimal Large Language Models (Hoffmann et al., “Chinchilla”)",
+      "publisher": "arXiv:2203.15556 (DeepMind)",
+      "date": "2022-03-29",
+      "url": "https://arxiv.org/abs/2203.15556"
+    },
+    "t28-nvda-10k-fy23": {
+      "title": "NVIDIA Form 10-K, fiscal year ended January 29, 2023",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2023-02-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581023000017/nvda-20230129.htm"
+    },
+    "t28-nvda-fy26": {
+      "title": "NVIDIA Announces Financial Results for Fourth Quarter and Fiscal 2026 (Form 8-K)",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2026-02-25",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000019/q4fy26pr.htm"
+    },
+    "t28-nvda-q2fy27": {
+      "title": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027 (Form 8-K)",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2026-08-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000073/q2fy27pr.htm"
+    },
+    "t28-nvda-10q": {
+      "title": "NVIDIA Form 10-Q, quarter ended July 26, 2026 (Notes: equity securities; guarantees)",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2026-08",
+      "url": "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000075/nvda-20260726.htm"
+    },
+    "t28-5t": {
+      "title": "Nvidia valuation reaches $5 trillion",
+      "publisher": "Computerworld (dẫn Reuters)",
+      "date": "2025-10-29",
+      "url": "https://www.computerworld.com/article/4081834/nvidia-valuation-reaches-5-trillion.html"
+    },
+    "t28-benzinga": {
+      "title": "Nvidia's AI Investment Bets Top $40 Billion In 2026, Led By OpenAI Stake",
+      "publisher": "Benzinga (đăng lại trên Yahoo Finance)",
+      "date": "2026-05-12",
+      "url": "https://finance.yahoo.com/sectors/technology/articles/nvidias-ai-investment-bets-top-120016038.html"
+    },
+    "t28-ap-openai-round": {
+      "title": "OpenAI gets $110 billion in funding from a trio of tech powerhouses led by Amazon",
+      "publisher": "Associated Press (qua KSAT)",
+      "date": "2026-02-27",
+      "url": "https://www.ksat.com/business/2026/02/27/openai-gets-110-billon-in-funding-from-a-trio-of-tech-powerhouses-led-by-amazon/"
+    },
+    "t28-anthropic-tpu": {
+      "title": "Expanding our use of Google Cloud TPUs and Services",
+      "publisher": "Anthropic",
+      "date": "2025-10-23",
+      "url": "https://www.anthropic.com/news/expanding-our-use-of-google-cloud-tpus-and-services"
+    },
+    "t28-amd-openai": {
+      "title": "AMD and OpenAI Announce Strategic Partnership to Deploy 6 Gigawatts of AMD GPUs",
+      "publisher": "AMD",
+      "date": "2025-10-06",
+      "url": "https://ir.amd.com/news-events/press-releases/detail/1260/amd-and-openai-announce-strategic-partnership-to-deploy-6-gigawatts-of-amd-gpus"
+    },
+    "t28-asiae": {
+      "title": "Nvidia Makes $750 Billion AI Bet, Rekindling Concerns Over “Circular Financing”",
+      "publisher": "Asia Economy (Hàn Quốc)",
+      "date": "2026-07-28",
+      "url": "https://view.asiae.co.kr/en/article/2026072807292255518"
+    },
+    "t28-boe": {
+      "title": "Financial Policy Committee Record — October 2025",
+      "publisher": "Bank of England",
+      "date": "2025-10-08",
+      "url": "https://www.bankofengland.co.uk/financial-policy-committee-record/2025/october-2025"
+    }
+  }
+}

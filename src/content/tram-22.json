@@ -1,0 +1,301 @@
+{
+  "id": 22,
+  "kicker": "Mỗi chữ thắp một chiếc đèn, soi về những chữ nó cần.",
+  "summary": "Mỗi chữ nhìn quanh để hiểu mình.",
+  "quiz": {
+    "q": "Trong câu “Con mèo không bắt được con chuột vì nó quá nhanh”, cơ chế chú ý (attention) giúp AI làm gì?",
+    "options": [
+      "Đếm xem câu có bao nhiêu chữ",
+      "Cân xem “nó” nên nối với chữ nào để hiểu đúng",
+      "Dịch câu sang tiếng Anh trước rồi mới hiểu",
+      "Tra từ điển trên mạng cho từng chữ"
+    ],
+    "answer": 1,
+    "explain": "Mỗi chữ chấm điểm các chữ khác trong câu; ở đây chữ “nhanh” kéo “nó” về phía con chuột."
+  },
+  "scenes": {
+    "lantern": {
+      "label": "Đèn lồng trên câu",
+      "art": "Đêm trăng trên một dòng sông mực. Mỗi chữ của câu là một chiếc đèn lồng giấy trôi thành hàng. Chạm chữ “nó”: một sợi sáng mảnh vắt qua mặt nước tới chiếc đèn nó cần nhất, vài sợi mờ hơn toả tới những đèn còn lại. Đổi chữ cuối câu, sợi sáng đổi hướng.",
+      "prompt": "Chạm chữ “nó”",
+      "words": ["Con", "mèo", "không", "bắt", "được", "con", "chuột", "vì", "nó", "quá"],
+      "pivot": 8,
+      "pivotAria": "Chạm chữ “nó” để xem nó chú ý tới chữ nào (hoặc nhấn Enter)",
+      "swap": "Đổi chữ cuối",
+      "swapAria": "Đổi chữ cuối câu thành “{word}”",
+      "endings": [
+        {
+          "word": "chậm",
+          "points": 1,
+          "weights": [0.04, 0.46, 0.03, 0.06, 0.02, 0.03, 0.18, 0.05, 0.08, 0.05],
+          "read": "“nó” = con mèo"
+        },
+        {
+          "word": "nhanh",
+          "points": 6,
+          "weights": [0.03, 0.17, 0.03, 0.06, 0.02, 0.04, 0.47, 0.05, 0.08, 0.05],
+          "read": "“nó” = con chuột"
+        }
+      ],
+      "threadAria": "Chữ “nó” chú ý mạnh nhất tới chữ “{word}”",
+      "weightsNote": {
+        "text": "Độ sáng các sợi là minh hoạ do AI Zen đặt, không đo từ một mô hình thật.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Cơ chế chú ý (attention): mỗi chữ chấm điểm mọi chữ khác trong câu, rồi mượn nghĩa nhiều nhất từ chữ được điểm cao.",
+        "asOf": "2026-10-15",
+        "source": "vaswani-2017"
+      },
+      "detail": {
+        "text": "Soi mô hình BERT năm 2019, các nhà nghiên cứu thấy có những “đầu chú ý” nối khá chính xác đại từ với người, vật được nhắc tới.",
+        "asOf": "2026-10-15",
+        "source": "clark-2019"
+      }
+    },
+    "heads": {
+      "label": "Nhiều đầu, nhiều ánh nhìn",
+      "art": "Bốn chiếc đèn đá đứng trên một cây cầu cong, mỗi đèn một sắc mực: đen đậm, xám nhạt, lam khói, son đỏ. Cùng một câu viết trên mặt hồ bên dưới; mỗi đèn rọi xuống một chùm sáng riêng, nối các chữ thành một hình khác nhau như những chòm sao.",
+      "prompt": "Thắp từng ngọn đèn",
+      "words": ["Cô giáo", "khen", "bài văn", "của", "Lan", "vì", "nó", "rất", "hay"],
+      "heads": [
+        {
+          "name": "Ai làm",
+          "relation": "nối việc làm với người làm",
+          "aria": "Thắp đèn 1: nối việc làm với người làm",
+          "links": [[1, 0]]
+        },
+        {
+          "name": "Làm gì",
+          "relation": "nối việc làm với thứ được nhắc tới",
+          "aria": "Thắp đèn 2: nối việc làm với thứ chịu tác động",
+          "links": [[1, 2]]
+        },
+        {
+          "name": "Hàng xóm",
+          "relation": "nhìn chữ đứng ngay trước",
+          "aria": "Thắp đèn 3: mỗi chữ nhìn chữ đứng ngay trước nó",
+          "links": [[1, 0], [2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 7]]
+        },
+        {
+          "name": "“Nó” là ai",
+          "relation": "nối đại từ với thứ được nhắc trước đó",
+          "aria": "Thắp đèn 4: nối chữ “nó” với thứ được nhắc trước đó",
+          "links": [[6, 2]]
+        }
+      ],
+      "allLit": "Bốn ánh nhìn, một câu",
+      "headsNote": {
+        "text": "Mỗi đèn một kiểu quan hệ rõ ràng là cách vẽ đơn giản; đầu chú ý thật thường lẫn lộn hơn.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Nhiều đầu chú ý (multi-head attention) cùng soi một câu, mỗi đầu bắt một kiểu quan hệ: ai làm, làm gì, “nó” là ai.",
+        "asOf": "2026-10-15",
+        "source": "clark-2019"
+      },
+      "detail": {
+        "text": "Bản Transformer gốc năm 2017 dùng 8 đầu chú ý chạy song song trong mỗi tầng.",
+        "asOf": "2026-10-15",
+        "source": "vaswani-2017"
+      },
+      "caveat": {
+        "text": "Nhưng đèn sáng chưa phải lời giải thích đầy đủ: hai kiểu chú ý rất khác nhau vẫn có thể cho ra cùng một đáp án.",
+        "asOf": "2026-10-15",
+        "source": "jain-wallace-2019"
+      }
+    },
+    "layers": {
+      "label": "Tầng tầng lớp lớp",
+      "art": "Mặt cắt một hồ sâu dưới trăng: nước chia thành nhiều tầng như những dải lụa, mực đậm dần về phía đáy. Một viên sỏi khắc chữ “nó” chìm xuống; qua mỗi tầng, nét chữ được tô thêm một lớp mực, tới đáy thì hiện rõ hình bài văn.",
+      "prompt": "Thả viên sỏi xuống đáy",
+      "slider": "Độ sâu",
+      "sliderAria": "Kéo để đưa chữ “nó” qua các tầng (phím ← →)",
+      "valueText": "Tầng {n}/{total}",
+      "stages": [
+        { "at": "Tầng nông", "reads": "“nó”: một đại từ, đứng sau “vì”" },
+        { "at": "Tầng giữa", "reads": "“nó”: một vật, không phải người" },
+        { "at": "Tầng sâu", "reads": "“nó” = bài văn của Lan, thứ được khen hay" }
+      ],
+      "stagesNote": {
+        "text": "Ba nấc là minh hoạ; mô hình thật có hàng chục tầng, mỗi tầng đổi nghĩa một chút.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Mô hình chồng nhiều tầng chú ý — GPT-3 có 96 tầng; qua mỗi tầng, nghĩa của chữ được tô đậm thêm từ ngữ cảnh.",
+        "asOf": "2026-10-15",
+        "source": "gpt3-2020"
+      },
+      "detail": {
+        "text": "Soi mô hình BERT, nhóm Tenney (2019) thấy thứ tự khá đều: tầng thấp nắm từ loại, ngữ pháp; tầng cao hơn mới nối đại từ với đúng thứ được nhắc.",
+        "asOf": "2026-10-15",
+        "source": "tenney-2019"
+      }
+    },
+    "window": {
+      "label": "Khung cửa đọc được bao xa",
+      "art": "Một khung cửa giấy mở ra dải cát dài như cuộn tranh dưới trăng. Kéo vầng trăng sang phải, khung cửa rộng dần: từ vài trang thư, tới trọn một cuốn tiểu thuyết, tới cả một kệ sách; mỗi mốc là một hòn đá nhô lên khỏi cát.",
+      "prompt": "Kéo trăng qua các năm",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2017-06",
+            "label": "Attention Is All You Need",
+            "fact": {
+              "text": "Tám nhà nghiên cứu công bố Transformer: mô hình chỉ dựa vào cơ chế chú ý, bỏ hẳn lối đọc lần lượt từng chữ.",
+              "asOf": "2026-10-15",
+              "source": "vaswani-2017"
+            }
+          },
+          {
+            "date": "2020-05",
+            "label": "GPT-3",
+            "fact": {
+              "text": "GPT-3 đọc tối đa 2.048 token mỗi lần — chừng vài trang giấy.",
+              "asOf": "2026-10-15",
+              "source": "gpt3-2020"
+            }
+          },
+          {
+            "date": "2023-05",
+            "label": "Claude 100K",
+            "fact": {
+              "text": "Anthropic nâng cửa sổ ngữ cảnh của Claude lên 100.000 token, khoảng 75.000 từ — đủ đọc trọn một cuốn tiểu thuyết ngắn.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-100k"
+            }
+          },
+          {
+            "date": "2024-02",
+            "label": "Gemini 1.5 Pro",
+            "fact": {
+              "text": "Google cho thử Gemini 1.5 Pro với 1 triệu token, hơn 700.000 từ; hãng nói trong phòng lab đã thử tới 10 triệu.",
+              "asOf": "2026-10-15",
+              "source": "google-gemini-15",
+              "claimBy": "Google"
+            }
+          },
+          {
+            "date": "2025-04",
+            "label": "Llama 4 Scout",
+            "fact": {
+              "text": "Meta công bố Llama 4 Scout có cửa sổ 10 triệu token — con số do hãng tự nêu.",
+              "asOf": "2026-10-15",
+              "source": "meta-llama4",
+              "claimBy": "Meta"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Hôm nay",
+            "fact": {
+              "text": "Nhiều mô hình hàng đầu nay đọc khoảng 1 triệu token; từ 03/2026, Anthropic mở mức này cho Claude Opus 4.6 và Sonnet 4.6.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-1m-ga"
+            },
+            "compare": {
+              "before": "2.048",
+              "after": "1.000.000",
+              "beforeLabel": "GPT-3 · 2020",
+              "afterLabel": "Hôm nay"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Cửa sổ có lẽ còn rộng thêm. Câu hỏi khó hơn: AI có dùng tốt từng chữ ở giữa, hay chủ yếu nhớ đầu và cuối?",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "Từ 2.048 lên khoảng 1 triệu token: cửa sổ ngữ cảnh rộng gần 500 lần trong sáu năm, nhưng đọc nhiều chưa chắc nhớ đều.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-1m-ga"
+      },
+      "detail": {
+        "text": "Nghiên cứu năm 2023 (Liu và cộng sự): mô hình tìm thông tin tốt nhất ở đầu hoặc cuối văn bản dài, kém hơn khi nó nằm ở giữa. Mẹo: đặt điều quan trọng ở đầu hoặc cuối câu lệnh.",
+        "asOf": "2026-10-15",
+        "source": "lost-in-middle"
+      }
+    }
+  },
+  "sources": {
+    "vaswani-2017": {
+      "title": "Attention Is All You Need",
+      "publisher": "Vaswani và cộng sự (arXiv 1706.03762, NeurIPS 2017)",
+      "url": "https://arxiv.org/abs/1706.03762",
+      "date": "2017-06-12",
+      "note": "Bài báo giới thiệu Transformer: chỉ dựa vào attention, bỏ recurrence và convolution; mục 3.2.2 dùng h = 8 đầu chú ý, mục 3.1 dùng N = 6 tầng."
+    },
+    "clark-2019": {
+      "title": "What Does BERT Look At? An Analysis of BERT's Attention",
+      "publisher": "Clark, Khandelwal, Levy, Manning (BlackboxNLP 2019)",
+      "url": "https://arxiv.org/abs/1906.04341",
+      "date": "2019-06-11",
+      "note": "Một số đầu chú ý khớp với các quan hệ ngữ pháp và đồng tham chiếu (nối đại từ với thứ được nhắc), ví dụ tân ngữ trực tiếp của động từ."
+    },
+    "jain-wallace-2019": {
+      "title": "Attention is not Explanation",
+      "publisher": "Jain & Wallace (NAACL 2019)",
+      "url": "https://arxiv.org/abs/1902.10186",
+      "date": "2019-02-26",
+      "note": "Trọng số attention thường không khớp với các thước đo mức quan trọng khác; những phân bố chú ý rất khác nhau có thể cho cùng dự đoán."
+    },
+    "tenney-2019": {
+      "title": "BERT Rediscovers the Classical NLP Pipeline",
+      "publisher": "Tenney, Das, Pavlick (ACL 2019)",
+      "url": "https://arxiv.org/abs/1905.05950",
+      "date": "2019-05-15",
+      "note": "Từ loại và cú pháp được nắm ở vùng thấp hơn của mạng, rồi tới thực thể, vai nghĩa, đồng tham chiếu ở vùng cao hơn."
+    },
+    "gpt3-2020": {
+      "title": "Language Models are Few-Shot Learners (GPT-3)",
+      "publisher": "Brown và cộng sự, OpenAI (arXiv 2005.14165)",
+      "url": "https://arxiv.org/abs/2005.14165",
+      "date": "2020-05-28",
+      "note": "Bảng 2.1: GPT-3 175B có 96 tầng, 96 đầu chú ý; mọi mô hình dùng cửa sổ 2.048 token."
+    },
+    "anthropic-100k": {
+      "title": "Introducing 100K Context Windows",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/100k-context-windows",
+      "date": "2023-05-11",
+      "note": "Cửa sổ ngữ cảnh của Claude tăng từ 9K lên 100K token, khoảng 75.000 từ."
+    },
+    "google-gemini-15": {
+      "title": "Our next-generation model: Gemini 1.5",
+      "publisher": "Google",
+      "url": "https://blog.google/technology/ai/google-gemini-next-generation-model-february-2024/",
+      "date": "2024-02-15",
+      "note": "Bản thử giới hạn tới 1 triệu token (1 giờ video, 11 giờ âm thanh, hơn 700.000 từ); Google nói đã thử nghiệm tới 10 triệu token trong nghiên cứu."
+    },
+    "meta-llama4": {
+      "title": "The Llama 4 herd",
+      "publisher": "Meta",
+      "url": "https://ai.meta.com/blog/llama-4-multimodal-intelligence/",
+      "date": "2025-04-05",
+      "note": "Meta công bố Llama 4 Scout có cửa sổ ngữ cảnh 10 triệu token (tuyên bố của hãng)."
+    },
+    "anthropic-1m-ga": {
+      "title": "1M context is now generally available for Opus 4.6 and Sonnet 4.6",
+      "publisher": "Anthropic",
+      "url": "https://claude.com/blog/1m-context-ga",
+      "date": "2026-03-13",
+      "note": "Cửa sổ 1 triệu token chính thức cho Claude Opus 4.6 và Sonnet 4.6. Giá & tính năng thay đổi thường xuyên, kiểm tra trang chính thức."
+    },
+    "lost-in-middle": {
+      "title": "Lost in the Middle: How Language Models Use Long Contexts",
+      "publisher": "Liu và cộng sự (arXiv 2307.03172)",
+      "url": "https://arxiv.org/abs/2307.03172",
+      "date": "2023-07-06",
+      "note": "Hiệu quả thường cao nhất khi thông tin cần tìm nằm ở đầu hoặc cuối ngữ cảnh, giảm rõ khi nằm ở giữa."
+    }
+  }
+}

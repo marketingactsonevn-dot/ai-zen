@@ -1,0 +1,421 @@
+{
+  "id": 38,
+  "kicker": "Trong sương có nhiều ngả — chưa ai đi tới cuối.",
+  "summary": "Không ai biết chắc tương lai AI — nhưng ta chọn được mình đứng ở đâu.",
+  "quiz": {
+    "q": "Một người nói “AGI sẽ tới năm 2027”, người kia nói “còn rất xa”. Câu nên hỏi đầu tiên là gì?",
+    "options": [
+      "Ai nổi tiếng hơn?",
+      "Mỗi người hiểu AGI là gì?",
+      "Công ty nào giàu hơn?",
+      "Ai nói trước?"
+    ],
+    "answer": 1,
+    "explain": "Mỗi bên có thể dùng một cây thước khác: công việc kinh tế, bài test nhận thức, hay chữ ký của một hội đồng. Cùng chữ AGI, khác định nghĩa."
+  },
+  "scenes": {
+    "defs": {
+      "label": "Mỗi người một định nghĩa",
+      "art": "Bốn hòn đá khắc chữ dựng quanh một miệng giếng đầy sương. Mỗi hòn soi xuống giếng một bóng trăng khác: đồng xu, bậc thang, bánh xe mười nan, con dấu hội đồng. Chạm đá nào, sương trong giếng tan bớt một lớp.",
+      "prompt": "Chạm đá đọc định nghĩa",
+      "group": "Bốn định nghĩa AGI",
+      "stoneAria": "Định nghĩa của {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "OpenAI · Hiến chương 2018",
+            "view": {
+              "text": "AGI là hệ thống tự chủ cao, làm giỏi hơn con người ở phần lớn công việc có giá trị kinh tế. Thước đo: công việc.",
+              "asOf": "2026-10-15",
+              "source": "t38-charter",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Google DeepMind · “Các cấp độ AGI”, 2023",
+            "view": {
+              "text": "Không có một vạch đích: xếp AI theo bậc thang, vừa theo độ giỏi vừa theo độ rộng, từ “mới nhú” tới “siêu phàm”.",
+              "asOf": "2026-10-15",
+              "source": "t38-levels",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Hendrycks, Bengio & cộng sự · 2025",
+            "view": {
+              "text": "AGI là AI linh hoạt và thạo việc ngang một người trưởng thành có học, chấm trên 10 mảng nhận thức. Nhóm này chấm GPT-4 27%, GPT-5 57%.",
+              "asOf": "2026-10-15",
+              "source": "t38-agidef",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Microsoft & OpenAI · hợp đồng 10/2025",
+            "view": {
+              "text": "Khi OpenAI tuyên bố đạt AGI, một hội đồng chuyên gia độc lập sẽ xác minh; nhiều điều khoản tiền bạc giữa hai công ty phụ thuộc vào ngày đó.",
+              "asOf": "2026-10-15",
+              "source": "t38-msft"
+            }
+          }
+        ],
+        "common": {
+          "text": "Cả bốn đều nói “giỏi rộng như người”, nhưng đo bằng thước khác nhau: công việc, bậc thang, bài test, hay chữ ký hội đồng.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Tranh cãi “bao giờ có AGI” thường là tranh cãi “AGI là gì”. Hỏi định nghĩa trước khi tin một mốc thời gian.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "tide": {
+      "label": "Sợi dây đo công việc",
+      "art": "Cuộn tranh dài trải trên bãi cát bạc. Kéo trăng từ trái sang phải, những sợi dây tre đo độ dài công việc AI tự làm được dài dần như bóng cây lúc trăng lặn. Mốc cuối chìm vào sương bình minh, đầu dây mờ hẳn.",
+      "prompt": "Kéo trăng qua các mốc",
+      "slider": "Mốc thời gian",
+      "valueText": "{date}: {label}",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2025-03",
+            "label": "Cây thước của METR",
+            "fact": {
+              "text": "METR đo độ dài công việc (tính theo giờ người làm) mà AI tự làm xong. Claude 3.7 Sonnet đạt khoảng 1 giờ; độ dài này gấp đôi khoảng mỗi 7 tháng suốt 6 năm.",
+              "asOf": "2026-10-15",
+              "source": "t38-metr-2025"
+            }
+          },
+          {
+            "date": "2025-07",
+            "label": "Vàng Olympic Toán",
+            "fact": {
+              "text": "Gemini Deep Think của Google DeepMind giải 5/6 bài IMO, đạt 35/42 điểm, mức huy chương vàng; điều phối viên IMO chấm và xác nhận.",
+              "asOf": "2026-10-15",
+              "source": "t38-imo",
+              "claimBy": "Google DeepMind",
+              "verifiedBy": "IMO"
+            }
+          },
+          {
+            "date": "2025-08",
+            "label": "Hơn 2 giờ",
+            "fact": {
+              "text": "Theo METR, agent dùng GPT-5 làm xong việc dài khoảng 2 giờ 17 phút, với tỉ lệ thành công 50%.",
+              "asOf": "2026-10-15",
+              "source": "t38-metr-page"
+            }
+          },
+          {
+            "date": "2026-03",
+            "label": "Thước gần hết vạch",
+            "fact": {
+              "text": "METR thử bản sớm của Claude Mythos Preview: ít nhất 16 giờ (khoảng tin cậy 8,5–55 giờ). Trên 16 giờ, bộ bài thử hiện có đo không còn chắc.",
+              "asOf": "2026-10-15",
+              "source": "t38-metr-mythos"
+            },
+            "compare": {
+              "before": "≈ 1 giờ",
+              "after": "≥ 16 giờ",
+              "ratio": 16,
+              "beforeLabel": "03/2025",
+              "afterLabel": "03/2026"
+            }
+          },
+          {
+            "date": "2026-09",
+            "label": "Bài toán triệu đô",
+            "fact": {
+              "text": "OpenAI công bố 10.000 agent tìm ra “điểm kỳ dị” của phương trình Navier–Stokes, đã kiểm bằng Lean; giới toán còn thẩm định, giải thưởng chưa trao.",
+              "asOf": "2026-10-15",
+              "source": "t38-quanta",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Hôm nay",
+            "fact": {
+              "text": "Trang đo của METR ngừng cập nhật từ 08/09/2026; model mới nhất được đo là Mythos Preview. Cây thước hiện có không đo tin cậy trên 16 giờ.",
+              "asOf": "2026-10-15",
+              "source": "t38-metr-page"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Nếu đà này giữ nguyên, METR dự phóng AI có thể tự làm những dự án dài cả tháng trước năm 2030.",
+          "asOf": "2026-10-15",
+          "source": "t38-metr-2025",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "Trong khoảng một năm, việc AI tự làm xong dài từ chừng 1 giờ lên ít nhất 16 giờ, chủ yếu là lập trình.",
+        "asOf": "2026-10-15",
+        "source": "t38-metr-mythos"
+      },
+      "detail": {
+        "text": "Lưu ý: bài thử của METR chủ yếu là lập trình, máy học, an ninh mạng, gói gọn và chấm được tự động. Việc ngoài đời lộn xộn hơn nhiều.",
+        "asOf": "2026-10-15",
+        "source": "t38-metr-page"
+      }
+    },
+    "fork": {
+      "label": "Ba ngả sương",
+      "art": "Ngã ba lối đá chìm trong sương lúc trăng lặn. Ba cần tre như cần kéo nước đặt bên lối. Kéo cần nào, khu vườn cuối lối đổi hình: rừng hoang um tùm, ruộng bậc thang chia đều, vườn chung rộng cửa, hay vườn tường cao chỉ vài người được vào.",
+      "prompt": "Kéo ba cần tre",
+      "sliderAria": "{label}: {value}",
+      "sliders": [
+        { "id": "speed", "label": "Tốc độ tiến bộ", "low": "Chậm", "high": "Rất nhanh" },
+        { "id": "share", "label": "Chia sẻ lợi ích", "low": "Dồn về ít người", "high": "Chia rộng" },
+        { "id": "control", "label": "Mức kiểm soát", "low": "Lỏng", "high": "Chặt" }
+      ],
+      "note": {
+        "text": "Đây là mô phỏng để suy nghĩ do AI Zen dựng, không phải dự báo.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "scenarios": [
+        {
+          "id": "wild",
+          "when": { "speed": "high", "control": "low" },
+          "name": "Rừng hoang",
+          "text": "Tiến nhanh mà rào lỏng: nhiều phát minh, nhưng tai nạn và lạm dụng cũng mọc nhanh như cỏ dại."
+        },
+        {
+          "id": "commons",
+          "when": { "speed": "high", "share": "high", "control": "high" },
+          "name": "Vườn chung",
+          "text": "Nhanh, chia rộng, có rào chắc: điều nhiều người mong, nhưng đòi các nước và các công ty phối hợp hiếm thấy."
+        },
+        {
+          "id": "walled",
+          "when": { "share": "low", "control": "high" },
+          "name": "Vườn tường cao",
+          "text": "Kiểm soát chặt nhưng lợi ích dồn về vài nơi: an toàn hơn, còn khoảng cách giàu nghèo rộng ra."
+        },
+        {
+          "id": "terraces",
+          "when": { "speed": "low" },
+          "name": "Ruộng bậc thang",
+          "text": "Tiến chậm, xã hội kịp thích nghi từng bậc; gần với góc nhìn “AI là công nghệ bình thường”."
+        },
+        {
+          "id": "drift",
+          "when": {},
+          "name": "Lối giữa sương",
+          "text": "Mọi thứ lưng chừng: lợi ích có, rủi ro có, và kết quả tuỳ vào lựa chọn của từng năm."
+        }
+      ],
+      "mistsLabel": "Hai kịch bản người ta hay nhắc",
+      "mists": [
+        {
+          "who": "AI 2027 · Kokotajlo & cộng sự, 04/2025",
+          "view": {
+            "text": "Kịch bản: AI tự đẩy nhanh nghiên cứu AI, tới cuối 2027 vượt chuyên gia ở hầu hết việc; có hai đoạn kết, “chạy đua” và “chậm lại”.",
+            "asOf": "2026-10-15",
+            "source": "t38-ai2027",
+            "kind": "prediction"
+          }
+        },
+        {
+          "who": "Chính nhóm AI 2027 · ghi chú 11/2025",
+          "view": {
+            "text": "Tác giả nói 2027 chỉ là năm “dễ xảy ra nhất”; dự đoán trung vị của họ muộn hơn, một tác giả đặt ở năm 2030.",
+            "asOf": "2026-10-15",
+            "source": "t38-ai2027"
+          }
+        },
+        {
+          "who": "Narayanan & Kapoor · 04/2025",
+          "view": {
+            "text": "AI sẽ thấm dần qua nhiều thập kỷ như những công nghệ lớn trước đó; con người giữ được quyền kiểm soát nếu xây đủ khả năng chống chịu.",
+            "asOf": "2026-10-15",
+            "source": "t38-normal",
+            "kind": "opinion"
+          }
+        }
+      ],
+      "insight": {
+        "text": "Kịch bản là công cụ để nghĩ, không phải lời tiên tri. Ba cần gạt này do con người chọn, không tự xảy ra.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "trays": {
+      "label": "Ba khay đá công việc",
+      "art": "Ba khay đá trên hiên gỗ lúc trăng lặn: khay sỏi trắng đã khô và sáng, khay ngâm nửa nước, khay còn phủ sương dày. Những viên sỏi khắc tên công việc nằm trong giỏ mây, chờ bạn đặt vào khay.",
+      "prompt": "Xếp việc vào khay",
+      "keys": "Chọn một viên sỏi, rồi bấm phím 1, 2, 3 để đặt vào khay",
+      "pickAria": "Đặt “{task}” vào khay {tray}",
+      "compare": "So với góc nhìn chuyên gia",
+      "match": "Bạn và góc nhìn chuyên gia cùng xếp {n}/{total} viên",
+      "trays": [
+        { "id": "good", "name": "AI đang làm tốt" },
+        { "id": "learning", "name": "AI đang học" },
+        { "id": "far", "name": "Còn xa" }
+      ],
+      "tasks": [
+        {
+          "id": "headlines",
+          "label": "Viết 20 phương án tiêu đề",
+          "expert": "good",
+          "why": "Nháp nhiều phương án là việc AI làm nhanh; bạn vẫn là người chọn."
+        },
+        {
+          "id": "summary",
+          "label": "Tóm tắt 200 bình luận khách hàng",
+          "expert": "good",
+          "why": "Đọc nhiều rồi gom ý là thế mạnh; nhớ kiểm vài trích dẫn gốc."
+        },
+        {
+          "id": "translate",
+          "label": "Dịch nháp bài đăng sang tiếng Anh",
+          "expert": "good",
+          "why": "Bản nháp tốt; giọng thương hiệu và chữ chơi vẫn cần người sửa."
+        },
+        {
+          "id": "moodboard",
+          "label": "Ảnh moodboard, ảnh nháp ý tưởng",
+          "expert": "good",
+          "why": "Ảnh nháp nhanh và rẻ; ảnh dùng thật cần kiểm quyền và soát chi tiết."
+        },
+        {
+          "id": "video",
+          "label": "Video quảng cáo hoàn chỉnh, đúng thương hiệu",
+          "expert": "learning",
+          "why": "Từng cảnh đã đẹp; giữ nhân vật, sản phẩm và nhịp kể nhất quán vẫn khó."
+        },
+        {
+          "id": "campaign",
+          "label": "Tự chạy chiến dịch nhiều tuần",
+          "expert": "learning",
+          "why": "Agent làm được chuỗi việc dài hơn mỗi năm, nhưng các bước khó rút lại vẫn cần người duyệt."
+        },
+        {
+          "id": "taste",
+          "label": "Chọn ý tưởng hợp gu thương hiệu",
+          "expert": "far",
+          "why": "Gu là lựa chọn có trách nhiệm, gắn với hiểu biết về khách hàng và văn hoá."
+        },
+        {
+          "id": "trust",
+          "label": "Giữ quan hệ, chịu trách nhiệm khi sai",
+          "expert": "far",
+          "why": "Khách hàng và đối tác cần một con người đứng ra cam kết."
+        }
+      ],
+      "expertNote": {
+        "text": "Cách xếp “chuyên gia” là góc nhìn biên tập của AI Zen tại 10/2026, tham khảo METR và WEF; mỗi tháng có thể khác.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "insight": {
+        "text": "Kỹ năng đáng đầu tư: gu thẩm mỹ, viết brief rõ, kiểm chứng, điều phối AI, và quan hệ con người.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Khảo sát hơn 1.000 doanh nghiệp (WEF, 01/2025) dự báo gần 40% kỹ năng cốt lõi sẽ đổi tới 2030; tư duy sáng tạo và kỹ năng công nghệ ngày càng quan trọng.",
+        "asOf": "2026-10-15",
+        "source": "t38-wef",
+        "kind": "prediction"
+      },
+      "jobs": {
+        "text": "Cũng khảo sát ấy dự báo tới 2030: 170 triệu việc làm mới, 92 triệu việc mất đi, thêm ròng 78 triệu.",
+        "asOf": "2026-10-15",
+        "source": "t38-wef",
+        "kind": "prediction"
+      }
+    }
+  },
+  "sources": {
+    "t38-charter": {
+      "title": "OpenAI Charter",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/charter/",
+      "date": "2018-04-09"
+    },
+    "t38-levels": {
+      "title": "Levels of AGI for Operationalizing Progress on the Path to AGI",
+      "publisher": "Google DeepMind (Meredith Ringel Morris và cộng sự), arXiv:2311.02462",
+      "url": "https://arxiv.org/abs/2311.02462",
+      "date": "2023-11-04",
+      "note": "Bản 5 (09/2025) đổi tên bậc 4 từ “Virtuoso” thành “Exceptional”."
+    },
+    "t38-agidef": {
+      "title": "A Definition of AGI",
+      "publisher": "Dan Hendrycks, Dawn Song, Yoshua Bengio và cộng sự, arXiv:2510.18212",
+      "url": "https://www.agidefinition.ai/",
+      "date": "2025-10",
+      "note": "Dựa trên lý thuyết nhận thức Cattell–Horn–Carroll (CHC), 10 mảng, mỗi mảng 10%."
+    },
+    "t38-msft": {
+      "title": "The next chapter of the Microsoft–OpenAI partnership",
+      "publisher": "Microsoft",
+      "url": "https://blogs.microsoft.com/blog/2025/10/28/the-next-chapter-of-the-microsoft-openai-partnership/",
+      "date": "2025-10-28"
+    },
+    "t38-metr-2025": {
+      "title": "Measuring AI Ability to Complete Long Tasks",
+      "publisher": "METR",
+      "url": "https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/",
+      "date": "2025-03-19",
+      "note": "Con số gấp đôi ~7 tháng là của bộ bài thử năm 2025; METR sau đó ra bộ Time Horizon 1.1 và ngừng cập nhật chuỗi cũ."
+    },
+    "t38-metr-page": {
+      "title": "Time horizons of frontier AI models",
+      "publisher": "METR",
+      "url": "https://metr.org/time-horizons/",
+      "date": "2026-09-08",
+      "note": "Trang ngừng cập nhật từ 08/09/2026; model thêm gần nhất ngày 08/05/2026."
+    },
+    "t38-metr-mythos": {
+      "title": "METR estimate for an early version of Claude Mythos Preview",
+      "publisher": "METR (bài đăng trên X), tường thuật bởi The Decoder ngày 10/05/2026",
+      "url": "https://x.com/METR_Evals/status/2052896623852929510",
+      "date": "2026-05",
+      "note": "Ước tính ≥ 16 giờ, khoảng tin cậy 95%: 8,5–55 giờ; chỉ 5/228 bài thử dài từ 16 giờ. Đối chiếu: https://the-decoder.com/metr-says-it-can-barely-measure-claude-mythos-palo-alto-networks-warns-of-autonomous-ai-attackers/"
+    },
+    "t38-imo": {
+      "title": "Advanced version of Gemini with Deep Think officially achieves gold-medal standard at the International Mathematical Olympiad",
+      "publisher": "Google DeepMind",
+      "url": "https://deepmind.google/discover/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/",
+      "date": "2025-07-21",
+      "note": "Bài giải được điều phối viên IMO chấm theo tiêu chí như thí sinh; IMO không đánh giá bản thân hệ thống AI."
+    },
+    "t38-quanta": {
+      "title": "AI Has Solved One of Math’s $1 Million Millennium Prize Problems",
+      "publisher": "Quanta Magazine",
+      "url": "https://www.quantamagazine.org/ai-has-solved-one-of-maths-1-million-millennium-prize-problems-20260908/",
+      "date": "2026-09-08"
+    },
+    "t38-ai2027": {
+      "title": "AI 2027",
+      "publisher": "Daniel Kokotajlo, Scott Alexander, Thomas Larsen, Eli Lifland, Romeo Dean",
+      "url": "https://ai-2027.com/",
+      "date": "2025-04-03",
+      "note": "Ghi chú về mốc thời gian được thêm ngày 22/11/2025."
+    },
+    "t38-normal": {
+      "title": "AI as Normal Technology",
+      "publisher": "Arvind Narayanan & Sayash Kapoor, Knight First Amendment Institute",
+      "url": "https://knightcolumbia.org/content/ai-as-normal-technology",
+      "date": "2025-04-15"
+    },
+    "t38-wef": {
+      "title": "Future of Jobs Report 2025",
+      "publisher": "World Economic Forum",
+      "url": "https://www.weforum.org/press/2025/01/future-of-jobs-report-2025-78-million-new-job-opportunities-by-2030-but-urgent-upskilling-needed-to-prepare-workforces/",
+      "date": "2025-01",
+      "note": "Khảo sát hơn 1.000 doanh nghiệp, đại diện hơn 14 triệu lao động ở 55 nền kinh tế; là kỳ vọng của nhà tuyển dụng, không phải số đo."
+    }
+  }
+}

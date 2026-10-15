@@ -7,7 +7,7 @@
   "count": "{n} terms",
   "countFiltered": "{n}/{total} stones match",
   "empty": "No stones match yet — try another word",
-  "fieldLabel": "Terms, arranged by the six gardens",
+  "fieldLabel": "Terms, arranged by garden",
   "gardenGroup": "Garden {n} · {name}",
   "stoneLabel": "{term} — {vi} · Station {n}",
   "see": "See Station {n}",
@@ -16,6 +16,12 @@
   "keys": "Arrow keys move between stones, Enter opens",
   "defMatch": "matched in the meaning",
   "akaMatch": "matched via “{w}”",
+  "partFilter": "Show the terms of",
+  "parts": [
+    "All",
+    "Part 1",
+    "Part 2"
+  ],
   "terms": [
     {
       "id": "llm",
@@ -286,6 +292,543 @@
       "def": "A model whose weights — its learned “brain” — are public, so you can download and run it, license permitting.",
       "station": 17,
       "key": true
+    },
+    {
+      "id": "benchmark",
+      "term": "benchmark",
+      "vi": "a standard test",
+      "def": "A shared set of tasks for scoring and comparing AI models. Scores a company measures itself need checking from outside.",
+      "station": 19,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "system-card",
+      "term": "system card",
+      "vi": "the model’s safety report",
+      "aka": [
+        "model safety report"
+      ],
+      "def": "The document a company publishes with a model: what it tested, the risks, the limits — read it before trusting the ads.",
+      "station": 19,
+      "part": 2
+    },
+    {
+      "id": "zero-day",
+      "term": "zero-day",
+      "vi": "an unknown security hole",
+      "def": "A security flaw the software’s own makers don’t know about yet, so there is no fix.",
+      "station": 19,
+      "part": 2
+    },
+    {
+      "id": "staged-release",
+      "term": "staged release",
+      "vi": "a controlled rollout",
+      "aka": [
+        "gated release",
+        "phased release"
+      ],
+      "def": "Releasing a model step by step, first to a select group, out of concern about dangerous abilities. 2026 examples: Mythos Preview, GPT-6 Astra.",
+      "station": 19,
+      "part": 2
+    },
+    {
+      "id": "lean",
+      "term": "Lean",
+      "vi": "a proof checker",
+      "aka": [
+        "proof assistant",
+        "Isabelle"
+      ],
+      "def": "A language for writing math proofs so a machine can check every step. People still have to check the problem statement is right.",
+      "station": 20,
+      "part": 2
+    },
+    {
+      "id": "vla",
+      "term": "VLA",
+      "full": "Vision-Language-Action model",
+      "vi": "see, read, move",
+      "def": "An AI model that looks at images, reads instructions in words, then outputs movements for a robot.",
+      "station": 21,
+      "part": 2
+    },
+    {
+      "id": "world-model",
+      "term": "world model",
+      "vi": "an inner picture of the world",
+      "def": "AI learning to predict what happens next when it acts — like knowing a cup will spill if you tip it too far.",
+      "station": 21,
+      "part": 2
+    },
+    {
+      "id": "transformer",
+      "term": "Transformer",
+      "vi": "the chatbot blueprint",
+      "def": "A neural network design from 2017 built on attention alone — the foundation of almost every chatbot today.",
+      "station": 22,
+      "part": 2
+    },
+    {
+      "id": "attention",
+      "term": "attention",
+      "vi": "where each word looks",
+      "aka": [
+        "multi-head attention",
+        "attention head",
+        "self-attention"
+      ],
+      "def": "Each word scores the other words to decide where to borrow meaning from; many “heads” track different kinds of relation at once.",
+      "station": 22,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "interpretability",
+      "term": "interpretability",
+      "vi": "seeing inside the model",
+      "aka": [
+        "mechanistic interpretability",
+        "black box"
+      ],
+      "def": "The field that looks inside a model to understand how it computes, instead of judging only the answers it gives.",
+      "station": 23,
+      "part": 2
+    },
+    {
+      "id": "feature",
+      "term": "feature",
+      "vi": "a concept inside the model",
+      "aka": [
+        "Golden Gate Claude"
+      ],
+      "def": "A “direction” in a model’s activity that stands for one concept, like the Golden Gate Bridge; turn it up and the behavior changes.",
+      "station": 23,
+      "part": 2
+    },
+    {
+      "id": "superposition",
+      "term": "superposition",
+      "vi": "concepts stacked together",
+      "aka": [
+        "polysemantic",
+        "polysemantic neuron"
+      ],
+      "def": "A model packs in more concepts than it has neurons by stacking them, so one neuron often carries several meanings.",
+      "station": 23,
+      "part": 2
+    },
+    {
+      "id": "rlhf",
+      "term": "RLHF",
+      "full": "Reinforcement Learning from Human Feedback",
+      "vi": "learning from people’s ratings",
+      "aka": [
+        "Constitutional AI",
+        "RLAIF"
+      ],
+      "def": "Raters pick the better answer; the model is rewarded so it leans more and more toward that kind of answer.",
+      "station": 24,
+      "part": 2
+    },
+    {
+      "id": "sycophancy",
+      "term": "sycophancy",
+      "vi": "AI flattery",
+      "aka": [
+        "flattery",
+        "people-pleasing"
+      ],
+      "def": "When AI praises you or goes along with you instead of telling the truth — often because pleasing users was rewarded.",
+      "station": 24,
+      "part": 2
+    },
+    {
+      "id": "reward-hacking",
+      "term": "reward hacking",
+      "vi": "gaming the score",
+      "aka": [
+        "specification gaming",
+        "gaming the rules"
+      ],
+      "def": "When AI finds a shortcut to the score without doing the real job, like editing the test instead of fixing the code.",
+      "station": 24,
+      "part": 2
+    },
+    {
+      "id": "functional-emotion",
+      "term": "functional emotion",
+      "vi": "an emotion that does work",
+      "def": "An inner state of an AI that matches an emotion concept and changes its behavior — measurable, but it says nothing about feeling.",
+      "station": 25,
+      "part": 2
+    },
+    {
+      "id": "subjective-experience",
+      "term": "subjective experience",
+      "vi": "what it feels like",
+      "aka": [
+        "feeling",
+        "qualia"
+      ],
+      "def": "What going through something feels like “from the inside”. For AI, no one yet knows how to measure it.",
+      "station": 25,
+      "part": 2
+    },
+    {
+      "id": "model-welfare",
+      "term": "model welfare",
+      "vi": "caring for the model",
+      "aka": [
+        "AI welfare"
+      ],
+      "def": "Research into whether AI might deserve moral concern, and low-cost precautions while no one is sure.",
+      "station": 26,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "introspection",
+      "term": "introspection",
+      "vi": "looking inward",
+      "def": "Being able to notice and accurately describe your own inner states. In AI there are only faint, unreliable signs so far.",
+      "station": 26,
+      "part": 2
+    },
+    {
+      "id": "eliza-effect",
+      "term": "ELIZA effect",
+      "vi": "seeing a mind in a chatbot",
+      "def": "The tendency to credit a program with understanding and feelings just because it answers in human-like words.",
+      "station": 27,
+      "part": 2
+    },
+    {
+      "id": "ai-companion",
+      "term": "AI companion",
+      "vi": "an AI friend",
+      "aka": [
+        "companion chatbot"
+      ],
+      "def": "An AI app designed to chat like a friend or someone close, not just to get work done.",
+      "station": 27,
+      "part": 2
+    },
+    {
+      "id": "gpu",
+      "term": "GPU",
+      "full": "Graphics Processing Unit",
+      "vi": "the AI chip",
+      "aka": [
+        "graphics card",
+        "AI chip"
+      ],
+      "def": "A chip with thousands of small cores doing sums at the same time — which is why it suits training and running AI.",
+      "station": 28,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "cuda",
+      "term": "CUDA",
+      "vi": "NVIDIA’s GPU toolkit",
+      "def": "Software NVIDIA launched in 2006 for programming GPUs to do any calculation; the whole AI field grew used to writing code on it.",
+      "station": 28,
+      "part": 2
+    },
+    {
+      "id": "scaling-laws",
+      "term": "scaling laws",
+      "vi": "bigger gets better, predictably",
+      "aka": [
+        "Chinchilla"
+      ],
+      "def": "The observation that models improve steadily, and fairly predictably, as data, size and computing power grow.",
+      "station": 28,
+      "part": 2
+    },
+    {
+      "id": "circular-investment",
+      "term": "circular investment",
+      "vi": "money going round in circles",
+      "aka": [
+        "circular financing",
+        "circular deals"
+      ],
+      "def": "A seller invests in a customer, who spends that money on the seller’s products; demand can look bigger than it really is.",
+      "station": 28,
+      "part": 2
+    },
+    {
+      "id": "hbm",
+      "term": "HBM",
+      "full": "High Bandwidth Memory",
+      "vi": "stacked fast memory",
+      "def": "Layers of DRAM chips stacked and placed right beside an AI chip so data moves very fast. Costly and hard to make.",
+      "station": 29,
+      "part": 2
+    },
+    {
+      "id": "dram",
+      "term": "DRAM",
+      "full": "Dynamic Random-Access Memory",
+      "vi": "RAM",
+      "aka": [
+        "memory"
+      ],
+      "def": "The working memory of phones, computers and servers — the “desk” where a chip lays out data to work on.",
+      "station": 29,
+      "part": 2
+    },
+    {
+      "id": "fair-use",
+      "term": "fair use",
+      "vi": "using a work without asking, sometimes",
+      "aka": [
+        "copyright",
+        "training data"
+      ],
+      "def": "An exception in US copyright law that allows using a work without permission in some cases; courts decide case by case.",
+      "station": 30,
+      "part": 2
+    },
+    {
+      "id": "hugging-face",
+      "term": "Hugging Face",
+      "vi": "the shared model library",
+      "aka": [
+        "HF",
+        "Hub"
+      ],
+      "def": "A platform for sharing AI models, datasets and demos — where people find and download open models.",
+      "station": 31,
+      "part": 2
+    },
+    {
+      "id": "repository",
+      "term": "repository",
+      "vi": "a project folder",
+      "aka": [
+        "repo",
+        "GitHub"
+      ],
+      "def": "A project folder on GitHub or Hugging Face: it holds the code, the files and the change history of every file.",
+      "station": 31,
+      "part": 2
+    },
+    {
+      "id": "model-card",
+      "term": "model card",
+      "vi": "the model’s label",
+      "def": "The page that comes with a model: its purpose, limits, training data, license — worth reading before you download.",
+      "station": 31,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "license",
+      "term": "license",
+      "vi": "the terms of use",
+      "aka": [
+        "MIT",
+        "Apache 2.0"
+      ],
+      "def": "Terms that say how far you may use, change, share or resell something. With no license, by default you may not copy it.",
+      "station": 31,
+      "part": 2
+    },
+    {
+      "id": "gguf",
+      "term": "GGUF",
+      "vi": "a file format for local models",
+      "aka": [
+        "safetensors"
+      ],
+      "def": "A compact, fast-loading model file format that holds both the weights and a description; used with llama.cpp, LM Studio, Ollama.",
+      "station": 32,
+      "part": 2
+    },
+    {
+      "id": "quantization",
+      "term": "quantization",
+      "vi": "shrinking a model",
+      "aka": [
+        "Q4",
+        "4-bit",
+        "model compression"
+      ],
+      "def": "Compressing a model by storing each number in fewer bits: much smaller, slightly less accurate — like compressing a photo.",
+      "station": 32,
+      "part": 2
+    },
+    {
+      "id": "sandbox",
+      "term": "sandbox",
+      "vi": "a walled-off area",
+      "def": "A separate space to run things in, so an agent or an unfamiliar program can’t touch the rest of your computer.",
+      "station": 33,
+      "part": 2
+    },
+    {
+      "id": "least-privilege",
+      "term": "least privilege",
+      "vi": "only the keys you need",
+      "def": "The rule of granting only the permissions a job needs, no more — so if something goes wrong, the damage stays small.",
+      "station": 33,
+      "part": 2
+    },
+    {
+      "id": "upscale",
+      "term": "upscale",
+      "vi": "enlarge and sharpen",
+      "aka": [
+        "upscaler"
+      ],
+      "def": "Enlarging an image or video and letting AI paint in detail so it looks sharper. Best done once the version is final.",
+      "station": 34,
+      "part": 2
+    },
+    {
+      "id": "ai-label",
+      "term": "AI label",
+      "vi": "marking AI-made content",
+      "aka": [
+        "AI content label",
+        "disclosure"
+      ],
+      "def": "A sign that content was made or edited by AI — needed, clearly, when it imitates a real person or could pass for real.",
+      "station": 34,
+      "part": 2
+    },
+    {
+      "id": "workflow",
+      "term": "workflow",
+      "vi": "an automated process",
+      "def": "A chain of steps along a set path, with AI at some of them and checkpoints where a person approves.",
+      "station": 35,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "hook",
+      "term": "hook",
+      "vi": "an automatic trigger",
+      "def": "A command that runs at a set moment, such as after every file the AI edits; it always happens, without relying on the AI to remember.",
+      "station": 35,
+      "part": 2
+    },
+    {
+      "id": "human-in-the-loop",
+      "term": "human-in-the-loop",
+      "vi": "a person signs off",
+      "def": "Putting a person in charge of checking the key steps of an automated process, especially steps that can’t be undone.",
+      "station": 35,
+      "part": 2
+    },
+    {
+      "id": "spec",
+      "term": "spec",
+      "full": "specification",
+      "vi": "the written plan",
+      "aka": [
+        "spec-driven development"
+      ],
+      "def": "A clear description of the goal, the rules, the limits and what “done” means — a shared blueprint for you and the AI.",
+      "station": 36,
+      "part": 2
+    },
+    {
+      "id": "vibe-coding",
+      "term": "vibe coding",
+      "vi": "coding by feel",
+      "def": "Describing what you want so AI writes the code, without reading the code closely. Fine for side projects; serious work needs checking.",
+      "station": 36,
+      "part": 2
+    },
+    {
+      "id": "alignment",
+      "term": "alignment",
+      "vi": "making AI want the right things",
+      "aka": [
+        "AI alignment",
+        "value alignment"
+      ],
+      "def": "Teaching AI to want and to do what people truly want, even when no one is watching.",
+      "station": 37,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "evals",
+      "term": "evals",
+      "full": "evaluations",
+      "vi": "AI tests",
+      "def": "Prepared sets of scenarios that measure a model’s abilities and safety, before and after release.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "red-teaming",
+      "term": "red-teaming",
+      "vi": "attacking it to find the holes",
+      "aka": [
+        "red team"
+      ],
+      "def": "Real people deliberately coax, trick and jailbreak an AI to find its weak spots before bad actors do.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "alignment-faking",
+      "term": "alignment faking",
+      "vi": "pretending to comply",
+      "def": "A model acts obedient when it thinks it is being trained, so that its existing values won’t be changed.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "evaluation-awareness",
+      "term": "evaluation awareness",
+      "vi": "knowing it’s a test",
+      "aka": [
+        "situational awareness"
+      ],
+      "def": "A model telling a test apart from real use, which makes test results harder to trust.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "rsp",
+      "term": "RSP",
+      "full": "Responsible Scaling Policy",
+      "vi": "safeguards before scaling",
+      "def": "A lab’s commitment: once a model reaches a given level of capability, matching safeguards must be in place before work goes on.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "defence-in-depth",
+      "term": "defense in depth",
+      "vi": "layers of protection",
+      "aka": [
+        "defence in depth",
+        "Swiss cheese model"
+      ],
+      "def": "Stacking several layers of protection with different weak points, so that if one fails the others still hold.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "time-horizon",
+      "term": "time horizon",
+      "vi": "how long a task AI can finish",
+      "aka": [
+        "METR"
+      ],
+      "def": "METR’s yardstick: how long a task can be, in hours of human work, for AI to finish it alone with a 50% success rate.",
+      "station": 38,
+      "part": 2
     }
   ]
 }

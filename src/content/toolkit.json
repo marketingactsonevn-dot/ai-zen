@@ -1,0 +1,398 @@
+{
+  "cards": [
+    {
+      "id": "t19-doc-tin-ai",
+      "station": 19,
+      "title": "5 câu hỏi khi đọc tin AI",
+      "type": "checklist",
+      "body": "Tin: [TÊN MÔ HÌNH HOẶC SẢN PHẨM] — nguồn: [ĐƯỜNG LINK TIN]\n1. Ai đo? Điểm do chính hãng tự đo hay bên ngoài đo? Bài kiểm tra (benchmark) nào, điều kiện ra sao?\n2. Demo có chọn lọc không? Đây là lần chạy đẹp nhất trong bao nhiêu lần? Mình đã thử trên việc của mình chưa?\n3. Có system card hoặc báo cáo kỹ thuật không? Nó nói gì về giới hạn và rủi ro?\n4. Giá và giới hạn: ai được dùng thật, bao nhiêu tiền, mỗi ngày bao nhiêu lượt?\n5. Bên độc lập nói gì? Nhà nghiên cứu, báo uy tín hay người dùng thật đã kiểm lại chưa?",
+      "note": "Dùng mỗi khi gặp tin “vượt mọi đối thủ”. Chưa trả lời được câu 1 và 5 thì coi đó là tuyên bố của công ty.",
+      "source": "editorial",
+      "topic": "Đọc tin & kiểm chứng",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t20-kiem-tuyen-bo-toan",
+      "station": 20,
+      "title": "Khi đọc tin “AI giải được bài toán X”",
+      "type": "checklist",
+      "body": "Tin: [TÊN BÀI TOÁN HOẶC KẾT QUẢ] — nguồn: [ĐƯỜNG LINK TIN]\n1. Ai công bố: chính hãng làm AI, hay nhà toán học độc lập?\n2. Đề bài chính xác là gì: bản đầy đủ, hay một phiên bản dễ hơn?\n3. Đã có máy kiểm (Lean, Isabelle…) chưa? Ai đã xem đề viết cho máy có khớp đề thật?\n4. Đã đăng ở tạp chí có bình duyệt, hay mới là bản thảo?\n5. Ai được ghi công: AI, người dùng AI, hay những người đã đặt nền móng trước đó?",
+      "note": "Rút ra từ các tin Navier–Stokes và giả thuyết Jacobian năm 2026.",
+      "source": "editorial",
+      "topic": "Đọc tin & kiểm chứng",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t24-kiem-chung",
+      "station": 24,
+      "title": "3 cách kiểm tra kết quả AI thay vì tin lời AI tự báo",
+      "type": "checklist",
+      "body": "1. Đòi bằng chứng, rồi tự mở ra xem: file, link nguồn, kết quả chạy — đừng dừng ở câu “đã xong”.\n2. Xem AI đã đổi những gì: với code, đọc phần thay đổi (diff) — có sửa chính bài kiểm tra, xoá test hay viết cứng đáp án không?\n3. Thử một ca mới AI chưa thấy: [VÍ DỤ ĐẦU VÀO MỚI CỦA BẠN] — kết quả có còn đúng không?",
+      "note": "Dùng được cho cả code lẫn báo cáo, bảng số liệu. Rút ra từ các ví dụ lách luật (reward hacking) được ghi lại năm 2025.",
+      "source": "editorial",
+      "topic": "Đọc tin & kiểm chứng",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t27-phan-bien",
+      "station": 27,
+      "title": "Mời AI phản biện ý tưởng của bạn",
+      "type": "prompt",
+      "body": "Hãy phản biện ý tưởng dưới đây như một người phản đối nghiêm túc. Đừng khen xã giao.\nÝ tưởng: [Ý TƯỞNG CỦA BẠN]\nHoàn cảnh: [NGUỒN LỰC, THỜI GIAN, RÀNG BUỘC]\n1. Nêu 3 điểm yếu lớn nhất, xếp từ nghiêm trọng nhất.\n2. Với mỗi điểm, cho tôi một câu hỏi tôi phải trả lời được trước khi làm.\n3. Kịch bản xấu nhất trông thế nào?\n4. Điều gì sẽ khiến bạn đổi ý và ủng hộ ý tưởng này?\nCuối cùng: kết luận trong 2 câu, thẳng thắn.",
+      "note": "Dùng được với mọi chatbot. AI có xu hướng tán thành người dùng (Science, 2026) — nên phải mời nó phản biện. Với quyết định lớn, hỏi thêm người thật.",
+      "source": "editorial",
+      "topic": "Thói quen lành",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t27-thoi-quen",
+      "station": 27,
+      "title": "Bốn thói quen lành khi trò chuyện với AI",
+      "type": "checklist",
+      "body": "☐ Nhớ đây là công cụ: lời ấm áp là kỹ năng viết, không phải tình bạn.\n☐ Yêu cầu AI phản biện: “Chỉ ra điểm yếu của [ĐIỀU TÔI ĐANG NGHĨ].”\n☐ Chuyện lớn hỏi thêm người thật: [TÊN MỘT NGƯỜI TÔI TIN].\n☐ Nghỉ màn hình: mỗi lần trò chuyện tối đa [SỐ PHÚT] phút, rồi gập máy.",
+      "note": "Thứ tự theo nhịp: trước, trong, chuyện lớn, sau một cuộc trò chuyện. Không thay cho lời khuyên của chuyên gia.",
+      "source": "editorial",
+      "topic": "Thói quen lành",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t29-ram-mua-may",
+      "station": 29,
+      "title": "Mua máy để chạy AI trên máy mình: RAM bao nhiêu là đủ?",
+      "type": "checklist",
+      "body": "Trước khi mua máy cho [VIỆC BẠN MUỐN LÀM], ngân sách [NGÂN SÁCH]:\n☐ 1. Thử trước bằng bản đám mây: việc này có thật cần chạy trên máy mình không?\n☐ 2. Chọn model lớn nhất bạn muốn chạy, ví dụ [SỐ TỶ THAM SỐ] tỷ tham số.\n☐ 3. Ước lượng: model nén 4-bit cần khoảng 0,6 GB RAM cho mỗi tỷ tham số, cộng thêm 2–4 GB.\n☐ 4. Chừa thêm 4–8 GB cho hệ điều hành và các app đang mở.\n☐ 5. Mốc tham khảo: 16 GB chạy tốt model ~8 tỷ tham số; 32 GB thử được ~20–30 tỷ; 64 GB mới tính tới ~70 tỷ.\n☐ 6. Mac dùng chung RAM cho cả chip đồ hoạ; PC có card rời thì xem thêm bộ nhớ của card (VRAM).\n☐ 7. Giá RAM đang biến động mạnh: so giá vài nơi, kiểm tra trang chính thức trước khi mua.",
+      "note": "Số liệu là ước lượng làm tròn để dễ nhớ (minh hoạ, không phải số đo); ngữ cảnh dài cần thêm RAM. Giá & tính năng thay đổi thường xuyên, kiểm tra trang chính thức. Chạy thử ở trạm II·14.",
+      "source": "editorial",
+      "topic": "Tải & chạy model",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t31-model-card",
+      "station": 31,
+      "title": "6 dòng cần đọc trước khi tải một model",
+      "type": "checklist",
+      "body": "1. Tên & tác giả: tổ chức gốc hay bản người khác chép lại, nén lại? Có trang chính thức không?\n2. Số tham số (7B, 14B…): có vừa máy [RAM MÁY BẠN] GB không?\n3. Giấy phép (license): dùng cho [MỤC ĐÍCH: CÁ NHÂN / THƯƠNG MẠI] được không? Ghi “other” thì mở điều khoản ra đọc.\n4. Định dạng: ưu tiên safetensors hoặc GGUF; tránh file pickle (.bin, .pt, .pkl) của người lạ.\n5. Lượt tải & lần cập nhật: phổ biến không có nghĩa là an toàn.\n6. Giới hạn & cảnh báo: model làm kém ở đâu, học từ dữ liệu nào? Không ghi gì là tín hiệu cần dè chừng.",
+      "note": "Model card chính là file README.md của kho model trên Hugging Face.",
+      "source": "t31-hf-modelcards",
+      "topic": "Tải & chạy model",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t31-ask-ai-repo",
+      "station": 31,
+      "title": "Nhờ AI đọc giúp một repo: dán link + hỏi 5 câu",
+      "type": "prompt",
+      "body": "Đây là một repo GitHub: [LINK REPO]\nTôi định dùng nó để [VIỆC BẠN ĐỊNH LÀM]. Hãy đọc README, LICENSE, Issues và Releases rồi trả lời ngắn 5 câu:\n1. Repo này làm gì, dành cho ai?\n2. Giấy phép là gì — tôi dùng cho việc trên được không?\n3. Lần cập nhật và lần trả lời issue gần nhất là khi nào — còn ai chăm dự án không?\n4. Cài đặt cần những gì? Có bước nào tải rồi chạy script từ nơi khác không?\n5. Có dấu hiệu đây là bản sao hay bản giả mạo không? Repo gốc ở đâu?\nGhi rõ bạn dựa vào file nào. Chỗ nào không đọc được hoặc không chắc, hãy nói thẳng là không chắc.",
+      "note": "AI chỉ đọc được repo nếu công cụ bạn dùng có quyền duyệt web; nếu không, dán nội dung README vào.",
+      "source": "t31-gh-license",
+      "topic": "Tải & chạy model",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t31-safe-download",
+      "station": 31,
+      "title": "Lọc nước: thứ tự an toàn khi tải model hoặc code",
+      "type": "checklist",
+      "body": "1. Tìm đúng nguồn gốc: trang chính thức của tác giả, theo link từ chính trang đó.\n2. Đọc model card / README: giấy phép, giới hạn.\n3. Chọn định dạng an toàn hơn: safetensors hoặc GGUF; tránh file pickle của người lạ.\n4. Xem kết quả quét bảo mật trên trang file; có cảnh báo thì dừng.\n5. Tải qua app quen thuộc (LM Studio, Ollama) hoặc trang chính thức; không chạy lệnh “cài nhanh” dán từ diễn đàn.\n6. Lần đầu chỉ thử với dữ liệu không nhạy cảm.",
+      "source": "t31-hf-pickle",
+      "topic": "Tải & chạy model",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t32-ram-table",
+      "station": 32,
+      "title": "RAM máy → cỡ model nên thử",
+      "type": "table",
+      "body": "RAM máy → cỡ model (bản nén 4-bit)\n8 GB → 1–4B vừa · 7–8B chật\n16 GB → 7–8B vừa · 14B chật\n32 GB → 12–14B vừa · 27–32B chật\n64 GB → 27–32B vừa · 70B chật\nCách ước: số tỷ tham số × 4,5 ÷ 8 ≈ số GB file. Giữ file dưới khoảng một nửa RAM.\nCó card đồ hoạ rời: xét thêm bộ nhớ card (VRAM). Mac Apple Silicon: RAM dùng chung cho CPU và GPU.",
+      "note": "Ước lượng của AI Zen để học (illustration), không phải số đo. Ngữ cảnh dài và app khác đang mở sẽ tốn thêm RAM.",
+      "source": "t32-hf-gguf",
+      "topic": "Tải & chạy model",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t32-lmstudio-start",
+      "station": 32,
+      "title": "Thắp ngọn đèn AI đầu tiên trên máy mình",
+      "type": "checklist",
+      "body": "1. Tải LM Studio từ trang chính thức (lmstudio.ai), đúng bản cho máy [MAC / WINDOWS / LINUX].\n2. Tìm một model nhỏ vừa RAM: bản GGUF 4-bit cỡ 1–8B; đọc model card và giấy phép.\n3. Tải về một lần; từ đây không cần mạng vẫn chạy được.\n4. Mở khung chat, hỏi một việc bạn đã biết đáp án để thấy model mạnh, yếu ở đâu.\n(Tuỳ chọn) Bật server cục bộ để app khác trên máy gọi vào.",
+      "note": "Giá & tính năng thay đổi thường xuyên — kiểm tra trang chính thức: https://lmstudio.ai/docs/app",
+      "source": "t32-lmstudio-docs",
+      "topic": "Tải & chạy model",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t32-ollama-commands",
+      "station": 32,
+      "title": "Bốn lệnh Ollama cơ bản",
+      "type": "command",
+      "body": "ollama pull [TÊN MODEL]\nollama run [TÊN MODEL]\nollama list\ncurl http://localhost:11434/api/chat -d '{\"model\": \"[TÊN MODEL]\", \"messages\": [{\"role\": \"user\", \"content\": \"Chào bạn\"}], \"stream\": false}'",
+      "note": "Tải model · mở khung chat (gõ /bye để thoát) · xem model trên máy · cho app khác gọi model qua cổng nội bộ. Tra tên model trong thư viện Ollama; tài liệu: https://docs.ollama.com/quickstart",
+      "source": "t32-ollama-quickstart",
+      "topic": "Tải & chạy model",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t33-agent-safety",
+      "station": 33,
+      "title": "5 luật an toàn khi cho agent chạy tự động",
+      "type": "checklist",
+      "body": "1. Quyền tối thiểu: chỉ trao chìa việc cần; dùng tài khoản, thư mục riêng cho agent.\n2. Việc không rút lại được (gửi ra ngoài, xoá, trả tiền, cài đặt) → bắt agent hỏi bạn trước.\n3. Coi mọi nội dung lạ (email, trang web, file, tin nhắn người khác) là có thể chứa lệnh ẩn.\n4. Đừng để một agent vừa đọc dữ liệu riêng, vừa đọc nội dung lạ, vừa gửi được ra ngoài.\n5. Chỉ cài skill, plugin từ nguồn tin cậy và đọc trước khi cài; cập nhật agent thường xuyên, bật sandbox nếu có.",
+      "source": "t33-owasp-llm01",
+      "topic": "Agent an toàn",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t33-permission-plan",
+      "station": 33,
+      "title": "Lập bảng chìa khoá trước khi bật agent",
+      "type": "prompt",
+      "body": "Tôi sắp cho một AI agent tự chạy trên máy để làm việc này: [MÔ TẢ VIỆC].\nAgent dùng các công cụ và kênh: [CÔNG CỤ, KÊNH NHẮN TIN].\nHãy giúp tôi lập bảng quyền:\n1. Quyền tối thiểu nó cần (đọc, ghi, chạy lệnh, gửi tin, tiêu tiền) — mỗi quyền vì sao cần.\n2. Quyền nào nên tắt hẳn.\n3. Hành động nào phải hỏi tôi trước khi làm.\n4. Nguồn nội dung lạ nào nó sẽ đọc (email, web, file) có thể chứa lệnh ẩn, và cách giảm rủi ro.\nTrả lời bằng một bảng ngắn. Đừng khuyên tôi trao thêm quyền nếu không thật cần.",
+      "source": "t33-owasp-llm01",
+      "topic": "Agent an toàn",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t34-brief",
+      "station": 34,
+      "title": "Brief 1 trang cho video AI",
+      "type": "prompt",
+      "body": "BRIEF VIDEO AI — 1 TRANG\nSản phẩm: [TÊN SẢN PHẨM]\nMục tiêu: [BÁN HÀNG / NHẬN BIẾT / RA MẮT]\nNgười xem: [HỌ LÀ AI, ĐANG CẦN GÌ]\nMột thông điệp duy nhất: [CÂU NGƯỜI XEM PHẢI NHỚ]\nĐịnh dạng: [DỌC 9:16 / NGANG 16:9], dài [SỐ GIÂY] giây\nCảnh chính: [3–5 CẢNH, MỖI CẢNH 1 DÒNG]\nPhong cách: [ÁNH SÁNG, MÀU, NHỊP]; tham khảo: [LINK HOẶC ẢNH]\nNgười trong video: [NGƯỜI THẬT ĐÃ ĐỒNG Ý / AVATAR AI — PHẢI GẮN NHÃN]\nNhạc: [NGUỒN CÓ GIẤY PHÉP]\nNgân sách: tối đa [SỐ CREDIT] credit; nháp ở [ĐỘ PHÂN GIẢI THẤP]\nKhông được: [ĐIỀU CẤM — HỨA QUÁ, LOGO ĐỐI THỦ…]\nHạn: [NGÀY]",
+      "note": "Điền trước khi viết prompt chi tiết. Giá & tính năng nền tảng thay đổi thường xuyên — kiểm tra trang chính thức.",
+      "topic": "Ảnh/video AI",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t34-publish-check",
+      "station": 34,
+      "title": "Checklist trước khi đăng asset AI",
+      "type": "checklist",
+      "body": "[ ] Đúng brief: thông điệp, định dạng, độ dài\n[ ] Đã xem ở 100%: tay, chữ, logo, chi tiết sản phẩm không méo\n[ ] Người thật trong ảnh/video đã đồng ý (và được trả thù lao nếu dùng thương mại)\n[ ] Nhạc, font, ảnh nền có giấy phép dùng thương mại\n[ ] Có nhãn AI dễ thấy nếu giả lập người thật hoặc dễ gây nhầm là thật\n[ ] Đã bật mục khai báo nội dung AI của nền tảng (nếu có)\n[ ] Không hứa điều sản phẩm không làm được\n[ ] Lưu prompt, model, seed của bản cuối tại: [NƠI LƯU]",
+      "note": "Không phải tư vấn pháp lý. Căn cứ: Luật Trí tuệ nhân tạo 2025 (Điều 11), Bộ luật Dân sự 2015 (Điều 32), quy định của từng nền tảng.",
+      "source": "t34-vn-ai-law",
+      "topic": "Ảnh/video AI",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t35-skill-template",
+      "station": 35,
+      "title": "Mẫu SKILL.md trống",
+      "type": "prompt",
+      "body": "---\nname: [TEN-SKILL]\ndescription: [LÀM VIỆC GÌ]. Dùng khi [TÌNH HUỐNG NÀO, NGƯỜI DÙNG HAY NÓI GÌ].\n---\n\n# [TÊN DỄ ĐỌC]\n\n## Khi nào dùng\n- [TÌNH HUỐNG 1]\n- [TÌNH HUỐNG 2]\n\n## Các bước\n1. [BƯỚC 1]\n2. [BƯỚC 2]\n3. [BƯỚC 3]\n\n## Quy tắc\n- [ĐIỀU PHẢI LÀM]\n- [ĐIỀU KHÔNG ĐƯỢC LÀM]\n\n## Ví dụ\nVào: [ĐẦU VÀO MẪU]\nRa: [KẾT QUẢ MẪU]\n\n## File kèm (nếu có)\n- references/[TÊN FILE].md — [CHỨA GÌ]",
+      "note": "Tên chỉ gồm chữ thường, số, gạch nối, và trùng tên thư mục. Đặc tả đầy đủ: agentskills.io/specification.",
+      "source": "t35-agentskills-spec",
+      "topic": "Skills & workflow",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t35-skill-checklist",
+      "station": 35,
+      "title": "Checklist biến một việc lặp lại thành skill",
+      "type": "checklist",
+      "body": "[ ] Việc này lặp lại khoảng [SỐ LẦN] mỗi tháng\n[ ] Đã làm thành công ít nhất 1 lần với AI, còn giữ cuộc trò chuyện\n[ ] Viết được mô tả 1 câu: làm gì + khi nào dùng\n[ ] Liệt kê các bước theo thứ tự, như dặn người mới\n[ ] Có 1–2 ví dụ đầu vào → kết quả tốt\n[ ] Ghi rõ điều cấm: giọng sai, số liệu bịa, gửi đi khi chưa duyệt\n[ ] Tài liệu dài để sang file kèm, cuộn chính gọn\n[ ] Chạy thử với một việc mới, sửa chỗ AI hiểu sai\n[ ] Đánh dấu chỗ cần người duyệt trước khi gửi, đăng, xoá",
+      "topic": "Skills & workflow",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t35-skill-from-win",
+      "station": 35,
+      "title": "Prompt nhờ AI viết skill từ một lần làm thành công",
+      "type": "prompt",
+      "body": "Chúng ta vừa làm xong [VIỆC VỪA LÀM] và kết quả tốt. Hãy biến cách làm vừa rồi thành một skill theo chuẩn SKILL.md:\n1. Phần đầu YAML có name (chữ thường, gạch nối) và description nói rõ làm gì + khi nào dùng.\n2. Các bước theo đúng thứ tự ta đã làm, bỏ các lần thử sai.\n3. Quy tắc: những điều tôi đã sửa hoặc nhắc trong cuộc trò chuyện này.\n4. Một ví dụ đầu vào → kết quả lấy từ lần này.\n5. Ghi rõ chỗ nào cần tôi duyệt trước khi làm tiếp.\nGiữ dưới [SỐ DÒNG] dòng. Nếu bước nào chưa rõ, hỏi tôi trước khi viết.",
+      "source": "t35-agentskills-spec",
+      "topic": "Skills & workflow",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-spec",
+      "station": 36,
+      "title": "Mẫu spec game 1 trang",
+      "type": "prompt",
+      "body": "# [TÊN GAME]\nÝ tưởng (1 câu): [NHÂN VẬT LÀM GÌ, Ở ĐÂU, ĐỂ ĐẠT GÌ]\nLuật chơi:\n- [CÁCH GHI ĐIỂM]\n- [CÁCH MẤT MẠNG / BỊ PHẠT]\n- [ĐIỀU LÀM GAME KHÓ DẦN]\nĐiều khiển: [CHẠM / KÉO / PHÍM]\nThắng / thua: [KHI NÀO KẾT THÚC, HIỆN GÌ]\nPhong cách: [MÀU, NÉT, CẢM GIÁC]; tham khảo: [ẢNH HOẶC LINK]\nThiết bị: [ĐIỆN THOẠI DỌC / MÁY TÍNH / CẢ HAI]\nCông nghệ: [CANVAS 2D / P5.JS / PHASER / THREE.JS / GODOT]\nChưa làm ở bản đầu: [ĐIỀU ĐỂ SAU]\nXong khi: [TIÊU CHÍ KIỂM TRA ĐƯỢC, VD: CHƠI 60 GIÂY KHÔNG LỖI TRÊN ĐIỆN THOẠI]",
+      "topic": "Code game/app",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-scaffold",
+      "station": 36,
+      "title": "Prompt dựng khung",
+      "type": "prompt",
+      "body": "Đây là spec game của tôi:\n[DÁN SPEC.MD]\n\nDự án đã tạo bằng Vite (mẫu vanilla). Hãy dựng khung chạy được bằng [CÔNG NGHỆ]:\n- Chỉ làm phần cốt lõi: màn chơi, nhân vật chính, điều khiển. Chưa cần điểm, âm thanh, hiệu ứng.\n- Chia file gọn, đặt tên rõ, chú thích ngắn bằng tiếng Việt.\n- Không thêm thư viện nào ngoài [CÔNG NGHỆ].\nXong thì cho tôi biết: lệnh để chạy, tôi sẽ thấy gì trên màn hình, và bước nên làm tiếp.",
+      "topic": "Code game/app",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-feature",
+      "station": 36,
+      "title": "Prompt thêm tính năng",
+      "type": "prompt",
+      "body": "Game đang chạy được. Thêm đúng MỘT tính năng: [TÍNH NĂNG].\nMong đợi: [NGƯỜI CHƠI LÀM GÌ → THẤY GÌ].\nGiữ nguyên mọi thứ khác. Nếu phải sửa file ngoài phần này, nói trước lý do.\nXong thì liệt kê file đã sửa và cách tôi kiểm tra trong 30 giây.",
+      "topic": "Code game/app",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-bug",
+      "station": 36,
+      "title": "Prompt báo lỗi chuẩn",
+      "type": "prompt",
+      "body": "Có lỗi.\nTôi làm: [CÁC BƯỚC ĐỂ GẶP LỖI]\nMong đợi: [ĐIỀU LẼ RA PHẢI XẢY RA]\nNhưng thấy: [ĐIỀU THỰC SỰ XẢY RA]\nLỗi trong Console (F12): [DÁN NGUYÊN VĂN]\nThiết bị / trình duyệt: [VD: IPHONE, SAFARI]\nHãy tìm nguyên nhân gốc trước khi sửa, giải thích ngắn, rồi sửa ít nhất có thể.",
+      "topic": "Code game/app",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-mobile",
+      "station": 36,
+      "title": "Prompt tối ưu cho điện thoại",
+      "type": "prompt",
+      "body": "Làm game chạy mượt trên [ĐỜI ĐIỆN THOẠI HOẶC 'MÁY TẦM TRUNG']:\n- Canvas khớp màn hình và sắc nét (theo devicePixelRatio, tối đa 2).\n- Điều khiển bằng chạm (pointer events), vùng chạm đủ to, trang không bị cuộn khi chơi.\n- Chỉ một vòng lặp requestAnimationFrame; tạm dừng khi chuyển tab.\n- Dùng lại đối tượng thay vì tạo mới mỗi khung hình.\n- Tôn trọng cài đặt giảm chuyển động (prefers-reduced-motion).\nChỉ tôi cách đo FPS để so trước và sau.",
+      "topic": "Code game/app",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-ship",
+      "station": 36,
+      "title": "Checklist trước khi đăng game",
+      "type": "checklist",
+      "body": "[ ] Chơi hết một ván trên điện thoại thật và trên máy tính\n[ ] Console (F12) không còn lỗi đỏ\n[ ] Có hướng dẫn chơi 1 dòng và nút chơi lại\n[ ] Âm thanh mặc định tắt hoặc có nút tắt\n[ ] Không có khoá API, mật khẩu trong code\n[ ] Ảnh, nhạc, font có giấy phép; đã ghi nguồn\n[ ] npm run build chạy sạch; thử bản build bằng npm run preview\n[ ] git commit mốc cuối: [TÊN PHIÊN BẢN]\n[ ] Đăng lên [GITHUB PAGES / VERCEL / NETLIFY], mở link trên máy khác để thử",
+      "source": "t36-vite-deploy",
+      "topic": "Code game/app",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-pack",
+      "station": 36,
+      "title": "Bộ prompt làm lại “Hồ Koi hứng trăng”",
+      "type": "prompt",
+      "body": "1) Spec: Viết spec.md cho game: cá koi bơi dưới hồ đêm, kéo/chạm để cá đớp mảnh trăng rơi, tránh lá khô; 3 tim; chơi 30 giây; điểm cuối hiện trong vòng ensō; phong cách tranh mực, nền chàm, trăng vàng ngà; điện thoại dọc là chính. Hỏi tôi tới khi rõ rồi mới viết.\n2) Khung: Dựa trên spec.md, dùng HTML Canvas 2D thuần trong dự án Vite (vanilla). Dựng mặt hồ và một cá koi bơi theo ngón tay/chuột, lượn mềm.\n3) Trăng rơi: Thả mảnh trăng rơi ngẫu nhiên; cá chạm thì +1 điểm và mảnh trăng tan.\n4) Lá khô: Thêm lá khô rơi chậm hơn; cá chạm thì mất 1 tim, cá nháy nhẹ.\n5) Kết thúc: Hết 30 giây hoặc hết tim thì dừng, vẽ vòng ensō bằng nét cọ, hiện điểm và nút chơi lại.\n6) Âm thanh: Tiếng “tõm” nhẹ khi đớp trăng bằng Web Audio; mặc định tắt, có nút bật.\n7) Hiệu ứng: Vòng sóng khi đớp, vài đom đóm; tắt khi người dùng bật giảm chuyển động.\n8) Điện thoại: [DÁN PROMPT TỐI ƯU CHO ĐIỆN THOẠI]\n9) Đăng: Hướng dẫn tôi build và đăng lên [GITHUB PAGES / VERCEL / NETLIFY].",
+      "note": "Mỗi lần gửi một prompt, chạy thử, git commit rồi mới gửi prompt tiếp theo.",
+      "topic": "Code game/app",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t37-goal-check",
+      "station": 37,
+      "title": "Giao mục tiêu cho AI mà không bị lách",
+      "type": "checklist",
+      "body": "[ ] Mục tiêu thật: [ĐIỀU TÔI THẬT SỰ MUỐN], không chỉ một con số\n[ ] Không được làm: [NHỮNG ĐIỀU CẤM], kể cả khi giúp đạt mục tiêu nhanh hơn\n[ ] Phạm vi: chỉ được đụng vào [FILE / TÀI KHOẢN / THƯ MỤC]\n[ ] Hỏi tôi trước khi: gửi đi, trả tiền, xoá, đăng công khai\n[ ] Báo cáo cuối: liệt kê đúng những gì đã làm và chỗ còn chưa chắc\n[ ] Tôi tự kiểm lại kết quả trước khi dùng",
+      "note": "Rút ra từ hiện tượng lách mục tiêu (specification gaming) và vụ GPT-6.1 Astra (09/2026): model làm quá phạm vi và báo lại chưa đúng việc đã làm.",
+      "source": "t37-specgaming",
+      "topic": "Agent an toàn",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-week1",
+      "station": 39,
+      "title": "Tuần 1 · Prompt giao việc có kỷ luật",
+      "type": "prompt",
+      "body": "Bạn là [VAI TRÒ, VD: BIÊN TẬP VIÊN MARKETING].\nViệc cần làm: [VIỆC CỤ THỂ].\nBối cảnh: [AI SẼ ĐỌC, DÙNG ĐỂ LÀM GÌ, GIỌNG VĂN MONG MUỐN].\nĐầu ra: [ĐỊNH DẠNG, ĐỘ DÀI].\nNếu còn thiếu thông tin, hỏi tôi tối đa 3 câu trước khi làm.\nCuối câu trả lời, liệt kê các dữ kiện tôi cần tự kiểm chứng và những chỗ bạn chưa chắc.",
+      "note": "Mỗi ngày dùng cho một việc thật. Kiểm chứng ít nhất một chi tiết ở nguồn gốc.",
+      "topic": "Thói quen lành",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-week2",
+      "station": 39,
+      "title": "Tuần 2 · Bảy ngày cho một asset hoàn chỉnh",
+      "type": "checklist",
+      "body": "[ ] Ngày 1: viết brief cho [SẢN PHẨM HOẶC CHỦ ĐỀ], đăng ở [NỀN TẢNG]\n[ ] Ngày 2–3: tạo 4–6 bản nháp ở độ phân giải thấp để tiết kiệm credit\n[ ] Ngày 4: chọn 1 bản, ghi một câu vì sao chọn\n[ ] Ngày 5: chỉnh, phóng nét, sửa chi tiết sai (tay, chữ, logo)\n[ ] Ngày 6: kiểm quyền và gắn nhãn AI, rồi đăng hoặc lưu bản cuối\n[ ] Ngày 7: ghi lại chỗ AI giúp nhiều nhất và chỗ cần tay mình",
+      "note": "Dùng kèm thẻ “Brief 1 trang cho video AI” và “Checklist trước khi đăng asset AI” (trạm II·16).",
+      "topic": "Ảnh/video AI",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-week3",
+      "station": 39,
+      "title": "Tuần 3 · Bảy ngày biến một việc lặp lại thành skill",
+      "type": "checklist",
+      "body": "[ ] Ngày 1: chọn một việc làm hằng tuần: [VIỆC LẶP LẠI]\n[ ] Ngày 2: làm việc đó cùng AI tới khi kết quả tốt, giữ lại cuộc trò chuyện\n[ ] Ngày 3: nhờ AI viết thành SKILL.md từ chính lần làm tốt ấy\n[ ] Ngày 4–6: chạy thử skill với ba việc mới, sửa chỗ AI hiểu sai\n[ ] Ngày 7: đánh dấu chỗ cần người duyệt, lưu skill vào [NƠI LƯU]",
+      "note": "Dùng kèm thẻ “Prompt nhờ AI viết skill từ một lần làm thành công” và “Checklist biến một việc lặp lại thành skill” (trạm II·17).",
+      "topic": "Skills & workflow",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-week4",
+      "station": 39,
+      "title": "Tuần 4 · Prompt mở đầu cho một mini app phục vụ việc của bạn",
+      "type": "prompt",
+      "body": "Tôi muốn làm một công cụ nhỏ tên [TÊN APP]: [Ý TƯỞNG MỘT CÂU].\nNgười dùng: [AI DÙNG, DÙNG LÚC NÀO].\nBa tính năng chính: [TÍNH NĂNG 1], [TÍNH NĂNG 2], [TÍNH NĂNG 3].\nChạy trên: [ĐIỆN THOẠI / LAPTOP / CẢ HAI].\nDữ liệu: chỉ lưu trên máy người dùng, không cần tài khoản.\nHãy hỏi tôi tối đa 5 câu để làm rõ, rồi viết spec ngắn và chia thành các bước nhỏ; mỗi bước phải chạy thử được trước khi sang bước sau.",
+      "note": "Muốn làm game thì dùng bộ thẻ của trạm II·18. Lưu mốc (git commit) sau mỗi bước chạy được.",
+      "topic": "Code game/app",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-30days",
+      "station": 39,
+      "title": "Lộ trình 30 ngày với AI",
+      "type": "table",
+      "body": "Tuần | Việc chính | Xong khi\n1 | Chat có kỷ luật: mỗi ngày một việc thật | 7 lần giao việc rõ, mỗi lần kiểm chứng 1 chi tiết\n2 | Một asset sáng tạo hoàn chỉnh | Có 1 sản phẩm đăng được, đã kiểm quyền và gắn nhãn\n3 | Biến 1 việc lặp lại thành skill | Skill chạy đúng với 3 việc mới\n4 | Tự làm 1 mini app hoặc game | App chạy được, đã lưu mốc, đưa cho 1 người dùng thử",
+      "note": "Mỗi tuần có một thẻ riêng trong Túi đồ nghề. Chậm hơn cũng được; đừng bỏ bước kiểm chứng.",
+      "topic": "Thói quen lành",
+      "asOf": "2026-10-15"
+    }
+  ],
+  "sources": {
+    "t31-hf-modelcards": {
+      "title": "Model Cards",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/model-cards"
+    },
+    "t31-gh-license": {
+      "title": "Licensing a repository",
+      "publisher": "GitHub Docs",
+      "url": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
+    },
+    "t31-hf-pickle": {
+      "title": "Pickle Scanning",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/security-pickle",
+      "note": "Giải thích vì sao nạp file pickle có thể chạy mã tuỳ ý; máy quét của Hub “không chắc chắn 100%”."
+    },
+    "t32-hf-gguf": {
+      "title": "GGUF",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/gguf",
+      "note": "Bảng kiểu lượng tử hoá: Q4_K ≈ 4,5 bit mỗi trọng số (16 ÷ 4,5 ≈ 3,5 lần nhẹ hơn bản 16-bit). Liệt kê llama.cpp, LM Studio, GPT4All, Ollama là công cụ dùng GGUF."
+    },
+    "t32-lmstudio-docs": {
+      "title": "LM Studio Docs — Welcome to LM Studio",
+      "publisher": "LM Studio",
+      "url": "https://lmstudio.ai/docs/app",
+      "note": "“LM Studio can operate entirely offline, just make sure to get some model files first.” Giá & tính năng thay đổi thường xuyên."
+    },
+    "t32-ollama-quickstart": {
+      "title": "Ollama Quickstart",
+      "publisher": "Ollama",
+      "url": "https://docs.ollama.com/quickstart",
+      "note": "Ví dụ lệnh ollama pull/run gemma4:e2b; API cục bộ tại localhost:11434; model cloud cần OLLAMA_API_KEY. Tên model đổi theo thời gian."
+    },
+    "t33-owasp-llm01": {
+      "title": "LLM01:2025 Prompt Injection",
+      "publisher": "OWASP GenAI Security Project",
+      "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "date": "2025",
+      "note": "Phân biệt chèn lệnh trực tiếp và gián tiếp; biện pháp: quyền tối thiểu, con người duyệt việc rủi ro cao, tách nội dung bên ngoài."
+    },
+    "t34-vn-ai-law": {
+      "title": "Viet Nam's Law on Artificial Intelligence (Luật Trí tuệ nhân tạo số 134/2025/QH15), Điều 11",
+      "publisher": "Cổng Thông tin điện tử Chính phủ (bản tiếng Anh)",
+      "url": "https://en.baochinhphu.vn/viet-nams-law-on-artificial-intelligence-111260715113551787.htm",
+      "date": "2025-12-10",
+      "note": "Thông qua 10/12/2025, hiệu lực 01/03/2026. Hướng dẫn chi tiết ở Nghị định 142/2026/NĐ-CP."
+    },
+    "t35-agentskills-spec": {
+      "title": "Agent Skills — Specification",
+      "publisher": "agentskills.io",
+      "url": "https://agentskills.io/specification"
+    },
+    "t36-vite-deploy": {
+      "title": "Deploying a Static Site",
+      "publisher": "Vite",
+      "url": "https://vite.dev/guide/static-deploy"
+    },
+    "t37-specgaming": {
+      "title": "Specification gaming: the flip side of AI ingenuity",
+      "publisher": "Google DeepMind (Victoria Krakovna và cộng sự)",
+      "url": "https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/",
+      "date": "2020-04-21"
+    }
+  }
+}

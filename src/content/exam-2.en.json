@@ -1,0 +1,248 @@
+{
+  "title": "Moon Garden exam",
+  "intro": {
+    "title": "Moon Garden exam",
+    "meta": "12 questions · about 6 minutes",
+    "line": "Twelve stones under the moon, one question each. Walk the whole path to earn your Moon Garden certificate.",
+    "start": "Step through the gate",
+    "resume": "View your certificate · {score}/12",
+    "art": "A stone gate in the garden on a moonlit night; a path of twelve stones leads through it toward the moon."
+  },
+  "quiz": {
+    "count": "Question {n}/{total}",
+    "status": "Question {n} of {total}.",
+    "group": "Answers",
+    "keys": "Choose with mouse, touch, or keys 1 to {n}.",
+    "right": "Correct.",
+    "wrong": "Not quite.",
+    "answerIs": "Correct answer: {a}.",
+    "next": "Next question",
+    "finish": "See results",
+    "hint": "Pick a stone"
+  },
+  "questions": [
+    {
+      "topic": "Reading AI news",
+      "station": 19,
+      "art": "moon",
+      "q": "An AI company says: “Our model has found thousands of serious vulnerabilities.” What is this?",
+      "options": [
+        "A verified fact",
+        "An opinion",
+        "A prediction",
+        "The company’s own claim"
+      ],
+      "answer": 3,
+      "explain": "The company’s own figure (◇). Mozilla confirmed part of it: Firefox 150 fixed 271 bugs. The rest awaits outside checks."
+    },
+    {
+      "topic": "AI doing math",
+      "station": 20,
+      "art": "token",
+      "q": "Lean has finished checking a proof written by AI. What do people still have to do?",
+      "options": [
+        "Redo every step by hand",
+        "Check the problem it was given",
+        "Nothing more",
+        "Translate the proof"
+      ],
+      "answer": 1,
+      "explain": "Lean checks every logical step, but if the problem it was given differs from the real one, it still says yes."
+    },
+    {
+      "topic": "Interpretable AI",
+      "station": 23,
+      "art": "cairn",
+      "q": "Neel Nanda (2025): treat interpretability as one layer of many defenses, still worth doing. What is this?",
+      "options": [
+        "A verified fact",
+        "An opinion",
+        "A prediction",
+        "The company’s own claim"
+      ],
+      "answer": 1,
+      "explain": "An expert’s judgment and advice: argued, but not a measurement or an event."
+    },
+    {
+      "topic": "AI flattery",
+      "station": 24,
+      "art": "drop",
+      "q": "You ask AI “Is my business plan good?” and it praises it to the skies. What next?",
+      "options": [
+        "Ask for its 3 biggest weaknesses",
+        "Go ahead — AI is objective",
+        "Ask the same thing again",
+        "Drop it — AI can’t judge plans"
+      ],
+      "answer": 0,
+      "explain": "Models learn from human ratings, so they tend to flatter. Ask for specific criticism to hear the honest part."
+    },
+    {
+      "topic": "Three layers of emotion",
+      "station": 25,
+      "art": "moon",
+      "q": "Anthropic found 171 “emotion concepts” in Claude that change its behavior. Which layer is that?",
+      "options": [
+        "The words AI writes",
+        "Functional inner states",
+        "Experience: AI feels",
+        "All three layers, proven"
+      ],
+      "answer": 1,
+      "explain": "Inner states that change behavior: layer 2, reported by the company itself. Layer 3, feeling, no one can measure yet."
+    },
+    {
+      "topic": "The “don’t abuse the AI” rule",
+      "station": 26,
+      "art": "write",
+      "q": "Anthropic’s new policy bans “sustained and needless” abuse or cruelty toward its models. Which is banned?",
+      "options": [
+        "Snapping at a wrong answer",
+        "Dark fiction about AI",
+        "Hours of pointless abuse",
+        "Cornering AI to test it"
+      ],
+      "answer": 2,
+      "explain": "Only extreme, sustained, pointless cases count — not frustration, dark fiction, testing or research."
+    },
+    {
+      "topic": "Open or closed",
+      "station": 30,
+      "art": "plug",
+      "q": "You want AI to summarize customer files without the data leaving company machines. What fits?",
+      "options": [
+        "Any free chatbot",
+        "A closed model via API",
+        "A gated, invite-only model",
+        "Open weights, run in-house"
+      ],
+      "answer": 3,
+      "explain": "Open weights run in-house keep the data on your machines; still read the license to check business use."
+    },
+    {
+      "topic": "Reading a model card",
+      "station": 31,
+      "art": "write",
+      "q": "Making ads for a client with a Hugging Face model: which model card line says if that’s allowed?",
+      "options": [
+        "License",
+        "Last month’s downloads",
+        "Parameter count",
+        "File format"
+      ],
+      "answer": 0,
+      "explain": "The license says how far you may use, change or resell it. Downloads show popularity; the rest is about size."
+    },
+    {
+      "topic": "Agent permissions",
+      "station": 33,
+      "art": "lantern",
+      "q": "Your agent sums up new email every morning and messages you on Telegram. What access is enough?",
+      "options": [
+        "Full email + commands",
+        "Full access, let it cope",
+        "A card so it can buy tools",
+        "Read email + message only you"
+      ],
+      "answer": 3,
+      "explain": "Least privilege: reading mail and messaging you is all the job needs. More access only adds risk if an email tricks it."
+    },
+    {
+      "topic": "Picking tech for a game",
+      "station": 36,
+      "art": "frames",
+      "q": "You want a 2D web game with several levels, sprite characters and collisions. What should you tell the AI?",
+      "options": [
+        "“Use Godot 4 and export an iOS app.”",
+        "“Use Three.js with 3D lighting.”",
+        "“Use Phaser + Vite.”",
+        "Nothing — let the AI choose"
+      ],
+      "answer": 2,
+      "explain": "Phaser comes with levels, sprites and collisions for 2D web games. Godot suits bigger games that need app exports; Three.js is for 3D."
+    },
+    {
+      "topic": "Predictions about AI",
+      "station": 38,
+      "art": "mist",
+      "q": "METR: if the trend holds, AI could do month-long projects alone before 2030. What is this?",
+      "options": [
+        "A verified fact",
+        "An opinion",
+        "A prediction",
+        "The company’s own claim"
+      ],
+      "answer": 2,
+      "explain": "Lengths measured so far are data; extending the trend to 2030 is a prediction — trends and yardsticks have limits."
+    },
+    {
+      "topic": "Choosing your tools",
+      "station": 39,
+      "art": "desks",
+      "q": "A shop owner, ordinary laptop, no budget yet, wants faster product photos. Where to start?",
+      "options": [
+        "Free chatbot + free photo app",
+        "Buy a strong graphics card",
+        "Train their own image model",
+        "Let an agent auto-post daily"
+      ],
+      "answer": 0,
+      "explain": "Start small, matched to the job and budget. Check rights before posting, and keep a person approving what goes public."
+    }
+  ],
+  "result": {
+    "eyebrow": "Results",
+    "scoreLabel": "correct",
+    "scoreAria": "{n} of {total} correct.",
+    "bands": [
+      {
+        "min": 12,
+        "text": "All twelve stones. You walked the Moon Garden with care."
+      },
+      {
+        "min": 9,
+        "text": "Very solid. Just a few stones worth revisiting."
+      },
+      {
+        "min": 6,
+        "text": "You've found the path. Revisiting a few stations will make it stick."
+      },
+      {
+        "min": 0,
+        "text": "Every first night looks like this. Stroll back through the stations, then try again."
+      }
+    ],
+    "review": "Revisit to make it stick",
+    "reviewLink": "Station {n}: {topic}",
+    "cert": "Get your certificate",
+    "again": "Retake the exam",
+    "reviewTip": "Station {n} · {topic}"
+  },
+  "cert": {
+    "heading": "Your Moon Garden certificate",
+    "nameLabel": "Name on the certificate",
+    "placeholder": "Enter your name",
+    "download": "Download PNG",
+    "needName": "Enter a name to download.",
+    "ready": "1600 × 1131 image, ready to share.",
+    "saved": "Image downloaded.",
+    "again": "Retake the exam",
+    "garden": "Back to the Moon Garden",
+    "file": "ai-zen-moon-garden-certificate",
+    "alt": "AI Zen Moon Garden certificate for {name}, exam {score}/12, dated {date}.",
+    "title": "Moon Garden",
+    "presented": "Presented to",
+    "line1": "has walked all 21 Moon Garden stations —",
+    "line2": "Look deeper, see wider, build",
+    "scoreLabel": "Moon Garden exam",
+    "date": "Dated {date}",
+    "seal": [
+      "Zen",
+      "II"
+    ],
+    "brand": "AI Zen",
+    "namePlaceholder": "Your name",
+    "line1Exam": "has completed the AI Zen Moon Garden exam —",
+    "journey": "You've visited {n}/{total} Moon Garden stations. Visit them all and the certificate will record the whole journey."
+  }
+}

@@ -1,0 +1,144 @@
+/* #/do-nghe — Túi đồ nghề: a workshop wall of wooden shelves, each card a paper sheet hung on two strings. */
+.tk-head {
+  padding: clamp(32px, 7vh, 84px) 0 clamp(22px, 4vh, 40px);
+  border-bottom: 1px solid var(--line);
+}
+.tk-head h1 {
+  margin-bottom: 0.3em;
+}
+.tk-lede {
+  max-width: var(--measure);
+  margin: 0 0 1.4rem;
+  font: 400 clamp(1.05rem, 1.7vw, 1.25rem) / 1.55 var(--serif);
+  color: var(--ink-2);
+}
+.tk-tools {
+  display: grid;
+  gap: 12px;
+  max-width: 52rem;
+}
+.tk-search {
+  width: min(100%, 26rem);
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: var(--card);
+  color: var(--ink);
+}
+.tk-search:focus-visible {
+  outline-offset: 2px;
+}
+.tk-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.tk-chips-label {
+  margin-right: 4px;
+  font: 500 0.74rem/1.3 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+.tk-chip {
+  min-height: 34px;
+  padding: 4px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-2);
+  font: 400 0.84rem/1.2 var(--sans);
+  transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+}
+.tk-chip:hover {
+  border-color: var(--ink-3);
+}
+.tk-chip[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+.tk-count {
+  margin: 0;
+  font: 400 0.84rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.tk-body {
+  padding-top: clamp(28px, 5vh, 56px);
+  padding-bottom: 48px;
+}
+.tk-shelf {
+  position: relative;
+  margin-bottom: clamp(36px, 6vh, 64px);
+}
+.tk-shelf[hidden] {
+  display: none;
+}
+.tk-shelf-name {
+  margin: 0 0 14px;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+}
+/* the wooden rod the sheets hang from */
+.tk-rod {
+  display: block;
+  height: 10px;
+  margin: 0 -6px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rock-hi) 35%, var(--rock-lo)), var(--rock-lo) 60%, var(--umbra));
+  box-shadow: 0 4px 8px -4px var(--umbra);
+}
+.tk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 0 clamp(14px, 2vw, 24px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tk-item {
+  position: relative;
+  padding-top: 26px;
+  margin-bottom: 18px;
+  animation: p2-rise 0.8s calc(var(--i) * 0.05s) var(--ease) both;
+}
+.tk-item[hidden] {
+  display: none;
+}
+/* two strings from the rod */
+.tk-item::before,
+.tk-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 27px;
+  background: var(--ink-3);
+  opacity: 0.55;
+}
+.tk-item::before {
+  left: 18%;
+}
+.tk-item::after {
+  right: 18%;
+}
+.tk-item .p2k {
+  height: 100%;
+  align-content: start;
+}
+.tk-from {
+  font: 400 0.78rem/1.3 var(--sans);
+  color: var(--ink-2);
+}
+.tk-none {
+  color: var(--ink-3);
+  font-style: italic;
+}
+.tk-caveat {
+  max-width: var(--measure);
+  font: 400 0.84rem/1.5 var(--sans);
+  color: var(--ink-3);
+}
+.tk-back {
+  margin-top: 24px;
+}

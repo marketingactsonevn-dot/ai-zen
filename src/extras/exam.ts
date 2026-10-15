@@ -1,5 +1,6 @@
 import './exam.css'
 import data from '../content/exam.json'
+import data2 from '../content/exam-2.json'
 import { fill, h, s } from '../core/dom'
 import { cssVar, onPrefs, prefs } from '../core/prefs'
 import { gsap } from '../core/anim'
@@ -10,7 +11,7 @@ import { ensoBrush } from '../ui/brush'
 import { setCrumb } from '../ui/topbar'
 import { icon } from '../ui/icons'
 import { progress } from '../core/progress'
-import { stationsOfPart } from '../core/content'
+import { PARTS, displayNo, stationsOfPart } from '../core/content'
 
 /*
  * Bài thi cuối — a stone gate at dawn; ten questions are ten stepping stones through it;
@@ -18,9 +19,11 @@ import { stationsOfPart } from '../core/content'
  * rice-paper certificate (Canvas2D, 1600×1131) you can save as a PNG.
  */
 
-const D = data
+// set by render(): one exam page is mounted at a time (Part 1 = exam.json, Part 2 = exam-2.json)
+let D = data
+let N = D.questions.length
+let PART = 1
 type Q = (typeof data.questions)[number]
-const N = D.questions.length
 type Pt = [number, number]
 type Saved = { name?: string; score?: number; picks?: number[] }
 
@@ -844,18 +847,19 @@ function ensoOn(g: CanvasRenderingContext2D, cx: number, cy: number, R: number, 
   return b
 }
 
-function sealImage(lines: string[]): HTMLCanvasElement {
+/** round: Part 2's seal — a round stamp with a ring cut inside, instead of Part 1's square one. */
+function sealImage(lines: string[], round = false): HTMLCanvasElement {
   const c = document.createElement('canvas')
   c.width = c.height = 200
   const g = c.getContext('2d')!
-  const r = rng(77)
+  const r = rng(round ? 78 : 77)
   const j = () => (r() - 0.5) * 5
   const pts: Pt[] = [[22 + j(), 20 + j()], [100 + j(), 17 + j()], [180 + j(), 21 + j()], [183 + j(), 100 + j()], [179 + j(), 181 + j()], [100 + j(), 184 + j()], [20 + j(), 179 + j()], [17 + j(), 100 + j()]]
   g.fillStyle = PAL.ver
-  g.fill(new Path2D(closed(pts, 1 / 9)))
+  g.fill(new Path2D(round ? blob(100, 100, 86, 86, 9, 0.025, 16) : closed(pts, 1 / 9)))
   g.strokeStyle = PAL.paper
   g.lineWidth = 4.5
-  g.stroke(new Path2D(rr(36, 35, 128, 130, 6)))
+  g.stroke(new Path2D(round ? ell(100, 100, 66, 66) : rr(36, 35, 128, 130, 6)))
   g.fillStyle = PAL.paper
   g.textAlign = 'center'
   g.textBaseline = 'alphabetic'
@@ -922,7 +926,7 @@ const today = () => {
   return `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()}`
 }
 
-/** Everything except the name: paper, frame, title, lines, ensō with the score, seal, the garden of 18 stones. */
+/** Everything except the name: paper, frame, title, lines, ensō with the score, seal, one stone per station of the part. */
 function certBackground(score: number, right: boolean[], date: string, line1: string): HTMLCanvasElement {
   const c = document.createElement('canvas')
   c.width = CW
@@ -938,10 +942,11 @@ function certBackground(score: number, right: boolean[], date: string, line1: st
   g.lineWidth = 1
   g.strokeRect(52, 52, CW - 104, CH - 104)
 
-  // the garden band: 18 stepping stones (18 stations) raked into the sand, two rocks at the end
-  const rs = rng(18)
+  // the garden band: one stepping stone per station of this part, raked into the sand, two rocks at the end
+  const ns = stationsOfPart(PART).length
+  const rs = rng(ns)
   const path: { x: number; y: number; rx: number; ry: number }[] = []
-  for (let i = 0; i < 18; i++) path.push({ x: 150 + i * 59 + (rs() - 0.5) * 12, y: 1016 + Math.sin(i * 0.72 + 0.4) * 13 + (i % 2 ? 5 : -4), rx: 11 + rs() * 7, ry: 0 }); path.forEach((p) => (p.ry = p.rx * (0.36 + rs() * 0.1)))
+  for (let i = 0; i < ns; i++) path.push({ x: 150 + (i * 1003) / (ns - 1) + (rs() - 0.5) * 12, y: 1016 + Math.sin(i * 0.72 + 0.4) * 13 + (i % 2 ? 5 : -4), rx: 11 + rs() * 7, ry: 0 }); path.forEach((p) => (p.ry = p.rx * (0.36 + rs() * 0.1)))
   const big = [{ x: 1326, y: 1010, rx: 60, ry: 25 }, { x: 1432, y: 1034, rx: 31, ry: 12.5 }]
   const obs: Obs[] = [...path, ...big].map((p) => ({ x: p.x, y: p.y + p.ry * 0.1, hw: p.rx * 1.02, hh: p.ry * 1.05 }))
   const rows: number[] = []
@@ -1055,9 +1060,33 @@ function certBackground(score: number, right: boolean[], date: string, line1: st
   g.rotate(-0.06)
   g.globalAlpha = 0.95
   g.globalCompositeOperation = 'multiply'
-  g.drawImage(sealImage(C.seal), -56, -56, 112, 112)
+  g.drawImage(sealImage(C.seal, PART === 2), -56, -56, 112, 112)
   g.restore()
+  if (PART === 2) certMoon(g, 1452, 126, 40)
   return c
+}
+
+/** Vườn Trăng: a pale moon in the top corner — a soft halo, an ivory wash, a hairline of ink, two faint seas. */
+function certMoon(g: CanvasRenderingContext2D, x: number, y: number, R: number) {
+  g.save()
+  const halo = g.createRadialGradient(x, y, R * 0.8, x, y, R * 2.6)
+  halo.addColorStop(0, 'rgba(214,188,120,0.2)')
+  halo.addColorStop(1, 'rgba(214,188,120,0)')
+  g.fillStyle = halo
+  g.fillRect(x - R * 2.6, y - R * 2.6, R * 5.2, R * 5.2)
+  const disc = new Path2D(blob(x, y, R, R, 4, 0.02, 18))
+  const body = g.createRadialGradient(x - R * 0.35, y - R * 0.35, R * 0.1, x, y, R * 1.05)
+  body.addColorStop(0, '#fdf8e8')
+  body.addColorStop(1, '#efe0b4')
+  g.fillStyle = body
+  g.fill(disc)
+  g.fillStyle = 'rgba(160,140,96,0.16)'
+  g.fill(new Path2D(blob(x + R * 0.22, y - R * 0.12, R * 0.34, R * 0.26, 6, 0.2)))
+  g.fill(new Path2D(blob(x - R * 0.3, y + R * 0.32, R * 0.22, R * 0.16, 8, 0.2)))
+  g.strokeStyle = 'rgba(31,29,26,0.3)'
+  g.lineWidth = 1.4
+  g.stroke(disc)
+  g.restore()
 }
 
 function certCompose(out: HTMLCanvasElement, bg: HTMLCanvasElement, name: string) {
@@ -1120,7 +1149,12 @@ function rgbOf(col: string): string {
   return v.replace(/rgba?\(|\)|\s/g, '').split(',').slice(0, 3).join(',')
 }
 
-export function render(root: HTMLElement): () => void {
+export function render(root: HTMLElement, { part = 1 }: { part?: number } = {}): () => void {
+  PART = part
+  D = part === 2 ? data2 : data
+  N = D.questions.length
+  // Part 2 keeps its own result: Part 1's 'exam' key is never touched from here
+  const KEY = part === 2 ? 'exam2' : 'exam'
   setCrumb(D.title)
   const reduced = prefs.reduced
   const sand = h('canvas', { class: 'ex-sand', 'aria-hidden': 'true' })
@@ -1151,7 +1185,7 @@ export function render(root: HTMLElement): () => void {
     return out
   }
 
-  const saved = load<Saved>('exam', {})
+  const saved = load<Saved>(KEY, {})
   let name = typeof saved.name === 'string' ? saved.name.slice(0, 40) : ''
   let picks: number[] = []
   const rightOf = (p: number[]) => D.questions.map((q, i) => p[i] === q.answer)
@@ -1651,7 +1685,7 @@ export function render(root: HTMLElement): () => void {
     const score = right.filter(Boolean).length
     saved.score = score
     saved.picks = picks.slice()
-    save('exam', { ...saved, name })
+    save(KEY, { ...saved, name })
     const el = h('div', { class: 'ex-stage ex-result' })
     // the ensō is painted on a canvas (pressure, flying white, tapered bristles) in the theme's ink
     const cv = h('canvas', { class: 'ex-res-enso', 'aria-hidden': 'true' })
@@ -1674,7 +1708,7 @@ export function render(root: HTMLElement): () => void {
     const scoreEl = h('p', { class: 'ex-res-score', 'aria-hidden': 'true' }, num, h('span', { class: 'ex-res-of' }, `/${N}`), h('span', { class: 'ex-res-l' }, D.result.scoreLabel))
     const rr2 = rng(score * 9 + 3)
     const ring = right.map((ok, i) => {
-      const a = (-90 + i * 36 + (rr2() - 0.5) * 10) * (Math.PI / 180)
+      const a = (-90 + (i * 360) / N + (rr2() - 0.5) * 10) * (Math.PI / 180)
       const rad = 46.5 + (rr2() - 0.5) * 3
       return h('span', { class: `ex-rs${ok ? ' is-right' : ' is-wrong'}`, style: `left:${(50 + Math.cos(a) * rad).toFixed(2)}%;top:${(50 + Math.sin(a) * rad).toFixed(2)}%;--rot:${((rr2() - 0.5) * 30).toFixed(0)}deg` })
     })
@@ -1690,8 +1724,8 @@ export function render(root: HTMLElement): () => void {
       const cap = h('p', { class: 'ex-review-label' }, D.result.review)
       const tip = (t: string) => () => (cap.textContent = t)
       const stones = missed.filter((q) => !seen.has(q.station) && seen.add(q.station)).map((q, i) => {
-        const n = String(q.station).padStart(2, '0')
-        const a = h('a', { class: 'ex-rev', href: `#/tram/${q.station}`, 'aria-label': fill(D.result.reviewLink, { n: q.station, topic: q.topic }), style: `--rot:${(((i * 37) % 19) - 9).toFixed(0)}deg;--dy:${(i % 2 ? 2 : -1)}px` },
+        const n = displayNo(q.station)
+        const a = h('a', { class: 'ex-rev', href: `#/tram/${q.station}`, 'aria-label': fill(D.result.reviewLink, { n: PART === 1 ? q.station : n, topic: q.topic }), style: `--rot:${(((i * 37) % 19) - 9).toFixed(0)}deg;--dy:${(i % 2 ? 2 : -1)}px` },
           h('span', { class: 'ex-rev-n', 'aria-hidden': 'true' }, n))
         const on = tip(fill(D.result.reviewTip, { n, topic: q.topic }))
         const off = tip(D.result.review)
@@ -1758,10 +1792,10 @@ export function render(root: HTMLElement): () => void {
     const right = rightOf(picks)
     const score = right.filter(Boolean).length
     const date = today()
-    // honest: the "18 stations" line only when the visitor really walked them all
-    const part1 = stationsOfPart(1)
-    const visited = part1.filter((st) => progress.isVisited(st.id)).length
-    const whole = visited >= part1.length
+    // honest: the "all stations" line only when the visitor really walked every station of this part
+    const sts = stationsOfPart(PART)
+    const visited = sts.filter((st) => progress.isVisited(st.id)).length
+    const whole = visited >= sts.length
     const el = h('div', { class: 'ex-stage ex-cert' })
     const canvas = h('canvas', { class: 'ex-cert-canvas', width: CW, height: CH, role: 'img' })
     const paper = h('div', { class: 'ex-cert-paper' }, canvas)
@@ -1772,7 +1806,7 @@ export function render(root: HTMLElement): () => void {
     const dlIcon = s('svg', { viewBox: '0 0 24 24', class: 'ex-dl-ico', 'aria-hidden': 'true' }, s('path', { d: 'M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14' }))
     const dl = h('button', { class: 'btn primary ex-dl', type: 'button' }, dlIcon, D.cert.download)
     const hint = h('p', { class: 'ex-cert-hint', id: 'ex-cert-hint', 'aria-live': 'polite' })
-    const journey = whole ? null : h('p', { class: 'ex-cert-note' }, fill(D.cert.journey, { n: visited, total: part1.length }))
+    const journey = whole ? null : h('p', { class: 'ex-cert-note' }, fill(D.cert.journey, { n: visited, total: sts.length }))
     const again = h('button', { class: 'btn ghost', type: 'button' }, D.cert.again)
     again.addEventListener('click', () => go(quizStage()))
     const side = h('div', { class: 'ex-cert-side' },
@@ -1780,7 +1814,7 @@ export function render(root: HTMLElement): () => void {
       h('label', { class: 'ex-name-label', for: 'ex-name' }, D.cert.nameLabel),
       h('div', { class: 'ex-name' }, input),
       h('div', { class: 'ex-dl-wrap' }, dl), hint, journey,
-      h('div', { class: 'ex-actions ex-cert-more' }, again, h('a', { class: 'btn ghost', href: '#/vuon' }, D.cert.garden)))
+      h('div', { class: 'ex-actions ex-cert-more' }, again, h('a', { class: 'btn ghost', href: PARTS.find((p) => p.id === PART)?.route ?? '#/vuon' }, D.cert.garden)))
     el.append(h('div', { class: 'ex-cert-grid' }, view, side))
 
     let bg: HTMLCanvasElement | null = null
@@ -1802,7 +1836,7 @@ export function render(root: HTMLElement): () => void {
       sync()
       if (!frame) frame = requestAnimationFrame(redraw)
       clearTimeout(savedT)
-      savedT = window.setTimeout(() => save('exam', { ...saved, name }), 400)
+      savedT = window.setTimeout(() => save(KEY, { ...saved, name }), 400)
     })
     const download = () => {
       if (!name.trim() || !bg) {
@@ -1868,7 +1902,7 @@ export function render(root: HTMLElement): () => void {
       destroy: () => {
         cancelAnimationFrame(frame)
         clearTimeout(savedT)
-        save('exam', { ...saved, name })
+        save(KEY, { ...saved, name })
       },
     }
   }

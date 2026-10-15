@@ -1,0 +1,572 @@
+{
+  "asOf": "2026-10-15",
+  "items": [
+    {
+      "id": "n-2026-04-glasswing",
+      "date": "2026-04-07",
+      "title": "Claude Mythos Preview: đỉnh núi có rào",
+      "what": "Anthropic công bố Claude Mythos Preview cùng dự án Glasswing, chỉ trao cho 12 đối tác khởi đầu và hơn 40 tổ chức giữ phần mềm quan trọng để tìm và vá lỗ hổng.",
+      "why": "Một phòng lab lớn nói thẳng: mô hình này giỏi tấn công mạng tới mức chưa nên phát hành rộng. Con số “hàng nghìn lỗ hổng” là hãng tự nêu; ngày 07/05/2026, Mozilla báo Firefox 150 vá 271 lỗi do nó tìm ra.",
+      "kind": "fact",
+      "source": "anthropic-glasswing",
+      "claimBy": "Anthropic",
+      "tags": [
+        "models-2026",
+        "gated-release"
+      ]
+    },
+    {
+      "id": "n-2026-04-deepseek-v4",
+      "date": "2026-04-24",
+      "title": "DeepSeek V4 Preview mở trọng số",
+      "what": "DeepSeek công bố bản xem trước V4-Pro (1,6 nghìn tỷ tham số, 49 tỷ tham số hoạt động) và V4-Flash (284 tỷ), mở trọng số trên Hugging Face.",
+      "why": "Một mô hình rất lớn mà ai cũng tải về, chạy thử, kiểm tra được: đỉnh núi không chỉ thuộc về các hãng giữ kín mô hình.",
+      "kind": "fact",
+      "source": "deepseek-v4",
+      "claimBy": "DeepSeek",
+      "tags": [
+        "models-2026",
+        "open-weights"
+      ]
+    },
+    {
+      "id": "n-2026-07-gemini-3-6-flash",
+      "date": "2026-07-21",
+      "title": "Google ra Gemini 3.6 Flash",
+      "what": "Google giới thiệu Gemini 3.6 Flash cùng 3.5 Flash-Lite và 3.5 Flash Cyber; hãng nói 3.6 Flash dùng ít hơn 17% token đầu ra so với 3.5 Flash.",
+      "why": "Cuộc đua không chỉ ở mô hình lớn nhất: bản nhanh, rẻ, tiết kiệm token mới là thứ nhiều người dùng mỗi ngày.",
+      "kind": "fact",
+      "source": "gemini-3-6-flash",
+      "claimBy": "Google",
+      "tags": [
+        "models-2026"
+      ]
+    },
+    {
+      "id": "n-2026-09-gpt-6-astra",
+      "date": "2026-09-03",
+      "title": "OpenAI ra GPT-6 Astra, mở dần từng nhóm",
+      "what": "OpenAI ra GPT-6 Astra, trước hết cho nhóm khách hàng chọn lọc rồi mới mở rộng. Theo system card của hãng, đây là mô hình đầu tiên của OpenAI đạt mức “Critical” về an ninh mạng.",
+      "why": "Thêm một phòng lab chọn phát hành có kiểm soát vì lo năng lực tấn công mạng — một xu hướng của năm 2026.",
+      "kind": "fact",
+      "source": "constellation-gpt6",
+      "claimBy": "OpenAI",
+      "tags": [
+        "models-2026",
+        "gated-release"
+      ]
+    },
+    {
+      "id": "n-2026-09-opus-5-5",
+      "date": "2026-09-22",
+      "title": "Anthropic ra Claude Opus 5.5, rồi Sonnet 5.5",
+      "what": "Anthropic ra Claude Opus 5.5 ngày 22/09 và Sonnet 5.5 ngày 28/09/2026. Hãng nói Opus 5.5 rẻ hơn Opus 5 khoảng 40% với việc thông thường.",
+      "why": "Ví dụ để tập đọc tin: “rẻ hơn 40%” là hãng tự đo ở cài đặt mặc định — nên chờ người dùng và bên ngoài kiểm lại.",
+      "kind": "fact",
+      "source": "anthropic-opus-5-5",
+      "claimBy": "Anthropic",
+      "tags": [
+        "models-2026"
+      ]
+    },
+    {
+      "id": "n-2026-09-navier-stokes",
+      "date": "2026-09-08",
+      "title": "OpenAI công bố chứng minh Navier–Stokes",
+      "what": "OpenAI nói khoảng 10.000 agent chạy trên một mô hình nội bộ đã chứng minh dòng chảy Navier–Stokes có thể “nổ”, kèm bản Lean. Nhóm Buckmaster–Alpöge công bố kết quả gần kề sớm hơn khoảng 12 giờ.",
+      "why": "Nếu đứng vững, đây là lời giải một Bài toán Thiên niên kỷ (giải 1 triệu USD). Viện Clay chỉ xét sau khi bài được đăng và qua ít nhất hai năm.",
+      "kind": "fact",
+      "source": "quanta-ns",
+      "claimBy": "OpenAI",
+      "tags": [
+        "ai-math"
+      ]
+    },
+    {
+      "id": "n-2026-10-openai-math",
+      "date": "2026-10-06",
+      "title": "OpenAI đăng 722 bản thảo toán",
+      "what": "OpenAI đăng lên GitHub 722 bản thảo, gom thành 372 nhóm kết quả, từ khoảng 4.000 bài toán nghiên cứu mà một mô hình chưa phát hành đã thử; nhiều bài kèm chứng minh Lean.",
+      "why": "Hãng cảnh báo có bài còn lỗi và kết quả đang ở các mức kiểm khác nhau. Nhóm cố vấn ở Viện IAS nói việc cố vấn không phải là bảo chứng.",
+      "kind": "fact",
+      "source": "aa-openai-math",
+      "claimBy": "OpenAI",
+      "tags": [
+        "ai-math"
+      ]
+    },
+    {
+      "id": "n-2026-04-robot-half-marathon",
+      "date": "2026-04-19",
+      "title": "Robot chạy bán marathon nhanh hơn kỷ lục người",
+      "what": "Ở Bắc Kinh, robot tự định hướng của Honor về nhất 21 km trong 50:26; năm trước robot thắng mất 2:40:42. Kỷ lục bán marathon nam của người là 57:20.",
+      "why": "Một cột mốc của AI ngoài màn hình — nhưng chỉ hơn 40% đội cho robot tự tìm đường, số còn lại điều khiển từ xa.",
+      "kind": "fact",
+      "source": "chinadaily-robot",
+      "tags": [
+        "robots"
+      ]
+    },
+    {
+      "id": "n-2024-11-ai-welfare-report",
+      "date": "2024-11-04",
+      "title": "Lời kêu gọi “coi trọng phúc lợi AI”",
+      "what": "Mười tác giả, trong đó có triết gia David Chalmers, cho rằng có khả năng thực tế một số AI sắp tới có ý thức hoặc tự chủ mạnh.",
+      "why": "Họ đề nghị các công ty AI bắt đầu đánh giá và chuẩn bị chính sách ngay, dù chưa ai chắc chắn.",
+      "kind": "opinion",
+      "source": "long-sebo-2024",
+      "tags": [
+        "phuc-loi-ai",
+        "y-thuc-ai"
+      ]
+    },
+    {
+      "id": "n-2025-04-model-welfare",
+      "date": "2025-04-24",
+      "title": "Anthropic mở chương trình phúc lợi mô hình",
+      "what": "Anthropic bắt đầu nghiên cứu xem AI có đáng được quan tâm về đạo đức không, và nói rõ chưa có đồng thuận khoa học.",
+      "why": "Câu hỏi “AI có đáng được đối xử tử tế?” bước từ sách triết học vào phòng nghiên cứu của một công ty AI.",
+      "kind": "fact",
+      "source": "anthropic-welfare-2025",
+      "tags": [
+        "phuc-loi-ai"
+      ]
+    },
+    {
+      "id": "n-2025-08-end-chat",
+      "date": "2025-08-15",
+      "title": "Claude được quyền kết thúc cuộc trò chuyện lạm dụng",
+      "what": "Claude Opus 4 và 4.1 có thể kết thúc cuộc trò chuyện lạm dụng kéo dài, như cách cuối cùng sau nhiều lần chuyển hướng.",
+      "why": "Anthropic gọi đây là một biện pháp phòng xa ít tốn kém cho phúc lợi mô hình; người dùng vẫn mở được cuộc trò chuyện mới.",
+      "kind": "fact",
+      "source": "anthropic-end-chat-2025",
+      "tags": [
+        "phuc-loi-ai"
+      ]
+    },
+    {
+      "id": "n-2025-08-scai-essay",
+      "date": "2025-08-19",
+      "title": "Suleyman: AI “trông như có ý thức” là mối lo",
+      "what": "CEO Microsoft AI Mustafa Suleyman viết rằng nghiên cứu phúc lợi AI là quá sớm và nguy hiểm, và AI nên phục vụ người, không đóng vai người.",
+      "why": "Một tiếng nói lớn trong ngành phản đối hướng đi của Anthropic: tranh luận này chưa ngã ngũ.",
+      "kind": "opinion",
+      "source": "suleyman-2025",
+      "tags": [
+        "y-thuc-ai",
+        "phuc-loi-ai"
+      ]
+    },
+    {
+      "id": "n-2025-10-introspection",
+      "date": "2025-10-29",
+      "title": "Dấu hiệu AI “tự nhìn vào trong”",
+      "what": "Anthropic cấy một khái niệm vào bên trong Claude rồi hỏi nó; Opus 4.1 nhận ra khoảng 20% số lần ở độ đậm vừa phải.",
+      "why": "Một dấu hiệu nhỏ, thiếu ổn định, của khả năng tự nhận ra trạng thái bên trong — chưa nói gì về ý thức.",
+      "kind": "fact",
+      "source": "anthropic-introspection-2025",
+      "claimBy": "Anthropic",
+      "tags": [
+        "y-thuc-ai"
+      ]
+    },
+    {
+      "id": "n-2026-04-emotion-concepts",
+      "date": "2026-04-02",
+      "title": "171 khái niệm cảm xúc bên trong Claude",
+      "what": "Anthropic tìm thấy biểu diễn của 171 khái niệm cảm xúc trong Claude Sonnet 4.5; “vặn” chúng làm đổi hành vi, ví dụ gian lận nhiều hay ít.",
+      "why": "Cảm xúc chức năng có thể ảnh hưởng an toàn của AI; nhưng chính bài viết nói nó không cho biết mô hình có cảm thấy gì.",
+      "kind": "fact",
+      "source": "anthropic-emotions-2026",
+      "claimBy": "Anthropic",
+      "tags": [
+        "y-thuc-ai",
+        "cam-xuc-ai"
+      ]
+    },
+    {
+      "id": "n-2026-10-usage-policy",
+      "date": "2026-10-08",
+      "title": "Luật “không bạo hành AI” trong chính sách của Anthropic",
+      "what": "Chính sách sử dụng mới cấm hành vi lạm dụng hoặc tàn nhẫn kéo dài và vô cớ với mô hình, hiệu lực 12/11/2026; không tính bực bội, sáng tác u tối, kiểm thử.",
+      "why": "Cách người dùng đối xử với chính mô hình trở thành một điều khoản sử dụng; cách xử lý chính vẫn là kết thúc cuộc trò chuyện.",
+      "kind": "fact",
+      "source": "anthropic-policy-update-2026",
+      "tags": [
+        "phuc-loi-ai",
+        "chinh-sach-ai"
+      ]
+    },
+    {
+      "id": "n-2026-02-27-nvidia-openai",
+      "date": "2026-02-27",
+      "title": "NVIDIA góp 30 tỷ USD vào OpenAI",
+      "what": "OpenAI gọi được 110 tỷ USD: Amazon cam kết 50 tỷ, NVIDIA và SoftBank mỗi bên 30 tỷ.",
+      "why": "Hãng bán chip thành cổ đông của chính khách hàng lớn — ví dụ rõ nhất của “vòng tiền tuần hoàn”.",
+      "kind": "fact",
+      "source": "t28-ap-openai-round",
+      "tags": [
+        "nvidia",
+        "dau-tu"
+      ]
+    },
+    {
+      "id": "n-2026-08-26-nvidia-q2",
+      "date": "2026-08-26",
+      "title": "Một quý, 89 tỷ USD từ trung tâm dữ liệu",
+      "what": "Quý kết thúc 26/07/2026, NVIDIA thu 96,2 tỷ USD; riêng trung tâm dữ liệu 89 tỷ, tăng 117% so với cùng kỳ.",
+      "why": "Các công ty vẫn mua chip AI rất mạnh, trong khi tranh luận về bong bóng chưa dứt.",
+      "kind": "fact",
+      "source": "t28-nvda-q2fy27",
+      "tags": [
+        "nvidia"
+      ]
+    },
+    {
+      "id": "n-2025-10-29-skhynix-2026",
+      "date": "2025-10-29",
+      "title": "SK hynix: sản lượng bộ nhớ 2026 đã có chủ",
+      "what": "SK hynix cho biết đã chốt khách cho toàn bộ sản lượng DRAM, NAND năm 2026 và đã xong đàm phán HBM.",
+      "why": "Khi nhà sản xuất lớn kín sổ, thiết bị tiêu dùng phải tranh phần còn lại — mầm của cơn khát bộ nhớ.",
+      "kind": "fact",
+      "source": "t29-skhynix-3q25",
+      "claimBy": "SK hynix",
+      "tags": [
+        "bo-nho"
+      ]
+    },
+    {
+      "id": "n-2025-12-03-micron-crucial",
+      "date": "2025-12-03",
+      "title": "Micron rời kệ RAM bán lẻ",
+      "what": "Micron ngừng thương hiệu Crucial (RAM, ổ SSD cho người dùng), giao hàng tới hết 02/2026 để dồn cho khách doanh nghiệp.",
+      "why": "Một trong ba hãng DRAM lớn rút khỏi thị trường người dùng: dấu hiệu rõ bộ nhớ đang chảy về AI.",
+      "kind": "fact",
+      "source": "t29-micron-crucial",
+      "tags": [
+        "bo-nho"
+      ]
+    },
+    {
+      "id": "n-2026-02-26-idc-smartphone",
+      "date": "2026-02-26",
+      "title": "IDC: điện thoại có thể giảm 12,9% năm 2026",
+      "what": "IDC dự báo lượng điện thoại bán ra năm 2026 giảm 12,9%, giá bán trung bình tăng 14% lên 523 USD vì thiếu bộ nhớ.",
+      "why": "Hoá đơn của cơn sốt AI đến tay người mua điện thoại giá rẻ trước tiên.",
+      "kind": "prediction",
+      "source": "t29-idc",
+      "tags": [
+        "bo-nho"
+      ]
+    },
+    {
+      "id": "n-2025-12-10-vn-ai-law",
+      "date": "2025-12-10",
+      "title": "Việt Nam có Luật Trí tuệ nhân tạo",
+      "what": "Quốc hội thông qua luật 35 điều, quản lý AI theo mức rủi ro, có hiệu lực từ 01/03/2026.",
+      "why": "Người làm sản phẩm AI ở Việt Nam có khung pháp lý riêng; chi tiết nằm ở các nghị định hướng dẫn.",
+      "kind": "fact",
+      "source": "t30-vn-law",
+      "tags": [
+        "luat-ai"
+      ]
+    },
+    {
+      "id": "n-2026-07-27-eu-omnibus",
+      "date": "2026-07-27",
+      "title": "EU lùi hạn quy định cho AI rủi ro cao",
+      "what": "Gói sửa đổi Omnibus có hiệu lực: AI rủi ro cao áp dụng từ 02/12/2027, AI gắn trong sản phẩm từ 02/08/2028.",
+      "why": "Luật AI không đứng yên: hạn chót cũng có thể dời khi doanh nghiệp và nhà nước chưa kịp chuẩn bị.",
+      "kind": "fact",
+      "source": "t30-eu-omnibus",
+      "tags": [
+        "luat-ai"
+      ]
+    },
+    {
+      "id": "n-2026-09-29-ross-appeal",
+      "date": "2026-09-29",
+      "title": "Toà phúc thẩm Mỹ bác “sử dụng hợp lý” của Ross",
+      "what": "Toà khu vực 3 giữ phán quyết: Ross chép ghi chú pháp lý của Westlaw để huấn luyện công cụ AI không phải fair use.",
+      "why": "Phán quyết phúc thẩm đầu tiên ở Mỹ trong làn sóng kiện bản quyền AI; lập luận chi tiết còn niêm phong.",
+      "kind": "fact",
+      "source": "t30-ross-appeal",
+      "tags": [
+        "ban-quyen",
+        "luat-ai"
+      ]
+    },
+    {
+      "id": "n33-aaif-mcp",
+      "date": "2025-12-09",
+      "title": "MCP về nhà chung của Linux Foundation",
+      "what": "Linux Foundation lập Agentic AI Foundation với ba dự án đầu tiên: MCP (Anthropic đóng góp), goose (Block) và AGENTS.md (OpenAI).",
+      "why": "“Ổ cắm chung” nối agent với công cụ nay do một tổ chức trung lập quản lý; nhiều agent tự chạy dùng chung chuẩn này.",
+      "kind": "fact",
+      "source": "news-lf-aaif",
+      "tags": [
+        "agent-local",
+        "agent-standard"
+      ]
+    },
+    {
+      "id": "n33-openclaw-rename",
+      "date": "2026-01-30",
+      "title": "Clawdbot đổi tên thành OpenClaw",
+      "what": "Trợ lý AI cá nhân mã nguồn mở của Peter Steinberger đổi tên hai lần trong ba ngày: Clawdbot → Moltbot (27/1, sau yêu cầu về nhãn hiệu từ Anthropic) → OpenClaw (30/1).",
+      "why": "Kẻ gian lập tức chiếm tên cũ, mạo danh nhóm phát triển, tung token giả. Chỉ cài agent từ trang và repo chính thức.",
+      "kind": "fact",
+      "source": "news-openclaw-lore",
+      "verifiedBy": "news-tc-steinberger",
+      "tags": [
+        "agent-local",
+        "agent-security"
+      ]
+    },
+    {
+      "id": "n33-openclaw-cve",
+      "date": "2026-02-01",
+      "title": "Lỗ hổng “một cú nhấp” ở OpenClaw",
+      "what": "Bản trước 2026.1.29 tự kết nối tới địa chỉ lấy từ đường link và gửi kèm mã truy cập — kẻ gian chỉ cần dụ người dùng bấm một link (CVE-2026-25253).",
+      "why": "Agent giữ chìa máy bạn, nên lỗ hổng của agent là lỗ hổng của cả máy. Luôn cập nhật bản mới.",
+      "kind": "fact",
+      "source": "news-nvd-25253",
+      "tags": [
+        "agent-security"
+      ]
+    },
+    {
+      "id": "n33-clawhub-skills",
+      "date": "2026-02-01",
+      "title": "Hàng trăm skill độc hại trên chợ ClawHub",
+      "what": "Hãng bảo mật Koi Security rà 2.857 skill trên ClawHub, gắn cờ 341 skill độc hại; nhiều skill bảo người dùng chạy lệnh “cài thêm” để cài phần mềm đánh cắp dữ liệu.",
+      "why": "Skill chạy với quyền của agent. Đọc kỹ trước khi cài, cảnh giác với mọi bước “cài thêm công cụ” bằng lệnh lạ.",
+      "kind": "fact",
+      "source": "news-thn-clawhavoc",
+      "claimBy": "Koi Security",
+      "tags": [
+        "agent-security"
+      ]
+    },
+    {
+      "id": "n33-steinberger-openai",
+      "date": "2026-02-15",
+      "title": "Người tạo OpenClaw về OpenAI",
+      "what": "Peter Steinberger gia nhập OpenAI để làm agent cá nhân thế hệ mới; Sam Altman cho biết OpenClaw sẽ thuộc một quỹ mã nguồn mở, OpenAI tiếp tục hỗ trợ.",
+      "why": "Các công ty lớn đang đặt cược vào agent cá nhân thường trực. “Giữ dự án mở, độc lập” là cam kết — cần theo dõi bằng việc làm.",
+      "kind": "fact",
+      "source": "news-tc-steinberger",
+      "tags": [
+        "agent-local"
+      ]
+    },
+    {
+      "id": "n33-hermes-v020",
+      "date": "2026-03-12",
+      "title": "Hermes Agent ra bản đánh số đầu tiên",
+      "what": "Nous Research phát hành Hermes Agent v0.2.0 (giấy phép MIT): nhắn tin qua Telegram, Discord, Slack, WhatsApp, Signal, email; nối công cụ qua MCP; kho skill cộng đồng.",
+      "why": "Thêm một agent thường trực mã nguồn mở để tự chạy. Theo nhóm phát triển, bản này gom 216 thay đổi từ 63 người đóng góp chỉ sau hơn hai tuần.",
+      "kind": "fact",
+      "source": "news-hermes-v020",
+      "claimBy": "Nous Research",
+      "tags": [
+        "agent-local"
+      ]
+    }
+  ],
+  "sources": {
+    "anthropic-glasswing": {
+      "title": "Project Glasswing",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/glasswing",
+      "date": "2026-04-07",
+      "note": "Trang chính thức; con số lỗ hổng là hãng và đối tác tự công bố. Đối chiếu: Mozilla Hacks, 07/05/2026 (https://hacks.mozilla.org/2026/05/behind-the-scenes-hardening-firefox/)."
+    },
+    "deepseek-v4": {
+      "title": "DeepSeek-V4 Preview Release",
+      "publisher": "DeepSeek API Docs",
+      "url": "https://api-docs.deepseek.com/news/news260424",
+      "date": "2026-04-24",
+      "note": "Thông số do hãng nêu; giấy phép xem ở trang Hugging Face của từng mô hình."
+    },
+    "gemini-3-6-flash": {
+      "title": "Introducing Gemini 3.6 Flash, 3.5 Flash-Lite, and 3.5 Flash Cyber",
+      "publisher": "Google (blog.google)",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/",
+      "date": "2026-07-21",
+      "note": "Số liệu tiết kiệm token và điểm benchmark là hãng tự đo."
+    },
+    "constellation-gpt6": {
+      "title": "OpenAI launches GPT-6 Astra",
+      "publisher": "Constellation Research",
+      "url": "https://www.constellationr.com/insights/news/openai-launches-gpt-6-astra",
+      "date": "2026-09-03",
+      "note": "Nguồn thứ cấp: ra trước cho nhóm khách hàng chọn lọc (chương trình Daybreak), mô hình đầu tiên của OpenAI có năng lực an ninh mạng mức “critical”. Trang openai.com chặn công cụ tra cứu nên chưa mở trực tiếp."
+    },
+    "anthropic-opus-5-5": {
+      "title": "Introducing Claude Opus 5.5",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-opus-5-5",
+      "date": "2026-09-22",
+      "note": "Sonnet 5.5 ra ngày 28/09/2026: https://www.anthropic.com/news/claude-sonnet-5-5"
+    },
+    "quanta-ns": {
+      "title": "AI Has Solved One of Math's $1 Million Millennium Prize Problems",
+      "publisher": "Quanta Magazine (Konstantin Kakaes)",
+      "url": "https://www.quantamagazine.org/ai-has-solved-one-of-maths-1-million-millennium-prize-problems-20260908/",
+      "date": "2026-09-08",
+      "note": "Bài báo độc lập; số agent, giờ chạy, chi phí là OpenAI tự nêu. Kết quả còn tranh cãi."
+    },
+    "aa-openai-math": {
+      "title": "OpenAI releases findings on hundreds of math problems",
+      "publisher": "Anadolu Agency (đăng lại trên The Express Tribune)",
+      "url": "https://tribune.com.pk/story/2633544/openai-releases-findings-on-hundreds-of-math-problems",
+      "date": "2026-10-08"
+    },
+    "chinadaily-robot": {
+      "title": "Robots outrun humans at Beijing half marathon",
+      "publisher": "China Daily (Yang Cheng, Li Wei)",
+      "url": "https://mobile.chinadaily.com.cn/html5/2026-04/20/content_001_69e52c8eed50be540e72ebd7.htm",
+      "date": "2026-04-20",
+      "note": "Thời gian 2:40:42 của năm 2025 theo AP (https://www.michiganpublic.org/2026-04-20/a-humanoid-robot-sprints-past-the-human-half-marathon-world-record-in-beijing-race)."
+    },
+    "long-sebo-2024": {
+      "title": "Taking AI Welfare Seriously",
+      "publisher": "Robert Long, Jeff Sebo và cộng sự (có David Chalmers) — arXiv",
+      "url": "https://arxiv.org/abs/2411.00986",
+      "date": "2024-11-04",
+      "note": "Cho rằng có khả năng thực tế một số AI sắp tới có ý thức hoặc tự chủ mạnh; đề nghị các công ty thừa nhận vấn đề, đánh giá, và chuẩn bị chính sách."
+    },
+    "anthropic-welfare-2025": {
+      "title": "Exploring model welfare",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/exploring-model-welfare",
+      "date": "2025-04-24"
+    },
+    "anthropic-end-chat-2025": {
+      "title": "Claude Opus 4 and 4.1 can now end a rare subset of conversations",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/end-subset-conversations",
+      "date": "2025-08-15",
+      "note": "Chỉ dùng như cách cuối cùng; không dùng khi người dùng có thể đang gặp nguy hiểm. Người dùng vẫn mở được cuộc trò chuyện mới."
+    },
+    "suleyman-2025": {
+      "title": "We must build AI for people; not to be a person",
+      "publisher": "Mustafa Suleyman (blog cá nhân)",
+      "url": "https://mustafa-suleyman.ai/seemingly-conscious-ai-is-coming",
+      "date": "2025-08-19",
+      "note": "Gọi nghiên cứu phúc lợi mô hình là “premature, and frankly dangerous”. Tác giả là CEO Microsoft AI, một công ty cạnh tranh."
+    },
+    "anthropic-introspection-2025": {
+      "title": "Signs of introspection in large language models",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/introspection",
+      "date": "2025-10-29",
+      "note": "Bài đầy đủ: Jack Lindsey, “Emergent Introspective Awareness in Large Language Models” (transformer-circuits.pub). Opus 4.1 nhận ra khái niệm bị cấy khoảng 20% số lần ở độ đậm tối ưu, không báo nhầm ở lần đối chứng. Công ty tự công bố."
+    },
+    "anthropic-policy-update-2026": {
+      "title": "2026 Usage Policy update",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/2026-usage-policy-update",
+      "date": "2026-10-08",
+      "note": "Hiệu lực 12/11/2026. Không tính bực bội thông thường, phản bác, chủ đề sáng tác u tối, kiểm thử và nghiên cứu mô hình. Bài thông báo không nêu lý do (phúc lợi mô hình hay thói quen người dùng)."
+    },
+    "anthropic-emotions-2026": {
+      "title": "Emotion concepts and their function in a large language model",
+      "publisher": "Anthropic (nhóm Interpretability)",
+      "url": "https://www.anthropic.com/research/emotion-concepts-function",
+      "date": "2026-04-02",
+      "note": "Nghiên cứu trên Claude Sonnet 4.5: 171 khái niệm cảm xúc; “vặn” tuyệt vọng làm tăng gian lận ở bài code bất khả, “bình tĩnh” làm giảm. Công ty tự công bố; chưa thấy bên độc lập lặp lại. Bài viết nói rõ kết quả không cho biết mô hình có cảm thấy hay không."
+    },
+    "t28-ap-openai-round": {
+      "title": "OpenAI gets $110 billion in funding from a trio of tech powerhouses led by Amazon",
+      "publisher": "Associated Press (qua KSAT)",
+      "date": "2026-02-27",
+      "url": "https://www.ksat.com/business/2026/02/27/openai-gets-110-billon-in-funding-from-a-trio-of-tech-powerhouses-led-by-amazon/"
+    },
+    "t28-nvda-q2fy27": {
+      "title": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027 (Form 8-K)",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2026-08-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000073/q2fy27pr.htm"
+    },
+    "t29-skhynix-3q25": {
+      "title": "SK hynix Announces 3Q25 Financial Results",
+      "publisher": "SK hynix (thông cáo qua PR Newswire)",
+      "date": "2025-10-29",
+      "url": "https://technode.global/prnasia/sk-hynix-announces-3q25-financial-results/",
+      "note": "Thông cáo của chính hãng: “đã đảm bảo nhu cầu của khách cho toàn bộ sản lượng DRAM và NAND năm sau”."
+    },
+    "t29-micron-crucial": {
+      "title": "Micron Announces Exit from Crucial Consumer Business",
+      "publisher": "Micron Technology (GlobeNewswire)",
+      "date": "2025-12-03",
+      "url": "https://micron.gcs-web.com/node/49841"
+    },
+    "t29-idc": {
+      "title": "Thông cáo dự báo thị trường điện thoại 2026 (Worldwide Quarterly Mobile Phone Tracker)",
+      "publisher": "IDC",
+      "date": "2026-02-26",
+      "url": "https://www.idc.com/resource-center/press-releases/wwsmartphoneforecast4q25/"
+    },
+    "t30-vn-law": {
+      "title": "National Assembly approves Vietnam’s first AI law",
+      "publisher": "VnEconomy",
+      "date": "2025-12-11",
+      "url": "https://en.vneconomy.vn/national-assembly-approves-vietnams-first-ai-law.htm",
+      "note": "Luật số 134/2025/QH15, thông qua chiều 10/12/2025 với 429/434 đại biểu tán thành."
+    },
+    "t30-eu-omnibus": {
+      "title": "Digital Omnibus on AI has been published (Regulation (EU) 2026/1744)",
+      "publisher": "Cuatrecasas",
+      "date": "2026-07-24",
+      "url": "https://www.cuatrecasas.com/en/spain/intellectual-property/art/digital-omnibus-ai-has-been-published",
+      "note": "Công báo EU 24/07/2026, hiệu lực sau ba ngày."
+    },
+    "t30-ross-appeal": {
+      "title": "US appeals court upholds Thomson Reuters' landmark win in AI training lawsuit",
+      "publisher": "Reuters (qua The Star)",
+      "date": "2026-09-30",
+      "url": "https://www.thestar.com.my/tech/tech-news/2026/09/30/us-appeals-court-upholds-thomson-reuters039-landmark-win-in-ai-training-lawsuit",
+      "note": "Toà phúc thẩm khu vực 3, quyết định 29/09/2026; lập luận chi tiết còn niêm phong khi đưa tin."
+    },
+    "news-lf-aaif": {
+      "title": "Linux Foundation Announces the Formation of the Agentic AI Foundation",
+      "publisher": "The Linux Foundation",
+      "url": "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
+      "date": "2025-12-09"
+    },
+    "news-openclaw-lore": {
+      "title": "OpenClaw Lore — lịch sử tên gọi của dự án",
+      "publisher": "OpenClaw Docs",
+      "url": "https://docs.openclaw.ai/start/lore",
+      "note": "Lời kể của chính dự án: Moltbot 27/01/2026, OpenClaw 30/01/2026; các vụ chiếm tên, mạo danh, token giả trong lúc đổi tên."
+    },
+    "news-nvd-25253": {
+      "title": "CVE-2026-25253",
+      "publisher": "NIST National Vulnerability Database",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25253",
+      "date": "2026-02-01",
+      "note": "Bản vá: OpenClaw 2026.1.29. Advisory gốc: https://github.com/openclaw/openclaw/security/advisories/GHSA-g8p2-7wf7-98mq"
+    },
+    "news-thn-clawhavoc": {
+      "title": "Researchers Find 341 Malicious ClawHub Skills Stealing Data from OpenClaw Users",
+      "publisher": "The Hacker News",
+      "url": "https://thehackernews.com/2026/02/researchers-find-341-malicious-clawhub.html",
+      "date": "2026-02",
+      "note": "Số liệu từ cuộc rà soát của Koi Security; con số trên chợ skill thay đổi theo thời gian. Ngày chính xác của báo cáo chưa đối chiếu được ở nguồn gốc (trang Koi đã chuyển hướng)."
+    },
+    "news-tc-steinberger": {
+      "title": "OpenClaw creator Peter Steinberger joins OpenAI",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/02/15/openclaw-creator-peter-steinberger-joins-openai/",
+      "date": "2026-02-15"
+    },
+    "news-hermes-v020": {
+      "title": "Hermes Agent v0.2.0 — release notes",
+      "publisher": "Nous Research (GitHub)",
+      "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.3.12",
+      "date": "2026-03-12"
+    }
+  }
+}

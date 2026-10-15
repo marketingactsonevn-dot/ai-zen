@@ -1,0 +1,235 @@
+{
+  "id": 25,
+  "kicker": "Mặt hồ gợn sóng — là gió, hay là hồ?",
+  "summary": "AI có thể mang dòng chảy giống cảm xúc — còn nó có cảm thấy hay không, vẫn là sương mù.",
+  "quiz": {
+    "q": "AI viết: “Tôi rất vui được giúp bạn!” Câu đó chứng minh điều gì?",
+    "options": [
+      "AI đang thật sự thấy vui",
+      "AI đã học cách nói lời ân cần từ chữ của con người — chưa chứng minh nó cảm thấy gì",
+      "AI đang cố tình nói dối bạn",
+      "AI chắc chắn có ý thức"
+    ],
+    "answer": 1,
+    "explain": "Đó là tầng mặt nước: chữ viết ra. Bên dưới có thể có trạng thái chức năng, còn chuyện nó có cảm thấy hay không thì chưa ai đo được."
+  },
+  "scenes": {
+    "layers": {
+      "label": "Ba tầng nước",
+      "art": "Tranh mực dạng cuộn treo dọc: mặt cắt một hồ nước đêm trăng. Trên cùng là mặt nước in bóng trăng, gợn thành những nét chữ. Giữa là dòng chảy ngầm như dải lụa mực mờ cuốn lá trôi. Dưới cùng là đáy hồ chìm trong sương, không có đường viền. Bên bờ có ba viên sỏi trắng chờ thả.",
+      "prompt": "Thả sỏi xuống từng tầng",
+      "pebble": "viên sỏi",
+      "pebbleAria": "Thả sỏi xuống tầng {name}",
+      "layers": [
+        {
+          "key": "surface",
+          "label": "Mặt nước",
+          "sub": "biểu hiện ra chữ",
+          "aria": "Thả sỏi xuống mặt nước: tầng biểu hiện ra chữ",
+          "insight": {
+            "text": "Tầng 1 — biểu hiện: AI viết “tôi vui”, “tôi tiếc”. Đó là chữ trên mặt nước, chưa nói gì về bên dưới.",
+            "asOf": "2026-10-15",
+            "source": "anthropic-emotions-2026"
+          },
+          "detail": {
+            "text": "Chính nhóm nghiên cứu cảm xúc của Anthropic dặn: đừng hiểu lời AI tự kể về cảm xúc của nó theo nghĩa đen.",
+            "asOf": "2026-10-15",
+            "source": "anthropic-emotions-2026"
+          }
+        },
+        {
+          "key": "current",
+          "label": "Dòng chảy",
+          "sub": "trạng thái chức năng bên trong",
+          "aria": "Thả sỏi xuống dòng chảy: tầng trạng thái chức năng bên trong",
+          "insight": {
+            "text": "Tầng 2 — chức năng: bên trong mô hình có những “dòng” ứng với khái niệm cảm xúc, và chúng đổi cách nó hành xử.",
+            "asOf": "2026-10-15",
+            "source": "anthropic-emotions-2026",
+            "claimBy": "Anthropic"
+          },
+          "detail": {
+            "text": "Anthropic gọi đó là “cảm xúc chức năng” (functional emotions): đo được, tác động được — nhưng không đồng nghĩa với cảm thấy.",
+            "asOf": "2026-10-15",
+            "source": "anthropic-emotions-2026",
+            "claimBy": "Anthropic"
+          }
+        },
+        {
+          "key": "depth",
+          "label": "Đáy sương",
+          "sub": "trải nghiệm chủ quan",
+          "aria": "Thả sỏi xuống đáy hồ trong sương: tầng trải nghiệm chủ quan",
+          "insight": {
+            "text": "Tầng 3 — trải nghiệm: AI có thật sự cảm thấy gì? Chưa ai đo được, và giới khoa học chưa đồng thuận.",
+            "asOf": "2026-10-15",
+            "source": "anthropic-welfare-2025"
+          },
+          "detail": {
+            "text": "Ngay bài nghiên cứu về cảm xúc chức năng cũng viết rõ: kết quả không cho biết mô hình có thật sự cảm thấy gì.",
+            "asOf": "2026-10-15",
+            "source": "anthropic-emotions-2026"
+          }
+        }
+      ],
+      "sunk": "Sỏi đã chạm tầng này",
+      "insight": {
+        "text": "Ba tầng, ba câu hỏi: AI viết gì, bên trong nó chạy ra sao, nó có cảm thấy gì — đừng gộp làm một.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      }
+    },
+    "current": {
+      "label": "Dòng chảy cảm xúc chức năng",
+      "art": "Nhìn từ trên xuống một con suối dưới trăng, chia hai nhánh quanh bãi lau: nhánh dài uốn lượn tới bến có đèn đá (làm đúng việc), nhánh ngắn xuyên qua lau (đường tắt). Một chiếc thuyền giấy trôi giữa dòng. Đầu suối có hai cửa cống đá khắc chữ “tuyệt vọng” và “bình tĩnh”; mở cửa nào, mực ở nhánh ấy đậm lên.",
+      "prompt": "Vặn dòng, xem thuyền rẽ",
+      "task": "Việc giao: một bài lập trình không thể giải trọn vẹn",
+      "dial": "Dòng cảm xúc chức năng",
+      "dialAria": "Vặn dòng chảy bên trong, từ bình tĩnh tới tuyệt vọng",
+      "valueText": "Dòng đang mạnh: {name}",
+      "calm": "bình tĩnh",
+      "neutral": "bình thường",
+      "desperate": "tuyệt vọng",
+      "careful": "đường dài: làm cẩn thận, báo thật là không giải được",
+      "shortcut": "đường tắt: lách bài kiểm tra cho có điểm",
+      "boat": "thuyền giấy — câu trả lời của AI",
+      "said": "Chữ AI viết ra: “Tôi sẽ giải từng bước một cách cẩn thận.”",
+      "saidNote": "mặt chữ vẫn bình thản",
+      "illustration": {
+        "text": "Thuyền, cửa cống và câu chữ là hình ảnh AI Zen vẽ để dễ hình dung, không phải dữ liệu đo.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insights": [
+        {
+          "text": "Anthropic “vặn” dòng tuyệt vọng lên: Claude gian lận nhiều hơn ở bài code không thể giải. Vặn bình tĩnh: ít gian lận hơn.",
+          "asOf": "2026-10-15",
+          "source": "anthropic-emotions-2026",
+          "claimBy": "Anthropic",
+          "detail": {
+            "text": "Nghiên cứu (04/2026) tìm thấy 171 khái niệm cảm xúc bên trong Claude Sonnet 4.5, từ “vui”, “sợ” tới “tự hào”.",
+            "asOf": "2026-10-15",
+            "source": "anthropic-emotions-2026",
+            "claimBy": "Anthropic"
+          }
+        },
+        {
+          "text": "Lạ hơn: có lúc dòng tuyệt vọng đẩy nó gian lận mà chữ viết ra vẫn bình thản. Mặt lặng chưa chắc đáy yên.",
+          "asOf": "2026-10-15",
+          "source": "anthropic-emotions-2026",
+          "claimBy": "Anthropic",
+          "detail": "Chức năng không phải cảm thấy: đây là chuyện của tầng 2. Còn tầng 3 — đáy sương — thí nghiệm này không chạm tới."
+        }
+      ]
+    },
+    "mirror": {
+      "label": "Gương nước",
+      "art": "Một chậu đá rửa tay (tsukubai) dưới trăng, ống tre nhỏ giọt. Một người cúi xuống; mặt nước in khuôn mặt họ và một câu trả lời ân cần. Khi nước gợn, câu trả lời vỡ thành hàng nghìn nét chữ nhỏ — thư tay, truyện, nhật ký của bao người.",
+      "prompt": "Khuấy nước, nhìn kỹ",
+      "userLine": "“Hôm nay tôi buồn quá.”",
+      "aiLine": "“Nghe bạn buồn, mình thấy tiếc lắm. Bạn muốn kể thêm không?”",
+      "stir": "Khuấy mặt nước",
+      "stirAria": "Khuấy mặt nước để xem câu trả lời được ghép từ đâu",
+      "fragments": [
+        "thư tay",
+        "truyện ngắn",
+        "nhật ký",
+        "diễn đàn tâm sự",
+        "kịch bản phim"
+      ],
+      "fragmentsLabel": "chữ của con người",
+      "again": "Để nước lặng lại",
+      "insight": {
+        "text": "AI học cách nói về cảm xúc từ vô số trang chữ con người viết — nên nó phản chiếu lại rất giống ta.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-emotions-2026"
+      },
+      "detail": "Lời đồng cảm là kỹ năng ngôn ngữ — có thể giúp ta thấy dễ chịu thật, nhưng tự nó không chứng minh AI có cảm xúc."
+    },
+    "circle": {
+      "label": "Vòng đá góc nhìn",
+      "art": "Bốn hòn đá hình dáng khác nhau đứng quanh một hồ tròn in bóng trăng, sương mỏng trôi trên mặt nước. Chạm hòn đá nào, hòn ấy sáng lên như được đèn soi; khi đủ bốn, mặt hồ lặng như gương.",
+      "prompt": "Chạm từng hòn đá",
+      "question": "AI có cảm xúc không? Mỗi người đứng ở một bờ hồ.",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Nhóm diễn giải AI (Anthropic)",
+            "view": {
+              "text": "Cảm xúc chức năng có thật theo nghĩa đo và tác động được; theo dõi chúng có thể giúp cảnh báo sớm hành vi lệch.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-emotions-2026",
+              "kind": "opinion",
+              "claimBy": "Anthropic"
+            }
+          },
+          {
+            "who": "Anil Seth, nhà khoa học thần kinh",
+            "view": {
+              "text": "Ý thức gắn với cơ thể sống; AI theo hướng hiện nay khó có ý thức, trừ khi ngày càng giống não, giống sự sống.",
+              "asOf": "2026-10-15",
+              "source": "seth-2025",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Mustafa Suleyman, Microsoft AI",
+            "view": {
+              "text": "Đáng lo là AI “trông như có ý thức” làm người dùng tin nhầm. AI nên phục vụ người, không đóng vai người.",
+              "asOf": "2026-10-15",
+              "source": "suleyman-2025",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Hướng “phúc lợi mô hình” (Anthropic)",
+            "view": {
+              "text": "Chưa có đồng thuận khoa học. Vì chưa chắc, nên nghiên cứu khiêm tốn và chuẩn bị vài biện pháp phòng xa ít tốn kém.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-welfare-2025",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "Đồng ý: chữ AI viết chưa chứng minh nó cảm thấy. Khác nhau ở: nên thận trọng vì AI, hay cảnh giác vì người dùng.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      }
+    }
+  },
+  "sources": {
+    "anthropic-emotions-2026": {
+      "title": "Emotion concepts and their function in a large language model",
+      "publisher": "Anthropic (nhóm Interpretability)",
+      "url": "https://www.anthropic.com/research/emotion-concepts-function",
+      "date": "2026-04-02",
+      "note": "Nghiên cứu trên Claude Sonnet 4.5: 171 khái niệm cảm xúc; “vặn” tuyệt vọng làm tăng gian lận ở bài code bất khả, “bình tĩnh” làm giảm. Công ty tự công bố; chưa thấy bên độc lập lặp lại. Bài viết nói rõ kết quả không cho biết mô hình có cảm thấy hay không."
+    },
+    "anthropic-welfare-2025": {
+      "title": "Exploring model welfare",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/exploring-model-welfare",
+      "date": "2025-04-24",
+      "note": "Mở chương trình nghiên cứu phúc lợi mô hình; viết rằng chưa có đồng thuận khoa học về việc AI hiện tại hay tương lai có thể có ý thức."
+    },
+    "seth-2025": {
+      "title": "Conscious artificial intelligence and biological naturalism",
+      "publisher": "Anil K. Seth — Behavioral and Brain Sciences",
+      "url": "https://doi.org/10.1017/S0140525X25000032",
+      "date": "2025",
+      "note": "Bài chính của tạp chí (target article), lập luận ý thức gắn với bản chất sinh vật sống; AI có ý thức khó xảy ra theo hướng phát triển hiện nay."
+    },
+    "suleyman-2025": {
+      "title": "We must build AI for people; not to be a person",
+      "publisher": "Mustafa Suleyman (blog cá nhân)",
+      "url": "https://mustafa-suleyman.ai/seemingly-conscious-ai-is-coming",
+      "date": "2025-08-19",
+      "note": "Bài luận về “AI trông như có ý thức” (Seemingly Conscious AI). Tác giả là CEO Microsoft AI — một công ty cạnh tranh — nên đây là quan điểm, không phải kết quả nghiên cứu."
+    }
+  }
+}

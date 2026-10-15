@@ -1,5 +1,5 @@
 import { h, s } from '../core/dom'
-import { ALL_STATIONS, L, PARTS, addSources, displayNo, stationIndex, type Fact } from '../core/content'
+import { ALL_STATIONS, L, PARTS, addSources, displayNo, gardensOfPart, stationIndex, type Fact } from '../core/content'
 import { STATIONS } from '../stations/registry'
 import type { SceneCtx, SceneDef, StationModule } from '../stations/types'
 import { prefs } from '../core/prefs'
@@ -9,7 +9,7 @@ import { chime } from '../core/sound'
 import { fact, tag } from './fact'
 import { quizScene } from './quiz'
 import { icon } from './icons'
-import { setCrumb } from './topbar'
+import { setCrumb, setPart } from './topbar'
 import { ensoBrush } from './brush'
 import { prefetchStation, whenIdle } from './prefetch'
 import { watchScene } from './autolow'
@@ -19,11 +19,13 @@ const TYPING = 'input, textarea, select, [contenteditable], [role="slider"], [ro
 /** Station = full-viewport scene player: art → interaction → insight, flipped with ← → or the rail. */
 export async function renderStation(root: HTMLElement, id: number, start: number, stale: () => boolean): Promise<(() => void) | null> {
   const idx = stationIndex(id)
-  if (idx < 0) {
+  const demo = import.meta.env.DEV && id === 99 // dev-only playground of the Part 2 components (src/ui/part2/demo.ts)
+  if (idx < 0 && !demo) {
     location.hash = '#/vuon'
     return null
   }
-  const meta = ALL_STATIONS[idx]
+  const meta = demo ? { id, title: 'B.7 demo', teaser: '', garden: gardensOfPart(2)[0] } : ALL_STATIONS[idx]
+  if (demo) (setPart(2), (document.documentElement.dataset.part = '2'))
   const part = meta.garden.part
   const after = ALL_STATIONS[idx + 1]
   const next = after?.garden.part === part ? after : undefined // "next station" never crosses into the other part
@@ -52,10 +54,10 @@ export async function renderStation(root: HTMLElement, id: number, start: number
   if (stale()) return null
   loading.remove()
   addSources(mod.content.sources)
-  progress.visit(id)
+  if (!demo) progress.visit(id)
 
-  // the last station of Part 1 (18) has no next one: its ensō leads over the bridge to Part 2 instead
-  const scenes: SceneDef[] = [...mod.scenes, quizScene(id, mod.content.quiz), summaryScene(mod.content.summary, mapHref, next, !next && part === 1)]
+  // the last station of a part has no next one: 18's ensō leads over the bridge to Part 2, 39's to its exam and toolkit
+  const scenes: SceneDef[] = [...mod.scenes, quizScene(id, mod.content.quiz), summaryScene(mod.content.summary, mapHref, next, next ? 0 : part)]
   const explored = new Set<number>()
   const host = h('div', { class: 'scenes' })
   const prevBtn = h('button', { class: 'rail-btn', type: 'button', 'aria-label': L.prevScene, onClick: () => go(cur - 1) }, icon('arrowL'))
@@ -272,8 +274,8 @@ function chapter(player: HTMLElement, no: string, title: string, kicker: string,
   }
 }
 
-/** Last scene: an ensō is brushed, the one sentence to remember appears inside, then onward. */
-function summaryScene(text: string, mapHref: string, next?: (typeof ALL_STATIONS)[number], toPartTwo = false): SceneDef {
+/** Last scene: an ensō is brushed, the one sentence to remember appears inside, then onward. end: the part this station closes (0 = not the last). */
+function summaryScene(text: string, mapHref: string, next?: (typeof ALL_STATIONS)[number], end = 0): SceneDef {
   return {
     label: L.summaryEyebrow,
     mount(ctx) {
@@ -294,7 +296,9 @@ function summaryScene(text: string, mapHref: string, next?: (typeof ALL_STATIONS
       const textEl = h('p', { class: 'summary-text' }, text)
       const actions = h('div', { class: 'summary-actions' },
         next ? h('a', { class: 'btn primary', href: `#/tram/${next.id}` }, `${L.next}: ${next.title}`, icon('arrowR', 'icon sm')) : null,
-        toPartTwo ? h('a', { class: 'btn primary', href: PARTS[1].route }, L.toPartTwo, icon('arrowR', 'icon sm')) : null,
+        end === 1 ? h('a', { class: 'btn primary', href: PARTS[1].route }, L.toPartTwo, icon('arrowR', 'icon sm')) : null,
+        end === 2 ? h('a', { class: 'btn primary', href: '#/bai-thi-trang' }, L.examTwo, icon('arrowR', 'icon sm')) : null,
+        end === 2 ? h('a', { class: 'btn ghost', href: '#/do-nghe' }, L.openToolkit) : null,
         h('a', { class: 'btn ghost', href: mapHref }, L.backToMap))
       ctx.art.append(h('div', { class: 'summary' }, h('div', { class: 'summary-in' }, h('p', { class: 'summary-label' }, L.summaryEyebrow), h('div', { class: 'summary-ring' }, enso, textEl), actions)))
       ctx.complete()

@@ -1,0 +1,392 @@
+{
+  "id": 30,
+  "kicker": "Vườn có cổng — ai giữ chìa khoá?",
+  "summary": "AI không chỉ là công nghệ — nó là chuyện quyền lực và lựa chọn của xã hội.",
+  "newsTags": ["luat-ai", "ban-quyen"],
+  "quiz": {
+    "q": "Một model “mở trọng số” (open-weight) nghĩa là gì?",
+    "options": [
+      "Mọi thứ đều công khai, kể cả dữ liệu huấn luyện",
+      "Tải được phần đã học về máy để tự chạy, tự tinh chỉnh",
+      "Ai cũng sửa được model trên máy chủ của hãng",
+      "Dùng thế nào cũng được, không cần giấy phép"
+    ],
+    "answer": 1,
+    "explain": "Mở trọng số là cho tải “bộ não” đã học. Dữ liệu huấn luyện thường không kèm theo, và giấy phép vẫn quy định bạn được dùng ra sao."
+  },
+  "scenes": {
+    "gate": {
+      "label": "Vườn có tường, vườn mở",
+      "art": "Hai khu vườn dưới cùng một vầng trăng: một vườn sau bức tường vôi trắng, chỉ chừa ô cửa nhỏ để xin từng cành hoa; một vườn cổng tre mở toang, ai cũng bứng được cây về trồng trong sân nhà mình. Đèn lồng treo ở cả hai cổng.",
+      "prompt": "Mở và đóng cổng vườn",
+      "closed": "Vườn có tường · mô hình đóng",
+      "open": "Vườn mở · mở trọng số",
+      "toggleAria": "Đổi giữa vườn có tường và vườn mở",
+      "tradeoffLabel": "Được gì, mất gì",
+      "tradeoffs": [
+        {
+          "id": "freedom",
+          "name": "Tự do",
+          "closed": "Dùng theo luật của hãng; không chỉnh được bên trong.",
+          "open": "Tải về, tinh chỉnh, chạy ở đâu tuỳ bạn."
+        },
+        {
+          "id": "cost",
+          "name": "Chi phí",
+          "closed": "Trả theo lượt hoặc theo gói; không cần máy mạnh.",
+          "open": "Không trả theo lượt, nhưng tự lo máy, điện và công vận hành."
+        },
+        {
+          "id": "privacy",
+          "name": "Riêng tư",
+          "closed": "Dữ liệu của bạn đi qua máy chủ của hãng.",
+          "open": "Chạy trên máy mình thì dữ liệu không rời khỏi máy."
+        },
+        {
+          "id": "misuse",
+          "name": "Rủi ro lạm dụng",
+          "closed": "Hãng có thể chặn yêu cầu xấu, khoá tài khoản vi phạm.",
+          "open": "Đã phát hành thì không thu hồi được; người khác có thể gỡ rào an toàn."
+        }
+      ],
+      "insight": {
+        "text": "Mô hình mở trọng số (open-weight) cho tải “bộ não” đã học về máy; mô hình đóng chỉ cho dùng qua app hoặc API.",
+        "asOf": "2026-10-15",
+        "source": "t30-gpt-oss"
+      },
+      "detail": {
+        "text": "Ví dụ: 08/2025, OpenAI phát hành gpt-oss mở trọng số, giấy phép Apache 2.0; hãng nói bản nhỏ chạy được với 16 GB bộ nhớ.",
+        "asOf": "2026-10-15",
+        "source": "t30-gpt-oss",
+        "claimBy": "OpenAI"
+      },
+      "caveat": "Mở trọng số chưa phải mã nguồn mở trọn vẹn: dữ liệu và cách huấn luyện thường không công bố. Xem trạm 31 để biết chỗ tải model."
+    },
+    "fence": {
+      "label": "Model có rào",
+      "art": "Giữa vườn có một khu vườn nhỏ quây hàng rào tre buộc dây gai; chỉ những người gác thành cầm đèn lồng khắc dấu mới được bước vào. Bên trong, một ngọn đèn rất sáng soi rõ từng vết nứt trên tường thành bên ngoài.",
+      "prompt": "Thử mở cổng rào",
+      "gate": "Mở cổng",
+      "gateAria": "Thử mở cổng rào: xem ai được vào và vì sao",
+      "denied": "Cổng chỉ mở cho người gác thành đã được thẩm định.",
+      "group": "Hai khu rào năm 2026",
+      "cases": [
+        {
+          "id": "mythos",
+          "name": "Anthropic · Claude Mythos Preview",
+          "fact": {
+            "text": "04/2026: Anthropic chỉ cấp Mythos Preview cho các tổ chức tìm và vá lỗ hổng phần mềm (Project Glasswing), không định phát hành rộng.",
+            "asOf": "2026-10-15",
+            "source": "t30-glasswing"
+          }
+        },
+        {
+          "id": "fairwind",
+          "name": "Google · chương trình Fairwind",
+          "fact": {
+            "text": "09/2026: Google lập chương trình Fairwind, chỉ cấp model an ninh mạng mạnh nhất cho người phòng thủ đã qua thẩm định.",
+            "asOf": "2026-10-15",
+            "source": "t30-fairwind"
+          }
+        }
+      ],
+      "whyLabel": "Vì sao rào?",
+      "why": {
+        "text": "Anthropic nói model này tìm và khai thác lỗ hổng giỏi hơn hầu hết chuyên gia; mở rộng ngay thì kẻ tấn công cũng dùng được.",
+        "asOf": "2026-10-15",
+        "source": "t30-glasswing",
+        "claimBy": "Anthropic"
+      },
+      "debateLabel": "Câu hỏi còn mở",
+      "debate": {
+        "text": "Ai quyết định người được vào rào, và ai kiểm chứng độc lập năng lực mà chính hãng tự công bố?",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "insight": {
+        "text": "Năm 2026, cả Anthropic lẫn Google đều giữ model an ninh mạng mạnh nhất sau rào: người phòng thủ đã thẩm định dùng trước.",
+        "asOf": "2026-10-15",
+        "source": "t30-glasswing"
+      },
+      "detail": "Xem lại trạm 19: đỉnh núi có rào. Ở đây ta hỏi tiếp: chìa khoá cổng rào đang nằm trong tay ai."
+    },
+    "laws": {
+      "label": "Thuỷ triều luật lệ",
+      "art": "Dải cát dài như một cuộn luật cổ trải dưới trăng; mỗi khi trăng đi qua, một cột đá khắc chữ dựng lên từ cát. Ở cuối dải, cột đá mang tên Việt Nam còn ướt nước triều, nét khắc chưa khô.",
+      "prompt": "Kéo trăng qua các mốc luật",
+      "sliderAria": "Kéo vầng trăng qua các mốc luật AI",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2024-08-01",
+            "label": "EU: Đạo luật AI có hiệu lực",
+            "fact": {
+              "text": "Đạo luật AI của EU (AI Act) có hiệu lực, áp dụng dần theo mức rủi ro của từng loại ứng dụng.",
+              "asOf": "2026-10-15",
+              "source": "t30-eu-aiact"
+            }
+          },
+          {
+            "date": "2025-02-02",
+            "label": "EU: cấm một số ứng dụng",
+            "fact": {
+              "text": "Lệnh cấm ở EU bắt đầu áp dụng cho các ứng dụng AI rủi ro không chấp nhận được, như chấm điểm xã hội.",
+              "asOf": "2026-10-15",
+              "source": "t30-eu-aiact"
+            }
+          },
+          {
+            "date": "2025-09-01",
+            "label": "Trung Quốc: dán nhãn nội dung AI",
+            "fact": {
+              "text": "Trung Quốc bắt buộc dán nhãn nội dung do AI tạo: nhãn nhìn thấy được và nhãn ẩn trong dữ liệu của tệp.",
+              "asOf": "2026-10-15",
+              "source": "t30-china-label"
+            }
+          },
+          {
+            "date": "2025-12-10",
+            "label": "Việt Nam: Luật Trí tuệ nhân tạo",
+            "fact": {
+              "text": "Quốc hội thông qua Luật Trí tuệ nhân tạo: 35 điều, quản lý theo mức rủi ro, có hiệu lực từ 01/03/2026.",
+              "asOf": "2026-10-15",
+              "source": "t30-vn-law"
+            }
+          },
+          {
+            "date": "2025-12-11",
+            "label": "Mỹ: sắc lệnh về luật các bang",
+            "fact": {
+              "text": "Tổng thống Mỹ ký sắc lệnh lập nhóm luật sư liên bang để thách thức các luật AI của bang bị cho là cản trở.",
+              "asOf": "2026-10-15",
+              "source": "t30-us-eo"
+            }
+          },
+          {
+            "date": "2026-05-01",
+            "label": "Việt Nam: nghị định hướng dẫn",
+            "fact": {
+              "text": "Nghị định 142/2026 có hiệu lực: chia AI thành ba mức rủi ro, buộc gắn dấu nhận biết cho ảnh, âm thanh, video do AI tạo.",
+              "asOf": "2026-10-15",
+              "source": "t30-vn-decree"
+            }
+          },
+          {
+            "date": "2026-07-27",
+            "label": "EU: lùi hạn rủi ro cao",
+            "fact": {
+              "text": "EU sửa luật (gói Omnibus): lùi quy định cho AI rủi ro cao tới 02/12/2027, riêng AI gắn trong sản phẩm tới 02/08/2028.",
+              "asOf": "2026-10-15",
+              "source": "t30-eu-omnibus"
+            },
+            "compare": {
+              "before": "02/08/2026",
+              "after": "02/12/2027",
+              "beforeLabel": "Hạn cũ cho AI rủi ro cao",
+              "afterLabel": "Hạn mới"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Hôm nay",
+            "fact": {
+              "text": "Theo bản phân tích 06/2026, danh sách hệ thống AI rủi ro cao của Việt Nam vẫn đang chờ Thủ tướng ban hành.",
+              "asOf": "2026-10-15",
+              "source": "t30-vn-decree"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Luật AI sẽ còn được viết lại khi công nghệ đổi; hạn chót hôm nay chưa chắc là hạn chót ngày mai.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "Mỗi nơi một lối: EU siết theo mức rủi ro, Trung Quốc buộc dán nhãn, Việt Nam vừa có luật riêng, Mỹ còn tranh cãi.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "copyright": {
+      "label": "Bản quyền & dữ liệu huấn luyện",
+      "art": "Năm hòn đá quanh một hồ trăng; mặt hồ in bóng hàng nghìn trang sách, bức tranh, bản nhạc. Một gàu nước được múc từ hồ lên — dữ liệu huấn luyện — và mỗi hòn đá nhìn chiếc gàu ấy theo một cách.",
+      "prompt": "Chạm từng hòn đá",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Người sáng tạo",
+            "view": {
+              "text": "Hàng chục nghìn nghệ sĩ, nhà văn ký tuyên bố (10/2024): lấy tác phẩm không xin phép để huấn luyện AI là đe doạ bất công.",
+              "asOf": "2026-10-15",
+              "source": "t30-statement",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Công ty AI",
+            "view": {
+              "text": "OpenAI (01/2024): huấn luyện trên tài liệu công khai trên mạng là “sử dụng hợp lý” (fair use), dù vẫn cho chủ nội dung từ chối.",
+              "asOf": "2026-10-15",
+              "source": "t30-openai-journalism",
+              "kind": "opinion",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "who": "Toà án Mỹ",
+            "view": {
+              "text": "06/2025, một thẩm phán Mỹ: huấn luyện trên sách mua hợp pháp là sử dụng hợp lý; tải sách lậu để lập thư viện thì không.",
+              "asOf": "2026-10-15",
+              "source": "t30-bartz-ruling"
+            }
+          },
+          {
+            "who": "Nhà làm luật",
+            "view": {
+              "text": "EU buộc nhà cung cấp model đa dụng có chính sách tôn trọng bản quyền và công bố bản tóm tắt dữ liệu đã dùng để huấn luyện.",
+              "asOf": "2026-10-15",
+              "source": "t30-eu-aiact"
+            }
+          },
+          {
+            "who": "Người dùng",
+            "view": {
+              "text": "Cục Bản quyền Mỹ (01/2025): chỉ gõ prompt chưa đủ để thành tác giả; phần hoàn toàn do AI tạo không được bảo hộ.",
+              "asOf": "2026-10-15",
+              "source": "t30-usco-part2"
+            }
+          }
+        ],
+        "common": {
+          "text": "Ai cũng thừa nhận dữ liệu huấn luyện có giá trị; họ khác nhau ở chỗ có phải xin phép và trả tiền cho người làm ra nó không.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "casesLabel": "Hồ sơ toà án",
+      "cases": [
+        {
+          "text": "07/2026: toà Mỹ duyệt dứt điểm khoản dàn xếp 1,5 tỷ USD Anthropic trả cho tác giả, khoảng 3.000 USD mỗi cuốn sách.",
+          "asOf": "2026-10-15",
+          "source": "t30-bartz-settlement"
+        },
+        {
+          "text": "09/2026: toà phúc thẩm Mỹ giữ phán quyết: Ross chép ghi chú pháp lý của Westlaw để huấn luyện AI không phải sử dụng hợp lý.",
+          "asOf": "2026-10-15",
+          "source": "t30-ross-appeal"
+        }
+      ],
+      "insight": {
+        "text": "Bản quyền dữ liệu huấn luyện chưa ngã ngũ: toà án và nhà làm luật vẫn đang vẽ lại ranh giới, mỗi nơi một kiểu.",
+        "asOf": "2026-10-15",
+        "source": "t30-ross-appeal"
+      }
+    }
+  },
+  "sources": {
+    "t30-gpt-oss": {
+      "title": "Introducing gpt-oss",
+      "publisher": "OpenAI",
+      "date": "2025-08-05",
+      "url": "https://openai.com/index/introducing-gpt-oss/"
+    },
+    "t30-glasswing": {
+      "title": "Project Glasswing — Claude Mythos Preview",
+      "publisher": "Anthropic",
+      "date": "2026-04-07",
+      "url": "https://www.anthropic.com/glasswing",
+      "note": "Trang của chính hãng, có cập nhật ngày 06/10/2026. Năng lực model là hãng tự công bố."
+    },
+    "t30-fairwind": {
+      "title": "Google’s Fairwind Program: Cyber defense tools for trusted partners",
+      "publisher": "Google (Four Flynn, VP Security and Privacy)",
+      "date": "2026-09-02",
+      "url": "https://blog.google/innovation-and-ai/technology/safety-security/fairwind-program/"
+    },
+    "t30-eu-aiact": {
+      "title": "AI Act — Shaping Europe’s digital future (Regulation (EU) 2024/1689)",
+      "publisher": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "note": "Mốc: hiệu lực 01/08/2024; lệnh cấm từ 02/02/2025; nghĩa vụ cho model đa dụng (gồm chính sách bản quyền, tóm tắt dữ liệu huấn luyện) từ 02/08/2025."
+    },
+    "t30-eu-omnibus": {
+      "title": "Digital Omnibus on AI has been published (Regulation (EU) 2026/1744)",
+      "publisher": "Cuatrecasas",
+      "date": "2026-07-24",
+      "url": "https://www.cuatrecasas.com/en/spain/intellectual-property/art/digital-omnibus-ai-has-been-published",
+      "note": "Công báo EU 24/07/2026, hiệu lực sau ba ngày."
+    },
+    "t30-china-label": {
+      "title": "China’s AI Labeling Measures and Mandatory National Standards Take Effect September 1",
+      "publisher": "Loeb & Loeb",
+      "date": "2025-03",
+      "url": "https://www.loeb.com/en/insights/publications/2025/03/chinas-ai-labeling-measures-and-mandatory-national-standards-take-effect-september-1"
+    },
+    "t30-vn-law": {
+      "title": "National Assembly approves Vietnam’s first AI law",
+      "publisher": "VnEconomy",
+      "date": "2025-12-11",
+      "url": "https://en.vneconomy.vn/national-assembly-approves-vietnams-first-ai-law.htm",
+      "note": "Luật số 134/2025/QH15, thông qua chiều 10/12/2025 với 429/434 đại biểu tán thành."
+    },
+    "t30-vn-decree": {
+      "title": "Vietnam Takes Major Step in AI Governance with New Guiding Decree (Nghị định 142/2026/NĐ-CP)",
+      "publisher": "Tilleke & Gibbins",
+      "date": "2026-06-05",
+      "url": "https://www.tilleke.com/insights/vietnam-takes-major-step-in-ai-governance-with-new-guiding-decree/",
+      "note": "Nghị định ban hành 30/04/2026, hiệu lực 01/05/2026. Tình trạng “còn chờ” là tại thời điểm bài viết."
+    },
+    "t30-us-eo": {
+      "title": "Executive Order 14365 — Ensuring a National Policy Framework for Artificial Intelligence",
+      "publisher": "Federal Register (Hoa Kỳ)",
+      "date": "2025-12-16",
+      "url": "https://www.govinfo.gov/content/pkg/FR-2025-12-16/html/2025-23092.htm",
+      "note": "Ký ngày 11/12/2025. Sắc lệnh tự nó không xoá luật bang; cần toà án hoặc Quốc hội."
+    },
+    "t30-statement": {
+      "title": "Statement on AI training",
+      "publisher": "Ed Newton-Rex và những người ký tên",
+      "date": "2024-10-22",
+      "url": "https://www.aitrainingstatement.org/",
+      "note": "Khoảng 13.500 chữ ký cuối 10/2024, hơn 36.000 vào 12/2024 (theo ALPSP)."
+    },
+    "t30-openai-journalism": {
+      "title": "OpenAI and journalism",
+      "publisher": "OpenAI",
+      "date": "2024-01-08",
+      "url": "https://openai.com/index/openai-and-journalism/",
+      "note": "Lập trường pháp lý của chính hãng trong vụ kiện với The New York Times, không phải phán quyết."
+    },
+    "t30-bartz-ruling": {
+      "title": "Federal judge rules copyrighted books are fair use for AI training",
+      "publisher": "NBC News",
+      "date": "2025-06-24",
+      "url": "https://www.nbcnews.com/tech/tech-news/federal-judge-rules-copyrighted-books-are-fair-use-ai-training-rcna214766",
+      "note": "Vụ Bartz v. Anthropic, toà quận Bắc California; phán quyết cấp quận, không ràng buộc toà khác."
+    },
+    "t30-bartz-settlement": {
+      "title": "Court Grants Final Approval of Anthropic Copyright Settlement",
+      "publisher": "Authors Guild",
+      "date": "2026-07-21",
+      "url": "https://authorsguild.org/news/court-grants-final-approval-anthropic-copyright-settlement/"
+    },
+    "t30-ross-appeal": {
+      "title": "US appeals court upholds Thomson Reuters' landmark win in AI training lawsuit",
+      "publisher": "Reuters (qua The Star)",
+      "date": "2026-09-30",
+      "url": "https://www.thestar.com.my/tech/tech-news/2026/09/30/us-appeals-court-upholds-thomson-reuters039-landmark-win-in-ai-training-lawsuit",
+      "note": "Toà phúc thẩm khu vực 3, quyết định 29/09/2026; lập luận chi tiết còn niêm phong khi đưa tin."
+    },
+    "t30-usco-part2": {
+      "title": "Copyright and Artificial Intelligence, Part 2: Copyrightability",
+      "publisher": "U.S. Copyright Office",
+      "date": "2025-01-29",
+      "url": "https://www.copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-2-Copyrightability-Report.pdf"
+    }
+  }
+}

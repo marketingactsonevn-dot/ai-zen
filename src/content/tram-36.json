@@ -1,0 +1,434 @@
+{
+  "id": 36,
+  "kicker": "Không cần biết đẽo gỗ — cần biết vẽ bản vẽ thật rõ cho người thợ.",
+  "summary": "Người làm game bằng AI giỏi nhất không phải người gõ code nhanh — mà là người mô tả rõ và sửa từng bước nhỏ.",
+  "takeaways": ["t36-spec", "t36-scaffold", "t36-feature", "t36-bug", "t36-mobile", "t36-ship", "t36-pack"],
+  "game": {
+    "name": "Hồ Koi hứng trăng",
+    "pitch": "Cá koi bơi dưới mặt hồ đêm; kéo hoặc chạm để cá đớp những mảnh trăng rơi, tránh lá khô."
+  },
+  "quiz": {
+    "q": "Game báo lỗi: cá đứng yên, không bơi theo tay. Cách báo nào giúp AI sửa trúng nhất?",
+    "options": [
+      "“Sửa đi, không chạy.”",
+      "Dán lỗi trong Console + “mong đợi cá bơi theo chuột, nhưng thấy cá đứng yên”",
+      "Bảo AI viết lại toàn bộ game từ đầu",
+      "Đổi sang công nghệ khác cho chắc"
+    ],
+    "answer": 1,
+    "explain": "Bằng chứng (lỗi Console) cộng “mong đợi vs thấy” chỉ đúng chỗ hỏng; AI sửa gốc thay vì đoán mò."
+  },
+  "scenes": {
+    "blueprint": {
+      "label": "Bản vẽ trước khi đẽo",
+      "art": "Tranh mực: bàn vẽ dưới đèn xưởng, tờ giấy dó trải phẳng. Sáu mảnh giấy cắt hình viên đá nằm bên mép; đặt mảnh nào vào khung, nét mực của hồ koi hiện ra ở góc đó — mặt nước, con cá, mảnh trăng — cho tới khi bản vẽ thành một trang spec.",
+      "prompt": "Chọn từng mảnh ghép",
+      "group": "Sáu mảnh của bản vẽ",
+      "pieceAria": "{piece}: {option}",
+      "specTitle": "spec.md",
+      "pieces": [
+        {
+          "id": "idea",
+          "label": "Ý tưởng 1 câu",
+          "options": [
+            "Cá koi đớp mảnh trăng rơi trên mặt hồ đêm, tránh lá khô.",
+            "Cá koi lượn quanh đá, gom đom đóm trước khi trời sáng."
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Luật chơi 3 dòng",
+          "options": [
+            "Đớp trăng +1 điểm · chạm lá khô mất 1 tim · trăng rơi nhanh dần.",
+            "Gom đom đóm +1 · chạm đá thì chậm lại 2 giây · càng về sau càng ít đom đóm."
+          ]
+        },
+        {
+          "id": "controls",
+          "label": "Điều khiển",
+          "options": [
+            "Kéo hoặc chạm, cá bơi theo ngón tay; máy tính dùng chuột hoặc phím mũi tên.",
+            "Chạm nửa trái/phải màn hình để cá rẽ."
+          ]
+        },
+        {
+          "id": "end",
+          "label": "Thắng / thua",
+          "options": [
+            "Chơi 30 giây hoặc tới khi hết 3 tim; điểm cuối hiện trong vòng ensō.",
+            "Không có thua; hết giờ thì hiện điểm và nút chơi lại."
+          ]
+        },
+        {
+          "id": "style",
+          "label": "Phong cách",
+          "options": [
+            "Tranh mực tàu: nền chàm đêm, trăng vàng ngà, ít màu.",
+            "Màu nước nhẹ trên giấy dó, nét cọ mềm."
+          ]
+        },
+        {
+          "id": "device",
+          "label": "Thiết bị",
+          "options": [
+            "Điện thoại dọc là chính, máy tính cũng chạy.",
+            "Máy tính là chính, có bàn phím."
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "text": "Bài giới thiệu Spec Kit của GitHub đề xuất lấy ý định làm gốc: spec sống dẫn đường cho code AI viết.",
+          "asOf": "2026-10-15",
+          "source": "t36-spec-kit",
+          "kind": "opinion"
+        }
+      ],
+      "insight": {
+        "text": "Một trang spec rõ — ý tưởng, luật, điều khiển, thắng thua, phong cách, thiết bị — giúp AI đoán ít, bạn sửa ít.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Thêm hai dòng đáng giá: “chưa làm ở bản đầu” (để AI khỏi làm quá tay) và “thế nào là xong” (để biết khi nào dừng).",
+      "takeaway": "t36-spec"
+    },
+    "pens": {
+      "label": "Chọn bút",
+      "art": "Tranh mực: ống bút tre trên bàn, năm cây bút khác nhau. Cùng một hồ koi được vẽ năm lần: nét than mảnh, nét màu phóng khoáng, nét có ô lưới như bàn cờ, nét có chiều sâu và bóng đổ, và một bức lớn đóng khung gỗ.",
+      "prompt": "Bấm từng cây bút",
+      "group": "Năm cây bút",
+      "penAria": "Bút: {name}",
+      "fitsLabel": "Hợp với",
+      "askLabel": "Ví dụ lời dặn AI",
+      "docsLabel": "Tài liệu chính thức",
+      "pens": [
+        {
+          "id": "canvas",
+          "name": "Canvas 2D thuần",
+          "fits": "Game 2D đơn giản, nhẹ nhất",
+          "ask": "“Dùng HTML Canvas 2D, không thư viện.”",
+          "source": "t36-canvas"
+        },
+        {
+          "id": "p5",
+          "name": "p5.js",
+          "fits": "Người mới, nghệ thuật tạo sinh",
+          "ask": "“Dùng p5.js qua CDN.”",
+          "source": "t36-p5"
+        },
+        {
+          "id": "phaser",
+          "name": "Phaser",
+          "fits": "Game 2D có màn, sprite, va chạm",
+          "ask": "“Dùng Phaser 4 + Vite.”",
+          "source": "t36-phaser"
+        },
+        {
+          "id": "three",
+          "name": "Three.js",
+          "fits": "3D trên web: ánh sáng, camera",
+          "ask": "“Dùng Three.js + Vite + TypeScript.”",
+          "source": "t36-three"
+        },
+        {
+          "id": "engine",
+          "name": "Godot / Unity",
+          "fits": "Game lớn, xuất app điện thoại/PC",
+          "ask": "“Dùng Godot 4, GDScript.”",
+          "source": "t36-godot"
+        }
+      ],
+      "facts": [
+        {
+          "text": "Phaser đã sang dòng 4; bản mới nhất khi kiểm tra là 4.2.1, phát hành ngày 9/7/2026.",
+          "asOf": "2026-10-15",
+          "source": "t36-phaser",
+          "kind": "fact"
+        }
+      ],
+      "insight": {
+        "text": "Ngón tay cái: 2D nhỏ → Canvas hoặc Phaser; 3D chạy trên web → Three.js; game lớn cần app → engine như Godot, Unity.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Không có bút “tốt nhất”. Nêu rõ tên bút trong lời dặn để AI không tự chọn thứ bạn không quen. Phiên bản thư viện đổi thường xuyên — xem trang chính thức."
+    },
+    "carve": {
+      "label": "Bảy bước đẽo game",
+      "art": "Tranh mực: xưởng mộc đêm, khúc gỗ trên giá dần thành hình con cá qua bảy nhát đục. Bảy viên đá dẫn từ đống phôi gỗ tới cửa xưởng mở ra hồ trăng; bên cạnh, một cuộn giấy dài chép mã như thư pháp, chú thích viết nhỏ bên lề.",
+      "prompt": "Đặt bảy viên đá",
+      "pathAria": "Lối đá bảy bước làm một game web",
+      "stoneAria": "Viên đá: {label}",
+      "slotAria": "Chỗ trống số {n} trên lối",
+      "keys": "Chạm lần lượt hoặc dùng phím số 1 đến 7.",
+      "wrongHint": "Chưa đúng chỗ — {why}",
+      "done": "Lối đã sáng. Mở thẻ mang về.",
+      "promptLabel": "Lời dặn mẫu",
+      "steps": {
+        "steps": [
+          {
+            "label": "Tạo dự án",
+            "detail": "Gõ npm create vite@latest, chọn mẫu vanilla. Cần Node.js 20.19+ hoặc 22.12+.",
+            "why": "Vite dựng sẵn khung và máy chủ chạy thử, khỏi cấu hình tay."
+          },
+          {
+            "label": "Nhờ AI dựng khung từ spec",
+            "detail": "Dán spec.md, dặn: dựng khung chạy được, chưa cần đẹp.",
+            "why": "Có khung chạy được trước, mọi tính năng sau gắn vào đó."
+          },
+          {
+            "label": "Chạy npm run dev",
+            "detail": "Mở http://localhost:5173 trong trình duyệt; lưu file là thấy ngay.",
+            "why": "Thấy kết quả sau mỗi thay đổi thì phát hiện lỗi sớm."
+          },
+          {
+            "label": "Thêm từng tính năng",
+            "detail": "Mỗi lần dặn một việc, chạy thử, rồi mới dặn việc sau.",
+            "why": "Một việc mỗi lần thì biết chắc cái gì làm hỏng cái gì."
+          },
+          {
+            "label": "Sửa lỗi có bằng chứng",
+            "detail": "Dán lỗi trong Console (phím F12) + “mong đợi… nhưng thấy…”.",
+            "why": "Bằng chứng giúp AI sửa đúng gốc, không đoán mò."
+          },
+          {
+            "label": "Lưu mốc bằng git",
+            "detail": "Sau mỗi bước chạy được: git add . rồi git commit -m \"thêm lá khô\".",
+            "why": "Hỏng thì quay lại mốc trước, không sợ mất công."
+          },
+          {
+            "label": "Đưa lên mạng",
+            "detail": "npm run build tạo thư mục dist; đăng lên GitHub Pages, Vercel hoặc Netlify.",
+            "why": "Có đường link là bạn bè chơi được ngay."
+          }
+        ],
+        "takeaway": "t36-scaffold"
+      },
+      "prompts": [
+        "Tạo giúp tôi một dự án Vite mẫu vanilla tên ho-koi và giải thích từng file sinh ra.",
+        "Đây là spec.md của tôi. Dựng khung chạy được bằng Canvas 2D: mặt hồ và một cá koi. Chưa cần điểm, âm thanh.",
+        "Tôi chạy npm run dev nhưng không thấy gì. Đây là toàn bộ chữ trong terminal: [DÁN].",
+        "Thêm đúng một tính năng: lá khô rơi chậm, cá chạm thì mất 1 tim. Giữ nguyên mọi thứ khác.",
+        "Mong đợi cá bơi theo chuột, nhưng cá đứng yên. Lỗi Console: [DÁN]. Tìm nguyên nhân gốc rồi sửa ít nhất có thể.",
+        "Gợi ý cho tôi một câu commit ngắn mô tả thay đổi vừa rồi.",
+        "Hướng dẫn tôi build và đăng game lên GitHub Pages từng bước, kèm chỗ hay gặp lỗi."
+      ],
+      "codeAria": "Đoạn mã mẫu: một cá koi bơi theo ngón tay trên Canvas 2D",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép",
+      "fileName": "src/main.js",
+      "code": {
+        "lang": "js",
+        "code": "const canvas = document.querySelector('canvas')\nconst ctx = canvas.getContext('2d')\nconst koi = { x: 160, y: 240, tx: 160, ty: 240 }\n\ncanvas.addEventListener('pointermove', (e) => {\n  koi.tx = e.offsetX\n  koi.ty = e.offsetY\n})\n\nfunction frame() {\n  koi.x += (koi.tx - koi.x) * 0.08\n  koi.y += (koi.ty - koi.y) * 0.08\n\n  ctx.fillStyle = '#1b2433'\n  ctx.fillRect(0, 0, canvas.width, canvas.height)\n\n  ctx.fillStyle = '#e8573c'\n  ctx.beginPath()\n  ctx.ellipse(koi.x, koi.y, 22, 10, 0, 0, Math.PI * 2)\n  ctx.fill()\n\n  requestAnimationFrame(frame)\n}\nrequestAnimationFrame(frame)",
+        "notes": [
+          { "line": 1, "text": "Lấy tấm canvas (khung vẽ) có sẵn trên trang." },
+          { "line": 2, "text": "Lấy “cây cọ” 2D để vẽ lên khung." },
+          { "line": 3, "text": "Cá koi: đang ở đâu (x, y) và muốn tới đâu (tx, ty)." },
+          { "line": 5, "text": "Ngón tay hoặc chuột đi tới đâu, cá muốn bơi tới đó." },
+          { "line": 11, "text": "Mỗi khung hình, cá bơi 8% quãng còn lại — nên lượn mềm, không giật." },
+          { "line": 14, "text": "Tô lại mặt hồ đêm, xoá hình của khung trước." },
+          { "line": 17, "text": "Vẽ thân cá: một hình bầu dục màu son." },
+          { "line": 22, "text": "Hẹn trình duyệt gọi lại ở khung hình sau — đây là vòng lặp game." }
+        ]
+      },
+      "facts": [
+        {
+          "text": "Vite tạo dự án bằng lệnh npm create vite@latest, chạy thử ở localhost:5173; cần Node.js 20.19+ hoặc 22.12+.",
+          "asOf": "2026-10-15",
+          "source": "t36-vite",
+          "kind": "fact"
+        },
+        {
+          "text": "Lệnh npm run build tạo thư mục dist; tài liệu Vite có hướng dẫn đăng lên GitHub Pages, Netlify, Vercel và nhiều nơi khác.",
+          "asOf": "2026-10-15",
+          "source": "t36-vite-deploy",
+          "kind": "fact"
+        }
+      ],
+      "insight": {
+        "text": "Bảy bước, mỗi bước một vòng nhỏ: dặn, chạy, xem, lưu mốc. Vòng nhỏ thì lỗi nhỏ, dễ quay lại.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Đoạn mã mẫu dùng Canvas 2D như game ở cuối trạm. Lệnh và phiên bản có thể đổi — làm theo trang hướng dẫn chính thức của Vite."
+    },
+    "layers": {
+      "label": "Game lớn dần từng lớp",
+      "art": "Tranh mực: hồ koi nhìn từ trên xuống, dựng từng lớp như chồng giấy can dưới đèn: mặt nước gợn → cá koi → bàn tay dẫn đường → mảnh trăng rơi → con dấu ghi điểm → tiếng nước → đom đóm và vòng sóng. Lớp cuối đặt xuống, mặt hồ sống dậy và chơi được.",
+      "prompt": "Đặt từng lớp giấy",
+      "layerAria": "Lớp {n}: {name}",
+      "promptLabel": "Câu dặn đã tạo ra lớp này",
+      "layers": [
+        { "id": "water", "name": "Mặt nước", "prompt": "Vẽ mặt hồ đêm màu chàm, gợn sóng nhẹ chuyển động chậm." },
+        { "id": "fish", "name": "Cá koi", "prompt": "Thêm một cá koi trắng đỏ, thân uốn nhẹ khi bơi." },
+        { "id": "control", "name": "Điều khiển", "prompt": "Cho cá bơi theo ngón tay hoặc chuột, lượn mềm; máy tính dùng thêm phím mũi tên." },
+        { "id": "moon", "name": "Trăng rơi", "prompt": "Thả mảnh trăng rơi ngẫu nhiên, cá chạm thì +1 điểm. Thêm lá khô: chạm thì mất 1 tim." },
+        { "id": "score", "name": "Điểm", "prompt": "Hiện điểm và 3 tim ở góc; hết 30 giây hoặc hết tim thì hiện điểm trong vòng ensō, có nút chơi lại." },
+        { "id": "sound", "name": "Âm thanh", "prompt": "Thêm tiếng “tõm” nhẹ khi đớp trăng; mặc định tắt, có nút bật." },
+        { "id": "fx", "name": "Hiệu ứng", "prompt": "Thêm vòng sóng khi cá đớp và vài đom đóm; tắt hết nếu người dùng bật giảm chuyển động." }
+      ],
+      "play": {
+        "start": "Chơi thử 30 giây",
+        "region": "Hồ Koi hứng trăng: kéo, chạm hoặc dùng phím mũi tên để cá bơi; đớp mảnh trăng, tránh lá khô.",
+        "how": "Kéo hoặc chạm để dẫn cá · đớp trăng · tránh lá khô",
+        "score": "Trăng: {n}",
+        "lives": "Tim: {n}",
+        "time": "{n} giây",
+        "end": "Ván kết thúc — {n} mảnh trăng",
+        "endAria": "Ván kết thúc. Bạn đớp được {n} mảnh trăng.",
+        "again": "Chơi lại",
+        "sound": "Bật tiếng",
+        "mute": "Tắt tiếng",
+        "pause": "Tạm dừng",
+        "resume": "Chơi tiếp",
+        "still": "Chế độ giảm chuyển động: trăng rơi chậm, không gợn sóng."
+      },
+      "facts": [
+        {
+          "text": "Câu dặn đi kèm mỗi lớp là minh hoạ cách chia nhỏ, không phải nhật ký thật của game trong app.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "illustration"
+        }
+      ],
+      "insight": {
+        "text": "Game tốt lớn lên từng lớp: mỗi lớp một câu dặn, chạy thử, lưu mốc — không phải một prompt khổng lồ.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Hết ván, mở thẻ mang về: bộ prompt đầy đủ để tự làm lại game này từ đầu.",
+      "takeaway": "t36-pack"
+    },
+    "vibe": {
+      "label": "Viết theo cảm giác có đủ?",
+      "art": "Tranh mực: năm hòn đá quanh mặt hồ trăng, trên mỗi hòn một ngọn nến nhỏ. Chạm hòn nào, ánh nến hắt bóng chữ của người đó xuống mặt nước; thắp đủ năm ngọn, mặt hồ lặng và hiện một vòng ensō.",
+      "prompt": "Chạm từng hòn đá",
+      "group": "Năm góc nhìn về vibe coding",
+      "stoneAria": "Góc nhìn: {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Người đặt ra từ “vibe coding”",
+            "view": {
+              "text": "Andrej Karpathy (2/2025): cứ để AI viết, “quên rằng code tồn tại” — hợp với dự án cuối tuần làm chơi.",
+              "asOf": "2026-10-15",
+              "source": "t36-willison",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Lập trình viên lâu năm",
+            "view": {
+              "text": "Simon Willison: nếu bạn đã đọc, chạy thử và giải thích được code, đó là lập trình bình thường, không còn là vibe coding.",
+              "asOf": "2026-10-15",
+              "source": "t36-willison",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Hãng bảo mật",
+            "view": {
+              "text": "Veracode tự đo 80 bài trên hơn 100 model: khoảng 45% trường hợp, code AI viết có lỗ hổng bảo mật.",
+              "asOf": "2026-10-15",
+              "source": "t36-veracode",
+              "kind": "fact",
+              "claimBy": "Veracode"
+            }
+          },
+          {
+            "who": "Từ điển",
+            "view": {
+              "text": "Từ điển Collins chọn “vibe coding” là Từ của năm 2025 — cách làm này đã vào đời thường.",
+              "asOf": "2026-10-15",
+              "source": "t36-collins",
+              "kind": "fact"
+            }
+          },
+          {
+            "who": "Người mới học",
+            "view": {
+              "text": "Game nhỏ là sân tập an toàn: hỏng thì làm lại, không ai mất tiền hay dữ liệu.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "AI giúp người mới làm ra thứ chạy được. Khác nhau ở: lúc nào phải đọc kỹ code — khi dính tới tiền, dữ liệu.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "detail": "Game hồ koi chạy trong trình duyệt, không có tài khoản hay thanh toán, nên rủi ro thấp. Khi app có đăng nhập, tiền hay dữ liệu người dùng, hãy nhờ người biết code xem lại."
+    }
+  },
+  "sources": {
+    "t36-spec-kit": {
+      "title": "Spec-driven development with AI: Get started with a new open source toolkit",
+      "publisher": "The GitHub Blog (Den Delimarsky)",
+      "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/",
+      "date": "2025-09-02"
+    },
+    "t36-canvas": {
+      "title": "Canvas API",
+      "publisher": "MDN Web Docs",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API"
+    },
+    "t36-p5": {
+      "title": "p5.js",
+      "publisher": "Processing Foundation",
+      "url": "https://p5js.org/"
+    },
+    "t36-phaser": {
+      "title": "Phaser — Download (v4.2.1 “Giedi”)",
+      "publisher": "Phaser Studio",
+      "url": "https://phaser.io/download/stable",
+      "date": "2026-07-09"
+    },
+    "t36-three": {
+      "title": "three.js docs",
+      "publisher": "three.js",
+      "url": "https://threejs.org/docs/"
+    },
+    "t36-godot": {
+      "title": "Godot Engine documentation",
+      "publisher": "Godot Engine",
+      "url": "https://docs.godotengine.org/"
+    },
+    "t36-vite": {
+      "title": "Getting Started",
+      "publisher": "Vite",
+      "url": "https://vite.dev/guide/"
+    },
+    "t36-vite-deploy": {
+      "title": "Deploying a Static Site",
+      "publisher": "Vite",
+      "url": "https://vite.dev/guide/static-deploy"
+    },
+    "t36-willison": {
+      "title": "Not all AI-assisted programming is vibe coding (but vibe coding rocks)",
+      "publisher": "Simon Willison’s Weblog",
+      "url": "https://simonwillison.net/2025/Mar/19/vibe-coding/",
+      "date": "2025-03-19",
+      "note": "Bài trích nguyên văn bài đăng gốc của Andrej Karpathy (tháng 2/2025)."
+    },
+    "t36-veracode": {
+      "title": "AI-Generated Code Poses Major Security Risks in Nearly Half of All Development Tasks",
+      "publisher": "Veracode (thông cáo của chính hãng, 2025 GenAI Code Security Report)",
+      "url": "https://www.veracode.com/press-release/ai-generated-code-poses-major-security-risks-in-nearly-half-of-all-development-tasks-veracode-research-reveals/",
+      "date": "2025-07-30"
+    },
+    "t36-collins": {
+      "title": "‘Vibe coding’ named Collins Dictionary’s Word of the Year",
+      "publisher": "CNN (đăng lại trên KRDO)",
+      "url": "https://krdo.com/news/2025/11/06/vibe-coding-named-collins-dictionarys-word-of-the-year/",
+      "date": "2025-11-06"
+    }
+  }
+}

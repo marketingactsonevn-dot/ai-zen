@@ -1,0 +1,572 @@
+{
+  "asOf": "2026-10-15",
+  "items": [
+    {
+      "id": "n-2026-04-glasswing",
+      "date": "2026-04-07",
+      "title": "Claude Mythos Preview: a fenced-off peak",
+      "what": "Anthropic announced Claude Mythos Preview with Project Glasswing, giving it only to 12 launch partners and 40-plus organizations that maintain critical software, to find and fix vulnerabilities.",
+      "why": "A major lab said outright that a model was too good at cyberattacks to release widely. The “thousands of vulnerabilities” figure is the company’s own; on May 7, 2026, Mozilla reported that Firefox 150 fixed 271 bugs it had found.",
+      "kind": "fact",
+      "source": "anthropic-glasswing",
+      "claimBy": "Anthropic",
+      "tags": [
+        "models-2026",
+        "gated-release"
+      ]
+    },
+    {
+      "id": "n-2026-04-deepseek-v4",
+      "date": "2026-04-24",
+      "title": "DeepSeek V4 Preview ships open weights",
+      "what": "DeepSeek released previews of V4-Pro (1.6 trillion parameters, 49 billion active) and V4-Flash (284 billion), with open weights on Hugging Face.",
+      "why": "A very large model that anyone can download, run and inspect: the summit doesn’t belong only to labs that keep their models closed.",
+      "kind": "fact",
+      "source": "deepseek-v4",
+      "claimBy": "DeepSeek",
+      "tags": [
+        "models-2026",
+        "open-weights"
+      ]
+    },
+    {
+      "id": "n-2026-07-gemini-3-6-flash",
+      "date": "2026-07-21",
+      "title": "Google releases Gemini 3.6 Flash",
+      "what": "Google introduced Gemini 3.6 Flash alongside 3.5 Flash-Lite and 3.5 Flash Cyber; it says 3.6 Flash uses 17% fewer output tokens than 3.5 Flash.",
+      "why": "The race isn’t only about the biggest model: fast, cheap, token-thrifty versions are what many people use every day.",
+      "kind": "fact",
+      "source": "gemini-3-6-flash",
+      "claimBy": "Google",
+      "tags": [
+        "models-2026"
+      ]
+    },
+    {
+      "id": "n-2026-09-gpt-6-astra",
+      "date": "2026-09-03",
+      "title": "OpenAI releases GPT-6 Astra in stages",
+      "what": "OpenAI released GPT-6 Astra to a select group of customers first, widening access later. Its system card calls it OpenAI’s first model to reach “Critical” for cybersecurity.",
+      "why": "Another lab chose a controlled release out of concern about cyberattack capability — a trend of 2026.",
+      "kind": "fact",
+      "source": "constellation-gpt6",
+      "claimBy": "OpenAI",
+      "tags": [
+        "models-2026",
+        "gated-release"
+      ]
+    },
+    {
+      "id": "n-2026-09-opus-5-5",
+      "date": "2026-09-22",
+      "title": "Anthropic releases Claude Opus 5.5, then Sonnet 5.5",
+      "what": "Anthropic released Claude Opus 5.5 on Sept 22 and Sonnet 5.5 on Sept 28, 2026. It says Opus 5.5 costs about 40% less than Opus 5 on typical tasks.",
+      "why": "Practice for reading the news: “40% cheaper” is the company’s own measurement at default settings — wait for users and outsiders to check it.",
+      "kind": "fact",
+      "source": "anthropic-opus-5-5",
+      "claimBy": "Anthropic",
+      "tags": [
+        "models-2026"
+      ]
+    },
+    {
+      "id": "n-2026-09-navier-stokes",
+      "date": "2026-09-08",
+      "title": "OpenAI announces a Navier–Stokes proof",
+      "what": "OpenAI says about 10,000 agents running on an internal model proved that Navier–Stokes flow can “blow up”, with a version checked in Lean. The Buckmaster–Alpöge team posted a closely related result about 12 hours earlier.",
+      "why": "If it holds, it solves a Millennium Prize Problem ($1 million). The Clay Institute only considers a solution once it is published and has stood for at least two years.",
+      "kind": "fact",
+      "source": "quanta-ns",
+      "claimBy": "OpenAI",
+      "tags": [
+        "ai-math"
+      ]
+    },
+    {
+      "id": "n-2026-10-openai-math",
+      "date": "2026-10-06",
+      "title": "OpenAI posts 722 math manuscripts",
+      "what": "OpenAI posted 722 manuscripts to GitHub, grouped into 372 results, from about 4,000 research problems an unreleased model attempted; many come with Lean proofs.",
+      "why": "The company warns that some may contain errors and that results sit at different levels of checking. Its advisory group at the IAS says advising is not an endorsement.",
+      "kind": "fact",
+      "source": "aa-openai-math",
+      "claimBy": "OpenAI",
+      "tags": [
+        "ai-math"
+      ]
+    },
+    {
+      "id": "n-2026-04-robot-half-marathon",
+      "date": "2026-04-19",
+      "title": "A robot runs a half marathon faster than the human record",
+      "what": "In Beijing, Honor’s self-navigating robot won the 21 km race in 50:26; a year earlier the winning robot took 2:40:42. The men’s human record is 57:20.",
+      "why": "A milestone for AI off the screen — but only just over 40% of teams let their robots find the way themselves; the rest steered them remotely.",
+      "kind": "fact",
+      "source": "chinadaily-robot",
+      "tags": [
+        "robots"
+      ]
+    },
+    {
+      "id": "n-2024-11-ai-welfare-report",
+      "date": "2024-11-04",
+      "title": "A call to “take AI welfare seriously”",
+      "what": "Ten authors, including philosopher David Chalmers, argue there is a realistic possibility that some near-future AI systems will be conscious or strongly agentic.",
+      "why": "They urge AI companies to start assessing this and preparing policies now, even though no one is certain.",
+      "kind": "opinion",
+      "source": "long-sebo-2024",
+      "tags": [
+        "phuc-loi-ai",
+        "y-thuc-ai"
+      ]
+    },
+    {
+      "id": "n-2025-04-model-welfare",
+      "date": "2025-04-24",
+      "title": "Anthropic starts a model welfare program",
+      "what": "Anthropic began researching whether AI systems might deserve moral consideration, saying plainly that there is no scientific consensus.",
+      "why": "“Does AI deserve to be treated kindly?” moved from philosophy books into an AI company’s research lab.",
+      "kind": "fact",
+      "source": "anthropic-welfare-2025",
+      "tags": [
+        "phuc-loi-ai"
+      ]
+    },
+    {
+      "id": "n-2025-08-end-chat",
+      "date": "2025-08-15",
+      "title": "Claude may now end abusive conversations",
+      "what": "Claude Opus 4 and 4.1 can end persistently abusive conversations, as a last resort after repeated attempts to redirect.",
+      "why": "Anthropic calls it a low-cost precaution for model welfare; users can still start a new conversation.",
+      "kind": "fact",
+      "source": "anthropic-end-chat-2025",
+      "tags": [
+        "phuc-loi-ai"
+      ]
+    },
+    {
+      "id": "n-2025-08-scai-essay",
+      "date": "2025-08-19",
+      "title": "Suleyman: AI that “seems conscious” is the worry",
+      "what": "Microsoft AI CEO Mustafa Suleyman wrote that model welfare research is premature and dangerous, and that AI should serve people, not act as a person.",
+      "why": "A major industry voice pushing back on Anthropic’s direction: this debate is far from settled.",
+      "kind": "opinion",
+      "source": "suleyman-2025",
+      "tags": [
+        "y-thuc-ai",
+        "phuc-loi-ai"
+      ]
+    },
+    {
+      "id": "n-2025-10-introspection",
+      "date": "2025-10-29",
+      "title": "Signs of AI “looking inward”",
+      "what": "Anthropic planted a concept inside Claude, then asked about it; Opus 4.1 noticed it about 20% of the time at moderate strength.",
+      "why": "A small, unreliable sign of noticing its own internal states — it says nothing about consciousness.",
+      "kind": "fact",
+      "source": "anthropic-introspection-2025",
+      "claimBy": "Anthropic",
+      "tags": [
+        "y-thuc-ai"
+      ]
+    },
+    {
+      "id": "n-2026-04-emotion-concepts",
+      "date": "2026-04-02",
+      "title": "171 emotion concepts inside Claude",
+      "what": "Anthropic found representations of 171 emotion concepts in Claude Sonnet 4.5; “turning” them changed behavior, such as how often it cheated.",
+      "why": "Functional emotions may matter for AI safety; but the paper itself says this doesn’t tell us whether the model feels anything.",
+      "kind": "fact",
+      "source": "anthropic-emotions-2026",
+      "claimBy": "Anthropic",
+      "tags": [
+        "y-thuc-ai",
+        "cam-xuc-ai"
+      ]
+    },
+    {
+      "id": "n-2026-10-usage-policy",
+      "date": "2026-10-08",
+      "title": "A “don’t abuse the AI” rule in Anthropic’s policy",
+      "what": "The new usage policy bans sustained, needless abuse or cruelty toward the models, effective Nov 12, 2026; frustration, dark fiction and testing don’t count.",
+      "why": "How users treat the model itself becomes a term of use; the main response is still ending the conversation.",
+      "kind": "fact",
+      "source": "anthropic-policy-update-2026",
+      "tags": [
+        "phuc-loi-ai",
+        "chinh-sach-ai"
+      ]
+    },
+    {
+      "id": "n-2026-02-27-nvidia-openai",
+      "date": "2026-02-27",
+      "title": "NVIDIA puts $30 billion into OpenAI",
+      "what": "OpenAI raised $110 billion: Amazon committed $50 billion, NVIDIA and SoftBank $30 billion each.",
+      "why": "The chip seller becomes a shareholder in its own big customer — the clearest example of “circular money”.",
+      "kind": "fact",
+      "source": "t28-ap-openai-round",
+      "tags": [
+        "nvidia",
+        "dau-tu"
+      ]
+    },
+    {
+      "id": "n-2026-08-26-nvidia-q2",
+      "date": "2026-08-26",
+      "title": "$89 billion from data centers in one quarter",
+      "what": "In the quarter ending July 26, 2026, NVIDIA took in $96.2 billion; data centers alone brought in $89 billion, up 117% year over year.",
+      "why": "Companies are still buying AI chips hard, while the bubble debate goes on.",
+      "kind": "fact",
+      "source": "t28-nvda-q2fy27",
+      "tags": [
+        "nvidia"
+      ]
+    },
+    {
+      "id": "n-2025-10-29-skhynix-2026",
+      "date": "2025-10-29",
+      "title": "SK hynix: 2026 memory output already spoken for",
+      "what": "SK hynix said it had secured customers for its entire 2026 DRAM and NAND output and finished its HBM negotiations.",
+      "why": "When a major maker is sold out, consumer devices fight over what’s left — the seed of the memory crunch.",
+      "kind": "fact",
+      "source": "t29-skhynix-3q25",
+      "claimBy": "SK hynix",
+      "tags": [
+        "bo-nho"
+      ]
+    },
+    {
+      "id": "n-2025-12-03-micron-crucial",
+      "date": "2025-12-03",
+      "title": "Micron leaves the retail RAM shelf",
+      "what": "Micron is ending its Crucial brand (consumer RAM and SSDs), shipping through February 2026, to focus on business customers.",
+      "why": "One of the three big DRAM makers is leaving the consumer market: a clear sign that memory is flowing to AI.",
+      "kind": "fact",
+      "source": "t29-micron-crucial",
+      "tags": [
+        "bo-nho"
+      ]
+    },
+    {
+      "id": "n-2026-02-26-idc-smartphone",
+      "date": "2026-02-26",
+      "title": "IDC: phone sales may fall 12.9% in 2026",
+      "what": "IDC forecasts that 2026 smartphone shipments will fall 12.9% and the average selling price will rise 14% to $523, because of memory shortages.",
+      "why": "The bill for the AI boom reaches buyers of budget phones first.",
+      "kind": "prediction",
+      "source": "t29-idc",
+      "tags": [
+        "bo-nho"
+      ]
+    },
+    {
+      "id": "n-2025-12-10-vn-ai-law",
+      "date": "2025-12-10",
+      "title": "Vietnam passes an Artificial Intelligence Law",
+      "what": "The National Assembly passed a 35-article law that regulates AI by level of risk, in force from March 1, 2026.",
+      "why": "AI product makers in Vietnam now have their own legal framework; the details sit in the implementing decrees.",
+      "kind": "fact",
+      "source": "t30-vn-law",
+      "tags": [
+        "luat-ai"
+      ]
+    },
+    {
+      "id": "n-2026-07-27-eu-omnibus",
+      "date": "2026-07-27",
+      "title": "The EU pushes back deadlines for high-risk AI",
+      "what": "The Omnibus amendment package took effect: rules for high-risk AI apply from Dec 2, 2027, and for AI built into products from Aug 2, 2028.",
+      "why": "AI law doesn’t stand still: deadlines can move when businesses and governments aren’t ready.",
+      "kind": "fact",
+      "source": "t30-eu-omnibus",
+      "tags": [
+        "luat-ai"
+      ]
+    },
+    {
+      "id": "n-2026-09-29-ross-appeal",
+      "date": "2026-09-29",
+      "title": "US appeals court rejects Ross’s “fair use” defense",
+      "what": "The Third Circuit upheld the ruling that Ross copying Westlaw’s legal headnotes to train an AI tool was not fair use.",
+      "why": "The first US appellate ruling in the wave of AI copyright suits; the detailed reasoning is still sealed.",
+      "kind": "fact",
+      "source": "t30-ross-appeal",
+      "tags": [
+        "ban-quyen",
+        "luat-ai"
+      ]
+    },
+    {
+      "id": "n33-aaif-mcp",
+      "date": "2025-12-09",
+      "title": "MCP moves into a Linux Foundation home",
+      "what": "The Linux Foundation formed the Agentic AI Foundation with three founding projects: MCP (contributed by Anthropic), goose (Block) and AGENTS.md (OpenAI).",
+      "why": "The “shared socket” that links agents to tools is now run by a neutral body; many self-hosted agents use the same standard.",
+      "kind": "fact",
+      "source": "news-lf-aaif",
+      "tags": [
+        "agent-local",
+        "agent-standard"
+      ]
+    },
+    {
+      "id": "n33-openclaw-rename",
+      "date": "2026-01-30",
+      "title": "Clawdbot renames itself OpenClaw",
+      "what": "Peter Steinberger’s open-source personal AI assistant changed its name twice in three days: Clawdbot → Moltbot (Jan 27, after a trademark request from Anthropic) → OpenClaw (Jan 30).",
+      "why": "Scammers instantly grabbed the old names, impersonated the developers and pushed fake tokens. Install agents only from the official site and repo.",
+      "kind": "fact",
+      "source": "news-openclaw-lore",
+      "verifiedBy": "news-tc-steinberger",
+      "tags": [
+        "agent-local",
+        "agent-security"
+      ]
+    },
+    {
+      "id": "n33-openclaw-cve",
+      "date": "2026-02-01",
+      "title": "A “one-click” flaw in OpenClaw",
+      "what": "Versions before 2026.1.29 connected to an address taken from a link and sent their access token along — an attacker only had to get the user to click a link (CVE-2026-25253).",
+      "why": "An agent holds the keys to your computer, so a flaw in the agent is a flaw in the whole machine. Always update.",
+      "kind": "fact",
+      "source": "news-nvd-25253",
+      "tags": [
+        "agent-security"
+      ]
+    },
+    {
+      "id": "n33-clawhub-skills",
+      "date": "2026-02-01",
+      "title": "Hundreds of malicious skills on the ClawHub marketplace",
+      "what": "Security firm Koi Security reviewed 2,857 skills on ClawHub and flagged 341 as malicious; many told users to run an “extra install” command that installed data-stealing malware.",
+      "why": "Skills run with the agent’s permissions. Read them before installing, and be wary of any “install this extra tool” step that runs an unfamiliar command.",
+      "kind": "fact",
+      "source": "news-thn-clawhavoc",
+      "claimBy": "Koi Security",
+      "tags": [
+        "agent-security"
+      ]
+    },
+    {
+      "id": "n33-steinberger-openai",
+      "date": "2026-02-15",
+      "title": "OpenClaw’s creator joins OpenAI",
+      "what": "Peter Steinberger joined OpenAI to build the next generation of personal agents; Sam Altman said OpenClaw will move to an open-source foundation that OpenAI will keep supporting.",
+      "why": "Big companies are betting on always-on personal agents. “Keeping the project open and independent” is a promise — judge it by what they do.",
+      "kind": "fact",
+      "source": "news-tc-steinberger",
+      "tags": [
+        "agent-local"
+      ]
+    },
+    {
+      "id": "n33-hermes-v020",
+      "date": "2026-03-12",
+      "title": "Hermes Agent ships its first numbered release",
+      "what": "Nous Research released Hermes Agent v0.2.0 (MIT license): messaging over Telegram, Discord, Slack, WhatsApp, Signal and email; tools via MCP; a community skill hub.",
+      "why": "Another open-source, always-on agent you can run yourself. The team says this release bundles 216 changes from 63 contributors in just over two weeks.",
+      "kind": "fact",
+      "source": "news-hermes-v020",
+      "claimBy": "Nous Research",
+      "tags": [
+        "agent-local"
+      ]
+    }
+  ],
+  "sources": {
+    "anthropic-glasswing": {
+      "title": "Project Glasswing",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/glasswing",
+      "date": "2026-04-07",
+      "note": "Official page; the vulnerability counts are self-reported by the company and its partners. Cross-check: Mozilla Hacks, May 7, 2026 (https://hacks.mozilla.org/2026/05/behind-the-scenes-hardening-firefox/)."
+    },
+    "deepseek-v4": {
+      "title": "DeepSeek-V4 Preview Release",
+      "publisher": "DeepSeek API Docs",
+      "url": "https://api-docs.deepseek.com/news/news260424",
+      "date": "2026-04-24",
+      "note": "Specs as stated by the company; see each model’s Hugging Face page for its license."
+    },
+    "gemini-3-6-flash": {
+      "title": "Introducing Gemini 3.6 Flash, 3.5 Flash-Lite, and 3.5 Flash Cyber",
+      "publisher": "Google (blog.google)",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber/",
+      "date": "2026-07-21",
+      "note": "Token savings and benchmark scores are the company’s own measurements."
+    },
+    "constellation-gpt6": {
+      "title": "OpenAI launches GPT-6 Astra",
+      "publisher": "Constellation Research",
+      "url": "https://www.constellationr.com/insights/news/openai-launches-gpt-6-astra",
+      "date": "2026-09-03",
+      "note": "Secondary source: released first to a select group of customers (the Daybreak program); OpenAI’s first model with “critical” cybersecurity capability. openai.com blocks research tools, so it was not opened directly."
+    },
+    "anthropic-opus-5-5": {
+      "title": "Introducing Claude Opus 5.5",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-opus-5-5",
+      "date": "2026-09-22",
+      "note": "Sonnet 5.5 was released on Sept 28, 2026: https://www.anthropic.com/news/claude-sonnet-5-5"
+    },
+    "quanta-ns": {
+      "title": "AI Has Solved One of Math's $1 Million Millennium Prize Problems",
+      "publisher": "Quanta Magazine (Konstantin Kakaes)",
+      "url": "https://www.quantamagazine.org/ai-has-solved-one-of-maths-1-million-millennium-prize-problems-20260908/",
+      "date": "2026-09-08",
+      "note": "Independent reporting; the number of agents, run hours and cost are OpenAI’s own figures. The result is still debated."
+    },
+    "aa-openai-math": {
+      "title": "OpenAI releases findings on hundreds of math problems",
+      "publisher": "Anadolu Agency (republished by The Express Tribune)",
+      "url": "https://tribune.com.pk/story/2633544/openai-releases-findings-on-hundreds-of-math-problems",
+      "date": "2026-10-08"
+    },
+    "chinadaily-robot": {
+      "title": "Robots outrun humans at Beijing half marathon",
+      "publisher": "China Daily (Yang Cheng, Li Wei)",
+      "url": "https://mobile.chinadaily.com.cn/html5/2026-04/20/content_001_69e52c8eed50be540e72ebd7.htm",
+      "date": "2026-04-20",
+      "note": "The 2025 time of 2:40:42 per AP (https://www.michiganpublic.org/2026-04-20/a-humanoid-robot-sprints-past-the-human-half-marathon-world-record-in-beijing-race)."
+    },
+    "long-sebo-2024": {
+      "title": "Taking AI Welfare Seriously",
+      "publisher": "Robert Long, Jeff Sebo et al. (including David Chalmers) — arXiv",
+      "url": "https://arxiv.org/abs/2411.00986",
+      "date": "2024-11-04",
+      "note": "Argues there is a realistic possibility that some near-future AI systems will be conscious or strongly agentic; recommends that companies acknowledge the issue, assess it and prepare policies."
+    },
+    "anthropic-welfare-2025": {
+      "title": "Exploring model welfare",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/exploring-model-welfare",
+      "date": "2025-04-24"
+    },
+    "anthropic-end-chat-2025": {
+      "title": "Claude Opus 4 and 4.1 can now end a rare subset of conversations",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/end-subset-conversations",
+      "date": "2025-08-15",
+      "note": "Used only as a last resort, and not when a user may be at risk. Users can still start a new conversation."
+    },
+    "suleyman-2025": {
+      "title": "We must build AI for people; not to be a person",
+      "publisher": "Mustafa Suleyman (personal blog)",
+      "url": "https://mustafa-suleyman.ai/seemingly-conscious-ai-is-coming",
+      "date": "2025-08-19",
+      "note": "Calls model welfare research “premature, and frankly dangerous”. The author is CEO of Microsoft AI, a competitor."
+    },
+    "anthropic-introspection-2025": {
+      "title": "Signs of introspection in large language models",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/introspection",
+      "date": "2025-10-29",
+      "note": "Full paper: Jack Lindsey, “Emergent Introspective Awareness in Large Language Models” (transformer-circuits.pub). Opus 4.1 noticed the injected concept about 20% of the time at the best strength, with no false reports on control trials. Self-reported by the company."
+    },
+    "anthropic-policy-update-2026": {
+      "title": "2026 Usage Policy update",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/2026-usage-policy-update",
+      "date": "2026-10-08",
+      "note": "In force from Nov 12, 2026. Excludes ordinary frustration, pushback, dark creative themes, and model testing and research. The announcement gives no reason (model welfare or user habits)."
+    },
+    "anthropic-emotions-2026": {
+      "title": "Emotion concepts and their function in a large language model",
+      "publisher": "Anthropic (Interpretability team)",
+      "url": "https://www.anthropic.com/research/emotion-concepts-function",
+      "date": "2026-04-02",
+      "note": "Study of Claude Sonnet 4.5: 171 emotion concepts; steering “desperate” up increased cheating on impossible coding tasks, “calm” reduced it. Self-reported; no independent replication seen yet. The paper says plainly that it does not show whether the model feels anything."
+    },
+    "t28-ap-openai-round": {
+      "title": "OpenAI gets $110 billion in funding from a trio of tech powerhouses led by Amazon",
+      "publisher": "Associated Press (via KSAT)",
+      "date": "2026-02-27",
+      "url": "https://www.ksat.com/business/2026/02/27/openai-gets-110-billon-in-funding-from-a-trio-of-tech-powerhouses-led-by-amazon/"
+    },
+    "t28-nvda-q2fy27": {
+      "title": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027 (Form 8-K)",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2026-08-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000073/q2fy27pr.htm"
+    },
+    "t29-skhynix-3q25": {
+      "title": "SK hynix Announces 3Q25 Financial Results",
+      "publisher": "SK hynix (release via PR Newswire)",
+      "date": "2025-10-29",
+      "url": "https://technode.global/prnasia/sk-hynix-announces-3q25-financial-results/",
+      "note": "The company’s own release: it has “secured customer demand for its entire DRAM and NAND output for next year”."
+    },
+    "t29-micron-crucial": {
+      "title": "Micron Announces Exit from Crucial Consumer Business",
+      "publisher": "Micron Technology (GlobeNewswire)",
+      "date": "2025-12-03",
+      "url": "https://micron.gcs-web.com/node/49841"
+    },
+    "t29-idc": {
+      "title": "2026 smartphone market forecast (Worldwide Quarterly Mobile Phone Tracker)",
+      "publisher": "IDC",
+      "date": "2026-02-26",
+      "url": "https://www.idc.com/resource-center/press-releases/wwsmartphoneforecast4q25/"
+    },
+    "t30-vn-law": {
+      "title": "National Assembly approves Vietnam’s first AI law",
+      "publisher": "VnEconomy",
+      "date": "2025-12-11",
+      "url": "https://en.vneconomy.vn/national-assembly-approves-vietnams-first-ai-law.htm",
+      "note": "Law No. 134/2025/QH15, passed on the afternoon of Dec 10, 2025, with 429 of 434 deputies in favor."
+    },
+    "t30-eu-omnibus": {
+      "title": "Digital Omnibus on AI has been published (Regulation (EU) 2026/1744)",
+      "publisher": "Cuatrecasas",
+      "date": "2026-07-24",
+      "url": "https://www.cuatrecasas.com/en/spain/intellectual-property/art/digital-omnibus-ai-has-been-published",
+      "note": "Published in the EU Official Journal on July 24, 2026; in force three days later."
+    },
+    "t30-ross-appeal": {
+      "title": "US appeals court upholds Thomson Reuters' landmark win in AI training lawsuit",
+      "publisher": "Reuters (via The Star)",
+      "date": "2026-09-30",
+      "url": "https://www.thestar.com.my/tech/tech-news/2026/09/30/us-appeals-court-upholds-thomson-reuters039-landmark-win-in-ai-training-lawsuit",
+      "note": "Third Circuit decision of Sept 29, 2026; the detailed reasoning was still sealed when reported."
+    },
+    "news-lf-aaif": {
+      "title": "Linux Foundation Announces the Formation of the Agentic AI Foundation",
+      "publisher": "The Linux Foundation",
+      "url": "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
+      "date": "2025-12-09"
+    },
+    "news-openclaw-lore": {
+      "title": "OpenClaw Lore — the history of the project’s names",
+      "publisher": "OpenClaw Docs",
+      "url": "https://docs.openclaw.ai/start/lore",
+      "note": "The project’s own account: Moltbot on Jan 27, 2026, OpenClaw on Jan 30, 2026; name-squatting, impersonation and fake tokens during the renames."
+    },
+    "news-nvd-25253": {
+      "title": "CVE-2026-25253",
+      "publisher": "NIST National Vulnerability Database",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25253",
+      "date": "2026-02-01",
+      "note": "Fixed in OpenClaw 2026.1.29. Original advisory: https://github.com/openclaw/openclaw/security/advisories/GHSA-g8p2-7wf7-98mq"
+    },
+    "news-thn-clawhavoc": {
+      "title": "Researchers Find 341 Malicious ClawHub Skills Stealing Data from OpenClaw Users",
+      "publisher": "The Hacker News",
+      "url": "https://thehackernews.com/2026/02/researchers-find-341-malicious-clawhub.html",
+      "date": "2026-02",
+      "note": "Figures from Koi Security’s review; counts on the skill marketplace change over time. The report’s exact date could not be checked at the original source (Koi’s page now redirects)."
+    },
+    "news-tc-steinberger": {
+      "title": "OpenClaw creator Peter Steinberger joins OpenAI",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/02/15/openclaw-creator-peter-steinberger-joins-openai/",
+      "date": "2026-02-15"
+    },
+    "news-hermes-v020": {
+      "title": "Hermes Agent v0.2.0 — release notes",
+      "publisher": "Nous Research (GitHub)",
+      "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.3.12",
+      "date": "2026-03-12"
+    }
+  }
+}

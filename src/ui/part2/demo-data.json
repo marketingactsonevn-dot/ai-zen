@@ -1,0 +1,118 @@
+{
+  "id": 99,
+  "kicker": "Bảy thành phần dùng chung của Vườn Trăng, chạy với dữ liệu giả",
+  "summary": "Nhiều góc nhìn, nhiều mốc, nhiều mức chắc chắn: ba thứ giúp ta đọc tin AI cho tỉnh táo.",
+  "quiz": {
+    "q": "Dấu ◇ cạnh một câu nghĩa là gì?",
+    "options": ["Sự thật đã kiểm chứng", "Công ty tự công bố, chưa có bên độc lập xác nhận", "Một dự đoán chưa xảy ra"],
+    "answer": 1,
+    "explain": "◇ là tuyên bố của chính công ty. Khi có bên độc lập kiểm lại, dấu chuyển thành ●."
+  },
+  "sources": {
+    "demo": { "title": "Dữ liệu giả cho trạm demo", "publisher": "AI Zen (chỉ ở dev)", "note": "Không phải dữ kiện thật, chỉ để bấm thử thành phần." },
+    "demo-lab": { "title": "Bài blog giả của một phòng lab", "publisher": "Phòng lab X (giả)", "date": "2026-09-30", "url": "https://example.com/" }
+  },
+  "scenes": {
+    "circle": {
+      "label": "Vòng đá góc nhìn",
+      "question": "AI có sắp thay được lập trình viên không?",
+      "detail": "Dữ liệu giả: bốn góc nhìn đặt cạnh nhau, không góc nào được ưu tiên.",
+      "perspectives": {
+        "stones": [
+          { "who": "Giám đốc một phòng lab AI (giả)", "view": { "text": "Trong hai năm, phần lớn mã sẽ do AI viết; người lập trình chuyển sang giao việc và duyệt.", "asOf": "2026-10-15", "source": "demo", "kind": "prediction" } },
+          { "who": "Nhà nghiên cứu độc lập (giả)", "view": { "text": "AI viết nhanh phần dễ, nhưng phần khó nhất là hiểu người dùng cần gì, và việc đó vẫn của con người.", "asOf": "2026-10-15", "source": "demo", "kind": "opinion" } },
+          { "who": "Phòng lab X · bài blog (giả)", "view": { "text": "Agent của họ tự sửa được 72% lỗi trong bộ bài thử nội bộ.", "asOf": "2026-10-15", "source": "demo-lab", "claimBy": "Phòng lab X" } },
+          { "who": "Khảo sát lập trình viên 2026 (giả)", "view": { "text": "Bốn trên năm người được hỏi dùng AI hằng tuần; ít hơn một nửa tin hẳn vào mã nó viết.", "asOf": "2026-10-15", "source": "demo" } }
+        ],
+        "common": { "text": "Đồng ý ở chỗ AI viết mã ngày càng nhiều; khác nhau ở chỗ ai còn quyết định viết gì.", "asOf": "2026-10-15", "source": "demo", "kind": "opinion" }
+      }
+    },
+    "tide": {
+      "label": "Thuỷ triều tiến triển",
+      "question": "Một robot chạy bán marathon nhanh lên bao nhiêu?",
+      "insight": { "text": "Một năm, thời gian chạy rút từ gần ba giờ xuống dưới một giờ: tiến bộ không đi đều mà nhảy bậc.", "asOf": "2026-10-15", "source": "demo" },
+      "tide": {
+        "milestones": [
+          { "date": "2025-04", "label": "Lần chạy đầu", "fact": { "text": "Robot hình người về đích sau 2 giờ 40 phút, có người chạy kèm và thay pin giữa đường.", "asOf": "2026-10-15", "source": "demo" } },
+          { "date": "2025-08", "label": "Tự giữ thăng bằng", "fact": { "text": "Bản mới tự đứng dậy sau khi vấp, không cần người đỡ.", "asOf": "2026-10-15", "source": "demo-lab", "claimBy": "Phòng lab X", "verifiedBy": "Ban tổ chức giải" } },
+          { "date": "2026-01", "label": "Bỏ dây an toàn", "fact": { "text": "Lần đầu chạy hết đường đua không dây bảo hộ.", "asOf": "2026-10-15", "source": "demo" } },
+          { "date": "2026-04", "label": "Dưới một giờ", "fact": { "text": "Kỷ lục mới 50 phút 26 giây, nhanh hơn phần lớn người chạy nghiệp dư.", "asOf": "2026-10-15", "source": "demo-lab", "claimBy": "Phòng lab X" }, "compare": { "before": "2:40:42", "after": "50:26", "ratio": 0.31, "beforeLabel": "04/2025", "afterLabel": "04/2026" } }
+        ],
+        "horizon": { "text": "Có người đoán robot sẽ chạy nhanh hơn kỷ lục thế giới của con người trước 2030.", "asOf": "2026-10-15", "source": "demo", "kind": "prediction" }
+      }
+    },
+    "news": {
+      "label": "Bảng tin trên đá",
+      "tags": ["demo"],
+      "insight": { "text": "Tin mới nhất chưa chắc đã đúng nhất: xem ai công bố, ai đã kiểm lại, và tin đã bao lâu.", "asOf": "2026-10-15", "source": "demo", "kind": "opinion" },
+      "file": {
+        "asOf": "2026-10-15",
+        "sources": { "demo-news": { "title": "Bảng tin giả", "publisher": "AI Zen (chỉ ở dev)", "date": "2026-10-15" } },
+        "items": [
+          { "id": "d1", "date": "2026-10-02", "title": "Mô hình mới đứng đầu bảng xếp hạng toán", "what": "Một phòng lab công bố mô hình giải đúng 9/10 bài trong bộ đề tự soạn.", "why": "Bộ đề do chính họ soạn, nên chưa so được với mô hình khác.", "kind": "fact", "source": "demo-news", "claimBy": "Phòng lab X", "tags": ["demo"] },
+          { "id": "d2", "date": "2026-09-12", "title": "Luật minh bạch AI có hiệu lực", "what": "Từ tháng 9, nội dung do AI tạo phải được gắn nhãn khi đăng công khai.", "why": "Người xem có quyền biết thứ mình đang xem do máy làm.", "kind": "fact", "source": "demo-news", "tags": ["demo"] },
+          { "id": "d3", "date": "2026-06-20", "title": "Agent tự đặt vé máy bay", "what": "Một agent đặt trọn chuyến đi từ email của người dùng, theo video công ty đăng.", "why": "Bên kiểm định độc lập đã chạy lại và đạt kết quả tương tự.", "kind": "fact", "source": "demo-news", "claimBy": "Công ty Y", "verifiedBy": "Phòng thử nghiệm Z", "tags": ["demo"] },
+          { "id": "d4", "date": "2026-02-03", "title": "Chip AI rẻ đi một nửa", "what": "Giá thuê một giờ GPU giảm còn khoảng một nửa so với năm trước.", "why": "Chạy AI rẻ hơn thì nhiều nhóm nhỏ làm được sản phẩm riêng.", "kind": "fact", "source": "demo-news", "tags": ["demo"] },
+          { "id": "d5", "date": "2025-11-18", "title": "Dự báo: mọi điện thoại có AI riêng", "what": "Một nhà phân tích dự báo đến 2028, mọi điện thoại mới đều chạy một mô hình nhỏ ngay trên máy.", "why": "Nếu đúng, dữ liệu cá nhân ít phải gửi lên máy chủ hơn.", "kind": "prediction", "source": "demo-news", "tags": ["demo"] }
+        ]
+      }
+    },
+    "path": {
+      "label": "Lối đá từng bước",
+      "question": "Giao một việc cho agent: làm theo thứ tự nào?",
+      "insight": { "text": "Agent làm tốt khi có mục tiêu rõ, quyền vừa đủ và một người duyệt trước khi việc thật chạy.", "asOf": "2026-10-15", "source": "demo" },
+      "steps": {
+        "steps": [
+          { "label": "Viết mục tiêu", "detail": "Một câu: xong là thế nào.", "why": "Không có đích thì agent không biết lúc nào dừng." },
+          { "label": "Cấp quyền tối thiểu", "detail": "Chỉ thư mục và công cụ việc này cần.", "why": "Quyền càng rộng, sai một bước càng đắt." },
+          { "label": "Chạy thử", "detail": "Cho chạy trên bản sao, xem nhật ký.", "why": "Thử trên bản sao thì lỗi không chạm dữ liệu thật." },
+          { "label": "Duyệt kết quả", "detail": "Đọc thay đổi trước khi chấp nhận.", "why": "Người duyệt là chốt chặn cuối cùng." },
+          { "label": "Ghi lại bài học", "detail": "Thêm vào hướng dẫn cho lần sau.", "why": "Lần sau agent bắt đầu từ chỗ đã học." }
+        ],
+        "takeaway": "demo-agent"
+      },
+      "card": {
+        "id": "demo-agent",
+        "station": 99,
+        "title": "Giao việc cho agent an toàn",
+        "type": "checklist",
+        "topic": "Agent an toàn",
+        "asOf": "2026-10-15",
+        "body": "☐ Mục tiêu: [VIỆC CẦN XONG], xong khi [DẤU HIỆU XONG]\n☐ Quyền: chỉ [THƯ MỤC / CÔNG CỤ]\n☐ Chạy thử trên bản sao trước\n☐ Tự đọc lại thay đổi rồi mới chấp nhận\n☐ Ghi bài học vào [FILE HƯỚNG DẪN]",
+        "note": "Thay chữ tô màu bằng việc của bạn."
+      }
+    },
+    "code": {
+      "label": "Cuộn mã",
+      "fileName": "main.js",
+      "insight": { "text": "Phòng lab X nói agent của họ viết đúng đoạn này ngay lần đầu trong 9/10 lần thử.", "asOf": "2026-10-15", "source": "demo-lab", "claimBy": "Phòng lab X" },
+      "scroll": {
+        "lang": "js",
+        "code": "// vẽ một vầng trăng lên canvas\nconst canvas = document.querySelector('canvas')\nconst ctx = canvas.getContext('2d')\n\nfunction moon(x, y, r) {\n  ctx.beginPath()\n  ctx.arc(x, y, r, 0, Math.PI * 2)\n  ctx.fillStyle = '#f2e4b8'\n  ctx.fill()\n}\n\nmoon(120, 80, 40) // trăng tròn giữa trời",
+        "notes": [
+          { "line": 2, "text": "Tìm tấm canvas trong trang và lấy bút vẽ 2D của nó." },
+          { "line": 5, "text": "Một hàm nhỏ: đưa vào toạ độ và bán kính, nó vẽ một hình tròn tô màu ngà." },
+          { "line": 12, "text": "Gọi hàm: trăng tâm (120, 80), bán kính 40 điểm ảnh." }
+        ]
+      },
+      "card": {
+        "id": "demo-prompt",
+        "station": 99,
+        "title": "Nhờ AI giải thích một đoạn mã",
+        "type": "prompt",
+        "topic": "Code game/app",
+        "asOf": "2026-10-15",
+        "body": "Giải thích đoạn mã dưới đây cho người mới, từng dòng một, bằng tiếng Việt đơn giản. Sau đó gợi ý 1 cách sửa để [MỤC TIÊU CỦA BẠN].\n\n[DÁN ĐOẠN MÃ VÀO ĐÂY]",
+        "source": "demo"
+      },
+      "command": {
+        "id": "demo-cmd",
+        "station": 99,
+        "title": "Tạo dự án game web",
+        "type": "command",
+        "topic": "Code game/app",
+        "body": "npm create vite@latest [TÊN-GAME] -- --template vanilla\ncd [TÊN-GAME]\nnpm install\nnpm run dev"
+      }
+    }
+  }
+}

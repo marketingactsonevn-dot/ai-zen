@@ -20,4 +20,6 @@ export const STATIONS: Partial<Record<number, () => Promise<{ default: StationMo
   16: () => import('./t16/index'),
   17: () => import('./t17/index'),
   18: () => import('./t18/index'),
+  // dev only (#/tram/99): every Part 2 component with fake data; dropped from the production build
+  ...(import.meta.env.DEV ? { 99: () => import('../ui/part2/demo') } : {}),
 }

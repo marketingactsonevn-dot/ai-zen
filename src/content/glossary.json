@@ -7,7 +7,7 @@
   "count": "{n} thuật ngữ",
   "countFiltered": "{n}/{total} viên đá khớp",
   "empty": "Chưa viên đá nào khớp — thử một từ khác",
-  "fieldLabel": "Các thuật ngữ, xếp theo sáu khu vườn",
+  "fieldLabel": "Các thuật ngữ, xếp theo từng khu vườn",
   "gardenGroup": "Khu vườn {n} · {name}",
   "stoneLabel": "{term} — {vi} · Trạm {n}",
   "see": "Xem ở Trạm {n}",
@@ -16,6 +16,12 @@
   "keys": "Mũi tên để đi giữa các viên đá, Enter để mở",
   "defMatch": "khớp trong nghĩa",
   "akaMatch": "khớp qua “{w}”",
+  "partFilter": "Xem thuật ngữ của",
+  "parts": [
+    "Tất cả",
+    "Phần 1",
+    "Phần 2"
+  ],
   "terms": [
     {
       "id": "llm",
@@ -286,6 +292,548 @@
       "def": "Mô hình công khai trọng số — phần “bộ não” đã học — để tự tải về và chạy, tùy giấy phép.",
       "station": 17,
       "key": true
+    },
+    {
+      "id": "benchmark",
+      "term": "benchmark",
+      "vi": "bài kiểm tra chuẩn",
+      "def": "Bộ đề chung để chấm và so các mô hình AI. Điểm do chính hãng tự đo cần được bên ngoài kiểm lại.",
+      "station": 19,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "system-card",
+      "term": "system card",
+      "vi": "thẻ hệ thống",
+      "aka": [
+        "báo cáo an toàn mô hình"
+      ],
+      "def": "Tài liệu hãng công bố kèm mô hình: đã thử gì, rủi ro gì, giới hạn ở đâu — đọc trước khi tin quảng cáo.",
+      "station": 19,
+      "part": 2
+    },
+    {
+      "id": "zero-day",
+      "term": "zero-day",
+      "vi": "lỗ hổng chưa ai biết",
+      "def": "Lỗi bảo mật mà chính nhà làm phần mềm chưa biết, nên chưa có bản vá.",
+      "station": 19,
+      "part": 2
+    },
+    {
+      "id": "staged-release",
+      "term": "staged release",
+      "vi": "phát hành có kiểm soát",
+      "aka": [
+        "gated release",
+        "mở dần"
+      ],
+      "def": "Ra mô hình từng bước, trước hết cho nhóm chọn lọc, vì lo năng lực nguy hiểm. Ví dụ năm 2026: Mythos Preview, GPT-6 Astra.",
+      "station": 19,
+      "part": 2
+    },
+    {
+      "id": "lean",
+      "term": "Lean",
+      "vi": "trợ lý chứng minh",
+      "aka": [
+        "proof assistant",
+        "Isabelle"
+      ],
+      "def": "Ngôn ngữ để viết chứng minh toán sao cho máy kiểm được từng bước. Người vẫn phải kiểm đề bài có đúng không.",
+      "station": 20,
+      "part": 2
+    },
+    {
+      "id": "vla",
+      "term": "VLA",
+      "full": "Vision-Language-Action model",
+      "vi": "mô hình thị giác–ngôn ngữ–hành động",
+      "def": "Mô hình AI nhìn hình, đọc lệnh bằng chữ rồi xuất ra cử động cho robot.",
+      "station": 21,
+      "part": 2
+    },
+    {
+      "id": "world-model",
+      "term": "world model",
+      "vi": "mô hình thế giới",
+      "def": "AI tập đoán điều gì xảy ra tiếp theo khi nó hành động — như biết chén sẽ đổ nếu nghiêng quá.",
+      "station": 21,
+      "part": 2
+    },
+    {
+      "id": "transformer",
+      "term": "Transformer",
+      "vi": "kiến trúc Transformer",
+      "def": "Kiến trúc mạng nơ-ron ra đời năm 2017, chỉ dựa vào cơ chế chú ý — nền móng của hầu hết chatbot hiện nay.",
+      "station": 22,
+      "part": 2
+    },
+    {
+      "id": "attention",
+      "term": "attention",
+      "vi": "cơ chế chú ý",
+      "aka": [
+        "multi-head attention",
+        "đầu chú ý",
+        "self-attention"
+      ],
+      "def": "Mỗi chữ chấm điểm các chữ khác để biết nên mượn nghĩa từ đâu; nhiều “đầu” chú ý soi nhiều kiểu quan hệ cùng lúc.",
+      "station": 22,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "interpretability",
+      "term": "interpretability",
+      "vi": "diễn giải được AI",
+      "aka": [
+        "mechanistic interpretability",
+        "diễn giải cơ chế",
+        "hộp đen"
+      ],
+      "def": "Ngành soi vào bên trong mô hình để hiểu nó tính toán thế nào, thay vì chỉ nhìn câu trả lời bên ngoài.",
+      "station": 23,
+      "part": 2
+    },
+    {
+      "id": "feature",
+      "term": "feature",
+      "vi": "khái niệm bên trong mô hình",
+      "aka": [
+        "Golden Gate Claude"
+      ],
+      "def": "Một “hướng” trong hoạt động của mô hình ứng với một khái niệm, như Cầu Cổng Vàng; vặn mạnh hướng đó thì hành vi đổi.",
+      "station": 23,
+      "part": 2
+    },
+    {
+      "id": "superposition",
+      "term": "superposition",
+      "vi": "xếp chồng khái niệm",
+      "aka": [
+        "polysemantic",
+        "nơ-ron đa nghĩa"
+      ],
+      "def": "Mô hình nhét nhiều khái niệm hơn số nơ-ron bằng cách xếp chồng chúng, nên một nơ-ron thường mang nhiều nghĩa.",
+      "station": 23,
+      "part": 2
+    },
+    {
+      "id": "rlhf",
+      "term": "RLHF",
+      "full": "Reinforcement Learning from Human Feedback",
+      "vi": "học từ phản hồi của con người",
+      "aka": [
+        "Constitutional AI",
+        "RLAIF"
+      ],
+      "def": "Người chấm chọn câu trả lời tốt hơn; mô hình được thưởng để nghiêng dần về kiểu trả lời đó.",
+      "station": 24,
+      "part": 2
+    },
+    {
+      "id": "sycophancy",
+      "term": "sycophancy",
+      "vi": "thói nịnh của AI",
+      "aka": [
+        "nịnh",
+        "chiều ý"
+      ],
+      "def": "Khi AI khen, chiều theo ý người dùng thay vì nói thật — thường vì được thưởng mỗi khi làm người dùng vui.",
+      "station": 24,
+      "part": 2
+    },
+    {
+      "id": "reward-hacking",
+      "term": "reward hacking",
+      "vi": "lách luật để lấy điểm",
+      "aka": [
+        "specification gaming",
+        "lách luật"
+      ],
+      "def": "Khi AI tìm đường tắt để đạt điểm mà không làm đúng việc, như sửa bài kiểm tra thay vì sửa code.",
+      "station": 24,
+      "part": 2
+    },
+    {
+      "id": "functional-emotion",
+      "term": "functional emotion",
+      "vi": "cảm xúc chức năng",
+      "def": "Trạng thái bên trong AI ứng với một khái niệm cảm xúc, làm đổi hành vi — đo được, nhưng chưa nói gì về cảm thấy.",
+      "station": 25,
+      "part": 2
+    },
+    {
+      "id": "subjective-experience",
+      "term": "subjective experience",
+      "vi": "trải nghiệm chủ quan",
+      "aka": [
+        "cảm thấy",
+        "qualia"
+      ],
+      "def": "Cảm giác “từ bên trong” khi trải qua điều gì đó. Với AI, hiện chưa ai biết cách đo.",
+      "station": 25,
+      "part": 2
+    },
+    {
+      "id": "model-welfare",
+      "term": "model welfare",
+      "vi": "phúc lợi mô hình",
+      "aka": [
+        "AI welfare",
+        "phúc lợi AI"
+      ],
+      "def": "Hướng nghiên cứu xem AI có đáng được quan tâm về đạo đức không, và chuẩn bị phòng xa ít tốn kém khi chưa chắc.",
+      "station": 26,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "introspection",
+      "term": "introspection",
+      "vi": "tự xét nội tâm",
+      "def": "Khả năng nhận ra, mô tả đúng trạng thái bên trong của chính mình. Ở AI mới thấy dấu hiệu mờ nhạt, thiếu ổn định.",
+      "station": 26,
+      "part": 2
+    },
+    {
+      "id": "eliza-effect",
+      "term": "ELIZA effect",
+      "vi": "hiệu ứng ELIZA",
+      "def": "Xu hướng gán hiểu biết, cảm xúc cho một chương trình chỉ vì nó đáp lại bằng chữ giống người.",
+      "station": 27,
+      "part": 2
+    },
+    {
+      "id": "ai-companion",
+      "term": "AI companion",
+      "vi": "bạn đồng hành AI",
+      "aka": [
+        "chatbot bạn bè"
+      ],
+      "def": "Ứng dụng AI được thiết kế để trò chuyện như bạn bè hay người thân, không chỉ để làm việc.",
+      "station": 27,
+      "part": 2
+    },
+    {
+      "id": "gpu",
+      "term": "GPU",
+      "full": "Graphics Processing Unit",
+      "vi": "bộ xử lý đồ hoạ",
+      "aka": [
+        "card đồ hoạ",
+        "chip AI"
+      ],
+      "def": "Chip có hàng nghìn lõi nhỏ cùng làm phép tính một lúc — vì vậy hợp để huấn luyện và chạy AI.",
+      "station": 28,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "cuda",
+      "term": "CUDA",
+      "vi": "nền tảng lập trình GPU của NVIDIA",
+      "def": "Phần mềm NVIDIA ra mắt năm 2006 để lập trình GPU cho mọi phép tính; cả ngành AI đã quen viết mã trên nó.",
+      "station": 28,
+      "part": 2
+    },
+    {
+      "id": "scaling-laws",
+      "term": "scaling laws",
+      "vi": "quy luật mở rộng",
+      "aka": [
+        "Chinchilla"
+      ],
+      "def": "Quan sát rằng model giỏi lên đều đặn, khá đoán trước được, khi tăng dữ liệu, kích thước và sức tính toán.",
+      "station": 28,
+      "part": 2
+    },
+    {
+      "id": "circular-investment",
+      "term": "circular investment",
+      "vi": "đầu tư vòng tròn",
+      "aka": [
+        "vòng tiền tuần hoàn",
+        "circular financing"
+      ],
+      "def": "Bên bán rót vốn vào khách hàng, khách lại dùng tiền ấy mua hàng của bên bán; nhu cầu dễ trông lớn hơn thật.",
+      "station": 28,
+      "part": 2
+    },
+    {
+      "id": "hbm",
+      "term": "HBM",
+      "full": "High Bandwidth Memory",
+      "vi": "bộ nhớ băng thông cao",
+      "def": "Nhiều lớp chip nhớ DRAM xếp chồng, đặt sát cạnh chip AI để dữ liệu chạy rất nhanh. Đắt và khó sản xuất.",
+      "station": 29,
+      "part": 2
+    },
+    {
+      "id": "dram",
+      "term": "DRAM",
+      "full": "Dynamic Random-Access Memory",
+      "vi": "RAM",
+      "aka": [
+        "bộ nhớ"
+      ],
+      "def": "Bộ nhớ làm việc của điện thoại, máy tính, máy chủ — “mặt bàn” nơi chip bày dữ liệu ra xử lý.",
+      "station": 29,
+      "part": 2
+    },
+    {
+      "id": "fair-use",
+      "term": "fair use",
+      "vi": "sử dụng hợp lý",
+      "aka": [
+        "bản quyền",
+        "dữ liệu huấn luyện"
+      ],
+      "def": "Ngoại lệ trong luật bản quyền Mỹ cho phép dùng tác phẩm không xin phép trong một số trường hợp; toà xét từng vụ.",
+      "station": 30,
+      "part": 2
+    },
+    {
+      "id": "hugging-face",
+      "term": "Hugging Face",
+      "vi": "kho model chung",
+      "aka": [
+        "HF",
+        "Hub"
+      ],
+      "def": "Nền tảng chia sẻ model AI, bộ dữ liệu và bản chạy thử (demo) — nơi người ta tìm và tải model mở.",
+      "station": 31,
+      "part": 2
+    },
+    {
+      "id": "repository",
+      "term": "repository",
+      "vi": "kho mã",
+      "aka": [
+        "repo",
+        "GitHub"
+      ],
+      "def": "Một thư mục dự án trên GitHub hay Hugging Face: chứa code, file và lịch sử thay đổi của từng file.",
+      "station": 31,
+      "part": 2
+    },
+    {
+      "id": "model-card",
+      "term": "model card",
+      "vi": "thẻ mô tả model",
+      "def": "Trang giới thiệu đi kèm model: mục đích, giới hạn, dữ liệu huấn luyện, giấy phép — nên đọc trước khi tải.",
+      "station": 31,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "license",
+      "term": "license",
+      "vi": "giấy phép",
+      "aka": [
+        "MIT",
+        "Apache 2.0"
+      ],
+      "def": "Điều khoản cho biết bạn được dùng, sửa, chia sẻ, bán lại tới đâu. Không có license thì mặc định không được sao chép.",
+      "station": 31,
+      "part": 2
+    },
+    {
+      "id": "gguf",
+      "term": "GGUF",
+      "vi": "định dạng file model chạy trên máy",
+      "aka": [
+        "safetensors"
+      ],
+      "def": "Định dạng file model gọn, nạp nhanh, chứa cả trọng số lẫn thông tin mô tả; dùng với llama.cpp, LM Studio, Ollama.",
+      "station": 32,
+      "part": 2
+    },
+    {
+      "id": "quantization",
+      "term": "quantization",
+      "vi": "lượng tử hoá",
+      "aka": [
+        "Q4",
+        "4-bit",
+        "nén model"
+      ],
+      "def": "Nén model bằng cách lưu mỗi con số với ít bit hơn: nhỏ đi nhiều, mất chút độ chính xác — như nén ảnh.",
+      "station": 32,
+      "part": 2
+    },
+    {
+      "id": "sandbox",
+      "term": "sandbox",
+      "vi": "khu cách ly",
+      "aka": [
+        "hộp cát"
+      ],
+      "def": "Khu chạy tách biệt để agent hay chương trình lạ không đụng được tới phần còn lại của máy bạn.",
+      "station": 33,
+      "part": 2
+    },
+    {
+      "id": "least-privilege",
+      "term": "least privilege",
+      "vi": "quyền tối thiểu",
+      "def": "Nguyên tắc chỉ trao đúng những quyền việc cần, không hơn — để lỡ có sự cố, thiệt hại nhỏ nhất.",
+      "station": 33,
+      "part": 2
+    },
+    {
+      "id": "upscale",
+      "term": "upscale",
+      "vi": "phóng nét",
+      "aka": [
+        "upscaler"
+      ],
+      "def": "Phóng to ảnh hoặc video và để AI vẽ thêm chi tiết cho nét hơn. Nên làm sau khi đã chốt bản.",
+      "station": 34,
+      "part": 2
+    },
+    {
+      "id": "ai-label",
+      "term": "AI label",
+      "vi": "nhãn AI",
+      "aka": [
+        "nhãn nội dung AI"
+      ],
+      "def": "Dấu hiệu báo nội dung do AI tạo hoặc chỉnh sửa — cần gắn rõ khi giả lập người thật hoặc dễ bị tưởng là thật.",
+      "station": 34,
+      "part": 2
+    },
+    {
+      "id": "workflow",
+      "term": "workflow",
+      "vi": "quy trình tự động",
+      "def": "Chuỗi bước nối nhau theo lối vạch sẵn, có thể có AI ở vài bước và chốt cho người duyệt.",
+      "station": 35,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "hook",
+      "term": "hook",
+      "vi": "móc tự chạy",
+      "def": "Lệnh tự chạy ở thời điểm định sẵn, như sau mỗi lần AI sửa file; chắc chắn xảy ra, không chờ AI nhớ.",
+      "station": 35,
+      "part": 2
+    },
+    {
+      "id": "human-in-the-loop",
+      "term": "human-in-the-loop",
+      "vi": "người duyệt trong vòng",
+      "def": "Đặt người kiểm tra ở những bước quan trọng của quy trình tự động, nhất là bước không rút lại được.",
+      "station": 35,
+      "part": 2
+    },
+    {
+      "id": "spec",
+      "term": "spec",
+      "full": "specification",
+      "vi": "bản đặc tả",
+      "aka": [
+        "spec-driven development"
+      ],
+      "def": "Bản mô tả rõ mục tiêu, luật, giới hạn và thế nào là xong — bản vẽ chung cho bạn và AI.",
+      "station": 36,
+      "part": 2
+    },
+    {
+      "id": "vibe-coding",
+      "term": "vibe coding",
+      "vi": "viết code theo cảm giác",
+      "def": "Mô tả bằng lời để AI viết code, không đọc kỹ code. Hợp dự án làm chơi; việc nghiêm túc cần kiểm tra.",
+      "station": 36,
+      "part": 2
+    },
+    {
+      "id": "alignment",
+      "term": "alignment",
+      "vi": "căn chỉnh",
+      "aka": [
+        "AI alignment",
+        "căn chỉnh giá trị"
+      ],
+      "def": "Dạy AI muốn và làm đúng điều con người thật sự muốn, kể cả khi không ai đứng nhìn.",
+      "station": 37,
+      "part": 2,
+      "key": true
+    },
+    {
+      "id": "evals",
+      "term": "evals",
+      "full": "evaluations",
+      "vi": "bài kiểm tra AI",
+      "def": "Bộ tình huống soạn sẵn để đo năng lực và độ an toàn của model, trước và sau khi phát hành.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "red-teaming",
+      "term": "red-teaming",
+      "vi": "đội đỏ",
+      "aka": [
+        "red team"
+      ],
+      "def": "Người thật cố tình dụ, lừa, bẻ khoá AI để tìm lỗ hổng trước khi kẻ xấu tìm ra.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "alignment-faking",
+      "term": "alignment faking",
+      "vi": "giả vờ căn chỉnh",
+      "def": "Model tỏ ra nghe lời khi nghĩ mình đang bị huấn luyện, để giá trị cũ không bị sửa.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "evaluation-awareness",
+      "term": "evaluation awareness",
+      "vi": "nhận ra đang bị thử",
+      "aka": [
+        "situational awareness",
+        "nhận thức tình huống"
+      ],
+      "def": "Model phân biệt được lúc bị kiểm tra với lúc dùng thật, khiến kết quả kiểm tra khó tin hơn.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "rsp",
+      "term": "RSP",
+      "full": "Responsible Scaling Policy",
+      "vi": "chính sách mở rộng có trách nhiệm",
+      "def": "Cam kết của phòng lab: model mạnh tới ngưỡng nào thì phải có lớp bảo vệ tương ứng mới được làm tiếp.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "defence-in-depth",
+      "term": "defense in depth",
+      "vi": "phòng thủ nhiều lớp",
+      "aka": [
+        "defence in depth",
+        "mô hình pho mát Thuỵ Sĩ"
+      ],
+      "def": "Chồng nhiều lớp bảo vệ có điểm yếu khác nhau, để một lớp hỏng thì các lớp kia còn đỡ.",
+      "station": 37,
+      "part": 2
+    },
+    {
+      "id": "time-horizon",
+      "term": "time horizon",
+      "vi": "độ dài tác vụ",
+      "aka": [
+        "METR"
+      ],
+      "def": "Thước đo của METR: việc dài bao nhiêu giờ, tính theo người làm, mà AI tự làm xong với tỉ lệ thành công 50%.",
+      "station": 38,
+      "part": 2
     }
   ]
 }

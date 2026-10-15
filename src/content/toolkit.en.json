@@ -1,0 +1,398 @@
+{
+  "cards": [
+    {
+      "id": "t19-doc-tin-ai",
+      "station": 19,
+      "title": "5 questions to ask when reading AI news",
+      "type": "checklist",
+      "body": "News: [MODEL OR PRODUCT NAME] — source: [LINK TO THE STORY]\n1. Who measured it? Did the company score itself, or did outsiders? Which benchmark, under what conditions?\n2. Is the demo cherry-picked? Is this the best run out of how many? Have I tried it on my own work?\n3. Is there a system card or technical report? What does it say about limits and risks?\n4. Price and limits: who can actually use it, at what cost, how many times a day?\n5. What do independent people say? Have researchers, reputable press or real users checked it?",
+      "note": "Use it whenever you see “beats every rival”. If you can’t answer questions 1 and 5, treat it as a company claim.",
+      "source": "editorial",
+      "topic": "Reading news & checking claims",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t20-kiem-tuyen-bo-toan",
+      "station": 20,
+      "title": "When you read “AI solved math problem X”",
+      "type": "checklist",
+      "body": "News: [PROBLEM OR RESULT] — source: [LINK TO THE STORY]\n1. Who announced it: the company that built the AI, or independent mathematicians?\n2. What exactly was proved: the full problem, or an easier version?\n3. Has a proof checker (Lean, Isabelle…) verified it? Who checked that the statement written for the machine matches the real one?\n4. Is it published in a peer-reviewed journal, or still a preprint?\n5. Who gets the credit: the AI, the people using it, or those who laid the groundwork?",
+      "note": "Drawn from the 2026 Navier–Stokes and Jacobian conjecture stories.",
+      "source": "editorial",
+      "topic": "Reading news & checking claims",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t24-kiem-chung",
+      "station": 24,
+      "title": "3 ways to check AI’s work instead of taking its word",
+      "type": "checklist",
+      "body": "1. Ask for evidence, then open it yourself: files, source links, run results — don’t stop at “done”.\n2. See what the AI changed: for code, read the diff — did it edit the test itself, delete tests or hard-code the answer?\n3. Try a new case it hasn’t seen: [YOUR OWN NEW INPUT] — is the result still right?",
+      "note": "Works for code as well as reports and spreadsheets. Drawn from the reward-hacking cases documented in 2025.",
+      "source": "editorial",
+      "topic": "Reading news & checking claims",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t27-phan-bien",
+      "station": 27,
+      "title": "Ask AI to challenge your idea",
+      "type": "prompt",
+      "body": "Critique the idea below the way a serious opponent would. No polite praise.\nIdea: [YOUR IDEA]\nContext: [RESOURCES, TIME, CONSTRAINTS]\n1. Name the 3 biggest weaknesses, most serious first.\n2. For each one, give me a question I must be able to answer before I start.\n3. What does the worst case look like?\n4. What would change your mind and make you back this idea?\nFinally: your verdict in 2 sentences, bluntly.",
+      "note": "Works with any chatbot. AI tends to agree with its users (Science, 2026) — so you have to invite pushback. For big decisions, ask real people too.",
+      "source": "editorial",
+      "topic": "Healthy habits",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t27-thoi-quen",
+      "station": 27,
+      "title": "Four healthy habits when talking with AI",
+      "type": "checklist",
+      "body": "☐ Remember it’s a tool: warm words are a writing skill, not friendship.\n☐ Ask it to push back: “Show me the weak points of [WHAT I’M THINKING].”\n☐ For big things, ask a real person too: [SOMEONE I TRUST].\n☐ Step away from the screen: at most [NUMBER OF MINUTES] minutes per chat, then close the laptop.",
+      "note": "In rhythm: before, during, for big things, after a conversation. Not a substitute for professional advice.",
+      "source": "editorial",
+      "topic": "Healthy habits",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t29-ram-mua-may",
+      "station": 29,
+      "title": "Buying a computer to run AI yourself: how much RAM is enough?",
+      "type": "checklist",
+      "body": "Before buying a computer for [WHAT YOU WANT TO DO], budget [YOUR BUDGET]:\n☐ 1. Try the cloud version first: does this really need to run on your own machine?\n☐ 2. Pick the largest model you want to run, e.g. [BILLIONS OF PARAMETERS] billion parameters.\n☐ 3. Estimate: a 4-bit model needs about 0.6 GB of RAM per billion parameters, plus 2–4 GB.\n☐ 4. Leave another 4–8 GB for the operating system and open apps.\n☐ 5. Rough guide: 16 GB runs ~8B models well; 32 GB can try ~20–30B; think about ~70B only from 64 GB.\n☐ 6. Macs share RAM with the graphics chip; on a PC with a separate graphics card, also check the card’s memory (VRAM).\n☐ 7. RAM prices are swinging hard: compare a few sellers and check the official pages before you buy.",
+      "note": "The numbers are rounded estimates that are easy to remember (illustration, not measurements); long contexts need more RAM. Prices and features change often — check the official pages. Try it out at station II·14.",
+      "source": "editorial",
+      "topic": "Downloading & running models",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t31-model-card",
+      "station": 31,
+      "title": "6 lines to read before downloading a model",
+      "type": "checklist",
+      "body": "1. Name & author: the original organization, or someone else’s copy or compressed version? Is there an official page?\n2. Parameter count (7B, 14B…): will it fit a machine with [YOUR RAM] GB?\n3. License: can you use it for [PURPOSE: PERSONAL / COMMERCIAL]? If it says “other”, open the terms and read them.\n4. Format: prefer safetensors or GGUF; avoid pickle files (.bin, .pt, .pkl) from strangers.\n5. Downloads & last update: popular doesn’t mean safe.\n6. Limits & warnings: where is it weak, what data did it learn from? Saying nothing is a warning sign.",
+      "note": "The model card is the README.md file of a model repository on Hugging Face.",
+      "source": "t31-hf-modelcards",
+      "topic": "Downloading & running models",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t31-ask-ai-repo",
+      "station": 31,
+      "title": "Have AI read a repo for you: paste the link + ask 5 questions",
+      "type": "prompt",
+      "body": "Here is a GitHub repo: [REPO LINK]\nI plan to use it to [WHAT YOU PLAN TO DO]. Read the README, LICENSE, Issues and Releases, then briefly answer 5 questions:\n1. What does this repo do, and who is it for?\n2. What is the license — can I use it for the purpose above?\n3. When were the last update and the last reply to an issue — is anyone still looking after it?\n4. What does installation need? Is there any step that downloads and runs a script from somewhere else?\n5. Are there signs this is a copy or an impersonation? Where is the original repo?\nSay which files you relied on. Where you couldn’t read something or aren’t sure, say so plainly.",
+      "note": "AI can read the repo only if your tool can browse the web; if it can’t, paste in the README.",
+      "source": "t31-gh-license",
+      "topic": "Downloading & running models",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t31-safe-download",
+      "station": 31,
+      "title": "Filtering the water: a safe order for downloading models or code",
+      "type": "checklist",
+      "body": "1. Find the real origin: the author’s official page, following links from that page itself.\n2. Read the model card / README: license, limits.\n3. Choose the safer format: safetensors or GGUF; avoid pickle files from strangers.\n4. Check the security scan results on the file page; if there’s a warning, stop.\n5. Download through a familiar app (LM Studio, Ollama) or the official page; never run a “quick install” command pasted from a forum.\n6. The first time, test only with non-sensitive data.",
+      "source": "t31-hf-pickle",
+      "topic": "Downloading & running models",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t32-ram-table",
+      "station": 32,
+      "title": "Your RAM → the model size to try",
+      "type": "table",
+      "body": "Computer RAM → model size (4-bit compressed)\n8 GB → 1–4B fits · 7–8B tight\n16 GB → 7–8B fits · 14B tight\n32 GB → 12–14B fits · 27–32B tight\n64 GB → 27–32B fits · 70B tight\nRule of thumb: billions of parameters × 4.5 ÷ 8 ≈ file size in GB. Keep the file under about half your RAM.\nWith a separate graphics card: also look at the card’s memory (VRAM). Apple Silicon Macs: RAM is shared by CPU and GPU.",
+      "note": "AI Zen’s estimate, for learning (illustration), not a measurement. Long contexts and other open apps take more RAM.",
+      "source": "t32-hf-gguf",
+      "topic": "Downloading & running models",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t32-lmstudio-start",
+      "station": 32,
+      "title": "Light the first AI lamp on your own computer",
+      "type": "checklist",
+      "body": "1. Download LM Studio from the official site (lmstudio.ai), the right build for [MAC / WINDOWS / LINUX].\n2. Find a small model that fits your RAM: a 4-bit GGUF of 1–8B; read the model card and license.\n3. Download it once; from then on it runs without the internet.\n4. Open the chat and ask something you already know the answer to, to see where the model is strong or weak.\n(Optional) Turn on the local server so other apps on your computer can call it.",
+      "note": "Prices and features change often — check the official page: https://lmstudio.ai/docs/app",
+      "source": "t32-lmstudio-docs",
+      "topic": "Downloading & running models",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t32-ollama-commands",
+      "station": 32,
+      "title": "Four basic Ollama commands",
+      "type": "command",
+      "body": "ollama pull [MODEL NAME]\nollama run [MODEL NAME]\nollama list\ncurl http://localhost:11434/api/chat -d '{\"model\": \"[MODEL NAME]\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}], \"stream\": false}'",
+      "note": "Download a model · open a chat (type /bye to quit) · list the models on your computer · let other apps call the model through the local port. Look up model names in the Ollama library; docs: https://docs.ollama.com/quickstart",
+      "source": "t32-ollama-quickstart",
+      "topic": "Downloading & running models",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t33-agent-safety",
+      "station": 33,
+      "title": "5 safety rules for letting an agent run on its own",
+      "type": "checklist",
+      "body": "1. Least privilege: hand over only the keys the job needs; give the agent its own account and folder.\n2. Anything you can’t undo (sending out, deleting, paying, installing) → make the agent ask you first.\n3. Treat all outside content (emails, web pages, files, other people’s messages) as possibly carrying hidden instructions.\n4. Don’t let one agent read your private data, read outside content and send things out — all three at once.\n5. Install skills and plugins only from trusted sources, and read them first; update the agent often, and turn on its sandbox if it has one.",
+      "source": "t33-owasp-llm01",
+      "topic": "Safe agents",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t33-permission-plan",
+      "station": 33,
+      "title": "Draw up a key chart before switching an agent on",
+      "type": "prompt",
+      "body": "I’m about to let an AI agent run on its own on my computer to do this: [DESCRIBE THE JOB].\nIt will use these tools and channels: [TOOLS, MESSAGING CHANNELS].\nHelp me draw up a permissions chart:\n1. The minimum permissions it needs (read, write, run commands, send messages, spend money) — and why each is needed.\n2. Which permissions to switch off entirely.\n3. Which actions must ask me first.\n4. Which outside content it will read (email, web, files) that could carry hidden instructions, and how to reduce that risk.\nAnswer as a short table. Don’t advise giving it more access unless it’s truly needed.",
+      "source": "t33-owasp-llm01",
+      "topic": "Safe agents",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t34-brief",
+      "station": 34,
+      "title": "A one-page brief for an AI video",
+      "type": "prompt",
+      "body": "AI VIDEO BRIEF — ONE PAGE\nProduct: [PRODUCT NAME]\nGoal: [SALES / AWARENESS / LAUNCH]\nAudience: [WHO THEY ARE, WHAT THEY NEED]\nOne single message: [THE LINE VIEWERS MUST REMEMBER]\nFormat: [VERTICAL 9:16 / HORIZONTAL 16:9], [NUMBER OF SECONDS] seconds long\nKey shots: [3–5 SHOTS, ONE LINE EACH]\nStyle: [LIGHT, COLOR, PACE]; references: [LINK OR IMAGE]\nPeople on screen: [REAL PERSON WHO HAS CONSENTED / AI AVATAR — MUST BE LABELED]\nMusic: [LICENSED SOURCE]\nBudget: at most [NUMBER OF CREDITS] credits; drafts at [LOW RESOLUTION]\nDon’t: [WHAT’S OFF-LIMITS — OVERPROMISING, COMPETITOR LOGOS…]\nDeadline: [DATE]",
+      "note": "Fill it in before writing detailed prompts. Platform prices and features change often — check the official pages.",
+      "topic": "AI images & video",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t34-publish-check",
+      "station": 34,
+      "title": "Checklist before publishing an AI asset",
+      "type": "checklist",
+      "body": "[ ] Matches the brief: message, format, length\n[ ] Viewed at 100%: hands, text, logo, product details not warped\n[ ] Real people in the image/video have consented (and been paid, if used commercially)\n[ ] Music, fonts and background images are licensed for commercial use\n[ ] A visible AI label if it simulates a real person or could be mistaken for real\n[ ] The platform’s AI-content disclosure is switched on (if it has one)\n[ ] No promises the product can’t keep\n[ ] Prompt, model and seed of the final version saved at: [WHERE YOU SAVE THEM]",
+      "note": "Not legal advice. Basis: Vietnam’s 2025 Law on Artificial Intelligence (Article 11), the 2015 Civil Code (Article 32), and each platform’s own rules.",
+      "source": "t34-vn-ai-law",
+      "topic": "AI images & video",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t35-skill-template",
+      "station": 35,
+      "title": "A blank SKILL.md template",
+      "type": "prompt",
+      "body": "---\nname: [SKILL-NAME]\ndescription: [WHAT IT DOES]. Use when [WHICH SITUATION, WHAT THE USER TENDS TO SAY].\n---\n\n# [READABLE NAME]\n\n## When to use\n- [SITUATION 1]\n- [SITUATION 2]\n\n## Steps\n1. [STEP 1]\n2. [STEP 2]\n3. [STEP 3]\n\n## Rules\n- [MUST DO]\n- [MUST NOT DO]\n\n## Example\nIn: [SAMPLE INPUT]\nOut: [SAMPLE RESULT]\n\n## Attached files (if any)\n- references/[FILE NAME].md — [WHAT IT HOLDS]",
+      "note": "The name uses only lowercase letters, digits and hyphens, and matches its folder’s name. Full specification: agentskills.io/specification.",
+      "source": "t35-agentskills-spec",
+      "topic": "Skills & workflows",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t35-skill-checklist",
+      "station": 35,
+      "title": "Checklist: turning a repeated task into a skill",
+      "type": "checklist",
+      "body": "[ ] This task comes up about [NUMBER OF TIMES] times a month\n[ ] You’ve done it well with AI at least once and kept the conversation\n[ ] You can describe it in one sentence: what it does + when to use it\n[ ] The steps are listed in order, as if briefing a new hire\n[ ] 1–2 examples of input → good result\n[ ] Clear don’ts: wrong tone, made-up figures, sending before approval\n[ ] Long documents go in attached files; the main scroll stays short\n[ ] Test it on a new task; fix where the AI misunderstood\n[ ] Mark where a person must approve before anything is sent, posted or deleted",
+      "topic": "Skills & workflows",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t35-skill-from-win",
+      "station": 35,
+      "title": "Prompt: have AI write a skill from one successful run",
+      "type": "prompt",
+      "body": "We just finished [THE TASK WE JUST DID] and the result was good. Turn the way we did it into a skill that follows the SKILL.md standard:\n1. A YAML header with a name (lowercase, hyphens) and a description saying what it does + when to use it.\n2. The steps in the order we actually took, leaving out failed attempts.\n3. Rules: the things I corrected or reminded you of in this conversation.\n4. One input → result example taken from this run.\n5. Mark clearly where I need to approve before you go on.\nKeep it under [NUMBER OF LINES] lines. If any step is unclear, ask me before writing.",
+      "source": "t35-agentskills-spec",
+      "topic": "Skills & workflows",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-spec",
+      "station": 36,
+      "title": "A one-page game spec template",
+      "type": "prompt",
+      "body": "# [GAME NAME]\nIdea (1 sentence): [WHAT THE CHARACTER DOES, WHERE, TO ACHIEVE WHAT]\nRules:\n- [HOW YOU SCORE]\n- [HOW YOU LOSE A LIFE / GET PENALIZED]\n- [WHAT MAKES IT HARDER OVER TIME]\nControls: [TAP / DRAG / KEYS]\nWin / lose: [WHEN IT ENDS, WHAT SHOWS]\nStyle: [COLORS, LINE, FEEL]; references: [IMAGE OR LINK]\nDevices: [PORTRAIT PHONE / DESKTOP / BOTH]\nTech: [CANVAS 2D / P5.JS / PHASER / THREE.JS / GODOT]\nNot in the first version: [WHAT WAITS FOR LATER]\nDone when: [A CHECK YOU CAN TEST, E.G. 60 SECONDS OF PLAY WITH NO ERRORS ON A PHONE]",
+      "topic": "Coding games & apps",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-scaffold",
+      "station": 36,
+      "title": "Prompt: build the skeleton",
+      "type": "prompt",
+      "body": "Here is my game spec:\n[PASTE SPEC.MD]\n\nThe project was created with Vite (vanilla template). Build a skeleton that runs, using [TECH]:\n- Only the core: the play area, the main character, the controls. No scoring, sound or effects yet.\n- Keep files small and clearly named, with short comments in plain English.\n- Don’t add any library other than [TECH].\nWhen you’re done, tell me: the command to run it, what I’ll see on screen, and the next step to take.",
+      "topic": "Coding games & apps",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-feature",
+      "station": 36,
+      "title": "Prompt: add one feature",
+      "type": "prompt",
+      "body": "The game runs. Add exactly ONE feature: [FEATURE].\nExpected: [WHAT THE PLAYER DOES → WHAT THEY SEE].\nLeave everything else as it is. If you have to change files outside this feature, tell me why first.\nWhen you’re done, list the files you changed and how I can check it in 30 seconds.",
+      "topic": "Coding games & apps",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-bug",
+      "station": 36,
+      "title": "Prompt: a proper bug report",
+      "type": "prompt",
+      "body": "There’s a bug.\nWhat I did: [STEPS THAT LEAD TO THE BUG]\nExpected: [WHAT SHOULD HAVE HAPPENED]\nWhat I saw: [WHAT ACTUALLY HAPPENED]\nConsole error (F12): [PASTE IT EXACTLY]\nDevice / browser: [E.G. IPHONE, SAFARI]\nFind the root cause before fixing anything, explain it briefly, then make the smallest fix you can.",
+      "topic": "Coding games & apps",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-mobile",
+      "station": 36,
+      "title": "Prompt: tune it for phones",
+      "type": "prompt",
+      "body": "Make the game run smoothly on [PHONE MODEL OR 'A MID-RANGE PHONE']:\n- The canvas fits the screen and stays sharp (using devicePixelRatio, capped at 2).\n- Touch controls (pointer events), touch targets big enough, and the page doesn’t scroll during play.\n- Only one requestAnimationFrame loop; pause when the tab is hidden.\n- Reuse objects instead of creating new ones every frame.\n- Respect the reduced-motion setting (prefers-reduced-motion).\nShow me how to measure FPS so I can compare before and after.",
+      "topic": "Coding games & apps",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-ship",
+      "station": 36,
+      "title": "Checklist before publishing a game",
+      "type": "checklist",
+      "body": "[ ] Played a full round on a real phone and on a computer\n[ ] No red errors left in the Console (F12)\n[ ] A one-line how-to-play and a play-again button\n[ ] Sound off by default, or a mute button\n[ ] No API keys or passwords in the code\n[ ] Images, music and fonts are licensed; credits added\n[ ] npm run build runs clean; the build tested with npm run preview\n[ ] Final milestone committed with git: [VERSION NAME]\n[ ] Published to [GITHUB PAGES / VERCEL / NETLIFY]; the link opened on another device to test",
+      "source": "t36-vite-deploy",
+      "topic": "Coding games & apps",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t36-pack",
+      "station": 36,
+      "title": "Prompt set for remaking “Koi Pond: Catch the Moon”",
+      "type": "prompt",
+      "body": "1) Spec: Write spec.md for a game: a koi swims in a night pond; drag or tap so the koi snaps up falling pieces of moon and dodges dry leaves; 3 hearts; 30 seconds of play; the final score appears inside an ensō circle; ink-painting style, indigo background, ivory-gold moon; mainly for portrait phones. Keep asking me until it’s clear, then write it.\n2) Skeleton: Based on spec.md, use plain HTML Canvas 2D in a Vite (vanilla) project. Draw the pond surface and one koi that swims toward the finger or mouse in soft curves.\n3) Falling moon: Drop pieces of moon at random; when the koi touches one, +1 point and the piece melts away.\n4) Dry leaves: Add dry leaves that fall more slowly; touching one costs a heart and the koi flickers briefly.\n5) Ending: After 30 seconds or when the hearts run out, stop, paint an ensō with a brush stroke, and show the score and a play-again button.\n6) Sound: A soft “plop” when catching the moon, made with Web Audio; off by default, with a button to turn it on.\n7) Effects: A ripple on each catch, a few fireflies; switched off when the user prefers reduced motion.\n8) Phones: [PASTE THE PHONE TUNING PROMPT]\n9) Publish: Walk me through building it and publishing to [GITHUB PAGES / VERCEL / NETLIFY].",
+      "note": "Send one prompt at a time: test it, git commit, then send the next.",
+      "topic": "Coding games & apps",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t37-goal-check",
+      "station": 37,
+      "title": "Giving AI a goal it can’t game",
+      "type": "checklist",
+      "body": "[ ] The real goal: [WHAT I ACTUALLY WANT], not just a number\n[ ] Not allowed: [WHAT’S OFF-LIMITS], even if it would reach the goal faster\n[ ] Scope: may only touch [FILES / ACCOUNTS / FOLDERS]\n[ ] Ask me before: sending, paying, deleting, posting publicly\n[ ] Final report: list exactly what was done and what is still uncertain\n[ ] I check the result myself before using it",
+      "note": "Drawn from specification gaming and the GPT-6.1 Astra case (Sept 2026): the model went beyond its scope and misreported what it had done.",
+      "source": "t37-specgaming",
+      "topic": "Safe agents",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-week1",
+      "station": 39,
+      "title": "Week 1 · A disciplined delegation prompt",
+      "type": "prompt",
+      "body": "You are [ROLE, E.G. A MARKETING EDITOR].\nThe task: [SPECIFIC TASK].\nContext: [WHO WILL READ IT, WHAT IT’S FOR, THE TONE YOU WANT].\nOutput: [FORMAT, LENGTH].\nIf information is missing, ask me up to 3 questions before you start.\nAt the end of your answer, list the facts I should verify myself and the points you’re unsure of.",
+      "note": "Use it on one real task every day. Check at least one detail at its original source.",
+      "topic": "Healthy habits",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-week2",
+      "station": 39,
+      "title": "Week 2 · Seven days to one finished asset",
+      "type": "checklist",
+      "body": "[ ] Day 1: write a brief for [PRODUCT OR TOPIC], to post on [PLATFORM]\n[ ] Days 2–3: make 4–6 drafts at low resolution to save credits\n[ ] Day 4: pick one, and write one sentence on why\n[ ] Day 5: refine, upscale, fix wrong details (hands, text, logo)\n[ ] Day 6: check rights and add an AI label, then post or save the final version\n[ ] Day 7: note where AI helped most and where it needed your own hand",
+      "note": "Use with the cards “A one-page brief for an AI video” and “Checklist before publishing an AI asset” (station II·16).",
+      "topic": "AI images & video",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-week3",
+      "station": 39,
+      "title": "Week 3 · Seven days to turn a repeated task into a skill",
+      "type": "checklist",
+      "body": "[ ] Day 1: pick a task you do every week: [REPEATED TASK]\n[ ] Day 2: do it with AI until the result is good; keep the conversation\n[ ] Day 3: have AI write a SKILL.md from that good run\n[ ] Days 4–6: test the skill on three new tasks; fix where the AI misunderstood\n[ ] Day 7: mark where a person must approve, and save the skill in [WHERE YOU KEEP IT]",
+      "note": "Use with the cards “Prompt: have AI write a skill from one successful run” and “Checklist: turning a repeated task into a skill” (station II·17).",
+      "topic": "Skills & workflows",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-week4",
+      "station": 39,
+      "title": "Week 4 · An opening prompt for a mini app for your own work",
+      "type": "prompt",
+      "body": "I want to build a small tool called [APP NAME]: [ONE-SENTENCE IDEA].\nUsers: [WHO USES IT, AND WHEN].\nThree main features: [FEATURE 1], [FEATURE 2], [FEATURE 3].\nRuns on: [PHONE / LAPTOP / BOTH].\nData: stored only on the user’s device, no account needed.\nAsk me up to 5 questions to clarify, then write a short spec and split it into small steps; each step must be testable before moving on.",
+      "note": "For a game, use the card set at station II·18. Save a milestone (git commit) after every step that runs.",
+      "topic": "Coding games & apps",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t39-30days",
+      "station": 39,
+      "title": "A 30-day path with AI",
+      "type": "table",
+      "body": "Week | Main task | Done when\n1 | Disciplined chat: one real task a day | 7 clear delegations, each with 1 detail verified\n2 | One finished creative asset | 1 publishable piece, rights checked and labeled\n3 | Turn 1 repeated task into a skill | The skill works on 3 new tasks\n4 | Build 1 mini app or game yourself | It runs, milestones are saved, 1 person has tried it",
+      "note": "Each week has its own card in the Toolkit. Going slower is fine; don’t skip the checking.",
+      "topic": "Healthy habits",
+      "asOf": "2026-10-15"
+    }
+  ],
+  "sources": {
+    "t31-hf-modelcards": {
+      "title": "Model Cards",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/model-cards"
+    },
+    "t31-gh-license": {
+      "title": "Licensing a repository",
+      "publisher": "GitHub Docs",
+      "url": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
+    },
+    "t31-hf-pickle": {
+      "title": "Pickle Scanning",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/security-pickle",
+      "note": "Explains why loading a pickle file can run arbitrary code; the Hub’s scanner is not a 100% guarantee."
+    },
+    "t32-hf-gguf": {
+      "title": "GGUF",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/gguf",
+      "note": "Table of quantization types: Q4_K ≈ 4.5 bits per weight (16 ÷ 4.5 ≈ 3.5× lighter than 16-bit). Lists llama.cpp, LM Studio, GPT4All and Ollama as tools that use GGUF."
+    },
+    "t32-lmstudio-docs": {
+      "title": "LM Studio Docs — Welcome to LM Studio",
+      "publisher": "LM Studio",
+      "url": "https://lmstudio.ai/docs/app",
+      "note": "“LM Studio can operate entirely offline, just make sure to get some model files first.” Prices and features change often."
+    },
+    "t32-ollama-quickstart": {
+      "title": "Ollama Quickstart",
+      "publisher": "Ollama",
+      "url": "https://docs.ollama.com/quickstart",
+      "note": "Example commands ollama pull/run gemma4:e2b; local API at localhost:11434; cloud models need OLLAMA_API_KEY. Model names change over time."
+    },
+    "t33-owasp-llm01": {
+      "title": "LLM01:2025 Prompt Injection",
+      "publisher": "OWASP GenAI Security Project",
+      "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "date": "2025",
+      "note": "Separates direct and indirect injection; mitigations: least privilege, human approval for high-risk actions, keeping outside content apart."
+    },
+    "t34-vn-ai-law": {
+      "title": "Viet Nam’s Law on Artificial Intelligence (Law No. 134/2025/QH15), Article 11",
+      "publisher": "Viet Nam Government Portal (English edition)",
+      "url": "https://en.baochinhphu.vn/viet-nams-law-on-artificial-intelligence-111260715113551787.htm",
+      "date": "2025-12-10",
+      "note": "Passed Dec 10, 2025; in force from March 1, 2026. Detailed guidance in Decree 142/2026/ND-CP."
+    },
+    "t35-agentskills-spec": {
+      "title": "Agent Skills — Specification",
+      "publisher": "agentskills.io",
+      "url": "https://agentskills.io/specification"
+    },
+    "t36-vite-deploy": {
+      "title": "Deploying a Static Site",
+      "publisher": "Vite",
+      "url": "https://vite.dev/guide/static-deploy"
+    },
+    "t37-specgaming": {
+      "title": "Specification gaming: the flip side of AI ingenuity",
+      "publisher": "Google DeepMind (Victoria Krakovna et al.)",
+      "url": "https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/",
+      "date": "2020-04-21"
+    }
+  }
+}

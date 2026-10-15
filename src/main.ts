@@ -23,6 +23,7 @@ const main = h('main', { id: 'main', tabindex: '-1' })
 const skip = h('a', { class: 'skip', href: '#main', onClick: (e: Event) => (e.preventDefault(), main.focus()) }, L.skip)
 document.body.append(inkDefs(), skip, topbar(), main)
 
+const PART_TWO = ['#/vuon-trang', '#/bai-thi-trang', '#/do-nghe']
 let cleanup: (() => void) | null = null
 let token = 0
 
@@ -37,8 +38,8 @@ async function route() {
   delete document.documentElement.dataset.garden
 
   const m = location.hash.match(/^#\/tram\/(\d+)(?:\/(\d+))?/)
-  // Part 2 = its map and stations 19–39; everything else (intro, glossary, exam, logos) counts as Part 1
-  const part = m ? partOfStation(Number(m[1])) : location.hash === '#/vuon-trang' ? 2 : 1
+  // Part 2 = its map, stations 19–39, its exam and the toolkit; everything else (intro, glossary, exam, logos) counts as Part 1
+  const part = m ? partOfStation(Number(m[1])) : PART_TWO.includes(location.hash) ? 2 : 1
   setPart(part)
   if (part === 2) document.documentElement.dataset.part = '2'
   else delete document.documentElement.dataset.part
@@ -47,8 +48,15 @@ async function route() {
     const c = await renderStation(main, Number(m[1]), Math.max(0, Number(m[2] ?? 1) - 1), stale)
     if (stale()) c?.()
     else cleanup = c
-  } else if (location.hash === '#/tu-dien' || location.hash === '#/bai-thi') {
-    const mod = location.hash === '#/tu-dien' ? await import('./extras/glossary') : await import('./extras/exam')
+  } else if (location.hash === '#/tu-dien') {
+    const mod = await import('./extras/glossary')
+    if (!stale()) cleanup = mod.render(main)
+  } else if (location.hash === '#/bai-thi' || location.hash === '#/bai-thi-trang') {
+    const mod = await import('./extras/exam')
+    if (!stale()) cleanup = mod.render(main, { part })
+  } else if (location.hash === '#/do-nghe') {
+    main.className = 'scroll-page'
+    const mod = await import('./extras/toolkit')
     if (!stale()) cleanup = mod.render(main)
   } else if (location.hash === '#/logos') {
     main.className = 'scroll-page'

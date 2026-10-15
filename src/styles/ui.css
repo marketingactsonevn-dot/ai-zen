@@ -1370,6 +1370,16 @@ main.scroll-page {
     right: auto;
     bottom: calc(46px + env(safe-area-inset-bottom));
   }
+  /* Vườn Trăng has three ways out (glossary · exam · toolkit): keep them inside the gutters */
+  .garden-extras:has(> .gx:nth-child(3)) {
+    right: var(--gutter);
+    gap: 6px;
+  }
+  .garden-extras:has(> .gx:nth-child(3)) .gx {
+    gap: 6px;
+    padding: 6px 10px 6px 8px;
+    font-size: 0.86rem;
+  }
   .garden-hint {
     display: none;
   }

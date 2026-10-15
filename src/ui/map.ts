@@ -71,11 +71,16 @@ export function renderMap(root: HTMLElement, { part, withIntro }: { part: number
   const note = h('p', { class: 'garden-note' }, SITE.footer.note, ' · ', h('a', { href: '#/logos' }, SITE.footer.logos))
   const hint = progress.visitedCount() ? null : h('p', { class: 'garden-hint' }, L.mapHint)
   const glossary = h('a', { class: 'gx', href: '#/tu-dien', title: L.glossaryHint }, icon('lantern'), h('span', null, L.glossary))
-  // shortcut: Part 2 has only the glossary until its exam (#/bai-thi-trang) and toolkit (#/do-nghe) exist
   const extras = part === 1
     ? h('nav', { class: 'garden-extras', 'aria-label': `${L.glossary} · ${L.exam}` },
         glossary, h('a', { class: 'gx', href: '#/bai-thi', title: L.examHint }, icon('gate'), h('span', null, L.exam)))
-    : h('nav', { class: 'garden-extras', 'aria-label': L.glossary }, glossary)
+    : h('nav', { class: 'garden-extras', 'aria-label': `${L.glossary} · ${L.examTwo} · ${L.toolkit}` },
+        glossary,
+        h('a', { class: 'gx', href: '#/bai-thi-trang', title: L.examTwoHint }, icon('gate'), h('span', null, L.examTwo)),
+        h('a', { class: 'gx', href: '#/do-nghe', title: L.toolkitHint }, icon(''), h('span', null, L.toolkit)))
+  // the toolkit's mark: a hanging scroll (icons.ts has no such glyph)
+  extras.querySelector('a[href="#/do-nghe"] svg')?.insertAdjacentHTML('beforeend',
+    '<path d="M6 4.5h12M7.5 4.5v14h9v-14M5.5 18.5h13M10 8.5h4M10 11.5h4M10 14.5h2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>')
   // the bridge sits where the walk leaves (Part 1, after the last stone) or arrives (Part 2, before the first)
   const garden = h('section', { class: 'garden', 'aria-label': L.map },
     sand, night, glint, glows, ripple, rocksSvg, flies, labels, part === 2 && bridge, list, part === 1 && bridge, tip, note, hint, extras)

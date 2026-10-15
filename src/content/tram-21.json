@@ -1,0 +1,318 @@
+{
+  "id": 21,
+  "kicker": "Con cá không đọc sách về nước — nó bơi.",
+  "summary": "AI đang học đi — chạy nhanh hơn người chưa có nghĩa là hiểu thế giới như người.",
+  "newsTags": [
+    "robots"
+  ],
+  "quiz": {
+    "q": "Một robot cán đích sớm nhất cuộc đua, nhưng có người điều khiển từ xa. Điều đó cho thấy gì?",
+    "options": [
+      "Robot đã tự hiểu đường đua như người",
+      "Chân robot đã giỏi, nhưng phần tìm đường vẫn do người làm",
+      "Robot điều khiển từ xa luôn chậm hơn robot tự đi",
+      "Robot không cần AI nữa"
+    ],
+    "answer": 1,
+    "explain": "“Đi được” khác “tự biết đi”. Ban tổ chức nhân thời gian của robot điều khiển từ xa với hệ số 1,2 để ưu tiên robot tự định hướng."
+  },
+  "scenes": {
+    "race": {
+      "label": "Vạch đích lùi dần",
+      "art": "Một đường chạy uốn quanh hồ dưới trăng, vạch đích là dải lụa đỏ căng giữa hai cột đèn đá. Kéo trăng qua từng mùa đua: bóng robot mực từ loạng choạng, vấp ngã thành sải bước đều; vạch đích như trôi lại gần.",
+      "prompt": "Kéo trăng qua hai mùa đua",
+      "moonAria": "Kéo vầng trăng, hoặc dùng phím ← → để đi qua các mốc",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2025-04-19",
+            "label": "Lần đầu · Bắc Kinh",
+            "fact": {
+              "text": "Ở giải bán marathon robot đầu tiên, robot thắng (Tiangong Ultra) mất 2 giờ 40 phút 42 giây; nhiều robot ngã hoặc bỏ cuộc.",
+              "asOf": "2026-10-15",
+              "source": "ap-robot-2026"
+            }
+          },
+          {
+            "date": "2026-03",
+            "label": "Kỷ lục của người",
+            "fact": {
+              "text": "Vận động viên Jacob Kiplimo (Uganda) lập kỷ lục bán marathon nam: 57 phút 20 giây, tại Lisbon.",
+              "asOf": "2026-10-15",
+              "source": "chinadaily-robot"
+            }
+          },
+          {
+            "date": "2026-04-19",
+            "label": "Lần hai · Bắc Kinh",
+            "fact": {
+              "text": "Robot tự định hướng “Tia Chớp” (Shandian) của Honor về nhất 21 km trong 50 phút 26 giây — nhanh hơn kỷ lục người gần 7 phút.",
+              "asOf": "2026-10-15",
+              "source": "chinadaily-robot"
+            },
+            "compare": {
+              "before": "2:40:42",
+              "after": "50:26",
+              "ratio": 0.31,
+              "beforeLabel": "Robot thắng · 2025",
+              "afterLabel": "Robot thắng · 2026"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Hôm nay",
+            "fact": {
+              "text": "Ngoài đường đua: cuối năm 2025, các nhà máy trên thế giới có khoảng 5 triệu robot công nghiệp đang làm việc.",
+              "asOf": "2026-10-15",
+              "source": "ifr-2026"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Chạy nhanh đã đến; tự làm việc nhà vẫn là câu hỏi mở — và dự đoán về thời điểm khác nhau rất xa.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Một năm, thời gian về đích giảm từ 2:40:42 xuống 50:26 — robot chạy nhanh hơn cả kỷ lục bán marathon của người.",
+        "asOf": "2026-10-15",
+        "source": "chinadaily-robot"
+      },
+      "detail": {
+        "text": "Robot và người chạy trên hai làn riêng, nên đây là phép so thời gian, không phải một cuộc đua chung.",
+        "asOf": "2026-10-15",
+        "source": "aljazeera-robot"
+      }
+    },
+    "strings": {
+      "label": "Tự đi hay được giật dây",
+      "art": "Hai bóng robot cùng chạy dưới trăng. Một bóng có những sợi tơ bạc mảnh nối lên tay người ngồi trên cành thông; bóng kia chạy một mình, không dây. Gạt công tắc, dây tơ hiện ra hoặc tan vào sương.",
+      "prompt": "Bật tắt dây điều khiển",
+      "toggle": "Dây điều khiển",
+      "toggleAria": "Bật hoặc tắt dây điều khiển từ xa",
+      "remoteLabel": "Có người điều khiển từ xa",
+      "autoLabel": "Robot tự định hướng",
+      "remoteTime": "48:19",
+      "remoteNote": "cán đích trước · tính hệ số 1,2",
+      "autoTime": "50:26",
+      "autoNote": "vô địch",
+      "facts": [
+        {
+          "text": "Chỉ hơn 40% số đội cho robot tự tìm đường; các đội còn lại điều khiển robot từ xa.",
+          "asOf": "2026-10-15",
+          "source": "chinadaily-robot"
+        },
+        {
+          "text": "Một robot điều khiển từ xa của Honor cán đích sớm hơn, 48 phút 19 giây, nhưng không được xếp nhất.",
+          "asOf": "2026-10-15",
+          "source": "ie-robot"
+        },
+        {
+          "text": "Luật đua nhân thời gian của robot điều khiển từ xa với hệ số 1,2: chạy 60 phút được tính 72 phút.",
+          "asOf": "2026-10-15",
+          "source": "beijing-gov-robot"
+        }
+      ],
+      "insight": {
+        "text": "“Đi được” khác “tự biết đi”: robot giật dây có thể nhanh hơn, nhưng phần nhìn đường, chọn lối vẫn do người làm.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "teacup": {
+      "label": "Bộ não cho tay chân",
+      "art": "Bàn trà đá dưới đèn lồng. Một bàn tay robot vẽ bằng nét mực run run vươn tới chén trà sứ. Sau lưng là thư viện chữ cao ngất như núi; cạnh bàn chỉ có một giỏ tre nhỏ đựng “dữ liệu bàn tay”.",
+      "prompt": "Ra lệnh cho bàn tay",
+      "commands": [
+        {
+          "label": "Cầm chén trà lên",
+          "aria": "Ra lệnh: cầm chén trà lên"
+        },
+        {
+          "label": "Rót trà vào chén",
+          "aria": "Ra lệnh: rót trà vào chén"
+        },
+        {
+          "label": "Đưa chén cho khách",
+          "aria": "Ra lệnh: đưa chén trà cho khách"
+        }
+      ],
+      "head": "Đầu: hiểu lệnh ngay",
+      "hand": "Tay: run, trượt, thử lại",
+      "scaleTitle": "Hai giỏ dữ liệu",
+      "scaleAria": "So lượng dữ liệu chữ với dữ liệu thao tác của robot",
+      "textLabel": "chữ",
+      "robotLabel": "thao tác robot",
+      "insight": {
+        "text": "Mô hình thị giác–ngôn ngữ–hành động (VLA) nhìn, đọc lệnh rồi xuất ra cử động — như Gemini Robotics của Google DeepMind (03/2025).",
+        "asOf": "2026-10-15",
+        "source": "gemini-robotics"
+      },
+      "data": [
+        {
+          "text": "Kho dữ liệu robot mở Open X-Embodiment (2023) gom hơn 1 triệu lượt thao tác, từ 22 loại robot.",
+          "asOf": "2026-10-15",
+          "source": "oxe-2023"
+        },
+        {
+          "text": "Còn mô hình chữ Llama 3 (2024) đã đọc hơn 15 nghìn tỷ token.",
+          "asOf": "2026-10-15",
+          "source": "meta-llama3"
+        }
+      ],
+      "insight2": {
+        "text": "Cái khó nằm ở “tay” hơn ở “đầu”: chữ trên mạng nhiều như núi, còn dữ liệu cầm nắm thật thì hiếm.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Mô hình thế giới (world model): AI tập đoán điều gì sẽ xảy ra tiếp theo khi nó cử động — như ta biết chén sẽ đổ nếu nghiêng quá tay."
+    },
+    "circle": {
+      "label": "Có cần hình người?",
+      "art": "Bốn hòn đá quanh mặt hồ trăng, mỗi hòn in bóng một kiểu robot: dáng người, cánh tay nhà máy, đường biểu đồ việc làm, và một chiếc ghế trống trong nhà. Chạm hòn nào, bóng ấy sáng lên dưới nước.",
+      "prompt": "Chạm từng hòn đá",
+      "stoneAria": "Nghe góc nhìn của {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Figure AI · công ty làm robot hình người (2022)",
+            "view": {
+              "text": "Thế giới được xây cho con người, nên robot đa năng mang hình người là lối đi có tác động lớn nhất.",
+              "asOf": "2026-10-15",
+              "source": "figure-master-plan",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Phe robot chuyên dụng · số liệu IFR (09/2026)",
+            "view": {
+              "text": "Khoảng 5 triệu robot công nghiệp đã làm việc trong nhà máy mà chẳng cần dáng người. Việc lặp lại cần máy chuyên dụng, không cần chân.",
+              "asOf": "2026-10-15",
+              "source": "ifr-2026",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Người lo việc làm · nhà kinh tế Acemoglu & Restrepo",
+            "view": {
+              "text": "Ở Mỹ 1990–2007, thêm một robot trên 1.000 lao động làm tỷ lệ có việc giảm 0,18–0,34 điểm phần trăm, lương giảm 0,25–0,5%.",
+              "asOf": "2026-10-15",
+              "source": "nber-robots"
+            }
+          },
+          {
+            "who": "Rodney Brooks · nhà robot học, đồng sáng lập iRobot (09/2025)",
+            "view": {
+              "text": "Robot hình người cỡ người thật chưa an toàn khi đứng gần; ông khuyên giữ cách 3 mét, và đoán còn hơn 10 năm nữa chúng mới có lãi.",
+              "asOf": "2026-10-15",
+              "source": "brooks-2025",
+              "kind": "prediction"
+            }
+          }
+        ],
+        "common": {
+          "text": "Đồng ý: robot đang tiến rất nhanh. Khác nhau: nên mang hình dạng gì, bao giờ vào nhà ta, và ai được lợi.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Chạy nhanh trên đường đua chưa phải làm việc trong nhà; câu hỏi giờ là robot vào đời ta theo dạng nào.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "ap-robot-2026": {
+      "title": "A humanoid robot sprints past the human half-marathon world record in Beijing race",
+      "publisher": "AP (đăng lại trên Michigan Public)",
+      "url": "https://www.michiganpublic.org/2026-04-20/a-humanoid-robot-sprints-past-the-human-half-marathon-world-record-in-beijing-race",
+      "date": "2026-04-20",
+      "note": "Bài AP nhắc lại giải 2025: robot thắng mất 2:40:42, nhiều robot ngã hoặc không về đích. Trang chặn công cụ tra cứu; nội dung đối chiếu qua bản đăng lại của KUOW và Interesting Engineering."
+    },
+    "chinadaily-robot": {
+      "title": "Robots outrun humans at Beijing half marathon",
+      "publisher": "China Daily (Yang Cheng, Li Wei)",
+      "url": "https://mobile.chinadaily.com.cn/html5/2026-04/20/content_001_69e52c8eed50be540e72ebd7.htm",
+      "date": "2026-04-20",
+      "note": "Robot “Flash” của Honor về nhất hạng tự định hướng trong 50:26; hơn 40% đội thi tự định hướng; hơn 100 đội (năm 2025 gần 20). Kỷ lục người 57:20 của Jacob Kiplimo lập tại Lisbon tháng 3."
+    },
+    "ie-robot": {
+      "title": "Humanoid robot surpasses human world record",
+      "publisher": "Interesting Engineering (Christopher McFadden)",
+      "url": "https://interestingengineering.com/innovation/humanoid-robot-surpasses-human-world-record",
+      "date": "2026-04-19",
+      "note": "Một phiên bản điều khiển từ xa của cùng robot về đích trong 48:19; robot thắng tên “Lightning”. Tên robot khác nhau giữa các báo (Lightning / Flash / Shandian 闪电)."
+    },
+    "beijing-gov-robot": {
+      "title": "Who is Winner? Champion Crowned for Humanoid Robot Half Marathon",
+      "publisher": "Beijing Municipal Government (english.beijing.gov.cn)",
+      "url": "https://english.beijing.gov.cn/latest/news/202604/t20260419_4593508.html",
+      "date": "2026-04-19",
+      "note": "Thông tin chính thức: robot “Shandian” (闪电) của đội Monkey King thắng với 50:26; thời gian robot điều khiển từ xa nhân hệ số 1,2."
+    },
+    "aljazeera-robot": {
+      "title": "Humanoid robot breaks half marathon world record in Beijing",
+      "publisher": "Al Jazeera",
+      "url": "https://www.aljazeera.com/amp/sports/2026/4/19/humanoid-robot-breaks-half-marathon-world-record-in-beijing",
+      "date": "2026-04-19",
+      "note": "Người và robot chạy trên hai làn riêng để tránh va chạm; theo CCTV, robot thắng chạy trung bình khoảng 25 km/h."
+    },
+    "ifr-2026": {
+      "title": "Five Million Robots Now Operate in Factories Globally",
+      "publisher": "International Federation of Robotics (IFR)",
+      "url": "https://ifr.org/ifr-press-releases/five-million-robots-now-operate-in-factories-globally",
+      "date": "2026-09-24",
+      "note": "Báo cáo World Robotics 2026 (số liệu năm 2025): 5 triệu robot công nghiệp đang hoạt động, hơn 600.000 robot lắp mới trong năm."
+    },
+    "gemini-robotics": {
+      "title": "Gemini Robotics brings AI into the physical world",
+      "publisher": "Google DeepMind",
+      "url": "https://deepmind.google/discover/blog/gemini-robotics-brings-ai-into-the-physical-world/",
+      "date": "2025-03-12",
+      "note": "Mô hình thị giác–ngôn ngữ–hành động (VLA) dựng trên Gemini 2.0, thêm cử động vật lý làm đầu ra."
+    },
+    "oxe-2023": {
+      "title": "Open X-Embodiment: Robotic Learning Datasets and RT-X Models",
+      "publisher": "Open X-Embodiment Collaboration (arXiv 2310.08864)",
+      "url": "https://arxiv.org/abs/2310.08864",
+      "date": "2023-10",
+      "note": "Hơn 1 triệu lượt thao tác từ 22 loại robot, do 21 tổ chức góp dữ liệu."
+    },
+    "meta-llama3": {
+      "title": "Introducing Meta Llama 3",
+      "publisher": "Meta AI",
+      "url": "https://ai.meta.com/blog/meta-llama-3/",
+      "date": "2024-04-18",
+      "note": "Llama 3 được tiền huấn luyện trên hơn 15 nghìn tỷ token lấy từ nguồn công khai."
+    },
+    "figure-master-plan": {
+      "title": "Master Plan",
+      "publisher": "Figure AI",
+      "url": "https://www.figure.ai/master-plan",
+      "date": "2022-05-20",
+      "note": "Quan điểm của chính công ty làm robot hình người."
+    },
+    "nber-robots": {
+      "title": "Robots and Jobs: Evidence from US Labor Markets",
+      "publisher": "NBER Working Paper 23285 (Daron Acemoglu, Pascual Restrepo); bản chính đăng Journal of Political Economy 2020",
+      "url": "https://www.nber.org/papers/w23285",
+      "date": "2017-03",
+      "note": "Nghiên cứu về robot công nghiệp ở Mỹ giai đoạn 1990–2007, không phải robot hình người."
+    },
+    "brooks-2025": {
+      "title": "Why Today's Humanoids Won't Learn Dexterity",
+      "publisher": "Rodney Brooks",
+      "url": "https://rodneybrooks.com/why-todays-humanoids-wont-learn-dexterity/",
+      "date": "2025-09-26",
+      "note": "Bài luận cá nhân: thiếu cảm giác chạm và lực nên robot khó khéo tay; khuyên không đứng gần robot đi bộ cỡ người dưới 3 mét."
+    }
+  }
+}

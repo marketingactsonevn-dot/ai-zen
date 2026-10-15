@@ -1,0 +1,313 @@
+{
+  "id": 20,
+  "kicker": "Viên sỏi nhỏ lăn trăm năm chưa tới đáy giếng — rồi một đêm, nó chạm nước.",
+  "summary": "AI đã chạm tới những bài toán lớn nhất — và cách loài người kiểm chứng tri thức cũng đang đổi theo.",
+  "newsTags": [
+    "ai-math"
+  ],
+  "takeaways": [
+    "t20-kiem-tuyen-bo-toan"
+  ],
+  "quiz": {
+    "q": "Vì sao chứng minh viết bằng Lean đáng tin hơn một bài viết thường, nhưng vẫn cần con người?",
+    "options": [
+      "Máy kiểm được từng bước logic, nhưng người phải xem đề bài trong Lean có đúng là đề thật không",
+      "Lean do AI viết nên luôn đúng, người chỉ cần đọc lướt",
+      "Lean chỉ kiểm chính tả, còn toán thì người phải tự kiểm hết",
+      "Lean chạy nhanh hơn nhưng hay sai hơn bài viết tay"
+    ],
+    "answer": 0,
+    "explain": "Máy kiểm logic rất chắc. Nhưng nếu đề bài viết cho máy lệch khỏi đề thật, máy vẫn gật đầu — chỉ con người mới kiểm được ý nghĩa."
+  },
+  "scenes": {
+    "well": {
+      "label": "Giếng sỏi",
+      "art": "Một miệng giếng đá cổ giữa vườn đêm, trăng soi thẳng xuống lòng giếng. Kéo trăng, từng viên sỏi khắc tên một bài toán rơi xuống; gợn sóng lan tròn trên mặt nước tối, viên sau rơi sâu hơn viên trước.",
+      "prompt": "Kéo trăng thả sỏi",
+      "moonAria": "Kéo vầng trăng, hoặc dùng phím ← → để đi qua các mốc",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2025-07-19",
+            "label": "IMO 2025 · OpenAI",
+            "fact": {
+              "text": "OpenAI tự công bố một mô hình thử nghiệm đạt 35/42 điểm, mức huy chương vàng Olympic Toán quốc tế (IMO); bài do ba cựu huy chương IMO chấm.",
+              "asOf": "2026-10-15",
+              "source": "willison-openai-imo",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "date": "2025-07-21",
+            "label": "IMO 2025 · Google DeepMind",
+            "fact": {
+              "text": "Gemini Deep Think đạt 35/42 điểm, giải 5/6 bài; Chủ tịch IMO xác nhận đây là điểm huy chương vàng.",
+              "asOf": "2026-10-15",
+              "source": "deepmind-imo-2025",
+              "verifiedBy": "Ban tổ chức IMO"
+            }
+          },
+          {
+            "date": "2026-07-20",
+            "label": "Giả thuyết Jacobian",
+            "fact": {
+              "text": "Levent Alpöge (Anthropic), với sự trợ giúp của Claude Fable, đưa ra phản ví dụ 3 chiều cho giả thuyết Jacobian đặt ra từ năm 1939.",
+              "asOf": "2026-10-15",
+              "source": "afp-jacobian",
+              "verifiedBy": "Archive of Formal Proofs (kiểm bằng Isabelle)"
+            }
+          },
+          {
+            "date": "2026-09-08",
+            "label": "Navier–Stokes",
+            "fact": {
+              "text": "OpenAI công bố chứng minh dòng chảy Navier–Stokes có thể “nổ” (blowup), kèm bản viết lại bằng Lean để máy kiểm.",
+              "asOf": "2026-10-15",
+              "source": "quanta-ns",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "date": "2026-10-06",
+            "label": "722 bản thảo",
+            "fact": {
+              "text": "OpenAI đăng 722 bản thảo, gom thành 372 nhóm kết quả, từ khoảng 4.000 bài toán đã thử; hãng cảnh báo có bài còn lỗi.",
+              "asOf": "2026-10-15",
+              "source": "aa-openai-math",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Hôm nay",
+            "fact": {
+              "text": "Viện Clay chỉ xét giải khi lời giải đã đăng ở nơi đủ chuẩn, qua ít nhất hai năm và được giới toán học chấp nhận rộng rãi.",
+              "asOf": "2026-10-15",
+              "source": "clay-rules"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Nhóm cố vấn ở Viện IAS (Princeton): tương lai toán học không thể chỉ là ngồi hiểu những kết quả do phòng lab AI làm ra.",
+          "asOf": "2026-10-15",
+          "source": "aa-openai-math",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Chỉ một năm, AI đi từ đề thi Olympic (07/2025) tới phản ví dụ cho một giả thuyết có từ năm 1939 (07/2026).",
+        "asOf": "2026-10-15",
+        "source": "afp-jacobian"
+      },
+      "detail": "Để ý dấu ◇: nhiều mốc là hãng tự công bố. Mốc nào đã có bên ngoài kiểm lại thì ghi rõ ai kiểm."
+    },
+    "vortex": {
+      "label": "Dòng nước nổ tung",
+      "art": "Mặt hồ phẳng như gương dưới trăng. Người xem khuấy một vòng: nước xoáy, các vòng xoáy siết dần vào một điểm sáng chói ở tâm. Quanh bờ, hàng vạn đom đóm nhỏ bay thành đàn — mỗi con là một agent đang dò lối.",
+      "prompt": "Khuấy mặt hồ",
+      "stirAria": "Khuấy mặt hồ: kéo theo vòng tròn, hoặc giữ phím mũi tên",
+      "stages": [
+        "Dòng chảy êm",
+        "Xoáy siết lại",
+        "Một điểm “nổ”"
+      ],
+      "fireflies": "khoảng 10.000 agent · 88 giờ",
+      "leanNote": "thêm 17 giờ viết lại bằng Lean",
+      "insight": {
+        "text": "Phương trình Navier–Stokes mô tả nước, không khí chảy. Câu hỏi triệu đô: dòng chảy đang êm có thể bỗng “nổ” (blowup) không?",
+        "asOf": "2026-10-15",
+        "source": "quanta-ns"
+      },
+      "detail": {
+        "text": "OpenAI nói: khoảng 10.000 agent chạy 88 giờ trên một mô hình chưa phát hành để tìm chứng minh; một AI khác mất thêm 17 giờ viết lại bằng Lean.",
+        "asOf": "2026-10-15",
+        "source": "quanta-ns",
+        "claimBy": "OpenAI"
+      },
+      "contextTitle": "Ai, khi nào, công của ai",
+      "context": [
+        {
+          "text": "Tristan Buckmaster (NYU) và Levent Alpöge (Anthropic) đăng kết quả cho bài toán gần kề sớm hơn khoảng 12 giờ; ai đi trước vẫn đang tranh cãi.",
+          "asOf": "2026-10-15",
+          "source": "quanta-ns"
+        },
+        {
+          "text": "Cả hai nhóm đều dựa trên chiến lược của hai nhà toán học Diego Córdoba và Luis Martínez-Zoroa, công bố năm 2023.",
+          "asOf": "2026-10-15",
+          "source": "quanta-ns"
+        },
+        {
+          "text": "Viện Clay chưa trao giải; OpenAI nói không định nhận giải 1 triệu USD và đã công khai bản thảo cùng bản Lean để mọi người kiểm.",
+          "asOf": "2026-10-15",
+          "source": "datacamp-ns"
+        }
+      ]
+    },
+    "mason": {
+      "label": "Người thợ đá kiểm từng viên",
+      "art": "Dưới đèn lồng, một người thợ đá già gõ búa nhỏ lên từng bậc cầu thang đá dẫn lên đồi; viên vững ngân tiếng trong. Trên đỉnh bậc treo tấm biển “đề bài”, bên cạnh là cuộn giấy đề gốc để đối chiếu.",
+      "prompt": "Gõ thử từng bậc",
+      "stepAria": "Gõ thử bậc {n}",
+      "machineOk": "Máy: mọi bước đều khớp",
+      "compare": "So biển với đề gốc",
+      "compareAria": "So đề bài viết cho máy với đề bài gốc",
+      "original": "Đề gốc: tổng hai số lẻ là số chẵn",
+      "mismatch": "Biển ghi “số chẵn” — máy đã kiểm đúng, nhưng là một đề khác!",
+      "code": {
+        "lang": "text",
+        "code": "-- Đề gốc: tổng hai số lẻ là số chẵn\ntheorem tong_chan (a b : ℕ) (ha : Even a) (hb : Even b) :\n    Even (a + b) := by\n  exact Even.add ha hb",
+        "notes": [
+          {
+            "line": 1,
+            "text": "Dòng chú thích: đề bài con người muốn chứng minh."
+          },
+          {
+            "line": 2,
+            "text": "Đề viết cho máy. Để ý: ở đây ghi “Even” (số chẵn), không phải số lẻ."
+          },
+          {
+            "line": 4,
+            "text": "Máy kiểm bước này: hợp lệ. Nhưng nó vừa chứng minh một đề khác."
+          }
+        ]
+      },
+      "codeNote": {
+        "text": "Đoạn mã là ví dụ nhỏ AI Zen viết theo kiểu Lean để minh hoạ, không trích từ chứng minh thật.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insights": [
+        {
+          "text": "Lean là trợ lý chứng minh (proof assistant): viết chứng minh để máy kiểm từng bước; sai một bước, máy không chấp nhận.",
+          "asOf": "2026-10-15",
+          "source": "lean-lang"
+        },
+        {
+          "text": "Nhưng người vẫn phải xem đề bài viết trong Lean có đúng là đề thật: máy kiểm logic, người kiểm ý nghĩa.",
+          "asOf": "2026-10-15",
+          "source": "quanta-ns"
+        }
+      ],
+      "detail": {
+        "text": "Phản ví dụ Jacobian được một nhóm độc lập kiểm lại bằng một trợ lý chứng minh khác là Isabelle — hai thợ đá, hai cây búa.",
+        "asOf": "2026-10-15",
+        "source": "afp-jacobian"
+      }
+    },
+    "circle": {
+      "label": "Bốn hòn đá quanh giếng",
+      "art": "Bốn hòn đá đứng quanh miệng giếng trăng, mỗi hòn khắc một dòng chữ nhỏ. Chạm hòn nào, hòn ấy sáng và gợn sóng lan về giữa giếng; khi cả bốn cùng sáng, mặt nước lặng lại và in trọn vầng trăng.",
+      "prompt": "Chạm từng hòn đá",
+      "stoneAria": "Nghe góc nhìn của {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Charles Fefferman · Princeton, người viết đề bài chính thức cho Viện Clay",
+            "view": {
+              "text": "“Tôi rất vui khi bài toán được giải” — chính người viết đề bài hào hứng đón kết quả, dù nó còn phải qua nhiều vòng kiểm.",
+              "asOf": "2026-10-15",
+              "source": "quanta-ns",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Tristan Buckmaster · NYU, nhóm cạnh tranh",
+            "view": {
+              "text": "Ông gọi một trong ba bài của chính nhóm mình là “rác AI” (AI slop) và xin lỗi: chứng minh do máy viết có thể rất khó đọc.",
+              "asOf": "2026-10-15",
+              "source": "quanta-ns",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Người hỏi chuyện tiền và công",
+            "view": {
+              "text": "Theo Sébastien Bubeck (OpenAI), cuộc săn chứng minh tốn vài triệu USD tiền tính toán; còn ai đi trước thì hai nhóm vẫn chưa thống nhất.",
+              "asOf": "2026-10-15",
+              "source": "quanta-ns",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "who": "Nhóm cố vấn Toán & AI · Viện IAS, Princeton",
+            "view": {
+              "text": "Đây là “một sự kiện quan trọng của toán học” — nhưng tương lai toán học không thể chỉ là ngồi hiểu kết quả do phòng lab AI làm ra.",
+              "asOf": "2026-10-15",
+              "source": "aa-openai-math",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "Đồng ý: AI đã làm được toán thật, và phải được kiểm. Khác nhau: công của ai, tốn bao nhiêu, người giữ vai trò gì.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Một kết quả toán do AI làm ra mở ba câu hỏi: có đúng không, công của ai, và con người còn làm gì.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "quanta-ns": {
+      "title": "AI Has Solved One of Math's $1 Million Millennium Prize Problems",
+      "publisher": "Quanta Magazine (Konstantin Kakaes)",
+      "url": "https://www.quantamagazine.org/ai-has-solved-one-of-maths-1-million-millennium-prize-problems-20260908/",
+      "date": "2026-09-08",
+      "note": "Bài báo độc lập; các con số agent, giờ chạy, chi phí là OpenAI tự nêu. Bài nói rõ kết quả còn gây tranh cãi và con người vẫn phải kiểm đề bài trong Lean."
+    },
+    "datacamp-ns": {
+      "title": "Did AI Solve Navier-Stokes? OpenAI's Claim, Explained",
+      "publisher": "DataCamp (Vinod Chugani)",
+      "url": "https://www.datacamp.com/blog/openai-navier-stokes-math-problem",
+      "date": "2026-09-09",
+      "note": "Nguồn thứ cấp: OpenAI công khai bản thảo 166 trang và bản Lean ngày 08/09, nói không định nhận giải. Trang gốc openai.com/index/navier-stokes-solution/ chặn công cụ tra cứu nên chưa mở trực tiếp."
+    },
+    "clay-rules": {
+      "title": "Millennium Prize Problems — Rules",
+      "publisher": "Clay Mathematics Institute",
+      "url": "https://www.claymath.org/millennium-problems/rules/",
+      "note": "Điều kiện xét giải: đăng ở nơi đủ chuẩn, chờ ít nhất hai năm, được cộng đồng toán học chấp nhận rộng rãi."
+    },
+    "aa-openai-math": {
+      "title": "OpenAI releases findings on hundreds of math problems",
+      "publisher": "Anadolu Agency (đăng lại trên The Express Tribune)",
+      "url": "https://tribune.com.pk/story/2633544/openai-releases-findings-on-hundreds-of-math-problems",
+      "date": "2026-10-08",
+      "note": "OpenAI đăng 722 bản thảo / 372 nhóm kết quả trên GitHub ngày 06/10/2026. Nhóm cố vấn Toán & AI của Viện IAS nói vai trò cố vấn không phải là bảo chứng cho kết quả."
+    },
+    "deepmind-imo-2025": {
+      "title": "Advanced version of Gemini with Deep Think officially achieves gold-medal standard at the International Mathematical Olympiad",
+      "publisher": "Google DeepMind",
+      "url": "https://deepmind.google/discover/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/",
+      "date": "2025-07-21",
+      "note": "Có trích lời Chủ tịch IMO Gregor Dolinar xác nhận điểm huy chương vàng; bài làm bằng ngôn ngữ thường trong 4,5 giờ."
+    },
+    "afp-jacobian": {
+      "title": "Formal Verification of an Explicit Counterexample to the Jacobian Conjecture",
+      "publisher": "Archive of Formal Proofs (Ramos, Hulak, de Queiroz)",
+      "url": "https://isa-afp.org/entries/Jacobian_Counterexample.html",
+      "date": "2026-07-20",
+      "note": "Kiểm độc lập bằng Isabelle/HOL ánh xạ 3 chiều do Levent Alpöge công bố, ghi công Claude Fable và Akhil Mathew (người đặt câu hỏi). Trường hợp 2 chiều vẫn còn mở. Giả thuyết do Ott-Heinrich Keller nêu năm 1939."
+    },
+    "lean-lang": {
+      "title": "Lean — programming language and proof assistant",
+      "publisher": "Lean FRO",
+      "url": "https://lean-lang.org/",
+      "note": "Lean là ngôn ngữ lập trình mã nguồn mở kiêm trợ lý chứng minh."
+    },
+    "willison-openai-imo": {
+      "title": "OpenAI's gold medal performance on the International Math Olympiad",
+      "publisher": "Simon Willison's Weblog",
+      "url": "https://simonwillison.net/2025/Jul/19/openai-gold-medal-math-olympiad/",
+      "date": "2025-07-19",
+      "note": "Tóm tắt công bố của Alexander Wei (OpenAI): mô hình thử nghiệm, 5/6 bài, chấm bởi ba cựu huy chương IMO; đây là OpenAI tự đánh giá, không qua chấm chính thức của IMO."
+    }
+  }
+}

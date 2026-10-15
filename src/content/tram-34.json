@@ -1,0 +1,337 @@
+{
+  "id": 34,
+  "kicker": "Xưởng có trăm cây đục — thợ giỏi biết cầm cây nào cho nhát nào.",
+  "summary": "Chọn đúng cây đục cho đúng nhát — và luôn biết mình đang tiêu bao nhiêu nước trong bình.",
+  "takeaways": ["t34-brief", "t34-publish-check"],
+  "quiz": {
+    "q": "Bạn làm 20 video review có người mẫu ảo cầm sản phẩm. Trước khi đăng, việc nào không được bỏ qua?",
+    "options": [
+      "Chuyển sang nền tảng đắt nhất cho chắc",
+      "Gắn nhãn AI và kiểm tra quyền hình ảnh, nhạc",
+      "Phóng nét tất cả bản nháp lên 4K",
+      "Đăng thật nhanh để kịp xu hướng"
+    ],
+    "answer": 1,
+    "explain": "Luật Trí tuệ nhân tạo Việt Nam yêu cầu gắn nhãn dễ nhận biết khi AI giả lập người thật; dùng hình người thật thì cần họ đồng ý."
+  },
+  "scenes": {
+    "market": {
+      "label": "Chợ đêm dưới trăng",
+      "art": "Tranh mực: phiên chợ đêm bên bờ hồ, hai dãy sạp gỗ dưới đèn lồng giấy. Một sạp lớn treo chùm đèn nhiều sắc mực (nhiều model một chỗ); mấy sạp nhỏ chỉ treo một ngọn, bày đúng một món. Trăng tròn soi lối đá giữa hai dãy; người xem cầm những tờ giấy ghi việc, thả vào sạp.",
+      "prompt": "Thả việc vào đúng sạp",
+      "group": "Các sạp trong chợ",
+      "taskGroup": "Việc cần làm",
+      "stalls": [
+        {
+          "id": "hub",
+          "name": "Sạp gom nhiều model",
+          "what": "Một chỗ có model ảnh, video của nhiều hãng; đổi model mà không đổi nơi làm.",
+          "example": "Ví dụ: Higgsfield",
+          "source": "t34-higgsfield"
+        },
+        {
+          "id": "sales",
+          "name": "Sạp video bán hàng",
+          "what": "Chuyên biến link hoặc ảnh sản phẩm thành video quảng cáo có người dẫn ảo.",
+          "example": "Ví dụ: TopView",
+          "source": "t34-topview"
+        },
+        {
+          "id": "image",
+          "name": "Sạp ảnh & phóng nét",
+          "what": "Mạnh ở phóng nét ảnh, tạo ảnh/video, kèm kho tài nguyên thiết kế.",
+          "example": "Ví dụ: Magnific (trước là Freepik)",
+          "source": "t34-magnific"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "photo4k",
+          "text": "Ảnh sản phẩm 4K",
+          "fits": ["image", "hub"],
+          "why": "Phóng nét (upscale) là việc chính của sạp ảnh; sạp gom cũng có công cụ ảnh."
+        },
+        {
+          "id": "review",
+          "text": "Video review có người mẫu ảo",
+          "fits": ["sales", "hub"],
+          "why": "Cả hai đều có người dẫn ảo đứng cạnh sản phẩm. Nhớ gắn nhãn AI."
+        },
+        {
+          "id": "film",
+          "text": "Phim ngắn có góc máy",
+          "fits": ["hub"],
+          "why": "Cần chỉnh chuyển động máy quay từng cảnh và thử nhiều model video."
+        },
+        {
+          "id": "link",
+          "text": "Dán link shop thành quảng cáo",
+          "fits": ["sales", "hub"],
+          "why": "Cả hai sạp đều tự giới thiệu tính năng đi từ link sản phẩm tới video."
+        }
+      ],
+      "dropAria": "Thả “{task}” vào {stall}",
+      "right": "Hợp sạp này.",
+      "also": "Cũng hợp: {stalls}",
+      "wrong": "Sạp này không chuyên việc đó — thử sạp khác.",
+      "officialLabel": "Trang chính thức",
+      "volatile": "Giá & tính năng thay đổi thường xuyên — kiểm tra trang chính thức.",
+      "facts": [
+        {
+          "text": "Higgsfield tự giới thiệu hơn 30 model, gồm Sora, Kling, Veo, Seedance, Wan; có Cinema Studio chỉnh chuyển động máy quay.",
+          "asOf": "2026-10-15",
+          "source": "t34-higgsfield",
+          "kind": "fact",
+          "claimBy": "Higgsfield"
+        },
+        {
+          "text": "Higgsfield nói Marketing Studio đi từ một link sản phẩm tới video quảng cáo có người dẫn, tiếng và khẩu hình.",
+          "asOf": "2026-10-15",
+          "source": "t34-higgsfield-ms",
+          "kind": "fact",
+          "claimBy": "Higgsfield"
+        },
+        {
+          "text": "TopView liệt kê các công cụ URL to Video, Product Avatar (người dẫn ảo cho sản phẩm) và Video Agent.",
+          "asOf": "2026-10-15",
+          "source": "t34-topview",
+          "kind": "fact",
+          "claimBy": "TopView"
+        },
+        {
+          "text": "Ngày 28/04/2026, Freepik đổi tên thành Magnific, gom phóng nét, tạo ảnh/video, không gian làm việc chung và kho tài nguyên.",
+          "asOf": "2026-10-15",
+          "source": "t34-magnific",
+          "kind": "fact"
+        }
+      ],
+      "insight": {
+        "text": "Không có sạp “tốt nhất”: chọn theo việc. Một việc thường hợp vài sạp; khác nhau ở model có sẵn, cách làm và giá.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Mô tả tính năng ở đây là lời các hãng tự giới thiệu (◇), chưa có bên độc lập đo. Hãy thử bản miễn phí hoặc gói nhỏ với đúng việc của bạn trước khi trả nhiều."
+    },
+    "path": {
+      "label": "Đường đi của một asset",
+      "art": "Tranh mực: lối đá cuội vắt qua khu vườn đêm, từ cổng xưởng tới bờ hồ nơi đèn đá tōrō sáng. Tám viên đá nằm lẫn trong cát cào; người xem nhặt từng viên đặt lên lối, đặt đúng thì viên đá ánh lên như được trăng chiếu.",
+      "prompt": "Xếp đá theo thứ tự",
+      "pathAria": "Lối đá tám bước làm một asset AI",
+      "stoneAria": "Viên đá: {label}",
+      "slotAria": "Chỗ trống số {n} trên lối",
+      "keys": "Chạm lần lượt hoặc dùng phím số 1 đến 8.",
+      "wrongHint": "Chưa đúng chỗ — {why}",
+      "done": "Lối đã sáng. Mở thẻ mang về.",
+      "steps": {
+        "steps": [
+          {
+            "label": "Viết brief",
+            "detail": "Một trang: mục tiêu, người xem, một thông điệp, định dạng, hạn, ngân sách credit.",
+            "why": "Brief rõ thì model đoán ít, bạn tốn ít lượt làm lại."
+          },
+          {
+            "label": "Chọn model",
+            "detail": "Chọn theo việc: ảnh tĩnh, video có người dẫn, hay cảnh cần góc máy.",
+            "why": "Mỗi model mạnh một kiểu và tốn số credit khác nhau."
+          },
+          {
+            "label": "Tạo nháp nhiều phương án",
+            "detail": "3–4 phương án ở độ phân giải thấp, cùng một prompt hoặc đổi nhẹ.",
+            "why": "Nháp rẻ giúp so sánh trước khi tiêu nhiều."
+          },
+          {
+            "label": "Chọn một bản",
+            "detail": "Đặt các bản cạnh nhau, chấm theo brief chứ không theo cảm hứng nhất thời.",
+            "why": "Quay về brief giữ đúng mục tiêu."
+          },
+          {
+            "label": "Phóng nét & sửa",
+            "detail": "Phóng nét (upscale) bản đã chốt; sửa vùng lỗi như tay, chữ, logo.",
+            "why": "Chỉ phóng nét bản cuối để không đốt credit vào bản bỏ đi."
+          },
+          {
+            "label": "Dựng",
+            "detail": "Ghép cảnh, chữ, nhạc trong phần mềm dựng như CapCut hoặc Premiere.",
+            "why": "AI cho chất liệu; câu chuyện vẫn do bạn kể."
+          },
+          {
+            "label": "Kiểm tra quyền & gắn nhãn AI",
+            "detail": "Quyền hình ảnh người thật, giấy phép nhạc, nhãn AI theo luật và quy định nền tảng.",
+            "why": "Đăng rồi mới gỡ thì thiệt hại đã xảy ra."
+          },
+          {
+            "label": "Đăng & lưu công thức",
+            "detail": "Đăng bài; lưu lại prompt, model, seed của bản cuối.",
+            "why": "Có công thức thì lần sau làm lại nhanh và giống."
+          }
+        ],
+        "takeaway": "t34-publish-check"
+      },
+      "insight": {
+        "text": "Asset AI tốt đi qua nhiều trạm: nháp rẻ, chọn kỹ, rồi mới phóng nét — và kiểm tra quyền trước khi đăng.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Thứ tự này là một gợi ý của AI Zen, không phải quy chuẩn. Phần mềm dựng nêu tên chỉ là ví dụ; dùng công cụ nào bạn quen."
+    },
+    "credit": {
+      "label": "Credit là nước trong bình",
+      "art": "Tranh mực: một bình gốm men rạn đặt trên bàn thợ, ánh trăng rót qua cửa sổ vào miệng bình. Mỗi lần bấm tạo, một gáo nước múc ra; gáo to nhỏ tuỳ model, độ phân giải, độ dài. Mực nước hạ dần, vạch khắc trên thân bình hiện rõ.",
+      "prompt": "Múc thử một gáo",
+      "jarAria": "Bình credit, còn {n} phần trên 100",
+      "modelLabel": "Model",
+      "models": ["Model nhẹ", "Model nặng"],
+      "resLabel": "Độ phân giải",
+      "resolutions": ["720p", "1080p"],
+      "lengthLabel": "Độ dài",
+      "lengths": ["5 giây", "10 giây"],
+      "generate": "Tạo",
+      "refill": "Đổ đầy lại",
+      "cost": "Lượt này tốn {n} phần",
+      "empty": "Bình cạn. Hết credit thì phải chờ kỳ sau hoặc mua thêm.",
+      "scale": {
+        "text": "Số phần nước chỉ để minh hoạ tỉ lệ, không phải giá thật của nền tảng nào.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "facts": [
+        {
+          "text": "Trang trợ giúp Higgsfield: mỗi lượt tạo tốn credit tuỳ model, độ phân giải, độ dài; giá hiện trên nút trước khi bấm.",
+          "asOf": "2026-10-15",
+          "source": "t34-hf-credits",
+          "kind": "fact"
+        },
+        {
+          "text": "Cũng theo trang đó: credit của gói thuê bao làm mới theo kỳ và không cộng dồn sang kỳ sau.",
+          "asOf": "2026-10-15",
+          "source": "t34-hf-credits",
+          "kind": "fact"
+        }
+      ],
+      "tips": [
+        "Nháp ở độ phân giải thấp, chỉ phóng nét bản đã chốt.",
+        "Khoá seed khi đã ưng bố cục, chỉ đổi từng chi tiết.",
+        "Viết prompt rõ trước khi bấm, đừng “thử đại”.",
+        "Nhìn giá trên nút tạo trước khi xác nhận."
+      ],
+      "tipsLabel": "Mẹo giữ nước",
+      "insight": {
+        "text": "Credit (tín dụng nền tảng) như nước trong bình: model nặng, độ phân giải cao, video dài thì mỗi gáo càng to.",
+        "asOf": "2026-10-15",
+        "source": "t34-hf-credits",
+        "kind": "fact"
+      },
+      "detail": "Mỗi nền tảng tính khác nhau, và bảng giá đổi thường xuyên. Đọc trang giá chính thức, xem credit có cộng dồn không, trước khi chọn gói.",
+      "takeaway": "t34-brief"
+    },
+    "real": {
+      "label": "Thật và giả",
+      "art": "Tranh mực: mặt hồ đêm phẳng như gương, in bóng một người mẫu đứng trên cầu gỗ — nhưng bóng dưới nước là một avatar vẽ bằng nét mực khác. Bốn hòn đá quanh hồ, mỗi hòn một ngọn đèn nhỏ chờ được thắp.",
+      "prompt": "Chạm từng hòn đá",
+      "group": "Bốn góc nhìn về người mẫu ảo",
+      "stoneAria": "Góc nhìn: {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Thương hiệu (bên đăng)",
+            "view": {
+              "text": "Luật AI Việt Nam, từ 01/03/2026: ảnh, video, giọng AI giả lập người thật phải có nhãn dễ nhận biết.",
+              "asOf": "2026-10-15",
+              "source": "t34-vn-ai-law",
+              "kind": "fact"
+            }
+          },
+          {
+            "who": "Người tiêu dùng",
+            "view": {
+              "text": "Tôi không cần biết bạn dùng công cụ gì — nhưng cần biết người trong video có thật hay không.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Người mẫu thật",
+            "view": {
+              "text": "Bộ luật Dân sự: dùng hình ảnh một người phải được họ đồng ý; dùng vì mục đích thương mại phải trả thù lao.",
+              "asOf": "2026-10-15",
+              "source": "t34-civil-code",
+              "kind": "fact"
+            }
+          },
+          {
+            "who": "Nền tảng mạng xã hội",
+            "view": {
+              "text": "YouTube yêu cầu người đăng khai báo nội dung AI trông như thật, ví dụ khiến người thật nói điều họ không nói.",
+              "asOf": "2026-10-15",
+              "source": "t34-youtube",
+              "kind": "fact"
+            }
+          }
+        ],
+        "common": {
+          "text": "Đều đồng ý: người xem có quyền biết. Khác nhau ở: nhãn đặt đâu, to cỡ nào, và ai chịu trách nhiệm.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "detail": "Luật còn yêu cầu thông báo rõ khi nội dung AI có thể gây nhầm về sự kiện, nhân vật thật; tác phẩm nghệ thuật được gắn nhãn theo cách không cản trở thưởng thức. Đây không phải tư vấn pháp lý."
+    }
+  },
+  "sources": {
+    "t34-higgsfield": {
+      "title": "Higgsfield — trang chủ (danh sách model, Cinema Studio)",
+      "publisher": "Higgsfield AI (trang của chính hãng)",
+      "url": "https://higgsfield.ai/",
+      "date": "2026-10-15",
+      "note": "Lời tự giới thiệu của hãng. Danh sách model đổi thường xuyên."
+    },
+    "t34-higgsfield-ms": {
+      "title": "AI product videos, no studio (Marketing Studio)",
+      "publisher": "Higgsfield AI — blog của chính hãng",
+      "url": "https://higgsfield.ai/blog/ai-product-videos-no-studio",
+      "date": "2026-07-23"
+    },
+    "t34-hf-credits": {
+      "title": "How credits work",
+      "publisher": "Higgsfield AI — Help Center",
+      "url": "https://higgsfield.ai/creator-hub/help-center/credits/how-credits-work",
+      "date": "2026-09-22"
+    },
+    "t34-topview": {
+      "title": "Topview Official Guide",
+      "publisher": "TopView (trang của chính hãng)",
+      "url": "https://www.topview.ai/guides/topview-official-guide",
+      "date": "2026-04-09",
+      "note": "Danh sách công cụ: URL to Video, Product Avatar, Video Agent."
+    },
+    "t34-magnific": {
+      "title": "Freepik rebrands as Magnific, unifying its AI creative stack",
+      "publisher": "Tech.eu",
+      "url": "https://tech.eu/2026/04/28/freepik-rebrands-as-magnific-unifying-its-ai-creative-stack-as-enterprise-and-no-collar-growth-accelerates/",
+      "date": "2026-04-28"
+    },
+    "t34-vn-ai-law": {
+      "title": "Viet Nam's Law on Artificial Intelligence (Luật Trí tuệ nhân tạo số 134/2025/QH15), Điều 11",
+      "publisher": "Cổng Thông tin điện tử Chính phủ (bản tiếng Anh)",
+      "url": "https://en.baochinhphu.vn/viet-nams-law-on-artificial-intelligence-111260715113551787.htm",
+      "date": "2025-12-10",
+      "note": "Thông qua 10/12/2025, hiệu lực 01/03/2026. Hướng dẫn chi tiết ở Nghị định 142/2026/NĐ-CP."
+    },
+    "t34-civil-code": {
+      "title": "Bộ luật Dân sự 2015 (Luật số 91/2015/QH13), Điều 32 — Quyền của cá nhân đối với hình ảnh",
+      "publisher": "Quốc hội Việt Nam; trích qua Tạp chí Tòa án nhân dân",
+      "url": "https://tapchitoaan.vn/quyen-cua-ca-nhan-doi-voi-hinh-anh-quy-dinh-va-bat-cap",
+      "date": "2015-11-24"
+    },
+    "t34-youtube": {
+      "title": "Disclosing use of altered or synthetic content",
+      "publisher": "YouTube Help",
+      "url": "https://support.google.com/youtube/answer/14328491"
+    }
+  }
+}

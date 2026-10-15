@@ -160,6 +160,47 @@
   white-space: nowrap;
 }
 
+/* Tất cả · Phần 1 · Phần 2 — native radios, so arrow keys and screen readers work as they always do */
+.gl-parts {
+  display: flex;
+  gap: 2px;
+  margin-top: 6px;
+}
+.gl-part {
+  position: relative;
+  cursor: pointer;
+}
+.gl-part input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.gl-part span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font: 400 0.9rem/1 var(--serif);
+  color: var(--ink-3);
+  transition: color 0.3s, border-color 0.3s, background-color 0.3s;
+}
+.gl-part:hover span {
+  color: var(--ink);
+}
+.gl-part input:checked + span {
+  color: var(--ink);
+  border-color: var(--line-2);
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+}
+.gl-part input:focus-visible + span {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+
 /* ───────── field ───────── */
 .gl-field {
   position: relative;
@@ -171,6 +212,19 @@
   position: absolute;
   width: 0;
   height: 0;
+}
+.gl-scroll {
+  position: absolute;
+  inset: 0;
+}
+/* only when every stone cannot fit even at the smallest type: the garden scrolls (its height is set in JS) */
+.gl[data-scroll] .gl-scroll {
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.gl[data-scroll] .gl-stage {
+  bottom: auto;
 }
 .gl-stage,
 .gl-group,

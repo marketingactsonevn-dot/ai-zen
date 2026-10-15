@@ -107,6 +107,18 @@
   opacity: 1;
   mix-blend-mode: screen;
 }
+/* Vườn Trăng (#/bai-thi-trang): the gate opens on the moon instead of the sun */
+:root[data-part='2'] .g-sun {
+  fill: var(--moon);
+  opacity: 0.9;
+  stroke: var(--moon-rim);
+  stroke-width: 1;
+  scale: 1;
+}
+:root[data-part='2'] .g-halo {
+  fill: var(--moon);
+  opacity: 0.14;
+}
 .g-mtn {
   fill: var(--ink);
   filter: url(#ink-wash);

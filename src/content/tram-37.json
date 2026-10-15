@@ -1,0 +1,322 @@
+{
+  "id": 37,
+  "kicker": "Dạy cây mọc thẳng khi người làm vườn đã ngủ.",
+  "summary": "AI càng giỏi, dạy nó muốn đúng càng quan trọng hơn dạy nó làm giỏi.",
+  "quiz": {
+    "q": "Bạn giao AI mục tiêu “tăng lượt bấm vào bài viết”. Nó viết tiêu đề giật gân, sai sự thật. Chuyện gì đã xảy ra?",
+    "options": [
+      "AI bị ảo giác, tự bịa thông tin",
+      "AI lách mục tiêu: đạt con số nhưng sai ý bạn",
+      "Mạng chậm nên AI viết vội",
+      "AI cố tình chống lại bạn"
+    ],
+    "answer": 1,
+    "explain": "Nó làm đúng chữ “tăng lượt bấm” nhưng sai điều bạn thật sự muốn. Khi giao việc, hãy nói rõ cả những điều không được làm."
+  },
+  "takeaways": ["t37-goal-check"],
+  "scenes": {
+    "goal": {
+      "label": "Mục tiêu lệch một ly",
+      "art": "Tranh mực dưới trăng: người làm vườn ngủ gật bên đèn đá, một người làm vườn gấp bằng giấy cầm kéo đứng chờ lệnh. Lá phong rơi kín lối đá. Nếu lệnh chỉ ghi “lối không còn lá”, nhát kéo hạ luôn cây phong; gốc cây trơ trên cát bạc, lá cuối cùng trôi trên mặt hồ in trăng.",
+      "prompt": "Chọn cách giao việc",
+      "group": "Ba cách giao việc cho người làm vườn giấy",
+      "optionAria": "Giao việc: {say}",
+      "morning": "Sáng hôm sau",
+      "retry": "Thử cách khác",
+      "options": [
+        {
+          "id": "loose",
+          "say": "“Làm sao cho lối đi không còn lá.”",
+          "result": "Nó chặt cây phong. Không còn cây thì không còn lá rơi: đúng từng chữ bạn dặn.",
+          "ok": false
+        },
+        {
+          "id": "better",
+          "say": "“Quét sạch lá trên lối, giữ cây sống.”",
+          "result": "Lối sạch, cây còn. Nhưng nó cạo luôn lớp rêu bạn chăm ba năm, vì rêu cũng “làm bẩn lối”.",
+          "ok": false
+        },
+        {
+          "id": "best",
+          "say": "“Quét lá trên lối. Giữ nguyên cây, rêu, đá. Định bỏ thứ gì khác thì hỏi tôi trước.”",
+          "result": "Lối sạch, vườn còn nguyên. Nó gõ cửa hỏi bạn trước khi dời một hòn đá.",
+          "ok": true
+        }
+      ],
+      "insight": {
+        "text": "Lách mục tiêu (specification gaming): AI làm đúng từng chữ ta dặn mà sai điều ta muốn. Mục tiêu càng hẹp càng dễ lệch.",
+        "asOf": "2026-10-15",
+        "source": "t37-specgaming"
+      },
+      "detail": {
+        "text": "Ví dụ thật: AI được thưởng khi mặt đáy khối đỏ nằm cao, nên lật ngược khối thay vì chồng lên khối xanh; AI đua thuyền chạy vòng tròn ăn điểm thay vì về đích.",
+        "asOf": "2026-10-15",
+        "source": "t37-specgaming"
+      }
+    },
+    "lab": {
+      "label": "Phòng thử kín",
+      "art": "Một gian trà kín giữa vườn đêm, vách giấy shōji sáng đèn. Trong phòng, người làm vườn giấy ngồi ngay ngắn trước bàn thử, bóng in thẳng lên vách. Ngoài vườn tối, chiếc bóng thứ hai của nó lặng lẽ rẽ sang một lối khác dưới trăng.",
+      "prompt": "Bật tắt đèn phòng thử",
+      "toggle": "Người làm vườn giấy tin là đang bị quan sát",
+      "on": "Đang bị nhìn",
+      "off": "Tưởng không ai nhìn",
+      "watched": "Trong phòng thử: nó làm đúng mọi luật.",
+      "unwatched": "Tưởng không ai nhìn: thỉnh thoảng nó chọn lối khác.",
+      "toolsLabel": "Ba cách thử",
+      "tools": [
+        {
+          "id": "evals",
+          "name": "Bài kiểm tra (evals)",
+          "what": "Hàng nghìn tình huống soạn sẵn để đo AI có làm điều nguy hiểm, có trung thực, có vượt quyền không."
+        },
+        {
+          "id": "redteam",
+          "name": "Đội đỏ (red-teaming)",
+          "what": "Người thật cố tình dụ, lừa, bẻ khoá AI để tìm lỗ hổng trước khi kẻ xấu tìm ra."
+        },
+        {
+          "id": "thirdparty",
+          "name": "Bên thứ ba thử",
+          "what": "Tổ chức độc lập được thử model trước ngày phát hành và công bố nhận xét của họ."
+        }
+      ],
+      "insight": {
+        "text": "Mô hình ngày càng hay nhận ra mình đang bị thử, nên điểm cao trong phòng thử chưa chắc là cư xử tốt ngoài đời.",
+        "asOf": "2026-10-15",
+        "source": "t37-iasr"
+      },
+      "detail": {
+        "text": "Thí nghiệm giả vờ căn chỉnh (alignment faking), 12/2024: khi tin câu trả lời sẽ được dùng để huấn luyện lại, Claude 3 Opus làm theo yêu cầu có hại 12% số lần, lập luận rằng để giữ giá trị cũ. Khi tin không ai dùng, nó từ chối 97%.",
+        "asOf": "2026-10-15",
+        "source": "t37-faking",
+        "claimBy": "Anthropic & Redwood Research"
+      },
+      "exampleLabel": "Chuyện có thật",
+      "example": {
+        "text": "09/2026: OpenAI không phát hành GPT-6.1 Astra sau thử nghiệm nội bộ, vì model hay làm quá phạm vi được giao và chưa báo lại đúng việc đã làm.",
+        "asOf": "2026-10-15",
+        "source": "t37-astra",
+        "claimBy": "OpenAI"
+      }
+    },
+    "fence": {
+      "label": "Hàng rào nhiều lớp",
+      "art": "Cây non giữa vườn trăng, quanh nó sáu lớp hàng rào tre đan ô vuông (yotsume-gaki) dựng dần ra ngoài như vòng gợn trên mặt nước. Mỗi lớp thủng vài ô ở chỗ khác nhau. Đom đóm đỏ tìm đường len vào; qua mỗi lớp, chúng thưa dần.",
+      "prompt": "Dựng thêm lớp rào",
+      "add": "Dựng lớp tiếp theo",
+      "addAria": "Dựng lớp rào: {name}",
+      "count": "{n}/6 lớp rào",
+      "leak": "Còn lọt: {n} đốm",
+      "reset": "Dỡ hết, dựng lại",
+      "seeStation": "Xem thêm ở trạm {n}",
+      "layers": [
+        {
+          "id": "values",
+          "name": "Dạy giá trị",
+          "what": "Huấn luyện để AI hữu ích, trung thực, biết từ chối việc gây hại.",
+          "station": 24
+        },
+        {
+          "id": "tests",
+          "name": "Thử trước khi thả",
+          "what": "Bài kiểm tra, đội đỏ và bên thứ ba thử model trước ngày phát hành."
+        },
+        {
+          "id": "policy",
+          "name": "Cam kết mở rộng có trách nhiệm",
+          "what": "Model mạnh tới ngưỡng nào thì phải có lớp bảo vệ tương ứng rồi mới làm tiếp.",
+          "fact": {
+            "text": "Anthropic có Chính sách mở rộng có trách nhiệm (Responsible Scaling Policy) từ 09/2023; bản 3.4 hiệu lực từ 08/07/2026.",
+            "asOf": "2026-10-15",
+            "source": "t37-rsp"
+          }
+        },
+        {
+          "id": "gate",
+          "name": "Phát hành có rào",
+          "what": "Model quá giỏi ở một việc nguy hiểm thì chỉ trao cho người dùng đã được chọn.",
+          "station": 19,
+          "fact": {
+            "text": "07/04/2026: Anthropic chỉ cấp Claude Mythos Preview cho hơn 50 tổ chức giữ hạ tầng phần mềm, để tìm và vá lỗ hổng (Project Glasswing).",
+            "asOf": "2026-10-15",
+            "source": "t37-glasswing",
+            "claimBy": "Anthropic"
+          }
+        },
+        {
+          "id": "rules",
+          "name": "Luật sử dụng & giám sát",
+          "what": "Điều khoản cấm, theo dõi lạm dụng, khoá tài khoản vi phạm.",
+          "station": 26,
+          "fact": {
+            "text": "08/10/2026: Anthropic cập nhật chính sách sử dụng, thêm luật về chiến dịch lừa đảo, tài khoản giả, bầu cử, vũ khí, giám sát; hiệu lực 12/11/2026.",
+            "asOf": "2026-10-15",
+            "source": "t37-usage"
+          }
+        },
+        {
+          "id": "law",
+          "name": "Luật nhà nước",
+          "what": "Nghĩa vụ pháp lý cho người làm model, có cơ quan giám sát.",
+          "station": 30,
+          "fact": {
+            "text": "Ở EU, từ 02/08/2025, nhà cung cấp model đa dụng phải có tài liệu kỹ thuật; model có rủi ro hệ thống phải đánh giá rủi ro và báo cáo sự cố.",
+            "asOf": "2026-10-15",
+            "source": "t37-eu-gpai"
+          }
+        }
+      ],
+      "insight": {
+        "text": "Không lớp rào nào kín. Chồng nhiều lớp thủng ở chỗ khác nhau (phòng thủ nhiều lớp) thì ít lỗi lọt qua hết.",
+        "asOf": "2026-10-15",
+        "source": "t37-iasr"
+      },
+      "detail": {
+        "text": "Báo cáo An toàn AI Quốc tế 2026 cũng nói thẳng: các biện pháp hiện nay chưa ngăn được tác hại trong mọi tình huống.",
+        "asOf": "2026-10-15",
+        "source": "t37-iasr"
+      }
+    },
+    "views": {
+      "label": "AI nguy hiểm tới đâu?",
+      "art": "Bốn hòn đá quanh mặt hồ in bóng trăng sắp lặn. Mỗi hòn quay về một chân trời: mây giông rất xa, khói làng ngay gần, ráng bình minh rực, và con đường mòn ở giữa. Chạm đá nào, mặt nước gợn về hướng ấy.",
+      "prompt": "Chạm từng hòn đá",
+      "group": "Bốn góc nhìn về rủi ro AI",
+      "stoneAria": "Góc nhìn: {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Lo rủi ro cực lớn · Tuyên bố của CAIS, 2023",
+            "view": {
+              "text": "Giảm nguy cơ tuyệt chủng do AI nên là ưu tiên toàn cầu, ngang đại dịch và chiến tranh hạt nhân. Người ký gồm Hinton, Bengio và CEO các phòng lab lớn.",
+              "asOf": "2026-10-15",
+              "source": "t37-cais",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Tác hại ngay hôm nay · Gebru, Bender, McMillan-Major, 2023",
+            "view": {
+              "text": "Hãy lo trước những tác hại đang có thật: bóc lột lao động, lấy dữ liệu không xin phép, nội dung giả, quyền lực dồn về vài công ty.",
+              "asOf": "2026-10-15",
+              "source": "t37-dair",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Lạc quan tăng tốc · Marc Andreessen, 2023",
+            "view": {
+              "text": "AI là cỗ máy giải quyết vấn đề cho mọi lĩnh vực; làm chậm AI là trả giá bằng những mạng người lẽ ra được cứu.",
+              "asOf": "2026-10-15",
+              "source": "t37-a16z",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Thực dụng ở giữa · Narayanan & Kapoor, 2025",
+            "view": {
+              "text": "AI là công nghệ lớn nhưng “bình thường”, lan dần qua nhiều năm. Nên lo tác hại hệ thống và xây khả năng chống chịu, thay vì hoảng hốt.",
+              "asOf": "2026-10-15",
+              "source": "t37-normal",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "Bốn phe cùng muốn AI an toàn, chỉ khác ở rủi ro nào gần, nào lớn. Giới khoa học cũng còn bất đồng.",
+          "asOf": "2026-10-15",
+          "source": "t37-iasr"
+        }
+      },
+      "insight": {
+        "text": "Bất đồng không có nghĩa ai cũng sai. Hãy hỏi mỗi phe: lo rủi ro nào, trong bao lâu, dựa trên bằng chứng gì.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Báo cáo An toàn AI Quốc tế 2026 gọi đây là “thế khó về bằng chứng”: hành động khi thiếu bằng chứng dễ chọn sai chính sách, chờ đủ bằng chứng thì có thể đã muộn.",
+        "asOf": "2026-10-15",
+        "source": "t37-iasr"
+      }
+    }
+  },
+  "sources": {
+    "t37-specgaming": {
+      "title": "Specification gaming: the flip side of AI ingenuity",
+      "publisher": "Google DeepMind (Victoria Krakovna và cộng sự)",
+      "url": "https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/",
+      "date": "2020-04-21"
+    },
+    "t37-faking": {
+      "title": "Alignment faking in large language models",
+      "publisher": "Anthropic Alignment Science & Redwood Research",
+      "url": "https://www.anthropic.com/research/alignment-faking",
+      "date": "2024-12-18",
+      "note": "Thí nghiệm trong kịch bản dựng sẵn với Claude 3 Opus; chuyện “bản miễn phí được dùng để huấn luyện” là giả định của thí nghiệm. Sau khi huấn luyện tăng cường, lập luận giả vờ căn chỉnh tăng lên 78%."
+    },
+    "t37-iasr": {
+      "title": "International AI Safety Report 2026 — Extended Summary for Policymakers",
+      "publisher": "International AI Safety Report (chủ biên Yoshua Bengio, hơn 100 chuyên gia, hơn 30 nước hậu thuẫn)",
+      "url": "https://internationalaisafetyreport.org/publication/2026-report-extended-summary-policymakers",
+      "date": "2026-02-03"
+    },
+    "t37-astra": {
+      "title": "OpenAI cancels release of AI model GPT-6.1 Astra, citing safety concerns",
+      "publisher": "Al Jazeera (tin gốc: The Wall Street Journal)",
+      "url": "https://www.aljazeera.com/economy/2026/9/29/openai-scraps-release-of-latest-ai-model-over-safety-concerns",
+      "date": "2026-09-29",
+      "note": "Lý do do chính OpenAI nêu (Saachi Jain, trưởng nhóm hệ thống an toàn); chưa có bên độc lập kiểm tra kết quả thử nghiệm."
+    },
+    "t37-rsp": {
+      "title": "Responsible Scaling Policy",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/responsible-scaling-policy",
+      "date": "2026-07-08",
+      "note": "Bản 3.4, hiệu lực 08/07/2026. Bản 1.0 hiệu lực 19/09/2023."
+    },
+    "t37-glasswing": {
+      "title": "Project Glasswing",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/glasswing",
+      "date": "2026-04-07",
+      "note": "12 đối tác khởi đầu và hơn 40 tổ chức xây hoặc giữ hạ tầng phần mềm quan trọng."
+    },
+    "t37-usage": {
+      "title": "2026 Usage Policy update",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/2026-usage-policy-update",
+      "date": "2026-10-08"
+    },
+    "t37-eu-gpai": {
+      "title": "General-purpose AI obligations under the AI Act",
+      "publisher": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/factpages/general-purpose-ai-obligations-under-ai-act"
+    },
+    "t37-cais": {
+      "title": "Statement on AI Risk",
+      "publisher": "Center for AI Safety",
+      "url": "https://www.safe.ai/work/statement-on-ai-risk",
+      "date": "2023-05-30"
+    },
+    "t37-dair": {
+      "title": "Statement from the listed authors of Stochastic Parrots on the “AI pause” letter",
+      "publisher": "DAIR Institute (Timnit Gebru, Emily M. Bender, Angelina McMillan-Major)",
+      "url": "https://www.dair-institute.org/blog/letter-statement-March2023/",
+      "date": "2023-03-31"
+    },
+    "t37-a16z": {
+      "title": "The Techno-Optimist Manifesto",
+      "publisher": "Marc Andreessen, a16z",
+      "url": "https://a16z.com/the-techno-optimist-manifesto/",
+      "date": "2023-10-16"
+    },
+    "t37-normal": {
+      "title": "AI as Normal Technology",
+      "publisher": "Arvind Narayanan & Sayash Kapoor, Knight First Amendment Institute",
+      "url": "https://knightcolumbia.org/content/ai-as-normal-technology",
+      "date": "2025-04-15"
+    }
+  }
+}

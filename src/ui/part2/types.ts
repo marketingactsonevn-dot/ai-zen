@@ -54,9 +54,15 @@ export interface Takeaway {
   body: string
   note?: string
   source?: string
+  /** C.2 shelf the card sits on in #/do-nghe, e.g. "Đọc tin & kiểm chứng" (free text, same words across cards) */
+  topic?: string
+  /** YYYY-MM-DD the card was last checked (C.2) */
+  asOf?: string
 }
 export interface ToolkitFile {
   cards: Takeaway[]
+  /** sources the cards cite: #/do-nghe does not load the station files, so their keys must resolve here (or in sources.json) */
+  sources?: Record<string, Source>
 }
 
 /** B.7.6 Lối đá từng bước: put the steps in order; done → the takeaway card (id in toolkit.json) opens. */
