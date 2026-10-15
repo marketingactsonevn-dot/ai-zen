@@ -1,0 +1,222 @@
+/* Trạm 21 — Robot chạy marathon: strings from a pine branch · a trembling hand at the tea table (+ tide, perspective circle) */
+.t21 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+.t21 svg { max-width: none; overflow: visible; }
+.t21-ink,
+.t21-body { fill: var(--ink); }
+.t21-visor { fill: var(--moon); }
+.t21-shadow { fill: var(--umbra); opacity: 0.25; }
+.t21-moon { fill: var(--moon); }
+.t21-pine { fill: var(--moss); opacity: 0.85; }
+.t21-mist { fill: var(--paper-2); opacity: 0.8; }
+.t21-track { fill: var(--ink-3); }
+
+/* ── strings ─────────────────────────────────────── */
+.t21s-stage,
+.t21t-stage {
+  flex: 1 1 0;
+  min-height: 120px;
+  width: 100%;
+}
+.t21s-svg,
+.t21t-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.t21s-strings {
+  stroke: var(--moon);
+  stroke-width: 0.9;
+  fill: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.t21s.wired .t21s-strings { opacity: 0.9; }
+:root[data-theme='light'] .t21s-strings { stroke: var(--ink-2); }
+.t21-runner { animation: t21-bob 0.7s ease-in-out infinite alternate; }
+.t21-b { animation-delay: -0.35s; }
+.t21.still .t21-runner { animation: none; }
+@keyframes t21-bob {
+  to { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t21-runner { animation: none; }
+}
+.t21s-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font: 500 0.9rem/1.2 var(--sans);
+  cursor: pointer;
+}
+.t21s-toggle:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t21s-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--stone-2);
+  transition: background 0.3s ease;
+}
+.t21s-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--paper);
+  transition: transform 0.3s ease;
+}
+.t21s-toggle[aria-pressed='true'] .t21s-switch { background: var(--vermilion); }
+.t21s-toggle[aria-pressed='true'] .t21s-switch::after { transform: translateX(16px); }
+.t21s-reveal {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  width: min(40rem, 100%);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.t21s.shown .t21s-reveal { visibility: visible; opacity: 1; }
+.t21s-tags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.t21s-tag { padding: 8px 12px; border-radius: 10px; background: var(--card); }
+.t21s-tag.remote { opacity: 0.6; transition: opacity 0.5s ease; }
+.t21s.wired .t21s-tag.remote { opacity: 1; box-shadow: inset 0 0 0 1px var(--moon-rim); }
+.t21s-tag.auto { box-shadow: inset 2px 0 0 var(--vermilion); }
+.t21s-time {
+  margin: 2px 0 0;
+  font: 400 1.5rem/1.1 var(--serif);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.t21s-note { margin: 2px 0 0; font: 400 0.8rem/1.35 var(--sans); color: var(--ink-3); }
+.t21s-facts {
+  margin: 8px 0 0;
+  padding-left: 1.1em;
+  font: 400 0.9rem/1.45 var(--serif);
+  color: var(--ink);
+}
+.t21s-facts li + li { margin-top: 3px; }
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .t21s {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 24rem;
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 32px;
+    row-gap: 12px;
+  }
+  .t21s-stage { grid-row: 1 / 3; height: 100%; }
+  .t21s-toggle { align-self: end; justify-self: start; }
+  .t21s-reveal { width: 100%; max-height: 100%; align-self: start; }
+}
+
+/* ── the tea table ───────────────────────────────── */
+.t21t-book { fill: var(--stone-2); stroke: var(--ink-3); stroke-width: 0.3; }
+.t21t-book2 { fill: var(--stone-3); stroke: var(--ink-3); stroke-width: 0.3; }
+.t21t-glow { fill: var(--lantern); opacity: 0.22; }
+.t21t-toro { fill: var(--ink-2); }
+.t21t-flame { fill: var(--lantern); }
+.t21t-table { fill: url(#p2-rock); stroke: var(--ink-2); stroke-width: 0.8; }
+.t21t-porcelain { fill: var(--card); stroke: var(--ink); stroke-width: 0.8; }
+.t21t-tea { fill: var(--moss); }
+.t21t-cup-ink { fill: var(--ink-2); opacity: 0.6; }
+.t21t-weave { fill: var(--lantern); opacity: 0.55; stroke: var(--ink-2); stroke-width: 0.6; }
+.t21t-weave-ink { stroke: var(--ink-2); stroke-width: 0.6; fill: none; }
+.t21t-joint { fill: var(--paper); stroke: var(--ink); stroke-width: 1.4; }
+.t21t-hand.try { animation: t21-reach 1.3s ease-in-out; }
+.t21.still .t21t-hand.try { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .t21t-hand.try { animation: none; }
+}
+@keyframes t21-reach {
+  0% { transform: none; }
+  35% { transform: translate(-36px, 26px); }
+  42% { transform: translate(-33px, 27px) rotate(1deg); }
+  49% { transform: translate(-37px, 25px) rotate(-1deg); }
+  56% { transform: translate(-34px, 28px); }
+  70% { transform: translate(-26px, 12px) rotate(-3deg); }
+  100% { transform: none; }
+}
+.t21t-status {
+  flex: 0 0 auto;
+  min-height: 1.4em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 18px;
+}
+.t21t-status p { margin: 0; font: 400 italic 0.95rem/1.4 var(--serif); }
+.t21t-head { color: var(--moss); }
+.t21t-try { color: var(--vermilion); }
+.t21t-cmds {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.t21t-cmd {
+  padding: 8px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font: 400 0.92rem/1.2 var(--serif);
+  cursor: pointer;
+}
+.t21t-cmd:hover { border-color: var(--ink-3); }
+.t21t-cmd:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t21t-scale {
+  display: none;
+  flex: 0 0 auto;
+  max-height: 55%;
+  min-height: 0;
+  overflow-y: auto;
+  width: min(40rem, 100%);
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--card);
+}
+.t21t.weighed .t21t-scale { display: block; }
+.t21t-scale-row { display: flex; align-items: center; gap: 14px; }
+.t21t-scale-svg { flex: 0 0 auto; width: 160px; height: 84px; }
+.t21t-beam {
+  transform-origin: 100px 40px;
+  transform: rotate(-11deg);
+}
+.t21t-cord { stroke: var(--ink-2); stroke-width: 0.8; fill: none; }
+.t21t-pan { fill: var(--stone-2); stroke: var(--ink-2); stroke-width: 0.8; }
+.t21t-lbl { font: 400 11px var(--sans); fill: var(--ink-2); }
+.t21t-data {
+  margin: 0;
+  padding-left: 1.1em;
+  font: 400 0.88rem/1.45 var(--serif);
+  color: var(--ink);
+}
+.t21t-data li + li { margin-top: 3px; }
+@media (max-width: 520px) {
+  .t21t-scale-row { flex-direction: column; align-items: stretch; }
+  .t21t-scale-svg { align-self: center; width: 150px; height: 78px; }
+}

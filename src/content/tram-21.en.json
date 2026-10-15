@@ -1,0 +1,318 @@
+{
+  "id": 21,
+  "kicker": "The fish reads no books about water — it swims.",
+  "summary": "AI is learning to walk — running faster than people doesn't yet mean understanding the world as people do.",
+  "newsTags": [
+    "robots"
+  ],
+  "quiz": {
+    "q": "A robot crossed the finish line first, but a person was steering it remotely. What does that show?",
+    "options": [
+      "The robot understood the course by itself, as a person would",
+      "The robot's legs are good, but finding the way was still done by a person",
+      "Remote-controlled robots are always slower than self-guided ones",
+      "Robots no longer need AI"
+    ],
+    "answer": 1,
+    "explain": "“Can walk” is not “knows where to walk”. The organisers multiplied remote-controlled robots' times by 1.2 to favour robots that navigate on their own."
+  },
+  "scenes": {
+    "race": {
+      "label": "The finish line draws nearer",
+      "art": "A running track winds round a lake under the moon; the finish line is a red silk ribbon strung between two stone lantern posts. Drag the moon through each racing season: the ink robot's shadow goes from wobbling and stumbling to an even stride; the finish line seems to drift closer.",
+      "prompt": "Drag the moon through two races",
+      "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2025-04-19",
+            "label": "First race · Beijing",
+            "fact": {
+              "text": "At the first robot half marathon, the winning robot (Tiangong Ultra) took 2 hours 40 minutes 42 seconds; many robots fell or dropped out.",
+              "asOf": "2026-10-15",
+              "source": "ap-robot-2026"
+            }
+          },
+          {
+            "date": "2026-03",
+            "label": "The human record",
+            "fact": {
+              "text": "Runner Jacob Kiplimo (Uganda) set the men's half marathon record: 57 minutes 20 seconds, in Lisbon.",
+              "asOf": "2026-10-15",
+              "source": "chinadaily-robot"
+            }
+          },
+          {
+            "date": "2026-04-19",
+            "label": "Second race · Beijing",
+            "fact": {
+              "text": "Honor's self-navigating robot “Lightning” (Shandian) won the 21 km in 50 minutes 26 seconds — almost 7 minutes faster than the human record.",
+              "asOf": "2026-10-15",
+              "source": "chinadaily-robot"
+            },
+            "compare": {
+              "before": "2:40:42",
+              "after": "50:26",
+              "ratio": 0.31,
+              "beforeLabel": "Winning robot · 2025",
+              "afterLabel": "Winning robot · 2026"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Today",
+            "fact": {
+              "text": "Off the track: by the end of 2025, factories worldwide had about 5 million industrial robots at work.",
+              "asOf": "2026-10-15",
+              "source": "ifr-2026"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Running fast has arrived; doing housework on its own is still an open question — and predictions of when differ wildly.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "In one year, the winning time fell from 2:40:42 to 50:26 — a robot ran faster than the human half marathon record.",
+        "asOf": "2026-10-15",
+        "source": "chinadaily-robot"
+      },
+      "detail": {
+        "text": "Robots and people ran in separate lanes, so this compares times; it was not one shared race.",
+        "asOf": "2026-10-15",
+        "source": "aljazeera-robot"
+      }
+    },
+    "strings": {
+      "label": "Walking alone or on strings",
+      "art": "Two robot shadows run side by side under the moon. One has fine silver threads running up to the hands of a person sitting on a pine branch; the other runs alone, with no strings. Flip the switch and the threads appear, or melt into the mist.",
+      "prompt": "Switch the strings on and off",
+      "toggle": "Remote-control strings",
+      "toggleAria": "Show or hide the remote-control strings",
+      "remoteLabel": "Steered remotely by a person",
+      "autoLabel": "Self-navigating robot",
+      "remoteTime": "48:19",
+      "remoteNote": "finished first · time counted ×1.2",
+      "autoTime": "50:26",
+      "autoNote": "champion",
+      "facts": [
+        {
+          "text": "Only just over 40% of teams let their robot find its own way; the rest steered their robots remotely.",
+          "asOf": "2026-10-15",
+          "source": "chinadaily-robot"
+        },
+        {
+          "text": "A remote-controlled Honor robot crossed the line earlier, in 48 minutes 19 seconds, but was not ranked first.",
+          "asOf": "2026-10-15",
+          "source": "ie-robot"
+        },
+        {
+          "text": "Race rules multiplied remote-controlled robots' times by 1.2: running 60 minutes counted as 72.",
+          "asOf": "2026-10-15",
+          "source": "beijing-gov-robot"
+        }
+      ],
+      "insight": {
+        "text": "“Can walk” isn't “knows the way”: a robot on strings may be faster, but a person still sees the road and picks the route.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "teacup": {
+      "label": "A brain for hands and feet",
+      "art": "A stone tea table under a lantern. A robot hand, drawn in shaky ink strokes, reaches for a porcelain teacup. Behind it a library of text towers like a mountain; beside the table sits just one small bamboo basket of “hand data”.",
+      "prompt": "Give the hand a command",
+      "commands": [
+        {
+          "label": "Pick up the teacup",
+          "aria": "Command: pick up the teacup"
+        },
+        {
+          "label": "Pour tea into the cup",
+          "aria": "Command: pour tea into the cup"
+        },
+        {
+          "label": "Hand the cup to the guest",
+          "aria": "Command: hand the teacup to the guest"
+        }
+      ],
+      "head": "Head: understands at once",
+      "hand": "Hand: trembles, slips, tries again",
+      "scaleTitle": "Two baskets of data",
+      "scaleAria": "Compare the amount of text data with robot movement data",
+      "textLabel": "text",
+      "robotLabel": "robot actions",
+      "insight": {
+        "text": "A vision–language–action (VLA) model sees, reads a command, then outputs movements — like Google DeepMind's Gemini Robotics (03/2025).",
+        "asOf": "2026-10-15",
+        "source": "gemini-robotics"
+      },
+      "data": [
+        {
+          "text": "The open robot dataset Open X-Embodiment (2023) gathers over 1 million recorded manipulations from 22 kinds of robot.",
+          "asOf": "2026-10-15",
+          "source": "oxe-2023"
+        },
+        {
+          "text": "The text model Llama 3 (2024), meanwhile, read more than 15 trillion tokens.",
+          "asOf": "2026-10-15",
+          "source": "meta-llama3"
+        }
+      ],
+      "insight2": {
+        "text": "The hard part is the “hands” more than the “head”: text online is as plentiful as mountains, but real grasping data is scarce.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "World model: an AI practising to predict what will happen next when it moves — the way we know a cup will spill if we tip it too far."
+    },
+    "circle": {
+      "label": "Does it need a human shape?",
+      "art": "Four stones round the moonlit lake, each reflecting a kind of robot: a human figure, a factory arm, a jobs chart, and an empty chair at home. Touch a stone and its reflection lights up in the water.",
+      "prompt": "Touch each stone",
+      "stoneAria": "Hear the view of {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Figure AI · a humanoid robot company (2022)",
+            "view": {
+              "text": "The world is built for humans, so general-purpose robots in human form are the path with the greatest impact.",
+              "asOf": "2026-10-15",
+              "source": "figure-master-plan",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "The specialised-robot camp · IFR figures (09/2026)",
+            "view": {
+              "text": "About 5 million industrial robots already work in factories without any human shape. Repetitive work needs specialised machines, not legs.",
+              "asOf": "2026-10-15",
+              "source": "ifr-2026",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Those worried about jobs · economists Acemoglu & Restrepo",
+            "view": {
+              "text": "In the US from 1990 to 2007, one more robot per 1,000 workers lowered the employment rate by 0.18–0.34 percentage points and wages by 0.25–0.5%.",
+              "asOf": "2026-10-15",
+              "source": "nber-robots"
+            }
+          },
+          {
+            "who": "Rodney Brooks · roboticist, co-founder of iRobot (09/2025)",
+            "view": {
+              "text": "Full-size humanoid robots are not yet safe to stand near; he advises keeping 3 metres away, and guesses it will be over 10 years before they turn a profit.",
+              "asOf": "2026-10-15",
+              "source": "brooks-2025",
+              "kind": "prediction"
+            }
+          }
+        ],
+        "common": {
+          "text": "Agreed: robots are advancing very fast. Disputed: what shape they should take, when they will enter our homes, and who benefits.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Running fast on a track is not working in a home; the question now is in what form robots enter our lives.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "ap-robot-2026": {
+      "title": "A humanoid robot sprints past the human half-marathon world record in Beijing race",
+      "publisher": "AP (republished by Michigan Public)",
+      "url": "https://www.michiganpublic.org/2026-04-20/a-humanoid-robot-sprints-past-the-human-half-marathon-world-record-in-beijing-race",
+      "date": "2026-04-20",
+      "note": "The AP story recalls the 2025 race: the winning robot took 2:40:42 and many robots fell or did not finish. The page blocks lookup tools; content cross-checked via the KUOW and Interesting Engineering versions."
+    },
+    "chinadaily-robot": {
+      "title": "Robots outrun humans at Beijing half marathon",
+      "publisher": "China Daily (Yang Cheng, Li Wei)",
+      "url": "https://mobile.chinadaily.com.cn/html5/2026-04/20/content_001_69e52c8eed50be540e72ebd7.htm",
+      "date": "2026-04-20",
+      "note": "Honor's robot “Flash” won the self-navigating category in 50:26; over 40% of teams navigated autonomously; more than 100 teams (nearly 20 in 2025). Jacob Kiplimo's human record of 57:20 was set in Lisbon in March."
+    },
+    "ie-robot": {
+      "title": "Humanoid robot surpasses human world record",
+      "publisher": "Interesting Engineering (Christopher McFadden)",
+      "url": "https://interestingengineering.com/innovation/humanoid-robot-surpasses-human-world-record",
+      "date": "2026-04-19",
+      "note": "A remote-controlled version of the same robot finished in 48:19; the winner is named “Lightning”. The robot's name varies between outlets (Lightning / Flash / Shandian 闪电)."
+    },
+    "beijing-gov-robot": {
+      "title": "Who is Winner? Champion Crowned for Humanoid Robot Half Marathon",
+      "publisher": "Beijing Municipal Government (english.beijing.gov.cn)",
+      "url": "https://english.beijing.gov.cn/latest/news/202604/t20260419_4593508.html",
+      "date": "2026-04-19",
+      "note": "Official information: the robot “Shandian” (闪电) of team Monkey King won in 50:26; remote-controlled robots' times were multiplied by 1.2."
+    },
+    "aljazeera-robot": {
+      "title": "Humanoid robot breaks half marathon world record in Beijing",
+      "publisher": "Al Jazeera",
+      "url": "https://www.aljazeera.com/amp/sports/2026/4/19/humanoid-robot-breaks-half-marathon-world-record-in-beijing",
+      "date": "2026-04-19",
+      "note": "People and robots ran in separate lanes to avoid collisions; according to CCTV, the winning robot averaged about 25 km/h."
+    },
+    "ifr-2026": {
+      "title": "Five Million Robots Now Operate in Factories Globally",
+      "publisher": "International Federation of Robotics (IFR)",
+      "url": "https://ifr.org/ifr-press-releases/five-million-robots-now-operate-in-factories-globally",
+      "date": "2026-09-24",
+      "note": "World Robotics 2026 report (2025 data): 5 million industrial robots in operation, more than 600,000 newly installed that year."
+    },
+    "gemini-robotics": {
+      "title": "Gemini Robotics brings AI into the physical world",
+      "publisher": "Google DeepMind",
+      "url": "https://deepmind.google/discover/blog/gemini-robotics-brings-ai-into-the-physical-world/",
+      "date": "2025-03-12",
+      "note": "A vision–language–action (VLA) model built on Gemini 2.0, adding physical movement as an output."
+    },
+    "oxe-2023": {
+      "title": "Open X-Embodiment: Robotic Learning Datasets and RT-X Models",
+      "publisher": "Open X-Embodiment Collaboration (arXiv 2310.08864)",
+      "url": "https://arxiv.org/abs/2310.08864",
+      "date": "2023-10",
+      "note": "Over 1 million recorded manipulations from 22 kinds of robot, contributed by 21 institutions."
+    },
+    "meta-llama3": {
+      "title": "Introducing Meta Llama 3",
+      "publisher": "Meta AI",
+      "url": "https://ai.meta.com/blog/meta-llama-3/",
+      "date": "2024-04-18",
+      "note": "Llama 3 was pretrained on over 15 trillion tokens from publicly available sources."
+    },
+    "figure-master-plan": {
+      "title": "Master Plan",
+      "publisher": "Figure AI",
+      "url": "https://www.figure.ai/master-plan",
+      "date": "2022-05-20",
+      "note": "The view of the humanoid robot company itself."
+    },
+    "nber-robots": {
+      "title": "Robots and Jobs: Evidence from US Labor Markets",
+      "publisher": "NBER Working Paper 23285 (Daron Acemoglu, Pascual Restrepo); final version in the Journal of Political Economy, 2020",
+      "url": "https://www.nber.org/papers/w23285",
+      "date": "2017-03",
+      "note": "A study of industrial robots in the US over 1990–2007, not humanoid robots."
+    },
+    "brooks-2025": {
+      "title": "Why Today's Humanoids Won't Learn Dexterity",
+      "publisher": "Rodney Brooks",
+      "url": "https://rodneybrooks.com/why-todays-humanoids-wont-learn-dexterity/",
+      "date": "2025-09-26",
+      "note": "Personal essay: without a sense of touch and force, robots struggle to become dexterous; advises not standing within 3 metres of a walking full-size robot."
+    }
+  }
+}
