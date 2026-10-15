@@ -3,6 +3,7 @@ import data from '../content/exam.json'
 import { fill, h, s } from '../core/dom'
 import { cssVar, onPrefs, prefs } from '../core/prefs'
 import { gsap } from '../core/anim'
+import { createLoop } from '../core/loop'
 import { load, save } from '../core/store'
 import { chime } from '../core/sound'
 import { ensoBrush } from '../ui/brush'
@@ -1269,16 +1270,12 @@ export function render(root: HTMLElement): () => void {
   type Ripple = { x: number; y: number; rx: number; ry: number; k: number; t: number; col: string; life: number; reach: number }
   const ripples: Ripple[] = []
   let motes: { x: number; y: number; v: number; r: number; ph: number }[] | null = null
-  let raf = 0
-  let last = performance.now()
-  const tick = (now: number) => {
-    raf = 0
-    if (!alive) return
-    const dt = Math.min(0.05, (now - last) / 1000)
-    last = now
-    const g = fx.getContext('2d')!
-    g.setTransform(dpr, 0, 0, dpr, 0, 0)
-    g.clearRect(0, 0, W, H)
+  const fxg = fx.getContext('2d')!
+  let inkCol = cssVar('--ink') // re-read in onPrefs (theme), never per frame
+  const loop = createLoop(fx, (_, dt) => {
+    const now = performance.now()
+    fxg.setTransform(dpr, 0, 0, dpr, 0, 0)
+    fxg.clearRect(0, 0, W, H)
     for (let i = ripples.length - 1; i >= 0; i--) {
       const rp = ripples[i]
       const age = (now - rp.t) / 1000 / rp.life
@@ -1290,33 +1287,30 @@ export function render(root: HTMLElement): () => void {
         const a = age - j * 0.11
         if (a <= 0) continue
         const e = 1 - Math.pow(1 - a, 2.4)
-        g.globalAlpha = (1 - a) * (j === 0 ? 0.55 : 0.28)
-        g.strokeStyle = rp.col
-        g.lineWidth = j === 0 ? 1.5 : 1
-        g.beginPath()
-        g.ellipse(rp.x, rp.y, rp.rx + e * rp.reach, rp.ry + e * rp.reach * rp.k, 0, 0, Math.PI * 2)
-        g.stroke()
+        fxg.globalAlpha = (1 - a) * (j === 0 ? 0.55 : 0.28)
+        fxg.strokeStyle = rp.col
+        fxg.lineWidth = j === 0 ? 1.5 : 1
+        fxg.beginPath()
+        fxg.ellipse(rp.x, rp.y, rp.rx + e * rp.reach, rp.ry + e * rp.reach * rp.k, 0, 0, Math.PI * 2)
+        fxg.stroke()
       }
     }
     if (motes) {
-      g.fillStyle = cssVar('--ink')
+      fxg.fillStyle = inkCol
       for (const m of motes) {
         m.y -= (m.v * dt) / H
         if (m.y < -0.02) m.y = 1.02
-        g.globalAlpha = 0.14 * (0.5 + 0.5 * Math.sin(now / 1300 + m.ph))
-        g.beginPath()
-        g.arc(m.x * W + Math.sin(now / 2400 + m.ph) * 12, m.y * H, m.r, 0, Math.PI * 2)
-        g.fill()
+        fxg.globalAlpha = 0.14 * (0.5 + 0.5 * Math.sin(now / 1300 + m.ph))
+        fxg.beginPath()
+        fxg.arc(m.x * W + Math.sin(now / 2400 + m.ph) * 12, m.y * H, m.r, 0, Math.PI * 2)
+        fxg.fill()
       }
     }
-    g.globalAlpha = 1
-    if (ripples.length || motes) raf = requestAnimationFrame(tick)
-  }
+    fxg.globalAlpha = 1
+    return ripples.length > 0 || !!motes
+  })
   const kick = () => {
-    if (!raf && alive && !reduced) {
-      last = performance.now()
-      raf = requestAnimationFrame(tick)
-    }
+    if (alive && !reduced) loop.start()
   }
   const ripple = (x: number, y: number, rx: number, ry: number, col: string, o: { k?: number; life?: number; reach?: number } = {}) => {
     if (reduced) return
@@ -1326,7 +1320,7 @@ export function render(root: HTMLElement): () => void {
   const clearFx = () => {
     ripples.length = 0
     motes = null
-    fx.getContext('2d')!.clearRect(0, 0, fx.width, fx.height)
+    fxg.clearRect(0, 0, fx.width, fx.height)
   }
 
   // ── stage switching ──
@@ -1899,6 +1893,7 @@ export function render(root: HTMLElement): () => void {
   })
   ro.observe(app)
   const offPrefs = onPrefs(() => {
+    inkCol = cssVar('--ink')
     if (!W) return
     paintSand()
     stage?.repaint?.()
@@ -1920,7 +1915,7 @@ export function render(root: HTMLElement): () => void {
     stage?.destroy?.()
     ro.disconnect()
     offPrefs()
-    cancelAnimationFrame(raf)
+    loop.dispose()
     cancelAnimationFrame(relayout)
     timers.forEach((t) => clearTimeout(t))
     gctx.revert()

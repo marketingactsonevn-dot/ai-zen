@@ -244,7 +244,10 @@ export function blockScene(ctx: SceneCtx) {
   const N = ctx.quality === 'low' ? 8 : 12
   const root = h('div', { class: 't08 t08b' })
   const host = h('div', { class: 't08b-stage', role: 'img', 'aria-label': B.art })
-  const over = s('svg', { class: 't08b-over', 'aria-hidden': 'true' })
+  // the time arrow's two strokes, re-shaped every frame (made once, not per frame)
+  const arrowLine = s('path', { class: 'k3' })
+  const arrowBarb = s('path', { class: 'k3' })
+  const over = s('svg', { class: 't08b-over', 'aria-hidden': 'true' }, arrowLine, arrowBarb)
   const labFirst = h('span', { class: 't08b-lab', 'aria-hidden': 'true' }, B.first)
   const labLast = h('span', { class: 't08b-lab', 'aria-hidden': 'true' }, B.last)
   const labTime = h('span', { class: 't08b-lab t08b-time', 'aria-hidden': 'true' }, B.time)
@@ -361,7 +364,7 @@ export function blockScene(ctx: SceneCtx) {
     camera.lookAt(target)
     camera.updateMatrixWorld()
     // frames along the time axis: back (first) → front (last)
-    frames.forEach(({ m }, i) => m.position.set(0, m.position.y, (i - (N - 1) / 2) * GAP * (1 - c)))
+    for (let i = 0; i < N; i++) frames[i].m.position.set(0, frames[i].m.position.y, (i - (N - 1) / 2) * GAP * (1 - c))
     edges.scale.set(1, 1, Math.max(0.0001, z0))
     edgeMat.opacity = 0.2 * (1 - c)
     gu.uZ0.value = z0
@@ -389,11 +392,18 @@ export function blockScene(ctx: SceneCtx) {
     }
     labLast.classList.toggle('under', !wide)
     // labels above a corner never rise out of the art box
-    Object.assign(labFirst.style, { left: `${pFirst[0]}px`, top: `${Math.max(pFirst[1], 30)}px`, opacity: fade })
-    Object.assign(labLast.style, { left: `${pLast[0]}px`, top: `${wide ? Math.max(pLast[1], 30) : pLast[1]}px`, opacity: fade })
+    labFirst.style.left = `${pFirst[0]}px`
+    labFirst.style.top = `${Math.max(pFirst[1], 30)}px`
+    labFirst.style.opacity = fade
+    labLast.style.left = `${pLast[0]}px`
+    labLast.style.top = `${wide ? Math.max(pLast[1], 30) : pLast[1]}px`
+    labLast.style.opacity = fade
     const ang = (Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) / Math.PI
     const m: Pt = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]
-    Object.assign(labTime.style, { left: `${m[0]}px`, top: `${m[1]}px`, opacity: fade, transform: `translate(-50%, 4px) rotate(${ang.toFixed(1)}deg) translateY(10px)` })
+    labTime.style.left = `${m[0]}px`
+    labTime.style.top = `${m[1]}px`
+    labTime.style.opacity = fade
+    labTime.style.transform = `translate(-50%, 4px) rotate(${ang.toFixed(1)}deg) translateY(10px)`
     // the time arrow: one tapered brush stroke along the base, a small barb at its head
     const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1
     const ux = (b[0] - a[0]) / len
@@ -402,10 +412,10 @@ export function blockScene(ctx: SceneCtx) {
     const head: Pt = b
     const barb: Pt = [head[0] - ux * 11 - uy * 6, head[1] - uy * 11 + ux * 6]
     over.setAttribute('viewBox', `0 0 ${W} ${H}`)
-    over.replaceChildren(
-      s('path', { class: 'k3', d: brush([a, [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + 1], b], w, { a: 0.08, b: 0.12, min: 0.35 }), opacity: fade }),
-      s('path', { class: 'k3', d: brush([barb, head], w * 0.9, { a: 0.1, b: 0.1, min: 0.4, straight: true }), opacity: fade }),
-    )
+    arrowLine.setAttribute('d', brush([a, [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + 1], b], w, { a: 0.08, b: 0.12, min: 0.35 }))
+    arrowLine.setAttribute('opacity', fade)
+    arrowBarb.setAttribute('d', brush([barb, head], w * 0.9, { a: 0.1, b: 0.1, min: 0.4, straight: true }))
+    arrowBarb.setAttribute('opacity', fade)
   }
 
   // ───────── per frame ─────────
@@ -422,14 +432,15 @@ export function blockScene(ctx: SceneCtx) {
     // once clear, a playhead walks the block: each frame lifts and warms in turn
     if (done && !ctx.reduced) hiT += dt
     const ph = ((hiT * 0.42) % 1.35) * (N - 1)
-    frames.forEach(({ m, u }, i) => {
+    for (let i = 0; i < N; i++) {
+      const { m, u } = frames[i]
       const hi = done && !collapsed && !ctx.reduced ? Math.exp(-((i - ph) ** 2) / 0.9) * (1 - st.col) : 0
       u.uHi.value = hi
       m.position.y = hi * 0.06
       const last = i === N - 1
       u.uFade.value = last ? 1 : 1 - st.col
       if (last) u.uT.value = st.col > 0.98 && !ctx.reduced ? ((t * 0.24) % 1) : 1
-    })
+    }
     place()
   })
   stage.onResize((w, hh) => {

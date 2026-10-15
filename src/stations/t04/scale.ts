@@ -124,13 +124,19 @@ export function mountScale(ctx: SceneCtx, c: ScaleCopy) {
       const p = rimAt(i, 0)
       const [x] = pit.toScreen(p.x, 0)
       const w = Math.min(pit.W / 2 - 12, G.rx * 2.6 * sc)
-      Object.assign(hosts[i].style, { left: `${x - w / 2}px`, width: `${w}px`, top: '4px' })
+      // runs every frame from frameFn: plain style writes, no throwaway objects
+      const hs = hosts[i].style
+      hs.left = `${x - w / 2}px`
+      hs.width = `${w}px`
+      hs.top = '4px'
       const e = rimAt(i)
       const [lx, ly] = pit.toScreen(e.x, e.y + G.stem + 16)
-      Object.assign(labels[i].style, { left: `${lx}px`, top: `${ly}px` })
+      labels[i].style.left = `${lx}px`
+      labels[i].style.top = `${ly}px`
     }
     const [bx, by] = pit.toScreen(G.L * 0.5, G.base + 22)
-    Object.assign(bill.style, { left: `${bx}px`, top: `${by}px` })
+    bill.style.left = `${bx}px`
+    bill.style.top = `${by}px`
   }
 
   // ── stones land → they start to weigh
@@ -147,7 +153,11 @@ export function mountScale(ctx: SceneCtx, c: ScaleCopy) {
   // a long document always weighs the same, however many pebbles the quality setting draws
   const DOC = 84
   let pebbleW = 2
-  const weight = (i: number) => pans[i].reduce((sum, st) => sum + (landed.has(st.body) ? (st.kind === 'pebble' ? pebbleW : WEIGHT[st.kind]) : 0), 0)
+  const weight = (i: number) => {
+    let sum = 0
+    for (const st of pans[i]) sum += landed.has(st.body) ? (st.kind === 'pebble' ? pebbleW : WEIGHT[st.kind]) : 0
+    return sum
+  }
 
   pit.frameFn = (dt) => {
     const wl = weight(0), wr = weight(1)

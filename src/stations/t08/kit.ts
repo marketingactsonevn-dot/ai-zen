@@ -206,33 +206,3 @@ export function watchSize(el: HTMLElement, fn: (w: number, h: number) => void) {
   ro.observe(el)
   return () => (ro.disconnect(), cancelAnimationFrame(raf))
 }
-
-/** A RAF clock that runs while `on` is true; returns stop. */
-export function loop(fn: (t: number, dt: number) => void) {
-  let raf = 0
-  let last = performance.now()
-  let t = 0
-  const tick = (now: number) => {
-    const dt = Math.min(0.05, (now - last) / 1000)
-    last = now
-    t += dt
-    fn(t, dt)
-    raf = requestAnimationFrame(tick)
-  }
-  const start = () => {
-    if (raf) return
-    last = performance.now()
-    raf = requestAnimationFrame(tick)
-  }
-  const stop = () => {
-    cancelAnimationFrame(raf)
-    raf = 0
-  }
-  const onVis = () => (document.hidden ? stop() : start())
-  document.addEventListener('visibilitychange', onVis)
-  start()
-  return () => {
-    stop()
-    document.removeEventListener('visibilitychange', onVis)
-  }
-}

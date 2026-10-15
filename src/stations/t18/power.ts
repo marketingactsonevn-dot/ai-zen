@@ -1,5 +1,6 @@
 import { h, nextId, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
+import { createLoop } from '../../core/loop'
 import type { SceneCtx } from '../types'
 import { C } from './data'
 import { arc, brush, clamp, ell, fit, later, peaks, place, poly, rng, stable, stone, stoneDefs, stroke, wash, watch, type Pt } from './ink'
@@ -416,7 +417,15 @@ export function powerScene(ctx: SceneCtx) {
   const CROP = { x: 220, y: 70, w: 580, h: 490 }
   let vb = FULL
   const loops: Tween[] = []
-  let blink = 0
+  // the server lights flicker every 110 ms while the hall is on screen
+  let acc = 0
+  const blink = createLoop(stage, (_, dt) => {
+    acc += dt
+    if (acc < 0.11) return
+    acc -= 0.11
+    for (let i = 0; i < 4; i++) leds[(r() * leds.length) | 0].classList.toggle('on')
+    if (r() < 0.25) leds[(r() * leds.length) | 0].classList.toggle('hot')
+  })
 
   // ───────── layout ─────────
   function target() {
@@ -547,10 +556,7 @@ export function powerScene(ctx: SceneCtx) {
   function startBlink() {
     leds.forEach((l) => l.classList.toggle('on', r() < 0.55))
     if (ctx.reduced) return
-    blink = window.setInterval(() => {
-      for (let i = 0; i < 4; i++) leds[(r() * leds.length) | 0].classList.toggle('on')
-      if (r() < 0.25) leds[(r() * leds.length) | 0].classList.toggle('hot')
-    }, 110)
+    blink.start()
   }
 
   function run() {
@@ -655,7 +661,7 @@ export function powerScene(ctx: SceneCtx) {
   gsap.set(labs, { opacity: 0 })
 
   return () => {
-    clearInterval(blink)
+    blink.dispose()
     loops.forEach((t) => t.kill())
   }
 }

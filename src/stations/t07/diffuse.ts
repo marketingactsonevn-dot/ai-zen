@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { fill, h, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
 import { createStage } from '../../core/three-stage'
+import { createLoop } from '../../core/loop'
 import type { SceneCtx } from '../types'
 import { brush, ell, onSize, stableHeight, watchTheme, type Pt } from './ink'
 import { paintCanvas, palette } from './paint'
@@ -87,7 +88,8 @@ export function diffuseScene(ctx: SceneCtx) {
   const trackBase = s('path', { class: 't7d-tb' })
   const trackFill = s('path', { class: 't7d-tf' })
   const ticks = s('g', { class: 't7d-ticks' })
-  const trackSvg = s('svg', { class: 't7d-tsvg', viewBox: '0 0 300 24', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, trackBase, s('g', { class: 't7d-tfill' }, trackFill), ticks)
+  const tfill = s('g', { class: 't7d-tfill' }, trackFill)
+  const trackSvg = s('svg', { class: 't7d-tsvg', viewBox: '0 0 300 24', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, trackBase, tfill, ticks)
   const icoPath = s('path', { d: PLAY })
   const play = h('button', { class: 't7d-play', type: 'button', 'aria-label': D.play, onClick: () => run() },
     s('svg', { viewBox: '0 0 24 24', 'aria-hidden': 'true' }, icoPath))
@@ -121,6 +123,7 @@ export function diffuseScene(ctx: SceneCtx) {
   let fallback: { cv: HTMLCanvasElement; noise: HTMLCanvasElement; img?: HTMLCanvasElement } | null = null
   const canvases: (HTMLCanvasElement | undefined)[] = []
   let gen = 0
+  let glW = 0 // the picture's width (= --side), cached by layout for the no-WebGL fallback
 
   if (stage) {
     U.uTex.value = new THREE.DataTexture(new Uint8Array([128, 128, 128, 255]), 1, 1)
@@ -190,7 +193,7 @@ export function diffuseScene(ctx: SceneCtx) {
     if (stage) stage.render()
     else if (fallback) {
       const { cv, noise, img } = fallback
-      const w = gl.clientWidth
+      const w = glW
       if (!w) return
       if (cv.width !== w) cv.width = cv.height = w
       const x = cv.getContext('2d')!
@@ -211,11 +214,12 @@ export function diffuseScene(ctx: SceneCtx) {
     const shown = Number(range.value)
     readout.textContent = fill(D.stepOf, { n: shown })
     range.setAttribute('aria-valuetext', fill(D.stepOf, { n: shown }))
-    ;(trackSvg.querySelector('.t7d-tfill') as SVGGElement).style.clipPath = `inset(0 ${(100 - (st.s * 100)).toFixed(2)}% 0 0)`
+    tfill.style.clipPath = `inset(0 ${(100 - (st.s * 100)).toFixed(2)}% 0 0)`
     icoPath.setAttribute('d', st.s > 0.995 ? AGAIN : PLAY)
     play.setAttribute('aria-label', st.s > 0.995 ? D.replay : D.play)
     draw()
     if (st.s > 0.995) reached()
+    else mist?.start()
   }
 
   let woke = false
@@ -299,16 +303,15 @@ export function diffuseScene(ctx: SceneCtx) {
     ctx.anim(() => gsap.to(st, { s: target, duration: 0.35, ease: 'power2.out', overwrite: true, onUpdate: () => sync(false) }))
   })
 
-  // mist drifts slowly while noise remains (paused at rest, under reduced motion and on the light setting)
-  if (stage && !ctx.reduced && ctx.quality === 'high') {
-    const drift = () => {
-      if (st.s > 0.995 || !root.isConnected) return
-      U.uT.value = performance.now() / 1000
-      stage.render()
-    }
-    gsap.ticker.add(drift)
-    ctx.onCleanup(() => gsap.ticker.remove(drift))
-  }
+  // mist drifts slowly while noise remains (rests once clear; off under reduced motion and on the light setting)
+  const mist = stage && !ctx.reduced && ctx.quality === 'high'
+    ? createLoop(gl, () => {
+        if (st.s > 0.995) return false
+        U.uT.value = performance.now() / 1000
+        stage.render()
+      })
+    : null
+  mist?.start()
 
   // ── layout ──
   const stable = stableHeight(ctx, [D.insight])
@@ -334,6 +337,7 @@ export function diffuseScene(ctx: SceneCtx) {
     }
     side = Math.max(90, Math.floor(side))
     root.style.setProperty('--side', `${side}px`)
+    glW = side
     // the scroll's rods and cord, brushed to size
     const kw = side * 1.16
     const kh = side * 1.36
@@ -371,6 +375,7 @@ export function diffuseScene(ctx: SceneCtx) {
 
   return () => {
     stop()
+    mist?.dispose()
     gen++
     tex.forEach((t) => t?.dispose())
     ;(U.uTex.value as THREE.Texture | null)?.dispose()

@@ -81,6 +81,7 @@ export function mountShatter(ctx: SceneCtx, c: ShatterCopy) {
   pit.paintFn = (g) => {
     const { Gy, Heff } = L
     const { s: sc, ox } = pit.view
+    // TODO(perf): ringsOn + this map allocate a few small arrays per frame (only while the pit loop runs)
     const rings = pit.ringsOn(0).map((r) => ({ x: ox + r.x * sc, y: Gy, rx: r.rx * sc }))
     pit.bed(0, { x0: pit.W * 0.02, x1: pit.W * 0.98, y: Gy, back: Heff * 0.15, front: Math.max(20, Math.min(Heff * (L.port ? 0.12 : 0.22), pit.H - Gy - 4)), rows: ctx.quality === 'low' ? 9 : 15, seed: 4 }, rings)
     pit.worldTx(g)

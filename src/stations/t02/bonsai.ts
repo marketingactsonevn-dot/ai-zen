@@ -1,6 +1,7 @@
 // Procedural sumi-e bonsai (informal upright "moyogi") painted on Canvas2D.
 // Static layers are painted once per size/theme into offscreen canvases; the frame loop only composites
 // them (growth mask, swaying foliage pads, glow, water ripples).
+import { createLoop, type Loop } from '../../core/loop'
 import { cssVar, type Quality } from '../../core/prefs'
 import { blotch, clamp, dab, inkLine, mix, noise1, normals, parseColor, rgba, rng, smooth, spline, sprite, sumi, type Pt, type RGB } from './paint'
 
@@ -218,7 +219,7 @@ export class Painting {
   private busy = false
   ripples: Ripple[] = []
   drops: { t0: number; x: number }[] = []
-  private raf = 0
+  private lp: Loop
   private t0 = performance.now()
   private ro: ResizeObserver
   private dirty = true
@@ -234,12 +235,13 @@ export class Painting {
     // gsap tweens these maps: every key must exist before the first tween
     for (const p of PADS) this.glow[p.id] = this.hover[p.id] = 0
     this.sway = !o.reduced && o.quality === 'high'
+    // runs while something moves, then stops; invalidate()/water() restart it (wake() = one frame under reduced motion)
+    this.lp = createLoop(o.host, () => this.tick())
     this.ro = new ResizeObserver(() => this.resize())
     this.ro.observe(o.host)
     this.resize()
     this.ready = true
-    this.loop = this.loop.bind(this)
-    this.raf = requestAnimationFrame(this.loop)
+    this.lp.start()
   }
 
   /** CSS px of a point in tree units */
@@ -947,10 +949,13 @@ export class Painting {
     const { pal } = this
     if (pal.dark) {
       // faint moss glow under night foliage
-      const c = { x: p.dabs.length ? p.dabs.reduce((a, d) => a + d.x, 0) / p.dabs.length : 0, y: p.dabs.length ? p.dabs.reduce((a, d) => a + d.y, 0) / p.dabs.length : 0 }
+      let sx = 0
+      let sy = 0
+      for (const d of p.dabs) (sx += d.x), (sy += d.y)
+      const n = p.dabs.length || 1 // no dabs → the origin, as before
       const rr = p.def.rx * this.s * 1.15
       g.save()
-      g.translate(c.x, c.y)
+      g.translate(sx / n, sy / n)
       g.scale(1, (p.def.ry / p.def.rx) * 2.2)
       const gl = g.createRadialGradient(0, 0, 0, 0, 0, rr)
       gl.addColorStop(0, rgba(pal.moss, 0.16 * bloom))
@@ -1023,21 +1028,21 @@ export class Painting {
     const now = performance.now() / 1000
     for (let i = 0; i < 3; i++) this.drops.push({ t0: now + i * 0.16, x: (i - 1) * 0.035 })
     this.gust = 1
-    this.dirty = true
+    this.invalidate()
   }
 
   invalidate() {
     this.dirty = true
+    this.lp.start()
+    this.lp.wake()
   }
 
   // ───────── frame loop ─────────
-  private loop() {
-    if (this.destroyed) return
-    this.raf = requestAnimationFrame(this.loop)
+  private tick() {
     const now = performance.now() / 1000
     const t = (performance.now() - this.t0) / 1000
     const animating = this.sway || this.busy || (this.breath && !this.o.reduced) || this.ripples.length > 0 || this.drops.length > 0 || (this.G === 0 && !this.o.reduced)
-    if (!this.dirty && !animating) return
+    if (!this.dirty && !animating) return false // idle: stop until invalidate()
     this.dirty = false
     this.frame(t, now)
   }
@@ -1049,23 +1054,27 @@ export class Painting {
     g.clearRect(0, 0, this.canvas.width, this.canvas.height)
     g.drawImage(this.bg, 0, 0)
 
-    // ripples on the sand and the soil
-    this.ripples = this.ripples.filter((rp) => now - rp.t0 < 3.2)
+    // ripples on the sand and the soil (expired ones dropped in place: no new array per frame)
+    let live = 0
+    for (const rp of this.ripples) if (now - rp.t0 < 3.2) this.ripples[live++] = rp
+    this.ripples.length = live
     g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
+    const ripC = this.ripples.length ? (pal.dark ? pal.ink : mix(pal.moss, pal.ink, 0.5)) : pal.ink
     for (const rp of this.ripples) {
       const age = (now - rp.t0) / 3.2
       if (age < 0) continue
+      const cx = this.ox + rp.x * s
+      const cy = this.oy - rp.y * s
       for (let k = 0; k < 3; k++) {
         const a = age - k * 0.09
         if (a <= 0) continue
-        const c = this.px(rp.x, rp.y)
         // ripples spread over the sand but never past the picture's edge
-        const R = Math.min((0.3 + Math.pow(a, 0.7) * 0.95) * s, Math.min(c.x, this.w - c.x) - 3)
+        const R = Math.min((0.3 + Math.pow(a, 0.7) * 0.95) * s, Math.min(cx, this.w - cx) - 3)
         const alpha = (1 - a) * (k === 0 ? 0.7 : 0.4) * (pal.dark ? 1.1 : 1)
         g.lineWidth = k === 0 ? 1.8 : 1.2
-        g.strokeStyle = rgba(pal.dark ? pal.ink : mix(pal.moss, pal.ink, 0.5), alpha)
+        g.strokeStyle = rgba(ripC, alpha)
         g.beginPath()
-        g.ellipse(c.x, c.y, R, R * 0.17, 0, 0, Math.PI * 2)
+        g.ellipse(cx, cy, R, R * 0.17, 0, 0, Math.PI * 2)
         g.stroke()
       }
     }
@@ -1073,24 +1082,25 @@ export class Painting {
     g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
     const seedK = 1 - smooth(0, 0.08, this.G)
     if (seedK > 0) {
-      const c = this.px(0.005, 0.036)
+      const cx = this.ox + 0.005 * s
+      const cy = this.oy - 0.036 * s
       // a soft vermilion breath around the seed: "start here"
       const br = this.o.reduced ? 0.7 : 0.55 + 0.45 * Math.sin(t * 2.2)
       const hr = 0.09 * s * (1 + 0.15 * br)
-      const halo = g.createRadialGradient(c.x, c.y, 0, c.x, c.y, hr)
+      const halo = g.createRadialGradient(cx, cy, 0, cx, cy, hr)
       halo.addColorStop(0, rgba(pal.verm, (pal.dark ? 0.36 : 0.32) * br * seedK))
       halo.addColorStop(1, rgba(pal.verm, 0))
       g.fillStyle = halo
       g.beginPath()
-      g.arc(c.x, c.y, hr, 0, Math.PI * 2)
+      g.arc(cx, cy, hr, 0, Math.PI * 2)
       g.fill()
       // half-buried: the soil covers its lower third
-      const cut = this.px(0, 0.036 - 0.0045).y
+      const cut = this.oy - (0.036 - 0.0045) * s
       g.save()
       g.beginPath()
-      g.rect(c.x - 0.05 * s, c.y - 0.05 * s, 0.1 * s, cut - (c.y - 0.05 * s))
+      g.rect(cx - 0.05 * s, cy - 0.05 * s, 0.1 * s, cut - (cy - 0.05 * s))
       g.clip()
-      g.translate(c.x, c.y)
+      g.translate(cx, cy)
       g.rotate(-0.3)
       g.fillStyle = rgba(pal.wood, 0.82 * seedK)
       g.beginPath()
@@ -1107,7 +1117,7 @@ export class Painting {
       g.restore()
       // a lip of soil where it sits
       g.save()
-      g.translate(c.x, cut)
+      g.translate(cx, cut)
       g.scale(1, 0.22)
       const lip = g.createRadialGradient(0, 0, 0, 0, 0, 0.034 * s)
       lip.addColorStop(0, rgba(pal.wood, 0.3 * seedK))
@@ -1179,15 +1189,21 @@ export class Painting {
       const amp = this.sway ? 1 + this.gust * 5 : 0
       const rot = amp * 0.006 * Math.sin(t * 0.8 + ph) + this.gust * 0.01 * Math.sin(t * 7 + ph)
       const breathe = this.sway ? 1 + 0.012 * Math.sin(t * 1.1 + ph * 1.3) + glow * 0.02 : 1 + glow * 0.02
-      const piv = this.px(p.def.pivot[0], p.def.pivot[1])
+      const pivX = this.ox + p.def.pivot[0] * s
+      const pivY = this.oy - p.def.pivot[1] * s
       g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
       if (glow > 0 || hov > 0) {
-        const c = this.padBox(p.def.id)
-        const sy = (c.ry / c.rx) * 1.25
+        // = padBox(p.def.id), inlined so a glowing frame allocates nothing
+        const d = p.def
+        const cx = this.ox + d.c[0] * s
+        const cy = this.oy - d.c[1] * s - d.ry * s * 0.35
+        const crx = d.rx * s
+        const cry = d.ry * s * 1.45
+        const sy = (cry / crx) * 1.25
         // keep the glow inside the picture: no hard cut at the art edge
-        const R = Math.max(4, Math.min(c.rx * 1.35, c.x - 2, this.w - c.x - 2, (c.y - 2) / sy, (this.H - c.y - 2) / sy))
+        const R = Math.max(4, Math.min(crx * 1.35, cx - 2, this.w - cx - 2, (cy - 2) / sy, (this.H - cy - 2) / sy))
         g.save()
-        g.translate(c.x, c.y)
+        g.translate(cx, cy)
         g.scale(1, sy)
         const gl = g.createRadialGradient(0, 0, 0, 0, 0, R)
         if (pal.dark) {
@@ -1211,10 +1227,10 @@ export class Painting {
         g.restore()
         g.globalCompositeOperation = 'source-over'
       }
-      g.translate(piv.x, piv.y)
+      g.translate(pivX, pivY)
       g.rotate(rot)
       g.scale(breathe, breathe)
-      g.translate(-piv.x, -piv.y)
+      g.translate(-pivX, -pivY)
       g.drawImage(p.canvas, p.x0, p.y0, p.canvas.width / this.dpr, p.canvas.height / this.dpr)
       if (glow > 0 || hov > 0) {
         // the foliage catches the light: lifted by day, lit warm from within by night
@@ -1232,29 +1248,34 @@ export class Painting {
 
     // falling water drops
     g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
-    this.drops = this.drops.filter((d) => {
+    // (in place, like the ripples: no new array per frame)
+    const dropC = this.drops.length ? (pal.dark ? pal.ink : mix(pal.moss, pal.ink, 0.35)) : pal.ink
+    let kept = 0
+    for (const d of this.drops) {
       const a = (now - d.t0) / DUR_DROP
-      if (a < 0) return true
       if (a >= 1) {
         if (d.x === 0) this.ripples.push({ t0: now, x: 0, y: GROUND, big: true }, { t0: now + 0.5, x: 0, y: GROUND, big: true })
-        return false
+        continue
       }
+      this.drops[kept++] = d
+      if (a < 0) continue
       const y = 0.62 - (0.62 - 0.02) * a * a
-      const c = this.px(d.x, y)
+      const cx = this.ox + d.x * s
+      const cy = this.oy - y * s
       const z = 0.016 * s
-      g.fillStyle = rgba(pal.dark ? pal.ink : mix(pal.moss, pal.ink, 0.35), 0.55 * (1 - a * 0.3))
+      g.fillStyle = rgba(dropC, 0.55 * (1 - a * 0.3))
       g.beginPath()
-      g.moveTo(c.x, c.y - z * 2.2)
-      g.quadraticCurveTo(c.x + z, c.y - z * 0.2, c.x, c.y + z * 0.9)
-      g.quadraticCurveTo(c.x - z, c.y - z * 0.2, c.x, c.y - z * 2.2)
+      g.moveTo(cx, cy - z * 2.2)
+      g.quadraticCurveTo(cx + z, cy - z * 0.2, cx, cy + z * 0.9)
+      g.quadraticCurveTo(cx - z, cy - z * 0.2, cx, cy - z * 2.2)
       g.fill()
-      return true
-    })
+    }
+    this.drops.length = kept
   }
 
   destroy() {
     this.destroyed = true
-    cancelAnimationFrame(this.raf)
+    this.lp.dispose()
     this.ro.disconnect()
     this.canvas.remove()
     for (const c of [this.canvas, this.bg, this.pot, this.wood, this.tmp, ...this.pads.flatMap((p) => (p.lit ? [p.canvas, p.lit] : [p.canvas]))]) c.width = c.height = 0

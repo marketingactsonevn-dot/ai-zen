@@ -1,5 +1,6 @@
 import { fill, h, nextId, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
+import { createLoop } from '../../core/loop'
 import { cssVar } from '../../core/prefs'
 import type { SceneCtx } from '../types'
 import { blob, brush, C, clamp, defs, ell, layer, onSize, onTheme, passFocus, place, rng, sheet, spline, stableHeight, stone, type Pt } from './ink'
@@ -399,7 +400,7 @@ export function lifeScene(ctx: SceneCtx) {
       el.setAttribute('transform', tf(anchor, 0.2 + 0.8 * q))
       el.setAttribute('opacity', q.toFixed(3))
     }
-    shootEls.forEach(({ m }) => m.setAttribute('stroke-dashoffset', (1 - prog(G, 0.72, 0.99)).toFixed(4)))
+    for (const { m } of shootEls) m.setAttribute('stroke-dashoffset', (1 - prog(G, 0.72, 0.99)).toFixed(4))
     sapling.setAttribute('transform', tf(BASE, 1 + 1.3 * ease(prog(G, 0, 0.24))))
     sapling.setAttribute('opacity', (1 - prog(G, 0.14, 0.3)).toFixed(3))
     soak.setAttribute('fill-opacity', (0.04 + G * 0.12).toFixed(3))
@@ -410,16 +411,17 @@ export function lifeScene(ctx: SceneCtx) {
   }
 
   /* ── rain of words ── */
-  interface Drop { x: number; y: number; v: number; dx: number; w: string; a: number; top: number; ground: number; soak: number; fs: number }
+  interface Drop { x: number; y: number; v: number; dx: number; w: string; a: number; top: number; ground: number; soak: number; fs: number; font: string }
   const drops: Drop[] = []
   let raining = false
   let burst = 0
   let ink = cssVar('--ink')
   onTheme(ctx, () => (ink = cssVar('--ink')))
   const rr = rng(77)
-  let raf = 0
   let last = 0
-  function frame(now: number) {
+  /** One frame of rain + growth; returns whether another is needed. Own wall clock: growth caps a frame at 0.12 s, not 0.05. */
+  function frame(): boolean {
+    const now = performance.now()
     const raw = (now - last) / 1000 || 0.016
     const dt = Math.min(0.05, raw)
     last = now
@@ -435,7 +437,9 @@ export function lifeScene(ctx: SceneCtx) {
       const n = (ctx.quality === 'low' ? 9 : 17) * dt * (raining ? 1 : 0.5)
       for (let i = 0; i < n + (rr() < n % 1 ? 1 : 0); i++) {
         const x = ox + (50 + rr() * 300) * sc
-        drops.push({ x, y: oy + (34 + rr() * 30) * sc, v: (130 + rr() * 110) * Math.max(0.7, sc), dx: -10 + rr() * 5, w: WORDS[Math.floor(rr() * WORDS.length)], a: 0, top: 0.18 + rr() * 0.22, ground: oy + (310 + rr() * 26) * sc, soak: 0, fs: clamp((8.5 + rr() * 4) * sc, 10, 16) })
+        const d: Drop = { x, y: oy + (34 + rr() * 30) * sc, v: (130 + rr() * 110) * Math.max(0.7, sc), dx: -10 + rr() * 5, w: WORDS[Math.floor(rr() * WORDS.length)], a: 0, top: 0.18 + rr() * 0.22, ground: oy + (310 + rr() * 26) * sc, soak: 0, fs: clamp((8.5 + rr() * 4) * sc, 10, 16), font: '' }
+        d.font = `400 ${d.fs.toFixed(1)}px "Noto Serif", Georgia, serif`
+        drops.push(d)
       }
     }
     if (cctx) {
@@ -458,7 +462,7 @@ export function lifeScene(ctx: SceneCtx) {
           continue
         }
         cctx.globalAlpha = d.a
-        cctx.font = `400 ${d.fs.toFixed(1)}px "Noto Serif", Georgia, serif`
+        cctx.font = d.font
         cctx.fillText(d.w, d.x, d.y)
         if (d.soak > 0) {
           cctx.globalAlpha = 0.25 * (1 - d.soak)
@@ -472,13 +476,14 @@ export function lifeScene(ctx: SceneCtx) {
       cctx.globalAlpha = 1
     }
     if (stage === 0 && G >= 0.999 && Gt >= 1) grown()
-    if (on || drops.length || Math.abs(Gt - G) > 0.0005) raf = requestAnimationFrame(frame)
-    else raf = 0
+    return on || drops.length > 0 || Math.abs(Gt - G) > 0.0005
   }
+  // essential: the hold IS the interaction (under ctx.reduced it never kicks); an OS reduced-motion switch mid-hold must not freeze the growth
+  const rain = createLoop(root, frame, { essential: true })
   const kick = () => {
-    if (raf) return
+    if (rain.running) return
     last = performance.now()
-    raf = requestAnimationFrame(frame)
+    rain.start()
   }
   function rainOn() {
     if (stage !== 0 || unlocked > 0) return
@@ -729,7 +734,7 @@ export function lifeScene(ctx: SceneCtx) {
   }
 
   return () => {
-    cancelAnimationFrame(raf)
+    rain.dispose()
     drops.length = 0
   }
 }

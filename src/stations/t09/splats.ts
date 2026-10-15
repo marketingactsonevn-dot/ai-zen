@@ -276,7 +276,7 @@ export function splatScene(ctx: SceneCtx) {
 
   // ── back-to-front order whenever the view turns (depth packed with the index into one sortable integer)
   const keys = new Uint32Array(NS)
-  let sorted = [99, 99]
+  const sorted = [99, 99]
   const sort = (yaw: number, pitch: number) => {
     const sy = Math.sin(yaw), cy = Math.cos(yaw), sp = Math.sin(pitch), cp = Math.cos(pitch)
     for (let i = 0; i < NS; i++) {
@@ -287,7 +287,8 @@ export function splatScene(ctx: SceneCtx) {
     keys.sort()
     for (let i = 0; i < NS; i++) order[i] = keys[i] & 0xffff
     geo.index!.needsUpdate = true
-    sorted = [yaw, pitch]
+    sorted[0] = yaw
+    sorted[1] = pitch
   }
 
   // ── framing: the work fills what the controls leave (below them, or beside them on a cramped landscape)

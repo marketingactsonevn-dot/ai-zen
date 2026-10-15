@@ -452,6 +452,7 @@ export function pipelineScene(ctx: SceneCtx) {
   })
   koiRoot.add(rig)
   const jp = JU.map(() => new THREE.Vector3())
+  const JS = JU.map(spine) // rest positions of the joints along the spine (fixed: computed once)
   const X = new THREE.Vector3(1, 0, 0)
 
   // ── floor + lotus pads
@@ -874,11 +875,12 @@ export function pipelineScene(ctx: SceneCtx) {
     // bones
     rig.visible = S.bones > 0.003
     if (rig.visible) {
-      JU.forEach((u, k) => {
-        const [x, y, z] = spine(u)
+      for (let k = 0; k < JS.length; k++) {
+        const [x, y, z] = JS[k]
         jp[k].set(x, y + 0.01, z + bendZ(x, S.swim, phase))
-      })
-      bones.forEach((b, k) => {
+      }
+      for (let k = 0; k < bones.length; k++) {
+        const b = bones[k]
         const a = Math.max(0, Math.min(1, S.bones * bones.length - k))
         v.subVectors(jp[k + 1], jp[k])
         const len = v.length()
@@ -887,13 +889,14 @@ export function pipelineScene(ctx: SceneCtx) {
         const w = Math.min(0.045, len * 0.16)
         b.scale.set(len * a + 1e-4, w * a + 1e-4, w * a + 1e-4)
         b.visible = a > 0.01
-      })
-      jointMs.forEach((m, k) => {
+      }
+      for (let k = 0; k < jointMs.length; k++) {
+        const m = jointMs[k]
         const a = Math.max(0, Math.min(1, S.bones * bones.length - k + 0.5))
         m.position.copy(jp[k])
         m.scale.setScalar(0.022 * a + 1e-4)
         m.visible = a > 0.01
-      })
+      }
     }
 
     // floor
@@ -910,10 +913,10 @@ export function pipelineScene(ctx: SceneCtx) {
     const pa = env.pond * S.use
     padMat.opacity = pa * 0.85
     padMat2.opacity = pa * 0.7
-    pads.forEach((p, k) => {
-      p.visible = pa > 0.003
-      p.position.y = GY + 0.01 + Math.sin(t * 0.7 + k) * 0.004
-    })
+    for (let k = 0; k < pads.length; k++) {
+      pads[k].visible = pa > 0.003
+      pads[k].position.y = GY + 0.01 + Math.sin(t * 0.7 + k) * 0.004
+    }
     root.style.setProperty('--use', S.use.toFixed(3))
     root.style.setProperty('--grid', (env.grid * S.use).toFixed(3))
     root.style.setProperty('--ar', (env.table * S.use).toFixed(3))

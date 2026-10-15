@@ -210,11 +210,12 @@ function threeDesk(p: Pen): Build {
   const mers = Array.from({ length: N }, () => s('path'))
   wire.append(...rings, ...mers)
   const turn = { phi: 0.25 }
+  const ysM = ys.filter((_, i) => i % 2 === 0) // paint runs every frame of a turn
   const paint = () => {
     mers.forEach((m, k) => {
       const th = turn.phi + (k * 2 * Math.PI) / N
       const c = Math.cos(th)
-      m.setAttribute('d', `M${ys.filter((_, i) => i % 2 === 0).map((y) => `${(120 + R3(y) * Math.sin(th)).toFixed(1)} ${(y + R3(y) * 0.2 * c).toFixed(1)}`).join('L')}`)
+      m.setAttribute('d', `M${ysM.map((y) => `${(120 + R3(y) * Math.sin(th)).toFixed(1)} ${(y + R3(y) * 0.2 * c).toFixed(1)}`).join('L')}`)
       m.setAttribute('stroke-opacity', (c > 0 ? 0.35 + 0.5 * c : 0.14).toFixed(2))
     })
   }

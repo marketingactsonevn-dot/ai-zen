@@ -81,7 +81,7 @@ function icon(kind: number) {
   return g
 }
 
-interface Stream { path: SVGPathElement; len: number; open: boolean; parts: { el: SVGElement; t: number; v: number }[]; inlet: Pt; g: SVGGElement }
+interface Stream { xy: number[]; cum: number[]; len: number; open: boolean; parts: { el: SVGElement; t: number; v: number }[]; inlet: Pt; g: SVGGElement }
 
 /** Scene 5 — text, images and sound flow into one pond (multimodal); below the surface, patterns and mist (the honest note). */
 export function pondScene(ctx: SceneCtx) {
@@ -112,6 +112,8 @@ export function pondScene(ctx: SceneCtx) {
   let streams: Stream[] = []
   const opened = new Set<number>()
   let dived = false
+  /** the stream/deep loop (motion only): idles until a spring opens or the pond is dived */
+  let flow: ReturnType<typeof loop> | null = null
   let moon: SVGGElement | null = null
   let k = 1
   let deepPts: { x: number; y: number; vx: number; vy: number; sz: number; ink: number }[] = []
@@ -186,11 +188,16 @@ export function pondScene(ctx: SceneCtx) {
           if (seg.length > 1) streamsG.append(s('path', { class: 'k', 'fill-opacity': 0.42, d: brush(seg, 1.5 * k + 0.4, { a: 0.2, b: 0.3, min: 0.25 }).d, filter: 'url(#ink-rough)' }))
         }
       }
-      const path = s('path', { d: `M${line.map(P).join('L')}`, fill: 'none' })
+      // the centreline as the `M…L…` polyline (0.1 px) the things ride along; placeParts walks it by arc length
+      const xy: number[] = []
+      const cum = [0]
+      line.forEach((q, j) => {
+        xy.push(+q[0].toFixed(1), +q[1].toFixed(1))
+        if (j) cum.push(cum[j - 1] + Math.hypot(xy[2 * j] - xy[2 * j - 2], xy[2 * j + 1] - xy[2 * j - 1]))
+      })
       const g = s('g')
       streamsG.append(g)
-      const st: Stream = { path, len: 0, open: old[i]?.open ?? false, parts: [], inlet: b, g }
-      st.len = path.getTotalLength()
+      const st: Stream = { xy, cum, len: cum[cum.length - 1], open: old[i]?.open ?? false, parts: [], inlet: b, g }
       makeParts(st, i)
       return st
     })
@@ -279,9 +286,16 @@ export function pondScene(ctx: SceneCtx) {
     if (st.open) placeParts(st, true)
   }
   function placeParts(st: Stream, show: boolean) {
+    const { xy, cum } = st
     for (const p of st.parts) {
-      const q = st.path.getPointAtLength(p.t * st.len)
-      p.el.setAttribute('transform', `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})`)
+      // the point path.getPointAtLength(p.t * len) gives on this polyline, without a style/layout flush per particle per frame
+      const d = clamp(p.t * st.len, 0, st.len)
+      let j = 1
+      while (j < cum.length - 1 && cum[j] < d) j++
+      const f = cum[j] > cum[j - 1] ? (d - cum[j - 1]) / (cum[j] - cum[j - 1]) : 0
+      const x = xy[2 * j - 2] + (xy[2 * j] - xy[2 * j - 2]) * f
+      const y = xy[2 * j - 1] + (xy[2 * j + 1] - xy[2 * j - 1]) * f
+      p.el.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)})`)
       // fade in at the spring, fade out into the pond
       const a = show ? Math.min(1, p.t * 6, (1 - p.t) * 5) : 0
       p.el.setAttribute('opacity', a.toFixed(2))
@@ -299,6 +313,7 @@ export function pondScene(ctx: SceneCtx) {
     if (opened.has(i) || dived) return
     opened.add(i)
     streams[i].open = true
+    flow?.start()
     springBtns[i].setAttribute('aria-pressed', 'true')
     passFocus(springBtns[i], springBtns.find((_, k) => !opened.has(k)) ?? (opened.size === 3 ? (diveBtn.hidden = false, diveBtn) : null))
     springBtns[i].disabled = true
@@ -379,19 +394,31 @@ export function pondScene(ctx: SceneCtx) {
     lab(patLab, dc[0] - dR * 0.42, dc[1] - dR * 0.62)
   }
   let ring: SVGPathElement | null = null
+  // drawDeep runs every frame once dived: its buffers are reused, not rebuilt
+  const dd = ['', '', '']
+  const tl = ['', '']
+  let dp: Pt[] = []
+  let links: number[] = []
   function drawDeep() {
     if (!dotEls.length) return
-    const dd = ['', '', '']
-    const tl = ['', '']
-    const P = deepPts.map((p) => [dc[0] + p.x * dR, dc[1] + p.y * dR * 0.92] as Pt)
-    const links = new Array(P.length).fill(0)
-    for (let i = 0; i < P.length; i++) {
-      const a = P[i]
+    dd[0] = dd[1] = dd[2] = ''
+    tl[0] = tl[1] = ''
+    if (dp.length !== deepPts.length) {
+      dp = deepPts.map((): Pt => [0, 0])
+      links = deepPts.map(() => 0)
+    }
+    for (let i = 0; i < dp.length; i++) {
+      dp[i][0] = dc[0] + deepPts[i].x * dR
+      dp[i][1] = dc[1] + deepPts[i].y * dR * 0.92
+      links[i] = 0
+    }
+    for (let i = 0; i < dp.length; i++) {
+      const a = dp[i]
       const sz = deepPts[i].sz * clamp(dR / 260, 0.8, 1.6)
       dd[deepPts[i].ink] += `M${(a[0] - sz).toFixed(1)} ${a[1].toFixed(1)}a${sz.toFixed(1)} ${sz.toFixed(1)} 0 1 0 ${(sz * 2).toFixed(1)} 0a${sz.toFixed(1)} ${sz.toFixed(1)} 0 1 0 ${(-sz * 2).toFixed(1)} 0`
-      for (let j = i + 1; j < P.length; j++) {
+      for (let j = i + 1; j < dp.length; j++) {
         if (links[i] >= 3 || links[j] >= 3) continue
-        const b = P[j]
+        const b = dp[j]
         const d = Math.hypot(a[0] - b[0], a[1] - b[1])
         // threads thin out towards the mist: the middle stays unseen
         const m = Math.hypot((a[0] + b[0]) / 2 - dc[0], (a[1] + b[1]) / 2 - dc[1]) / dR
@@ -402,8 +429,8 @@ export function pondScene(ctx: SceneCtx) {
         }
       }
     }
-    dotEls.forEach((el, k) => el.setAttribute('d', dd[k]))
-    threadEls.forEach((el, k) => el.setAttribute('d', tl[k]))
+    for (let m = 0; m < dotEls.length; m++) dotEls[m].setAttribute('d', dd[m])
+    for (let m = 0; m < threadEls.length; m++) threadEls[m].setAttribute('d', tl[m])
   }
 
   let idle = 0
@@ -420,6 +447,7 @@ export function pondScene(ctx: SceneCtx) {
     idle = 0
     diveBtn.classList.remove('ready')
     dived = !dived
+    flow?.start()
     pondHit.setAttribute('aria-label', dived ? N.surfaceAria : N.diveAria)
     diveBtn.textContent = dived ? N.surfaceAria : N.diveAria
     root.classList.toggle('dived', dived)
@@ -450,10 +478,12 @@ export function pondScene(ctx: SceneCtx) {
 
   if (!ctx.reduced) {
     let t = 0
-    loop(ctx, (dt) => {
+    flow = loop(ctx, (dt) => {
       t += dt
-      streams.forEach((st) => {
-        if (!st.open) return
+      let busy = dived
+      for (const st of streams) {
+        if (!st.open) continue
+        busy = true
         for (const p of st.parts) {
           p.t += p.v * dt
           if (p.t >= 1) {
@@ -462,7 +492,7 @@ export function pondScene(ctx: SceneCtx) {
           }
         }
         placeParts(st, true)
-      })
+      }
       if (dived) {
         for (const p of deepPts) {
           p.x += p.vx * dt
@@ -472,6 +502,7 @@ export function pondScene(ctx: SceneCtx) {
         drawDeep()
         mist?.setAttribute('transform', `rotate(${(Math.sin(t * 0.2) * 6).toFixed(2)} ${dc[0]} ${dc[1]})`)
       }
+      return busy
     })
   }
 

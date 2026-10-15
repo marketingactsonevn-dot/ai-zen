@@ -567,14 +567,16 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
   let eraName = ''
   let disposed = false
 
+  let pathW = 0 // pathEl.clientWidth, cached in drawRake (the ResizeObserver): weights() runs every frame of a glide
   const weights = (pos: number) => {
-    machines.forEach((m, i) => {
+    for (let i = 0; i < machines.length; i++) {
+      const m = machines[i]
       const w = Math.max(0, 1 - Math.abs(pos - i))
       m.svg.style.opacity = String(w)
       m.svg.style.filter = w > 0.999 || ctx.reduced ? '' : `blur(${((1 - w) * 8).toFixed(1)}px)`
       m.svg.style.visibility = w <= 0.001 ? 'hidden' : 'visible'
-    })
-    const x = (stops[0] + (stops[4] - stops[0]) * (pos / 4)) * pathEl.clientWidth
+    }
+    const x = (stops[0] + (stops[4] - stops[0]) * (pos / 4)) * pathW
     marker.style.transform = `translate(${x.toFixed(1)}px, 0)`
   }
 
@@ -622,6 +624,7 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
 
   const drawRake = () => {
     const W = pathEl.clientWidth, H = pathEl.clientHeight
+    pathW = W
     if (W < 2 || H < 2) return
     stops = W < 420 ? [0.1, 0.3, 0.5, 0.7, 0.9] : [0.07, 0.28, 0.49, 0.7, 0.91]
     const cy = H * 0.56

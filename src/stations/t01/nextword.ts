@@ -2,6 +2,7 @@ import { fill, h } from '../../core/dom'
 import { gsap } from '../../core/anim'
 import { cssVar, onPrefs, prefs } from '../../core/prefs'
 import type { Fact } from '../../core/content'
+import { createLoop } from '../../core/loop'
 import type { SceneCtx } from '../types'
 import { stoneArt } from './brush'
 
@@ -70,9 +71,7 @@ export function mountNextWord(ctx: SceneCtx, c: NextWordCopy) {
   let picked = -1
   let top = -1
   let revealT = 0 // time the washes started blooming (seconds); 0 = not yet
-  let raf = 0
   const t0 = performance.now()
-  let disposed = false
   const C = { ink: rgba('#000'), ink3: rgba('#666'), ver: rgba('#c33'), moss: rgba('#575'), pond: rgba('#ccc'), pondA: 0.5, dark: false }
   const readColors = () => {
     const dark = prefs.theme === 'dark'
@@ -122,21 +121,25 @@ export function mountNextWord(ctx: SceneCtx, c: NextWordCopy) {
 
   // ── Pond: a feathered ink wash, tapered ripple strokes thickening towards the viewer, reflections under stones;
   //    after a pick, a wash blooms under every stone with area ∝ its (illustrative) probability.
+  // scratch buffers for taperedLine (reused every frame): x, centre y and half-width per sample
+  let tX = new Float64Array(256), tY = new Float64Array(256), tW = new Float64Array(256)
   const taperedLine = (y0: number, x0: number, x1: number, hw: number, amp: number, k: number, tt: number) => {
     if (!cx || x1 - x0 < 8) return
     const n = Math.max(4, Math.round((x1 - x0) / 7))
-    const top: [number, number][] = [], bot: [number, number][] = []
+    if (tX.length <= n) (tX = new Float64Array(n * 2)), (tY = new Float64Array(n * 2)), (tW = new Float64Array(n * 2))
+    cx.beginPath()
     for (let i = 0; i <= n; i++) {
       const u = i / n
       const x = x0 + (x1 - x0) * u
       const y = y0 + Math.sin(x * 0.012 + k * 0.7 + tt * 0.35) * amp + Math.sin(x * 0.031 - tt * 0.6 + k) * amp * 0.35
       const w = hw * Math.pow(Math.sin(Math.PI * u), 0.7) * (0.75 + 0.25 * Math.sin(x * 0.05 + k))
-      top.push([x, y - w])
-      bot.push([x, y + w])
+      tX[i] = x
+      tY[i] = y
+      tW[i] = w
+      if (i) cx.lineTo(x, y - w)
+      else cx.moveTo(x, y - w)
     }
-    cx.beginPath()
-    top.forEach(([x, y], i) => (i ? cx.lineTo(x, y) : cx.moveTo(x, y)))
-    for (let i = bot.length - 1; i >= 0; i--) cx.lineTo(bot[i][0], bot[i][1])
+    for (let i = n; i >= 0; i--) cx.lineTo(tX[i], tY[i] + tW[i])
     cx.closePath()
     cx.fill()
   }
@@ -196,10 +199,11 @@ export function mountNextWord(ctx: SceneCtx, c: NextWordCopy) {
     const base = H < 260 ? Math.max(Math.min(W, H), W * 0.32) : Math.min(W, H)
     const shown = revealT > 0
     const grow = shown ? (still ? 1 : 1 - Math.pow(1 - Math.min(1, (t - revealT) / 2.2), 3)) : 0
-    stones.forEach((st, i) => {
-      if (st.el.classList.contains('is-dragging')) return
-      if (i === picked && !shown) return // the stone is away, gliding to the blank
-      const [sx, sy] = st.home
+    for (let i = 0; i < stones.length; i++) {
+      const st = stones[i]
+      if (st.el.classList.contains('is-dragging')) continue
+      if (i === picked && !shown) continue // the stone is away, gliding to the blank
+      const sx = st.home[0], sy = st.home[1]
       const isTop = shown && i === top
       // reflection: a soft, flipped smear beneath the stone
       wash(sx + 2, sy + st.hgt * 0.62, st.w * 0.42, st.hgt * 0.55, C.ink, C.dark ? 0.1 : 0.13, 0.2)
@@ -222,20 +226,13 @@ export function mountNextWord(ctx: SceneCtx, c: NextWordCopy) {
         cx.stroke()
       }
       cx.globalAlpha = 1
-    })
+    }
   }
   let frameN = 0
-  const loop = () => {
-    raf = 0
-    if (disposed) return
+  // ambient pond: paused offscreen / hidden tab / reduced motion (then draw() runs on demand instead)
+  const loop = createLoop(root, () => {
     if (!low || frameN++ % 2 === 0) draw() // low quality: ~30 fps
-    if (!ctx.reduced && !document.hidden) raf = requestAnimationFrame(loop)
-  }
-  const kick = () => {
-    if (!raf && !ctx.reduced && !disposed) raf = requestAnimationFrame(loop)
-  }
-  const onVis = () => kick()
-  document.addEventListener('visibilitychange', onVis)
+  })
 
   // ── Rounds
   const renderRound = (focus: boolean) => {
@@ -359,7 +356,6 @@ export function mountNextWord(ctx: SceneCtx, c: NextWordCopy) {
       if (round === 0) ctx.insight(c.insight, c.note)
       else if (round === c.rounds.length - 1) ctx.insight(c.regen, c.note)
       if (ctx.reduced) return draw()
-      kick()
       ctx.anim(() => {
         gsap.fromTo(fillEl, { clipPath: 'inset(0 100% 0 0)', opacity: 0.3 }, { clipPath: 'inset(0 -5% 0 0)', opacity: 1, duration: 1.1, ease: 'power2.out' })
         gsap.fromTo(stones.map((s2) => s2.pctEl), { opacity: 0, y: -4 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, delay: 0.6, ease: 'power3.out' })
@@ -392,13 +388,11 @@ export function mountNextWord(ctx: SceneCtx, c: NextWordCopy) {
   const offPrefs = onPrefs(readColors)
   readColors()
   renderRound(false)
-  kick()
+  if (!ctx.reduced) loop.start()
 
   return () => {
-    disposed = true
-    cancelAnimationFrame(raf)
+    loop.dispose()
     ro.disconnect()
     offPrefs()
-    document.removeEventListener('visibilitychange', onVis)
   }
 }

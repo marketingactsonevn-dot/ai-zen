@@ -1,5 +1,6 @@
 import { fill, h, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
+import { createLoop } from '../../core/loop'
 import { cssVar } from '../../core/prefs'
 import type { SceneCtx } from '../types'
 import { C } from './data'
@@ -100,14 +101,13 @@ function incense(low: boolean) {
 function smoke(canvas: HTMLCanvasElement, reduced: boolean) {
   const g = canvas.getContext('2d')!
   let color = '0,0,0'
-  let tip = { x: 0, y: 0 }
+  const tip = { x: 0, y: 0 }
   let on = false
-  let raf = 0
-  let last = 0
   let clock = 0
   let cssH = 1
   type P = { x0: number; y: number; t: number; ph: number }
   const ribbons: P[][] = [[], []]
+  const spare: P[] = [] // recycled particles: no new objects per frame
   const readColor = () => (color = rgb(cssVar('--ink'), '40,40,40'))
   const size = () => {
     const r = canvas.getBoundingClientRect()
@@ -119,14 +119,22 @@ function smoke(canvas: HTMLCanvasElement, reduced: boolean) {
   }
   const step = (dt: number) => {
     clock += dt
-    ribbons.forEach((pts, k) => {
-      if (on) pts.push({ x0: tip.x + (k ? 1.2 : -0.6), y: tip.y - 2, t: 0, ph: clock * 0.55 + k * 2.1 })
+    for (let k = 0; k < 2; k++) {
+      const pts = ribbons[k]
+      if (on) {
+        const p = spare.pop() ?? { x0: 0, y: 0, t: 0, ph: 0 }
+        p.x0 = tip.x + (k ? 1.2 : -0.6)
+        p.y = tip.y - 2
+        p.t = 0
+        p.ph = clock * 0.55 + k * 2.1
+        pts.push(p)
+      }
       for (const p of pts) {
         p.t += dt
         p.y -= (26 + p.t * 5) * dt
       }
-      while (pts.length && (pts[0].y < -20 || pts[0].t > 9)) pts.shift()
-    })
+      while (pts.length && (pts[0].y < -20 || pts[0].t > 9)) spare.push(pts.shift()!)
+    }
   }
   const xOf = (p: P, k: number) => {
     // calm near the tip, swaying wider (and drifting with the air) as it rises
@@ -138,7 +146,8 @@ function smoke(canvas: HTMLCanvasElement, reduced: boolean) {
     g.lineCap = 'round'
     g.lineJoin = 'round'
     const fadeTop = cssH * 0.16
-    ribbons.forEach((pts, k) => {
+    for (let k = 0; k < 2; k++) {
+      const pts = ribbons[k]
       for (let i = 2; i < pts.length; i += 2) {
         const a = pts[i - 2]
         const b = pts[i]
@@ -166,21 +175,21 @@ function smoke(canvas: HTMLCanvasElement, reduced: boolean) {
           g.stroke()
         }
       }
-    })
+    }
   }
-  const loop = (now: number) => {
-    const dt = Math.min(0.05, (now - last) / 1000 || 0.016)
-    last = now
+  // runs while lit and until the last wisp has faded after out()
+  const loop = createLoop(canvas, (_, dt) => {
     step(dt)
     draw()
-    raf = requestAnimationFrame(loop)
-  }
+    return on || ribbons[0].length + ribbons[1].length > 0
+  })
   readColor()
   return {
     size: () => (size(), draw()),
     readColor: () => (readColor(), draw()),
     setTip(x: number, y: number) {
-      tip = { x, y }
+      tip.x = x
+      tip.y = y
     },
     light() {
       on = true
@@ -190,18 +199,12 @@ function smoke(canvas: HTMLCanvasElement, reduced: boolean) {
         draw()
         return
       }
-      if (!raf) {
-        last = performance.now()
-        raf = requestAnimationFrame(loop)
-      }
+      loop.start()
     },
     out() {
       on = false
     },
-    stop() {
-      cancelAnimationFrame(raf)
-      raf = 0
-    },
+    dispose: () => loop.dispose(),
   }
 }
 
@@ -214,9 +217,7 @@ function fog(canvas: HTMLCanvasElement, reduced: boolean) {
   let W = 1
   let H = 1
   let clear = 0
-  let raf = 0
   let t = 0
-  let last = 0
   const read = () => (paper = rgb(cssVar('--paper'), '240,240,240'))
   const size = () => {
     const b = canvas.getBoundingClientRect()
@@ -243,6 +244,7 @@ function fog(canvas: HTMLCanvasElement, reduced: boolean) {
       const rr = R * p.k * (1 + clear * 0.5)
       const a = 0.48 * (1 - clear) ** 1.2
       if (a < 0.004) continue
+      // TODO(perf): 16 gradients per frame; a pre-rendered puff sprite would avoid them but may shift the look
       const grd = g.createRadialGradient(x, y, 0, x, y, rr)
       grd.addColorStop(0, `rgba(${paper},${a.toFixed(3)})`)
       grd.addColorStop(0.5, `rgba(${paper},${(a * 0.6).toFixed(3)})`)
@@ -251,30 +253,25 @@ function fog(canvas: HTMLCanvasElement, reduced: boolean) {
       g.fillRect(x - rr, y - rr, rr * 2, rr * 2)
     }
   }
-  const loop = (now: number) => {
-    t += Math.min(0.05, (now - last) / 1000 || 0.016)
-    last = now
+  const loop = createLoop(canvas, (_, dt) => {
+    t += dt
     draw()
-    raf = clear >= 1 ? 0 : requestAnimationFrame(loop)
-  }
+    return clear < 1
+  })
   read()
   return {
     size: () => (size(), draw()),
     read: () => (read(), draw()),
     start() {
-      if (reduced || raf) return draw()
-      last = performance.now()
-      raf = requestAnimationFrame(loop)
+      if (reduced || loop.running) return draw()
+      loop.start()
     },
     /** 0 → 1 */
     set(k: number) {
       clear = k
-      if (reduced || !raf) draw()
+      if (reduced || !loop.running) draw()
     },
-    stop() {
-      cancelAnimationFrame(raf)
-      raf = 0
-    },
+    dispose: () => loop.dispose(),
   }
 }
 
@@ -480,7 +477,7 @@ export function thinkScene(ctx: SceneCtx) {
   gsap.set(list, { filter: 'blur(5px)', opacity: 0.55 })
   return () => {
     clearInterval(tick)
-    fx.stop()
-    mist.stop()
+    fx.dispose()
+    mist.dispose()
   }
 }

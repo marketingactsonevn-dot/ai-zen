@@ -169,7 +169,11 @@ function buildArt(k: Kit): ArtApi {
   // ── motion: the 8-second shot loops; a crammed prompt cuts between four things instead
   // the pot tips over the front edge of its base, which stays on the table
   const EDGE = '201 176'
-  const loop = gsap.timeline({ repeat: -1, paused: true, onUpdate: () => void (tc.textContent = svg.classList.contains('s-time') ? `00:0${Math.min(8, Math.floor(loop.time()))}` : '--:--') })
+  // the timecode only changes once a second: skip the DOM write on the other frames
+  const loop = gsap.timeline({ repeat: -1, paused: true, onUpdate: () => {
+    const tcNow = svg.classList.contains('s-time') ? `00:0${Math.min(8, Math.floor(loop.time()))}` : '--:--'
+    if (tc.textContent !== tcNow) tc.textContent = tcNow
+  } })
   loop.fromTo(head, { x: 0 }, { x: end - T0, duration: 8, ease: 'none' }, 0)
     .fromTo(potTilt, { rotation: 0, svgOrigin: EDGE }, { rotation: 18, svgOrigin: EDGE, duration: 1.3, ease: 'power2.inOut' }, 0.3)
     .fromTo(stream, { opacity: 0, strokeDashoffset: 0 }, { opacity: 1, duration: 0.3 }, 1.5)

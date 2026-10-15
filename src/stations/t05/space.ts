@@ -218,6 +218,8 @@ export function mountSpace(ctx: SceneCtx) {
   const pos = new Float32Array(n * 3)
   let tall = false
   let target = words.map((w) => place(w.pos, tall))
+  /** neighbourhood centres in the current layout (tall swaps axes); updated by relayout, read every frame */
+  let centres = CENTERS.map((c) => place(c, tall))
   const aSize = new Float32Array(n)
   const aQ = new Float32Array(n)
   const aHi = new Float32Array(n)
@@ -252,10 +254,15 @@ export function mountSpace(ctx: SceneCtx) {
   const lines = new THREE.LineSegments(lineGeo, lineMat)
   lines.renderOrder = 2
   world.add(lines)
+  // runs every fly-in frame: copy in place, no throwaway arrays
   const syncLines = () => {
-    pairs.forEach(([i, j], k) => {
-      linePos.set([pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2], pos[j * 3], pos[j * 3 + 1], pos[j * 3 + 2]], k * 6)
-    })
+    for (let k = 0; k < pairs.length; k++) {
+      const [i, j] = pairs[k]
+      for (let c = 0; c < 3; c++) {
+        linePos[k * 6 + c] = pos[i * 3 + c]
+        linePos[k * 6 + 3 + c] = pos[j * 3 + c]
+      }
+    }
     lineGeo.attributes.position.needsUpdate = true
   }
   syncLines()
@@ -318,7 +325,8 @@ export function mountSpace(ctx: SceneCtx) {
     target.forEach((p, i) => pos.set(p, i * 3))
     geo.attributes.position.needsUpdate = true
     syncLines()
-    hazeSprites.forEach((sp, c) => sp.position.set(...place(CENTERS[c], tall)))
+    centres = CENTERS.map((c) => place(c, tall))
+    hazeSprites.forEach((sp, c) => sp.position.set(...centres[c]))
     sand.geometry.dispose()
     sand.geometry = sandPoints(low, tall)
   }
@@ -472,7 +480,6 @@ export function mountSpace(ctx: SceneCtx) {
   // ── your words fly up from the sand into their neighbourhoods
   const order = question().words.map((w) => words.findIndex((x) => x.w === w))
   const fly = { t: ctx.reduced ? 1 : 0 }
-  const startOf = (k: number): V3 => [(k / Math.max(1, order.length - 1) - 0.5) * (tall ? 1.8 : 2.6), floorOf(tall) + 0.05, 1.9]
   if (!ctx.reduced) {
     ctx.anim(() => gsap.to(fly, { t: 1, duration: 3.2, delay: 0.5, ease: 'none' }))
     order.forEach((wi, k) => timers.push(window.setTimeout(() => words[wi]?.el.classList.add('is-land'), 500 + (k * 0.12 + 0.55) * 3200)))
@@ -483,7 +490,19 @@ export function mountSpace(ctx: SceneCtx) {
   // ── per-frame: orbit, fly-in, project labels, ink threads
   const v = new THREE.Vector3()
   const ft = new THREE.Vector3()
+  // label widths: read on mount and when the label layer resizes, never inside the frame
   const lbW = new Map<HTMLElement, number>()
+  const measureLabels = () => {
+    for (const w of words) lbW.set(w.el, w.el.offsetWidth)
+    for (const el of names) lbW.set(el, el.offsetWidth)
+  }
+  measureLabels()
+  // per-frame scratch: one reusable box per word, the visible ones collected in `shown`
+  type Box = { i: number; x: number; y: number; w: number }
+  const boxes: Box[] = words.map(() => ({ i: 0, x: 0, y: 0, w: 0 }))
+  const shown: Box[] = []
+  const byY = (a: Box, b: Box) => a.y - b.y
+  const THREAD = { head: 0.05, tail: 0.8, min: 0.18 }
   stage.onFrame((t, dt) => {
     if (!dragging) {
       yaw += vYaw
@@ -505,74 +524,101 @@ export function mountSpace(ctx: SceneCtx) {
       camera.lookAt(0, 0.05, 0)
     }
     if (fly.t < 1 || t === 0) {
-      order.forEach((wi, k) => {
-        if (wi < 0) return
-        const u = ease(THREE.MathUtils.clamp((fly.t - k * 0.12) / 0.55, 0, 1))
-        const a = startOf(k), b = target[wi]
+      for (let o = 0; o < order.length; o++) {
+        const wi = order[o]
+        if (wi < 0) continue
+        const u = ease(THREE.MathUtils.clamp((fly.t - o * 0.12) / 0.55, 0, 1))
+        // from a pebble on the near sand to the word's place in the space
+        const ax = (o / Math.max(1, order.length - 1) - 0.5) * (tall ? 1.8 : 2.6), ay = floorOf(tall) + 0.05, az = 1.9
+        const b = target[wi]
         const lift = Math.sin(u * Math.PI) * 0.9
-        pos.set([a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u + lift, a[2] + (b[2] - a[2]) * u], wi * 3)
-      })
+        pos[wi * 3] = ax + (b[0] - ax) * u
+        pos[wi * 3 + 1] = ay + (b[1] - ay) * u + lift
+        pos[wi * 3 + 2] = az + (b[2] - az) * u
+      }
       geo.attributes.position.needsUpdate = true
       syncLines()
     }
     camera.updateMatrixWorld()
     const W = stage.width, H = stage.height
-    const shown: { i: number; x: number; y: number; w: number }[] = []
-    words.forEach((w, i) => {
+    shown.length = 0
+    for (let i = 0; i < words.length; i++) {
+      const w = words[i]
       v.set(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]).applyMatrix4(world.matrixWorld).project(camera)
       w.sx = (v.x * 0.5 + 0.5) * W
       w.sy = (-v.y * 0.5 + 0.5) * H
       w.z = v.z < 1 ? 1 : 0
-      const lw = lbW.get(w.el) ?? lbW.set(w.el, w.el.offsetWidth).get(w.el)!
+      const lw = lbW.get(w.el) ?? 0
       const x = Math.min(W - lw - 4, Math.max(4, w.sx + 12))
       const y = Math.max(4, w.sy - 11)
       const off = w.z === 0 || w.sx < -8 || w.sx > W + 8 || w.sy < -8 || w.sy > H + 8
       w.el.classList.toggle('is-off', off)
-      if (off) return
-      if (w.q || aHi[i] > 0) shown.push({ i, x, y, w: lw })
-      else w.el.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`
-    })
+      if (off) continue
+      if (w.q || aHi[i] > 0) {
+        const bx = boxes[i]
+        bx.i = i
+        bx.x = x
+        bx.y = y
+        bx.w = lw
+        shown.push(bx)
+      } else w.el.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`
+    }
     // visible labels never sit on top of each other: walk down the screen, nudging overlaps below
-    shown.sort((a, b) => a.y - b.y)
+    shown.sort(byY)
     let lead = ''
-    shown.forEach((a, k) => {
-      for (let m = 0; m < k; m++) {
-        const b = shown[m]
+    for (let m = 0; m < shown.length; m++) {
+      const a = shown[m]
+      for (let q = 0; q < m; q++) {
+        const b = shown[q]
         if (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + 22) a.y = b.y + 22
       }
       words[a.i].el.style.translate = `${a.x.toFixed(1)}px ${a.y.toFixed(1)}px`
       // a nudged label keeps a fine hairline back to its dot
       const w = words[a.i]
       if (a.y - Math.max(4, w.sy - 11) > 6) lead += `M${(w.sx + 2).toFixed(1)} ${(w.sy + 1).toFixed(1)}L${(a.x + 2).toFixed(1)} ${(a.y + 11).toFixed(1)}`
-    })
+    }
     leader.setAttribute('d', lead)
     // neighbourhood names: only for neighbourhoods on the near side of the orbit (a far name would float over near
     // words); close up, only the chosen word's; never clamped to the frame or laid over a word
     const zo = v.set(0, 0, 0).applyMatrix4(world.matrixWorld).applyMatrix4(camera.matrixWorldInverse).z
     const only = k > 0.4 ? words[focusIdx].c : -1
     const rate = ctx.reduced ? 1 : Math.min(1, dt * 4)
-    names.forEach((el, c) => {
-      const cc = place(CENTERS[c], tall)
-      const dz = v.set(...cc).applyMatrix4(world.matrixWorld).applyMatrix4(camera.matrixWorldInverse).z - zo
+    for (let c = 0; c < names.length; c++) {
+      const el = names[c]
+      const cc = centres[c]
+      const dz = v.set(cc[0], cc[1], cc[2]).applyMatrix4(world.matrixWorld).applyMatrix4(camera.matrixWorldInverse).z - zo
       v.set(cc[0], cc[1] + 0.62, cc[2]).applyMatrix4(world.matrixWorld).project(camera)
-      const half = (lbW.get(el) ?? lbW.set(el, el.offsetWidth).get(el)!) / 2
+      const half = (lbW.get(el) ?? 0) / 2
       const x = (v.x * 0.5 + 0.5) * W, y = (-v.y * 0.5 + 0.5) * H
       let want = only >= 0 ? Number(c === only) : THREE.MathUtils.smoothstep(dz, -0.2, 0.45)
       if (v.z > 1 || x < half + 2 || x > W - half - 2 || y < 18 || y > H - 4) want = 0
-      else if (want > 0 && shown.some((a) => x + half > a.x && x - half < a.x + a.w && y > a.y && y - 16 < a.y + 22)) want = 0
+      else if (want > 0) {
+        for (let m = 0; m < shown.length; m++) {
+          const a = shown[m]
+          if (x + half > a.x && x - half < a.x + a.w && y > a.y && y - 16 < a.y + 22) {
+            want = 0
+            break
+          }
+        }
+      }
       nameVis[c] += (want - nameVis[c]) * rate
       nameText[c].style.opacity = nameVis[c].toFixed(3)
       if (nameVis[c] > 0.01) el.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`
-    })
+    }
     const f = focus()
-    threadPaths.forEach((p, k) => {
-      if (f < 0) return void p.setAttribute('d', '')
-      const a = words[f], b = words[a.near[k]]
+    for (let m = 0; m < threadPaths.length; m++) {
+      const p = threadPaths[m]
+      if (f < 0) {
+        p.setAttribute('d', '')
+        continue
+      }
+      const a = words[f], b = words[a.near[m]]
       const mx = (a.sx + b.sx) / 2, my = (a.sy + b.sy) / 2 - Math.hypot(b.sx - a.sx, b.sy - a.sy) * 0.18
-      p.setAttribute('d', stroke([[a.sx, a.sy], [mx, my], [b.sx, b.sy]], 4.2 - k * 1.1, { head: 0.05, tail: 0.8, min: 0.18 }))
-    })
+      // TODO(perf): stroke() builds the tapered outline from fresh arrays — only while a word is focused
+      p.setAttribute('d', stroke([[a.sx, a.sy], [mx, my], [b.sx, b.sy]], 4.2 - m * 1.1, THREAD))
+    }
   })
-  const ro = new ResizeObserver(() => lbW.clear())
+  const ro = new ResizeObserver(measureLabels)
   ro.observe(labels)
   stage.render()
 

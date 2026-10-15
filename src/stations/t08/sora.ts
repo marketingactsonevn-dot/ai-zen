@@ -2,7 +2,8 @@ import { fill, h, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
 import type { SceneCtx } from '../types'
 import { craneD, landscape, SH, SW } from './demos'
-import { arc, brush, C, clamp, ell, loop, path, pebble, rng, stableHeight, watchSize, type Pt } from './kit'
+import { createLoop } from '../../core/loop'
+import { arc, brush, C, clamp, ell, path, pebble, rng, stableHeight, watchSize, type Pt } from './kit'
 
 const S = C.scenes.sora as typeof C.scenes.sora & { month: string; dateFmt: string }
 // day index in 2026 (0 = 1 January)
@@ -291,6 +292,7 @@ export function soraScene(ctx: SceneCtx) {
         geo.lan.forEach(([x, y], i) => puff(x, y - geo.lr, geo.lr * 1.6, i * 0.28 + 0.2))
       }
     }
+    if (!ctx.reduced && (app || api)) life.start()
     if (end !== state.end) {
       state.end = end
       changed = true
@@ -304,26 +306,27 @@ export function soraScene(ctx: SceneCtx) {
   }
   range.addEventListener('input', () => setDay(Number(range.value)))
 
+  // the crane on the screen; the lanterns breathe (rests once both are dark)
+  const life = createLoop(svg, (t) => {
+    if (!state.app && !state.api) return false
+    if (state.app && bird) {
+      const u = (t / 6) % 1
+      bird.setAttribute('d', craneD(-20 + u * 360, 74 - Math.sin(u * Math.PI) * 16, 1.8, Math.sin(t * 7)))
+    }
+    if (state.api) for (let i = 0; i < glows.length; i++) glows[i].firstElementChild?.setAttribute('opacity', (0.85 + 0.15 * Math.sin(t * 1.7 + i * 1.3)).toFixed(3))
+  })
+  if (!ctx.reduced) life.start()
+
   const unwatch = watchSize(ctx.art, layout)
   layout(ctx.art.clientWidth, ctx.art.clientHeight)
   stable.afterFonts(() => layout(ctx.art.clientWidth, ctx.art.clientHeight))
   setDay(0)
   tell()
 
-  // the crane on the screen; the lanterns breathe
-  const stop = ctx.reduced
-    ? () => {}
-    : loop((t) => {
-        if (state.app && bird) {
-          const u = (t / 6) % 1
-          bird.setAttribute('d', craneD(-20 + u * 360, 74 - Math.sin(u * Math.PI) * 16, 1.8, Math.sin(t * 7)))
-        }
-        if (state.api) glows.forEach((gl, i) => gl.firstElementChild?.setAttribute('opacity', (0.85 + 0.15 * Math.sin(t * 1.7 + i * 1.3)).toFixed(3)))
-      })
   if (!ctx.reduced) gsap.from(svg, { opacity: 0, duration: 1.4, ease: 'power2.out', delay: 0.1 })
 
   return () => {
-    stop()
+    life.dispose()
     unwatch()
   }
 }

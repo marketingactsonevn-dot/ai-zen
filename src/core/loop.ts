@@ -20,6 +20,8 @@ export interface Loop {
  * Inside fn: no getComputedStyle/cssVar, no getBoundingClientRect, no new arrays/objects — read colours on mount and
  * in onPrefs, sizes in a ResizeObserver.
  */
+const reduceQuery = matchMedia('(prefers-reduced-motion: reduce)')
+
 export function createLoop(host: Element | null, fn: (t: number, dt: number) => void | boolean, opts: { essential?: boolean } = {}): Loop {
   let want = false
   let once = false
@@ -28,6 +30,7 @@ export function createLoop(host: Element | null, fn: (t: number, dt: number) => 
   let t = 0
   let visible = !host
   let disposed = false
+  let inTick = false // fn may call start()/wake() on its own loop: the reschedule after fn covers it
   counters.loops++
 
   const canTick = () => !disposed && visible && !document.hidden
@@ -39,7 +42,7 @@ export function createLoop(host: Element | null, fn: (t: number, dt: number) => 
     counters.ticking--
   }
   const schedule = () => {
-    if (raf || !((want && canRun()) || (once && canTick()))) return
+    if (raf || inTick || !((want && canRun()) || (once && canTick()))) return
     last = performance.now()
     raf = requestAnimationFrame(tick)
     counters.ticking++
@@ -52,8 +55,11 @@ export function createLoop(host: Element | null, fn: (t: number, dt: number) => 
     last = now
     t += dt
     once = false
-    if (fn(t, dt) === false) want = false
-    if (want && canRun()) {
+    inTick = true
+    const r = fn(t, dt)
+    inTick = false
+    if (r === false) want = false
+    if ((want && canRun()) || (once && canTick())) {
       raf = requestAnimationFrame(tick)
       counters.ticking++
     }
@@ -69,6 +75,9 @@ export function createLoop(host: Element | null, fn: (t: number, dt: number) => 
   if (host) io!.observe(host)
   const onVis = () => (document.hidden ? cancel() : schedule())
   document.addEventListener('visibilitychange', onVis)
+  // reduced motion switched in the OS while the loop exists: pause decorative loops, resume them when it is off again
+  const onReduce = () => (canRun() ? schedule() : !once && !opts.essential && cancel())
+  reduceQuery.addEventListener('change', onReduce)
 
   return {
     start() {
@@ -90,6 +99,7 @@ export function createLoop(host: Element | null, fn: (t: number, dt: number) => 
       cancel()
       io?.disconnect()
       document.removeEventListener('visibilitychange', onVis)
+      reduceQuery.removeEventListener('change', onReduce)
       counters.loops--
     },
     get running() {

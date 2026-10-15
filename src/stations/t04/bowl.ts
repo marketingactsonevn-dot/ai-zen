@@ -162,6 +162,7 @@ export function mountBowl(ctx: SceneCtx, c: BowlCopy) {
     meter.classList.toggle('is-side', short)
     if (mode === 'm') {
       const [, rimTop] = pit.toScreen(0, -geo.rx * 0.1 - 20)
+      // TODO(perf): layout read per frame while setMode's zoom tween runs; msg rewraps as paddingLeft changes, so caching could move the label
       const msgBottom = msg.offsetTop + (msg.hidden ? 0 : msg.offsetHeight)
       million.style.top = `${Math.max(msgBottom + 8, (msgBottom + rimTop) / 2 - million.offsetHeight / 2)}px`
     }
@@ -185,11 +186,18 @@ export function mountBowl(ctx: SceneCtx, c: BowlCopy) {
     return { rx, ry, ground, t, rr: rx * k, ro: rx * k + t * 0.4 }
   }
   /** light: an ink-wash bowl; dark: matte stoneware under moonlight — warm grey glaze, lip lit from the upper left */
+  // the palette object only changes on a theme change: mix once per palette, not every frame
+  let tonesPal: typeof pit.pal | null = null
+  let tonesV = { body: pit.pal.ink2, lip: pit.pal.ink2, deep: pit.pal.ink }
   const tones = () => {
     const p = pit.pal
-    return p.dark
-      ? { body: mix(p.stone2, p.stone, 0.3), lip: mix(p.stone, p.ink3, 0.2), deep: mix(p.paper, p.stone3, 0.5) }
-      : { body: p.ink2, lip: p.ink2, deep: p.ink }
+    if (p !== tonesPal) {
+      tonesPal = p
+      tonesV = p.dark
+        ? { body: mix(p.stone2, p.stone, 0.3), lip: mix(p.stone, p.ink3, 0.2), deep: mix(p.paper, p.stone3, 0.5) }
+        : { body: p.ink2, lip: p.ink2, deep: p.ink }
+    }
+    return tonesV
   }
   const lipFill = (g: CanvasRenderingContext2D, rx: number, a: number) => {
     const { body, lip } = tones()
@@ -200,11 +208,16 @@ export function mountBowl(ctx: SceneCtx, c: BowlCopy) {
     gr.addColorStop(1, col(mix(body, tones().deep, 0.3), a))
     return gr
   }
+  // scratch lists the per-frame hooks refill (no new arrays every frame)
+  const outs: Stone[] = []
+  const inBowl: Stone[] = []
   pit.paintFn = (g) => {
     const pal = pit.pal
     const sc = pit.view.s
     const [, gy] = pit.toScreen(0, geo.ground)
-    const outs = entries.filter((e) => e.out && e.st).map((e) => e.st!)
+    outs.length = 0
+    for (const e of entries) if (e.out && e.st) outs.push(e.st)
+    // TODO(perf): ringsOn + this map allocate a few small arrays per frame (only while the pit loop runs)
     const rings = pit.ringsOn(geo.ground, outs, 14).map((r) => ({ x: pit.view.ox + r.x * sc, y: gy, rx: r.rx * sc }))
     pit.bed(0, { x0: pit.W * 0.01, x1: pit.W * 0.99, y: gy, back: Math.min(Heff * 0.14, 70), front: Math.max(10, pit.H - gy - 2), rows: ctx.quality === 'low' ? 7 : 11, seed: 9 }, rings)
     pit.worldTx(g)
@@ -483,7 +496,9 @@ export function mountBowl(ctx: SceneCtx, c: BowlCopy) {
   pit.frameFn = () => {
     if (!busy || !fallT) return false
     const t = performance.now() - fallT
-    const settled = pending <= 0 && pit.calm(entries.filter((e) => e.st && !e.out).map((e) => e.st as Stone), 0.5)
+    inBowl.length = 0
+    for (const e of entries) if (e.st && !e.out) inBowl.push(e.st)
+    const settled = pending <= 0 && pit.calm(inBowl, 0.5)
     if ((settled && t > 1300) || t > 3400) done()
     return true
   }

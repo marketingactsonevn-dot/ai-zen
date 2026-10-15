@@ -4,6 +4,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { fill, h, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
 import { createStage } from '../../core/three-stage'
+import { createLoop } from '../../core/loop'
 import { cssVar, onPrefs } from '../../core/prefs'
 import type { SceneCtx } from '../types'
 import { C } from './data'
@@ -339,28 +340,23 @@ function buildArt(k: Kit): ArtApi {
   let dragging = false
   let lastX = 0
   turn.rotation.y = angle
-  let raf = 0
-  let last = performance.now()
   const deg = (a: number) => Math.round((((a * 180) / Math.PI) % 360 + 360) % 360)
   const announce = () => {
     host.setAttribute('aria-valuenow', String(deg(angle)))
     host.setAttribute('aria-valuetext', fill(WD.angle, { n: deg(angle) }))
   }
-  let lastAria = 0
-  const spin = (now: number) => {
-    raf = requestAnimationFrame(spin)
-    const dt = Math.min(0.05, (now - last) / 1000)
-    last = now
-    if (document.hidden || dragging) return
+  let lastAria = -1
+  // paused offscreen / hidden tab / reduced motion; stopped while a drag turns it by hand
+  const spin = createLoop(host, (t, dt) => {
     angle += dt * 0.28
     turn.rotation.y = angle
     renderer.render(scene, camera)
-    if (now - lastAria > 1000) {
-      lastAria = now
+    if (t - lastAria > 1) {
+      lastAria = t
       announce()
     }
-  }
-  if (!ctx.reduced) raf = requestAnimationFrame(spin)
+  })
+  if (!ctx.reduced) spin.start()
   announce()
   const setAngle = (a: number) => {
     angle = a
@@ -370,6 +366,7 @@ function buildArt(k: Kit): ArtApi {
   }
   const down = (e: PointerEvent) => {
     dragging = true
+    spin.stop()
     lastX = e.clientX
     host.setPointerCapture(e.pointerId)
   }
@@ -378,7 +375,10 @@ function buildArt(k: Kit): ArtApi {
     setAngle(angle + (e.clientX - lastX) * 0.012)
     lastX = e.clientX
   }
-  const up = () => void (dragging = false)
+  const up = () => {
+    dragging = false
+    if (!ctx.reduced) spin.start()
+  }
   const key = (e: KeyboardEvent) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
     e.preventDefault()
@@ -400,7 +400,7 @@ function buildArt(k: Kit): ArtApi {
       apply(instant)
     },
     dispose() {
-      cancelAnimationFrame(raf)
+      spin.dispose()
       offPrefs()
       gsap.killTweensOf(shards.children.map((c) => c.scale))
       lumpGeos.forEach((g) => g.dispose())

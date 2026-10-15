@@ -240,6 +240,7 @@ const HANG: Record<FruitId, { at: [number, number]; stem: number; side: -1 | 1 }
   rec: { at: [0.575, 0.51], stem: 0, side: 1 },
   robot: { at: [-0.42, 0.716], stem: 0, side: -1 },
 }
+const FRUIT_IDS = Object.keys(HANG) as FruitId[]
 /** top to bottom: the order of the pads for Tab */
 const ORDER = ['gen', 'robot', 'rec', 'recog']
 /** where the young branch leaves the apex twig (tree units) */
@@ -680,6 +681,8 @@ const branchScene: SceneDef = {
     }
 
     // ── painting the fruits, the blossoms and the pictures (every frame, over the tree) ──
+    // TODO(perf): the brush helpers (inkLine → spline, drawArm, drawPainting) build point arrays on every call; caching
+    // settled strokes in a layer would cut that, but changes how they are painted — left as is.
     function draw(g: CanvasRenderingContext2D, t: number, now: number) {
       const pal = paint.pal
       const breeze = paint.sway
@@ -705,7 +708,7 @@ const branchScene: SceneDef = {
           if (b.k < 1 || breathe) busy = true
         }
       }
-      for (const id of Object.keys(HANG) as FruitId[]) {
+      for (const id of FRUIT_IDS) {
         const f = fruit[id]
         if (f.k <= 0) continue
         const Hd = HANG[id]

@@ -419,6 +419,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
   const washMat = mat(DOT_VERT, DOT_FRAG, dotUniforms())
   const washMass = new THREE.Points(washGeo, washMat)
   let washA = 0
+  let shadowA = 0.2 // brain shadow strength for the theme (read in applyTheme, not per frame)
 
   // ── The raked bed: dense dotted grooves and rings that stay on the ground (never turns).
   const bed: number[] = []
@@ -600,13 +601,14 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
   const headMat = mat(HEAD_VERT, HEAD_FRAG, { uColor: { value: new THREE.Color() }, uOpacity: { value: 0 }, uSize: { value: 16 } })
   const heads = new THREE.Points(headGeo, headMat)
   const placeHeads = (t: number) => {
-    pulseCurves.forEach(({ pts, speed, phase }, k) => {
+    for (let k = 0; k < pulseCurves.length; k++) {
+      const { pts, speed, phase } = pulseCurves[k]
       const f = (((t * speed + phase) % 1) + 1) % 1
       const x = f * (pts.length - 1)
       const j = Math.min(pts.length - 2, Math.floor(x))
       const u = x - j
       for (let a = 0; a < 3; a++) headPos[k * 3 + a] = pts[j][a] * (1 - u) + pts[j + 1][a] * u
-    })
+    }
     headGeo.attributes.position.needsUpdate = true
   }
 
@@ -649,6 +651,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
     u(washMat).uSoft.value = 1
     u(washMat).uSize.value = 70
     washA = dark ? 0.05 : 0.06
+    shadowA = dark ? 0.55 : 0.2
     u(headMat).uColor.value = col('--vermilion')
     u(headMat).uSize.value = dark ? 22 : 14
     u(brainShadowMat).uColor.value = col('--umbra')
@@ -850,7 +853,9 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
     lastNow = now
     U.uTime.value = t
     if (holding && holdDt > 0) {
-      setGoal(goal + (dir * holdDt) / HOLD_SECONDS)
+      // not setGoal(): its stage.render() (loop.wake) from inside the running frame would schedule a second rAF chain
+      goal = clamp01(goal + (dir * holdDt) / HOLD_SECONDS)
+      syncScrub()
       if (goal <= 0 || goal >= 1) setHold(false) // arrived: the next hold goes the other way
     }
     // weighted, never instant: the shown morph eases toward the goal both ways
@@ -872,7 +877,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
     }
     brainG.scale.setScalar(1 + 0.014 * Math.sin(t * 0.8) * e) // slow breathing once formed
     brainG.updateMatrix()
-    brainShadowMat.uniforms.uOpacity.value = e * (prefs.theme === 'dark' ? 0.55 : 0.2)
+    brainShadowMat.uniforms.uOpacity.value = e * shadowA
     const hv = smooth(0.85, 1, progress)
     headMat.uniforms.uOpacity.value = hv
     if (hv > 0) placeHeads(t)

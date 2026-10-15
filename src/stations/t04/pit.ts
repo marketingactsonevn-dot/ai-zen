@@ -3,6 +3,7 @@
 import Matter from 'matter-js'
 import { gsap } from '../../core/anim'
 import { h, nextId, s } from '../../core/dom'
+import { createLoop, type Loop } from '../../core/loop'
 import type { Fact } from '../../core/content'
 import type { SceneCtx } from '../types'
 import type { Tok } from './tokenizer'
@@ -116,7 +117,8 @@ export class Pit {
   resizeFn: () => void = () => {}
   /** set by a scene when display frames moved: sync every stone this frame */
   forceSync = false
-  private raf = 0
+  private loop: Loop
+  private inTick = false
   private last = 0
   private acc = 0
   private keep = 0
@@ -144,13 +146,13 @@ export class Pit {
     ctx.art.append(this.root)
     if (import.meta.env.DEV) (this.root as unknown as { pit: Pit }).pit = this
 
+    // essential: the physics IS the interaction (a drag settles under reduced motion too); pauses offscreen / hidden tab
+    this.loop = createLoop(this.root, this.tick, { essential: true })
     const ro = new ResizeObserver(() => this.measure())
     ro.observe(this.root)
     const mo = new MutationObserver(() => this.retheme())
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-garden'] })
-    const onVis = () => !document.hidden && this.wake()
-    document.addEventListener('visibilitychange', onVis)
-    this.offs.push(() => ro.disconnect(), () => mo.disconnect(), () => document.removeEventListener('visibilitychange', onVis))
+    this.offs.push(() => ro.disconnect(), () => mo.disconnect())
     ctx.onCleanup(() => this.destroy())
   }
 
@@ -206,36 +208,45 @@ export class Pit {
   // ───────── loop ─────────
   wake(ms = 0) {
     this.keep = Math.max(this.keep, performance.now() + ms)
-    if (!this.raf && this.alive) this.raf = requestAnimationFrame(this.tick)
+    // inside the frame the tick's return value decides (it reads `keep`); start() there would queue a second rAF
+    if (this.alive && !this.inTick) this.loop.start()
   }
-  private tick = (now: number) => {
-    this.raf = 0
-    if (!this.alive) return
+  /** One frame; returns whether the next one is needed. Own wall clock: keeps the 64 ms cap and the dev speed-up. */
+  private tick = (): boolean => {
+    if (!this.alive) return false
+    const now = performance.now()
     // dev-only fast-forward for automated visual checks (window.__t4speed)
     const k = import.meta.env.DEV ? ((window as unknown as { __t4speed?: number }).__t4speed ?? 1) : 1
     const dt = (this.last ? Math.min(64, now - this.last) : STEP) * k
     this.last = now
     this.acc += dt
     let n = 0
-    while (this.acc >= STEP && n < 4 * k) {
-      Engine.update(this.engine, STEP)
-      this.acc -= STEP
-      n++
+    this.inTick = true
+    let busy: boolean
+    try {
+      while (this.acc >= STEP && n < 4 * k) {
+        Engine.update(this.engine, STEP)
+        this.acc -= STEP
+        n++
+      }
+      if (n >= 4 * k) this.acc = 0
+      busy = this.frameFn(dt / 1000)
+      this.sync(this.forceSync)
+      this.forceSync = false
+      this.paint(now)
+    } finally {
+      this.inTick = false
     }
-    if (n >= 4 * k) this.acc = 0
-    const busy = this.frameFn(dt / 1000)
-    this.sync(this.forceSync)
-    this.forceSync = false
-    this.paint(now)
-    const moving = this.drag || this.stones.some((st) => !st.body.isSleeping && !st.body.isStatic)
-    // a wake() during this frame may already have queued the next one — never run two loops
-    if (this.raf) return
-    if (moving || busy || now < this.keep) this.raf = requestAnimationFrame(this.tick)
-    else this.last = 0
+    let moving = !!this.drag
+    for (let i = 0; !moving && i < this.stones.length; i++) moving = !this.stones[i].body.isSleeping && !this.stones[i].body.isStatic
+    const more = moving || busy || now < this.keep
+    if (!more) this.last = 0
+    return more
   }
   /** Nothing in `list` is visibly moving any more (sleeping, static, or barely creeping). */
   calm(list = this.stones, v = 0.3) {
-    return list.every((st) => st.body.isSleeping || st.body.isStatic || (st.body.speed < v && st.body.angularSpeed < 0.02))
+    for (const st of list) if (!(st.body.isSleeping || st.body.isStatic || (st.body.speed < v && st.body.angularSpeed < 0.02))) return false
+    return true
   }
   /** Reduced motion: run the world to rest at once. */
   settle(max = 900) {
@@ -579,30 +590,25 @@ export class Pit {
   bed(id: number, spec: { x0: number; x1: number; y: number; back: number; front: number; rows: number; seed?: number }, rings: Ring[]) {
     const g = this.g
     if (!g) return
-    const key = [this.W, this.H, this.dpr, this.themeTick, spec.x0, spec.x1, spec.y, spec.back, spec.front, spec.rows].map((v) => Math.round(v)).join(',')
-    const ringKey = rings.map((r) => `${Math.round(r.x / 3)}:${Math.round(r.rx / 3)}:${Math.round(r.y)}`).join('|')
+    // cache keys built without arrays/closures: bed() runs every frame
+    const r = Math.round
+    const key = `${r(this.W)},${r(this.H)},${r(this.dpr)},${r(this.themeTick)},${r(spec.x0)},${r(spec.x1)},${r(spec.y)},${r(spec.back)},${r(spec.front)},${r(spec.rows)}`
+    let ringKey = ''
+    for (let i = 0; i < rings.length; i++) ringKey += `${i ? '|' : ''}${r(rings[i].x / 3)}:${r(rings[i].rx / 3)}:${r(rings[i].y)}`
     let slot = this.beds.get(id)
     if (!slot) {
       slot = { cur: document.createElement('canvas'), old: document.createElement('canvas'), key: '', ring: '', t0: 0 }
       this.beds.set(id, slot)
     }
-    const render = (c: HTMLCanvasElement) => {
-      c.width = this.canvas.width
-      c.height = this.canvas.height
-      const cg = c.getContext('2d')
-      if (!cg) return
-      cg.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
-      sandBed(cg, this.pal, { ...spec, rings })
-    }
     const now = performance.now()
     if (slot.key !== key) {
-      render(slot.cur)
+      this.renderBed(slot.cur, spec, rings)
       slot.key = key
       slot.ring = ringKey
       slot.t0 = 0
     } else if (slot.ring !== ringKey) {
       ;[slot.cur, slot.old] = [slot.old, slot.cur]
-      render(slot.cur)
+      this.renderBed(slot.cur, spec, rings)
       slot.ring = ringKey
       slot.t0 = this.ctx.reduced ? 0 : now
     }
@@ -618,10 +624,19 @@ export class Pit {
     g.globalAlpha = 1
   }
 
+  private renderBed(c: HTMLCanvasElement, spec: Parameters<Pit['bed']>[1], rings: Ring[]) {
+    c.width = this.canvas.width
+    c.height = this.canvas.height
+    const cg = c.getContext('2d')
+    if (!cg) return
+    cg.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
+    sandBed(cg, this.pal, { ...spec, rings })
+  }
+
   destroy() {
     if (!this.alive) return
     this.alive = false
-    cancelAnimationFrame(this.raf)
+    this.loop.dispose()
     this.offs.forEach((f) => f())
     gsap.killTweensOf(this.stones.flatMap((st) => [st.inner, st.art]))
     Composite.clear(this.engine.world, false)

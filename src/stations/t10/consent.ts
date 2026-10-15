@@ -239,18 +239,16 @@ export function consentScene(ctx: SceneCtx) {
       const p1: Pt = [(p0[0] + p2[0]) / 2 + u[1] * bow, (p0[1] + p2[1]) / 2 - Math.abs(u[0]) * bow]
       const jit = dots.map((_, i) => ((i * 37) % 11) / 11 - 0.5)
       const st = { u: 0 }
-      gsap.to(st, {
-        u: 1, duration: 2, ease: 'none',
-        onUpdate: () => dots.forEach((el, i) => {
-          const t = clamp((st.u - (i / dots.length) * 0.45) / 0.55)
-          const e = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2
-          const x = (1 - e) ** 2 * p0[0] + 2 * (1 - e) * e * p1[0] + e * e * p2[0]
-          const y = (1 - e) ** 2 * p0[1] + 2 * (1 - e) * e * p1[1] + e * e * p2[1] + jit[i] * R * 0.5 * Math.sin(e * Math.PI)
-          el.setAttribute('cx', x.toFixed(1))
-          el.setAttribute('cy', y.toFixed(1))
-          el.setAttribute('opacity', (Math.sin(t * Math.PI) * 0.85).toFixed(2))
-        }),
-      })
+      const fleck = (el: SVGCircleElement, i: number) => {
+        const t = clamp((st.u - (i / dots.length) * 0.45) / 0.55)
+        const e = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2
+        const x = (1 - e) ** 2 * p0[0] + 2 * (1 - e) * e * p1[0] + e * e * p2[0]
+        const y = (1 - e) ** 2 * p0[1] + 2 * (1 - e) * e * p1[1] + e * e * p2[1] + jit[i] * R * 0.5 * Math.sin(e * Math.PI)
+        el.setAttribute('cx', x.toFixed(1))
+        el.setAttribute('cy', y.toFixed(1))
+        el.setAttribute('opacity', (Math.sin(t * Math.PI) * 0.85).toFixed(2))
+      }
+      gsap.to(st, { u: 1, duration: 2, ease: 'none', onUpdate: () => dots.forEach(fleck) })
       gsap.set(ghost, { opacity: 1 })
       gsap.fromTo(ghostM, { attr: { r: 0 } }, { attr: { r: R * 2.2 }, duration: 1.6, delay: 0.9, ease: 'power2.out' })
       gsap.fromTo(slip, { autoAlpha: 0, y: -14, scaleY: 0.7 }, { autoAlpha: 1, y: 0, scaleY: 1, duration: 1, delay: 1.7, ease: 'power3.out', transformOrigin: '50% 0%' })

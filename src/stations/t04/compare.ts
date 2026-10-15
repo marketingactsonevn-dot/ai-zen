@@ -107,11 +107,13 @@ export function mountCompare(ctx: SceneCtx, c: CompareCopy) {
 
   pit.paintFn = (g) => {
     const sc = pit.view.s
-    lanes.forEach((ln, i) => {
+    for (let i = 0; i < lanes.length; i++) {
+      const ln = lanes[i]
       const y = ln.gy * sc
+      // TODO(perf): ringsOn + this map allocate a few small arrays per frame (only while the pit loop runs)
       const rings = pit.ringsOn(ln.gy, ln.stones, 16).map((r) => ({ x: r.x * sc, y, rx: r.rx * sc }))
       pit.bed(i, { x0: ln.x + ln.w * 0.03, x1: ln.x + ln.w * 0.97, y, back: ln.h * 0.2, front: Math.max(12, Math.min(ln.h * 0.12, Heff - y - 28 + (i ? 0 : ln.h * 0.05))), rows: ctx.quality === 'low' ? 7 : 10, seed: 5 + i * 4 }, rings)
-    })
+    }
     pit.worldTx(g)
     pit.shadows(g)
   }
@@ -119,7 +121,8 @@ export function mountCompare(ctx: SceneCtx, c: CompareCopy) {
   pit.frameFn = () => {
     if (state !== 'falling') return false
     const t = performance.now() - fallT
-    const n = lanes.reduce((a, ln) => a + ln.toks.length, 0)
+    let n = 0
+    for (const ln of lanes) n += ln.toks.length
     if ((pit.stones.length >= n && pit.calm() && t > 1800) || t > 5000) rest()
     return true
   }

@@ -1,5 +1,6 @@
 import { fill, h, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
+import { createLoop } from '../../core/loop'
 import type { SceneCtx } from '../types'
 import { brush, C, clamp, fitCanvas, palette, rgba, rng, timers, watchTheme, type Pal } from './ink'
 
@@ -233,7 +234,13 @@ export function voiceScene(ctx: SceneCtx) {
     place(voiceBox, was.voices, voicesTop)
     place(brand, was.brand, brandTop)
     place(same, was.same, sameTop)
-    if (glide) ctx.anim(() => gsap.to(view, { base, maxH, duration: 0.9, ease: 'power3.inOut', overwrite: true }))
+    // GSAP rounds the end value: snap it exactly, or `gliding` never clears and the low-quality loop never sleeps
+    const land = () => {
+      view.base = base
+      view.maxH = maxH
+      dirty = true
+    }
+    if (glide) ctx.anim(() => gsap.to(view, { base, maxH, duration: 0.9, ease: 'power3.inOut', overwrite: true, onComplete: land }))
     else {
       gsap.killTweensOf(view)
       view.base = base
@@ -263,6 +270,7 @@ export function voiceScene(ctx: SceneCtx) {
     if (rd) ticks = buildTicks()
     dirty = true
     draw(performance.now())
+    loop.start()
   }
 
   /** The quiet back layer: a low sun (a pale moon at night) setting behind a far shore of wash, both mirrored in the pond. */
@@ -335,10 +343,19 @@ export function voiceScene(ctx: SceneCtx) {
     b.globalCompositeOperation = 'source-over'
   }
 
+  // reused every frame by draw()
+  let swClock = 0
+  let swOn = 0
+  const swayAt = (x: number, hh: number) => Math.sin(swClock * 0.8 + x * 0.012) * 0.045 * hh * swOn
+  const fresh: { tk: Tick; hh: number; a: number }[] = []
+  let nFresh = 0
+
   function draw(now: number) {
     if (!g) return
     const clock = now / 1000
     const sway = ctx.reduced || ctx.quality === 'low' ? 0 : 1
+    swClock = clock
+    swOn = sway
     g.clearRect(0, 0, W, H)
     g.save()
     g.translate(0, view.base)
@@ -371,7 +388,6 @@ export function voiceScene(ctx: SceneCtx) {
     g.fill()
 
     const v = voice >= 0 ? VOICES[voice] : VOICES[0]
-    const swayAt = (x: number, hh: number) => Math.sin(clock * 0.8 + x * 0.012) * 0.045 * hh * sway
     // reeds of the previous reading sink away
     if (st.oldA > 0 && old.length) {
       g.fillStyle = rgba(pal.ink, oldTint * st.oldA)
@@ -383,7 +399,7 @@ export function voiceScene(ctx: SceneCtx) {
       g.fill()
     }
     // this reading: reeds grow as the voice passes
-    const fresh: [Tick, number, number][] = []
+    nFresh = 0
     if (st.p >= 0) {
       // four ink loads; each fades toward a dry, pale tip
       for (let b = 0; b < TONES.length; b++) {
@@ -401,7 +417,12 @@ export function voiceScene(ctx: SceneCtx) {
           const k = Math.min(1, age / 0.16)
           const hh = tk.h * maxH * (1 - (1 - k) ** 3)
           reed(g, tk.x, base, hh, tk.tw, tk.lean * hh + swayAt(tk.x, hh), -1)
-          if (age < 0.45) fresh.push([tk, hh, 1 - age / 0.45])
+          if (age < 0.45) {
+            const f = (fresh[nFresh++] ??= { tk, hh, a: 0 })
+            f.tk = tk
+            f.hh = hh
+            f.a = 1 - age / 0.45
+          }
         }
         g.fill()
       }
@@ -419,7 +440,8 @@ export function voiceScene(ctx: SceneCtx) {
       }
       g.fill()
       // the newest reeds still carry the reader's vermilion
-      for (const [tk, hh, a] of fresh) {
+      for (let i = 0; i < nFresh; i++) {
+        const { tk, hh, a } = fresh[i]
         g.fillStyle = rgba(pal.verm, a * 0.85)
         g.beginPath()
         reed(g, tk.x, base, hh, tk.tw, tk.lean * hh + swayAt(tk.x, hh), -1)
@@ -470,14 +492,16 @@ export function voiceScene(ctx: SceneCtx) {
     dirty = false
   }
 
-  const frame = () => {
+  // reduced motion: createLoop keeps it paused; every change draws directly instead
+  const loop = createLoop(root, () => {
     const now = performance.now()
     const live = !ctx.reduced && ctx.quality !== 'low'
     const gliding = view.base !== base || view.maxH !== maxH
-    if (!live && !dirty && !gliding && !ripples.length && !(play && play.isActive()) && st.oldA <= 0) return
+    // nothing moves: sleep until layout() / start() / finish()
+    if (!live && !dirty && !gliding && !ripples.length && !(play && play.isActive()) && st.oldA <= 0) return false
     if (rd && st.p >= 0) syncWords()
     draw(now)
-  }
+  })
 
   function syncWords() {
     if (!rd) return
@@ -522,10 +546,12 @@ export function voiceScene(ctx: SceneCtx) {
       play = gsap.fromTo(st, { p: 0 }, { p: rd!.T, duration: rd!.T, ease: 'none', delay: old.length ? 0.35 : 0.1, onComplete: () => tm.later(finish, 0) })
     })
     st.p = 0
+    loop.start()
   }
 
   function finish() {
     syncWords()
+    loop.start() // the last ripples
     if (!readOnce) {
       readOnce = true
       ctx.insight(V.insight, V.detail)
@@ -580,10 +606,10 @@ export function voiceScene(ctx: SceneCtx) {
     if (W) paintBg()
     draw(performance.now())
   })
-  gsap.ticker.add(frame)
+  loop.start()
 
   return () => {
-    gsap.ticker.remove(frame)
+    loop.dispose()
     ro.disconnect()
     cancelAnimationFrame(raf)
     unTheme()

@@ -1,7 +1,8 @@
 import { fill, h, nextId, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
 import type { SceneCtx } from '../types'
-import { arc, brush, C, ell, loop, path, poly, rng, smooth, spline, stableHeight, watchSize, type Pt } from './kit'
+import { createLoop } from '../../core/loop'
+import { arc, brush, C, ell, path, poly, rng, smooth, spline, stableHeight, watchSize, type Pt } from './kit'
 
 const G = C.scenes.glitch
 const VW = 240
@@ -363,21 +364,21 @@ export function glitchScene(ctx: SceneCtx) {
     if (found.size === cards.length) setTimeout(() => ctx.insight(G.insight, G.detail), ctx.reduced ? 0 : 900)
   }
 
-  const draw = () =>
-    cards.forEach((c, i) => {
+  const draw = () => {
+    for (let i = 0; i < cards.length; i++) {
+      const c = cards[i]
       c.clip.update(c.t, found.has(i))
       c.head.style.left = `${(c.t * 100).toFixed(2)}%`
-    })
+    }
+  }
   draw()
-  const stop = ctx.reduced
-    ? () => {}
-    : loop((_, dt) => {
-        cards.forEach((c, i) => {
-          if (found.has(i)) return
-          c.t = (c.t + dt / PERIOD) % 1
-        })
-        draw()
-      })
+  // the clips play until every glitch is found (found ones hold still)
+  const play = createLoop(grid, (_, dt) => {
+    for (let i = 0; i < cards.length; i++) if (!found.has(i)) cards[i].t = (cards[i].t + dt / PERIOD) % 1
+    draw()
+    if (found.size === cards.length) return false
+  })
+  if (!ctx.reduced) play.start()
 
   // ───────── layout: three in a row when wide; two over one when tall ─────────
   function layout(W: number, Hh: number) {
@@ -402,7 +403,7 @@ export function glitchScene(ctx: SceneCtx) {
   if (!ctx.reduced) gsap.from(cards.map((c) => c.btn.parentElement), { opacity: 0, y: 18, filter: 'blur(6px)', duration: 1.2, stagger: 0.14, ease: 'power3.out', delay: 0.2, clearProps: 'filter' })
 
   return () => {
-    stop()
+    play.dispose()
     unwatch()
   }
 }

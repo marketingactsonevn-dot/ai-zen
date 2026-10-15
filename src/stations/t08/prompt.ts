@@ -2,7 +2,8 @@ import { h, nextId, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
 import type { SceneCtx } from '../types'
 import { character, landscape, SH, SW, walkPose, type Pose } from './demos'
-import { arc, brush, C, clamp, ell, lerp, loop, path, pebble, rng, smooth, stableHeight, watchSize, type Pt } from './kit'
+import { createLoop } from '../../core/loop'
+import { arc, brush, C, clamp, ell, lerp, path, pebble, rng, smooth, stableHeight, watchSize, type Pt } from './kit'
 
 const P = C.scenes.prompt
 type Part = 'subject' | 'action' | 'camera' | 'light' | 'sound'
@@ -175,10 +176,11 @@ export function promptScene(ctx: SceneCtx) {
     warm.setAttribute('opacity', (0.07 * L).toFixed(3))
     sun.setAttribute('opacity', (0.85 * L).toFixed(3))
     veil.setAttribute('opacity', (0.42 * (1 - L)).toFixed(3))
-    mists.forEach(({ p, ph }, i) => {
+    for (let i = 0; i < mists.length; i++) {
+      const { p, ph } = mists[i]
       p.setAttribute('opacity', (0.82 - 0.42 * L).toFixed(3))
       p.setAttribute('transform', `translate(${(Math.sin(t * 0.16 + ph) * 26 - i * 6).toFixed(1)} 0)`)
-    })
+    }
     // the walker: stands on the bridge, or walks across it once there is an action
     let pose: Pose
     if (prm.action > 0.5) {
@@ -197,21 +199,21 @@ export function promptScene(ctx: SceneCtx) {
     // the bell: rings spread from the pagoda, the sound track pulses with each strike
     const S = prm.sound
     const k = t % 2.6
-    rings.forEach((p, i) => {
+    for (let i = 0; i < rings.length; i++) {
       const u = clamp((k - i * 0.16) / 1.6)
       const R = 6 + u * 46
-      p.setAttribute('d', S > 0.01 && u > 0 && u < 1 ? brush(arc(272, 84, R, R * 0.7, -160, -20, 18), 1.4 * (1 - u) + 0.3, { a: 0.2, b: 0.3, min: 0.3 }) : '')
-      p.setAttribute('opacity', (S * 0.8 * (1 - u)).toFixed(3))
-    })
+      rings[i].setAttribute('d', S > 0.01 && u > 0 && u < 1 ? brush(arc(272, 84, R, R * 0.7, -160, -20, 18), 1.4 * (1 - u) + 0.3, { a: 0.2, b: 0.3, min: 0.3 }) : '')
+      rings[i].setAttribute('opacity', (S * 0.8 * (1 - u)).toFixed(3))
+    }
     track.setAttribute('opacity', S.toFixed(3))
     if (S > 0.01) {
-      bars.forEach((b, i) => {
+      for (let i = 0; i < N; i++) {
         const x = i / (N - 1)
         const e = Math.exp(-Math.max(0, k - x * 0.25) / 0.6)
         const hh = 1.2 + S * (1.5 + 11 * e * (0.5 + 0.5 * jit[i]) + jit[(i * 7) % N] * 1.5)
-        b.setAttribute('y', (170 - hh / 2).toFixed(1))
-        b.setAttribute('height', hh.toFixed(1))
-      })
+        bars[i].setAttribute('y', (170 - hh / 2).toFixed(1))
+        bars[i].setAttribute('height', hh.toFixed(1))
+      }
     }
     slate.setAttribute('opacity', prm.rule.toFixed(3))
   }
@@ -222,12 +224,11 @@ export function promptScene(ctx: SceneCtx) {
     slate.firstElementChild!.setAttribute('width', String(Math.ceil(w + 30)))
   }
 
-  const stop = ctx.reduced
-    ? () => {}
-    : loop((t) => {
-        tNow = t
-        draw(t)
-      })
+  const clip = createLoop(screen, (t) => {
+    tNow = t
+    draw(t)
+  })
+  if (!ctx.reduced) clip.start()
   if (ctx.reduced) draw(3)
 
   // ───────── stones: pebbles sized to their names ─────────
@@ -325,7 +326,7 @@ export function promptScene(ctx: SceneCtx) {
   }
 
   return () => {
-    stop()
+    clip.dispose()
     unwatch()
   }
 }

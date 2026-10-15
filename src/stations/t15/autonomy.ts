@@ -720,12 +720,14 @@ export function autonomyScene(ctx: SceneCtx) {
   let drag = false
   let dragPend = -1
   let dragTimer = 0
+  // measured once per drag: reading it on every move would force a layout after each thumb/caption write
+  let sliderLeft = 0
   const nearest = (clientX: number) => {
-    const r = slider.getBoundingClientRect()
-    const x = clamp(clientX - r.left, 26, 26 + G.ns * 4)
+    const x = clamp(clientX - sliderLeft, 26, 26 + G.ns * 4)
     return { x, i: Math.round((x - 26) / G.ns) }
   }
   slider.addEventListener('pointerdown', (e) => {
+    sliderLeft = slider.getBoundingClientRect().left
     drag = true
     slider.setPointerCapture(e.pointerId)
     slider.classList.add('drag')

@@ -1,5 +1,6 @@
 import { h, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
+import { createLoop } from '../../core/loop'
 import { cssVar, prefs } from '../../core/prefs'
 import { logoStone } from '../../ui/logo'
 import type { SceneCtx } from '../types'
@@ -31,8 +32,11 @@ const MOODS: Mood[] = [
     hz: [220, 261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25], wave: 'triangle', attack: 0.006, decay: 1.9, extra: 'rain' },
 ]
 const LOOP = 16 // beats per phrase
+const RAKE_RINGS = [0.32, 0.72]
 
 interface Note { x: number; pos: number; beats: number; bass: boolean; born: number; drop: boolean; landed: boolean; sung: number; dead: number; seed: number; mark: boolean }
+/** A stone drawn this frame (pooled: draw() runs every frame). */
+interface Vis { n: Note; x: number; y: number; a: number; down: boolean }
 
 /** A pre-painted picture whose local origin (the bamboo's foot) sits at (ox, oy) inside it. */
 interface Sprite { cv: HTMLCanvasElement; ox: number; oy: number; w: number; h: number }
@@ -343,7 +347,6 @@ export function streamScene(ctx: SceneCtx) {
   let notes: Note[] = []
   let nextLoop = 0
   let off = 0
-  let last = performance.now()
   let kick = 0
   let firstSong = false
   let dirty = true
@@ -461,6 +464,7 @@ export function streamScene(ctx: SceneCtx) {
     if (ctx.reduced && mood >= 0) placeStatic()
     dirty = true
     draw(performance.now())
+    loop.start() // a sleeping low-quality loop wakes for the glide
   }
 
   function spawnLoop(m: Mood, startX: number, now: number, dropAll: boolean) {
@@ -500,6 +504,7 @@ export function streamScene(ctx: SceneCtx) {
       else if (rights) showRights()
       return
     }
+    loop.start()
     nextLoop = spawnLoop(MOODS[i], off + xp + sp * 1.8, now, true)
     while (nextLoop - off < sx1 + pxBeat() * 6) nextLoop = spawnLoop(MOODS[i], nextLoop, now, true)
     if (MOODS[i].extra === 'petals') {
@@ -570,9 +575,12 @@ export function streamScene(ctx: SceneCtx) {
     }
   }
 
+  const sz: [number, number] = [0, 0] // reused: callers destructure it at once
   const size = (n: Note) => {
     const rx = sp * (n.bass ? 0.95 : 0.5 + 0.1 * Math.min(n.beats, 4))
-    return [rx, rx * (n.bass ? 0.5 : 0.62)]
+    sz[0] = rx
+    sz[1] = rx * (n.bass ? 0.5 : 0.62)
+    return sz
   }
 
   function stone(gc: CanvasRenderingContext2D, n: Note, x: number, y: number, a: number, now: number) {
@@ -641,7 +649,11 @@ export function streamScene(ctx: SceneCtx) {
   }
 
   /** The highest a raindrop may fall from at x: below the description chips and the brand. */
-  const skyTop = (x: number, stop: number) => keep.reduce((t, k) => (x > k.x0 && x < k.x1 && k.y0 < stop ? Math.max(t, k.y1) : t), 0)
+  const skyTop = (x: number, stop: number) => {
+    let t = 0
+    for (const k of keep) if (x > k.x0 && x < k.x1 && k.y0 < stop) t = Math.max(t, k.y1)
+    return t
+  }
 
   function rain(gc: CanvasRenderingContext2D, clock: number) {
     const N = ctx.quality === 'low' ? 16 : 30
@@ -702,6 +714,12 @@ export function streamScene(ctx: SceneCtx) {
     if (skyClip) gc.restore()
   }
 
+  function petal(gc: CanvasRenderingContext2D, r: number, k: number) {
+    const t = (k / 5) * Math.PI * 2
+    gc.moveTo(Math.cos(t) * r * 0.62 + r * 0.5, Math.sin(t) * r * 0.62)
+    gc.arc(Math.cos(t) * r * 0.62, Math.sin(t) * r * 0.62, r * 0.5, 0, Math.PI * 2)
+  }
+
   /** A plum blossom adrift: five round petals of pale wash, a few ink stamens. */
   function blossom(gc: CanvasRenderingContext2D, x: number, y: number, r: number, rot: number, a: number) {
     gc.save()
@@ -709,23 +727,18 @@ export function streamScene(ctx: SceneCtx) {
     gc.rotate(rot)
     gc.scale(1, 0.62)
     gc.globalAlpha = a
-    const petal = (k: number) => {
-      const t = (k / 5) * Math.PI * 2
-      gc.moveTo(Math.cos(t) * r * 0.62 + r * 0.5, Math.sin(t) * r * 0.62)
-      gc.arc(Math.cos(t) * r * 0.62, Math.sin(t) * r * 0.62, r * 0.5, 0, Math.PI * 2)
-    }
     if (pal.dark) {
       // pale translucent petals on a night stream: where they overlap, the light gathers at the heart
       gc.fillStyle = rgba(pal.ink, 0.16)
       for (let k = 0; k < 5; k++) {
         gc.beginPath()
-        petal(k)
+        petal(gc, r, k)
         gc.fill()
       }
     } else {
       // a fine ink outline only where the petals meet the paper: stroke first, the opaque petals cover the inner arcs
       gc.beginPath()
-      for (let k = 0; k < 5; k++) petal(k)
+      for (let k = 0; k < 5; k++) petal(gc, r, k)
       gc.strokeStyle = rgba(pal.ink3, 0.55)
       gc.lineWidth = 1.4
       gc.stroke()
@@ -741,6 +754,33 @@ export function streamScene(ctx: SceneCtx) {
     }
     gc.restore()
     gc.globalAlpha = 1
+  }
+
+  // reused every frame by draw()
+  const groove: Pt[] = []
+  let rakeJ = 0
+  let rakeW = 0
+  const rakeHw = (i: number, t: number) => rakeW + 0.4 * Math.sin(i * 0.37 + rakeJ * 1.7 + t * 9) ** 2
+  const edgeHw = () => 0.45
+  const visB: Vis[] = [] // bass stones first, then the melody: the order the stones are painted in
+  const visM: Vis[] = []
+  let nB = 0
+  let nM = 0
+  function keepVis(n: Note, x: number, y: number, a: number, down: boolean) {
+    const pool = n.bass ? visB : visM
+    const v = (pool[n.bass ? nB++ : nM++] ??= { n, x, y, a, down })
+    v.n = n
+    v.x = x
+    v.y = y
+    v.a = a
+    v.down = down
+  }
+  function fadeEnd(gc: CanvasRenderingContext2D, x0: number, x1: number, by: number, bh: number) {
+    const fg = gc.createLinearGradient(x0, 0, x1, 0)
+    fg.addColorStop(0, 'rgba(0,0,0,1)')
+    fg.addColorStop(1, 'rgba(0,0,0,0)')
+    gc.fillStyle = fg
+    gc.fillRect(Math.min(x0, x1), by, Math.abs(x1 - x0), bh)
   }
 
   function draw(now: number) {
@@ -767,30 +807,34 @@ export function streamScene(ctx: SceneCtx) {
     const step = Math.max(6, W / 120)
     for (let j = -3; j <= 3; j++) {
       const staff = Math.abs(j) <= 2
-      const pts: Pt[] = []
-      for (let x = sx0 - step; x <= sx1 + step; x += step) pts.push([x, yc(x) + j * sp + Math.sin(x * 0.028 + flow * 1.5 + j * 0.9) * sp * 0.06])
+      let np = 0
+      for (let x = sx0 - step; x <= sx1 + step; x += step) {
+        const p = (groove[np++] ??= [0, 0])
+        p[0] = x
+        p[1] = yc(x) + j * sp + Math.sin(x * 0.028 + flow * 1.5 + j * 0.9) * sp * 0.06
+      }
       gc.fillStyle = staff ? rgba(pal.ink, pal.dark ? 0.3 : 0.32) : rgba(pal.ink, pal.dark ? 0.11 : 0.12)
       gc.beginPath()
-      ribbon(gc, pts, (i, t) => (staff ? 0.55 : 0.45) + 0.4 * Math.sin(i * 0.37 + j * 1.7 + t * 9) ** 2)
+      rakeJ = j
+      rakeW = staff ? 0.55 : 0.45
+      ribbon(gc, groove, rakeHw, np)
       gc.fill()
-      // the groove's lit edge
+      // the groove's lit edge, 1.6px lower
       gc.fillStyle = pal.rakeHi
+      gc.save()
+      gc.translate(0, 1.6)
       gc.beginPath()
-      ribbon(gc, pts.map(([x, y]) => [x, y + 1.6] as Pt), () => 0.45)
+      ribbon(gc, groove, edgeHw, np)
       gc.fill()
+      gc.restore()
     }
     // the gravel fades into paper at both ends (only the gravel band: the far shore above keeps its own fade)
     gc.globalCompositeOperation = 'destination-out'
     const fw = (sx1 - sx0) * 0.08
     const by = cy - amp - 3.6 * sp
     const bh = 2 * (amp + 3.6 * sp)
-    for (const [x0, x1] of [[sx0, sx0 + fw], [sx1, sx1 - fw]]) {
-      const fg = gc.createLinearGradient(x0, 0, x1, 0)
-      fg.addColorStop(0, 'rgba(0,0,0,1)')
-      fg.addColorStop(1, 'rgba(0,0,0,0)')
-      gc.fillStyle = fg
-      gc.fillRect(Math.min(x0, x1), by, Math.abs(x1 - x0), bh)
-    }
+    fadeEnd(gc, sx0, sx0 + fw, by, bh)
+    fadeEnd(gc, sx1, sx1 - fw, by, bh)
     gc.fillStyle = 'rgba(0,0,0,1)'
     gc.fillRect(0, by, sx0, bh)
     gc.fillRect(sx1, by, W - sx1, bh)
@@ -811,7 +855,7 @@ export function streamScene(ctx: SceneCtx) {
 
     // stones: where each sits, the gravel is raked in rings around it
     const DROP = 650
-    const vis: [Note, number, number, number, boolean][] = []
+    nB = nM = 0
     const SW = sx1 - sx0
     for (const n of notes) {
       const sx = n.x - off
@@ -838,11 +882,11 @@ export function streamScene(ctx: SceneCtx) {
           down = false
         }
       }
-      if (a > 0.01) vis.push([n, sx, y, a, down])
+      if (a > 0.01) keepVis(n, sx, y, a, down)
     }
-    vis.sort((p, q) => Number(q[0].bass) - Number(p[0].bass))
     gc.globalCompositeOperation = 'destination-out'
-    for (const [n, x, y, a, down] of vis) {
+    for (let i = 0; i < nB + nM; i++) {
+      const { n, x, y, a, down } = i < nB ? visB[i] : visM[i - nB]
       if (!down) continue
       const [rx, ry] = size(n)
       gc.fillStyle = `rgba(0,0,0,${a})`
@@ -851,10 +895,11 @@ export function streamScene(ctx: SceneCtx) {
       gc.fill()
     }
     gc.globalCompositeOperation = 'source-over'
-    for (const [n, x, y, a, down] of vis) {
-      if (!down || !n.bass) continue
+    for (let i = 0; i < nB; i++) {
+      const { n, x, y, a, down } = visB[i]
+      if (!down) continue
       const [rx, ry] = size(n)
-      for (const k of [0.32, 0.72]) {
+      for (const k of RAKE_RINGS) {
         gc.lineWidth = 1.1
         gc.strokeStyle = rgba(pal.ink, (pal.dark ? 0.26 : 0.22) * a)
         gc.beginPath()
@@ -868,9 +913,13 @@ export function streamScene(ctx: SceneCtx) {
         gc.globalAlpha = 1
       }
     }
-    for (const [n, x, y, a] of vis) stone(gc, n, x, y, a, now)
+    for (let i = 0; i < nB + nM; i++) {
+      const v = i < nB ? visB[i] : visM[i - nB]
+      stone(gc, v.n, v.x, v.y, v.a, now)
+    }
     // each © stone is tied by a thread of ink dots to the ghost of the real song it was learned from, upstream
-    for (const [n, x, y, a, down] of vis) {
+    for (let i = 0; i < nB + nM; i++) {
+      const { n, x, y, a, down } = i < nB ? visB[i] : visM[i - nB]
       if (!n.mark || !down) continue
       const [rx, ry] = size(n)
       const gx = x + sp * 1.3
@@ -933,11 +982,10 @@ export function streamScene(ctx: SceneCtx) {
     dirty = false
   }
 
-  const frame = () => {
+  // reduced motion: createLoop keeps it paused; every change draws directly instead
+  const loop = createLoop(root, (_t, dt) => {
     const now = performance.now()
-    const dt = Math.min(0.05, (now - last) / 1000)
-    last = now
-    if (ctx.reduced) return
+    if (ctx.reduced) return false
     if (mood >= 0) {
       const m = MOODS[mood]
       off += m.bps * m.ppb * sp * dt
@@ -954,12 +1002,14 @@ export function streamScene(ctx: SceneCtx) {
         }
       }
       if (nextLoop - off < sx1 + pxBeat() * 6) nextLoop = spawnLoop(m, nextLoop, now, false)
-      notes = notes.filter((n) => n.x - off > sx0 - sp * 4 && !(n.dead && now - n.dead > 800))
-    } else if (ctx.quality === 'low' && !dirty && !view.dy) return
+      let kept = 0
+      for (const n of notes) if (n.x - off > sx0 - sp * 4 && !(n.dead && now - n.dead > 800)) notes[kept++] = n
+      notes.length = kept
+    } else if (ctx.quality === 'low' && !dirty && !view.dy) return false // a still picture: sleep until choose() / layout()
     kick *= Math.exp(-dt * 2.2)
     sunA += ((mood === 1 ? 1 : 0) - sunA) * Math.min(1, dt * 1.2)
     draw(now)
-  }
+  })
 
   gsap.set([melLab, harLab, brand], { autoAlpha: 0 })
   if (!ctx.reduced) gsap.from(moods, { y: 10, opacity: 0, duration: 1.1, stagger: 0.14, delay: 0.5, ease: 'power3.out' })
@@ -976,10 +1026,10 @@ export function streamScene(ctx: SceneCtx) {
     serif = cssVar('--serif')
     layout()
   })
-  gsap.ticker.add(frame)
+  loop.start()
 
   return () => {
-    gsap.ticker.remove(frame)
+    loop.dispose()
     ro.disconnect()
     cancelAnimationFrame(raf)
     unTheme()

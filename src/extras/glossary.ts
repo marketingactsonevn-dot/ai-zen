@@ -4,6 +4,7 @@ import { fill, h, s } from '../core/dom'
 import { ALL_STATIONS, GARDENS, type Fact, type Garden } from '../core/content'
 import { cssVar, onPrefs, prefs } from '../core/prefs'
 import { gsap } from '../core/anim'
+import { createLoop } from '../core/loop'
 import { progress } from '../core/progress'
 import { fact, tag } from '../ui/fact'
 import { setCrumb } from '../ui/topbar'
@@ -1173,17 +1174,18 @@ export function render(root: HTMLElement): () => void {
   type Thread = { ax: number; ay: number; bx: number; by: number; t: number }
   const rips: Rip[] = []
   const threads: Thread[] = []
-  let raf = 0
-  const tick = () => {
-    raf = 0
-    if (!alive) return
+  const fxg = fx.getContext('2d')!
+  // colours are read on mount and in onPrefs (theme), never per frame
+  let ink = cssVar('--ink')
+  let ver = cssVar('--vermilion')
+  /** one coordinate of the thread's quadratic curve */
+  const qb = (a: number, m: number, b: number, t: number) => (1 - t) ** 2 * a + 2 * (1 - t) * t * m + t * t * b
+  const loop = createLoop(fx, () => {
+    const g = fxg
     const d = dpr()
-    const g = fx.getContext('2d')!
     g.setTransform(d, 0, 0, d, 0, 0)
     g.clearRect(0, 0, W, H)
     const now = performance.now()
-    const ink = cssVar('--ink')
-    const ver = cssVar('--vermilion')
     for (let i = rips.length - 1; i >= 0; i--) {
       const r = rips[i]
       const age = (now - r.t) / 1000 / (r.ver ? 2.4 : 1.9)
@@ -1215,39 +1217,35 @@ export function render(root: HTMLElement): () => void {
       const p = 1 - (1 - Math.min(1, age / 1.05)) ** 3
       const fade = age < 1.3 ? 1 : 1 - (age - 1.3) / 1.5
       const mx = (th.ax + th.bx) / 2, my = Math.min(th.ay, th.by) - Math.hypot(th.bx - th.ax, th.by - th.ay) * 0.14
-      const at = (t: number): Pt => [
-        (1 - t) ** 2 * th.ax + 2 * (1 - t) * t * mx + t * t * th.bx,
-        (1 - t) ** 2 * th.ay + 2 * (1 - t) * t * my + t * t * th.by,
-      ]
       g.strokeStyle = ver
       g.fillStyle = ver
       g.lineCap = 'round'
       const n = 64
-      let prev = at(0)
+      let px = qb(th.ax, mx, th.bx, 0), py = qb(th.ay, my, th.by, 0)
       for (let k = 1; k <= n * p; k++) {
         const t = k / n
-        const pt = at(t)
+        const x = qb(th.ax, mx, th.bx, t), y = qb(th.ay, my, th.by, t)
         // pressed where it leaves the stone, a dry hair by the time it reaches the paper
         g.globalAlpha = 0.6 * fade * (1 - t * 0.45)
         g.lineWidth = 0.7 + 1.8 * (1 - t) ** 1.4
         g.beginPath()
-        g.moveTo(prev[0], prev[1])
-        g.lineTo(pt[0], pt[1])
+        g.moveTo(px, py)
+        g.lineTo(x, y)
         g.stroke()
-        prev = pt
+        px = x
+        py = y
       }
       if (p < 1) {
-        const hd = at(p)
         g.globalAlpha = 0.85 * fade
         g.beginPath()
-        g.arc(hd[0], hd[1], 2.6, 0, TAU)
+        g.arc(qb(th.ax, mx, th.bx, p), qb(th.ay, my, th.by, p), 2.6, 0, TAU)
         g.fill()
       }
     }
     g.globalAlpha = 1
-    if (rips.length || threads.length) raf = requestAnimationFrame(tick)
-  }
-  const kick = () => void (raf ||= requestAnimationFrame(tick))
+    return rips.length > 0 || threads.length > 0
+  })
+  const kick = () => void (alive && loop.start())
   function ripple(x: number, y: number, hw: number, hh: number, ver: boolean, reach: number) {
     if (reduced) return
     rips.push({ x, y, hw, hh, t: performance.now(), ver, reach })
@@ -1549,7 +1547,11 @@ export function render(root: HTMLElement): () => void {
     relayout = requestAnimationFrame(layout)
   })
   ro.observe(field)
-  const offPrefs = onPrefs(() => W && drawSand(false))
+  const offPrefs = onPrefs(() => {
+    ink = cssVar('--ink')
+    ver = cssVar('--vermilion')
+    if (W) drawSand(false)
+  })
   const refit = () => {
     if (!alive) return
     cardCache.clear()
@@ -1580,7 +1582,7 @@ export function render(root: HTMLElement): () => void {
     cro.disconnect()
     offPrefs()
     document.fonts?.removeEventListener('loadingdone', refit)
-    cancelAnimationFrame(raf)
+    loop.dispose()
     cancelAnimationFrame(relayout)
     clearTimeout(sandTimer)
     intro?.kill()

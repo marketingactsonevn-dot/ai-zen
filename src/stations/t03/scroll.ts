@@ -6,6 +6,7 @@ import { brush, drawIn, ell, Pen, peaks, rng, type Extra, type Pt, type TL } fro
 import { VIGNETTES } from './vignettes'
 import { C } from './data'
 import { octaves } from '../../ui/ink'
+import { createLoop } from '../../core/loop'
 
 const T = C.scenes.scroll
 const N = T.events.length
@@ -56,7 +57,6 @@ export function scrollScene(ctx: SceneCtx) {
   let ti = 0
   let cur = -1
   let pending = -1
-  let raf = 0
   let actT = 0
   let snapT = 0
   let ready = false
@@ -271,11 +271,12 @@ export function scrollScene(ctx: SceneCtx) {
     return it.ghost
   }
   function ghosts(n: number) {
-    items.forEach((it, i) => {
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i]
       const near = Math.abs(i - n) <= 3
       if (near && !it.ghost?.isConnected) it.hold.prepend(ghost(i))
       else if (!near && it.ghost?.isConnected) it.ghost.remove()
-    })
+    }
   }
 
   // ───────── motion ─────────
@@ -306,19 +307,22 @@ export function scrollScene(ctx: SceneCtx) {
     }
   }
   let lastT = 0
-  function tick(now: number) {
-    const dt = lastT ? Math.min(1, (now - lastT) / 1000) : 1 / 60
+  // eases x → tx, then stops; essential: it is the scroll itself (under reduced motion it lands in one frame)
+  const loop = createLoop(view, () => {
+    const now = performance.now()
+    const dt = lastT ? Math.min(1, (now - lastT) / 1000) : 1 / 60 // own clock: keeps the 1 s cap of the original easing
     lastT = now
     const kk = drag || ctx.reduced ? 1 : 1 - Math.exp(-dt / 0.19)
     x += (tx - x) * kk
     if (Math.abs(tx - x) < 0.4) x = tx
     render()
-    raf = x !== tx ? requestAnimationFrame(tick) : 0
-    if (!raf) lastT = 0
-  }
+    if (x !== tx) return
+    lastT = 0
+    return false
+  }, { essential: true })
   function setX(v: number) {
     tx = clamp(v, -W * 0.06, end() + W * 0.3)
-    if (!raf) raf = requestAnimationFrame(tick)
+    loop.start()
   }
   function goTo(i: number) {
     ti = clamp(i, 0, N - 1)
@@ -462,7 +466,7 @@ export function scrollScene(ctx: SceneCtx) {
   return () => {
     alive = false
     ro.disconnect()
-    cancelAnimationFrame(raf)
+    loop.dispose()
     cancelAnimationFrame(rraf)
     clearTimeout(actT)
     clearTimeout(snapT)

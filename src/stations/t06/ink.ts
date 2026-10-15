@@ -1,6 +1,7 @@
 import raw from '../../content/tram-06.json'
 import type { Fact, StationContent } from '../../core/content'
 import { h, nextId, s } from '../../core/dom'
+import { createLoop } from '../../core/loop'
 import type { SceneCtx } from '../types'
 
 /** Sumi-e toolkit for Trạm 6: tapered brush strokes, organic blobs, text measuring, stable layout. */
@@ -215,25 +216,12 @@ export function onTheme(ctx: SceneCtx, fn: () => void) {
   ctx.onCleanup(() => mo.disconnect())
 }
 
-/** A RAF loop that stops itself on cleanup. dt in seconds (capped). */
-export function loop(ctx: SceneCtx, step: (dt: number, now: number) => void) {
-  let raf = 0
-  let last = performance.now()
-  let on = true
-  const tick = (now: number) => {
-    if (!on) return
-    const dt = Math.min(0.05, (now - last) / 1000)
-    last = now
-    step(dt, now)
-    raf = requestAnimationFrame(tick)
-  }
-  raf = requestAnimationFrame(tick)
-  const stop = () => {
-    on = false
-    cancelAnimationFrame(raf)
-  }
-  ctx.onCleanup(stop)
-  return stop
+/** A frame loop on the scene's art (pauses offscreen, hidden tab, reduced motion), disposed on cleanup. dt in seconds (≤ 0.05). step returns false to idle until start(). */
+export function loop(ctx: SceneCtx, step: (dt: number) => void | boolean) {
+  const l = createLoop(ctx.art, (_t, dt) => step(dt))
+  l.start()
+  ctx.onCleanup(l.dispose)
+  return l
 }
 
 /** Theme gradients one SVG needs (stone tops, glow): returns their ids. */

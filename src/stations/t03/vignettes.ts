@@ -1,5 +1,6 @@
 import { s } from '../../core/dom'
 import { gsap } from '../../core/anim'
+import { createLoop } from '../../core/loop'
 import { arc, brush, cursive, ell, lerp, poly, rect, rng, rrD, rrPts, type Picture, type Pt } from './brush'
 
 /** Eleven milestone pictures, each drawn in a 300 × 300 box with the ground at y ≈ 262. */
@@ -143,11 +144,9 @@ const winter: Picture = (p) => {
   p.fades.push(g)
   return {
     loop() {
-      let raf = 0
-      let last = performance.now()
-      const step = (now: number) => {
-        const dt = Math.min(0.05, (now - last) / 1000)
-        last = now
+      // dt: the loop's own (≤ 0.05 s, as before); host: the picture's <svg>, so the snow stops offscreen
+      const lp = createLoop(g.ownerSVGElement ?? g, (_t, dt) => {
+        const now = performance.now()
         for (const f of flakes) {
           f.y += f.v * dt
           if (f.y > 256) f.y = 40
@@ -155,10 +154,9 @@ const winter: Picture = (p) => {
           f.el.setAttribute('cy', f.y.toFixed(1))
           f.el.setAttribute('fill-opacity', Math.min(1, (f.y - 40) / 24).toFixed(2)) // flakes appear softly, below the year
         }
-        raf = requestAnimationFrame(step)
-      }
-      raf = requestAnimationFrame(step)
-      return () => cancelAnimationFrame(raf)
+      })
+      lp.start()
+      return () => lp.dispose()
     },
   }
 }

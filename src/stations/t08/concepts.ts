@@ -2,7 +2,8 @@ import { h, nextId, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
 import type { SceneCtx } from '../types'
 import { DEMOS, idleDemo, SH, SW, type Demo } from './demos'
-import { brush, C, loop, path, pebble, rng, stableHeight, watchSize, type Pt } from './kit'
+import { createLoop } from '../../core/loop'
+import { brush, C, path, pebble, rng, stableHeight, watchSize, type Pt } from './kit'
 
 const K = C.scenes.concepts
 
@@ -68,7 +69,9 @@ export function conceptsScene(ctx: SceneCtx) {
     if (seen.size === 4) ctx.insight(K.insight, K.detail)
   }
 
-  const stop = ctx.reduced ? () => {} : loop(() => demo.update((performance.now() - t0) / 1000))
+  // the demo plays while the screen is in view; reduced motion keeps its still frame
+  const play = createLoop(screen, () => demo.update((performance.now() - t0) / 1000))
+  if (!ctx.reduced) play.start()
 
   // ───────── stepping stones: each pebble sized to its word, drawn at its real size ─────────
   // three or four sizes, a zigzag path when there is height, else two staggered rows (4 + 3)
@@ -164,7 +167,7 @@ export function conceptsScene(ctx: SceneCtx) {
   }
 
   return () => {
-    stop()
+    play.dispose()
     unwatch()
   }
 }

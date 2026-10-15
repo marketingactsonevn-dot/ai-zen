@@ -35,12 +35,17 @@ export function rng(seed: number) {
   }
 }
 
-/** '#rrggbb' token → rgba() with alpha (canvas helpers read tokens as hex). */
+/** '#rrggbb' token → rgba() with alpha (canvas helpers read tokens as hex). Parsed once per token: it runs every frame. */
+const rgbOf = new Map<string, string | null>()
 export const rgba = (hex: string, a: number) => {
-  const m = /^#?([0-9a-f]{6})$/i.exec(hex)
-  if (!m) return hex
-  const n = parseInt(m[1], 16)
-  return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`
+  let rgb = rgbOf.get(hex)
+  if (rgb === undefined) {
+    const m = /^#?([0-9a-f]{6})$/i.exec(hex)
+    const n = m ? parseInt(m[1], 16) : 0
+    rgb = m ? `${n >> 16},${(n >> 8) & 255},${n & 255}` : null
+    rgbOf.set(hex, rgb)
+  }
+  return rgb === null ? hex : `rgba(${rgb},${a})`
 }
 
 const f1 = (n: number) => Math.round(n * 10) / 10
@@ -145,12 +150,11 @@ export function timers() {
   }
 }
 
-/** Fill a ribbon of varying half-width along a polyline (cheap per-frame brush for canvas). */
-export function ribbon(g: CanvasRenderingContext2D, pts: Pt[], hw: (i: number, t: number) => number) {
-  const n = pts.length
+const rx: number[] = [] // the right edge, reused across calls (ribbon runs every frame)
+const ry: number[] = []
+/** Fill a ribbon of varying half-width along the first n points of a polyline (cheap per-frame brush for canvas). */
+export function ribbon(g: CanvasRenderingContext2D, pts: Pt[], hw: (i: number, t: number) => number, n = pts.length) {
   if (n < 2) return
-  const L: Pt[] = []
-  const R: Pt[] = []
   for (let i = 0; i < n; i++) {
     const A = pts[Math.max(0, i - 1)]
     const B = pts[Math.min(n - 1, i + 1)]
@@ -158,11 +162,11 @@ export function ribbon(g: CanvasRenderingContext2D, pts: Pt[], hw: (i: number, t
     const nx = -(B[1] - A[1]) / dl
     const ny = (B[0] - A[0]) / dl
     const w = hw(i, i / (n - 1))
-    L.push([pts[i][0] + nx * w, pts[i][1] + ny * w])
-    R.push([pts[i][0] - nx * w, pts[i][1] - ny * w])
+    if (i) g.lineTo(pts[i][0] + nx * w, pts[i][1] + ny * w)
+    else g.moveTo(pts[i][0] + nx * w, pts[i][1] + ny * w)
+    rx[i] = pts[i][0] - nx * w
+    ry[i] = pts[i][1] - ny * w
   }
-  g.moveTo(L[0][0], L[0][1])
-  for (let i = 1; i < n; i++) g.lineTo(L[i][0], L[i][1])
-  for (let i = n - 1; i >= 0; i--) g.lineTo(R[i][0], R[i][1])
+  for (let i = n - 1; i >= 0; i--) g.lineTo(rx[i], ry[i])
   g.closePath()
 }

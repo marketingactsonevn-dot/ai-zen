@@ -168,16 +168,22 @@ function textToVideo(words: string[]): Demo {
   const caret = path('', 'v')
   root.append(scene, noise, prompt, caret)
   const full = words[0] ?? ''
+  // the typed text's width, measured once per length (a layout read), not every frame
+  const widths: number[] = []
+  let shown = -1
   return {
     root,
     still: 6,
     update(t) {
       t %= 8
       const typed = Math.floor(clamp((t - 0.2) / 1.6) * full.length)
-      prompt.textContent = full.slice(0, typed)
+      if (typed !== shown) {
+        shown = typed
+        prompt.textContent = full.slice(0, typed)
+      }
       prompt.setAttribute('opacity', String(1 - smooth(2.1, 2.7, t)))
       prompt.setAttribute('transform', `translate(0 ${(-8 * smooth(2.1, 2.7, t)).toFixed(1)})`)
-      const w = (prompt.getComputedTextLength?.() || typed * 6.2) / 2
+      const w = ((widths[typed] ||= prompt.getComputedTextLength?.() || 0) || typed * 6.2) / 2
       caret.setAttribute('d', t < 2.1 && Math.floor(t * 3) % 2 === 0 ? `M${160 + w + 2} 85h1.6v14h-1.6Z` : '')
       // the grain arrives, then thins out as the picture appears
       const inA = smooth(1.9, 2.6, t)
@@ -408,20 +414,23 @@ function nativeAudio(words: string[]): Demo {
       const sw = k < 0.12 ? 0 : -Math.sin(clamp((k - 0.12) / (PERIOD - 0.12)) * Math.PI) * 24
       log.setAttribute('transform', `translate(${sw.toFixed(1)} 0)`)
       bell.setAttribute('transform', `rotate(${(Math.exp(-k / 0.3) * Math.sin(k * 30) * 2).toFixed(2)} 160 25)`)
-      ringEls.forEach((p, i) => {
+      for (let i = 0; i < ringEls.length; i++) {
+        const p = ringEls[i]
         const u = clamp((k - i * 0.14) / 1.4)
         const R = 14 + u * 70
         p.setAttribute('d', u > 0 && u < 1 ? brush(arc(160, 52, R, R * 0.8, -150 + i * 20, -30 - i * 20, 20), 1.6 * (1 - u) + 0.3, { a: 0.2, b: 0.3, min: 0.3 }) + brush(arc(160, 52, R, R * 0.8, 30 + i * 20, 150 - i * 20, 20), 1.6 * (1 - u) + 0.3, { a: 0.2, b: 0.3, min: 0.3 }) : '')
         p.setAttribute('opacity', String(0.8 * (1 - u)))
-      })
+      }
       const span = 28
-      cellEls.forEach((g, i) => {
+      for (let i = 0; i < cellEls.length; i++) {
+        const g = cellEls[i]
         let x = ((i * span - t * SPEED) % (span * 9) + span * 9) % (span * 9) + X0 - 8
         if (x > X1) x -= span * 9
         g.setAttribute('transform', `translate(${x.toFixed(1)} 0)`)
         g.setAttribute('opacity', x < X0 - 2 || x > X1 - 20 ? '0' : '1')
-      })
-      barEls.forEach((b, i) => {
+      }
+      for (let i = 0; i < N; i++) {
+        const b = barEls[i]
         const x = X0 + (i / (N - 1)) * (X1 - X0)
         const tau = t + (x - PX) / SPEED
         const e = env(tau)
@@ -432,7 +441,7 @@ function nativeAudio(words: string[]): Demo {
         b.setAttribute('x', (x - 1.3).toFixed(1))
         b.setAttribute('y', (y2 - hgt / 2).toFixed(1))
         b.setAttribute('height', hgt.toFixed(1))
-      })
+      }
     },
   }
 }
@@ -558,7 +567,7 @@ export function idleDemo(): Demo {
     root,
     still: 3.5,
     update(t) {
-      bands.forEach(({ p, ph }, i) => p.setAttribute('transform', `translate(${(Math.sin(t * 0.16 + ph) * 34 - i * 6).toFixed(1)} 0)`))
+      for (let i = 0; i < bands.length; i++) bands[i].p.setAttribute('transform', `translate(${(Math.sin(t * 0.16 + bands[i].ph) * 34 - i * 6).toFixed(1)} 0)`)
       const u = (t / 14 + 0.32) % 1
       bird.setAttribute('d', craneD(lerp(-30, 350, u), 78 - Math.sin(u * Math.PI) * 18, 1.5, Math.sin(t * 2.4) * 0.7))
       bird.setAttribute('opacity', (smooth(0, 0.06, u) * (1 - smooth(0.94, 1, u))).toFixed(2))

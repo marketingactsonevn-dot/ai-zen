@@ -125,9 +125,9 @@ export function hiddenScene(ctx: SceneCtx) {
     secretInk.style.setProperty('--mx', `${f1(pos.x - sec[0])}px`)
     secretInk.style.setProperty('--my', `${f1(pos.y - sec[1])}px`)
     if (found || !samples.length) return
-    samples.forEach(([x, y], i) => {
-      if (Math.hypot(x - pos.x, y - pos.y) < R * 0.72) visited.add(i)
-    })
+    for (let i = 0; i < samples.length; i++) {
+      if (Math.hypot(samples[i][0] - pos.x, samples[i][1] - pos.y) < R * 0.72) visited.add(i)
+    }
     if (visited.size / samples.length >= 0.5) reveal()
   }
 

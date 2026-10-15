@@ -123,12 +123,13 @@ const spiral: Picture = (p) => {
   g.append(fx)
   p.fades.push(fx)
   let L = 0
+  const marks = [dot, halo]
   /** u = 0…1 in time; the point covers u³ of the way, so it is three times faster at the end than on average */
   const place = (u: number) => {
-    L ||= trail.getTotalLength()
+    L ||= trail.getTotalLength() // measured once, on the first call
     const pos = u ** 3 * L
     const pt = trail.getPointAtLength(pos)
-    for (const el of [dot, halo]) el.setAttribute('cx', pt.x.toFixed(1)), el.setAttribute('cy', pt.y.toFixed(1))
+    for (const el of marks) el.setAttribute('cx', pt.x.toFixed(1)), el.setAttribute('cy', pt.y.toFixed(1))
     dot.setAttribute('r', (6 - 3.2 * u).toFixed(2))
     const seg = Math.min(pos, L * (0.01 + 0.2 * u * u))
     trail.setAttribute('stroke-dasharray', `${seg.toFixed(1)} ${(L * 2).toFixed(0)}`)

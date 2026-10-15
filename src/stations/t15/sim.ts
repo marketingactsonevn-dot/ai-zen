@@ -611,13 +611,23 @@ export function simScene(ctx: SceneCtx) {
       const a = A
       ctx.anim(() => {
         const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.4, delay: 0.8 })
+        // the thread only changes while the ember walks: measure it again only when its path did
+        let dKey: string | null = null
+        let L = 0
+        const len = () => {
+          const d = a.thread.getAttribute('d')
+          if (d !== dKey) {
+            dKey = d
+            L = a.thread.getTotalLength()
+          }
+          return L
+        }
         a.asks.forEach((dot, k) => {
           const p = { t: 0 }
           tl.fromTo(p, { t: 0 }, {
             t: 1, duration: 1.1, ease: 'power1.inOut',
             onUpdate: () => {
-              const L = a.thread.getTotalLength()
-              const pt = a.thread.getPointAtLength(L * (1 - p.t))
+              const pt = a.thread.getPointAtLength(len() * (1 - p.t))
               dot.setAttribute('cx', f1(pt.x))
               dot.setAttribute('cy', f1(pt.y))
             },

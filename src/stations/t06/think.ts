@@ -325,7 +325,7 @@ export function thinkScene(ctx: SceneCtx) {
         const [bx, by] = p.base
         const tip = by - p.len * (1 - c.burnNow) - 2
         const k = c.state === 'running' ? 1 : 0.6
-        p.smoke.forEach((sm, j) => {
+        for (let j = 0; j < p.smoke.length; j++) {
           const L = p.len * (0.8 + j * 0.3) * k
           let d = ''
           for (let i = 0; i <= 14; i++) {
@@ -333,8 +333,8 @@ export function thinkScene(ctx: SceneCtx) {
             const x = bx + Math.sin(u * 4.6 + t * (0.8 + j * 0.35) + j * 2.2) * u * (5 + j * 4) + u * u * (j ? -7 : 9)
             d += `${i ? 'L' : 'M'}${x.toFixed(1)} ${(tip - u * L).toFixed(1)}`
           }
-          sm.setAttribute('d', d)
-        })
+          p.smoke[j].setAttribute('d', d)
+        }
       }
     })
   }
