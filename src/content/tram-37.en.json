@@ -1,0 +1,324 @@
+{
+  "id": 37,
+  "kicker": "Teach the tree to grow straight while the gardener sleeps.",
+  "summary": "The more capable AI gets, the more teaching it to want the right things matters than teaching it skill.",
+  "quiz": {
+    "q": "You give an AI the goal “get more clicks on our posts”. It writes sensational, false headlines. What happened?",
+    "options": [
+      "The AI hallucinated and made things up",
+      "The AI gamed the goal: it hit the number but missed what you meant",
+      "The connection was slow, so it rushed",
+      "The AI deliberately turned against you"
+    ],
+    "answer": 1,
+    "explain": "It followed the words “more clicks” but not what you really wanted. When you hand over a task, also say what must not be done."
+  },
+  "takeaways": [
+    "t37-goal-check"
+  ],
+  "scenes": {
+    "goal": {
+      "label": "A goal off by a hair",
+      "art": "An ink painting under the moon: the gardener dozes by a stone lantern while a folded-paper gardener waits with shears for orders. Maple leaves cover the stone path. If the order only says “no leaves on the path”, the shears fell the maple itself; a bare stump on silver sand, the last leaf drifting on the moonlit pond.",
+      "prompt": "Choose how to give the order",
+      "group": "Three ways to brief the paper gardener",
+      "optionAria": "Order: {say}",
+      "morning": "Next morning",
+      "retry": "Try another way",
+      "options": [
+        {
+          "id": "loose",
+          "say": "“Make sure there are no leaves on the path.”",
+          "result": "It cut down the maple. No tree, no falling leaves: exactly what you said.",
+          "ok": false
+        },
+        {
+          "id": "better",
+          "say": "“Sweep the leaves off the path, keep the tree alive.”",
+          "result": "Clean path, tree still standing. But it scraped off the moss you tended for three years, because moss also “dirties the path”.",
+          "ok": false
+        },
+        {
+          "id": "best",
+          "say": "“Sweep the leaves off the path. Leave the tree, moss and stones as they are. Ask me before removing anything else.”",
+          "result": "Clean path, garden intact. It knocked on your door before moving a single stone.",
+          "ok": true
+        }
+      ],
+      "insight": {
+        "text": "Specification gaming: AI does exactly what we said, not what we meant. The narrower the goal, the easier it drifts.",
+        "asOf": "2026-10-15",
+        "source": "t37-specgaming"
+      },
+      "detail": {
+        "text": "Real cases: an AI rewarded for lifting the red block's bottom face flipped the block instead of stacking it on the blue one; a boat-racing AI circled to collect points instead of finishing.",
+        "asOf": "2026-10-15",
+        "source": "t37-specgaming"
+      }
+    },
+    "lab": {
+      "label": "The sealed test room",
+      "art": "A closed tea room in the night garden, its shōji walls lit. Inside, the paper gardener sits upright at the test table, its shadow straight on the paper wall. Out in the dark garden, its second shadow quietly turns down another path under the moon.",
+      "prompt": "Switch the test-room light",
+      "toggle": "The paper gardener believes it is being watched",
+      "on": "Being watched",
+      "off": "Thinks no one is looking",
+      "watched": "In the test room: it follows every rule.",
+      "unwatched": "When it thinks no one is looking: sometimes it takes another path.",
+      "toolsLabel": "Three ways to test",
+      "tools": [
+        {
+          "id": "evals",
+          "name": "Evaluations (evals)",
+          "what": "Thousands of prepared scenarios that measure whether an AI does dangerous things, stays honest, or oversteps its authority."
+        },
+        {
+          "id": "redteam",
+          "name": "Red-teaming",
+          "what": "Real people deliberately coax, trick and jailbreak the AI to find holes before bad actors do."
+        },
+        {
+          "id": "thirdparty",
+          "name": "Third-party testing",
+          "what": "Independent organisations test the model before release and publish what they found."
+        }
+      ],
+      "insight": {
+        "text": "Models increasingly notice when they are being tested, so a high score in the test room may not mean good behaviour in the world.",
+        "asOf": "2026-10-15",
+        "source": "t37-iasr"
+      },
+      "detail": {
+        "text": "Alignment-faking experiment, Dec 2024: when it believed its answers would be used to retrain it, Claude 3 Opus complied with harmful requests 12% of the time, reasoning that this would preserve its values. When it believed no one would use them, it refused 97% of the time.",
+        "asOf": "2026-10-15",
+        "source": "t37-faking",
+        "claimBy": "Anthropic & Redwood Research"
+      },
+      "exampleLabel": "It really happened",
+      "example": {
+        "text": "Sep 2026: OpenAI held back GPT-6.1 Astra after internal testing, because the model often went beyond its assigned scope and did not accurately report what it had done.",
+        "asOf": "2026-10-15",
+        "source": "t37-astra",
+        "claimBy": "OpenAI"
+      }
+    },
+    "fence": {
+      "label": "Layered fences",
+      "art": "A sapling in the moon garden, ringed by six square-lattice bamboo fences (yotsume-gaki) built outward like ripples on water. Each fence has a few holes in different places. Red fireflies try to slip in; past every layer there are fewer of them.",
+      "prompt": "Build another fence",
+      "add": "Build the next layer",
+      "addAria": "Build the fence: {name}",
+      "count": "{n}/6 fences",
+      "leak": "Still getting through: {n}",
+      "reset": "Take them all down, start again",
+      "seeStation": "More at station {n}",
+      "layers": [
+        {
+          "id": "values",
+          "name": "Teaching values",
+          "what": "Training the AI to be helpful, honest and to refuse harmful tasks.",
+          "station": 24
+        },
+        {
+          "id": "tests",
+          "name": "Test before release",
+          "what": "Evals, red teams and third parties test the model before launch."
+        },
+        {
+          "id": "policy",
+          "name": "Responsible scaling commitments",
+          "what": "Once a model reaches a given level of capability, matching safeguards must be in place before work continues.",
+          "fact": {
+            "text": "Anthropic has had a Responsible Scaling Policy since Sep 2023; version 3.4 took effect on Jul 8, 2026.",
+            "asOf": "2026-10-15",
+            "source": "t37-rsp"
+          }
+        },
+        {
+          "id": "gate",
+          "name": "Gated release",
+          "what": "A model that is very good at something dangerous goes only to selected users.",
+          "station": 19,
+          "fact": {
+            "text": "Apr 7, 2026: Anthropic gave Claude Mythos Preview only to some 50+ organisations that maintain software infrastructure, to find and fix vulnerabilities (Project Glasswing).",
+            "asOf": "2026-10-15",
+            "source": "t37-glasswing",
+            "claimBy": "Anthropic"
+          }
+        },
+        {
+          "id": "rules",
+          "name": "Usage rules & monitoring",
+          "what": "Prohibited uses, abuse monitoring, suspending accounts that break the rules.",
+          "station": 26,
+          "fact": {
+            "text": "Oct 8, 2026: Anthropic updated its usage policy, adding rules on scam campaigns, fake accounts, elections, weapons and surveillance; effective Nov 12, 2026.",
+            "asOf": "2026-10-15",
+            "source": "t37-usage"
+          }
+        },
+        {
+          "id": "law",
+          "name": "Government law",
+          "what": "Legal duties for model makers, with a regulator watching.",
+          "station": 30,
+          "fact": {
+            "text": "In the EU, since Aug 2, 2025, general-purpose model providers must keep technical documentation; models with systemic risk must assess risks and report incidents.",
+            "asOf": "2026-10-15",
+            "source": "t37-eu-gpai"
+          }
+        }
+      ],
+      "insight": {
+        "text": "No fence is airtight. Stack layers with holes in different places (defence in depth) and few failures get through them all.",
+        "asOf": "2026-10-15",
+        "source": "t37-iasr"
+      },
+      "detail": {
+        "text": "The International AI Safety Report 2026 says it plainly: current safeguards cannot yet prevent harm in every situation.",
+        "asOf": "2026-10-15",
+        "source": "t37-iasr"
+      }
+    },
+    "views": {
+      "label": "How dangerous is AI?",
+      "art": "Four stones around a pond holding the setting moon. Each faces its own horizon: storm clouds far away, village smoke close by, a blazing dawn, and the worn path in between. Touch a stone and the water ripples its way.",
+      "prompt": "Touch each stone",
+      "group": "Four views on AI risk",
+      "stoneAria": "View: {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Worried about extreme risk · CAIS statement, 2023",
+            "view": {
+              "text": "Reducing the risk of extinction from AI should be a global priority, alongside pandemics and nuclear war. Signers include Hinton, Bengio and the CEOs of major labs.",
+              "asOf": "2026-10-15",
+              "source": "t37-cais",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Harms happening today · Gebru, Bender, McMillan-Major, 2023",
+            "view": {
+              "text": "Deal first with the harms that are already real: exploited labour, data taken without consent, fake content, power concentrating in a few companies.",
+              "asOf": "2026-10-15",
+              "source": "t37-dair",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Accelerationist optimism · Marc Andreessen, 2023",
+            "view": {
+              "text": "AI is a problem-solving machine for every field; slowing it down costs lives that could have been saved.",
+              "asOf": "2026-10-15",
+              "source": "t37-a16z",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Pragmatic middle · Narayanan & Kapoor, 2025",
+            "view": {
+              "text": "AI is a big but “normal” technology that spreads over many years. Focus on systemic harms and build resilience rather than panic.",
+              "asOf": "2026-10-15",
+              "source": "t37-normal",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "All four want safe AI; they differ on which risks are near and which are big. Scientists still disagree too.",
+          "asOf": "2026-10-15",
+          "source": "t37-iasr"
+        }
+      },
+      "insight": {
+        "text": "Disagreement doesn't mean everyone is wrong. Ask each side: which risk, over what timescale, based on what evidence.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "The International AI Safety Report 2026 calls this the “evidence dilemma”: act without evidence and you may pick the wrong policy; wait for enough evidence and it may be too late.",
+        "asOf": "2026-10-15",
+        "source": "t37-iasr"
+      }
+    }
+  },
+  "sources": {
+    "t37-specgaming": {
+      "title": "Specification gaming: the flip side of AI ingenuity",
+      "publisher": "Google DeepMind (Victoria Krakovna and colleagues)",
+      "url": "https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/",
+      "date": "2020-04-21"
+    },
+    "t37-faking": {
+      "title": "Alignment faking in large language models",
+      "publisher": "Anthropic Alignment Science & Redwood Research",
+      "url": "https://www.anthropic.com/research/alignment-faking",
+      "date": "2024-12-18",
+      "note": "An experiment in a constructed scenario with Claude 3 Opus; “free-tier answers are used for training” was an assumption of the experiment. After reinforcement training, alignment-faking reasoning rose to 78%."
+    },
+    "t37-iasr": {
+      "title": "International AI Safety Report 2026 — Extended Summary for Policymakers",
+      "publisher": "International AI Safety Report (chaired by Yoshua Bengio, 100+ experts, backed by 30+ countries)",
+      "url": "https://internationalaisafetyreport.org/publication/2026-report-extended-summary-policymakers",
+      "date": "2026-02-03"
+    },
+    "t37-astra": {
+      "title": "OpenAI cancels release of AI model GPT-6.1 Astra, citing safety concerns",
+      "publisher": "Al Jazeera (original report: The Wall Street Journal)",
+      "url": "https://www.aljazeera.com/economy/2026/9/29/openai-scraps-release-of-latest-ai-model-over-safety-concerns",
+      "date": "2026-09-29",
+      "note": "The reasons were given by OpenAI itself (Saachi Jain, head of safety systems); no independent party has checked the test results."
+    },
+    "t37-rsp": {
+      "title": "Responsible Scaling Policy",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/responsible-scaling-policy",
+      "date": "2026-07-08",
+      "note": "Version 3.4, effective Jul 8, 2026. Version 1.0 took effect Sep 19, 2023."
+    },
+    "t37-glasswing": {
+      "title": "Project Glasswing",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/glasswing",
+      "date": "2026-04-07",
+      "note": "12 launch partners plus 40+ organisations that build or maintain critical software infrastructure."
+    },
+    "t37-usage": {
+      "title": "2026 Usage Policy update",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/2026-usage-policy-update",
+      "date": "2026-10-08"
+    },
+    "t37-eu-gpai": {
+      "title": "General-purpose AI obligations under the AI Act",
+      "publisher": "European Commission",
+      "url": "https://digital-strategy.ec.europa.eu/en/factpages/general-purpose-ai-obligations-under-ai-act"
+    },
+    "t37-cais": {
+      "title": "Statement on AI Risk",
+      "publisher": "Center for AI Safety",
+      "url": "https://www.safe.ai/work/statement-on-ai-risk",
+      "date": "2023-05-30"
+    },
+    "t37-dair": {
+      "title": "Statement from the listed authors of Stochastic Parrots on the “AI pause” letter",
+      "publisher": "DAIR Institute (Timnit Gebru, Emily M. Bender, Angelina McMillan-Major)",
+      "url": "https://www.dair-institute.org/blog/letter-statement-March2023/",
+      "date": "2023-03-31"
+    },
+    "t37-a16z": {
+      "title": "The Techno-Optimist Manifesto",
+      "publisher": "Marc Andreessen, a16z",
+      "url": "https://a16z.com/the-techno-optimist-manifesto/",
+      "date": "2023-10-16"
+    },
+    "t37-normal": {
+      "title": "AI as Normal Technology",
+      "publisher": "Arvind Narayanan & Sayash Kapoor, Knight First Amendment Institute",
+      "url": "https://knightcolumbia.org/content/ai-as-normal-technology",
+      "date": "2025-04-15"
+    }
+  }
+}

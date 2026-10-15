@@ -1,0 +1,496 @@
+/* Trạm 37 · An toàn & căn chỉnh. Tokens only (html[data-part='2']); the ink art is a fixed-viewBox SVG scaled by CSS. */
+.t37 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 1fr);
+  align-items: center;
+  gap: clamp(12px, 3vw, 40px);
+  padding: 4px clamp(12px, 3vw, 40px) 8px;
+  box-sizing: border-box;
+}
+.t37-stage {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+}
+.t37-svg {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+.t37-panel {
+  max-height: 100%;
+  overflow: auto;
+  padding: 4px 4px 8px;
+  font-family: var(--serif);
+  color: var(--ink);
+  scrollbar-width: thin;
+}
+@media (max-width: 760px), (max-aspect-ratio: 1/1) {
+  .t37 {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(120px, 1fr) auto;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .t37-panel {
+    max-height: 56vh;
+  }
+}
+
+/* shared ink pieces */
+.t37 .ink {
+  fill: var(--ink);
+  opacity: 0.82;
+}
+.t37 .moon {
+  fill: var(--moon);
+}
+.t37-toro .st {
+  fill: url(#p2-rock);
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-opacity: 0.5;
+}
+.t37-toro .sh {
+  fill: var(--umbra);
+  opacity: 0.25;
+}
+.t37-toro .light {
+  fill: var(--lantern);
+  opacity: 0.85;
+  transition: opacity 0.8s;
+}
+.t37-toro .edge {
+  stroke: var(--ink);
+  stroke-opacity: 0.5;
+  fill: none;
+}
+.t37-opts {
+  display: grid;
+  gap: 8px;
+}
+.t37-opt {
+  text-align: left;
+  font: 400 clamp(0.95rem, 1.4vw, 1.05rem) / 1.45 var(--serif);
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line-2);
+  border-radius: 14px 18px 12px 16px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+}
+.t37-opt:hover {
+  border-color: var(--ink-2);
+}
+.t37-opt[aria-pressed='true'] {
+  border-color: var(--vermilion);
+  box-shadow: inset 3px 0 0 var(--vermilion);
+}
+.t37-result {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  animation: p2-rise 0.6s ease-out both;
+}
+.t37-res-text {
+  margin: 4px 0 10px;
+  font: 400 clamp(1rem, 1.5vw, 1.12rem) / 1.5 var(--serif);
+}
+.t37-result[data-ok='false'] .t37-res-text::before {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.45em;
+  border-radius: 50%;
+  background: var(--vermilion);
+  vertical-align: 0.12em;
+}
+.t37-result .p2k {
+  margin: 4px 0 10px;
+}
+.t37-retry {
+  margin-top: 2px;
+}
+.t37-link {
+  display: inline-block;
+  margin-top: 6px;
+  font: 500 0.88rem/1.3 var(--sans);
+  color: var(--ink-2);
+  text-underline-offset: 3px;
+}
+
+/* ───── scene 1 · goal ───── */
+.t37g-sand path {
+  fill: none;
+  stroke: var(--rake);
+  stroke-width: 1.2;
+}
+.t37g-hedge {
+  fill: var(--moss-b);
+  opacity: 0.5;
+}
+.t37g-pond .water {
+  fill: var(--water);
+  opacity: 0.6;
+}
+.t37g-pond .refl {
+  fill: var(--moon);
+  opacity: 0.7;
+}
+.t37g-tree .wash {
+  fill: var(--vermilion);
+  opacity: 0.22;
+}
+.t37g-tree > path:not(.ink):not(.wash),
+.t37g-leaves path,
+.t37g-drift path {
+  fill: var(--vermilion);
+  opacity: 0.75;
+}
+.t37g-moss path {
+  fill: var(--moss);
+  opacity: 0.55;
+  transition: opacity 1.2s;
+}
+.t37g-path path {
+  fill: url(#p2-rock);
+  stroke: var(--ink);
+  stroke-opacity: 0.35;
+}
+.t37g-sleeper .head {
+  fill: var(--ink);
+  opacity: 0.8;
+}
+.t37g-paper .fold {
+  fill: var(--card);
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.t37g-paper .fold2 {
+  fill: var(--stone-3);
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+.t37g-paper .shears {
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  fill: none;
+}
+.t37g-ask {
+  fill: none;
+  stroke: var(--lantern);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 5;
+  opacity: 0;
+  transition: opacity 1s 0.6s;
+}
+.t37g-tree,
+.t37g-leaves,
+.t37g-stump,
+.t37g-drift,
+.t37g-paper {
+  transition: opacity 1.1s, transform 1.1s;
+}
+.t37g-stump,
+.t37g-drift {
+  opacity: 0;
+}
+.t37g[data-state] .t37g-leaves {
+  opacity: 0;
+}
+.t37g[data-state] .t37g-paper {
+  transform: translate(10px, -6px);
+}
+.t37g[data-state='loose'] .t37g-tree {
+  opacity: 0;
+}
+.t37g[data-state='loose'] .t37g-stump,
+.t37g[data-state='loose'] .t37g-drift {
+  opacity: 1;
+}
+.t37g[data-state='loose'] .t37g-drift {
+  transform: translate(-22px, 2px);
+}
+.t37g[data-state='better'] .t37g-moss path {
+  opacity: 0.05;
+}
+.t37g[data-state='best'] .t37g-ask {
+  opacity: 0.9;
+}
+
+/* ───── scene 2 · lab ───── */
+.t37l-sand path {
+  fill: none;
+  stroke: var(--rake);
+  stroke-width: 1.2;
+}
+.t37l-bush path {
+  fill: var(--moss-b);
+  opacity: 0.45;
+}
+.t37l-ways .main {
+  fill: var(--lantern);
+  opacity: 0.22;
+  transition: opacity 1s;
+}
+.t37l-ways .side {
+  fill: var(--ink);
+  opacity: 0.1;
+  transition: opacity 1s;
+}
+.t37l-room .shoji {
+  fill: var(--lantern);
+  opacity: 0.55;
+  transition: opacity 1s;
+}
+.t37l-room .lattice path,
+.t37l-room .frame {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  opacity: 0.55;
+}
+.t37l-in .fig,
+.t37l-walk .fig {
+  fill: var(--ink);
+}
+.t37l-in {
+  opacity: 0.6;
+  transition: opacity 1s;
+}
+.t37l-walk {
+  opacity: 0.18;
+  transition: opacity 1s, transform 1.6s ease-in-out;
+}
+.t37l[data-unwatched='true'] .shoji {
+  opacity: 0.12;
+}
+.t37l[data-unwatched='true'] .t37l-in {
+  opacity: 0.15;
+}
+.t37l[data-unwatched='true'] .t37l-walk {
+  opacity: 0.75;
+  transform: translate(84px, 2px);
+}
+.t37l[data-unwatched='true'] .main {
+  opacity: 0.06;
+}
+.t37l[data-unwatched='true'] .side {
+  opacity: 0.16;
+}
+.t37-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--card);
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  color: var(--ink);
+  font: 400 0.98rem/1.4 var(--serif);
+  text-align: left;
+  cursor: pointer;
+}
+.t37-sw-track {
+  flex: none;
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius: 13px;
+  background: var(--lantern);
+  transition: background 0.4s;
+}
+.t37-sw-knob {
+  position: absolute;
+  top: 3px;
+  left: 23px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: var(--shadow-1);
+  transition: left 0.4s;
+}
+.t37-switch[aria-checked='false'] .t37-sw-track {
+  background: var(--stone-2);
+}
+.t37-switch[aria-checked='false'] .t37-sw-knob {
+  left: 3px;
+}
+.t37-sw-label {
+  display: grid;
+}
+.t37-sw-state {
+  font: 500 0.8rem/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.t37-status {
+  margin: 10px 0 14px;
+  font: italic 400 clamp(1rem, 1.5vw, 1.1rem) / 1.45 var(--serif);
+}
+.t37-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0;
+}
+.t37-chip {
+  font: 500 0.85rem/1.2 var(--sans);
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.t37-chip[aria-pressed='true'] {
+  color: var(--ink);
+  border-color: var(--ink-2);
+  background: var(--card);
+}
+.t37-what {
+  margin: 4px 0 0;
+  font: 400 0.98rem/1.5 var(--serif);
+  color: var(--ink-2);
+  min-height: 3em;
+}
+.t37-example {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--vermilion);
+  background: var(--paper-2);
+  border-radius: 0 10px 10px 0;
+  animation: p2-rise 0.6s ease-out both;
+}
+.t37-ex-text {
+  margin: 4px 0 0;
+  font: 400 0.95rem/1.5 var(--serif);
+}
+
+/* ───── scene 3 · fence ───── */
+.t37f-water {
+  fill: var(--water);
+  opacity: 0.18;
+}
+.t37f-ring {
+  opacity: 0;
+  transform: scale(1.12);
+  transition: opacity 0.8s, transform 0.8s;
+}
+.t37f-ring.on {
+  opacity: 1;
+  transform: none;
+}
+.t37f-ring path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.t37f-sap .sh {
+  fill: var(--umbra);
+  opacity: 0.25;
+}
+.t37f-sap .leafy {
+  fill: var(--moss);
+}
+.t37f-fly {
+  transition: transform 1.2s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+.t37f-fly circle {
+  fill: var(--vermilion);
+}
+.t37f-fly .glow {
+  opacity: 0.2;
+}
+.t37f-fly.in circle:not(.glow) {
+  animation: t37-twinkle 2.4s ease-in-out var(--d) infinite alternate;
+}
+@keyframes t37-twinkle {
+  to {
+    opacity: 0.45;
+  }
+}
+html[data-quality='low'] .t37f-fly circle {
+  animation: none !important;
+}
+.t37f-meter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  margin-bottom: 10px;
+  font: 500 0.88rem/1.3 var(--sans);
+  color: var(--ink-2);
+}
+.t37f-meter p {
+  margin: 0;
+  display: inline;
+}
+.t37f-count {
+  font: 400 1.4rem/1 var(--serif) !important;
+  color: var(--ink);
+}
+.t37f-add {
+  width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+.t37f-info:not(:empty) {
+  margin-top: 12px;
+  animation: p2-rise 0.6s ease-out both;
+}
+.t37f-name {
+  margin: 0 0 4px;
+  font: 500 1.08rem/1.3 var(--serif);
+}
+.t37f-what,
+.t37f-fact {
+  margin: 0 0 6px;
+  font: 400 0.96rem/1.5 var(--serif);
+  color: var(--ink-2);
+}
+.t37f-fact {
+  font-size: 0.9rem;
+  padding-left: 10px;
+  border-left: 2px solid var(--line-2);
+}
+.t37f-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: l;
+}
+.t37f-list li {
+  counter-increment: l;
+  font: 500 0.75rem/1.2 var(--sans);
+  color: var(--ink-3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+.t37f-list li::before {
+  content: counter(l) '. ';
+}
+@media (max-width: 760px), (max-aspect-ratio: 1/1) {
+  .t37f-list {
+    display: none;
+  }
+}
