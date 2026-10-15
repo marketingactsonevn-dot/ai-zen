@@ -1,0 +1,106 @@
+/* Trạm 24 — Reward, reasoning, flattery: a sapling that leans · a pruned bonsai · a gravel maze · incense by the lake */
+
+/* scene 1: two flowers */
+.g8f .g8f-pot { fill: var(--stone-2); stroke: var(--ink); stroke-opacity: 0.5; }
+.g8f .g8f-pet { fill: var(--card); stroke: var(--ink); stroke-opacity: 0.45; stroke-width: 1; }
+:root[data-theme='dark'] .g8f .g8f-pet { fill: var(--moon); fill-opacity: 0.85; }
+.g8f-tree { transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1); }
+.g8f[data-lean='l'] .g8f-tree { transform: rotate(-7deg); }
+.g8f[data-lean='r'] .g8f-tree { transform: rotate(7deg); }
+.g8f-card {
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line-2);
+  background: color-mix(in srgb, var(--card) 86%, transparent);
+  color: var(--ink);
+  font: 400 clamp(0.92rem, 1.4vw, 1.05rem) / 1.45 var(--serif);
+  text-align: left;
+  cursor: pointer;
+  transition: opacity 0.6s, border-color 0.4s, box-shadow 0.4s;
+}
+.g8f-card[aria-pressed='true'] { border-color: var(--vermilion); box-shadow: 0 0 0 4px color-mix(in srgb, var(--vermilion) 16%, transparent); }
+.g8f-card.dim { opacity: 0.55; }
+.g8f-card:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.g8f-cap { margin: 0; text-align: center; font: 400 0.92rem/1.4 var(--serif); color: var(--ink-2); }
+.g8f-scroll {
+  padding: 10px 12px 12px;
+  border-radius: 4px;
+  border-top: 5px solid var(--ink-2);
+  border-bottom: 5px solid var(--ink-2);
+  background: var(--card);
+  box-shadow: var(--shadow-1);
+  text-align: center;
+}
+.g8f-scroll-h { margin: 0 0 4px; font: 500 0.72rem/1.2 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--vermilion); }
+.g8f-scroll ul { margin: 0; padding: 0; list-style: none; font: 400 0.95rem/1.5 var(--serif); color: var(--ink); }
+
+/* scene 2: flattery branch */
+.g8t .g8t-pot { fill: var(--stone-2); stroke: var(--ink); stroke-opacity: 0.5; }
+.g8t .g8t-pad { fill: var(--moss); fill-opacity: 0.8; }
+.g8t .g8t-leaf { fill: var(--lantern); fill-opacity: 0.85; stroke: var(--ink); stroke-opacity: 0.4; }
+.g8t .g8t-gloss { fill: var(--card); fill-opacity: 0.9; }
+.g8t .g8t-honest { fill-opacity: 0.45; transition: fill-opacity 1s; }
+.g8t.cut .g8t-honest { fill-opacity: 1; }
+.g8t-tree { transform: rotate(4deg); transition: transform 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s; }
+.g8t.cut .g8t-tree { transform: none; }
+.g8t-flat { transition: transform 1.4s cubic-bezier(0.5, 0, 0.8, 0.4), opacity 1.2s 0.3s; }
+.g8t.cut .g8t-flat { transform: translate(40px, 160px) rotate(28deg); opacity: 0; }
+.g8t-shears {
+  width: 48px;
+  height: 48px;
+  padding: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  cursor: pointer;
+  transition: opacity 0.6s;
+}
+.g8t-shears svg { width: 100%; height: 100%; fill: none; stroke: var(--vermilion); stroke-width: 3; stroke-linecap: round; }
+.g8t.cut .g8t-shears { opacity: 0; pointer-events: none; }
+:root[data-quality='high'] .g8t:not(.cut) .g8t-shears { animation: g8t-call 2.6s ease-in-out infinite; }
+@keyframes g8t-call { 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--vermilion) 20%, transparent); } }
+.g8t-shears:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.g8t-card {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 86%, transparent);
+  border: 1px solid var(--line);
+}
+.g8t-card p { margin: 0; font: italic 400 clamp(0.98rem, 1.5vw, 1.12rem) / 1.45 var(--serif); color: var(--ink); }
+.g8t-tag { justify-self: start; font: 500 0.7rem/1.2 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--lantern); }
+:root[data-theme='light'] .g8t-tag { color: var(--vermilion); }
+.g8t-tag.honest { color: var(--moss); }
+
+/* scene 3: gravel maze */
+.g8c .g8c-bed { fill: var(--stone-3); fill-opacity: 0.55; }
+.g8c .g8c-rake { fill: var(--ink-3); fill-opacity: 0.18; transition: fill-opacity 1.2s; }
+.g8c.raked .g8c-rake { fill-opacity: 0.45; }
+.g8c.cheat .g8c-rake { fill-opacity: 0.08; }
+.g8c .g8c-bronze { fill: color-mix(in srgb, var(--lantern) 60%, var(--ink-3)); stroke: var(--ink); stroke-width: 1.2; }
+.g8c .g8c-trail { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0.7; }
+.g8c .g8c-trail.cheat { stroke: var(--vermilion); stroke-dasharray: 1; }
+.g8c.ring .g8c-bellg { animation: g8c-ring 1.4s ease-out; }
+@keyframes g8c-ring { 15% { transform: rotate(16deg); } 35% { transform: rotate(-12deg); } 55% { transform: rotate(7deg); } 75% { transform: rotate(-3deg); } }
+.g8c-bell { text-align: right; font: 400 0.85rem/1.2 var(--sans); color: var(--ink-2); }
+.g8c-reveal { margin: 0; text-align: center; font: italic 400 1rem/1.4 var(--serif); color: var(--vermilion); }
+
+/* scene 4: incense */
+.g8i .g8i-ground { fill: var(--paper-2); }
+.g8i .g8i-draft { fill: var(--moon); opacity: 0.12; transition: opacity 1s; }
+:root[data-theme='light'] .g8i .g8i-draft { fill: var(--card); opacity: 0.3; }
+.g8i:not([data-t='0']) .g8i-draft { opacity: 0.45; }
+.g8i .g8i-rip { fill: none; stroke: var(--moon); stroke-opacity: 0.3; }
+.g8i .g8i-stick { fill: var(--vermilion); fill-opacity: 0.7; transform: scaleY(calc(1 - var(--t, 0) * 0.8)); transition: transform 1.2s; }
+.g8i-ember { transform: translateY(calc(var(--t, 0) * var(--stk, 0px))); transition: transform 1.2s; }
+.g8i .g8i-smoke { fill: var(--ink-3); opacity: 0.35; }
+.g8i .g8i-tablet { fill: var(--stone-2); stroke: var(--ink); stroke-opacity: 0.5; }
+.g8i .g8i-answer { fill: var(--ink); fill-opacity: calc(0.08 + var(--t, 0) * 0.85); transition: fill-opacity 1.2s; }
+:root[data-theme='dark'] .g8i .g8i-answer { fill: var(--stone-text); }
+.g8i .g8i-seal { opacity: 0; transition: opacity 1s; }
+.g8i[data-t='4'] .g8i-seal { opacity: 0.9; }
+.g8i-ctrl { display: grid; justify-items: center; gap: 4px; }
+.g8i-ctrl .g8-slider { width: min(460px, 100%); }
+.g8i-far { text-align: center; max-width: 62ch; }
+.g8f.ruled.narrow .g8f-card { opacity: 0; visibility: hidden; transition: opacity 0.6s, visibility 0s 0.6s; }
