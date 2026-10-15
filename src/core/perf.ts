@@ -5,7 +5,7 @@
  */
 
 /** Live counters fed by the app itself (cheap, always on). */
-export const counters = { stages: 0 }
+export const counters = { stages: 0, loops: 0, ticking: 0 } // createStage alive · createLoop alive · createLoop ticking
 
 if (new URLSearchParams(location.search).get('perf') === '1') install()
 
@@ -17,6 +17,7 @@ function install() {
   const glN = new Uint8Array(N)
   const stN = new Uint8Array(N)
   const lpN = new Uint8Array(N)
+  const tkN = new Uint8Array(N)
   let n = 0
 
   // ── long tasks (> 50 ms) ──
@@ -54,7 +55,7 @@ function install() {
     return k
   }
 
-  // ── rAF loops: callbacks run per frame (until the shared createLoop of A.3 exists); the HUD's own loop is not counted ──
+  // ── raw rAF callbacks per frame (catches loops outside createLoop); the HUD's own loop is not counted ──
   const raf = window.requestAnimationFrame.bind(window)
   let calls = 0
   let names: string[] = []
@@ -78,6 +79,7 @@ function install() {
       glN[i] = glAlive()
       stN[i] = counters.stages
       lpN[i] = calls
+      tkN[i] = counters.ticking
       n++
     }
     last = now
@@ -125,6 +127,7 @@ function install() {
       maxGl: max(idx.map((i) => glN[i])),
       maxStages: max(idx.map((i) => stN[i])),
       maxLoops: max(idx.map((i) => lpN[i])),
+      maxTicking: max(idx.map((i) => tkN[i])),
       heapMB: mb(mem()),
     }
   }
@@ -142,6 +145,8 @@ function install() {
       glMade,
       stages: counters.stages,
       loops: loops(),
+      loopsAlive: counters.loops,
+      loopsTicking: counters.ticking,
       loopNames: [...lastNames],
       heapMB: mb(mem()),
     }
@@ -164,7 +169,7 @@ function install() {
     hud.textContent =
       `FPS ${s.fps}  max ${s.maxFrame5s}ms/5s\n` +
       `long ${hasLongTask ? `${s.longTasks5s}/5s (${s.longTasks})` : '–'}\n` +
-      `GL ${s.glAlive} (stage ${s.stages})  rAF ${s.loops}\n` +
+      `GL ${s.glAlive} (stage ${s.stages})  loop ${s.loopsTicking}/${s.loopsAlive}  rAF ${s.loops}\n` +
       `heap ${s.heapMB ?? '–'}${s.heapMB == null ? '' : ' MB'}`
   }, 250)
 }

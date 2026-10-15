@@ -4,6 +4,7 @@ import { STATIONS } from '../stations/registry'
 import { progress } from '../core/progress'
 import { cssVar, onPrefs, prefs } from '../core/prefs'
 import { gsap } from '../core/anim'
+import { createLoop } from '../core/loop'
 import { icon } from './icons'
 
 type Pt = { x: number; y: number }
@@ -52,6 +53,14 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
   let w = 0
   let hgt = 0
   let rocks: Rock[] = []
+  // design tokens read once (and again when prefs change) — never inside a frame
+  const col = { rake: '', rakeHi: '', ink: '' }
+  const readColours = () => {
+    col.rake = cssVar('--rake')
+    col.rakeHi = cssVar('--rake-hi')
+    col.ink = cssVar('--ink')
+  }
+  readColours()
   const dpr = () => Math.min(devicePixelRatio, prefs.quality === 'high' ? 2 : 1)
 
   function layout() {
@@ -236,13 +245,11 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
       for (const r of rocks) m = Math.min(m, Math.hypot(x - r.x, (y - r.y) * 1.15) - r.r * 1.12)
       return m
     }
-    const rake = cssVar('--rake')
-    const hi = cssVar('--rake-hi')
     const stroke = (fn: () => void) => {
-      for (const [col, dy] of [[hi, -0.9], [rake, 0]] as const) {
+      for (const [c, dy] of [[col.rakeHi, -0.9], [col.rake, 0]] as const) {
         g.save()
         g.translate(0, dy)
-        g.strokeStyle = col
+        g.strokeStyle = c
         g.lineWidth = 1.05
         g.beginPath()
         fn()
@@ -300,15 +307,13 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
 
   // Touching the sand sends a slow ripple — the garden answers you.
   const ripples: { x: number; y: number; t: number }[] = []
-  let raf = 0
-  const tick = () => {
-    raf = 0
+  const rippleCtx = ripple.getContext('2d')!
+  const rippleLoop = createLoop(ripple, () => {
     const d = dpr()
-    const g = ripple.getContext('2d')!
+    const g = rippleCtx
     g.setTransform(d, 0, 0, d, 0, 0)
     g.clearRect(0, 0, w, hgt)
     const now = performance.now()
-    const col = cssVar('--ink')
     for (let i = ripples.length - 1; i >= 0; i--) {
       const age = (now - ripples[i].t) / 2600
       if (age >= 1) {
@@ -319,20 +324,20 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
         const a = age - k * 0.12
         if (a <= 0) continue
         g.globalAlpha = (1 - a) * 0.22
-        g.strokeStyle = col
+        g.strokeStyle = col.ink
         g.lineWidth = 1.2
         g.beginPath()
         g.ellipse(ripples[i].x, ripples[i].y, a * 150, a * 150 * 0.62, 0, 0, Math.PI * 2)
         g.stroke()
       }
     }
-    if (ripples.length) raf = requestAnimationFrame(tick)
-  }
+    return ripples.length > 0
+  })
   const onSandDown = (e: PointerEvent) => {
     if (prefs.reduced || (e.target as Element).closest('a, button')) return
     const r = garden.getBoundingClientRect()
     ripples.push({ x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now() })
-    if (!raf) raf = requestAnimationFrame(tick)
+    rippleLoop.start()
   }
   garden.addEventListener('pointerdown', onSandDown)
 
@@ -382,7 +387,10 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     relayout = requestAnimationFrame(layout)
   })
   ro.observe(garden)
-  const offPrefs = onPrefs(() => w && drawSand())
+  const offPrefs = onPrefs(() => {
+    readColours()
+    if (w) drawSand()
+  })
   layout()
 
   let introCleanup: (() => void) | null = null
@@ -402,7 +410,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
   return () => {
     ro.disconnect()
     offPrefs()
-    cancelAnimationFrame(raf)
+    rippleLoop.dispose()
     cancelAnimationFrame(relayout)
     introCleanup?.()
     gctx.revert()
@@ -435,7 +443,8 @@ function intro(garden: HTMLElement, then: () => void): () => void {
   const motes = Array.from({ length: prefs.quality === 'high' ? 70 : 34 }, (_, i) => ({
     x: Math.random(), y: Math.random(), v: 4 + Math.random() * 10, r: 0.6 + Math.random() * 1.4, ph: i * 1.7,
   }))
-  let W = 1, H = 1, d = 1, cx = 0, cy = 0, Rr = 200, raf = 0, last = performance.now(), alive = true
+  let W = 1, H = 1, d = 1, cx = 0, cy = 0, Rr = 200
+  let ink = '', ver = '' // read in size() and on prefs change, never per frame
 
   function size() {
     const vr = veil.getBoundingClientRect()
@@ -453,6 +462,8 @@ function intro(garden: HTMLElement, then: () => void): () => void {
     // pre-render the raked pattern once: rings around the dot, straight rows beyond
     rake.width = W * d
     rake.height = H * d
+    ink = cssVar('--ink')
+    ver = cssVar('--vermilion')
     const c = rake.getContext('2d')!
     c.setTransform(d, 0, 0, d, 0, 0)
     const gap = Math.max(8, Math.min(12, Math.min(W, H) / 70))
@@ -480,11 +491,9 @@ function intro(garden: HTMLElement, then: () => void): () => void {
     }
   }
 
-  function frame(now: number) {
-    raf = 0
-    if (!alive) return
-    const dt = Math.min(0.05, (now - last) / 1000)
-    last = now
+  // dust drifts while motion is allowed; under reduced motion the loop only draws on wake()
+  const loop = createLoop(veil, (_t, dt) => {
+    const now = performance.now()
     ctx2.setTransform(d, 0, 0, d, 0, 0)
     ctx2.clearRect(0, 0, W, H)
     if (state.reveal > 0) {
@@ -495,8 +504,6 @@ function intro(garden: HTMLElement, then: () => void): () => void {
       ctx2.drawImage(rake, 0, 0, W, H)
       ctx2.restore()
     }
-    const ink = cssVar('--ink')
-    const ver = cssVar('--vermilion')
     for (let i = ripples.length - 1; i >= 0; i--) {
       const rp = ripples[i]
       const life = rp.big ? 2.2 : 3.4
@@ -531,11 +538,12 @@ function intro(garden: HTMLElement, then: () => void): () => void {
       ctx2.fill()
     }
     ctx2.globalAlpha = 1
-    if (!prefs.reduced) raf = requestAnimationFrame(frame)
-  }
-  const kick = () => {
-    if (!raf && alive) raf = requestAnimationFrame(frame)
-  }
+  })
+  const kick = () => (prefs.reduced ? loop.wake() : loop.start())
+  const offPrefs = onPrefs(() => {
+    ink = cssVar('--ink')
+    ver = cssVar('--vermilion')
+  })
   const ripple = (big = false) => {
     ripples.push({ t: performance.now(), big })
     kick()
@@ -577,8 +585,8 @@ function intro(garden: HTMLElement, then: () => void): () => void {
     ripple(true)
     const tl = gsap.timeline({
       onComplete: () => {
-        alive = false
-        cancelAnimationFrame(raf)
+        loop.dispose()
+        offPrefs()
         ro.disconnect()
         veil.remove()
       },
@@ -598,9 +606,9 @@ function intro(garden: HTMLElement, then: () => void): () => void {
   }, { once: true })
 
   return () => {
-    alive = false
     idle?.kill()
-    cancelAnimationFrame(raf)
+    loop.dispose()
+    offPrefs()
     ro.disconnect()
   }
 }
