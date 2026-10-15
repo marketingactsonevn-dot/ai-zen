@@ -1,0 +1,386 @@
+{
+  "id": 28,
+  "kicker": "In a gold rush, the shovel sellers get rich first.",
+  "summary": "Every question you type runs on someone's chip — and the money flowing around those chips is shaping the whole AI industry.",
+  "newsTags": [
+    "nvidia",
+    "dau-tu"
+  ],
+  "quiz": {
+    "q": "Rivals already have powerful chips. Why is NVIDIA still hard to beat?",
+    "options": [
+      "NVIDIA chips are the cheapest on the market",
+      "The whole industry is used to writing software on CUDA",
+      "The law bans chips from other makers",
+      "Other makers' chips cannot run AI"
+    ],
+    "answer": 1,
+    "explain": "NVIDIA's moat is CUDA, a software platform dating from 2006. Switching to another chip means rewriting or converting a great deal of code."
+  },
+  "scenes": {
+    "gardeners": {
+      "label": "A thousand gardeners",
+      "art": "Ink painting under a full moon: on the left, an old gardener carries a watering can from bed to bed, his shadow long on the stone path. On the right, a thousand little bamboo spouts drip on the whole garden at once; the moonlit water ripples in time.",
+      "prompt": "Choose how to water",
+      "group": "Two ways to water the same garden",
+      "one": "1 watering can · CPU",
+      "oneAria": "Water with one can: a few strong cores doing one job after another",
+      "many": "1,000 bamboo spouts · GPU",
+      "manyAria": "Water with a thousand bamboo spouts: thousands of small cores working at once",
+      "rows": "{n}/1,000 beds watered",
+      "sep": ",",
+      "done": "The whole garden is soaked",
+      "insight": {
+        "text": "A GPU (graphics processor) is like a thousand gardeners watering at once: just right for AI's billions of tiny sums.",
+        "asOf": "2026-10-15",
+        "source": "t28-cuda-guide"
+      },
+      "detail": "CPUs are still needed to coordinate and make decisions. A neural network, though, mostly multiplies and adds huge tables of numbers, work that splits neatly into parallel pieces."
+    },
+    "scaling": {
+      "label": "Growing takes more shovels",
+      "art": "Three stone jars in the moonlight: Data, Size, Compute. A bamboo spout lets fall a hundred silver drops; the sapling in the middle only grows tall when all three jars fill evenly, and leans when one falls behind.",
+      "prompt": "Share out 100 drops",
+      "jars": [
+        {
+          "id": "data",
+          "name": "Data",
+          "aria": "Data jar: how much text the model reads"
+        },
+        {
+          "id": "size",
+          "name": "Size",
+          "aria": "Size jar: the model's number of parameters"
+        },
+        {
+          "id": "compute",
+          "name": "Compute",
+          "aria": "Compute jar: chips and hours of running"
+        }
+      ],
+      "slider": "Drops for the {name} jar",
+      "valueText": "{n} drops for {name}",
+      "remaining": "{n} drops left",
+      "balanced": "The tree grows straight",
+      "lopsided": "The tree leans: the {name} jar is low",
+      "insights": [
+        {
+          "text": "Scaling laws: add data, size and compute, and a model improves steadily and predictably.",
+          "asOf": "2026-10-15",
+          "source": "t28-kaplan"
+        },
+        {
+          "text": "In 2022 Chinchilla (70 billion parameters, 1.4 trillion tokens) beat Gopher, four times its size: balancing data with size pays off.",
+          "asOf": "2026-10-15",
+          "source": "t28-chinchilla"
+        }
+      ],
+      "detail": "Because the curve is so steady, many companies believe more chips mean better models — so they keep buying chips."
+    },
+    "moat": {
+      "label": "The moat round the castle",
+      "art": "A stone castle on an island, ringed by a black moat holding the moon. Countless little bamboo bridges cross it — the code the whole village is used to walking on. From the far bank, three boats with their own lanterns are rowing in.",
+      "prompt": "Touch each boat",
+      "castle": "NVIDIA",
+      "moatLabel": "CUDA · the software everyone knows",
+      "group": "Three boats crossing the moat",
+      "boatAria": "{name} boat: see what this rival is doing",
+      "boats": [
+        {
+          "id": "google",
+          "name": "Google · TPU",
+          "fact": {
+            "text": "Oct 2025: Anthropic announced it will use up to a million Google TPU chips, over 1 gigawatt of capacity in 2026.",
+            "asOf": "2026-10-15",
+            "source": "t28-anthropic-tpu",
+            "claimBy": "Anthropic"
+          }
+        },
+        {
+          "id": "amazon",
+          "name": "Amazon · Trainium",
+          "fact": {
+            "text": "Feb 2026: in its new funding round, OpenAI agreed to use 2 gigawatts of compute running on Amazon's Trainium chips.",
+            "asOf": "2026-10-15",
+            "source": "t28-ap-openai-round"
+          }
+        },
+        {
+          "id": "amd",
+          "name": "AMD · Instinct",
+          "fact": {
+            "text": "Oct 2025: AMD and OpenAI signed a 6-gigawatt GPU deal; the first gigawatt (MI450) starts in the second half of 2026.",
+            "asOf": "2026-10-15",
+            "source": "t28-amd-openai",
+            "claimBy": "AMD, OpenAI"
+          }
+        }
+      ],
+      "insight": {
+        "text": "NVIDIA's moat is CUDA: a software platform from 2006 that the whole industry is used to writing code on.",
+        "asOf": "2026-10-15",
+        "source": "t28-cuda-guide"
+      },
+      "detail": {
+        "text": "Some big AI labs use several kinds of chip side by side: Anthropic says it uses TPUs, Trainium and NVIDIA GPUs.",
+        "asOf": "2026-10-15",
+        "source": "t28-anthropic-tpu"
+      }
+    },
+    "goldrush": {
+      "label": "Gold-rush season",
+      "art": "A long strip of sand unrolled like a scroll under the moon. Drag the moon from left to right; each milestone rises like a stone, and the pile of shovels by the seller's hut grows into a hill.",
+      "prompt": "Drag the moon through the seasons",
+      "sliderAria": "Drag the moon through NVIDIA's milestones",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2006-11",
+            "label": "CUDA is born",
+            "fact": {
+              "text": "NVIDIA introduces CUDA: a way to use GPUs for any calculation, not just drawing game graphics.",
+              "asOf": "2026-10-15",
+              "source": "t28-cuda-guide"
+            }
+          },
+          {
+            "date": "2020-01",
+            "label": "Scaling laws",
+            "fact": {
+              "text": "Kaplan's team (OpenAI) shows that bigger models with more data and compute make fewer word-prediction errors, along a smooth curve.",
+              "asOf": "2026-10-15",
+              "source": "t28-kaplan"
+            }
+          },
+          {
+            "date": "2023-01",
+            "label": "Before the boom",
+            "fact": {
+              "text": "In the fiscal year ending January 2023, NVIDIA's data-centre business brought in $15.0 billion.",
+              "asOf": "2026-10-15",
+              "source": "t28-nvda-10k-fy23"
+            }
+          },
+          {
+            "date": "2025-10-29",
+            "label": "The $5 trillion mark",
+            "fact": {
+              "text": "NVIDIA becomes the first company worth more than $5 trillion on the stock market.",
+              "asOf": "2026-10-15",
+              "source": "t28-5t"
+            }
+          },
+          {
+            "date": "2026-01",
+            "label": "Nearly 13 times bigger",
+            "fact": {
+              "text": "In fiscal 2026 data centres brought in $193.7 billion, nearly 13 times the figure three years earlier.",
+              "asOf": "2026-10-15",
+              "source": "t28-nvda-fy26"
+            },
+            "compare": {
+              "before": "$15.0 billion",
+              "after": "$193.7 billion",
+              "beforeLabel": "Fiscal 2023",
+              "afterLabel": "Fiscal 2026"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Today",
+            "fact": {
+              "text": "Latest report (26 Aug 2026): data centres earned $89 billion in one quarter, up 117% on a year earlier.",
+              "asOf": "2026-10-15",
+              "source": "t28-nvda-q2fy27"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Some investors predict NVIDIA will be the first $10 trillion company; nobody knows how long the boom will last.",
+          "asOf": "2026-10-15",
+          "source": "t28-benzinga",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "About 9 in 10 dollars of NVIDIA's fiscal 2026 revenue came from data centres: the shovel seller gets paid first.",
+        "asOf": "2026-10-15",
+        "source": "t28-nvda-fy26"
+      }
+    },
+    "loop": {
+      "label": "The money loop",
+      "art": "Four stone islands on the moon lake: NVIDIA, AI companies, data centres, investors. A silver stream flows from island to island and back to where it began; round the shore, four stones stand watching, each with its own remark.",
+      "prompt": "Follow the money",
+      "flowLabel": "Money flowing in a loop",
+      "islands": [
+        "NVIDIA",
+        "AI company",
+        "Data centre"
+      ],
+      "circleLabel": "Four voices by the lake",
+      "flow": [
+        "NVIDIA invests in an AI company",
+        "The AI company builds data centres",
+        "The data centres buy NVIDIA chips",
+        "NVIDIA's revenue rises, so it has more to invest"
+      ],
+      "flowAria": "Step {n} of the money loop: {text}",
+      "facts": [
+        {
+          "text": "Feb 2026: NVIDIA put $30 billion into OpenAI's $110 billion funding round, alongside Amazon and SoftBank.",
+          "asOf": "2026-10-15",
+          "source": "t28-ap-openai-round"
+        },
+        {
+          "text": "NVIDIA's stakes in private companies grew from $22 billion to $51 billion in just the first six months of 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-nvda-10q"
+        },
+        {
+          "text": "Aug 2026: NVIDIA guaranteed up to $105 billion for building data centres that serve an OpenAI subsidiary.",
+          "asOf": "2026-10-15",
+          "source": "t28-nvda-10q"
+        }
+      ],
+      "perspectives": {
+        "stones": [
+          {
+            "who": "A Wedbush analyst",
+            "view": {
+              "text": "These deals sit “right in the middle” of the circular-investment debate, but if they work they could become a competitive moat.",
+              "asOf": "2026-10-15",
+              "source": "t28-benzinga",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "A Global X strategist",
+            "view": {
+              "text": "NVIDIA weighing a guarantee for OpenAI adds strain to the already contested story of “the supplier funding its customer”.",
+              "asOf": "2026-10-15",
+              "source": "t28-asiae",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Jensen Huang, NVIDIA CEO",
+            "view": {
+              "text": "NVIDIA's money is only part of what customers must raise; he calls the “circular” charge groundless.",
+              "asOf": "2026-10-15",
+              "source": "t28-asiae",
+              "kind": "opinion",
+              "claimBy": "NVIDIA"
+            }
+          },
+          {
+            "who": "Bank of England",
+            "view": {
+              "text": "Oct 2025: share prices, especially of AI-focused tech companies, look stretched; the risk of a sharp market correction has risen.",
+              "asOf": "2026-10-15",
+              "source": "t28-boe",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "Everyone sees money circling between NVIDIA and its customers; they differ on whether it is a moat or the seed of a bubble.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "NVIDIA invests in the very customers who buy its chips: moat or bubble, analysts still disagree.",
+        "asOf": "2026-10-15",
+        "source": "t28-benzinga"
+      }
+    }
+  },
+  "sources": {
+    "t28-cuda-guide": {
+      "title": "CUDA C++ Programming Guide — Introduction (“In November 2006, NVIDIA introduced CUDA…”)",
+      "publisher": "NVIDIA",
+      "url": "https://docs.nvidia.com/cuda/cuda-c-programming-guide/",
+      "note": "The company's official guide; explains why GPUs devote more transistors to parallel computing."
+    },
+    "t28-kaplan": {
+      "title": "Scaling Laws for Neural Language Models (Kaplan et al.)",
+      "publisher": "arXiv:2001.08361 (OpenAI)",
+      "date": "2020-01-23",
+      "url": "https://arxiv.org/abs/2001.08361"
+    },
+    "t28-chinchilla": {
+      "title": "Training Compute-Optimal Large Language Models (Hoffmann et al., “Chinchilla”)",
+      "publisher": "arXiv:2203.15556 (DeepMind)",
+      "date": "2022-03-29",
+      "url": "https://arxiv.org/abs/2203.15556"
+    },
+    "t28-nvda-10k-fy23": {
+      "title": "NVIDIA Form 10-K, fiscal year ended January 29, 2023",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2023-02-24",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581023000017/nvda-20230129.htm"
+    },
+    "t28-nvda-fy26": {
+      "title": "NVIDIA Announces Financial Results for Fourth Quarter and Fiscal 2026 (Form 8-K)",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2026-02-25",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000019/q4fy26pr.htm"
+    },
+    "t28-nvda-q2fy27": {
+      "title": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027 (Form 8-K)",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2026-08-26",
+      "url": "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000073/q2fy27pr.htm"
+    },
+    "t28-nvda-10q": {
+      "title": "NVIDIA Form 10-Q, quarter ended July 26, 2026 (Notes: equity securities; guarantees)",
+      "publisher": "NVIDIA / U.S. SEC",
+      "date": "2026-08",
+      "url": "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000075/nvda-20260726.htm"
+    },
+    "t28-5t": {
+      "title": "Nvidia valuation reaches $5 trillion",
+      "publisher": "Computerworld (citing Reuters)",
+      "date": "2025-10-29",
+      "url": "https://www.computerworld.com/article/4081834/nvidia-valuation-reaches-5-trillion.html"
+    },
+    "t28-benzinga": {
+      "title": "Nvidia's AI Investment Bets Top $40 Billion In 2026, Led By OpenAI Stake",
+      "publisher": "Benzinga (republished on Yahoo Finance)",
+      "date": "2026-05-12",
+      "url": "https://finance.yahoo.com/sectors/technology/articles/nvidias-ai-investment-bets-top-120016038.html"
+    },
+    "t28-ap-openai-round": {
+      "title": "OpenAI gets $110 billion in funding from a trio of tech powerhouses led by Amazon",
+      "publisher": "Associated Press (via KSAT)",
+      "date": "2026-02-27",
+      "url": "https://www.ksat.com/business/2026/02/27/openai-gets-110-billon-in-funding-from-a-trio-of-tech-powerhouses-led-by-amazon/"
+    },
+    "t28-anthropic-tpu": {
+      "title": "Expanding our use of Google Cloud TPUs and Services",
+      "publisher": "Anthropic",
+      "date": "2025-10-23",
+      "url": "https://www.anthropic.com/news/expanding-our-use-of-google-cloud-tpus-and-services"
+    },
+    "t28-amd-openai": {
+      "title": "AMD and OpenAI Announce Strategic Partnership to Deploy 6 Gigawatts of AMD GPUs",
+      "publisher": "AMD",
+      "date": "2025-10-06",
+      "url": "https://ir.amd.com/news-events/press-releases/detail/1260/amd-and-openai-announce-strategic-partnership-to-deploy-6-gigawatts-of-amd-gpus"
+    },
+    "t28-asiae": {
+      "title": "Nvidia Makes $750 Billion AI Bet, Rekindling Concerns Over “Circular Financing”",
+      "publisher": "Asia Economy (South Korea)",
+      "date": "2026-07-28",
+      "url": "https://view.asiae.co.kr/en/article/2026072807292255518"
+    },
+    "t28-boe": {
+      "title": "Financial Policy Committee Record — October 2025",
+      "publisher": "Bank of England",
+      "date": "2025-10-08",
+      "url": "https://www.bankofengland.co.uk/financial-policy-committee-record/2025/october-2025"
+    }
+  }
+}

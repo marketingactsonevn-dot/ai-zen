@@ -25,6 +25,7 @@
       "many": "1.000 ống tre · GPU",
       "manyAria": "Tưới bằng một nghìn ống tre: hàng nghìn lõi nhỏ cùng làm một lúc",
       "rows": "{n}/1.000 luống đã tưới",
+      "sep": ".",
       "done": "Cả vườn đã đẫm nước",
       "insight": {
         "text": "GPU (bộ xử lý đồ hoạ) như nghìn người làm vườn cùng tưới một lúc: hợp với hàng tỷ phép tính nhỏ của AI.",
@@ -197,6 +198,8 @@
       "art": "Bốn hòn đảo đá trên hồ trăng: NVIDIA, các công ty AI, trung tâm dữ liệu, nhà đầu tư. Một dòng nước bạc chảy vòng từ đảo này sang đảo kia rồi quay về chỗ cũ; quanh bờ, bốn hòn đá lặng lẽ đứng nhìn, mỗi hòn một lời bình.",
       "prompt": "Lần theo dòng tiền",
       "flowLabel": "Dòng tiền chảy vòng",
+      "islands": ["NVIDIA", "Công ty AI", "Trung tâm dữ liệu"],
+      "circleLabel": "Bốn lời bình bên hồ",
       "flow": [
         "NVIDIA rót vốn vào công ty AI",
         "Công ty AI xây trung tâm dữ liệu",
