@@ -44,6 +44,8 @@
     "soundOff": "Tắt âm thanh",
     "qualityHigh": "Đang ở chất lượng cao — bấm để chuyển sang bản nhẹ cho điện thoại",
     "qualityLow": "Đang ở bản nhẹ — bấm để bật chất lượng cao",
+    "autoLowToast": "Đã chuyển sang chế độ nhẹ cho mượt hơn",
+    "keepRich": "Giữ chế độ đẹp",
     "qualityShortHigh": "Cao",
     "qualityShortLow": "Nhẹ",
     "logosLink": "Nguồn logo",

@@ -44,6 +44,8 @@
     "soundOff": "Turn off sound",
     "qualityHigh": "High quality on — tap for the light version for phones",
     "qualityLow": "Light version on — tap for high quality",
+    "autoLowToast": "Switched to the light version so it runs smoothly",
+    "keepRich": "Keep high quality",
     "qualityShortHigh": "High",
     "qualityShortLow": "Light",
     "logosLink": "Logo sources",

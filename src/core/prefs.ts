@@ -11,8 +11,16 @@ const weakDevice = coarse || ((navigator as Navigator & { deviceMemory?: number 
 const state = {
   theme: load<Theme | 'auto'>('theme', 'auto'),
   sound: load<boolean>('sound', false), // muted by default
-  quality: load<Quality>('quality', weakDevice ? 'low' : 'high'),
+  /** null = the viewer never chose; the device decides, and auto-low (spec A.8) may lower it for this session */
+  quality: load<Quality | null>('quality', null),
 }
+let autoLow = (() => {
+  try {
+    return sessionStorage.getItem('aizen:autoLow') === '1'
+  } catch {
+    return false
+  }
+})()
 
 const listeners = new Set<() => void>()
 
@@ -23,15 +31,19 @@ export const prefs = {
   get sound() {
     return state.sound
   },
-  get quality() {
-    return state.quality
+  get quality(): Quality {
+    return state.quality ?? (weakDevice || autoLow ? 'low' : 'high')
+  },
+  /** The viewer picked a quality themselves (it wins over auto-low). */
+  get qualityChosen() {
+    return state.quality != null
   },
   get reduced() {
     return mqReduce.matches
   },
   /** Calm motion (touch screens, quality=low): transitions use opacity + transform only, never filters. */
   get calm() {
-    return coarse || state.quality === 'low'
+    return coarse || prefs.quality === 'low'
   },
 }
 
@@ -45,10 +57,29 @@ export function setSound(on: boolean) {
   save('sound', on)
   apply()
 }
+const choiceListeners = new Set<() => void>()
 export function setQuality(q: Quality) {
   state.quality = q
   save('quality', q)
   apply()
+  choiceListeners.forEach((f) => f())
+}
+/** The viewer changed quality themselves (main re-mounts the scene for it; auto-low does not). */
+export function onQualityChoice(fn: () => void) {
+  choiceListeners.add(fn)
+  return () => void choiceListeners.delete(fn)
+}
+/** The device struggled (spec A.8): light version for the rest of the session, from the next scene on. */
+export function setAutoLow(): boolean {
+  if (state.quality != null || autoLow) return false
+  autoLow = true
+  try {
+    sessionStorage.setItem('aizen:autoLow', '1')
+  } catch {
+    /* lasts until reload */
+  }
+  apply()
+  return true
 }
 
 /** Subscribe to theme/sound/quality changes (canvas scenes re-read CSS colours here). */

@@ -10,7 +10,7 @@ import './styles/ui.css'
 
 import { h } from './core/dom'
 import { L } from './core/content'
-import { apply, onPrefs, prefs } from './core/prefs'
+import { apply, onQualityChoice } from './core/prefs'
 import { inkDefs } from './ui/ink'
 import { topbar, setCrumb } from './ui/topbar'
 import { renderMap } from './ui/map'
@@ -54,12 +54,7 @@ async function route() {
 }
 
 addEventListener('hashchange', route)
-// Re-mount the current scene when the quality setting changes (renderer DPR, particle counts…).
-let quality = prefs.quality
-onPrefs(() => {
-  if (prefs.quality !== quality) {
-    quality = prefs.quality
-    route()
-  }
-})
+// Re-mount the current scene when the viewer changes quality (renderer DPR, particle counts…).
+// Auto-low (spec A.8) only switches data-quality and applies from the next scene.
+onQualityChoice(route)
 route()

@@ -12,6 +12,7 @@ import { icon } from './icons'
 import { setCrumb } from './topbar'
 import { ensoBrush } from './brush'
 import { prefetchStation, whenIdle } from './prefetch'
+import { watchScene } from './autolow'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 const TYPING = 'input, textarea, select, [contenteditable], [role="slider"], [role="listbox"]'
@@ -66,6 +67,7 @@ export async function renderStation(root: HTMLElement, id: number, start: number
   let curCleanup: (() => void) | null = null
   let leaving: Animation | null = null // the mounted scene is fading out; the swap then mounts whatever `cur` is by then
   let disposed = false
+  let unwatch: (() => void) | null = null // auto-low watch on the mounted scene
   const calm = prefs.calm
 
   // Old scene out → cleaned up → new scene mounted → in. Two heavy scenes (WebGL, physics, loops) never live together,
@@ -101,6 +103,8 @@ export async function renderStation(root: HTMLElement, id: number, start: number
     const { el, cleanup } = mountScene(cur)
     curEl = el
     curCleanup = cleanup
+    unwatch?.()
+    unwatch = watchScene(el)
     if (first || prefs.reduced) return
     // calm: ink settling into paper — a soft fade with a few pixels of drift; rich: the old feel, with a light 3 px blur
     el.animate(
@@ -228,6 +232,7 @@ export async function renderStation(root: HTMLElement, id: number, start: number
   return () => {
     disposed = true
     leaving?.cancel()
+    unwatch?.()
     removeEventListener('keydown', onKey)
     chapterCleanup?.()
     curCleanup?.()
