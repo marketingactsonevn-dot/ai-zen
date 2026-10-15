@@ -1,0 +1,418 @@
+{
+  "id": 35,
+  "kicker": "Good carvers don't remember everything — they hang each tool in its place.",
+  "summary": "Don't remind AI every day — teach it once, hang it in the right place, call it when needed.",
+  "takeaways": [
+    "t35-skill-template",
+    "t35-skill-checklist",
+    "t35-skill-from-win"
+  ],
+  "quiz": {
+    "q": "Every Monday you retype the same long instructions so AI writes the weekly report. What is the most sensible upgrade?",
+    "options": [
+      "Type faster, or paste from your notes",
+      "Package the instructions as a skill with a clear “when to use”",
+      "Let an agent send the report on its own, no review",
+      "Switch to the most expensive model"
+    ],
+    "answer": 1,
+    "explain": "A skill keeps the instructions in one place, and AI opens it when the task fits. Sending things out should still wait for your approval."
+  },
+  "scenes": {
+    "ladder": {
+      "label": "The automation stairs",
+      "art": "Ink painting: five mossy stone steps lead up to the workshop door, a stone lantern on each. The same “weekly report” scroll is carried up step by step; on the top step a bamboo water tube (shishi-odoshi) tips on its own rhythm — work that runs on time by itself.",
+      "prompt": "Climb each step",
+      "task": "Sample task: the weekly report",
+      "rungAria": "Step {n}: {name}",
+      "rungs": [
+        {
+          "id": "prompt",
+          "name": "Prompt",
+          "what": "Say it once, then it's forgotten. Next time you explain from scratch.",
+          "example": "Every Monday you type: “summarise this week's numbers using the template…”"
+        },
+        {
+          "id": "skill",
+          "name": "Skill",
+          "what": "A packaged instruction sheet; AI opens it by itself when the task fits.",
+          "example": "A “weekly report” skill: which columns, which tone, which template."
+        },
+        {
+          "id": "agent",
+          "name": "Agent",
+          "what": "Does several steps by itself and picks its own tools.",
+          "example": "Opens the spreadsheet, works out the changes, writes a draft."
+        },
+        {
+          "id": "workflow",
+          "name": "Workflow",
+          "what": "Steps chained along a fixed route, with checkpoints.",
+          "example": "Get numbers → agent writes → you review → send."
+        },
+        {
+          "id": "hook",
+          "name": "Hook / schedule",
+          "what": "Starts by itself at a set time or on an event.",
+          "example": "8 a.m. Monday, the workflow runs and waits for your review."
+        }
+      ],
+      "scale": {
+        "text": "This five-step ladder is AI Zen's own picture to make it easy to imagine, not a standard classification.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "facts": [
+        {
+          "text": "Anthropic draws a line: workflows follow routes laid down in code; agents decide their own steps and tools.",
+          "asOf": "2026-10-15",
+          "source": "t35-effective-agents",
+          "kind": "fact"
+        },
+        {
+          "text": "A hook in Claude Code is a command that runs at a set moment, so it always happens rather than waiting for AI to remember.",
+          "asOf": "2026-10-15",
+          "source": "t35-hooks",
+          "kind": "fact"
+        }
+      ],
+      "insight": {
+        "text": "Which step is enough? Common advice: pick the simplest way that does the job; add complexity only when truly needed.",
+        "asOf": "2026-10-15",
+        "source": "t35-effective-agents",
+        "kind": "opinion"
+      },
+      "detail": "Higher steps are handier but harder to control. Many jobs need just one good skill; workflows and schedules suit regular, repeated, stable work."
+    },
+    "scroll": {
+      "label": "Unrolling a skill",
+      "art": "Ink painting: a scroll hung on a wooden peg under a lantern, unrolling from top to bottom. The head is written boldly like a shop sign (name, “when to use”); the body holds the steps; at the bottom hangs a small cloth pouch of attachments, opened only when needed.",
+      "prompt": "Unroll the skill",
+      "codeAria": "A sample skill: writing product captions in the brand voice",
+      "copy": "Copy",
+      "copied": "Copied",
+      "fileName": "product-caption/SKILL.md",
+      "code": {
+        "lang": "text",
+        "code": "---\nname: product-caption\ndescription: Write product captions in the brand voice. Use when you need a caption for Facebook, Instagram or TikTok.\n---\n\n# Product caption\n\n## Steps\n1. Ask for the product name, 3 highlights and the platform.\n2. Read the brand voice in references/brand-voice.md.\n3. Write 3 options: an opening line, a body under 60 words, a call to action.\n4. Never promise what the product doesn't do; never use the word “best”.\n\n## Example\nIn: Linen shirt, airy, low-crease, 3 colours\nOut: 35 degrees outside and still light as a morning breeze. An airy, low-crease linen shirt in three soft colours…",
+        "notes": [
+          {
+            "line": 2,
+            "text": "Name: lowercase, numbers, hyphens; same as the skill's folder name."
+          },
+          {
+            "line": 3,
+            "text": "Description: what it does + when to use it. AI reads this line first to know when to open the scroll."
+          },
+          {
+            "line": 8,
+            "text": "Steps: write them as if briefing a new hire, in order."
+          },
+          {
+            "line": 10,
+            "text": "Attachments: long documents live separately; AI opens them only when needed."
+          },
+          {
+            "line": 12,
+            "text": "A “don't” rule is a step too — say clearly what not to do."
+          },
+          {
+            "line": 14,
+            "text": "An in → out example helps AI catch the voice fastest."
+          }
+        ]
+      },
+      "facts": [
+        {
+          "text": "Per the spec, SKILL.md must have a name and a description; the body holds instructions; it may include scripts, references and assets folders.",
+          "asOf": "2026-10-15",
+          "source": "t35-agentskills-spec",
+          "kind": "fact"
+        },
+        {
+          "text": "At first AI reads only each skill's name and description; it opens the whole scroll when a task fits (progressive disclosure).",
+          "asOf": "2026-10-15",
+          "source": "t35-agentskills-spec",
+          "kind": "fact"
+        }
+      ],
+      "insight": {
+        "text": "The description is the shop sign: AI reads it first and opens the scroll when a task fits — so state “when to use” clearly.",
+        "asOf": "2026-10-15",
+        "source": "t35-agentskills-spec",
+        "kind": "fact"
+      },
+      "detail": "The spec suggests keeping SKILL.md under 500 lines and moving long details to attached files. Each tool supports the standard differently — check your tool's docs."
+    },
+    "moons": {
+      "label": "From habit to standard",
+      "art": "Ink painting: a long strip of raked sand like a horizontal scroll; the visitor drags the moon from left to right. Each milestone is a small stone lantern rising from the sand as the moon passes; at the end, mist covers a lantern not yet lit.",
+      "prompt": "Drag the moon past the milestones",
+      "sliderAria": "Timeline, at milestone {n} of {total}: {label}",
+      "today": "Today",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2024-11-25",
+            "label": "MCP is born",
+            "fact": {
+              "text": "Anthropic announces MCP, an open standard for connecting AI assistants to data and tools.",
+              "asOf": "2026-10-15",
+              "source": "t35-mcp",
+              "kind": "fact"
+            }
+          },
+          {
+            "date": "2024-12-19",
+            "label": "Workflow or agent",
+            "fact": {
+              "text": "Anthropic's guide separates workflows (fixed routes) from agents (choose their own steps) and advises starting simple.",
+              "asOf": "2026-10-15",
+              "source": "t35-effective-agents",
+              "kind": "fact"
+            }
+          },
+          {
+            "date": "2025-09-02",
+            "label": "Spec first, code later",
+            "fact": {
+              "text": "GitHub open-sources Spec Kit: write a spec, plan, split into small checkable tasks, then let AI write code.",
+              "asOf": "2026-10-15",
+              "source": "t35-spec-kit",
+              "kind": "fact"
+            }
+          },
+          {
+            "date": "2025-10-16",
+            "label": "Skills launch",
+            "fact": {
+              "text": "Anthropic launches Agent Skills: folders with a SKILL.md that Claude loads only when a task needs them.",
+              "asOf": "2026-10-15",
+              "source": "t35-skills-launch",
+              "kind": "fact"
+            }
+          },
+          {
+            "date": "2025-12-18",
+            "label": "An open standard",
+            "fact": {
+              "text": "Agent Skills is published as an open standard at agentskills.io so many tools can share it.",
+              "asOf": "2026-10-15",
+              "source": "t35-skills-launch",
+              "kind": "fact"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Today",
+            "fact": {
+              "text": "agentskills.io lists 40+ products supporting skills, from Claude Code, Codex and Gemini CLI to GitHub Copilot and Cursor.",
+              "asOf": "2026-10-15",
+              "source": "t35-agentskills",
+              "kind": "fact"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "Skills may become a common way to carry a workflow from one AI tool to another — not certain yet.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "In about a year, “teach AI once” went from one tool's trick to an open format many tools can read.",
+        "asOf": "2026-10-15",
+        "source": "t35-agentskills",
+        "kind": "fact"
+      },
+      "detail": "The agentskills.io list is the standard's own showcase page; the exact level of support in each tool may differ."
+    },
+    "spec": {
+      "label": "Spec first, code later",
+      "art": "Ink painting: a workbench under a hanging lamp, a blueprint spread flat, its four corners held by pebbles. Eight stones form a path from the workshop door to the bench; each stone set in its place inks one more line of the blueprint.",
+      "prompt": "Set the stones in order",
+      "pathAria": "An eight-step stone path: from a description to a skill",
+      "stoneAria": "Stone: {label}",
+      "slotAria": "Empty spot {n} on the path",
+      "keys": "Tap in turn, or use number keys 1 to 8.",
+      "wrongHint": "Not quite — {why}",
+      "done": "The path is lit. Open your take-away card.",
+      "steps": {
+        "steps": [
+          {
+            "label": "Describe the feel you want",
+            "detail": "Tell it like you'd tell a friend: who uses it, what they see, how it should feel.",
+            "why": "AI needs to know the destination before choosing the road."
+          },
+          {
+            "label": "Let AI ask back",
+            "detail": "Say: “ask me until it's clear; don't write code yet”.",
+            "why": "AI's questions expose what you haven't thought of."
+          },
+          {
+            "label": "Write the spec as .md",
+            "detail": "Collect the answers in one file: goals, rules, limits, what counts as done.",
+            "why": "The spec is a shared blueprint; you and AI look at one page."
+          },
+          {
+            "label": "Split into phases",
+            "detail": "Cut it into small tasks, each one checkable on its own.",
+            "why": "Small tasks are easy to check; mistakes stay small."
+          },
+          {
+            "label": "Hand each part to a coding agent",
+            "detail": "Claude Code, Codex or a similar tool does one phase at a time.",
+            "why": "One task at a time keeps the agent on track."
+          },
+          {
+            "label": "Check with screenshots and numbers",
+            "detail": "Take screenshots, measure speed, click through it like a user.",
+            "why": "What you can see and measure needn't be guessed."
+          },
+          {
+            "label": "Fix the exact spot",
+            "detail": "Say clearly: what you expected, what you saw, on which screen.",
+            "why": "A clear bug report lets AI fix it without breaking other things."
+          },
+          {
+            "label": "Save it as a skill",
+            "detail": "A method that worked well → write it up as a SKILL.md.",
+            "why": "Next time call the skill instead of explaining from scratch."
+          }
+        ],
+        "takeaway": "t35-skill-from-win"
+      },
+      "facts": [
+        {
+          "text": "GitHub calls this spec-driven development: intent comes first, AI does small tasks, a person reviews each step.",
+          "asOf": "2026-10-15",
+          "source": "t35-spec-kit",
+          "kind": "fact"
+        }
+      ],
+      "insight": {
+        "text": "The spec is a shared blueprint: say clearly what you want once, AI builds part by part, you check each part.",
+        "asOf": "2026-10-15",
+        "source": "t35-spec-kit",
+        "kind": "opinion"
+      },
+      "detail": "Tool names are only examples. This works with any coding agent that reads Markdown files."
+    },
+    "line": {
+      "label": "The workshop line",
+      "art": "Ink painting: an ink cord strung across the night workshop, hung with eight paper lanterns — one per work station. The visitor joins the lanterns with a brush stroke; where a person must approve, they set a vermilion stone like a seal beneath the lantern.",
+      "prompt": "Light lanterns, set red stones",
+      "task": "Example: a new product goes on the shelf",
+      "lineAria": "An eight-station marketing line",
+      "stationAria": "Station {n}: {name}",
+      "stoneAria": "Set a red stone — a human reviewer — at {name}",
+      "stations": [
+        {
+          "id": "info",
+          "name": "Gather product info",
+          "human": false
+        },
+        {
+          "id": "openers",
+          "name": "Write 5 opening lines",
+          "human": false
+        },
+        {
+          "id": "draft",
+          "name": "Make draft images/videos",
+          "human": false
+        },
+        {
+          "id": "pick",
+          "name": "Pick the one to use",
+          "human": true,
+          "why": "Picking needs taste and knowing the brand."
+        },
+        {
+          "id": "upscale",
+          "name": "Upscale",
+          "human": false
+        },
+        {
+          "id": "rights",
+          "name": "Check rights & AI label",
+          "human": true,
+          "why": "Getting rights or labels wrong is a legal risk."
+        },
+        {
+          "id": "schedule",
+          "name": "Schedule the post",
+          "human": true,
+          "why": "Once posted, it's hard to take back."
+        },
+        {
+          "id": "report",
+          "name": "Report results",
+          "human": false
+        }
+      ],
+      "extraStone": "A red stone here is fine too — but slower, without adding safety.",
+      "missingStone": "{n} spot(s) still need a human reviewer and have no red stone.",
+      "done": "The line runs: machines do the repetitive parts, you keep the three that matter.",
+      "facts": [
+        {
+          "text": "Anthropic's guidance: agents should pause at checkpoints for human feedback; human review stays very important.",
+          "asOf": "2026-10-15",
+          "source": "t35-effective-agents",
+          "kind": "opinion"
+        }
+      ],
+      "insight": {
+        "text": "Automate the repetitive parts; put a human in the loop where taste, rights or no-undo actions are involved.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Links to station 15: for sending, paying or deleting data, have the agent stop and ask you."
+    }
+  },
+  "sources": {
+    "t35-effective-agents": {
+      "title": "Building effective agents",
+      "publisher": "Anthropic Engineering",
+      "url": "https://www.anthropic.com/engineering/building-effective-agents",
+      "date": "2024-12-19"
+    },
+    "t35-hooks": {
+      "title": "Automate actions with hooks",
+      "publisher": "Claude Code Docs (Anthropic)",
+      "url": "https://code.claude.com/docs/en/hooks-guide"
+    },
+    "t35-agentskills": {
+      "title": "Agent Skills Overview (list of supporting products)",
+      "publisher": "agentskills.io",
+      "url": "https://agentskills.io/home",
+      "note": "46 products counted on the list on 15 Oct 2026."
+    },
+    "t35-agentskills-spec": {
+      "title": "Agent Skills — Specification",
+      "publisher": "agentskills.io",
+      "url": "https://agentskills.io/specification"
+    },
+    "t35-skills-launch": {
+      "title": "Introducing Agent Skills (updated 18 Dec 2025: open standard)",
+      "publisher": "Anthropic / Claude blog",
+      "url": "https://claude.com/blog/skills",
+      "date": "2025-10-16"
+    },
+    "t35-mcp": {
+      "title": "Introducing the Model Context Protocol",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/model-context-protocol",
+      "date": "2024-11-25"
+    },
+    "t35-spec-kit": {
+      "title": "Spec-driven development with AI: Get started with a new open source toolkit",
+      "publisher": "The GitHub Blog (Den Delimarsky)",
+      "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/",
+      "date": "2025-09-02"
+    }
+  }
+}
