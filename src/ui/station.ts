@@ -60,34 +60,54 @@ export async function renderStation(root: HTMLElement, id: number, start: number
   const rail = h('nav', { class: 'rail', 'aria-label': L.sceneNav }, prevBtn, h('div', { class: 'rail-dots' }, ...dots), nextBtn)
   player.append(host, rail)
 
-  let cur = -1
-  let curEl: HTMLElement | null = null
+  let cur = -1 // the scene the rail points at (where the viewer is going)
+  let curEl: HTMLElement | null = null // the scene actually mounted
   let curCleanup: (() => void) | null = null
+  let leaving: Animation | null = null // the mounted scene is fading out; the swap then mounts whatever `cur` is by then
+  let disposed = false
+  const calm = prefs.calm
 
+  // Old scene out → cleaned up → new scene mounted → in. Two heavy scenes (WebGL, physics, loops) never live together,
+  // and spamming ← → only mounts the last target. Transitions run on the compositor (WAAPI), so a heavy mount can't stutter them.
   function go(i: number) {
     i = Math.max(0, Math.min(scenes.length - 1, i))
     if (i === cur) return
     const dir = i > cur ? 1 : -1
-    const oldEl = curEl
-    const oldCleanup = curCleanup
     cur = i
-    const { el, cleanup } = mountScene(i)
-    curEl = el
-    curCleanup = cleanup
-    if (oldEl) {
-      oldEl.inert = true
-      if (prefs.reduced) {
-        oldCleanup?.()
-        oldEl.remove()
-      } else {
-        // Revert the old scene's gsap context OUTSIDE gsap's render loop: reverting inside a tween callback
-        // flags gsap as "reverting" mid-frame and rewinds the new scene's from() tweens (stones stuck invisible).
-        gsap.to(oldEl, { opacity: 0, x: -50 * dir, filter: 'blur(6px)', duration: 0.55, ease: 'power2.in', onComplete: () => void setTimeout(() => (oldCleanup?.(), oldEl.remove())) })
-        gsap.from(el, { opacity: 0, x: 60 * dir, filter: 'blur(8px)', duration: 0.95, delay: 0.25, ease: 'power3.out', clearProps: 'filter,transform' })
-      }
-    }
     sync()
     history.replaceState(null, '', `#/tram/${id}/${i + 1}`)
+    if (leaving) return
+    if (!curEl || prefs.reduced) return swap(dir)
+    const el = curEl
+    el.inert = true
+    const from = getComputedStyle(el).opacity // may still be fading in
+    el.getAnimations().forEach((a) => a.cancel())
+    leaving = el.animate([{ opacity: from }, { opacity: 0, transform: calm ? 'translateY(-6px)' : `translateX(${-30 * dir}px)` }], {
+      duration: calm ? 160 : 320,
+      easing: 'cubic-bezier(0.55, 0.085, 0.68, 0.53)', // power2.in
+      fill: 'forwards',
+    })
+    // Revert the old scene's gsap context OUTSIDE gsap's render loop: reverting inside a tween callback
+    // flags gsap as "reverting" mid-frame and rewinds the new scene's from() tweens (stones stuck invisible).
+    leaving.onfinish = () => void setTimeout(() => !disposed && swap(dir))
+  }
+
+  function swap(dir: number) {
+    leaving = null
+    const first = !curEl
+    curCleanup?.()
+    curEl?.remove()
+    const { el, cleanup } = mountScene(cur)
+    curEl = el
+    curCleanup = cleanup
+    if (first || prefs.reduced) return
+    // calm: ink settling into paper — a soft fade with a few pixels of drift; rich: the old feel, with a light 3 px blur
+    el.animate(
+      calm
+        ? [{ opacity: 0, transform: 'translateY(10px) scale(0.995)' }, { opacity: 1, transform: 'none' }]
+        : [{ opacity: 0, transform: `translateX(${50 * dir}px)`, filter: 'blur(3px)' }, { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
+      { duration: calm ? 420 : 900, easing: 'cubic-bezier(0.215, 0.61, 0.355, 1)' }, // power3.out
+    )
   }
 
   function sync() {
@@ -202,9 +222,11 @@ export async function renderStation(root: HTMLElement, id: number, start: number
   addEventListener('keydown', onKey)
 
   go(Math.min(start, scenes.length - 1))
-  const chapterCleanup = start === 0 ? chapter(player, id, meta.title, mod.content.kicker) : null
+  const chapterCleanup = start === 0 ? chapter(player, id, meta.title, mod.content.kicker, calm) : null
 
   return () => {
+    disposed = true
+    leaving?.cancel()
     removeEventListener('keydown', onKey)
     chapterCleanup?.()
     curCleanup?.()
@@ -213,7 +235,7 @@ export async function renderStation(root: HTMLElement, id: number, start: number
 }
 
 /** Opening card: big station number + title + one metaphor line, dissolves into the first scene. */
-function chapter(player: HTMLElement, id: number, title: string, kicker: string) {
+function chapter(player: HTMLElement, id: number, title: string, kicker: string, calm: boolean) {
   const card = h('div', { class: 'chapter', role: 'presentation' },
     h('p', { class: 'chapter-num' }, pad(id)),
     h('h1', { class: 'chapter-title', tabindex: '-1' }, title),
@@ -227,9 +249,10 @@ function chapter(player: HTMLElement, id: number, title: string, kicker: string)
     clearTimeout(timer)
     removeEventListener('keydown', close, true)
     if (prefs.reduced) card.remove()
+    else if (calm) gsap.to(card, { opacity: 0, y: -8, duration: 0.6, ease: 'power2.inOut', onComplete: () => card.remove() })
     else gsap.to(card, { opacity: 0, filter: 'blur(10px)', scale: 1.02, duration: 0.9, ease: 'power2.inOut', onComplete: () => card.remove() })
   }
-  if (!prefs.reduced) gsap.from(card.children, { opacity: 0, y: 16, filter: 'blur(6px)', stagger: 0.18, duration: 1.2, ease: 'power3.out' })
+  if (!prefs.reduced) gsap.from(card.children, { opacity: 0, y: 16, ...(calm ? {} : { filter: 'blur(6px)' }), stagger: 0.18, duration: 1.2, ease: 'power3.out' })
   const timer = setTimeout(close, 2800)
   card.addEventListener('pointerdown', close)
   addEventListener('keydown', close, true)

@@ -5,8 +5,8 @@ export type Quality = 'high' | 'low'
 
 const mqDark = matchMedia('(prefers-color-scheme: dark)')
 const mqReduce = matchMedia('(prefers-reduced-motion: reduce)')
-const weakDevice =
-  matchMedia('(pointer: coarse)').matches || ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) < 4
+const coarse = matchMedia('(pointer: coarse)').matches
+const weakDevice = coarse || ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) < 4
 
 const state = {
   theme: load<Theme | 'auto'>('theme', 'auto'),
@@ -28,6 +28,10 @@ export const prefs = {
   },
   get reduced() {
     return mqReduce.matches
+  },
+  /** Calm motion (touch screens, quality=low): transitions use opacity + transform only, never filters. */
+  get calm() {
+    return coarse || state.quality === 'low'
   },
 }
 
