@@ -25,7 +25,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
   const labels = h('div', { class: 'garden-labels', 'aria-hidden': 'true' })
   const tip = h('div', { class: 'ptip', role: 'tooltip', id: 'ptip', hidden: true })
   const nextId = ALL_STATIONS.find((st) => st.id in STATIONS && !progress.isVisited(st.id))?.id
-  const stones = ALL_STATIONS.map((st) => {
+  const stones = ALL_STATIONS.map((st, i) => {
     const built = st.id in STATIONS
     const visited = progress.isVisited(st.id)
     const passed = progress.isPassed(st.id)
@@ -40,6 +40,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
       'data-garden': st.garden.id,
       'aria-label': `${L.station} ${st.id}: ${st.title}${state ? ` — ${state}` : ''}`,
       'aria-describedby': 'ptip',
+      style: `--i:${i}`, // appear stagger
     }, h('span', { class: 'pstone-num' }, pad(st.id)))
   })
   const list = h('nav', { class: 'garden-stones', 'aria-label': SITE.hero.tagline }, ...stones)
@@ -125,6 +126,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     const pending: { lab: HTMLElement; half: number; cands: Pt[]; home: Pt }[] = []
     const placed: Pt[] = []
     rocks = []
+    let ri = 0
     rocksSvg.replaceChildren()
     rocksSvg.setAttribute('viewBox', `0 0 ${w} ${hgt}`)
     rocksSvg.style.width = `${w}px`
@@ -150,10 +152,13 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
         { x: rc.x + R * 1.3 * Math.cos(g.id * 2.1), y: rc.y + R * 0.55 * Math.sin(g.id * 2.1) + R * 0.35, r: R * 0.46, seed: g.id * 3.1 },
       ]
       if (g.stations.length > 2) cluster.push({ x: rc.x - R * 1.15, y: rc.y + R * 0.5, r: R * 0.3, seed: g.id * 5.3 })
-      cluster.forEach((rk, i) => drawRock(rocksSvg, rk, g.id, i === 0))
+      cluster.forEach((rk, i) => {
+        drawRock(rocksSvg, rk, g.id, i === 0)
+        ;(rocksSvg.lastElementChild as SVGGElement).style.setProperty('--i', String(ri++)) // appear stagger
+      })
       rocks.push(...cluster)
 
-      const lab = h('p', { class: 'glabel', 'data-garden': g.id }, h('span', { class: 'glabel-num' }, String(g.id)), h('span', null, g.name))
+      const lab = h('p', { class: 'glabel', 'data-garden': g.id, style: `--i:${gi}` }, h('span', { class: 'glabel-num' }, String(g.id)), h('span', null, g.name))
       labels.append(lab)
       const half = lab.offsetWidth / 2 + 10
       const cands = [
@@ -425,13 +430,14 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
   })
 
   let introCleanup: (() => void) | null = null
+  let appearTimer = 0
   const gctx = gsap.context(() => {
     if (prefs.reduced) return
+    // the garden settles in: CSS animations (ui.css .garden.appear), so nothing reads styles or bboxes in JS;
+    // the class goes once they are done, so a later relayout (rotation) draws without replaying them
     const appear = () => {
-      gsap.from(rocksSvg.children, { opacity: 0, scale: 0.9, transformOrigin: '50% 60%', stagger: 0.04, duration: 1.4, ease: 'power3.out' })
-      gsap.from(stones, { opacity: 0, y: 10, stagger: 0.035, duration: 0.9, ease: 'power3.out', delay: 0.3 })
-      gsap.from(labels.children, { opacity: 0, duration: 1.6, stagger: 0.08, delay: 0.6 })
-      gsap.from(sand, { opacity: 0, duration: 2 })
+      garden.classList.add('appear')
+      appearTimer = window.setTimeout(() => garden.classList.remove('appear'), 4200)
     }
     if (withIntro) introCleanup = intro(garden, appear)
     else appear()
@@ -445,6 +451,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     rippleLoop.dispose()
     clearTimeout(relayout)
     introCleanup?.()
+    clearTimeout(appearTimer)
     gctx.revert()
   }
 }
