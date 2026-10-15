@@ -1,0 +1,2182 @@
+{
+ "meta": {
+  "date": "2026-10-15T07:51:57.094Z",
+  "profile": "mobile",
+  "label": "Moto G Power (giả lập) · 412×823 @1.75x · cảm ứng · CPU 4× · Fast 4G",
+  "ablate": [
+   "svgfilter"
+  ],
+  "trace": true,
+  "commit": "f2f3836+dirty",
+  "browser": "Chromium 156.0.8078.4",
+  "host": "darwin arm64",
+  "quality": "low"
+ },
+ "c": {
+  "mapStart": {
+   "heapMB": 2,
+   "glAlive": 0,
+   "glMade": 0,
+   "stages": 0,
+   "loops": 1,
+   "loopNames": [
+    "e"
+   ]
+  },
+  "stations": [
+   {
+    "id": 13,
+    "latency": 447,
+    "entry": {
+     "ms": 4203,
+     "frames": 250,
+     "fps": 59.5,
+     "medianFps": 60,
+     "maxFrame": 33,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 1,
+     "longTaskMax": 51,
+     "longTaskTotal": 51,
+     "maxGl": 0,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "heapMB": 5.4
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "AI ảnh",
+      "transition": {
+       "ms": 1642,
+       "frames": 97,
+       "fps": 59.1,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 5.4
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 5.6
+      }
+     },
+     {
+      "scene": 3,
+      "label": "AI video",
+      "transition": {
+       "ms": 1648,
+       "frames": 98,
+       "fps": 59.5,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 5.4
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 5.5
+      }
+     },
+     {
+      "scene": 4,
+      "label": "AI 3D",
+      "transition": {
+       "ms": 1787,
+       "frames": 96,
+       "fps": 53.7,
+       "medianFps": 60,
+       "maxFrame": 200,
+       "p95Frame": 17,
+       "over50": 1,
+       "longTasks": 1,
+       "longTaskMax": 184,
+       "longTaskTotal": 184,
+       "maxGl": 1,
+       "maxStages": 1,
+       "maxLoops": 6,
+       "heapMB": 11.9
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 1,
+       "maxLoops": 4,
+       "heapMB": 10
+      }
+     },
+     {
+      "scene": 5,
+      "label": "AI agent",
+      "transition": {
+       "ms": 1652,
+       "frames": 97,
+       "fps": 58.7,
+       "medianFps": 60,
+       "maxFrame": 50,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 1,
+       "maxLoops": 5,
+       "heapMB": 11.8
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 12.3
+      }
+     },
+     {
+      "scene": 6,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1616,
+       "frames": 97,
+       "fps": 60,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 7.5
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 7.5
+      }
+     },
+     {
+      "scene": 7,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1619,
+       "frames": 97,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.1
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.3
+      }
+     }
+    ],
+    "trace": {
+     "windowMs": 20719.3,
+     "mainBusyMs": 2391.1,
+     "mainSelf": [
+      [
+       "UpdateLayoutTree",
+       345.8
+      ],
+      [
+       "Layerize",
+       338.5
+      ],
+      [
+       "(task)",
+       310.1
+      ],
+      [
+       "JS index-QQeHfosC.js",
+       233
+      ],
+      [
+       "EventDispatch",
+       227
+      ],
+      [
+       "Layout",
+       222.8
+      ],
+      [
+       "PrePaint",
+       194.5
+      ],
+      [
+       "Paint",
+       169.1
+      ],
+      [
+       "Commit",
+       102.4
+      ],
+      [
+       "EvaluateScript",
+       64.3
+      ],
+      [
+       "Receive mojo message",
+       48.4
+      ],
+      [
+       "FireAnimationFrame",
+       30.7
+      ],
+      [
+       "BlinkScheduler_PerformMicrotaskCheckpoint",
+       27.5
+      ],
+      [
+       "UpdateLayer",
+       15.5
+      ]
+     ],
+     "jsByFile": [
+      [
+       "(program)",
+       2026.7
+      ],
+      [
+       "index-QQeHfosC.js",
+       262
+      ],
+      [
+       "three-stage-d_ZQTQJb.js",
+       174
+      ],
+      [
+       "t13-DaIcktEl.js",
+       131.8
+      ],
+      [
+       "(garbage collector)",
+       36
+      ],
+      [
+       "setAttribute",
+       11.7
+      ],
+      [
+       "(anonymous)",
+       10
+      ],
+      [
+       "getBoundingClientRect",
+       9.9
+      ],
+      [
+       "getContext",
+       5.9
+      ],
+      [
+       "replaceChildren",
+       4.6
+      ]
+     ],
+     "jsByFunction": [
+      [
+       "(program) · (program)",
+       2026.7
+      ],
+      [
+       "index-QQeHfosC.js · e",
+       128.2
+      ],
+      [
+       "t13-DaIcktEl.js · i",
+       44.9
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       36
+      ],
+      [
+       "three-stage-d_ZQTQJb.js · C",
+       28.7
+      ],
+      [
+       "index-QQeHfosC.js · n.render",
+       22.3
+      ],
+      [
+       "t13-DaIcktEl.js · we",
+       20.2
+      ],
+      [
+       "t13-DaIcktEl.js · F",
+       19.5
+      ],
+      [
+       "index-QQeHfosC.js · Tr",
+       16.2
+      ],
+      [
+       "index-QQeHfosC.js · (anonymous)",
+       12.3
+      ],
+      [
+       "setAttribute · setAttribute",
+       11.7
+      ],
+      [
+       "(anonymous) · (anonymous)",
+       10
+      ]
+     ],
+     "forcedStyleLayoutInRaf": [
+      [
+       "layout in rAF · index-QQeHfosC.js",
+       28.9
+      ],
+      [
+       "style in rAF · index-QQeHfosC.js",
+       19.3
+      ]
+     ],
+     "longTasks": [
+      {
+       "at": 10028,
+       "ms": 184.4,
+       "parts": [
+        [
+         "EventDispatch",
+         159.7
+        ],
+        [
+         "Layout",
+         11.4
+        ],
+        [
+         "UpdateLayoutTree",
+         6.3
+        ],
+        [
+         "V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE",
+         2.1
+        ]
+       ],
+       "js": [
+        [
+         "t13-DaIcktEl.js · we",
+         20.2
+        ],
+        [
+         "three-stage-d_ZQTQJb.js · C",
+         19.7
+        ],
+        [
+         "getBoundingClientRect · getBoundingClientRect",
+         7.4
+        ],
+        [
+         "t13-DaIcktEl.js · i",
+         6.7
+        ],
+        [
+         "three-stage-d_ZQTQJb.js · n",
+         6.6
+        ]
+       ]
+      },
+      {
+       "at": 5.4,
+       "ms": 52.9,
+       "parts": [
+        [
+         "EvaluateScript",
+         51.3
+        ],
+        [
+         "Receive mojo message",
+         0.9
+        ],
+        [
+         "(task)",
+         0.6
+        ],
+        [
+         "V8.GC_HEAP_ENSURE_SWEEPING_COMPLETED",
+         0.1
+        ]
+       ],
+       "js": [
+        [
+         "InjectedScript · InjectedScript",
+         1
+        ],
+        [
+         "(program) · (program)",
+         0.8
+        ],
+        [
+         "SelectorEvaluatorImpl · SelectorEvaluatorImpl",
+         0.6
+        ],
+        [
+         "addEventListener · addEventListener",
+         0.6
+        ],
+        [
+         "(anonymous) · (anonymous)",
+         0.5
+        ]
+       ]
+      },
+      {
+       "at": 913.2,
+       "ms": 51,
+       "parts": [
+        [
+         "BlinkScheduler_PerformMicrotaskCheckpoint",
+         18.1
+        ],
+        [
+         "Layout",
+         17.5
+        ],
+        [
+         "v8.evaluateModule",
+         6.1
+        ],
+        [
+         "UpdateLayoutTree",
+         4.2
+        ]
+       ],
+       "js": [
+        [
+         "t13-DaIcktEl.js · i",
+         16.8
+        ],
+        [
+         "three-stage-d_ZQTQJb.js · (anonymous)",
+         3.8
+        ],
+        [
+         "focus · focus",
+         3.7
+        ],
+        [
+         "t13-DaIcktEl.js · F",
+         3.4
+        ],
+        [
+         "t13-DaIcktEl.js · L",
+         2.5
+        ]
+       ]
+      }
+     ],
+     "gpuMainMs": 1206.9,
+     "compositorMs": 194.6
+    },
+    "settled": {
+     "heapMB": 5.8,
+     "glAlive": 1,
+     "glMade": 1,
+     "stages": 0,
+     "loops": 2,
+     "loopNames": [
+      "e",
+      "u"
+     ]
+    }
+   },
+   {
+    "id": 14,
+    "latency": 270,
+    "entry": {
+     "ms": 4201,
+     "frames": 249,
+     "fps": 59.3,
+     "medianFps": 60,
+     "maxFrame": 50,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 1,
+     "longTaskMax": 60,
+     "longTaskTotal": 60,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "heapMB": 7.7
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Giải phẫu một agent",
+      "transition": {
+       "ms": 1644,
+       "frames": 88,
+       "fps": 53.5,
+       "medianFps": 60,
+       "maxFrame": 50,
+       "p95Frame": 33,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 4,
+       "heapMB": 7.7
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.1
+      }
+     },
+     {
+      "scene": 3,
+      "label": "Vòng lặp của agent",
+      "transition": {
+       "ms": 1644,
+       "frames": 97,
+       "fps": 59,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.5
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.1
+      }
+     },
+     {
+      "scene": 4,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1613,
+       "frames": 96,
+       "fps": 59.5,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.5
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.6
+      }
+     },
+     {
+      "scene": 5,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1612,
+       "frames": 96,
+       "fps": 59.5,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 7.6
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 7.8
+      }
+     }
+    ],
+    "trace": {
+     "windowMs": 14768,
+     "mainBusyMs": 1406.6,
+     "mainSelf": [
+      [
+       "Layerize",
+       269.4
+      ],
+      [
+       "UpdateLayoutTree",
+       244.7
+      ],
+      [
+       "(task)",
+       193.2
+      ],
+      [
+       "JS index-QQeHfosC.js",
+       124.9
+      ],
+      [
+       "Paint",
+       113.3
+      ],
+      [
+       "Layout",
+       98.8
+      ],
+      [
+       "PrePaint",
+       94.8
+      ],
+      [
+       "Receive mojo message",
+       58.4
+      ],
+      [
+       "BlinkScheduler_PerformMicrotaskCheckpoint",
+       56.5
+      ],
+      [
+       "Commit",
+       53.7
+      ],
+      [
+       "EventDispatch",
+       43.3
+      ],
+      [
+       "FireAnimationFrame",
+       13.6
+      ],
+      [
+       "UpdateLayer",
+       9
+      ],
+      [
+       "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING",
+       3.5
+      ]
+     ],
+     "jsByFile": [
+      [
+       "(program)",
+       1255.3
+      ],
+      [
+       "index-QQeHfosC.js",
+       170.3
+      ],
+      [
+       "t14-Dk3Z9RXW.js",
+       56.6
+      ],
+      [
+       "brush-CpAxWBZ8.js",
+       51.3
+      ],
+      [
+       "(garbage collector)",
+       30.6
+      ],
+      [
+       "get offsetWidth",
+       25.8
+      ],
+      [
+       "setAttribute",
+       15.4
+      ],
+      [
+       "(anonymous)",
+       4.7
+      ],
+      [
+       "get memory",
+       3
+      ],
+      [
+       "remove",
+       2.7
+      ]
+     ],
+     "jsByFunction": [
+      [
+       "(program) · (program)",
+       1255.3
+      ],
+      [
+       "index-QQeHfosC.js · e",
+       80.6
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       30.6
+      ],
+      [
+       "brush-CpAxWBZ8.js · h",
+       30.1
+      ],
+      [
+       "get offsetWidth · get offsetWidth",
+       25.8
+      ],
+      [
+       "setAttribute · setAttribute",
+       15.4
+      ],
+      [
+       "t14-Dk3Z9RXW.js · (anonymous)",
+       13
+      ],
+      [
+       "brush-CpAxWBZ8.js · r",
+       12.8
+      ],
+      [
+       "t14-Dk3Z9RXW.js · J",
+       12.4
+      ],
+      [
+       "index-QQeHfosC.js · n.render",
+       10.9
+      ],
+      [
+       "index-QQeHfosC.js · (anonymous)",
+       7.7
+      ],
+      [
+       "index-QQeHfosC.js · render",
+       6.5
+      ]
+     ],
+     "forcedStyleLayoutInRaf": [
+      [
+       "style in rAF · index-QQeHfosC.js",
+       29.8
+      ],
+      [
+       "layout in rAF · index-QQeHfosC.js",
+       14.9
+      ]
+     ],
+     "longTasks": [
+      {
+       "at": 231,
+       "ms": 60.5,
+       "parts": [
+        [
+         "BlinkScheduler_PerformMicrotaskCheckpoint",
+         40.1
+        ],
+        [
+         "UpdateLayoutTree",
+         10
+        ],
+        [
+         "Layout",
+         6.7
+        ],
+        [
+         "V8.GC_SCAVENGER_SCAVENGE_WEAK_GLOBAL_HANDLES_PROCESS",
+         1
+        ]
+       ],
+       "js": [
+        [
+         "index-QQeHfosC.js · e",
+         11.4
+        ],
+        [
+         "brush-CpAxWBZ8.js · h",
+         10.3
+        ],
+        [
+         "t14-Dk3Z9RXW.js · (anonymous)",
+         3.8
+        ],
+        [
+         "brush-CpAxWBZ8.js · r",
+         2.9
+        ],
+        [
+         "t14-Dk3Z9RXW.js · b",
+         2.8
+        ]
+       ]
+      }
+     ],
+     "gpuMainMs": 1588.9,
+     "compositorMs": 125.8
+    }
+   },
+   {
+    "id": 15,
+    "latency": 289,
+    "entry": {
+     "ms": 4201,
+     "frames": 249,
+     "fps": 59.3,
+     "medianFps": 60,
+     "maxFrame": 50,
+     "p95Frame": 17,
+     "over50": 1,
+     "longTasks": 1,
+     "longTaskMax": 69,
+     "longTaskTotal": 69,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "heapMB": 8.5
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Các loại agent",
+      "transition": {
+       "ms": 1644,
+       "frames": 97,
+       "fps": 59,
+       "medianFps": 60,
+       "maxFrame": 50,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.7
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.8
+      }
+     },
+     {
+      "scene": 3,
+      "label": "Thử giao việc",
+      "transition": {
+       "ms": 1651,
+       "frames": 96,
+       "fps": 58.1,
+       "medianFps": 60,
+       "maxFrame": 50,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 4,
+       "heapMB": 9.9
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 10
+      }
+     },
+     {
+      "scene": 4,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1613,
+       "frames": 96,
+       "fps": 59.5,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.5
+      },
+      "idle": {
+       "ms": 1004,
+       "frames": 61,
+       "fps": 60.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.6
+      }
+     },
+     {
+      "scene": 5,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1613,
+       "frames": 96,
+       "fps": 59.5,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.2
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.3
+      }
+     }
+    ],
+    "trace": {
+     "windowMs": 14781.6,
+     "mainBusyMs": 1569.6,
+     "mainSelf": [
+      [
+       "UpdateLayoutTree",
+       313.6
+      ],
+      [
+       "Layerize",
+       247.3
+      ],
+      [
+       "(task)",
+       220
+      ],
+      [
+       "Paint",
+       154.5
+      ],
+      [
+       "JS index-QQeHfosC.js",
+       134.7
+      ],
+      [
+       "PrePaint",
+       107
+      ],
+      [
+       "Layout",
+       96.5
+      ],
+      [
+       "Receive mojo message",
+       75.7
+      ],
+      [
+       "Commit",
+       60.3
+      ],
+      [
+       "BlinkScheduler_PerformMicrotaskCheckpoint",
+       46.3
+      ],
+      [
+       "EventDispatch",
+       40.3
+      ],
+      [
+       "FireAnimationFrame",
+       26.2
+      ],
+      [
+       "UpdateLayer",
+       11.4
+      ],
+      [
+       "V8.GC_MC_INCREMENTAL",
+       3
+      ]
+     ],
+     "jsByFile": [
+      [
+       "(program)",
+       1445.4
+      ],
+      [
+       "index-QQeHfosC.js",
+       179.2
+      ],
+      [
+       "t15-C_FVooII.js",
+       84.1
+      ],
+      [
+       "(garbage collector)",
+       31.2
+      ],
+      [
+       "setAttribute",
+       21
+      ],
+      [
+       "getComputedTextLength",
+       10.8
+      ],
+      [
+       "get ready",
+       8.2
+      ],
+      [
+       "get memory",
+       6.9
+      ],
+      [
+       "replaceChildren",
+       4.4
+      ],
+      [
+       "requestAnimationFrame",
+       4
+      ]
+     ],
+     "jsByFunction": [
+      [
+       "(program) · (program)",
+       1445.4
+      ],
+      [
+       "index-QQeHfosC.js · e",
+       83
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       31.2
+      ],
+      [
+       "setAttribute · setAttribute",
+       21
+      ],
+      [
+       "index-QQeHfosC.js · Tr",
+       16
+      ],
+      [
+       "index-QQeHfosC.js · (anonymous)",
+       12.1
+      ],
+      [
+       "t15-C_FVooII.js · h",
+       11.6
+      ],
+      [
+       "getComputedTextLength · getComputedTextLength",
+       10.8
+      ],
+      [
+       "index-QQeHfosC.js · n.render",
+       10.2
+      ],
+      [
+       "t15-C_FVooII.js · (anonymous)",
+       10.1
+      ],
+      [
+       "t15-C_FVooII.js · K",
+       8.6
+      ],
+      [
+       "t15-C_FVooII.js · ie",
+       8.6
+      ]
+     ],
+     "forcedStyleLayoutInRaf": [
+      [
+       "style in rAF · index-QQeHfosC.js",
+       26.2
+      ],
+      [
+       "layout in rAF · index-QQeHfosC.js",
+       13.7
+      ]
+     ],
+     "longTasks": [
+      {
+       "at": 247.8,
+       "ms": 69.1,
+       "parts": [
+        [
+         "BlinkScheduler_PerformMicrotaskCheckpoint",
+         40.3
+        ],
+        [
+         "UpdateLayoutTree",
+         13.3
+        ],
+        [
+         "Layout",
+         11.2
+        ],
+        [
+         "V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE",
+         1.3
+        ]
+       ],
+       "js": [
+        [
+         "t15-C_FVooII.js · G",
+         7.9
+        ],
+        [
+         "t15-C_FVooII.js · K",
+         7.7
+        ],
+        [
+         "getComputedTextLength · getComputedTextLength",
+         7.5
+        ],
+        [
+         "t15-C_FVooII.js · h",
+         3.9
+        ],
+        [
+         "index-QQeHfosC.js · e",
+         3.6
+        ]
+       ]
+      }
+     ],
+     "gpuMainMs": 902.2,
+     "compositorMs": 138.2
+    }
+   },
+   {
+    "id": 16,
+    "latency": 252,
+    "entry": {
+     "ms": 4201,
+     "frames": 251,
+     "fps": 59.8,
+     "medianFps": 60,
+     "maxFrame": 33,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "heapMB": 9.1
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Trước và sau",
+      "transition": {
+       "ms": 1635,
+       "frames": 97,
+       "fps": 59.3,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.7
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.7
+      }
+     },
+     {
+      "scene": 3,
+      "label": "Bốn viên đá",
+      "transition": {
+       "ms": 1617,
+       "frames": 97,
+       "fps": 60,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.3
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.4
+      }
+     },
+     {
+      "scene": 4,
+      "label": "Mực ẩn",
+      "transition": {
+       "ms": 1645,
+       "frames": 97,
+       "fps": 59,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.1
+      }
+     },
+     {
+      "scene": 5,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1614,
+       "frames": 96,
+       "fps": 59.5,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.8
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 8.9
+      }
+     },
+     {
+      "scene": 6,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1613,
+       "frames": 97,
+       "fps": 60.1,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.4
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.6
+      }
+     }
+    ],
+    "trace": {
+     "windowMs": 17388.9,
+     "mainBusyMs": 1741.5,
+     "mainSelf": [
+      [
+       "Layerize",
+       306.3
+      ],
+      [
+       "UpdateLayoutTree",
+       279.7
+      ],
+      [
+       "(task)",
+       273.9
+      ],
+      [
+       "JS index-QQeHfosC.js",
+       183.9
+      ],
+      [
+       "Paint",
+       158.8
+      ],
+      [
+       "PrePaint",
+       133.5
+      ],
+      [
+       "Layout",
+       123.1
+      ],
+      [
+       "Commit",
+       79.7
+      ],
+      [
+       "EventDispatch",
+       54.5
+      ],
+      [
+       "Receive mojo message",
+       39.3
+      ],
+      [
+       "BlinkScheduler_PerformMicrotaskCheckpoint",
+       34.6
+      ],
+      [
+       "FireAnimationFrame",
+       19.8
+      ],
+      [
+       "UpdateLayer",
+       9.9
+      ],
+      [
+       "IntersectionObserverController::computeIntersections",
+       3.8
+      ]
+     ],
+     "jsByFile": [
+      [
+       "(program)",
+       1662.6
+      ],
+      [
+       "index-QQeHfosC.js",
+       171.4
+      ],
+      [
+       "t16-mUqOaTY6.js",
+       60
+      ],
+      [
+       "(garbage collector)",
+       32.4
+      ],
+      [
+       "brush-CpAxWBZ8.js",
+       30.3
+      ],
+      [
+       "setAttribute",
+       18.7
+      ],
+      [
+       "getBoundingClientRect",
+       7.3
+      ],
+      [
+       "get ready",
+       5
+      ],
+      [
+       "requestAnimationFrame",
+       4.6
+      ],
+      [
+       "createElementNS",
+       3.7
+      ]
+     ],
+     "jsByFunction": [
+      [
+       "(program) · (program)",
+       1662.6
+      ],
+      [
+       "index-QQeHfosC.js · e",
+       68.1
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       32.4
+      ],
+      [
+       "setAttribute · setAttribute",
+       18.7
+      ],
+      [
+       "brush-CpAxWBZ8.js · r",
+       15
+      ],
+      [
+       "index-QQeHfosC.js · (anonymous)",
+       14.1
+      ],
+      [
+       "index-QQeHfosC.js · Tr",
+       12.3
+      ],
+      [
+       "brush-CpAxWBZ8.js · h",
+       10.4
+      ],
+      [
+       "t16-mUqOaTY6.js · Z",
+       10.3
+      ],
+      [
+       "t16-mUqOaTY6.js · pe",
+       10.1
+      ],
+      [
+       "index-QQeHfosC.js · Ot",
+       9.6
+      ],
+      [
+       "t16-mUqOaTY6.js · (anonymous)",
+       9
+      ]
+     ],
+     "forcedStyleLayoutInRaf": [
+      [
+       "style in rAF · index-QQeHfosC.js",
+       22.8
+      ],
+      [
+       "layout in rAF · index-QQeHfosC.js",
+       14.6
+      ]
+     ],
+     "longTasks": [],
+     "gpuMainMs": 929.3,
+     "compositorMs": 156.9
+    }
+   },
+   {
+    "id": 17,
+    "latency": 334,
+    "entry": {
+     "ms": 4203,
+     "frames": 241,
+     "fps": 57.3,
+     "medianFps": 60,
+     "maxFrame": 100,
+     "p95Frame": 17,
+     "over50": 1,
+     "longTasks": 1,
+     "longTaskMax": 92,
+     "longTaskTotal": 92,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "heapMB": 10.7
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Đóng hay mở",
+      "transition": {
+       "ms": 1654,
+       "frames": 96,
+       "fps": 58.1,
+       "medianFps": 60,
+       "maxFrame": 50,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 1,
+       "longTaskMax": 51,
+       "longTaskTotal": 51,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 10.3
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.6
+      }
+     },
+     {
+      "scene": 3,
+      "label": "Bậc thang model",
+      "transition": {
+       "ms": 1631,
+       "frames": 96,
+       "fps": 58.9,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 10
+      },
+      "idle": {
+       "ms": 1004,
+       "frames": 61,
+       "fps": 60.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 10.2
+      }
+     },
+     {
+      "scene": 4,
+      "label": "So sánh hai đảo",
+      "transition": {
+       "ms": 1634,
+       "frames": 98,
+       "fps": 60,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.7
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.8
+      }
+     },
+     {
+      "scene": 5,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1615,
+       "frames": 97,
+       "fps": 60.1,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.7
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.8
+      }
+     },
+     {
+      "scene": 6,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1614,
+       "frames": 97,
+       "fps": 60.1,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 10.2
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 9.7
+      }
+     }
+    ],
+    "trace": {
+     "windowMs": 17426.3,
+     "mainBusyMs": 3761.9,
+     "mainSelf": [
+      [
+       "UpdateLayoutTree",
+       1091.3
+      ],
+      [
+       "(task)",
+       654
+      ],
+      [
+       "Layerize",
+       497.5
+      ],
+      [
+       "PrePaint",
+       320.7
+      ],
+      [
+       "JS index-QQeHfosC.js",
+       258.7
+      ],
+      [
+       "Paint",
+       218.8
+      ],
+      [
+       "Layout",
+       163.3
+      ],
+      [
+       "Commit",
+       160.7
+      ],
+      [
+       "BlinkScheduler_PerformMicrotaskCheckpoint",
+       99.4
+      ],
+      [
+       "Receive mojo message",
+       79.6
+      ],
+      [
+       "EventDispatch",
+       52.6
+      ],
+      [
+       "UpdateLayer",
+       40.6
+      ],
+      [
+       "FireAnimationFrame",
+       28.6
+      ],
+      [
+       "PaintImage",
+       19.1
+      ]
+     ],
+     "jsByFile": [
+      [
+       "(program)",
+       3210.3
+      ],
+      [
+       "index-QQeHfosC.js",
+       492.6
+      ],
+      [
+       "t17-B5_Ivjra.js",
+       108.5
+      ],
+      [
+       "(garbage collector)",
+       48.3
+      ],
+      [
+       "setAttribute",
+       22
+      ],
+      [
+       "focus",
+       19.8
+      ],
+      [
+       "get offsetHeight",
+       15.1
+      ],
+      [
+       "get offsetWidth",
+       6.3
+      ],
+      [
+       "remove",
+       4.3
+      ],
+      [
+       "(anonymous)",
+       3.5
+      ]
+     ],
+     "jsByFunction": [
+      [
+       "(program) · (program)",
+       3210.3
+      ],
+      [
+       "index-QQeHfosC.js · e",
+       301.4
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       48.3
+      ],
+      [
+       "t17-B5_Ivjra.js · J",
+       35.3
+      ],
+      [
+       "index-QQeHfosC.js · Tr",
+       28.3
+      ],
+      [
+       "index-QQeHfosC.js · ha",
+       27
+      ],
+      [
+       "setAttribute · setAttribute",
+       22
+      ],
+      [
+       "index-QQeHfosC.js · n.render",
+       21.3
+      ],
+      [
+       "index-QQeHfosC.js · (anonymous)",
+       20.5
+      ],
+      [
+       "focus · focus",
+       19.8
+      ],
+      [
+       "get offsetHeight · get offsetHeight",
+       15.1
+      ],
+      [
+       "index-QQeHfosC.js · Ot",
+       12.9
+      ]
+     ],
+     "forcedStyleLayoutInRaf": [
+      [
+       "style in rAF · index-QQeHfosC.js",
+       205.6
+      ],
+      [
+       "layout in rAF · index-QQeHfosC.js",
+       25
+      ]
+     ],
+     "longTasks": [
+      {
+       "at": 262.8,
+       "ms": 92.3,
+       "parts": [
+        [
+         "BlinkScheduler_PerformMicrotaskCheckpoint",
+         43.4
+        ],
+        [
+         "UpdateLayoutTree",
+         26
+        ],
+        [
+         "Layout",
+         9.6
+        ],
+        [
+         "V8.GC_MC_INCREMENTAL",
+         3.9
+        ]
+       ],
+       "js": [
+        [
+         "focus · focus",
+         19.8
+        ],
+        [
+         "index-QQeHfosC.js · e",
+         18.5
+        ],
+        [
+         "(garbage collector) · (garbage collector)",
+         10
+        ],
+        [
+         "t17-B5_Ivjra.js · J",
+         5.9
+        ],
+        [
+         "t17-B5_Ivjra.js · (anonymous)",
+         4.9
+        ]
+       ]
+      },
+      {
+       "at": 4257.2,
+       "ms": 51.2,
+       "parts": [
+        [
+         "UpdateLayoutTree",
+         24
+        ],
+        [
+         "EventDispatch",
+         20.3
+        ],
+        [
+         "Layout",
+         4
+        ],
+        [
+         "Receive mojo message",
+         1
+        ]
+       ],
+       "js": [
+        [
+         "index-QQeHfosC.js · e",
+         20.7
+        ],
+        [
+         "get offsetHeight · get offsetHeight",
+         7.9
+        ],
+        [
+         "t17-B5_Ivjra.js · L",
+         3.7
+        ],
+        [
+         "t17-B5_Ivjra.js · I",
+         2.7
+        ],
+        [
+         "index-QQeHfosC.js · (anonymous)",
+         1.8
+        ]
+       ]
+      }
+     ],
+     "gpuMainMs": 1403.4,
+     "compositorMs": 289
+    },
+    "settled": {
+     "heapMB": 8.3,
+     "glAlive": 1,
+     "glMade": 1,
+     "stages": 0,
+     "loops": 1,
+     "loopNames": [
+      "e"
+     ]
+    }
+   }
+  ],
+  "mapEnd": {
+   "heapMB": 8.5,
+   "glAlive": 1,
+   "glMade": 1,
+   "stages": 0,
+   "loops": 2,
+   "loopNames": [
+    "e"
+   ]
+  },
+  "warnings": []
+ }
+}

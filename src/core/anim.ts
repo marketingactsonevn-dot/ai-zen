@@ -20,4 +20,4 @@ export function revealIn(root: ParentNode) {
 }
 
 // Dev-only handle so automated visual checks can fast-forward motion (e.g. __aizen.gsap.globalTimeline.timeScale(20)).
-if (import.meta.env.DEV) (window as unknown as { __aizen: unknown }).__aizen = { gsap, ScrollTrigger }
+if (import.meta.env.DEV) Object.assign(((window as unknown as { __aizen?: object }).__aizen ??= {}), { gsap, ScrollTrigger })

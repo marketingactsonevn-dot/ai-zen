@@ -1,3 +1,4 @@
+import './core/perf' // first: the ?perf=1 HUD must see every rAF / WebGL context
 import '@fontsource/noto-serif/300.css'
 import '@fontsource/noto-serif/400.css'
 import '@fontsource/noto-serif/500.css'

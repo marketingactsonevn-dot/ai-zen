@@ -1,0 +1,186 @@
+{
+ "meta": {
+  "date": "2026-10-15T07:16:45.326Z",
+  "profile": "mobile",
+  "label": "Moto G Power (giả lập) · 412×823 @1.75x · cảm ứng · CPU 4× · Fast 4G",
+  "ablate": [],
+  "trace": false,
+  "commit": "f2f3836+dirty",
+  "browser": "Chromium 156.0.8078.4",
+  "host": "darwin arm64",
+  "quality": "low"
+ },
+ "e": {
+  "ids": [
+   1,
+   2,
+   9
+  ],
+  "start": {
+   "heapMB": 3.2,
+   "glAlive": 0,
+   "glMade": 0,
+   "stages": 0,
+   "loops": 1,
+   "loopNames": [
+    "_rafBugFix"
+   ]
+  },
+  "legs": [
+   {
+    "to": "t01",
+    "latency": 7565,
+    "ms": 10067,
+    "frames": 576,
+    "fps": 57.2,
+    "medianFps": 60,
+    "maxFrame": 483,
+    "p95Frame": 17,
+    "over50": 1,
+    "longTasks": 1,
+    "longTaskMax": 375,
+    "longTaskTotal": 375,
+    "maxGl": 1,
+    "maxStages": 1,
+    "maxLoops": 4,
+    "heapMB": 24.2
+   },
+   {
+    "to": "map",
+    "latency": 88,
+    "ms": 2139,
+    "frames": 122,
+    "fps": 57,
+    "medianFps": 60,
+    "maxFrame": 83,
+    "p95Frame": 17,
+    "over50": 1,
+    "longTasks": 1,
+    "longTaskMax": 77,
+    "longTaskTotal": 77,
+    "maxGl": 1,
+    "maxStages": 0,
+    "maxLoops": 3,
+    "heapMB": 25.7,
+    "settled": {
+     "heapMB": 11.2,
+     "glAlive": 0,
+     "glMade": 1,
+     "stages": 0,
+     "loops": 2,
+     "loopNames": [
+      "_rafBugFix",
+      "_tick"
+     ]
+    }
+   },
+   {
+    "to": "t02",
+    "latency": 955,
+    "ms": 3458,
+    "frames": 205,
+    "fps": 59.3,
+    "medianFps": 60,
+    "maxFrame": 50,
+    "p95Frame": 17,
+    "over50": 0,
+    "longTasks": 1,
+    "longTaskMax": 70,
+    "longTaskTotal": 70,
+    "maxGl": 0,
+    "maxStages": 0,
+    "maxLoops": 4,
+    "heapMB": 23.5
+   },
+   {
+    "to": "map",
+    "latency": 80,
+    "ms": 2088,
+    "frames": 120,
+    "fps": 57.5,
+    "medianFps": 60,
+    "maxFrame": 67,
+    "p95Frame": 17,
+    "over50": 1,
+    "longTasks": 1,
+    "longTaskMax": 74,
+    "longTaskTotal": 74,
+    "maxGl": 0,
+    "maxStages": 0,
+    "maxLoops": 3,
+    "heapMB": 22.4,
+    "settled": {
+     "heapMB": 12.3,
+     "glAlive": 0,
+     "glMade": 1,
+     "stages": 0,
+     "loops": 2,
+     "loopNames": [
+      "_rafBugFix",
+      "_tick"
+     ]
+    }
+   },
+   {
+    "to": "t09",
+    "latency": 1227,
+    "ms": 3730,
+    "frames": 219,
+    "fps": 58.7,
+    "medianFps": 60,
+    "maxFrame": 100,
+    "p95Frame": 17,
+    "over50": 1,
+    "longTasks": 1,
+    "longTaskMax": 89,
+    "longTaskTotal": 89,
+    "maxGl": 1,
+    "maxStages": 1,
+    "maxLoops": 4,
+    "heapMB": 23.9
+   },
+   {
+    "to": "map",
+    "latency": 82,
+    "ms": 2093,
+    "frames": 121,
+    "fps": 57.8,
+    "medianFps": 60,
+    "maxFrame": 67,
+    "p95Frame": 17,
+    "over50": 1,
+    "longTasks": 1,
+    "longTaskMax": 77,
+    "longTaskTotal": 77,
+    "maxGl": 1,
+    "maxStages": 0,
+    "maxLoops": 4,
+    "heapMB": 23.1,
+    "settled": {
+     "heapMB": 13.6,
+     "glAlive": 1,
+     "glMade": 2,
+     "stages": 0,
+     "loops": 2,
+     "loopNames": [
+      "_rafBugFix",
+      "_tick"
+     ]
+    }
+   }
+  ],
+  "end": {
+   "heapMB": 13.4,
+   "glAlive": 1,
+   "glMade": 2,
+   "stages": 0,
+   "loops": 2,
+   "loopNames": [
+    "_rafBugFix",
+    "_tick"
+   ]
+  },
+  "trace": null,
+  "warnings": []
+ }
+}

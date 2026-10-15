@@ -1,0 +1,20 @@
+# loops-check · dev server http://localhost:5179 · 2026-10-15 14:55 · Chromium headless, 1280×800, no throttling
+# rAF loops on the map after leaving a station (perf HUD snapshot; names readable on the dev server) + sand redraws per map mount
+# note: the sand counter attaches by MutationObserver after the first synchronous drawSand(), so it misses that first draw
+map fresh, 6s: loops 1 [_rafBugFix] · sand draws on mount: 2
+after t1 → map 1500ms: loops 2 [_rafBugFix,_tick]
+after t1 → map 3000ms: loops 2 [_rafBugFix,_tick]
+after t1 → map 6000ms: loops 1 [_rafBugFix]
+  sand draws on this map mount: 1
+after t9 → map 1500ms: loops 2 [_rafBugFix,_tick]
+after t9 → map 3000ms: loops 2 [_rafBugFix,_tick]
+after t9 → map 6000ms: loops 1 [_rafBugFix]
+  sand draws on this map mount: 1
+after t18 → map 1500ms: loops 2 [_rafBugFix,_tick]
+after t18 → map 3000ms: loops 2 [_rafBugFix,_tick]
+after t18 → map 6000ms: loops 1 [_rafBugFix]
+  sand draws on this map mount: 1
+after t3 → map 1500ms: loops 2 [_rafBugFix,_tick]
+after t3 → map 3000ms: loops 2 [_rafBugFix,_tick]
+after t3 → map 6000ms: loops 1 [_rafBugFix]
+  sand draws on this map mount: 1

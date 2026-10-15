@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { prefs } from './prefs'
+import { counters } from './perf'
 
 export interface Stage {
   scene: THREE.Scene
@@ -27,6 +28,7 @@ export function createStage(host: HTMLElement, opts: { fov?: number; animate?: b
   } catch {
     return null
   }
+  counters.stages++
   renderer.setPixelRatio(Math.min(devicePixelRatio, prefs.quality === 'high' ? 2 : 1.25))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   const canvas = renderer.domElement
@@ -98,6 +100,7 @@ export function createStage(host: HTMLElement, opts: { fov?: number; animate?: b
     onResize: (fn) => void resizers.add(fn),
     render: renderOnce,
     dispose() {
+      if (!disposed) counters.stages--
       disposed = true
       cancelAnimationFrame(raf)
       ro.disconnect()

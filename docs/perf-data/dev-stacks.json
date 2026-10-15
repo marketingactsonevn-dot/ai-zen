@@ -1,0 +1,2129 @@
+{
+ "meta": {
+  "date": "2026-10-15T07:19:36.618Z",
+  "profile": "mobile",
+  "label": "Moto G Power (giả lập) · 412×823 @1.75x · cảm ứng · CPU 4× · Fast 4G",
+  "ablate": [],
+  "trace": true,
+  "commit": "f2f3836+dirty",
+  "browser": "Chromium 156.0.8078.4",
+  "host": "darwin arm64",
+  "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)",
+  "quality": "low"
+ },
+ "a": {
+  "load": {
+   "fcp": 2724,
+   "dcl": 2667,
+   "load": 3222,
+   "jsKB": 0
+  },
+  "intro": {
+   "ms": 8756,
+   "frames": 362,
+   "fps": 41.3,
+   "medianFps": 60,
+   "maxFrame": 200,
+   "p95Frame": 17,
+   "over50": 2,
+   "longTasks": 2,
+   "longTaskMax": 178,
+   "longTaskTotal": 243,
+   "maxGl": 0,
+   "maxStages": 0,
+   "maxLoops": 4,
+   "heapMB": 6.7
+  },
+  "enter": {
+   "ms": 2590,
+   "frames": 150,
+   "fps": 57.9,
+   "medianFps": 60,
+   "maxFrame": 100,
+   "p95Frame": 17,
+   "over50": 1,
+   "longTasks": 1,
+   "longTaskMax": 105,
+   "longTaskTotal": 105,
+   "maxGl": 0,
+   "maxStages": 0,
+   "maxLoops": 4,
+   "heapMB": 7.2
+  },
+  "mapIdle": {
+   "ms": 3002,
+   "frames": 180,
+   "fps": 60,
+   "medianFps": 60,
+   "maxFrame": 17,
+   "p95Frame": 17,
+   "over50": 0,
+   "longTasks": 0,
+   "longTaskMax": 0,
+   "longTaskTotal": 0,
+   "maxGl": 0,
+   "maxStages": 0,
+   "maxLoops": 3,
+   "heapMB": 6.5
+  },
+  "sandTouch": {
+   "taps": 6,
+   "ms": 4305,
+   "frames": 258,
+   "fps": 59.9,
+   "medianFps": 60,
+   "maxFrame": 17,
+   "p95Frame": 17,
+   "over50": 0,
+   "longTasks": 0,
+   "longTaskMax": 0,
+   "longTaskTotal": 0,
+   "maxGl": 0,
+   "maxStages": 0,
+   "maxLoops": 3,
+   "heapMB": 7.2
+  },
+  "addressBar": {
+   "resizes": 6,
+   "sandRedraws": 6,
+   "ms": 3527,
+   "frames": 201,
+   "fps": 57,
+   "medianFps": 60,
+   "maxFrame": 50,
+   "p95Frame": 17,
+   "over50": 1,
+   "longTasks": 3,
+   "longTaskMax": 63,
+   "longTaskTotal": 169,
+   "maxGl": 0,
+   "maxStages": 0,
+   "maxLoops": 3,
+   "heapMB": 6.8
+  },
+  "settled": {
+   "heapMB": 4.7,
+   "glAlive": 0,
+   "glMade": 0,
+   "stages": 0,
+   "loops": 1,
+   "loopNames": [
+    "_rafBugFix"
+   ]
+  },
+  "trace": {
+   "windowMs": 22188.9,
+   "mainBusyMs": 3146.2,
+   "mainSelf": [
+    [
+     "UpdateLayoutTree",
+     784.4
+    ],
+    [
+     "JS perf.ts",
+     656.2
+    ],
+    [
+     "(task)",
+     413.1
+    ],
+    [
+     "Layerize",
+     343.7
+    ],
+    [
+     "Layout",
+     171.4
+    ],
+    [
+     "PrePaint",
+     167.2
+    ],
+    [
+     "Commit",
+     139.2
+    ],
+    [
+     "Paint",
+     115.5
+    ],
+    [
+     "v8.evaluateModule",
+     109.4
+    ],
+    [
+     "Receive mojo message",
+     50.5
+    ],
+    [
+     "FireAnimationFrame",
+     31.5
+    ],
+    [
+     "EvaluateScript",
+     26.8
+    ],
+    [
+     "UpdateLayer",
+     23.6
+    ],
+    [
+     "BlinkScheduler_PerformMicrotaskCheckpoint",
+     11.6
+    ]
+   ],
+   "jsByFile": [
+    [
+     "(program)",
+     1751.8
+    ],
+    [
+     "prefs.ts",
+     526.7
+    ],
+    [
+     "map.ts",
+     373.9
+    ],
+    [
+     "gsap.js",
+     327.2
+    ],
+    [
+     "requestAnimationFrame",
+     235.1
+    ],
+    [
+     "(garbage collector)",
+     70.5
+    ],
+    [
+     "getBoundingClientRect",
+     36.3
+    ],
+    [
+     "perf.ts",
+     33
+    ],
+    [
+     "removeChild",
+     31.8
+    ],
+    [
+     "setAttribute",
+     14
+    ]
+   ],
+   "jsByFunction": [
+    [
+     "(program) · (program)",
+     1751.8
+    ],
+    [
+     "prefs.ts · cssVar",
+     526.5
+    ],
+    [
+     "requestAnimationFrame · requestAnimationFrame",
+     235.1
+    ],
+    [
+     "gsap.js · _getComputedProperty",
+     204.1
+    ],
+    [
+     "map.ts · field",
+     189.1
+    ],
+    [
+     "map.ts · (anonymous)",
+     141
+    ],
+    [
+     "(garbage collector) · (garbage collector)",
+     70.5
+    ],
+    [
+     "gsap.js · _getReparentedCloneBBox",
+     44.3
+    ],
+    [
+     "getBoundingClientRect · getBoundingClientRect",
+     36.3
+    ],
+    [
+     "removeChild · removeChild",
+     31.8
+    ],
+    [
+     "perf.ts · (anonymous)",
+     28
+    ],
+    [
+     "gsap.js · _parseTransform",
+     26.5
+    ]
+   ],
+   "forcedStyleLayoutInRaf": [
+    [
+     "style in rAF · cssVar@prefs.ts:54",
+     473.7
+    ],
+    [
+     "style in rAF · _getComputedProperty@gsap.js:3068",
+     139.2
+    ],
+    [
+     "style in rAF · (anonymous)@map.ts:243",
+     34.2
+    ],
+    [
+     "layout in rAF · _getComputedProperty@gsap.js:3068",
+     24.8
+    ],
+    [
+     "style in rAF · _getReparentedCloneBBox@gsap.js:3099",
+     24.7
+    ],
+    [
+     "layout in rAF · _getReparentedCloneBBox@gsap.js:3099",
+     15.3
+    ],
+    [
+     "layout in rAF · (anonymous)@map.ts:243",
+     13.5
+    ],
+    [
+     "style in rAF · _parseTransform@gsap.js:3425",
+     2.9
+    ]
+   ],
+   "longTasks": [
+    {
+     "at": 2490.5,
+     "ms": 179,
+     "parts": [
+      [
+       "v8.evaluateModule",
+       105.9
+      ],
+      [
+       "Layout",
+       38.3
+      ],
+      [
+       "UpdateLayoutTree",
+       20.1
+      ],
+      [
+       "V8.GC_SCAVENGER_SCAVENGE_PARALLEL_PHASE",
+       4.1
+      ]
+     ],
+     "js": [
+      [
+       "map.ts · (anonymous)",
+       37.1
+      ],
+      [
+       "getBoundingClientRect · getBoundingClientRect",
+       29.7
+      ],
+      [
+       "map.ts · field",
+       21.9
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       9.9
+      ],
+      [
+       "gsap.js · _getComputedProperty",
+       7.8
+      ]
+     ]
+    },
+    {
+     "at": 9386.8,
+     "ms": 105.8,
+     "parts": [
+      [
+       "JS perf.ts",
+       49
+      ],
+      [
+       "UpdateLayoutTree",
+       37.3
+      ],
+      [
+       "Layout",
+       15.5
+      ],
+      [
+       "Layerize",
+       1.4
+      ]
+     ],
+     "js": [
+      [
+       "gsap.js · _getComputedProperty",
+       29.6
+      ],
+      [
+       "gsap.js · _getReparentedCloneBBox",
+       26.2
+      ],
+      [
+       "removeChild · removeChild",
+       16.8
+      ],
+      [
+       "gsap.js · _parseTransform",
+       11.8
+      ],
+      [
+       "appendChild · appendChild",
+       7.5
+      ]
+     ]
+    },
+    {
+     "at": 2691.8,
+     "ms": 65.9,
+     "parts": [
+      [
+       "JS perf.ts",
+       45.9
+      ],
+      [
+       "UpdateLayoutTree",
+       8.3
+      ],
+      [
+       "Layout",
+       3.7
+      ],
+      [
+       "Paint",
+       1.3
+      ]
+     ],
+     "js": [
+      [
+       "map.ts · field",
+       25.4
+      ],
+      [
+       "map.ts · (anonymous)",
+       18.7
+      ],
+      [
+       "(program) · (program)",
+       6.5
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       5.2
+      ],
+      [
+       "setAttribute · setAttribute",
+       3
+      ]
+     ]
+    },
+    {
+     "at": 18686.7,
+     "ms": 63.8,
+     "parts": [
+      [
+       "JS perf.ts",
+       47.3
+      ],
+      [
+       "UpdateLayoutTree",
+       7.1
+      ],
+      [
+       "Layout",
+       2.6
+      ],
+      [
+       "V8.GC_SCAVENGER_SCAVENGE_ROOTS",
+       0.9
+      ]
+     ],
+     "js": [
+      [
+       "map.ts · field",
+       26.1
+      ],
+      [
+       "map.ts · (anonymous)",
+       18.8
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       5.1
+      ],
+      [
+       "(program) · (program)",
+       4.4
+      ],
+      [
+       "map.ts · stroke",
+       4
+      ]
+     ]
+    },
+    {
+     "at": 19703.4,
+     "ms": 55.6,
+     "parts": [
+      [
+       "JS perf.ts",
+       40.3
+      ],
+      [
+       "UpdateLayoutTree",
+       6.4
+      ],
+      [
+       "Layout",
+       3.2
+      ],
+      [
+       "V8.GC_SCAVENGER_SCAVENGE_ROOTS",
+       1
+      ]
+     ],
+     "js": [
+      [
+       "map.ts · field",
+       22.7
+      ],
+      [
+       "map.ts · (anonymous)",
+       17
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       4.5
+      ],
+      [
+       "(program) · (program)",
+       3.6
+      ],
+      [
+       "map.ts · drawSand",
+       1.9
+      ]
+     ]
+    },
+    {
+     "at": 19185.8,
+     "ms": 51.2,
+     "parts": [
+      [
+       "JS perf.ts",
+       35.2
+      ],
+      [
+       "UpdateLayoutTree",
+       6.3
+      ],
+      [
+       "Layout",
+       3.5
+      ],
+      [
+       "V8.GC_SCAVENGER_SCAVENGE_ROOTS",
+       1.5
+      ]
+     ],
+     "js": [
+      [
+       "map.ts · field",
+       23.4
+      ],
+      [
+       "map.ts · (anonymous)",
+       12.7
+      ],
+      [
+       "(program) · (program)",
+       4.5
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       4.3
+      ],
+      [
+       "prefs.ts · cssVar",
+       1.4
+      ]
+     ]
+    }
+   ],
+   "gpuMainMs": 4142.1,
+   "compositorMs": 610.4
+  },
+  "warnings": []
+ },
+ "b": {
+  "id": 1,
+  "latency": 7513,
+  "entry": {
+   "ms": 7783,
+   "frames": 429,
+   "fps": 55.1,
+   "medianFps": 60,
+   "maxFrame": 600,
+   "p95Frame": 17,
+   "over50": 1,
+   "longTasks": 2,
+   "longTaskMax": 324,
+   "longTaskTotal": 579,
+   "maxGl": 1,
+   "maxStages": 1,
+   "maxLoops": 4,
+   "heapMB": 26
+  },
+  "scenes": [
+   {
+    "scene": 2,
+    "label": "Một việc, bốn cách",
+    "transition": {
+     "ms": 1849,
+     "frames": 95,
+     "fps": 51.4,
+     "medianFps": 60,
+     "maxFrame": 283,
+     "p95Frame": 17,
+     "over50": 1,
+     "longTasks": 1,
+     "longTaskMax": 246,
+     "longTaskTotal": 246,
+     "maxGl": 1,
+     "maxStages": 1,
+     "maxLoops": 4,
+     "heapMB": 30
+    },
+    "idle": {
+     "ms": 1002,
+     "frames": 60,
+     "fps": 59.9,
+     "medianFps": 60,
+     "maxFrame": 17,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "heapMB": 30.1
+    }
+   },
+   {
+    "scene": 3,
+    "label": "Đoán chữ tiếp theo",
+    "transition": {
+     "ms": 1635,
+     "frames": 97,
+     "fps": 59.3,
+     "medianFps": 60,
+     "maxFrame": 33,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 4,
+     "heapMB": 29
+    },
+    "idle": {
+     "ms": 1002,
+     "frames": 60,
+     "fps": 59.9,
+     "medianFps": 60,
+     "maxFrame": 17,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 4,
+     "heapMB": 30.7
+    }
+   },
+   {
+    "scene": 4,
+    "label": "Câu hỏi nhỏ",
+    "transition": {
+     "ms": 1616,
+     "frames": 96,
+     "fps": 59.4,
+     "medianFps": 60,
+     "maxFrame": 33,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 4,
+     "heapMB": 32.1
+    },
+    "idle": {
+     "ms": 1002,
+     "frames": 60,
+     "fps": 59.9,
+     "medianFps": 60,
+     "maxFrame": 17,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "heapMB": 29.2
+    }
+   },
+   {
+    "scene": 5,
+    "label": "Tóm lại trong 1 câu",
+    "transition": {
+     "ms": 1622,
+     "frames": 97,
+     "fps": 59.8,
+     "medianFps": 60,
+     "maxFrame": 17,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 1,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "heapMB": 27.3
+    },
+    "idle": {
+     "ms": 1001,
+     "frames": 60,
+     "fps": 60,
+     "medianFps": 60,
+     "maxFrame": 17,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 0,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "heapMB": 27.4
+    }
+   }
+  ],
+  "trace": {
+   "windowMs": 11020.4,
+   "mainBusyMs": 1376.7,
+   "mainSelf": [
+    [
+     "UpdateLayoutTree",
+     226.7
+    ],
+    [
+     "EventDispatch",
+     204.9
+    ],
+    [
+     "(task)",
+     180.1
+    ],
+    [
+     "JS perf.ts",
+     152.3
+    ],
+    [
+     "PrePaint",
+     120.3
+    ],
+    [
+     "Layerize",
+     117.8
+    ],
+    [
+     "Layout",
+     114
+    ],
+    [
+     "Paint",
+     90.2
+    ],
+    [
+     "Commit",
+     55.1
+    ],
+    [
+     "Receive mojo message",
+     23.8
+    ],
+    [
+     "FireAnimationFrame",
+     18.1
+    ],
+    [
+     "JS station.ts",
+     17.3
+    ],
+    [
+     "UpdateLayer",
+     9.4
+    ],
+    [
+     "BlinkScheduler_PerformMicrotaskCheckpoint",
+     6.9
+    ]
+   ],
+   "jsByFile": [
+    [
+     "(program)",
+     1038
+    ],
+    [
+     "gsap.js",
+     184.3
+    ],
+    [
+     "stone.ts",
+     84.6
+    ],
+    [
+     "requestAnimationFrame",
+     67.4
+    ],
+    [
+     "ladder.ts",
+     44.1
+    ],
+    [
+     "three.module-Bj7iJlUn.js",
+     35.6
+    ],
+    [
+     "(garbage collector)",
+     21.7
+    ],
+    [
+     "perf.ts",
+     17.7
+    ],
+    [
+     "brush.ts",
+     15.6
+    ],
+    [
+     "nextword.ts",
+     9.4
+    ]
+   ],
+   "jsByFunction": [
+    [
+     "(program) · (program)",
+     1038
+    ],
+    [
+     "gsap.js · _getComputedProperty",
+     135.4
+    ],
+    [
+     "requestAnimationFrame · requestAnimationFrame",
+     67.4
+    ],
+    [
+     "stone.ts · paintStone",
+     33.5
+    ],
+    [
+     "(garbage collector) · (garbage collector)",
+     21.7
+    ],
+    [
+     "stone.ts · (anonymous)",
+     21
+    ],
+    [
+     "ladder.ts · paint",
+     19.8
+    ],
+    [
+     "stone.ts · blurField",
+     18.4
+    ],
+    [
+     "perf.ts · (anonymous)",
+     14.8
+    ],
+    [
+     "gsap.js · _parseTransform",
+     11.5
+    ],
+    [
+     "gsap.js · _applySVGOrigin",
+     9.9
+    ],
+    [
+     "getProgramInfoLog · getProgramInfoLog",
+     9.3
+    ]
+   ],
+   "forcedStyleLayoutInRaf": [
+    [
+     "style in rAF · _getComputedProperty@gsap.js:3068",
+     21.2
+    ],
+    [
+     "layout in rAF · _getComputedProperty@gsap.js:3068",
+     13.9
+    ],
+    [
+     "style in rAF · onComplete@station.ts:293",
+     0.1
+    ]
+   ],
+   "longTasks": [
+    {
+     "at": 281.2,
+     "ms": 259.8,
+     "parts": [
+      [
+       "EventDispatch",
+       179.6
+      ],
+      [
+       "UpdateLayoutTree",
+       32
+      ],
+      [
+       "Layout",
+       19.3
+      ],
+      [
+       "(task)",
+       13.7
+      ]
+     ],
+     "js": [
+      [
+       "gsap.js · _getComputedProperty",
+       41.1
+      ],
+      [
+       "stone.ts · paintStone",
+       33.5
+      ],
+      [
+       "stone.ts · (anonymous)",
+       21
+      ],
+      [
+       "ladder.ts · paint",
+       19.8
+      ],
+      [
+       "stone.ts · blurField",
+       18.4
+      ]
+     ]
+    }
+   ],
+   "gpuMainMs": 2037.1,
+   "compositorMs": 234.4
+  },
+  "settled": {
+   "heapMB": 11.5,
+   "glAlive": 0,
+   "glMade": 1,
+   "stages": 0,
+   "loops": 2,
+   "loopNames": [
+    "_rafBugFix",
+    "_tick"
+   ]
+  }
+ },
+ "c": {
+  "mapStart": {
+   "heapMB": 3.1,
+   "glAlive": 0,
+   "glMade": 0,
+   "stages": 0,
+   "loops": 1,
+   "loopNames": [
+    "_rafBugFix"
+   ]
+  },
+  "stations": [
+   {
+    "id": 1,
+    "latency": 7513,
+    "entry": {
+     "ms": 7783,
+     "frames": 429,
+     "fps": 55.1,
+     "medianFps": 60,
+     "maxFrame": 600,
+     "p95Frame": 17,
+     "over50": 1,
+     "longTasks": 2,
+     "longTaskMax": 324,
+     "longTaskTotal": 579,
+     "maxGl": 1,
+     "maxStages": 1,
+     "maxLoops": 4,
+     "heapMB": 26
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Một việc, bốn cách",
+      "transition": {
+       "ms": 1849,
+       "frames": 95,
+       "fps": 51.4,
+       "medianFps": 60,
+       "maxFrame": 283,
+       "p95Frame": 17,
+       "over50": 1,
+       "longTasks": 1,
+       "longTaskMax": 246,
+       "longTaskTotal": 246,
+       "maxGl": 1,
+       "maxStages": 1,
+       "maxLoops": 4,
+       "heapMB": 30
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 30.1
+      }
+     },
+     {
+      "scene": 3,
+      "label": "Đoán chữ tiếp theo",
+      "transition": {
+       "ms": 1635,
+       "frames": 97,
+       "fps": 59.3,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 4,
+       "heapMB": 29
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 4,
+       "heapMB": 30.7
+      }
+     },
+     {
+      "scene": 4,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1616,
+       "frames": 96,
+       "fps": 59.4,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 4,
+       "heapMB": 32.1
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 29.2
+      }
+     },
+     {
+      "scene": 5,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1622,
+       "frames": 97,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 1,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 27.3
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 60,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 27.4
+      }
+     }
+    ],
+    "trace": {
+     "windowMs": 11020.4,
+     "mainBusyMs": 1376.7,
+     "mainSelf": [
+      [
+       "UpdateLayoutTree",
+       226.7
+      ],
+      [
+       "EventDispatch",
+       204.9
+      ],
+      [
+       "(task)",
+       180.1
+      ],
+      [
+       "JS perf.ts",
+       152.3
+      ],
+      [
+       "PrePaint",
+       120.3
+      ],
+      [
+       "Layerize",
+       117.8
+      ],
+      [
+       "Layout",
+       114
+      ],
+      [
+       "Paint",
+       90.2
+      ],
+      [
+       "Commit",
+       55.1
+      ],
+      [
+       "Receive mojo message",
+       23.8
+      ],
+      [
+       "FireAnimationFrame",
+       18.1
+      ],
+      [
+       "JS station.ts",
+       17.3
+      ],
+      [
+       "UpdateLayer",
+       9.4
+      ],
+      [
+       "BlinkScheduler_PerformMicrotaskCheckpoint",
+       6.9
+      ]
+     ],
+     "jsByFile": [
+      [
+       "(program)",
+       1038
+      ],
+      [
+       "gsap.js",
+       184.3
+      ],
+      [
+       "stone.ts",
+       84.6
+      ],
+      [
+       "requestAnimationFrame",
+       67.4
+      ],
+      [
+       "ladder.ts",
+       44.1
+      ],
+      [
+       "three.module-Bj7iJlUn.js",
+       35.6
+      ],
+      [
+       "(garbage collector)",
+       21.7
+      ],
+      [
+       "perf.ts",
+       17.7
+      ],
+      [
+       "brush.ts",
+       15.6
+      ],
+      [
+       "nextword.ts",
+       9.4
+      ]
+     ],
+     "jsByFunction": [
+      [
+       "(program) · (program)",
+       1038
+      ],
+      [
+       "gsap.js · _getComputedProperty",
+       135.4
+      ],
+      [
+       "requestAnimationFrame · requestAnimationFrame",
+       67.4
+      ],
+      [
+       "stone.ts · paintStone",
+       33.5
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       21.7
+      ],
+      [
+       "stone.ts · (anonymous)",
+       21
+      ],
+      [
+       "ladder.ts · paint",
+       19.8
+      ],
+      [
+       "stone.ts · blurField",
+       18.4
+      ],
+      [
+       "perf.ts · (anonymous)",
+       14.8
+      ],
+      [
+       "gsap.js · _parseTransform",
+       11.5
+      ],
+      [
+       "gsap.js · _applySVGOrigin",
+       9.9
+      ],
+      [
+       "getProgramInfoLog · getProgramInfoLog",
+       9.3
+      ]
+     ],
+     "forcedStyleLayoutInRaf": [
+      [
+       "style in rAF · _getComputedProperty@gsap.js:3068",
+       21.2
+      ],
+      [
+       "layout in rAF · _getComputedProperty@gsap.js:3068",
+       13.9
+      ],
+      [
+       "style in rAF · onComplete@station.ts:293",
+       0.1
+      ]
+     ],
+     "longTasks": [
+      {
+       "at": 281.2,
+       "ms": 259.8,
+       "parts": [
+        [
+         "EventDispatch",
+         179.6
+        ],
+        [
+         "UpdateLayoutTree",
+         32
+        ],
+        [
+         "Layout",
+         19.3
+        ],
+        [
+         "(task)",
+         13.7
+        ]
+       ],
+       "js": [
+        [
+         "gsap.js · _getComputedProperty",
+         41.1
+        ],
+        [
+         "stone.ts · paintStone",
+         33.5
+        ],
+        [
+         "stone.ts · (anonymous)",
+         21
+        ],
+        [
+         "ladder.ts · paint",
+         19.8
+        ],
+        [
+         "stone.ts · blurField",
+         18.4
+        ]
+       ]
+      }
+     ],
+     "gpuMainMs": 2037.1,
+     "compositorMs": 234.4
+    },
+    "settled": {
+     "heapMB": 11.5,
+     "glAlive": 0,
+     "glMade": 1,
+     "stages": 0,
+     "loops": 2,
+     "loopNames": [
+      "_rafBugFix",
+      "_tick"
+     ]
+    }
+   },
+   {
+    "id": 2,
+    "latency": 935,
+    "entry": {
+     "ms": 4201,
+     "frames": 245,
+     "fps": 58.3,
+     "medianFps": 60,
+     "maxFrame": 133,
+     "p95Frame": 17,
+     "over50": 1,
+     "longTasks": 2,
+     "longTaskMax": 84,
+     "longTaskTotal": 148,
+     "maxGl": 0,
+     "maxStages": 0,
+     "maxLoops": 4,
+     "heapMB": 24
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Các nhánh",
+      "transition": {
+       "ms": 1925,
+       "frames": 97,
+       "fps": 50.4,
+       "medianFps": 60,
+       "maxFrame": 317,
+       "p95Frame": 17,
+       "over50": 1,
+       "longTasks": 1,
+       "longTaskMax": 323,
+       "longTaskTotal": 323,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 5,
+       "heapMB": 24.6
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 23.1
+      }
+     },
+     {
+      "scene": 3,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1614,
+       "frames": 97,
+       "fps": 60.1,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 4,
+       "heapMB": 24.4
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 24.5
+      }
+     },
+     {
+      "scene": 4,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1615,
+       "frames": 97,
+       "fps": 60.1,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 22.1
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 22.3
+      }
+     }
+    ],
+    "trace": {
+     "windowMs": 11445.9,
+     "mainBusyMs": 1654.8,
+     "mainSelf": [
+      [
+       "Commit",
+       242.4
+      ],
+      [
+       "JS perf.ts",
+       240.8
+      ],
+      [
+       "UpdateLayoutTree",
+       228.8
+      ],
+      [
+       "(task)",
+       195.6
+      ],
+      [
+       "EventDispatch",
+       151.2
+      ],
+      [
+       "Receive mojo message",
+       150.1
+      ],
+      [
+       "Layerize",
+       101.1
+      ],
+      [
+       "PrePaint",
+       95.3
+      ],
+      [
+       "Paint",
+       79.7
+      ],
+      [
+       "Layout",
+       79.2
+      ],
+      [
+       "FireAnimationFrame",
+       23
+      ],
+      [
+       "BlinkScheduler_PerformMicrotaskCheckpoint",
+       9.5
+      ],
+      [
+       "V8.GC_HEAP_ENSURE_SWEEPING_COMPLETED",
+       5.7
+      ],
+      [
+       "UpdateLayer",
+       5.2
+      ]
+     ],
+     "jsByFile": [
+      [
+       "(program)",
+       1239.8
+      ],
+      [
+       "paint.ts",
+       147.9
+      ],
+      [
+       "requestAnimationFrame",
+       139.4
+      ],
+      [
+       "gsap.js",
+       71.1
+      ],
+      [
+       "drawImage",
+       43.2
+      ],
+      [
+       "fill",
+       42.2
+      ],
+      [
+       "index.ts",
+       34.4
+      ],
+      [
+       "(garbage collector)",
+       32.4
+      ],
+      [
+       "bonsai.ts",
+       32
+      ],
+      [
+       "set textContent",
+       12.1
+      ]
+     ],
+     "jsByFunction": [
+      [
+       "(program) · (program)",
+       1239.8
+      ],
+      [
+       "requestAnimationFrame · requestAnimationFrame",
+       139.4
+      ],
+      [
+       "paint.ts · blotch",
+       65.2
+      ],
+      [
+       "gsap.js · _getComputedProperty",
+       51.7
+      ],
+      [
+       "drawImage · drawImage",
+       43.2
+      ],
+      [
+       "fill · fill",
+       42.2
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       32.4
+      ],
+      [
+       "paint.ts · dab",
+       24.7
+      ],
+      [
+       "paint.ts · noise1",
+       19.7
+      ],
+      [
+       "paint.ts · (anonymous)",
+       17
+      ],
+      [
+       "set textContent · set textContent",
+       12.1
+      ],
+      [
+       "getContext · getContext",
+       11
+      ]
+     ],
+     "forcedStyleLayoutInRaf": [
+      [
+       "style in rAF · _getComputedProperty@gsap.js:3068",
+       20.1
+      ],
+      [
+       "layout in rAF · _getComputedProperty@gsap.js:3068",
+       10.2
+      ],
+      [
+       "layout in rAF · onComplete@station.ts:293",
+       0.7
+      ],
+      [
+       "style in rAF · onComplete@station.ts:293",
+       0.1
+      ]
+     ],
+     "longTasks": [
+      {
+       "at": 3272.1,
+       "ms": 325.2,
+       "parts": [
+        [
+         "EventDispatch",
+         142
+        ],
+        [
+         "Receive mojo message",
+         129.2
+        ],
+        [
+         "UpdateLayoutTree",
+         8.3
+        ],
+        [
+         "Layout",
+         8
+        ]
+       ],
+       "js": [
+        [
+         "paint.ts · blotch",
+         65.2
+        ],
+        [
+         "drawImage · drawImage",
+         36
+        ],
+        [
+         "fill · fill",
+         35.5
+        ],
+        [
+         "(garbage collector) · (garbage collector)",
+         27.9
+        ],
+        [
+         "paint.ts · noise1",
+         19.7
+        ]
+       ]
+      }
+     ],
+     "gpuMainMs": 1865.5,
+     "compositorMs": 248.7
+    }
+   },
+   {
+    "id": 3,
+    "latency": 954,
+    "entry": {
+     "ms": 4203,
+     "frames": 247,
+     "fps": 58.8,
+     "medianFps": 60,
+     "maxFrame": 100,
+     "p95Frame": 17,
+     "over50": 1,
+     "longTasks": 1,
+     "longTaskMax": 66,
+     "longTaskTotal": 66,
+     "maxGl": 0,
+     "maxStages": 0,
+     "maxLoops": 4,
+     "heapMB": 25
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Phía trước",
+      "transition": {
+       "ms": 1629,
+       "frames": 98,
+       "fps": 60.2,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 24.5
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 2,
+       "heapMB": 24.6
+      }
+     },
+     {
+      "scene": 3,
+      "label": "Các góc nhìn",
+      "transition": {
+       "ms": 1617,
+       "frames": 97,
+       "fps": 60,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 26.1
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 26.2
+      }
+     },
+     {
+      "scene": 4,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1618,
+       "frames": 97,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 26.7
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 26.8
+      }
+     },
+     {
+      "scene": 5,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1617,
+       "frames": 96,
+       "fps": 59.4,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 22.3
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 59,
+       "fps": 59,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "heapMB": 22.5
+      }
+     }
+    ],
+    "trace": {
+     "windowMs": 13744,
+     "mainBusyMs": 1462.7,
+     "mainSelf": [
+      [
+       "UpdateLayoutTree",
+       292.1
+      ],
+      [
+       "(task)",
+       235.1
+      ],
+      [
+       "Layerize",
+       196.8
+      ],
+      [
+       "JS perf.ts",
+       140.7
+      ],
+      [
+       "Paint",
+       107.7
+      ],
+      [
+       "PrePaint",
+       107.1
+      ],
+      [
+       "Layout",
+       96.9
+      ],
+      [
+       "Commit",
+       65
+      ],
+      [
+       "JS scroll.ts",
+       62
+      ],
+      [
+       "EventDispatch",
+       29.9
+      ],
+      [
+       "FireAnimationFrame",
+       21.6
+      ],
+      [
+       "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE",
+       21
+      ],
+      [
+       "BlinkScheduler_PerformMicrotaskCheckpoint",
+       19.4
+      ],
+      [
+       "Receive mojo message",
+       19.1
+      ]
+     ],
+     "jsByFile": [
+      [
+       "(program)",
+       1355.4
+      ],
+      [
+       "gsap.js",
+       90.8
+      ],
+      [
+       "requestAnimationFrame",
+       83.9
+      ],
+      [
+       "(garbage collector)",
+       42.8
+      ],
+      [
+       "set textContent",
+       16.9
+      ],
+      [
+       "get offsetHeight",
+       11.9
+      ],
+      [
+       "get clientWidth",
+       7.1
+      ],
+      [
+       "brush.ts",
+       6.2
+      ],
+      [
+       "views.ts",
+       4.7
+      ],
+      [
+       "mist.ts",
+       4.6
+      ]
+     ],
+     "jsByFunction": [
+      [
+       "(program) · (program)",
+       1355.4
+      ],
+      [
+       "requestAnimationFrame · requestAnimationFrame",
+       83.9
+      ],
+      [
+       "gsap.js · _getComputedProperty",
+       73.6
+      ],
+      [
+       "(garbage collector) · (garbage collector)",
+       42.8
+      ],
+      [
+       "set textContent · set textContent",
+       16.9
+      ],
+      [
+       "get offsetHeight · get offsetHeight",
+       11.9
+      ],
+      [
+       "get clientWidth · get clientWidth",
+       7.1
+      ],
+      [
+       "gsap.js · _setterPlain",
+       4.6
+      ],
+      [
+       "setTimeout · setTimeout",
+       4
+      ],
+      [
+       "setAttribute · setAttribute",
+       3.4
+      ],
+      [
+       "remove · remove",
+       3.3
+      ],
+      [
+       "gsap.js · _parseTransform",
+       3.2
+      ]
+     ],
+     "forcedStyleLayoutInRaf": [
+      [
+       "style in rAF · _getComputedProperty@gsap.js:3068",
+       23.4
+      ],
+      [
+       "layout in rAF · _getComputedProperty@gsap.js:3068",
+       14.8
+      ],
+      [
+       "layout in rAF · layout@mist.ts:252",
+       2.8
+      ],
+      [
+       "style in rAF · layout@mist.ts:252",
+       2.7
+      ],
+      [
+       "style in rAF · build@scroll.ts:85",
+       0.8
+      ],
+      [
+       "style in rAF · layout@mist.ts:255",
+       0.5
+      ],
+      [
+       "style in rAF · layout@views.ts:121",
+       0.5
+      ],
+      [
+       "style in rAF · onComplete@station.ts:293",
+       0.5
+      ]
+     ],
+     "longTasks": [
+      {
+       "at": 0,
+       "ms": 60.8,
+       "parts": [
+        [
+         "JS scroll.ts",
+         60.8
+        ],
+        [
+         "V8.GC_HEAP_ENSURE_SWEEPING_COMPLETED",
+         0
+        ],
+        [
+         "V8.GC_TIME_TO_SAFEPOINT",
+         0
+        ]
+       ],
+       "js": [
+        [
+         "(program) · (program)",
+         0.5
+        ],
+        [
+         "requestAnimationFrame · requestAnimationFrame",
+         0.3
+        ]
+       ]
+      }
+     ],
+     "gpuMainMs": 1663.4,
+     "compositorMs": 307
+    },
+    "settled": {
+     "heapMB": 13.5,
+     "glAlive": 0,
+     "glMade": 1,
+     "stages": 0,
+     "loops": 2,
+     "loopNames": [
+      "_rafBugFix"
+     ]
+    }
+   }
+  ],
+  "mapEnd": {
+   "heapMB": 13.7,
+   "glAlive": 0,
+   "glMade": 1,
+   "stages": 0,
+   "loops": 2,
+   "loopNames": [
+    "_rafBugFix"
+   ]
+  },
+  "warnings": []
+ }
+}
