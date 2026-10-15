@@ -1,0 +1,494 @@
+{
+  "id": 36,
+  "kicker": "You don't need to carve wood — you need to draw a clear plan for the carver.",
+  "summary": "The best AI game makers aren't the fastest typists — they describe clearly and fix in small steps.",
+  "takeaways": [
+    "t36-spec",
+    "t36-scaffold",
+    "t36-feature",
+    "t36-bug",
+    "t36-mobile",
+    "t36-ship",
+    "t36-pack"
+  ],
+  "game": {
+    "name": "Koi & Moon Pond",
+    "pitch": "A koi swims under the night pond; drag or tap to make it catch falling moon pieces and dodge dry leaves."
+  },
+  "quiz": {
+    "q": "Your game has a bug: the koi stays still instead of following your finger. Which report helps AI fix it best?",
+    "options": [
+      "“Fix it, it doesn't work.”",
+      "Paste the Console error + “expected the koi to follow the mouse, but it stays still”",
+      "Ask AI to rewrite the whole game from scratch",
+      "Switch to another technology, just in case"
+    ],
+    "answer": 1,
+    "explain": "Evidence (the Console error) plus “expected vs saw” points at the broken spot; AI fixes the root instead of guessing."
+  },
+  "scenes": {
+    "blueprint": {
+      "label": "A plan before carving",
+      "art": "Ink painting: a drawing table under the workshop lamp, a sheet of dó paper spread flat. Six paper pieces cut like stones lie by the edge; place one in the frame and the ink lines of a koi pond appear in that corner — water, fish, a piece of moon — until the drawing becomes a one-page spec.",
+      "prompt": "Choose each piece",
+      "group": "The six pieces of the plan",
+      "pieceAria": "{piece}: {option}",
+      "specTitle": "spec.md",
+      "pieces": [
+        {
+          "id": "idea",
+          "label": "One-line idea",
+          "options": [
+            "A koi catches moon pieces falling on the night pond, dodging dry leaves.",
+            "A koi glides around rocks, gathering fireflies before dawn."
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Rules in 3 lines",
+          "options": [
+            "Catch a moon piece +1 · touch a dry leaf, lose a heart · the moon falls faster and faster.",
+            "Gather a firefly +1 · touch a rock, slow down for 2 s · fewer fireflies over time."
+          ]
+        },
+        {
+          "id": "controls",
+          "label": "Controls",
+          "options": [
+            "Drag or tap and the koi follows your finger; on a computer use the mouse or arrow keys.",
+            "Tap the left/right half of the screen to turn the koi."
+          ]
+        },
+        {
+          "id": "end",
+          "label": "Win / lose",
+          "options": [
+            "Play 30 seconds or until 3 hearts are gone; the final score shows in an ensō.",
+            "No losing; when time runs out show the score and a replay button."
+          ]
+        },
+        {
+          "id": "style",
+          "label": "Style",
+          "options": [
+            "Chinese ink painting: indigo night, ivory moon, few colours.",
+            "Soft watercolour on dó paper, gentle brush strokes."
+          ]
+        },
+        {
+          "id": "device",
+          "label": "Device",
+          "options": [
+            "Phone in portrait first, computer works too.",
+            "Computer first, with a keyboard."
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "text": "GitHub's Spec Kit post proposes putting intent first: a living spec guides the code AI writes.",
+          "asOf": "2026-10-15",
+          "source": "t36-spec-kit",
+          "kind": "opinion"
+        }
+      ],
+      "insight": {
+        "text": "One clear page — idea, rules, controls, win/lose, style, device — means AI guesses less and you fix less.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Two more lines worth adding: “not in the first version” (so AI doesn't overdo it) and “what counts as done” (so you know when to stop).",
+      "takeaway": "t36-spec"
+    },
+    "pens": {
+      "label": "Choosing a pen",
+      "art": "Ink painting: a bamboo pen pot on the desk, five different pens. The same koi pond is drawn five times: thin charcoal lines, free colour strokes, strokes on a grid like a chessboard, strokes with depth and cast shadows, and one large framed piece.",
+      "prompt": "Tap each pen",
+      "group": "Five pens",
+      "penAria": "Pen: {name}",
+      "fitsLabel": "Good for",
+      "askLabel": "Sample instruction to AI",
+      "docsLabel": "Official docs",
+      "pens": [
+        {
+          "id": "canvas",
+          "name": "Plain Canvas 2D",
+          "fits": "Simple 2D games, the lightest",
+          "ask": "“Use HTML Canvas 2D, no libraries.”",
+          "source": "t36-canvas"
+        },
+        {
+          "id": "p5",
+          "name": "p5.js",
+          "fits": "Beginners, generative art",
+          "ask": "“Use p5.js from a CDN.”",
+          "source": "t36-p5"
+        },
+        {
+          "id": "phaser",
+          "name": "Phaser",
+          "fits": "2D games with levels, sprites, collisions",
+          "ask": "“Use Phaser 4 + Vite.”",
+          "source": "t36-phaser"
+        },
+        {
+          "id": "three",
+          "name": "Three.js",
+          "fits": "3D on the web: lights, camera",
+          "ask": "“Use Three.js + Vite + TypeScript.”",
+          "source": "t36-three"
+        },
+        {
+          "id": "engine",
+          "name": "Godot / Unity",
+          "fits": "Big games, phone/PC apps",
+          "ask": "“Use Godot 4, GDScript.”",
+          "source": "t36-godot"
+        }
+      ],
+      "facts": [
+        {
+          "text": "Phaser has moved to version 4; the latest when checked was 4.2.1, released 9 July 2026.",
+          "asOf": "2026-10-15",
+          "source": "t36-phaser",
+          "kind": "fact"
+        }
+      ],
+      "insight": {
+        "text": "Rule of thumb: small 2D → Canvas or Phaser; 3D in the browser → Three.js; big app games → an engine like Godot or Unity.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "There is no “best” pen. Name the pen in your instruction so AI doesn't pick something you don't know. Library versions change often — check the official site."
+    },
+    "carve": {
+      "label": "Seven steps to carve a game",
+      "art": "Ink painting: a night woodshop, a log on the rack slowly becoming a fish over seven chisel cuts. Seven stones lead from the timber pile to the workshop door opening onto the moon pond; beside it, a long scroll copies code like calligraphy, with small notes in the margin.",
+      "prompt": "Set the seven stones",
+      "pathAria": "A seven-step stone path for making a web game",
+      "stoneAria": "Stone: {label}",
+      "slotAria": "Empty spot {n} on the path",
+      "keys": "Tap in turn, or use number keys 1 to 7.",
+      "wrongHint": "Not quite — {why}",
+      "done": "The path is lit. Open your take-away card.",
+      "promptLabel": "Sample prompts",
+      "steps": {
+        "steps": [
+          {
+            "label": "Create the project",
+            "detail": "Type npm create vite@latest and pick the vanilla template. Needs Node.js 20.19+ or 22.12+.",
+            "why": "Vite sets up the skeleton and a dev server, no manual config."
+          },
+          {
+            "label": "Ask AI for a skeleton from the spec",
+            "detail": "Paste spec.md and say: build a skeleton that runs, no need to be pretty.",
+            "why": "A running skeleton first; every later feature hooks into it."
+          },
+          {
+            "label": "Run npm run dev",
+            "detail": "Open http://localhost:5173 in the browser; save a file and see it at once.",
+            "why": "Seeing results after each change catches bugs early."
+          },
+          {
+            "label": "Add one feature at a time",
+            "detail": "Ask for one thing, run it, then ask for the next.",
+            "why": "One thing at a time tells you exactly what broke what."
+          },
+          {
+            "label": "Fix bugs with evidence",
+            "detail": "Paste the Console error (F12) + “expected… but saw…”.",
+            "why": "Evidence helps AI fix the root, not guess."
+          },
+          {
+            "label": "Save checkpoints with git",
+            "detail": "After each working step: git add . then git commit -m \"add dry leaves\".",
+            "why": "If it breaks, go back to the last checkpoint without losing work."
+          },
+          {
+            "label": "Put it online",
+            "detail": "npm run build makes a dist folder; publish it on GitHub Pages, Vercel or Netlify.",
+            "why": "With a link, your friends can play right away."
+          }
+        ],
+        "takeaway": "t36-scaffold"
+      },
+      "prompts": [
+        "Create a Vite project with the vanilla template named koi-pond and explain each generated file.",
+        "Here is my spec.md. Build a running skeleton with Canvas 2D: the pond surface and one koi. No score or sound yet.",
+        "I ran npm run dev but see nothing. Here is all the text in the terminal: [PASTE].",
+        "Add exactly one feature: dry leaves fall slowly, and touching one costs the koi 1 heart. Keep everything else the same.",
+        "Expected the koi to follow the mouse, but it stays still. Console error: [PASTE]. Find the root cause and fix it with as little change as possible.",
+        "Suggest a short commit message describing the change I just made.",
+        "Walk me step by step through building and publishing the game on GitHub Pages, including the usual pitfalls."
+      ],
+      "codeAria": "Sample code: a koi following your finger on Canvas 2D",
+      "copy": "Copy",
+      "copied": "Copied",
+      "fileName": "src/main.js",
+      "code": {
+        "lang": "js",
+        "code": "const canvas = document.querySelector('canvas')\nconst ctx = canvas.getContext('2d')\nconst koi = { x: 160, y: 240, tx: 160, ty: 240 }\n\ncanvas.addEventListener('pointermove', (e) => {\n  koi.tx = e.offsetX\n  koi.ty = e.offsetY\n})\n\nfunction frame() {\n  koi.x += (koi.tx - koi.x) * 0.08\n  koi.y += (koi.ty - koi.y) * 0.08\n\n  ctx.fillStyle = '#1b2433'\n  ctx.fillRect(0, 0, canvas.width, canvas.height)\n\n  ctx.fillStyle = '#e8573c'\n  ctx.beginPath()\n  ctx.ellipse(koi.x, koi.y, 22, 10, 0, 0, Math.PI * 2)\n  ctx.fill()\n\n  requestAnimationFrame(frame)\n}\nrequestAnimationFrame(frame)",
+        "notes": [
+          {
+            "line": 1,
+            "text": "Grab the canvas (drawing frame) already on the page."
+          },
+          {
+            "line": 2,
+            "text": "Grab the 2D “brush” to draw on it."
+          },
+          {
+            "line": 3,
+            "text": "The koi: where it is (x, y) and where it wants to go (tx, ty)."
+          },
+          {
+            "line": 5,
+            "text": "Wherever the finger or mouse goes, the koi wants to swim there."
+          },
+          {
+            "line": 11,
+            "text": "Each frame the koi swims 8% of the remaining distance — so it glides, never jerks."
+          },
+          {
+            "line": 14,
+            "text": "Repaint the night pond, erasing the previous frame."
+          },
+          {
+            "line": 17,
+            "text": "Draw the body: a vermilion ellipse."
+          },
+          {
+            "line": 22,
+            "text": "Ask the browser to call again next frame — this is the game loop."
+          }
+        ]
+      },
+      "facts": [
+        {
+          "text": "Vite creates a project with npm create vite@latest and runs at localhost:5173; it needs Node.js 20.19+ or 22.12+.",
+          "asOf": "2026-10-15",
+          "source": "t36-vite",
+          "kind": "fact"
+        },
+        {
+          "text": "npm run build creates a dist folder; Vite's docs explain publishing to GitHub Pages, Netlify, Vercel and more.",
+          "asOf": "2026-10-15",
+          "source": "t36-vite-deploy",
+          "kind": "fact"
+        }
+      ],
+      "insight": {
+        "text": "Seven steps, each a small loop: ask, run, look, save a checkpoint. Small loops mean small bugs, easy to undo.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "The sample code uses Canvas 2D like the game at the end of this station. Commands and versions may change — follow Vite's official guide."
+    },
+    "layers": {
+      "label": "The game grows layer by layer",
+      "art": "Ink painting: a koi pond seen from above, built up layer by layer like sheets of tracing paper under a lamp: rippling water → koi → guiding hand → falling moon → score seal → water sounds → fireflies and ripples. When the last layer is down, the pond comes alive and playable.",
+      "prompt": "Lay down each layer",
+      "layerAria": "Layer {n}: {name}",
+      "promptLabel": "The prompt that made this layer",
+      "layers": [
+        {
+          "id": "water",
+          "name": "Water",
+          "prompt": "Draw an indigo night pond with slow, gentle ripples."
+        },
+        {
+          "id": "fish",
+          "name": "Koi",
+          "prompt": "Add one red-and-white koi whose body bends a little as it swims."
+        },
+        {
+          "id": "control",
+          "name": "Controls",
+          "prompt": "Make the koi follow the finger or mouse, gliding smoothly; on computers also use arrow keys."
+        },
+        {
+          "id": "moon",
+          "name": "Falling moon",
+          "prompt": "Drop moon pieces at random; the koi touching one scores +1. Add dry leaves: touching one costs a heart."
+        },
+        {
+          "id": "score",
+          "name": "Score",
+          "prompt": "Show the score and 3 hearts in a corner; after 30 seconds or no hearts, show the score in an ensō with a replay button."
+        },
+        {
+          "id": "sound",
+          "name": "Sound",
+          "prompt": "Add a soft “plop” when catching the moon; off by default, with a toggle."
+        },
+        {
+          "id": "fx",
+          "name": "Effects",
+          "prompt": "Add ripple rings when the koi catches and a few fireflies; turn all of it off if the user prefers reduced motion."
+        }
+      ],
+      "play": {
+        "start": "Play for 30 seconds",
+        "region": "Koi & Moon Pond: drag, tap or use the arrow keys to swim; catch moon pieces, dodge dry leaves.",
+        "how": "Drag or tap to guide the koi · catch the moon · dodge dry leaves",
+        "score": "Moon: {n}",
+        "lives": "Hearts: {n}",
+        "time": "{n} s",
+        "end": "Game over — {n} moon pieces",
+        "endAria": "Game over. You caught {n} moon pieces.",
+        "again": "Play again",
+        "sound": "Sound on",
+        "mute": "Sound off",
+        "pause": "Pause",
+        "resume": "Resume",
+        "still": "Reduced motion: the moon falls slowly, no ripples."
+      },
+      "facts": [
+        {
+          "text": "The prompt shown with each layer illustrates how to split the work; it is not a real log of this game's build.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "illustration"
+        }
+      ],
+      "insight": {
+        "text": "Good games grow layer by layer: one prompt per layer, run it, save a checkpoint — not one giant prompt.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "After a round, open the take-away card: the full prompt pack to rebuild this game from scratch.",
+      "takeaway": "t36-pack"
+    },
+    "vibe": {
+      "label": "Is coding by feel enough?",
+      "art": "Ink painting: five stones around the moon pond, a small candle on each. Touch a stone and its candlelight casts that person's words onto the water; light all five and the pond goes still and an ensō appears.",
+      "prompt": "Touch each stone",
+      "group": "Five views on vibe coding",
+      "stoneAria": "View: {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "The person who coined “vibe coding”",
+            "view": {
+              "text": "Andrej Karpathy (Feb 2025): let AI write it, “forget that the code even exists” — fine for throwaway weekend projects.",
+              "asOf": "2026-10-15",
+              "source": "t36-willison",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Veteran programmer",
+            "view": {
+              "text": "Simon Willison: if you've read, tested and can explain the code, that's normal programming, not vibe coding anymore.",
+              "asOf": "2026-10-15",
+              "source": "t36-willison",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Security company",
+            "view": {
+              "text": "Veracode tested 80 tasks across 100+ models: in about 45% of cases, AI-written code had security flaws.",
+              "asOf": "2026-10-15",
+              "source": "t36-veracode",
+              "kind": "fact",
+              "claimBy": "Veracode"
+            }
+          },
+          {
+            "who": "Dictionary",
+            "view": {
+              "text": "Collins Dictionary named “vibe coding” its 2025 Word of the Year — the practice has gone mainstream.",
+              "asOf": "2026-10-15",
+              "source": "t36-collins",
+              "kind": "fact"
+            }
+          },
+          {
+            "who": "Beginner",
+            "view": {
+              "text": "A small game is a safe practice ground: if it breaks, start over; nobody loses money or data.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "AI helps beginners make things that run. They differ on when code must be read carefully — when money or data is involved.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "detail": "The koi game runs in the browser with no accounts or payments, so the risk is low. When an app has logins, money or user data, ask someone who knows code to review it."
+    }
+  },
+  "sources": {
+    "t36-spec-kit": {
+      "title": "Spec-driven development with AI: Get started with a new open source toolkit",
+      "publisher": "The GitHub Blog (Den Delimarsky)",
+      "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/",
+      "date": "2025-09-02"
+    },
+    "t36-canvas": {
+      "title": "Canvas API",
+      "publisher": "MDN Web Docs",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API"
+    },
+    "t36-p5": {
+      "title": "p5.js",
+      "publisher": "Processing Foundation",
+      "url": "https://p5js.org/"
+    },
+    "t36-phaser": {
+      "title": "Phaser — Download (v4.2.1 “Giedi”)",
+      "publisher": "Phaser Studio",
+      "url": "https://phaser.io/download/stable",
+      "date": "2026-07-09"
+    },
+    "t36-three": {
+      "title": "three.js docs",
+      "publisher": "three.js",
+      "url": "https://threejs.org/docs/"
+    },
+    "t36-godot": {
+      "title": "Godot Engine documentation",
+      "publisher": "Godot Engine",
+      "url": "https://docs.godotengine.org/"
+    },
+    "t36-vite": {
+      "title": "Getting Started",
+      "publisher": "Vite",
+      "url": "https://vite.dev/guide/"
+    },
+    "t36-vite-deploy": {
+      "title": "Deploying a Static Site",
+      "publisher": "Vite",
+      "url": "https://vite.dev/guide/static-deploy"
+    },
+    "t36-willison": {
+      "title": "Not all AI-assisted programming is vibe coding (but vibe coding rocks)",
+      "publisher": "Simon Willison’s Weblog",
+      "url": "https://simonwillison.net/2025/Mar/19/vibe-coding/",
+      "date": "2025-03-19",
+      "note": "Quotes Andrej Karpathy's original post (February 2025) in full."
+    },
+    "t36-veracode": {
+      "title": "AI-Generated Code Poses Major Security Risks in Nearly Half of All Development Tasks",
+      "publisher": "Veracode (company press release, 2025 GenAI Code Security Report)",
+      "url": "https://www.veracode.com/press-release/ai-generated-code-poses-major-security-risks-in-nearly-half-of-all-development-tasks-veracode-research-reveals/",
+      "date": "2025-07-30"
+    },
+    "t36-collins": {
+      "title": "‘Vibe coding’ named Collins Dictionary’s Word of the Year",
+      "publisher": "CNN (republished on KRDO)",
+      "url": "https://krdo.com/news/2025/11/06/vibe-coding-named-collins-dictionarys-word-of-the-year/",
+      "date": "2025-11-06"
+    }
+  }
+}
