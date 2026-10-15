@@ -11,7 +11,7 @@
  *   node scripts/perf-walk.mjs --only a,c,d --trace                   # + Chrome trace: what the main thread spent time on
  *   … --trace --stacks --base http://localhost:5179/                # + who forced each style/layout (dev server = readable names)
  *   node scripts/perf-walk.mjs --only e --pingpong 13,13,13 --settle-each   # one station in and out, heap after each
- *   --cpu 8 (override the slowdown) · --out file.json · --base http://… (default: serve dist/ here, gzip + max-age=600 like GitHub Pages)
+ *   --cpu 8 (override the slowdown) · --out file.json · --dist other-build-dir · --base http://… (default: serve dist/ like GitHub Pages)
  *
  * Scenarios: a) home → map (intro, sand, address-bar resize)  b) station 1, every scene  c) stations 1 → 18 in order
  *            d) first visit of a 3D station on a cold cache   e) map ↔ station, 10 times
@@ -20,10 +20,9 @@
 import { chromium } from 'playwright'
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
-import http from 'node:http'
-import zlib from 'node:zlib'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { serveDist } from './serve-dist.mjs'
 
 process.chdir(path.join(path.dirname(fileURLToPath(import.meta.url)), '..'))
 
@@ -79,26 +78,11 @@ const pad = (n) => String(n).padStart(2, '0')
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const log = (...a) => console.error(...a)
 
-// ── server: dist/ gzip-compressed with max-age=600, as GitHub Pages serves it (vite preview sends it raw) ──
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff' }
+// ── server: dist/ (or --dist) served like GitHub Pages, unless --base points elsewhere ──
 let server = null
 if (!BASE) {
-  const root = path.resolve('dist')
-  if (!fs.existsSync(path.join(root, 'index.html'))) throw new Error('No dist/ — run `npm run build` first.')
-  const cache = new Map()
-  server = http.createServer((req, res) => {
-    let p = decodeURIComponent(new URL(req.url, 'http://x').pathname)
-    if (p.endsWith('/')) p += 'index.html'
-    const file = path.join(root, p)
-    if (!file.startsWith(root) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) return res.writeHead(404).end()
-    const ext = path.extname(file)
-    const gz = /^\.(html|js|css|json|svg)$/.test(ext)
-    if (!cache.has(file)) cache.set(file, gz ? zlib.gzipSync(fs.readFileSync(file)) : fs.readFileSync(file))
-    res.writeHead(200, { 'content-type': TYPES[ext] ?? 'application/octet-stream', 'cache-control': 'max-age=600', ...(gz ? { 'content-encoding': 'gzip' } : {}) })
-    res.end(cache.get(file))
-  })
-  await new Promise((ok) => server.listen(0, ok))
-  BASE = `http://localhost:${server.address().port}/`
+  server = await serveDist(String(opt('dist', 'dist')))
+  BASE = server.url
 }
 const url = (hash) => `${BASE}?perf=1${hash}`
 
