@@ -52,6 +52,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
 
   let w = 0
   let hgt = 0
+  let sandH = 0 // canvas height in CSS px (garden height + 15%)
   let rocks: Rock[] = []
   // design tokens read once (and again when prefs change) — never inside a frame
   const col = { rake: '', rakeHi: '', ink: '' }
@@ -125,6 +126,8 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     rocks = []
     rocksSvg.replaceChildren()
     rocksSvg.setAttribute('viewBox', `0 0 ${w} ${hgt}`)
+    rocksSvg.style.width = `${w}px`
+    rocksSvg.style.height = `${hgt}px`
     labels.replaceChildren()
     GARDENS.forEach((g, gi) => {
       const T = gi + 1
@@ -231,78 +234,93 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
 
   function drawSand() {
     const d = dpr()
-    sand.width = w * d
-    sand.height = hgt * d
-    ripple.width = w * d
-    ripple.height = hgt * d
+    // raked a little taller than the garden: when a phone's address bar hides, the sand is already there
+    const H = (sandH = Math.round(hgt * 1.15))
+    for (const c of [sand, ripple]) {
+      c.width = w * d
+      c.height = H * d
+      c.style.width = `${w}px`
+      c.style.height = `${H}px`
+    }
     const g = sand.getContext('2d')!
     g.setTransform(d, 0, 0, d, 0, 0)
-    g.clearRect(0, 0, w, hgt)
+    g.clearRect(0, 0, w, H)
     const gap = Math.max(7, Math.min(11, Math.min(w, hgt) / 80))
     const K = 5
+    const limit = (K + 0.55) * gap
     const field = (x: number, y: number) => {
       let m = Infinity
       for (const r of rocks) m = Math.min(m, Math.hypot(x - r.x, (y - r.y) * 1.15) - r.r * 1.12)
       return m
     }
-    const stroke = (fn: () => void) => {
-      for (const [c, dy] of [[col.rakeHi, -0.9], [col.rake, 0]] as const) {
-        g.save()
-        g.translate(0, dy)
-        g.strokeStyle = c
-        g.lineWidth = 1.05
-        g.beginPath()
-        fn()
-        g.stroke()
-        g.restore()
-      }
+    // Distance field sampled every c px. Only cells within reach of a rock are computed exactly — further out the
+    // value is only known to exceed `reach`, which is all the rows and the rings (≤ K·gap < reach) need.
+    const c = 4
+    const nx = Math.ceil(w / c) + 1, ny = Math.ceil(H / c) + 1
+    const F = new Float32Array(nx * ny).fill(1e6)
+    const reach = limit + 3 * c
+    for (const r of rocks) {
+      const rx = r.r * 1.12 + reach
+      const i0 = Math.max(0, Math.floor((r.x - rx) / c)), i1 = Math.min(nx - 1, Math.ceil((r.x + rx) / c))
+      const j0 = Math.max(0, Math.floor((r.y - rx / 1.15) / c)), j1 = Math.min(ny - 1, Math.ceil((r.y + rx / 1.15) / c))
+      for (let j = j0; j <= j1; j++)
+        for (let i = i0; i <= i1; i++) {
+          const v = Math.hypot(i * c - r.x, (j * c - r.y) * 1.15) - r.r * 1.12
+          if (v < F[j * nx + i]) F[j * nx + i] = v
+        }
+    }
+    // the field changes ≤ 1.15 px per px, so a grid value this far past the limit decides a row sample without the exact field
+    const clear = limit + 1.15 * c * 1.5
+    const far = (x: number, y: number) => {
+      const i = Math.min(nx - 1, Math.max(0, Math.round(x / c))), j = Math.min(ny - 1, Math.max(0, Math.round(y / c)))
+      return F[j * nx + i] > clear || field(x, y) > limit
     }
     // straight raked rows, broken where they meet the rings
-    const limit = (K + 0.55) * gap
-    stroke(() => {
-      for (let y = gap * 0.6; y < hgt; y += gap) {
-        let pen = false
-        for (let x = -2; x <= w + 4; x += 4) {
-          const yy = y + Math.sin(x / 210 + y / 37) * 0.9
-          if (field(x, yy) > limit) {
-            if (pen) g.lineTo(x, yy)
-            else g.moveTo(x, yy)
-            pen = true
-          } else pen = false
-        }
+    const rows = new Path2D()
+    for (let y = gap * 0.6; y < H; y += gap) {
+      let pen = false
+      for (let x = -2; x <= w + 4; x += 4) {
+        const yy = y + Math.sin(x / 210 + y / 37) * 0.9
+        if (far(x, yy)) {
+          if (pen) rows.lineTo(x, yy)
+          else rows.moveTo(x, yy)
+          pen = true
+        } else pen = false
       }
-    })
+    }
     // concentric rings around each rock cluster = iso-lines of the distance field (marching squares)
-    const c = 4
-    const nx = Math.ceil(w / c) + 1, ny = Math.ceil(hgt / c) + 1
-    const F = new Float32Array(nx * ny)
-    for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) F[j * nx + i] = field(i * c, j * c)
-    stroke(() => {
-      for (let k = 1; k <= K; k++) {
-        const lv = k * gap
-        for (let j = 0; j < ny - 1; j++)
-          for (let i = 0; i < nx - 1; i++) {
-            const a = F[j * nx + i], b = F[j * nx + i + 1], cc = F[(j + 1) * nx + i + 1], dd = F[(j + 1) * nx + i]
-            if (Math.min(a, b, cc, dd) > lv || Math.max(a, b, cc, dd) < lv) continue
-            const x0 = i * c, y0 = j * c
-            const pts: [number, number][] = []
-            const edge = (v1: number, v2: number, p1: [number, number], p2: [number, number]) => {
-              if ((v1 < lv) !== (v2 < lv)) {
-                const t = (lv - v1) / (v2 - v1)
-                pts.push([p1[0] + (p2[0] - p1[0]) * t, p1[1] + (p2[1] - p1[1]) * t])
-              }
-            }
-            edge(a, b, [x0, y0], [x0 + c, y0])
-            edge(b, cc, [x0 + c, y0], [x0 + c, y0 + c])
-            edge(cc, dd, [x0 + c, y0 + c], [x0, y0 + c])
-            edge(dd, a, [x0, y0 + c], [x0, y0])
-            for (let p = 0; p + 1 < pts.length; p += 2) {
-              g.moveTo(pts[p][0], pts[p][1])
-              g.lineTo(pts[p + 1][0], pts[p + 1][1])
-            }
-          }
+    const rings = new Path2D()
+    let px = 0, py = 0, n = 0
+    const edge = (v1: number, v2: number, lv: number, x1: number, y1: number, x2: number, y2: number) => {
+      if (v1 < lv === v2 < lv) return
+      const t = (lv - v1) / (v2 - v1)
+      const x = x1 + (x2 - x1) * t, y = y1 + (y2 - y1) * t
+      if (n++ % 2 === 0) (px = x), (py = y)
+      else rings.moveTo(px, py), rings.lineTo(x, y)
+    }
+    for (let k = 1; k <= K; k++) {
+      const lv = k * gap
+      for (let j = 0; j < ny - 1; j++)
+        for (let i = 0; i < nx - 1; i++) {
+          const a = F[j * nx + i], b = F[j * nx + i + 1], cc = F[(j + 1) * nx + i + 1], dd = F[(j + 1) * nx + i]
+          if (Math.min(a, b, cc, dd) > lv || Math.max(a, b, cc, dd) < lv) continue
+          const x0 = i * c, y0 = j * c
+          n = 0
+          edge(a, b, lv, x0, y0, x0 + c, y0)
+          edge(b, cc, lv, x0 + c, y0, x0 + c, y0 + c)
+          edge(cc, dd, lv, x0 + c, y0 + c, x0, y0 + c)
+          edge(dd, a, lv, x0, y0 + c, x0, y0)
+        }
+    }
+    for (const path of [rows, rings])
+      for (const [c2, dy] of [[col.rakeHi, -0.9], [col.rake, 0]] as const) {
+        g.save()
+        g.translate(0, dy)
+        g.strokeStyle = c2
+        g.lineWidth = 1.05
+        g.stroke(path)
+        g.restore()
       }
-    })
   }
 
   // Touching the sand sends a slow ripple — the garden answers you.
@@ -312,7 +330,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     const d = dpr()
     const g = rippleCtx
     g.setTransform(d, 0, 0, d, 0, 0)
-    g.clearRect(0, 0, w, hgt)
+    g.clearRect(0, 0, w, sandH)
     const now = performance.now()
     for (let i = ripples.length - 1; i >= 0; i--) {
       const age = (now - ripples[i].t) / 2600
@@ -381,10 +399,14 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     })
   })
 
+  // Re-lay out only when the width changes or the height changes by more than 15% (a phone's address bar hiding
+  // or showing must not redraw the sand), debounced 150 ms for real resizes such as rotating the phone.
   let relayout = 0
-  const ro = new ResizeObserver(() => {
-    cancelAnimationFrame(relayout)
-    relayout = requestAnimationFrame(layout)
+  const ro = new ResizeObserver(([e]) => {
+    const nw = Math.round(e.contentRect.width), nh = Math.round(e.contentRect.height)
+    if (nw === w && Math.abs(nh - hgt) <= hgt * 0.15) return
+    clearTimeout(relayout)
+    relayout = window.setTimeout(layout, 150)
   })
   ro.observe(garden)
   const offPrefs = onPrefs(() => {
@@ -411,7 +433,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     ro.disconnect()
     offPrefs()
     rippleLoop.dispose()
-    cancelAnimationFrame(relayout)
+    clearTimeout(relayout)
     introCleanup?.()
     gctx.revert()
   }
