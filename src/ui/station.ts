@@ -11,6 +11,7 @@ import { quizScene } from './quiz'
 import { icon } from './icons'
 import { setCrumb } from './topbar'
 import { ensoBrush } from './brush'
+import { prefetchStation, whenIdle } from './prefetch'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 const TYPING = 'input, textarea, select, [contenteditable], [role="slider"], [role="listbox"]'
@@ -288,6 +289,7 @@ function summaryScene(text: string, next?: (typeof ALL_STATIONS)[number]): Scene
         h('a', { class: 'btn ghost', href: '#/vuon' }, L.backToMap))
       ctx.art.append(h('div', { class: 'summary' }, h('div', { class: 'summary-in' }, h('p', { class: 'summary-label' }, L.summaryEyebrow), h('div', { class: 'summary-ring' }, enso, textEl), actions)))
       ctx.complete()
+      ctx.onCleanup(whenIdle(() => prefetchStation(next?.id))) // the next station is the likely click
       if (!ctx.reduced) {
         gsap.to(reveal, { attr: { 'stroke-dashoffset': 0 }, duration: 2.4, ease: 'power2.inOut', delay: 0.2 })
         gsap.from(enso.querySelector('.enso-seal'), { scale: 1.35, opacity: 0, transformOrigin: '50% 50%', duration: 0.45, delay: 2.5, ease: 'power3.in' })

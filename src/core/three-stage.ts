@@ -42,10 +42,22 @@ export function createStage(host: HTMLElement, opts: { fov?: number; animate?: b
   const resizers = new Set<(w: number, h: number) => void>()
   let w = 1, h = 1, disposed = false
 
-  // createLoop pauses offscreen / hidden tab / reduced motion; render() = one frame on demand (dt 0)
+  // createLoop pauses offscreen / hidden tab / reduced motion; render() = one frame on demand (dt 0).
+  // First frame: compile every shader the scene needs without blocking (KHR_parallel_shader_compile where the
+  // browser has it) and draw once they are ready, instead of stalling on the first render (spec A.7).
+  let shaders: 'todo' | 'compiling' | 'ready' = 'todo'
   const loop = createLoop(host, (t, dt) => {
     frames.forEach((f) => f(t, dt))
-    renderer.render(scene, camera)
+    if (shaders === 'ready') return void renderer.render(scene, camera)
+    if (shaders === 'compiling') return
+    shaders = 'compiling'
+    renderer
+      .compileAsync(scene, camera)
+      .catch(() => {})
+      .then(() => {
+        shaders = 'ready'
+        loop.wake()
+      })
   }, { essential: opts.animate === true })
   const resize = () => {
     const r = host.getBoundingClientRect()

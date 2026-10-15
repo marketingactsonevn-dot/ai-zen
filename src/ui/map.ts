@@ -5,6 +5,7 @@ import { progress } from '../core/progress'
 import { cssVar, onPrefs, prefs } from '../core/prefs'
 import { gsap } from '../core/anim'
 import { createLoop } from '../core/loop'
+import { lightNet, prefetchStation, prefetchThree, whenIdle } from './prefetch'
 import { icon } from './icons'
 
 type Pt = { x: number; y: number }
@@ -365,6 +366,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
   const showTip = (el: HTMLElement) => {
     const st = ALL_STATIONS[stones.indexOf(el as HTMLAnchorElement)]
     const built = st.id in STATIONS
+    prefetchStation(st.id) // hover / focus / first tap: the visit is likely, start loading it now
     tip.replaceChildren(
       h('span', { class: 'ptip-num' }, `${L.station} ${pad(st.id)} · ${fill(L.gardenOf, { n: st.garden.id })}`),
       h('span', { class: 'ptip-title' }, st.title),
@@ -415,6 +417,13 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
   })
   layout()
 
+  // once the garden is drawn and the browser is idle: the station to visit next, and three.js for the 3D scenes
+  const cancelIdle = whenIdle(() => {
+    if (lightNet()) return
+    prefetchStation(nextId)
+    prefetchThree()
+  })
+
   let introCleanup: (() => void) | null = null
   const gctx = gsap.context(() => {
     if (prefs.reduced) return
@@ -432,6 +441,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
   return () => {
     ro.disconnect()
     offPrefs()
+    cancelIdle()
     rippleLoop.dispose()
     clearTimeout(relayout)
     introCleanup?.()
