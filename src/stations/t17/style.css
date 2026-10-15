@@ -1432,3 +1432,15 @@
     animation: none;
   }
 }
+
+/* quality=low (spec A.5): no backdrop blur, denser card; the veil keeps more of what it veils */
+:root[data-quality='low'] :is(.t17-chips, .t17m-note-t) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--card) 86%, transparent);
+}
+:root[data-quality='low'] .t17c-veil {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--paper) 72%, transparent);
+}

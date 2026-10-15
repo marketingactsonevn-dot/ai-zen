@@ -1388,3 +1388,34 @@ body:has(main.scroll-page) .topbar {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
 }
+
+/* ───────── quality=low (spec A.5): no backdrop blur — a denser paper instead; no big static blur ───────── */
+:root[data-quality='low'] :is(.scene-prompt, .gx) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--card) 92%, transparent);
+}
+:root[data-quality='low'] .insight-detail {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--card) 96%, transparent);
+}
+:root[data-quality='low'] .rail {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--card) 86%, transparent);
+}
+:root[data-quality='low'] body:has(main.scroll-page) .topbar {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--paper) 94%, transparent);
+}
+:root[data-quality='low'] .chapter {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: radial-gradient(ellipse at center, var(--paper) 30%, color-mix(in srgb, var(--paper) 94%, transparent) 75%);
+}
+/* the dawn mist is already a soft radial gradient; its 20px blur on 90vmax layers only costs GPU */
+:root[data-quality='low'] .intro .mist {
+  filter: none;
+}

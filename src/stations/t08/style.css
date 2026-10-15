@@ -1018,3 +1018,10 @@
     visibility: hidden;
   }
 }
+
+/* quality=low (spec A.5): no backdrop blur, denser card */
+:root[data-quality='low'] .t08m-card {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--card) 96%, transparent);
+}

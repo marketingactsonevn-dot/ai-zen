@@ -710,3 +710,10 @@
   z-index: 2;
   background: none;
 }
+
+/* quality=low (spec A.5): no backdrop blur, denser card */
+:root[data-quality='low'] .t6-btn {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--card) 92%, transparent);
+}

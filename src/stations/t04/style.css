@@ -699,3 +699,10 @@
     scale: 1.15;
   }
 }
+
+/* quality=low (spec A.5): no backdrop blur, denser card */
+:root[data-quality='low'] :is(.t4-try, .t4-chip) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--card) 92%, transparent);
+}

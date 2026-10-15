@@ -265,7 +265,6 @@
   pointer-events: none;
   background: radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--mist) 80%, transparent), transparent 75%);
   animation: t3-drift calc(24s + var(--i) * 9s) ease-in-out infinite alternate;
-  will-change: transform;
 }
 .t3f.wide .t3f-band {
   left: -14%;
@@ -349,7 +348,6 @@
   border-radius: 50%;
   background: radial-gradient(closest-side, color-mix(in srgb, var(--veil) 90%, transparent) 40%, transparent);
   animation: t3-veil 14s ease-in-out infinite alternate;
-  will-change: transform;
 }
 .t3f-cover i:nth-child(2) { left: -34%; top: 6%; }
 .t3f-cover i:nth-child(3) { left: 26%; top: 38%; animation-duration: 18s; animation-direction: alternate-reverse; }

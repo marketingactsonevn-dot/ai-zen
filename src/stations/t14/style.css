@@ -427,3 +427,20 @@
     transition: none;
   }
 }
+
+/* quality=low (spec A.5): no backdrop blur, denser card */
+:root[data-quality='low'] .t14-seal {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--card) 92%, transparent);
+}
+:root[data-quality='low'] .t14-ana .t14-lab.read:not(.sel) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--paper) 86%, transparent);
+}
+:root[data-quality='low'] .t14-lab.sel {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-color: color-mix(in srgb, var(--card) 96%, transparent);
+}
