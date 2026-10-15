@@ -1,0 +1,353 @@
+{
+  "id": 31,
+  "kicker": "The village well — anyone can draw from it, but you need to know which water is clean.",
+  "summary": "The open AI world is a village sharing its wells — learn to read the stone by the well and you can choose your water.",
+  "takeaways": ["t31-model-card", "t31-ask-ai-repo", "t31-safe-download"],
+  "quiz": {
+    "q": "You plan to use a model downloaded from Hugging Face to make content for a client. Which line on the model card should you read first?",
+    "options": [
+      "Last month's downloads",
+      "The license",
+      "The number of parameters",
+      "The author's profile picture"
+    ],
+    "answer": 1,
+    "explain": "The license decides whether you may use it commercially, change it or share it. Downloads only tell you the model is popular, not that you are allowed to use it."
+  },
+  "scenes": {
+    "wells": {
+      "label": "Two wells",
+      "art": "A moonlit night at the edge of the village: two mossy stone wells, each with a bamboo bucket. The left well's water glints with lines of code like fish scales; the right one holds small labelled clay jars. A paper lantern hangs from a wooden post between them.",
+      "prompt": "Drop each into its well",
+      "aria": "Two wells: GitHub and Hugging Face. Put each item into the right well",
+      "wells": [
+        {
+          "id": "github",
+          "name": "GitHub",
+          "holds": "the well of source code",
+          "aria": "GitHub well: where people share source code"
+        },
+        {
+          "id": "hf",
+          "name": "Hugging Face",
+          "holds": "the well of models, data, demos",
+          "aria": "Hugging Face well: where people share models, datasets and demos"
+        }
+      ],
+      "items": [
+        { "id": "app", "label": "An app's source code", "well": "github", "aria": "An app's source code" },
+        { "id": "weights", "label": "A trained model file", "well": "hf", "aria": "A trained model file (the weights)" },
+        { "id": "dataset", "label": "A dataset", "well": "hf", "aria": "A dataset for training or testing" },
+        { "id": "space", "label": "A web demo to try", "well": "hf", "aria": "A demo that runs a model right in the browser" },
+        { "id": "cli", "label": "A command-line tool", "well": "github", "aria": "The source code of a command-line tool" },
+        { "id": "site", "label": "A website like AI Zen", "well": "github", "aria": "The source code of a website like AI Zen" }
+      ],
+      "itemAria": "Drop “{item}” into the {well} well",
+      "right": "Right well.",
+      "wrong": "This one usually lives in the other well.",
+      "done": "All six are in.",
+      "insight": {
+        "text": "Hugging Face is the shared well for models, datasets and demos — mostly public, free for anyone to download.",
+        "asOf": "2026-10-15",
+        "source": "t31-hf-hub"
+      },
+      "detail": {
+        "text": "GitHub is the well for source code: each repository holds code, files and the change history of every file.",
+        "asOf": "2026-10-15",
+        "source": "t31-gh-repos"
+      },
+      "note": "The line isn't absolute: GitHub also has downloadable files, and Hugging Face also holds code. This is enough to get started."
+    },
+    "depth": {
+      "label": "A deepening well",
+      "art": "A cross-section of an old well unrolled like a scroll: rings of stone laid down over the years, the water rising notch by notch. The moon glides along the well's mouth; each notch has a small stone carved with a date. At the end of the scroll, white mist covers the mouth of the well.",
+      "prompt": "Drag the moon through the years",
+      "aria": "Progress tide: public models on Hugging Face over the years. Drag the moon or use the arrow keys",
+      "tide": {
+        "milestones": [
+          {
+            "date": "09/2024",
+            "label": "One million models",
+            "fact": {
+              "text": "In September 2024, Hugging Face co-founder Clément Delangue announced the hub had passed 1 million public models.",
+              "asOf": "2026-10-15",
+              "source": "t31-decoder-1m",
+              "claimBy": "Hugging Face"
+            }
+          },
+          {
+            "date": "02/2026",
+            "label": "llama.cpp moves in",
+            "fact": {
+              "text": "20 Feb 2026: the ggml team behind llama.cpp — the engine for running AI on personal computers — joined Hugging Face; both say it stays open source.",
+              "asOf": "2026-10-15",
+              "source": "t31-hf-ggml",
+              "claimBy": "Hugging Face"
+            }
+          },
+          {
+            "date": "15/10/2026",
+            "label": "Today",
+            "fact": {
+              "text": "Hugging Face's Models page now lists over 3.15 million public models; over 211,000 have GGUF files for running on your own machine.",
+              "asOf": "2026-10-15",
+              "source": "t31-hf-models"
+            },
+            "compare": {
+              "before": "1 million",
+              "after": "3.16 million",
+              "ratio": 3.16,
+              "beforeLabel": "09/2024",
+              "afterLabel": "10/2026"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "The well will probably keep getting deeper every year; knowing how to pick the right model will matter more than knowing many names.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "Today Hugging Face holds over 3.15 million public models — three times the 1 million mark of September 2024.",
+        "asOf": "2026-10-15",
+        "source": "t31-hf-models"
+      },
+      "detail": "More choice also means more murky water. The skill you need: reading the stone by the well — the next scene."
+    },
+    "card": {
+      "label": "Reading the well stone",
+      "art": "Beside the well stands a low stone stele, six lines faintly carved under the moss. You hold a paper lantern; wherever it shines, a line becomes clear and casts its shadow on a puddle holding the moon.",
+      "prompt": "Light each line on the stone",
+      "aria": "A mock model card: six lines to read before you download a model",
+      "mock": "A made-up model for learning, not a real one",
+      "model": "lang-mau / vuon-trang-8B-instruct-GGUF",
+      "lineAria": "Light line {n}: {label}",
+      "lines": [
+        {
+          "id": "name",
+          "label": "Name & author",
+          "value": "lang-mau / vuon-trang-8B-instruct",
+          "read": "Who is the author, and do they have an official page? Is this the original, or someone else's copy or compressed version?"
+        },
+        {
+          "id": "params",
+          "label": "Parameters",
+          "value": "8B — about 8 billion parameters",
+          "read": "Bigger usually means smarter but heavier. An ordinary laptop suits models of about 1B–14B (see the next station)."
+        },
+        {
+          "id": "license",
+          "label": "License",
+          "value": "license: other — see separate terms",
+          "read": "It decides whether you may use it commercially, change it or share it. “other” means you have to open the separate terms and read them."
+        },
+        {
+          "id": "format",
+          "label": "File format",
+          "value": "GGUF · Q4_K_M",
+          "read": "GGUF runs in LM Studio, Ollama and llama.cpp. “Q4” is a 4-bit compressed version, much lighter than the original."
+        },
+        {
+          "id": "downloads",
+          "label": "Downloads",
+          "value": "12,400 downloads last month",
+          "read": "It shows the model is popular — not that it is safe or good."
+        },
+        {
+          "id": "limits",
+          "label": "Limits & warnings",
+          "value": "Not well tested in Vietnamese; may get figures wrong",
+          "read": "A careful author says plainly where the model is weak. A stone that says nothing about limits is a sign to be wary."
+        }
+      ],
+      "insight": {
+        "text": "Every model comes with a model card: its purpose, limits, training data and evaluation results.",
+        "asOf": "2026-10-15",
+        "source": "t31-hf-modelcards"
+      },
+      "detail": {
+        "text": "The license shows right on the model page; if it says “other”, the author must give the name of and a link to the separate terms.",
+        "asOf": "2026-10-15",
+        "source": "t31-hf-modelcards"
+      },
+      "takeaway": "t31-model-card"
+    },
+    "repo": {
+      "label": "Two houses",
+      "art": "Two wooden houses beside a stone path under the moon, almost identical. The left one has its lights on, a swept porch and a wooden board listing repairs; the right one has its door shut, cobwebs everywhere, and the name on its gate carved one stroke off.",
+      "prompt": "Guess which house to trust",
+      "aria": "Compare two GitHub repos on six signals, then choose the one to trust",
+      "signals": [
+        { "id": "readme", "label": "README", "what": "The front page: what it does, how to install it, examples." },
+        { "id": "stars", "label": "Stars", "what": "How many people bookmarked it: popularity, not a guarantee of safety." },
+        { "id": "forks", "label": "Forks", "what": "Copies others made to change on their own. A fake repo is often a renamed copy." },
+        { "id": "issues", "label": "Issues", "what": "Where people report bugs and ask questions. Recent replies mean someone still looks after it." },
+        { "id": "releases", "label": "Releases", "what": "Published versions with notes. Downloading from here is safer than grabbing stray files." },
+        { "id": "license", "label": "License", "what": "With no license, by default you may not copy, change or distribute it." }
+      ],
+      "repos": [
+        {
+          "id": "a",
+          "name": "lang-mau/den-long",
+          "trust": true,
+          "values": {
+            "readme": "Complete, with examples",
+            "stars": "8,200",
+            "forks": "640",
+            "issues": "Answered 2 days ago",
+            "releases": "v2.3 · 3 weeks ago",
+            "license": "MIT"
+          }
+        },
+        {
+          "id": "b",
+          "name": "lang-rnau/den-long",
+          "trust": false,
+          "values": {
+            "readme": "Copied from the original, plus a “quick installer” button",
+            "stars": "8,150",
+            "forks": "0",
+            "issues": "Turned off",
+            "releases": "One .zip file, no notes",
+            "license": "None"
+          }
+        }
+      ],
+      "mock": "Two made-up repos for learning",
+      "pick": "Choose this house",
+      "pickAria": "Choose repo {name} as the one to trust",
+      "right": "Right. The original has a history, someone looking after it, and a clear license.",
+      "wrong": "Look closely at the name: “rn” is pretending to be “m”. The stars are almost equal, but the history and the care are completely different.",
+      "insight": {
+        "text": "Attackers have cloned popular GitHub repos in bulk, slipped in malware and re-uploaded them under identical names.",
+        "asOf": "2026-10-15",
+        "source": "t31-repo-confusion"
+      },
+      "detail": {
+        "text": "A repo without a license falls under default copyright: the author keeps all rights and you may not copy it freely.",
+        "asOf": "2026-10-15",
+        "source": "t31-gh-license"
+      },
+      "takeaway": "t31-ask-ai-repo"
+    },
+    "clean": {
+      "label": "Filtering the water",
+      "art": "A bamboo filter under the well's spout: water runs through layers of gravel, sand and charcoal, each layer a numbered stone. At the bottom a clay bowl catches clear water holding the whole moon.",
+      "prompt": "Stack the filter layers",
+      "aria": "Stepping-stone path: the safe order for downloading a model or some code. Tap them in turn or use the number keys",
+      "stepAria": "Place step {n}: {label}",
+      "wrongHint": "This layer comes later — the water hasn't passed the one before.",
+      "done": "The water is clear.",
+      "steps": {
+        "steps": [
+          {
+            "label": "Find the true source",
+            "detail": "Go to the author's or organisation's official page and follow the link from there.",
+            "why": "A renamed copy looks exactly like the original."
+          },
+          {
+            "label": "Read the license and limits",
+            "detail": "Open the model card or README; check the license allows what you plan to do.",
+            "why": "Finding out you can't use it after downloading is wasted effort."
+          },
+          {
+            "label": "Pick a safer format",
+            "detail": "Prefer safetensors or GGUF; avoid pickle files (.bin, .pt, .pkl) from strangers.",
+            "why": "A pickle file can run code the moment it is opened."
+          },
+          {
+            "label": "Check the security scan",
+            "detail": "Hugging Face file pages show scan results; if a file is flagged, stop.",
+            "why": "Hugging Face itself says its scanner doesn't catch 100%."
+          },
+          {
+            "label": "Download with a known app",
+            "detail": "Use LM Studio, Ollama or the official page — never run odd commands pasted from a forum.",
+            "why": "“Quick install” commands are malware's favourite road."
+          },
+          {
+            "label": "Test with harmless data",
+            "detail": "At first, give it only sample content, not client documents.",
+            "why": "If something is off, nothing precious is lost."
+          }
+        ],
+        "takeaway": "t31-safe-download"
+      },
+      "insight": {
+        "text": "Pickle model files can run malicious code the moment they're opened; prefer safetensors or GGUF from trusted authors.",
+        "asOf": "2026-10-15",
+        "source": "t31-hf-pickle"
+      },
+      "detail": {
+        "text": "In 2024 the security firm JFrog found models on Hugging Face hiding a backdoor that fired when the pickle file was loaded.",
+        "asOf": "2026-10-15",
+        "source": "t31-jfrog"
+      },
+      "note": "GGUF and safetensors hold only data, so they are safer than pickle — but no format is perfectly safe: the right source still matters."
+    }
+  },
+  "sources": {
+    "t31-hf-hub": {
+      "title": "Hugging Face Hub documentation",
+      "publisher": "Hugging Face",
+      "url": "https://huggingface.co/docs/hub/index"
+    },
+    "t31-gh-repos": {
+      "title": "About repositories",
+      "publisher": "GitHub Docs",
+      "url": "https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories"
+    },
+    "t31-hf-models": {
+      "title": "Models — the list of models on Hugging Face",
+      "publisher": "Hugging Face",
+      "url": "https://huggingface.co/models",
+      "date": "2026-10-15",
+      "note": "The page counter showed 3,156,130 public models when checked on 15 Oct 2026; filtering by the GGUF library showed 211,773 models. The numbers change daily."
+    },
+    "t31-decoder-1m": {
+      "title": "Hugging Face is growing fast with users creating new AI repositories every 10 seconds",
+      "publisher": "The Decoder (Maximilian Schreiner)",
+      "url": "https://the-decoder.com/hugging-face-is-growing-fast-with-users-creating-new-ai-repositories-every-10-seconds/",
+      "date": "2024-09-27",
+      "note": "Quotes Hugging Face co-founder Clément Delangue on the 1 million public models milestone."
+    },
+    "t31-hf-ggml": {
+      "title": "GGML and llama.cpp join HF to ensure the long-term progress of Local AI",
+      "publisher": "Hugging Face Blog",
+      "url": "https://huggingface.co/blog/ggml-joins-hf",
+      "date": "2026-02-20"
+    },
+    "t31-hf-modelcards": {
+      "title": "Model Cards",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/model-cards"
+    },
+    "t31-gh-license": {
+      "title": "Licensing a repository",
+      "publisher": "GitHub Docs",
+      "url": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
+    },
+    "t31-repo-confusion": {
+      "title": "Millions of Malicious Repositories Flood GitHub",
+      "publisher": "Dark Reading",
+      "url": "https://www.darkreading.com/application-security/millions-of-malicious-repositories-flood-github",
+      "date": "2024",
+      "note": "Reports research on “repo confusion” by the security firm Apiiro: popular repos cloned, infected with malware and re-uploaded under the same name. Exact numbers are hard to count because repos are constantly deleted and re-uploaded."
+    },
+    "t31-hf-pickle": {
+      "title": "Pickle Scanning",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/security-pickle",
+      "note": "Explains why loading a pickle file can run arbitrary code; the Hub's scanner is “not 100% foolproof”."
+    },
+    "t31-jfrog": {
+      "title": "Data Scientists Targeted by Malicious Hugging Face ML Models with Silent Backdoor",
+      "publisher": "JFrog Security Research",
+      "url": "https://jfrog.com/blog/data-scientists-targeted-by-malicious-hugging-face-ml-models-with-silent-backdoor/",
+      "date": "2024-02",
+      "note": "JFrog reported about 100 flagged models; according to Ars Technica, JFrog said about 10 were truly malicious and most of the rest were research experiments."
+    }
+  }
+}

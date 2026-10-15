@@ -1,0 +1,129 @@
+/* Garden 11 (stations 31–33): shared night backdrop, lantern, pills and the take-away sheet. */
+.g11 {
+  position: absolute;
+  inset: 0;
+  overflow: hidden auto; /* safety net: a very short screen scrolls instead of clipping */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--serif);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+.g11 > :not(.g11-night, .g11-sheet, .g11-take) {
+  position: relative;
+}
+.g11-night {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.g11-moon { fill: var(--moon); stroke: var(--moon-rim); stroke-width: 1; }
+.g11-hill { fill: var(--ink); }
+.g11-water { fill: var(--water); opacity: 0.16; }
+.g11-glint { fill: var(--moon); opacity: 0.55; }
+.g11-ink { fill: var(--ink); }
+.g11-ink2 { fill: var(--ink-2); }
+.g11-ink3 { fill: var(--ink-3); }
+.g11-paper { fill: var(--paper); }
+.g11-card { fill: var(--card); }
+.g11-moss { fill: var(--moss); }
+.g11-ver { fill: var(--vermilion); }
+.g11-stroke { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+
+/* lantern */
+.g11-lan { overflow: visible; }
+.g11-lan-glow { fill: var(--lantern); opacity: 0; transition: opacity 0.6s var(--ease); }
+.g11-lan-body { fill: var(--lantern); fill-opacity: 0.22; stroke: var(--ink); stroke-width: 1.4; transition: fill-opacity 0.6s var(--ease); }
+.g11-lan-rib { fill: none; stroke: var(--ink); stroke-width: 0.8; opacity: 0.45; }
+.on > .g11-lan .g11-lan-body,
+.on .g11-lan .g11-lan-body,
+.g11-lan.on .g11-lan-body { fill-opacity: 0.95; }
+.on > .g11-lan .g11-lan-glow,
+.on .g11-lan .g11-lan-glow,
+.g11-lan.on .g11-lan-glow { opacity: 0.32; }
+
+/* question / caption lines */
+.g11-q {
+  margin: 6px 16px 0;
+  max-width: 34rem;
+  text-align: center;
+  font: 400 italic clamp(0.95rem, 2.4vw, 1.08rem) / 1.4 var(--serif);
+  color: var(--ink-2);
+}
+.g11-mock {
+  font: 500 0.7rem/1.2 var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.g11-say {
+  min-height: 1.4em;
+  margin: 0 16px;
+  max-width: 36rem;
+  text-align: center;
+  font: 400 0.95rem/1.45 var(--serif);
+  color: var(--ink-2);
+}
+.g11-say .bad { color: var(--vermilion); }
+
+/* pills (choices, actions) */
+.g11-pill {
+  appearance: none;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  color: var(--ink);
+  font: 500 0.88rem/1.2 var(--sans);
+  padding: 9px 16px;
+  min-height: 40px;
+  cursor: pointer;
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.3s var(--ease), opacity 0.3s;
+}
+.g11-pill:hover { border-color: var(--ink-3); }
+.g11-pill:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.g11-pill[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.g11-pill:disabled { opacity: 0.45; cursor: default; }
+
+/* the take-away pill sits bottom-right of the art; the sheet covers the art */
+.g11-take {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  z-index: 7;
+  border-color: var(--vermilion);
+  color: var(--vermilion);
+  animation: p2-rise 0.8s var(--ease) both;
+}
+.g11-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  overflow-y: auto;
+  padding: 12px max(12px, calc((100% - 640px) / 2)) 16px;
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  animation: p2-rise 0.6s var(--ease) both;
+}
+.g11-close {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+.g11-close:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+
+@keyframes g11-shake {
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+.g11-shake { animation: g11-shake 0.4s ease-in-out; }
