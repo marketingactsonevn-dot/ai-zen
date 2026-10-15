@@ -1,0 +1,360 @@
+{
+  "id": 34,
+  "kicker": "A workshop holds a hundred chisels — a good carver knows which one each cut needs.",
+  "summary": "Pick the right chisel for the right cut — and always know how much water is left in the jar.",
+  "takeaways": [
+    "t34-brief",
+    "t34-publish-check"
+  ],
+  "quiz": {
+    "q": "You are making 20 review videos where a virtual model holds the product. Before posting, which step must you not skip?",
+    "options": [
+      "Switch to the most expensive platform, just in case",
+      "Label it as AI and check image and music rights",
+      "Upscale every draft to 4K",
+      "Post fast to catch the trend"
+    ],
+    "answer": 1,
+    "explain": "Vietnam's AI Law requires a clearly recognisable label when AI imitates a real person; using a real person's image needs their consent."
+  },
+  "scenes": {
+    "market": {
+      "label": "Night market under the moon",
+      "art": "Ink painting: a night market by the lake, two rows of wooden stalls under paper lanterns. One big stall hangs a cluster of lanterns in many ink tones (many models in one place); a few small stalls hang a single lantern and sell exactly one thing. The full moon lights the stone path between the rows; the visitor holds paper slips with tasks and drops them into stalls.",
+      "prompt": "Drop each task at a stall",
+      "group": "The market stalls",
+      "taskGroup": "Tasks to do",
+      "stalls": [
+        {
+          "id": "hub",
+          "name": "Many-model stall",
+          "what": "Image and video models from many companies in one place; switch models without switching tools.",
+          "example": "Example: Higgsfield",
+          "source": "t34-higgsfield"
+        },
+        {
+          "id": "sales",
+          "name": "Sales-video stall",
+          "what": "Turns a product link or photo into an ad video with a virtual presenter.",
+          "example": "Example: TopView",
+          "source": "t34-topview"
+        },
+        {
+          "id": "image",
+          "name": "Image & upscale stall",
+          "what": "Strong at upscaling and image/video generation, with a design asset library.",
+          "example": "Example: Magnific (formerly Freepik)",
+          "source": "t34-magnific"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "photo4k",
+          "text": "4K product photo",
+          "fits": [
+            "image",
+            "hub"
+          ],
+          "why": "Upscaling is the image stall's main job; the many-model stall has image tools too."
+        },
+        {
+          "id": "review",
+          "text": "Review video with a virtual model",
+          "fits": [
+            "sales",
+            "hub"
+          ],
+          "why": "Both offer a virtual presenter standing next to the product. Remember the AI label."
+        },
+        {
+          "id": "film",
+          "text": "Short film with camera moves",
+          "fits": [
+            "hub"
+          ],
+          "why": "You need to steer the camera shot by shot and try several video models."
+        },
+        {
+          "id": "link",
+          "text": "Shop link into an ad",
+          "fits": [
+            "sales",
+            "hub"
+          ],
+          "why": "Both stalls advertise going from a product link to a video."
+        }
+      ],
+      "dropAria": "Drop “{task}” at {stall}",
+      "right": "Fits this stall.",
+      "also": "Also fits: {stalls}",
+      "wrong": "This stall doesn't specialise in that — try another.",
+      "officialLabel": "Official site",
+      "volatile": "Prices and features change often — check the official site.",
+      "facts": [
+        {
+          "text": "Higgsfield says it offers 30+ models, including Sora, Kling, Veo, Seedance and Wan, plus Cinema Studio for camera moves.",
+          "asOf": "2026-10-15",
+          "source": "t34-higgsfield",
+          "kind": "fact",
+          "claimBy": "Higgsfield"
+        },
+        {
+          "text": "Higgsfield says Marketing Studio goes from one product link to an ad video with a presenter, voice and lip-sync.",
+          "asOf": "2026-10-15",
+          "source": "t34-higgsfield-ms",
+          "kind": "fact",
+          "claimBy": "Higgsfield"
+        },
+        {
+          "text": "TopView lists URL to Video, Product Avatar (a virtual presenter for products) and Video Agent among its tools.",
+          "asOf": "2026-10-15",
+          "source": "t34-topview",
+          "kind": "fact",
+          "claimBy": "TopView"
+        },
+        {
+          "text": "On 28 April 2026 Freepik renamed itself Magnific, bundling upscaling, image/video generation, shared workspaces and an asset library.",
+          "asOf": "2026-10-15",
+          "source": "t34-magnific",
+          "kind": "fact"
+        }
+      ],
+      "insight": {
+        "text": "There is no “best” stall: choose by task. One task often fits several stalls; they differ in models, workflow and price.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "Feature descriptions here are the companies' own claims (◇), not independently measured. Try a free tier or a small plan with your real task before paying more."
+    },
+    "path": {
+      "label": "The path of one asset",
+      "art": "Ink painting: a cobblestone path across the night garden, from the workshop gate to a stone lantern (tōrō) glowing by the lake. Eight stones lie in the raked sand; the visitor sets them on the path one by one, and each right stone glows as if moonlit.",
+      "prompt": "Set the stones in order",
+      "pathAria": "An eight-step stone path for making an AI asset",
+      "stoneAria": "Stone: {label}",
+      "slotAria": "Empty spot {n} on the path",
+      "keys": "Tap in turn, or use number keys 1 to 8.",
+      "wrongHint": "Not quite — {why}",
+      "done": "The path is lit. Open your take-away card.",
+      "steps": {
+        "steps": [
+          {
+            "label": "Write a brief",
+            "detail": "One page: goal, audience, one message, format, deadline, credit budget.",
+            "why": "A clear brief means the model guesses less and you redo less."
+          },
+          {
+            "label": "Choose a model",
+            "detail": "Choose by task: still image, presenter video, or a scene that needs camera moves.",
+            "why": "Each model has its own strengths and costs a different number of credits."
+          },
+          {
+            "label": "Draft several options",
+            "detail": "3–4 options at low resolution, with the same prompt or small tweaks.",
+            "why": "Cheap drafts let you compare before spending a lot."
+          },
+          {
+            "label": "Pick one",
+            "detail": "Put them side by side and judge against the brief, not a passing mood.",
+            "why": "Going back to the brief keeps you on target."
+          },
+          {
+            "label": "Upscale & fix",
+            "detail": "Upscale the chosen one; fix weak spots like hands, text, logos.",
+            "why": "Upscale only the final one so you don't burn credits on rejects."
+          },
+          {
+            "label": "Edit",
+            "detail": "Assemble shots, text and music in an editor such as CapCut or Premiere.",
+            "why": "AI gives you material; you still tell the story."
+          },
+          {
+            "label": "Check rights & add AI label",
+            "detail": "Rights to real people's images, music licences, AI labels per law and platform rules.",
+            "why": "Taking it down after posting means the harm is already done."
+          },
+          {
+            "label": "Post & save the recipe",
+            "detail": "Post it; save the prompt, model and seed of the final version.",
+            "why": "With a recipe, next time is faster and consistent."
+          }
+        ],
+        "takeaway": "t34-publish-check"
+      },
+      "insight": {
+        "text": "A good AI asset passes many stations: cheap drafts, careful picking, then upscaling — and a rights check before posting.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": "This order is AI Zen's suggestion, not a standard. The editors named are only examples; use whatever tool you know."
+    },
+    "credit": {
+      "label": "Credits are water in a jar",
+      "art": "Ink painting: a crackle-glazed jar on the workbench, moonlight pouring through the window into its mouth. Each time you press generate, a ladle of water comes out; the ladle's size depends on model, resolution and length. The water level drops and the marks on the jar show clearly.",
+      "prompt": "Take one ladle",
+      "jarAria": "Credit jar, {n} of 100 parts left",
+      "modelLabel": "Model",
+      "models": [
+        "Light model",
+        "Heavy model"
+      ],
+      "resLabel": "Resolution",
+      "resolutions": [
+        "720p",
+        "1080p"
+      ],
+      "lengthLabel": "Length",
+      "lengths": [
+        "5 seconds",
+        "10 seconds"
+      ],
+      "generate": "Generate",
+      "refill": "Refill",
+      "cost": "This one cost {n} parts",
+      "empty": "The jar is dry. Out of credits, you wait for the next cycle or buy more.",
+      "scale": {
+        "text": "The water parts only illustrate proportions; they are not any platform's real prices.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "facts": [
+        {
+          "text": "Higgsfield's help page: each generation costs credits depending on model, resolution and length; the price shows on the button first.",
+          "asOf": "2026-10-15",
+          "source": "t34-hf-credits",
+          "kind": "fact"
+        },
+        {
+          "text": "The same page says subscription credits renew each cycle and do not roll over to the next one.",
+          "asOf": "2026-10-15",
+          "source": "t34-hf-credits",
+          "kind": "fact"
+        }
+      ],
+      "tips": [
+        "Draft at low resolution; upscale only the final pick.",
+        "Lock the seed once the layout works; change one detail at a time.",
+        "Write a clear prompt before pressing — don't “just try”.",
+        "Check the price on the generate button before confirming."
+      ],
+      "tipsLabel": "Ways to save water",
+      "insight": {
+        "text": "Credits (platform currency) are like water in a jar: heavier models, higher resolution and longer videos take bigger ladles.",
+        "asOf": "2026-10-15",
+        "source": "t34-hf-credits",
+        "kind": "fact"
+      },
+      "detail": "Every platform charges differently, and price lists change often. Read the official pricing page, and check whether credits roll over, before picking a plan.",
+      "takeaway": "t34-brief"
+    },
+    "real": {
+      "label": "Real and fake",
+      "art": "Ink painting: a night lake as flat as a mirror, reflecting a model standing on a wooden bridge — but the reflection is an avatar drawn in a different ink. Four stones around the lake, each with a small lamp waiting to be lit.",
+      "prompt": "Touch each stone",
+      "group": "Four views on virtual models",
+      "stoneAria": "View: {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Brand (the poster)",
+            "view": {
+              "text": "Vietnam's AI Law, from 1 March 2026: AI images, video or voices imitating real people must carry a clearly recognisable label.",
+              "asOf": "2026-10-15",
+              "source": "t34-vn-ai-law",
+              "kind": "fact"
+            }
+          },
+          {
+            "who": "Consumer",
+            "view": {
+              "text": "I don't need to know which tool you used — but I need to know whether the person in the video is real.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Real model",
+            "view": {
+              "text": "Civil Code: using someone's image requires their consent; commercial use requires paying them.",
+              "asOf": "2026-10-15",
+              "source": "t34-civil-code",
+              "kind": "fact"
+            }
+          },
+          {
+            "who": "Social platform",
+            "view": {
+              "text": "YouTube asks creators to disclose realistic AI content, such as making a real person say something they didn't.",
+              "asOf": "2026-10-15",
+              "source": "t34-youtube",
+              "kind": "fact"
+            }
+          }
+        ],
+        "common": {
+          "text": "All agree viewers have a right to know. They differ on where the label goes, how big it is, and who is responsible.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "detail": "The law also requires a clear notice when AI content could mislead about real events or people; artworks are labelled in a way that doesn't spoil enjoyment. This is not legal advice."
+    }
+  },
+  "sources": {
+    "t34-higgsfield": {
+      "title": "Higgsfield — home page (model list, Cinema Studio)",
+      "publisher": "Higgsfield AI (company site)",
+      "url": "https://higgsfield.ai/",
+      "date": "2026-10-15",
+      "note": "The company's own description. The model list changes often."
+    },
+    "t34-higgsfield-ms": {
+      "title": "AI product videos, no studio (Marketing Studio)",
+      "publisher": "Higgsfield AI — company blog",
+      "url": "https://higgsfield.ai/blog/ai-product-videos-no-studio",
+      "date": "2026-07-23"
+    },
+    "t34-hf-credits": {
+      "title": "How credits work",
+      "publisher": "Higgsfield AI — Help Center",
+      "url": "https://higgsfield.ai/creator-hub/help-center/credits/how-credits-work",
+      "date": "2026-09-22"
+    },
+    "t34-topview": {
+      "title": "Topview Official Guide",
+      "publisher": "TopView (company site)",
+      "url": "https://www.topview.ai/guides/topview-official-guide",
+      "date": "2026-04-09",
+      "note": "Tool list: URL to Video, Product Avatar, Video Agent."
+    },
+    "t34-magnific": {
+      "title": "Freepik rebrands as Magnific, unifying its AI creative stack",
+      "publisher": "Tech.eu",
+      "url": "https://tech.eu/2026/04/28/freepik-rebrands-as-magnific-unifying-its-ai-creative-stack-as-enterprise-and-no-collar-growth-accelerates/",
+      "date": "2026-04-28"
+    },
+    "t34-vn-ai-law": {
+      "title": "Viet Nam's Law on Artificial Intelligence (No. 134/2025/QH15), Article 11",
+      "publisher": "Government of Viet Nam news portal (English edition)",
+      "url": "https://en.baochinhphu.vn/viet-nams-law-on-artificial-intelligence-111260715113551787.htm",
+      "date": "2025-12-10",
+      "note": "Passed 10 Dec 2025, in force 1 Mar 2026. Details in Decree 142/2026/ND-CP."
+    },
+    "t34-civil-code": {
+      "title": "Civil Code 2015 (Law No. 91/2015/QH13), Article 32 — A person's right to their image",
+      "publisher": "National Assembly of Viet Nam; quoted by the People's Court Journal",
+      "url": "https://tapchitoaan.vn/quyen-cua-ca-nhan-doi-voi-hinh-anh-quy-dinh-va-bat-cap",
+      "date": "2015-11-24"
+    },
+    "t34-youtube": {
+      "title": "Disclosing use of altered or synthetic content",
+      "publisher": "YouTube Help",
+      "url": "https://support.google.com/youtube/answer/14328491"
+    }
+  }
+}
