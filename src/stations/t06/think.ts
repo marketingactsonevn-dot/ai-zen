@@ -134,8 +134,10 @@ export function thinkScene(ctx: SceneCtx) {
       { x: gx + fastW - slowW * overlap, y: paperY, w: slowW, h: slowH, rot: 0.9 },
     ]
     drawBoard(boxes[0].x - (side ? trayW + 10 : 0), boxes[1].x + slowW + (side ? trayW + 10 : 0), paperY + slowH * (side ? 0.45 : 0.55), groundY, edge, fs)
-    // pills over each paper, pushed apart if they would touch
+    // pills over each paper, pushed apart if they would touch; the meter words' widths read in the same layout
+    cols.forEach((c) => c.labs.forEach((l) => (l.hidden = side)))
     const bw = cols.map((c) => c.btn.offsetWidth || 140)
+    const lw = cols.map((c) => c.labs.map((l) => l.offsetWidth || 60))
     const cx = boxes.map((b) => b.x + b.w / 2)
     const clash = cx[0] + bw[0] / 2 + 8 - (cx[1] - bw[1] / 2)
     if (clash > 0) (cx[0] -= clash / 2), (cx[1] += clash / 2)
@@ -149,17 +151,15 @@ export function thinkScene(ctx: SceneCtx) {
       build(c, b.x, b.y, b.w, b.h, padX, lh, tray, b.rot, groundY)
       const p = c.parts!
       // the two meter words under each tray
-      c.labs.forEach((l) => (l.hidden = side))
       if (!side) {
-        lab(c.labs[0], p.base[0], groundY + edge + 4)
-        lab(c.labs[1], dishAt[c.key][0], groundY + edge + 4)
+        lab(c.labs[0], lw[i][0], p.base[0], groundY + edge + 4)
+        lab(c.labs[1], lw[i][1], dishAt[c.key][0], groundY + edge + 4)
       }
     })
     root.style.setProperty('--t6-fs', `${clamp(fs * 0.82, 12.5, 16)}px`)
   }
   const dishAt: Record<string, Pt> = { fast: [0, 0], slow: [0, 0] }
-  function lab(el: HTMLElement, cx: number, y: number) {
-    const w = el.offsetWidth || 60
+  function lab(el: HTMLElement, w: number, cx: number, y: number) {
     place(el, clamp(cx - w / 2, 2, W - w - 2), y)
   }
 
@@ -412,10 +412,20 @@ export function thinkScene(ctx: SceneCtx) {
     }
   }
 
-  onSize(ctx, root, layout, stable.reset)
-  layout()
   ctx.prompt(T.prompt)
+  // A.10: split the mount in two tasks. Here the tween (it reads styles: start it before layout() writes any, one style
+  // pass instead of two); layout in the first frame's rAF, still before that frame paints. Reduced motion: right away.
   if (!ctx.reduced) gsap.from([q, board, ...cols.map((c) => c.btn), ...cols.map((c) => c.g), pens], { opacity: 0, y: 12, duration: 1.2, stagger: 0.12, ease: 'power3.out', delay: 0.3 })
+  const first = () => {
+    layout()
+    // after the first layout, so the fonts check also waits for every face that layout asked for (canvas measures too)
+    onSize(ctx, root, layout, stable.reset)
+  }
+  if (ctx.reduced) first()
+  else {
+    const raf = requestAnimationFrame(first)
+    ctx.onCleanup(() => cancelAnimationFrame(raf))
+  }
 
   return () => cols.forEach((c) => c.tl?.kill())
 }

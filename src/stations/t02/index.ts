@@ -418,6 +418,18 @@ const branchScene: SceneDef = {
       return { p: { x: a.x + tx * f, y: a.y + ty * f }, n: { x: nx, y: ny }, t: { x: tx / l, y: ty / l } }
     }
 
+    let shootDue = false
+    let shootTimer = 0
+    ctx.onCleanup(() => clearTimeout(shootTimer))
+    /** the young branch (and the paper beside it, which it shapes) laid out for the current layout, if place() left that for later */
+    function ensureShoot() {
+      clearTimeout(shootTimer)
+      if (!shootDue) return
+      shootDue = false
+      layoutShoot()
+      placePic()
+    }
+
     function layoutShoot() {
       const s = paint.s
       const W = art.clientWidth
@@ -620,7 +632,11 @@ const branchScene: SceneDef = {
         const top = clamp(box.y - hh / 2, 0, art.clientHeight - hh)
         Object.assign(p.b.style, { left: `${left}px`, top: `${top}px`, width: `${w}px`, height: `${hh}px` })
       }
-      layoutShoot()
+      shootDue = true
+      clearTimeout(shootTimer)
+      // nothing shows the young branch before AI tạo sinh is chosen: lay it out just after the scene has come in, not in its mount
+      if (ctx.reduced || visited.has('gen')) ensureShoot()
+      else shootTimer = window.setTimeout(ensureShoot, 500)
       placeLabels()
       placePic()
       // the closing words: under the pot in portrait, on the sand at the bottom right otherwise
@@ -751,6 +767,7 @@ const branchScene: SceneDef = {
     }
 
     function choose(id: string) {
+      ensureShoot()
       const f = fam.get(id)!
       const first = !visited.has(id)
       sel = id

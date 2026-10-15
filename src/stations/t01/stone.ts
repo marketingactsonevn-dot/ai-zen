@@ -73,8 +73,8 @@ function noise2(seed: number) {
   }
 }
 
-/** Gaussian-like blur of a float field (three box passes each way) — float, so no 8-bit terracing. */
-function blurField(src: Float32Array, W: number, H: number, sigma: number): Float32Array {
+/** Gaussian-like blur of a float field (three box passes each way) — float, so no 8-bit terracing. Yields per row/column. */
+function* blurField(src: Float32Array, W: number, H: number, sigma: number): Generator<void, Float32Array> {
   const a = src.slice()
   const b = new Float32Array(W * H)
   const R = Math.max(1, Math.round(sigma))
@@ -88,6 +88,7 @@ function blurField(src: Float32Array, W: number, H: number, sigma: number): Floa
         b[row + x] = acc / n
         acc += a[row + Math.min(W - 1, x + R + 1)] - a[row + Math.max(0, x - R)]
       }
+      yield
     }
     for (let x = 0; x < W; x++) {
       let acc = 0
@@ -96,6 +97,7 @@ function blurField(src: Float32Array, W: number, H: number, sigma: number): Floa
         a[y * W + x] = acc / n
         acc += b[Math.min(H - 1, y + R + 1) * W + x] - b[Math.max(0, y - R) * W + x]
       }
+      yield
     }
   }
   return a
@@ -116,14 +118,18 @@ function closed(pts: Pt[]): Path2D {
   return p
 }
 
-/** Paint one stone into `cv` (STONE_W × STONE_H times `scale`, transparent outside the stone and its shadow). */
-export function paintStone(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk, scale = 1) {
+/**
+ * Paint one stone into `cv` (STONE_W × STONE_H times `scale`, transparent outside the stone and its shadow).
+ * A generator that yields between rows (~0.1 ms steps): run it with sliced() so a scene can mount without a long task.
+ */
+export function* paintStoneSteps(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk, scale = 1): Generator<void, void> {
   const W = Math.round(STONE_W * scale), H = Math.round(STONE_H * scale)
   cv.width = W
   cv.height = H
   const ctx = cv.getContext('2d', { willReadFrequently: true })
   if (!ctx) return
   ctx.clearRect(0, 0, W, H)
+  yield
   const A = STONE_A * scale
   const [cx, by] = [STONE_BASE[0] * scale, STONE_BASE[1] * scale]
   const bot = A * FOOT
@@ -166,6 +172,7 @@ export function paintStone(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk,
   ctx.ellipse(cx + A * 0.4, by + bot * 0.55, A * 1.1, bot * 0.7, -0.04, 0, Math.PI * 2)
   ctx.fill()
   ctx.restore()
+  yield
 
   // ── Body, shaded per pixel: soft dome from the distance to the edge, gentle weathering, washes and grain.
   const off = document.createElement('canvas')
@@ -175,17 +182,19 @@ export function paintStone(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk,
   if (!octx) return
   octx.fillStyle = '#fff'
   octx.fill(body)
+  yield
   const img = octx.getImageData(0, 0, W, H)
   const px = img.data
   // height field: the silhouette blurred at two scales (a soft dome with rounded edges), rising toward the
   // front face so the upper surface tilts up into the light; weathering bumps fade out toward the rim
   const mask = new Float32Array(W * H)
   for (let i = 0; i < W * H; i++) mask[i] = px[i * 4 + 3] / 255
-  const b1 = blurField(mask, W, H, A * 0.2), b2 = blurField(mask, W, H, A * 0.04)
+  yield
+  const b1 = yield* blurField(mask, W, H, A * 0.2), b2 = yield* blurField(mask, W, H, A * 0.04)
   const yTop = by - A * Math.max(...prof)
   const Hf = new Float32Array(W * H)
   const s1 = 1 / (A * 0.5), s2 = 1 / (A * 0.2)
-  for (let y = 0; y < H; y++)
+  for (let y = 0; y < H; y++) {
     for (let x = 0; x < W; x++) {
       const i = y * W + x
       const m = 0.6 * b1[i] + 0.4 * b2[i]
@@ -194,10 +203,12 @@ export function paintStone(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk,
       const wv = (fbm(x * s1, y * s1) - 0.5) * 0.14 + (vn(x * s2 + 40, y * s2) - 0.5) * 0.04
       Hf[i] = A * 1.5 * (m * ramp + wv * m * m)
     }
+    yield
+  }
   const [c0, c1, c2] = ink.ramp.map(rgb)
   const sb = 1 / (A * 0.3)
   const sc = 1 / (A * 0.06)
-  for (let y = 1; y < H - 1; y++)
+  for (let y = 1; y < H - 1; y++) {
     for (let x = 1; x < W - 1; x++) {
       const i = y * W + x
       const a = px[i * 4 + 3]
@@ -235,7 +246,10 @@ export function paintStone(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk,
       px[i * 4 + 1] = p[1] + (q[1] - p[1]) * k
       px[i * 4 + 2] = p[2] + (q[2] - p[2]) * k
     }
+    yield
+  }
   octx.putImageData(img, 0, 0)
+  yield
   // a tight contact shadow where the stone meets the sand (drawn under the body; only its lower right shows)
   ctx.save()
   ctx.filter = `blur(${(A * 0.03).toFixed(1)}px)`
@@ -245,6 +259,7 @@ export function paintStone(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk,
   ctx.fill()
   ctx.restore()
   ctx.drawImage(off, 0, 0)
+  yield
 
   // ── Contour: one tapered brush line, heavy on the shaded side, thin and broken where the light falls.
   const shade = pts.map((_, i) => {
@@ -287,6 +302,7 @@ export function paintStone(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk,
   }
   ribbon(ink.edge, ink.edgeA, (s) => A * (0.006 + 0.03 * Math.pow(s, 1.6)), (s) => (s < 0.4 ? 0.14 : 0.006))
   if (ink.rimA > 0) ribbon(ink.rim, ink.rimA, (s) => A * 0.022 * Math.max(0, 1 - s * 2.6), (s) => (s < 0.36 ? 0.04 : 1))
+  yield
 
   // ── Moss: a soft cushion lying on the top surface (seen from above), with its soft shadow.
   if (sh.moss) {
@@ -319,6 +335,7 @@ export function paintStone(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk,
     ctx.closePath()
     ctx.fill()
     ctx.restore()
+    yield
     // one soft mass underneath, so the dabs read as a cushion and not as beads
     ctx.save()
     ctx.filter = `blur(${(A * 0.01).toFixed(1)}px)`
@@ -349,6 +366,7 @@ export function paintStone(cv: HTMLCanvasElement, sh: StoneShape, ink: StoneInk,
       ctx.beginPath()
       ctx.ellipse(mx + u * mw, y, rad * 1.35, rad, 0, 0, Math.PI * 2)
       ctx.fill()
+      if (i % 32 === 31) yield
     }
   }
 }

@@ -101,6 +101,13 @@ export function mossIsland(cx: number, cy: number, rx: number, ry: number, lowQ:
 /** Raked sand between y0 and y1: grooves come in bands of three (one pass of the rake), closer together far away. */
 export function rakeLines(x0: number, x1: number, y0: number, y1: number, scale = 1, seed = 1): SVGGElement {
   const g = s('g', { class: 't12-sand' })
+  const steps = raking(g, x0, x1, y0, y1, scale, seed)
+  while (!steps.next().done);
+  return g
+}
+
+/** The same raked sand drawn into `g` one pass of the rake per step (for a scene that mounts in slices). */
+export function* raking(g: SVGGElement, x0: number, x1: number, y0: number, y1: number, scale = 1, seed = 1) {
   const r = rng(seed)
   let y = y0 + 4
   let k = 0
@@ -121,6 +128,6 @@ export function rakeLines(x0: number, x1: number, y0: number, y1: number, scale 
     }
     y += gap * 3 + lerp(3, 12, f) * scale
     k++
+    yield
   }
-  return g
 }

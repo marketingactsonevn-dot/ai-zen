@@ -274,10 +274,14 @@ export function dawnScene(ctx: SceneCtx) {
     })
   }
 
-  watch(ctx, () => {
-    st.reset()
-    layout()
-  })
+  watch(
+    ctx,
+    () => {
+      st.reset()
+      layout()
+    },
+    true,
+  )
   ctx.prompt(S.prompt)
   if (!ctx.reduced) {
     gsap.from(pic, { opacity: 0, duration: 2, ease: 'power1.out' })

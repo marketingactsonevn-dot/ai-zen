@@ -124,6 +124,8 @@ export function pondScene(ctx: SceneCtx) {
     W = root.clientWidth
     const Hraw = root.clientHeight
     if (!W || !Hraw) return
+    // A.10: the spring and model words' sizes, read now while layout is clean, so placing them forces none
+    const sz = (sizes = new Map([...springLabs, modelLab].map((el) => [el, [el.offsetWidth, el.offsetHeight]])))
     H = stable.H(Hraw)
     svg.setAttribute('viewBox', `0 0 ${W} ${Hraw}`)
     const land = W / H > 1.1
@@ -249,16 +251,22 @@ export function pondScene(ctx: SceneCtx) {
       springs.append(g)
       const bw = 92 * k, bh = 96 * k
       place(springBtns[i], p[0] - bw / 2, p[1] - 40 * k, bw, bh)
-      lab(springLabs[i], p[0], p[1] - 32 * k - (springLabs[i].offsetHeight || 26))
+      lab(springLabs[i], p[0], p[1] - 32 * k - (sz.get(springLabs[i])![1] || 26))
     })
     lab(modelLab, pc[0], pc[1] - 12)
+    sizes = null
     place(pondHit, pc[0] - prx, pc[1] - pry, prx * 2, pry * 2)
     placeDive()
     root.style.setProperty('--t6-fs', `${clamp(15 * k, 13, 18)}px`)
-    buildDeep()
+    // A.10: the deep porthole stays hidden (clipped to nothing) until you dive, so the first layout skips it: the
+    // ResizeObserver's first report (onSize) relayouts next frame and builds it then
+    if (deepLater) deepLater = false
+    else buildDeep()
   }
+  let deepLater = !ctx.reduced
+  let sizes: Map<HTMLElement, number[]> | null = null
   function lab(el: HTMLElement, cx: number, y: number) {
-    const w = el.offsetWidth || 60
+    const w = (sizes?.get(el)?.[0] ?? el.offsetWidth) || 60
     place(el, clamp(cx - w / 2, 2, W - w - 2), y)
   }
   function placeDive() {
@@ -506,8 +514,18 @@ export function pondScene(ctx: SceneCtx) {
     })
   }
 
-  onSize(ctx, root, layout, stable.reset)
-  layout()
   ctx.prompt(N.prompt)
+  // A.10: split the mount in two tasks: the tween here, layout in the first frame's rAF (still before it paints).
+  // Reduced motion: right away.
   if (!ctx.reduced) gsap.from([pondG, streamsG, springs], { opacity: 0, duration: 1.6, stagger: 0.25, ease: 'power2.out', delay: 0.3 })
+  const first = () => {
+    layout()
+    // after the first layout, so the fonts check also waits for every face that layout asked for (canvas measures too)
+    onSize(ctx, root, layout, stable.reset)
+  }
+  if (ctx.reduced) first()
+  else {
+    const raf = requestAnimationFrame(first)
+    ctx.onCleanup(() => cancelAnimationFrame(raf))
+  }
 }

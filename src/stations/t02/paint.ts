@@ -423,6 +423,8 @@ export function sprite(color: RGB, wet: boolean): HTMLCanvasElement {
 
 /** Irregular ink-wash blotch (ragged edge, a little granulation) — 4 variants per colour. */
 const blotches = new Map<string, HTMLCanvasElement>()
+/** its edge noise, built once per variant (a foliage pad asks for hundreds of blotches, nearly every one a new colour) */
+const blotchNz = [0, 1, 2, 3].map((v) => noise1(71 + v * 13))
 export function blotch(color: RGB, variant: number): HTMLCanvasElement {
   const v = variant & 3
   const key = `${color.map((c) => c | 0).join(',')}|${v}`
@@ -431,7 +433,7 @@ export function blotch(color: RGB, variant: number): HTMLCanvasElement {
   c = document.createElement('canvas')
   c.width = c.height = 64
   const g = c.getContext('2d')!
-  const nz = noise1(71 + v * 13)
+  const nz = blotchNz[v]
   const r = rng(5 + v)
   g.beginPath()
   for (let i = 0; i <= 48; i++) {

@@ -2,17 +2,13 @@ import { fill, h, nextId, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
 import type { SceneCtx } from '../types'
 import { C } from './data'
-import { rakeLines } from './garden'
-import { afterFonts, blob, clamp, closed, f1, lerp, ring, shapeK, stableHeight, stroke, type Pt } from './ink'
+import { raking } from './garden'
+import { afterFonts, blob, clamp, closed, f1, later, lerp, ring, shapeK, stableHeight, stroke, type Pt } from './ink'
 import { octaves, liteInk } from '../../ui/ink'
 
 type TL = ReturnType<typeof gsap.timeline>
 interface Moment {
   g: SVGGElement
-  /** the ground this moment stands on (raked sand stops there): centre and half width, in field units */
-  hole: [number, number, number]
-  /** the lowest ink of the picture, in field units (its name is written just below) */
-  foot: number
   /** the story of this rule, added to a timeline (fromTo, so a replay starts clean) */
   play(tl: TL): void
   /** the end state, at once (reduced motion) */
@@ -79,8 +75,6 @@ function clear(): Moment {
   const g = s('g', null, ...rings(110, 82, 25, 2, 11), mossAt(112, 82, 26, 12), stone(110, 61, 14, 21, 4, 'tall'), ...steps)
   return {
     g,
-    hole: [84, 82, 62],
-    foot: 102,
     play: (tl) => void tl.fromTo(steps, { opacity: 0, scale: 0.4, transformOrigin: '50% 60%' }, { opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(2)', stagger: 0.32 }, 0.1),
     end: () => void gsap.set(steps, { opacity: 1, scale: 1 }),
     rest: () => void gsap.set(steps, { opacity: 0 }),
@@ -101,8 +95,6 @@ function example(): Moment {
   const g = s('g', null, ...rings(50, 72, 28, 2, 21), ...rings(112, 72, 27, 2, 23), stone(50, 68, 22, 13.5, 7, 'arch'), mossAt(46, 73, 22, 25), ghost, copy, arc, head)
   return {
     g,
-    hole: [82, 72, 66],
-    foot: 85,
     play: (tl) => {
       tl.fromTo(arc, { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, duration: 0.8, ease: 'power2.inOut' }, 0.1)
         .fromTo(head, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.8)
@@ -127,8 +119,6 @@ function steps(): Moment {
   const g = s('g', null, ...rings(80, 70, 45, 2, 31, 0.2), bigG, ...parts)
   return {
     g,
-    hole: [80, 72, 60],
-    foot: 97,
     play: (tl) => {
       tl.fromTo(crack, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.in' }, 0.1)
         .fromTo(bigG, { opacity: 1, scale: 1, transformOrigin: '50% 60%' }, { opacity: 0, scale: 0.92, duration: 0.5, ease: 'power2.in' }, 0.75)
@@ -153,8 +143,6 @@ function loop(): Moment {
   }
   return {
     g,
-    hole: [80, 66, 58],
-    foot: 85,
     play: (tl) => {
       tl.fromTo(rs.slice(1), { opacity: 0, scale: 0.85, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 0.55, ease: 'power2.out', stagger: 0.55 }, 0.4)
         .fromTo(dot, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0)
@@ -242,8 +230,6 @@ function check(): Moment {
   const g = s('g', null, ...rings(bx, 86, 43, 2, 64, 0.2), basin, water, spout, drop)
   return {
     g,
-    hole: [bx + 4, 86, 52],
-    foot: 100,
     play: (tl) => {
       tl.fromTo(drop, { opacity: 0, scale: 0.4, transformOrigin: '50% 0%' }, { opacity: 1, scale: 1, duration: 0.45, ease: 'power1.out' }, 0)
         .to(drop, { y: 4.2, duration: 0.28, ease: 'power2.in' }, 0.55)
@@ -280,8 +266,6 @@ function privacy(): Moment {
   const g = s('g', null, ...rings(cx, cy + 6, 33, 2, 71), mossAt(cx + 2, cy + 14, 34, 73), stone(cx, cy, rx, ry, 72, 'round'), ...rim, ...ropes, knot)
   return {
     g,
-    hole: [cx, cy + 7, 46],
-    foot: 92,
     play: (tl) => {
       tl.fromTo(ropes, { strokeDashoffset: 1, opacity: 1 }, { strokeDashoffset: 0, duration: 0.6, ease: 'power2.inOut', stagger: 0.45 }, 0.1)
         .fromTo(rim, { opacity: 0 }, { opacity: 1, duration: 0.5 }, 1.0)
@@ -292,7 +276,18 @@ function privacy(): Moment {
   }
 }
 
-const MOMENTS = [clear, example, steps, loop, check, privacy]
+/**
+ * The six moments, each with the ground it stands on (raked sand stops there: centre and half width) and its lowest ink
+ * (its name is written just below), in field units: the layout needs these before the pictures are drawn.
+ */
+const MOMENTS: [() => Moment, [number, number, number], number][] = [
+  [clear, [84, 82, 62], 102],
+  [example, [82, 72, 66], 85],
+  [steps, [80, 72, 60], 97],
+  [loop, [80, 66, 58], 85],
+  [check, [74, 86, 52], 100], // the basin at bx = 70
+  [privacy, [80, 77, 46], 92],
+]
 
 type Mode = 'land' | 'port' | 'compact'
 /**
@@ -332,20 +327,31 @@ export function rulesScene(ctx: SceneCtx) {
   ctx.prompt(T.prompt)
 
   const cells = T.items.map((it, i) => {
-    const m = MOMENTS[i]()
-    const art = s('svg', { class: 't12r-art', viewBox: `${VB.x} ${VB.y} ${VB.w} ${VB.h}`, 'aria-hidden': 'true' }, m.g)
+    const art = s('svg', { class: 't12r-art', viewBox: `${VB.x} ${VB.y} ${VB.w} ${VB.h}`, 'aria-hidden': 'true' })
     const title = h('span', { class: 't12r-title' }, it.short)
     const el = h('button', { class: 't12r-cell', type: 'button', 'aria-label': fill(T.open, { n: i + 1 }) }, art, title)
     grid.append(el)
-    m.rest()
-    return { el, art, m, title, open: false, tl: null as TL | null }
+    return { el, art, m: null as Moment | null, title, open: false, tl: null as TL | null }
   })
+  // the pictures are inked one per frame (spec A.10: no long task on entering), while the stagger below still hides them
+  const inking = (function* () {
+    for (const [i, c] of cells.entries()) {
+      const m = MOMENTS[i][0]()
+      c.art.append(m.g)
+      ctx.anim(() => m.rest())
+      c.m = m
+      yield
+    }
+  })()
+  ctx.onCleanup(later(inking, ctx.reduced).cancel)
   let opened = 0
   const nextHint = () => cells.forEach((c, i) => c.el.classList.toggle('next', i === cells.findIndex((x) => !x.open)))
   nextHint()
 
   function reveal(i: number) {
     const c = cells[i]
+    while (!c.m && !inking.next().done); // tapped before its picture was inked: ink it now
+    const m = c.m as Moment
     const it = T.items[i]
     ctx.chime('soft')
     if (!c.open) {
@@ -359,11 +365,11 @@ export function rulesScene(ctx: SceneCtx) {
     capX.textContent = it.example
     cap.classList.add('on')
     c.tl?.kill()
-    if (ctx.reduced) c.m.end()
+    if (ctx.reduced) m.end()
     else
       ctx.anim(() => {
         const tl = gsap.timeline()
-        c.m.play(tl)
+        m.play(tl)
         c.tl = tl
         gsap.fromTo(c.title, { opacity: 0, clipPath: 'inset(0 100% 0 0)' }, { opacity: 1, clipPath: 'inset(0 -4% 0 0)', duration: 1.2, ease: 'power2.out', delay: 0.3, clearProps: 'clipPath' })
         gsap.fromTo(capX, { opacity: 0.2, clipPath: 'inset(0 100% 0 0)' }, { opacity: 1, clipPath: 'inset(0 -4% 0 0)', duration: 1.4, ease: 'power2.out', clearProps: 'clipPath' })
@@ -408,12 +414,11 @@ export function rulesScene(ctx: SceneCtx) {
     // try the plan from large to small; take the largest at which no two moments (with their names) touch
     const place = (aH: number) => {
       const fh = H - top
-      return cells.map((c, i) => {
+      return MOMENTS.map(([, [hx, hy, hr], foot], i) => {
         const [fx, fy, k] = spots[i]
         const u = (aH * k) / VB.h
-        const [hx, hy, hr] = c.m.hole
         const w = VB.w * u
-        const titleY = (c.m.foot - VB.y) * u + 4
+        const titleY = (foot - VB.y) * u + 4
         const bw = Math.max(w, tw[i])
         const bh = Math.max(VB.h * u, titleY + th)
         // where the ground's centre should be, kept inside the field
@@ -451,7 +456,19 @@ export function rulesScene(ctx: SceneCtx) {
       c.el.style.zIndex = String(Math.round(p.y))
       holes.push([p.x, p.y, p.hr])
     })
-    // the sand
+    // the sand: drawn again only when the ground moved (a re-layout for fonts or an unchanged size draws nothing)
+    const y0 = Math.max(0, top - (mode === 'compact' ? 0 : 6))
+    const key = JSON.stringify([W, H, y0, mode, holes])
+    if (key === sandKey) return
+    sandKey = key
+    sanding?.cancel()
+    sanding = later(sand(W, H, y0, mode, holes), ctx.reduced || sanded)
+  }
+  let sandKey = ''
+  let sanding: { cancel(): void } | null = null
+  let sanded = false // the first sand is raked a pass per frame while the scene fades in; a later one (a resize) at once
+  ctx.onCleanup(() => sanding?.cancel())
+  function* sand(W: number, H: number, y0: number, mode: Mode, holes: [number, number, number][]) {
     bg.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     bg.setAttribute('width', f1(W))
     bg.setAttribute('height', f1(H))
@@ -461,8 +478,10 @@ export function rulesScene(ctx: SceneCtx) {
       s('mask', { id: mid, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: H }, s('rect', { x: 0, y: 0, width: W, height: H, fill: '#fff' }), ...holes.map(([x, y, rx]) => s('ellipse', { cx: f1(x), cy: f1(y), rx: f1(rx), ry: f1(rx * 0.36), fill: '#000' }))),
       s('linearGradient', { id: `${fid}g`, x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, 'stop-color': '#fff', 'stop-opacity': 0 }), s('stop', { offset: 0.06, 'stop-color': '#fff' }), s('stop', { offset: 0.94, 'stop-color': '#fff' }), s('stop', { offset: 1, 'stop-color': '#fff', 'stop-opacity': 0 })),
       s('mask', { id: fid, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: H }, s('rect', { x: 0, y: 0, width: W, height: H, fill: `url(#${fid}g)` }))))
-    const y0 = Math.max(0, top - (mode === 'compact' ? 0 : 6))
-    bg.append(s('g', { mask: `url(#${fid})` }, s('g', { mask: `url(#${mid})` }, rakeLines(-20, W + 20, y0, H, mode === 'compact' ? 0.7 : 1, 13))))
+    const rake = s('g', { class: 't12-sand' })
+    bg.append(s('g', { mask: `url(#${fid})` }, s('g', { mask: `url(#${mid})` }, rake)))
+    yield* raking(rake, -20, W + 20, y0, H, mode === 'compact' ? 0.7 : 1, 13)
+    sanded = true
   }
   const ro = new ResizeObserver(() => layout())
   ro.observe(ctx.art)

@@ -197,17 +197,28 @@ export function stable(ctx: SceneCtx, copies: Copy[], root: HTMLElement) {
   return { apply, reset: () => void (probeW = -1) }
 }
 
-/** Run `fn` now, on every resize of the art, and once the fonts are in (line breaks change). */
-export function watch(ctx: SceneCtx, fn: () => void) {
-  const ro = new ResizeObserver(() => fn())
+/**
+ * Run `fn` now, on every resize of the art, and once the fonts are in (line breaks change).
+ * `lean`: skip the reruns that would redo the same layout — the observer's first report of the size `fn` just
+ * used, and the fonts when none are loading (for scenes whose layout reads no transformed box, so a rerun can't differ).
+ */
+export function watch(ctx: SceneCtx, fn: () => void, lean = false) {
+  const size = () => `${ctx.art.clientWidth}x${ctx.art.clientHeight}`
+  let last = ''
+  const run = () => {
+    if (lean) last = size()
+    fn()
+  }
+  const ro = new ResizeObserver(() => (!lean || last !== size()) && run())
   ro.observe(ctx.art)
   let alive = true
-  document.fonts?.ready.then(() => alive && fn())
+  if (!lean) document.fonts?.ready.then(() => alive && fn())
   ctx.onCleanup(() => {
     alive = false
     ro.disconnect()
   })
-  fn()
+  run()
+  if (lean && document.fonts?.status === 'loading') document.fonts.ready.then(() => alive && run())
 }
 
 /** Call fn when the light/dark theme flips (canvas scenes repaint their colours). */

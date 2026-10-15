@@ -1,6 +1,7 @@
 // Procedural sumi-e bonsai (informal upright "moyogi") painted on Canvas2D.
 // Static layers are painted once per size/theme into offscreen canvases; the frame loop only composites
 // them (growth mask, swaying foliage pads, glow, water ripples).
+import { sliced } from '../../core/chunk'
 import { createLoop, type Loop } from '../../core/loop'
 import { cssVar, type Quality } from '../../core/prefs'
 import { blotch, clamp, dab, inkLine, mix, noise1, normals, parseColor, rgba, rng, smooth, spline, sprite, sumi, type Pt, type RGB } from './paint'
@@ -226,6 +227,10 @@ export class Painting {
   private built = false
   private destroyed = false
   private ready = false
+  /** the layers being painted in slices (see layers()); settled once a painting has finished */
+  private job: { cancel(): void } | null = null
+  private painting = false
+  private settled = false
 
   constructor(private o: PaintingOpts) {
     this.canvas.className = 't02-canvas'
@@ -263,7 +268,12 @@ export class Painting {
 
   /** Re-run the layout without a size change (e.g. once the web fonts have loaded). */
   relayout() {
-    if (this.built) this.build()
+    if (!this.built) return
+    // same composition (fonts were already in): the layers are already right, only the words around them move
+    const L = this.o.layout(this.w, this.h)
+    const dpr = Math.min(devicePixelRatio || 1, this.o.quality === 'high' ? 2 : 1.5)
+    if (L.s === this.s && L.ox === this.ox && L.oy === this.oy && Math.min(this.h, L.H ?? this.h) === this.H && dpr === this.dpr) this.o.onLayout?.()
+    else this.build()
   }
 
   resize() {
@@ -284,6 +294,7 @@ export class Painting {
 
   private build() {
     if (!this.w || this.destroyed) return
+    this.job?.cancel()
     const q = this.o.quality === 'high'
     this.dpr = Math.min(devicePixelRatio || 1, q ? 2 : 1.5)
     const { s, ox, oy, H } = this.o.layout(this.w, this.h)
@@ -297,16 +308,36 @@ export class Painting {
     }
     this.canvas.style.width = `${this.w}px`
     this.canvas.style.height = `${this.h}px`
-    this.paintBg()
-    this.paintPot()
-    this.paintWood()
     this.buildPads()
     this.buildMoss()
     this.built = true
+    // the first painting soaks in a few strokes per frame while the scene fades in (one long task otherwise, spec A.10);
+    // once it has been painted, a rebuild (resize, theme, fonts) is synchronous as before
+    this.painting = true
+    this.job = sliced(this.layers(), { sync: this.o.reduced || this.settled })
+    if (this.painting) this.lp.start()
     // paint right away: resizing cleared the canvas, and waiting for the next frame would flash
     this.dirty = false
     this.frame((performance.now() - this.t0) / 1000, performance.now() / 1000)
     if (this.ready) this.o.onLayout?.()
+  }
+
+  /** The static layers, a stroke or a dab per step (frame() composites whatever is painted so far). */
+  private *layers() {
+    yield* this.paintBg()
+    yield* this.paintPot()
+    yield* this.paintWood()
+    for (const p of this.pads) {
+      const f = this.bloomOf(p)
+      if (f > 0) yield* this.padSteps(p, f)
+    }
+    this.painting = false
+    this.settled = true
+    this.dirty = true
+  }
+
+  private bloomOf(p: PadRuntime) {
+    return clamp((this.F - p.def.f[0]) / (p.def.f[1] - p.def.f[0]))
   }
 
   private ctx2(c: HTMLCanvasElement) {
@@ -317,7 +348,7 @@ export class Painting {
   }
 
   // ───────── background: sun (moon at night), raked sand, the soil mound ─────────
-  private paintBg() {
+  private *paintBg() {
     const g = this.ctx2(this.bg)
     const { pal, s } = this
     const r = rng(5)
@@ -365,6 +396,7 @@ export class Painting {
     }
     g.restore()
     g.globalAlpha = 1
+    yield
 
     // raked sand: rings around the pot, a few straight rake lines beyond — fading into the paper on every side
     const sand = document.createElement('canvas')
@@ -437,6 +469,7 @@ export class Painting {
     g.setTransform(1, 0, 0, 1, 0, 0)
     g.drawImage(sand, 0, 0)
     g.restore()
+    yield
 
     // contact shadow under the pot
     g.save()
@@ -483,7 +516,7 @@ export class Painting {
   }
 
   // ───────── the shallow pot: glazed ceramic in ink wash — a lip with a pressed rim line, small feet, a potter's chop ─────────
-  private paintPot() {
+  private *paintPot() {
     const g = this.ctx2(this.pot)
     const { pal, s } = this
     const P = (x: number, y: number) => this.px(x, y)
@@ -571,6 +604,7 @@ export class Painting {
       g.drawImage(blotch(c, i), p.x - w / 2, p.y - w * 0.2, w, w * 0.4)
     }
     g.globalAlpha = 1
+    yield
     // a few soft runs where the glaze slid down from the lip
     for (let i = 0; i < 6; i++) {
       const x = -0.36 + (0.72 * (i + 0.2 + r() * 0.6)) / 6
@@ -603,6 +637,7 @@ export class Painting {
       dab(g, p.x, p.y, Math.max(0.5, s * (0.0008 + r() * 0.0012)), pool, 0.1 + r() * 0.14, i)
     }
     g.restore()
+    yield
     // the contour, firmer along the foot
     body()
     g.lineWidth = Math.max(1, 0.0028 * s)
@@ -623,6 +658,7 @@ export class Painting {
     const rim = spline([P(-LIP.half - 0.002, LIP.top - 0.003), P(-0.1, LIP.top - 0.0015), P(0.2, LIP.top - 0.0035), P(LIP.half + 0.002, LIP.top - 0.004)], 1.2)
     const rw = Math.max(1.6, 0.011 * s)
     sumi(g, rim, rim.map((_, k) => rw * (0.75 + 0.25 * Math.sin((k / (rim.length - 1)) * Math.PI))), { color: dark ? mix(pal.paper, pal.ink, 0.5) : pool, alpha: dark ? 0.7 : 0.95, seed: 406, dry: 0.3, side: 1, paper: pal.paper })
+    yield
     // the potter's chop, pressed into the glaze: a small vermilion seal with a carved border and character
     const seal = P(0.285, -0.084)
     const z = Math.max(7, 0.03 * s)
@@ -659,7 +695,7 @@ export class Painting {
   }
 
   // ───────── wood: trunk, branches, roots — each one loaded brush stroke ─────────
-  private paintWood() {
+  private *paintWood() {
     const g = this.ctx2(this.wood)
     const { pal, s } = this
     const dark = pal.dark
@@ -686,6 +722,7 @@ export class Painting {
       // the trunk and its roots rise out of the soil (see below); each branch grows out of the trunk
       this.grownOut(g, path, W, opts, i === 0 ? 0 : d.w0 * s * (i <= 4 ? 0.35 : 1))
       if (i === 0) this.bark(g, path, W, nm, side)
+      yield
     }
     // moss dots (苔点): a few ink dabs scattered just inside the trunk's edges, in small clusters
     const r = rng(321)
@@ -942,6 +979,12 @@ export class Painting {
   }
 
   private paintPad(p: PadRuntime, bloom: number) {
+    const steps = this.padSteps(p, bloom)
+    while (!steps.next().done);
+  }
+
+  /** paintPad, a dab or a needle per step */
+  private *padSteps(p: PadRuntime, bloom: number) {
     const g = p.canvas.getContext('2d')!
     g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
     g.clearRect(0, 0, p.canvas.width, p.canvas.height)
@@ -977,6 +1020,7 @@ export class Painting {
       g.globalAlpha = d.a * k
       g.drawImage(d.soft || d.v == null ? sprite(d.col, d.wet) : blotch(d.col, d.v), -rr, -rr, rr * 2, rr * 2)
       g.restore()
+      yield
     }
     g.lineCap = 'round'
     for (const n of p.needles) {
@@ -988,6 +1032,7 @@ export class Painting {
       g.moveTo(n.x, n.y)
       g.lineTo(n.x + Math.cos(n.ang) * n.len * k, n.y + Math.sin(n.ang) * n.len * k)
       g.stroke()
+      yield
     }
     p.bloomDrawn = bloom
   }
@@ -1041,7 +1086,7 @@ export class Painting {
   private tick() {
     const now = performance.now() / 1000
     const t = (performance.now() - this.t0) / 1000
-    const animating = this.sway || this.busy || (this.breath && !this.o.reduced) || this.ripples.length > 0 || this.drops.length > 0 || (this.G === 0 && !this.o.reduced)
+    const animating = this.painting || this.sway || this.busy || (this.breath && !this.o.reduced) || this.ripples.length > 0 || this.drops.length > 0 || (this.G === 0 && !this.o.reduced)
     if (!this.dirty && !animating) return false // idle: stop until invalidate()
     this.dirty = false
     this.frame(t, now)
@@ -1177,9 +1222,10 @@ export class Painting {
     this.gust *= 0.985
     if (this.gust < 0.01) this.gust = 0
     for (const p of this.pads) {
-      const f = clamp((this.F - p.def.f[0]) / (p.def.f[1] - p.def.f[0]))
+      const f = this.bloomOf(p)
       if (f <= 0) continue
-      if (Math.abs(f - p.bloomDrawn) > 0.004 || (f === 1 && p.bloomDrawn !== 1)) this.paintPad(p, f)
+      // (while the layers soak in, layers() paints the pads)
+      if (!this.painting && (Math.abs(f - p.bloomDrawn) > 0.004 || (f === 1 && p.bloomDrawn !== 1))) this.paintPad(p, f)
       // the small pad beside the crown belongs to the crown (AI tạo sinh)
       const id = p.def.id === 'deco' ? 'gen' : p.def.id
       const glow = this.glow[id] ?? 0
@@ -1275,6 +1321,7 @@ export class Painting {
 
   destroy() {
     this.destroyed = true
+    this.job?.cancel()
     this.lp.dispose()
     this.ro.disconnect()
     this.canvas.remove()

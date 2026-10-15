@@ -3,8 +3,9 @@ import { gsap } from '../../core/anim'
 import type { Fact } from '../../core/content'
 import type { SceneCtx } from '../types'
 import { onPrefs } from '../../core/prefs'
+import { sliced } from '../../core/chunk'
 import { blob, blobPts, curve, measure, pebbleArt, rng, sheet, stroke, wrap, type Pt } from './brush'
-import { paintStone, themeInk, type StoneInk, type StoneShape } from './stone'
+import { paintStoneSteps, themeInk, type StoneInk, type StoneShape } from './stone'
 
 interface Era {
   name: string
@@ -532,10 +533,27 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
     const shape: StoneShape = { seed: 71 + i * 7, profile: i ? [0, 0.2, 0.27, 0.25, 0.19, 0] : [0, 0.26, 0.32, 0.27, 0] }
     const bare = h('canvas', { class: 't1-stop-bare' })
     const moss = h('canvas', { class: 't1-stop-moss' })
-    return { bare, moss, paint: (ink: StoneInk) => (paintStone(bare, shape, ink, 0.4), i && paintStone(moss, { ...shape, moss: [-0.12, 0.5] }, ink, 0.4)) }
+    return {
+      bare, moss, *paint(ink: StoneInk) {
+        yield* paintStoneSteps(bare, shape, ink, 0.4)
+        if (i) yield* paintStoneSteps(moss, { ...shape, moss: [-0.12, 0.5] }, ink, 0.4)
+      },
+    }
   })
-  const paintStops = () => stopArt.forEach((a) => a.paint(themeInk()))
-  paintStops()
+  // first painted in slices once the pictures are drawn (spec A.10: no long frame on the scene change); a theme change
+  // repaints at once, as before, so no visible stone is ever caught half-painted
+  let stopsJob: { cancel(): void } | null = null
+  let stopsKey = ''
+  const paintStops = () => {
+    const ink = themeInk()
+    const key = JSON.stringify(ink)
+    if (key === stopsKey) return // a sound / quality change leaves the ink as it was
+    stopsJob?.cancel()
+    stopsJob = sliced((function* () {
+      for (const a of stopArt) yield* a.paint(ink)
+    })(), { sync: ctx.reduced || stopsKey !== '' })
+    stopsKey = key
+  }
   const offPrefs = onPrefs(paintStops)
   const stopBtns = [0, 1, 2, 3, 4].map((i) =>
     h('button', {
@@ -580,33 +598,70 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
     marker.style.transform = `translate(${x.toFixed(1)}px, 0)`
   }
 
-  /** Every layer shares one viewBox: the stage in px divided by the scale that fits the core box. */
-  const fitView = () => {
-    const r = stageEl.getBoundingClientRect()
-    if (r.width < 2 || r.height < 2 || mode == null) return
-    const [cw, ch] = CORE[mode]
-    const B = compact ? 30 : 0 // the path overlays the picture's quiet bottom margin
-    const k = Math.min((r.width - 12) / cw, (r.height - B - 6) / ch, 1.9)
-    const vb = `${(-r.width / 2 / k).toFixed(1)} ${(-(r.height - B) / 2 / k).toFixed(1)} ${(r.width / k).toFixed(1)} ${(r.height / k).toFixed(1)}`
-    const minFs = MIN_FS / k
-    machines.forEach((m) => {
+  /** Every layer shares one viewBox: the stage in px divided by the scale that fits the core box. A picture drawn
+   *  later (`only`) gets the last measured view, so all five match. */
+  let view: [vb: string, minFs: number] | null = null
+  const fitView = (only?: Machine) => {
+    if (!only || !view) {
+      const r = stageEl.getBoundingClientRect()
+      if (r.width < 2 || r.height < 2 || mode == null) return
+      const [cw, ch] = CORE[mode]
+      const B = compact ? 30 : 0 // the path overlays the picture's quiet bottom margin
+      const k = Math.min((r.width - 12) / cw, (r.height - B - 6) / ch, 1.9)
+      view = [`${(-r.width / 2 / k).toFixed(1)} ${(-(r.height - B) / 2 / k).toFixed(1)} ${(r.width / k).toFixed(1)} ${(r.height / k).toFixed(1)}`, MIN_FS / k]
+    }
+    const [vb, minFs] = view
+    ;(only ? [only] : machines).forEach((m) => {
       m.svg.setAttribute('viewBox', vb)
       m.svg.querySelectorAll<SVGTextElement>('text[data-fs]').forEach((t) => t.setAttribute('font-size', Math.max(Number(t.dataset.fs), minFs).toFixed(1)))
       m.svg.querySelectorAll<SVGGElement>('g[data-hk]').forEach((el) => el.setAttribute('transform', `scale(${Math.max(1, minFs / Number(el.dataset.hk)).toFixed(3)})`))
     })
   }
 
+  // The five pictures are drawn one per slice from the next frame on (each is ~10 ms of SVG on a slow phone; spec A.10),
+  // each shown at its weight as soon as it exists, then the stepping stones; go() finishes them at once if the visitor
+  // is quicker.
+  let building: Iterator<unknown> | null = null
+  let buildJob = { cancel() {} }
   const build = (md: Mode) => {
+    buildJob.cancel()
     machines.forEach((m) => (m.tl.kill(), m.svg.remove()))
     intro?.open.kill()
     const art: Art = { mode: md, wide: md !== 'tall', rough, wash, dry, c }
-    intro = introArt(art, stageEl)
-    machines = [intro, ...BUILDERS.map((b) => b(art, stageEl))]
-    if (opened) intro.open.progress(1)
-    if (cur > 0) machines[cur].tl.progress(1)
-    stageEl.append(openBtn)
-    fitView()
-    weights(f)
+    machines = []
+    view = null
+    const add = (m: Machine) => {
+      machines.push(m)
+      fitView(m)
+      weights(f)
+    }
+    building = (function* () {
+      ctx.anim(() => {
+        intro = introArt(art, stageEl)
+        if (opened) intro.open.progress(1)
+        add(intro)
+      })
+      for (const [k, b] of BUILDERS.entries()) {
+        yield
+        ctx.anim(() => {
+          const m = b(art, stageEl)
+          if (cur === k + 1) m.tl.progress(1)
+          add(m)
+        })
+      }
+      stageEl.append(openBtn)
+      if (stopsJob) return
+      yield
+      paintStops()
+    })()
+    if (ctx.reduced) return void sliced(building, { sync: true })
+    const steps = building
+    let job = { cancel() {} }
+    const raf = requestAnimationFrame(() => (job = sliced(steps, { budget: 4 })))
+    buildJob = { cancel: () => (cancelAnimationFrame(raf), job.cancel()) }
+  }
+  const finishBuild = () => {
+    if (building) while (!building.next().done);
   }
 
   const measureStage = () => {
@@ -614,7 +669,7 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
     compact = ar.height < 260
     root.classList.toggle('is-compact', compact)
     const r = stageEl.getBoundingClientRect()
-    if (r.width < 2 || r.height < 2) return
+    if (r.width < 2 || r.height < 2) return void (stopsJob ?? paintStops()) // no room for the pictures: the path still needs its stones
     const md: Mode = compact ? 'compact' : r.width / r.height > 1.15 ? 'wide' : 'tall'
     if (md !== mode) {
       mode = md
@@ -622,10 +677,12 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
     } else fitView()
   }
 
+  let rakeSize = ''
   const drawRake = () => {
     const W = pathEl.clientWidth, H = pathEl.clientHeight
     pathW = W
-    if (W < 2 || H < 2) return
+    if (W < 2 || H < 2 || rakeSize === `${W}x${H}`) return // the ResizeObserver's first call repeats start()'s
+    rakeSize = `${W}x${H}`
     stops = W < 420 ? [0.1, 0.3, 0.5, 0.7, 0.9] : [0.07, 0.28, 0.49, 0.7, 0.91]
     const cy = H * 0.56
     const big = W > 520 ? 1 : 0.8
@@ -688,6 +745,7 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
 
   const open = () => {
     if (opened) return
+    finishBuild() // the intro picture may not be drawn yet in the first frames
     opened = true
     if (ctx.reduced) intro?.open.progress(1)
     else intro?.open.play()
@@ -704,6 +762,7 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
     i = Math.max(0, Math.min(4, i))
     const changed = i !== cur
     if (!changed && !fromDrag) return
+    finishBuild()
     if (i > 0 && !opened) {
       opened = true
       intro?.open.progress(1)
@@ -719,6 +778,7 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
     }
     const arrive = () => {
       if (!changed || i === 0) return
+      finishBuild() // a resize may have restarted the build during the glide
       const m = machines[i]
       if (ctx.reduced) m.tl.progress(1)
       else m.tl.restart()
@@ -816,6 +876,8 @@ export function mountLadder(ctx: SceneCtx, c: LadderCopy) {
 
   return () => {
     disposed = true
+    buildJob.cancel()
+    stopsJob?.cancel()
     offPrefs()
     ro.disconnect()
     finalCall?.kill()

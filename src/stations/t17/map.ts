@@ -1,5 +1,6 @@
 import { fill, h, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
+import { sliced } from '../../core/chunk'
 import { L, type Fact } from '../../core/content'
 import { company, loadLogos, logoStone, type Category, type Company, type Model } from '../../ui/logo'
 import type { SceneCtx } from '../types'
@@ -85,6 +86,9 @@ interface Zone {
   y0: number
   y1: number
 }
+/** which companies have an official mark: known before the first mount when the manifest is already in */
+let logoIds: Set<string> | null = null
+loadLogos().then((m) => (logoIds = new Set(Object.keys(m?.items ?? {}))))
 
 /** Scene 1 — the archipelago: three clusters of stone islands (Mỹ, Trung Quốc, khác); filters light the ones that do that work. */
 export function mapScene(ctx: SceneCtx) {
@@ -201,11 +205,15 @@ export function mapScene(ctx: SceneCtx) {
   ctx.art.append(root)
   ctx.prompt(M.prompt)
 
-  let hasLogo: Set<string> | null = null
-  loadLogos().then((m) => {
-    hasLogo = new Set(Object.keys(m?.items ?? {}))
-    layout()
+  let hasLogo = logoIds
+  let first = 0
+  loadLogos().then(() => {
+    if (hasLogo || !root.isConnected) return
+    hasLogo = logoIds
+    clearTimeout(first)
+    start()
   })
+  let art: ReturnType<typeof sliced> | null = null
 
   let W = 0
   let H = 0
@@ -409,40 +417,11 @@ export function mapScene(ctx: SceneCtx) {
     }
     root.classList.toggle('bare', bare)
 
-    // ── paint: the dusk sky
+    // ── paint (the ink itself soaks in over a few frames, below): the dusk sky
     back.replaceChildren()
     for (const v of [back, sandL, isl, rip]) v.setAttribute('viewBox', `0 0 ${W} ${H}`)
-    const id = defs(back)
     const sunR = clamp(sky * 0.34, 7, 30)
     const sun: Pt = [W * (wide ? 0.86 : 0.6), horizon - sky * 0.46]
-    back.append(
-      s('ellipse', {
-        cx: W / 2,
-        cy: top + (H - top) * 0.55,
-        rx: W * 0.62,
-        ry: (H - top) * 0.64,
-        fill: `url(#${id.warm})`,
-      }),
-      s('circle', {
-        cx: sun[0],
-        cy: sun[1],
-        r: sunR * 3,
-        fill: `url(#${id.glow})`,
-        class: 't17-halo',
-      }),
-      s('circle', { class: 't17-sun', cx: sun[0], cy: sun[1], r: sunR }),
-    )
-    const pr = rng(17)
-    const rg = s('g', {
-      class: 't17-ridge',
-      filter: ctx.quality === 'low' ? null : 'url(#ink-wash)',
-    })
-    for (const [b, h0, h1, op] of [
-      [horizon - 2, 0.3, 0.72, 0.075],
-      [horizon + 2, 0.14, 0.38, 0.11],
-    ])
-      for (const d of peaks(pr, -W * 0.05, W * 1.05, b, sky * h0, sky * h1, W * (wide ? 0.1 : 0.17))) rg.append(s('path', { d, 'fill-opacity': op }))
-    back.append(rg)
 
     // ── islands (far ones first), their rings, and the rivers between regions
     const k = 0.34
@@ -497,24 +476,17 @@ export function mapScene(ctx: SceneCtx) {
         n: 3,
       }
     })
-    sandL.replaceChildren(
-      sand(W, H, rings, {
-        top: horizon - 2,
-        gap: wide ? 7 : 6,
-        k,
-        fade: (H - horizon) * 0.14,
-        rivers,
-      }),
-    )
+    sandL.replaceChildren()
     isl.replaceChildren()
     const glide: [SVGGElement, number, number][] = []
+    const inks: [SVGGElement, () => SVGGElement][] = []
     groups
       .map((g, i) => ({ g, i }))
       .sort((a, b) => a.g.y - b.g.y)
       .forEach(({ g, i }) => {
         const e = isles[i]
         const el = s('g', { class: `t17m-g${g.hero ? ' hero' : ''}` })
-        el.append(isle(e.x, e.y, e.rx, e.ry, hash(g.st[0].c.id)))
+        inks.push([el, () => isle(e.x, e.y, e.rx, e.ry, hash(g.st[0].c.id))])
         g.g = el
         isl.append(el)
         const old = wasIsle.get(g)
@@ -527,6 +499,57 @@ export function mapScene(ctx: SceneCtx) {
           height: `${g.h * 1.5}px`,
         })
       })
+    art?.cancel()
+    // only the first paint soaks in; a relayout (insight, resize) repaints at once, as before
+    art = sliced(
+      (function* (W: number, H: number) {
+        const id = defs(back)
+        back.append(
+          s('ellipse', {
+            cx: W / 2,
+            cy: top + (H - top) * 0.55,
+            rx: W * 0.62,
+            ry: (H - top) * 0.64,
+            fill: `url(#${id.warm})`,
+          }),
+          s('circle', {
+            cx: sun[0],
+            cy: sun[1],
+            r: sunR * 3,
+            fill: `url(#${id.glow})`,
+            class: 't17-halo',
+          }),
+          s('circle', { class: 't17-sun', cx: sun[0], cy: sun[1], r: sunR }),
+        )
+        const pr = rng(17)
+        const rg = s('g', {
+          class: 't17-ridge',
+          filter: ctx.quality === 'low' ? null : 'url(#ink-wash)',
+        })
+        back.append(rg)
+        for (const [b, h0, h1, op] of [
+          [horizon - 2, 0.3, 0.72, 0.075],
+          [horizon + 2, 0.14, 0.38, 0.11],
+        ])
+          for (const d of peaks(pr, -W * 0.05, W * 1.05, b, sky * h0, sky * h1, W * (wide ? 0.1 : 0.17))) rg.append(s('path', { d, 'fill-opacity': op }))
+        yield
+        sandL.append(
+          sand(W, H, rings, {
+            top: horizon - 2,
+            gap: wide ? 7 : 6,
+            k,
+            fade: (H - horizon) * 0.14,
+            rivers,
+          }),
+        )
+        yield
+        for (const [el, paint] of inks) {
+          el.append(paint())
+          yield
+        }
+      })(W, H),
+      { sync: ctx.reduced || art !== null },
+    )
 
     // ── stones and words
     const moved: [Element, number, number][] = []
@@ -806,14 +829,23 @@ export function mapScene(ctx: SceneCtx) {
 
   let raf = 0
   const ro = new ResizeObserver(() => {
+    // its first report is the size the layout just used: nothing to redo
+    if (root.clientWidth === W && root.clientHeight === H) return
     cancelAnimationFrame(raf)
     raf = requestAnimationFrame(layout)
   })
-  ro.observe(root)
-  layout()
+  function start() {
+    layout()
+    ro.observe(root)
+  }
+  // its own task, out of the mount: what it places is still invisible (the islands rise from 0.35 s)
+  if (ctx.reduced) start()
+  else first = window.setTimeout(start)
   return () => {
     idle?.kill()
     ro.disconnect()
+    art?.cancel()
+    clearTimeout(first)
     cancelAnimationFrame(raf)
     clearTimeout(timer)
     clearTimeout(settle)

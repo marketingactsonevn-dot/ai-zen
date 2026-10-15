@@ -3,8 +3,8 @@ import { gsap } from '../../core/anim'
 import type { SceneCtx } from '../types'
 import { C } from './data'
 import { drawLantern, lanternLight } from './lantern'
-import { afterFonts, clamp, f1, lerp, ring, stableHeight, stoneArt, type Pt } from './ink'
-import { backWall, dryH, mossIsland, rakeLines } from './garden'
+import { afterFonts, clamp, f1, later, lerp, ring, stableHeight, stoneArt, type Pt } from './ink'
+import { backWall, dryH, mossIsland, raking } from './garden'
 
 type Mode = 'land' | 'port' | 'compact'
 interface Slot {
@@ -47,15 +47,19 @@ export function pathScene(ctx: SceneCtx) {
   ctx.prompt(T.prompt)
   const stable = stableHeight(ctx, [[T.insight, T.detail]])
 
-  // ── the word-stones
-  const stones = B.map((b, i) => {
+  // ── the word-stones (their ink, which takes no room, is laid in a stone per frame while they are still hidden)
+  const stones = B.map((b) => {
     const word = h('span', { class: 't12-word' }, b.name)
-    const body = h('span', { class: 't12-stone-body' }, stoneArt(i * 7 + 3), word)
+    const body = h('span', { class: 't12-stone-body' }, word)
     const el = h('button', { class: 't12-stone', type: 'button', 'aria-label': fill(T.place, { name: b.name }) }, body)
     stonesEl.append(el)
-    gsap.set(el, { xPercent: -50, yPercent: -50 })
     return { el, body, home: [0, 0] as Pt, homeSc: 1, w: 100, hgt: 44, slot: -1 }
   })
+  gsap.set(stones.map((st) => st.el), { xPercent: -50, yPercent: -50 })
+  const inking = (function* () {
+    for (const [i, st] of stones.entries()) yield st.body.prepend(stoneArt(i * 7 + 3))
+  })()
+  ctx.onCleanup(later(inking, ctx.reduced).cancel)
 
   // ── state
   let mode: Mode = 'land'
@@ -289,7 +293,13 @@ export function pathScene(ctx: SceneCtx) {
       const mh = meter.offsetHeight
       Object.assign(meter.style, { left: `${lx + 0.33 * Lh}px`, top: `${Math.max(0, Math.min(ly - Lh * (mode === 'compact' ? 0.66 : 0.36), ly - 0.13 * Lh - 8 - mh))}px` })
     }
-    draw(yh)
+    // the picture: drawn again only when something it shows moved (a re-layout for fonts or an unchanged size draws nothing)
+    const key = JSON.stringify([W, H, mode, L, yh, slots, stones.map((st) => st.w)])
+    if (key !== drawn) {
+      drawn = key
+      drawing?.cancel()
+      drawing = later(draw(yh), ctx.reduced || shown)
+    }
     // place the stones (a dragged one stays under the finger)
     stones.forEach((st) => {
       if (st.el.classList.contains('dragging') || st.el.classList.contains('flying')) return
@@ -302,7 +312,11 @@ export function pathScene(ctx: SceneCtx) {
   }
 
   // ───────── the picture ─────────
-  function draw(yh: number) {
+  let drawn = ''
+  let drawing: { cancel(): void } | null = null
+  let shown = false // the first picture is laid in a part per frame while the scene fades in; a later one (a resize) at once
+  ctx.onCleanup(() => drawing?.cancel())
+  function* draw(yh: number) {
     ambient.forEach((t) => t.kill())
     ambient = []
     const { lx, ly, Lh } = L
@@ -311,7 +325,6 @@ export function pathScene(ctx: SceneCtx) {
     svg.setAttribute('height', f1(H))
     svg.replaceChildren()
     const persp = 0.3 // ellipses on the ground: ry / rx
-    const lant = drawLantern(lx, ly, Lh, lowQ)
 
     // defs: light gradients, the window clip, the sand mask
     const maskId = `${uid}-m`
@@ -335,17 +348,28 @@ export function pathScene(ctx: SceneCtx) {
     svg.append(s('defs', null,
       s('linearGradient', { id: `${fadeId}g`, x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, 'stop-color': '#fff', 'stop-opacity': 0 }), s('stop', { offset: 0.05, 'stop-color': '#fff' }), s('stop', { offset: 0.95, 'stop-color': '#fff' }), s('stop', { offset: 1, 'stop-color': '#fff', 'stop-opacity': 0 })),
       s('mask', { id: fadeId, maskUnits: 'userSpaceOnUse', x: 0, y: -H, width: W, height: H * 3 }, s('rect', { x: 0, y: -H, width: W, height: H * 3, fill: `url(#${fadeId}g)` }))))
-    const sand = s('g', { mask: `url(#${maskId})` }, rakeLines(-W * 0.04, W * 1.04, yh, H, mode === 'compact' ? 0.75 : 1, 5))
+    const rake = s('g', { class: 't12-sand' })
+    const sand = s('g', { mask: `url(#${maskId})` }, rake)
+    yield
     // (a short landscape screen has no room for the wall above the stones: just sand)
     svg.append(s('g', { mask: `url(#${fadeId})` }, mode === 'compact' ? null : backWall(-W * 0.04, W * 1.04, yh, wallH, lowQ, 3), sand))
+    yield
+    yield* raking(rake, -W * 0.04, W * 1.04, yh, H, mode === 'compact' ? 0.75 : 1, 5)
     const rings = s('g', { filter: lowQ ? null : 'url(#ink-rough)' })
     for (let k = 1; k <= 3; k++) rings.append(s('path', { class: 't12-ring', d: ring(lx, ly, isle * (1 + k * 0.14), isle * (1 + k * 0.14) * persp, lerp(1.1, 1.8, ly / H), 70 + k) }))
-    svg.append(rings, mossIsland(lx + Lh * 0.02, ly + Lh * 0.006, isle * 0.92, isle * 0.92 * persp, lowQ))
+    svg.append(rings)
+    yield
+    svg.append(mossIsland(lx + Lh * 0.02, ly + Lh * 0.006, isle * 0.92, isle * 0.92 * persp, lowQ))
+    yield
 
     // where the stones can go: shallow hollows in the sand; rings appear once a stone is laid
     const avgW = stones.reduce((a, st) => a + st.w, 0) / N
     hollows = []
-    ringsG = slots.map((sl, k) => {
+    ringsG = []
+    const ringsBox = s('g', { filter: lowQ ? null : 'url(#ink-rough)' })
+    const hollowsBox = s('g', { filter: lowQ ? null : 'url(#ink-dry)' })
+    svg.append(ringsBox, hollowsBox)
+    for (const [k, sl] of slots.entries()) {
       const rx = avgW * sl.sc * 0.5
       const hol = s('path', { class: 't12p-hollow', d: ring(sl.x, sl.y, rx * 0.9, rx * 0.9 * persp * 1.15, 1.4, 90 + k) })
       hollows.push(hol)
@@ -355,11 +379,14 @@ export function pathScene(ctx: SceneCtx) {
       g.style.opacity = filled ? '1' : '0'
       hol.style.opacity = filled ? '0' : ''
       if (filled) holes[k].setAttribute('rx', f1(rx * 1.56)), holes[k].setAttribute('ry', f1(rx * 1.56 * persp * 1.1))
-      return g
-    })
-    svg.append(s('g', { filter: lowQ ? null : 'url(#ink-rough)' }, ...ringsG), s('g', { filter: lowQ ? null : 'url(#ink-dry)' }, ...hollows))
+      ringsG.push(g)
+      ringsBox.append(g)
+      hollowsBox.append(hol)
+      yield
+    }
 
     // light: a pool on the sand, a halo behind the lantern; in the window the rising light and the flame
+    const lant = drawLantern(lx, ly, Lh, lowQ)
     const light = lanternLight(uid, lant, lx, ly, Lh, root)
     svg.append(...light.under, lant.g, ...light.over)
     setLight = light.set
@@ -369,6 +396,7 @@ export function pathScene(ctx: SceneCtx) {
         ambient.push(gsap.to(light.flick, { rotation: 'random(-4, 4)', y: 'random(-0.6, 0.6)', duration: 0.24, repeat: -1, yoyo: true, repeatRefresh: true, ease: 'sine.inOut', svgOrigin: light.origin }))
       })
     }
+    shown = true
   }
 
   // ───────── caption ─────────
@@ -517,13 +545,14 @@ export function pathScene(ctx: SceneCtx) {
     cancelAnimationFrame(raf)
     raf = requestAnimationFrame(() => layout())
   })
-  ro.observe(root)
-  layout()
-  afterFonts(ctx, () => (stable.reset(), layout()))
+  // (before the layout: these read styles, and after its writes that would cost one more style pass)
   if (!ctx.reduced) {
     gsap.from(stones.map((st) => st.body), { opacity: 0, y: 18, scale: 0.92, duration: 1.3, stagger: 0.1, delay: 0.5, ease: 'power3.out', clearProps: 'opacity,transform' })
     gsap.from(svg, { opacity: 0, duration: 1.6, ease: 'power1.out' })
   }
+  ro.observe(root)
+  layout()
+  afterFonts(ctx, () => (stable.reset(), layout()))
 
   return () => {
     ro.disconnect()

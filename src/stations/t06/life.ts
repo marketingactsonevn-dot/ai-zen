@@ -2,6 +2,7 @@ import { fill, h, nextId, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
 import { createLoop } from '../../core/loop'
 import { cssVar } from '../../core/prefs'
+import { sliced } from '../../core/chunk'
 import type { SceneCtx } from '../types'
 import { blob, brush, C, clamp, defs, ell, layer, onSize, onTheme, passFocus, place, rng, sheet, spline, stableHeight, stone, type Pt } from './ink'
 
@@ -147,6 +148,15 @@ export function lifeScene(ctx: SceneCtx) {
   const root = h('div', { class: 't6 t6l' }, h('p', { class: 'visually-hidden' }, L.art), svg, canvas)
   ctx.art.append(root)
 
+  // A.10: the pine pads are most of this mount's work (hundreds of needle strokes) and stay hidden until the tree grows
+  // (`grow` starts at opacity 0): mount empty groups now, paint each pad into its group over the next frames
+  const padJobs: [SVGGElement, number, number, number, number, number][] = []
+  const padSlot = (cx: number, cy: number, rx: number, ry: number, seed: number) => {
+    const el = s('g')
+    padJobs.push([el, cx, cy, rx, ry, seed])
+    return el
+  }
+
   /* ── world (tree space) ── */
   const world = s('g')
   const sand = s('g', { class: 't6l-sand' })
@@ -223,12 +233,12 @@ export function lifeScene(ctx: SceneCtx) {
     mask.append(m)
     for (const tw of sh.twigs) ink.append(s('path', { class: 'w2', d: brush(tw, 2.2, { a: 0.1, b: 0.6 }).d }))
     inner.append(ink)
-    sh.tufts.forEach(([x, y, rx, ry], k) => inner.append(pad(x, y, rx, ry, 40 + i * 5 + k)))
+    sh.tufts.forEach(([x, y, rx, ry], k) => inner.append(padSlot(x, y, rx, ry, 40 + i * 5 + k)))
     const wrap = s('g', null, mask, inner)
     return { wrap, m }
   })
   const pads = PADS.map((p, i) => {
-    const el = pad(p.c[0], p.c[1], p.r[0], p.r[1], 11 + i * 3)
+    const el = padSlot(p.c[0], p.c[1], p.r[0], p.r[1], 11 + i * 3)
     return { el, p, anchor: [p.c[0], p.c[1] + p.r[1]] as Pt }
   })
   const blossoms = s('g', { class: 't6l-bloom' })
@@ -347,10 +357,11 @@ export function lifeScene(ctx: SceneCtx) {
     // words
     const fs = clamp(14 * sc, 13, 17)
     root.style.setProperty('--t6-fs', `${fs}px`)
-    label(cloudLab, px([200, 100]), 'c')
-    SHOOTS.forEach((sh, i) => label(shootLabs[i], px(sh.lab), 'c'))
-    label(shearsLab, px([SHEARS_REST[0] + 2, SHEARS_REST[1] + 26]), 'c')
-    label(askLab, px([ASK_AT[0], ASK_AT[1] + 20]), 'c')
+    // read every word's size first, then place them all: one layout, not one per word
+    const labs = [cloudLab, ...shootLabs, shearsLab, askLab]
+    const at = [px([200, 100]), ...SHOOTS.map((sh) => px(sh.lab)), px([SHEARS_REST[0] + 2, SHEARS_REST[1] + 26]), px([ASK_AT[0], ASK_AT[1] + 20])]
+    const sz = labs.map((el) => [el.offsetWidth || 80, el.offsetHeight || 20])
+    labs.forEach((el, i) => label(el, at[i], sz[i][0], sz[i][1]))
     // answer: right of the crown, or in the sky top-left on narrow screens
     const ar = px([300, 34])
     if (!portrait && W - ar[0] > 170) {
@@ -371,11 +382,9 @@ export function lifeScene(ctx: SceneCtx) {
     if (stage === 1 && !busy) placeShears(SHEARS_REST)
   }
 
-  /** In-art word near a point (px), kept inside the art. */
-  function label(el: HTMLElement, p: Pt, align: 'c' | 'l') {
-    const w = el.offsetWidth || 80
-    const x = align === 'c' ? p[0] - w / 2 : p[0]
-    place(el, clamp(x, 4, W - w - 4), p[1] - (el.offsetHeight || 20) / 2)
+  /** In-art word centred near a point (px), kept inside the art; w, hh = its size. */
+  function label(el: HTMLElement, p: Pt, w: number, hh: number) {
+    place(el, clamp(p[0] - w / 2, 4, W - w - 4), p[1] - hh / 2)
   }
 
   function placeShears(p: Pt, rot = -18) {
@@ -415,7 +424,7 @@ export function lifeScene(ctx: SceneCtx) {
   const drops: Drop[] = []
   let raining = false
   let burst = 0
-  let ink = cssVar('--ink')
+  let ink = '' // read when the rain starts: a style read here would force a style pass inside the mount
   onTheme(ctx, () => (ink = cssVar('--ink')))
   const rr = rng(77)
   let last = 0
@@ -482,6 +491,7 @@ export function lifeScene(ctx: SceneCtx) {
   const rain = createLoop(root, frame, { essential: true })
   const kick = () => {
     if (rain.running) return
+    ink ||= cssVar('--ink')
     last = performance.now()
     rain.start()
   }
@@ -723,15 +733,38 @@ export function lifeScene(ctx: SceneCtx) {
 
   render()
   syncChips()
-  onSize(ctx, root, layout, stable.reset)
-  layout()
   ctx.prompt(L.hold)
-  if (!ctx.reduced) {
-    gsap.from(cloudWrap, { opacity: 0, y: -10, duration: 2, ease: 'power2.out' })
-    // the library breathes: its rows of writing drift slowly, alternate ways
-    const rowEls = [...rows.children] as SVGTextElement[]
-    rowEls.forEach((el, i) => gsap.to(el, { x: (i % 2 ? -1 : 1) * 14, duration: 7 + i, ease: 'sine.inOut', repeat: -1, yoyo: true }))
+  // A.10: lay out in the first frame's rAF, still before it paints: the style and layout passes this needs then run in
+  // that frame instead of being forced inside this mount. The pads are painted in from the frame after, ~8 ms a frame.
+  // Reduced motion: all at once, as before.
+  let raf = 0
+  let padding: { cancel(): void } | undefined
+  const paintPads = () => {
+    padding = sliced((function* () {
+      for (const [el, ...a] of padJobs) {
+        el.append(...pad(...a).childNodes)
+        yield
+      }
+    })(), { sync: ctx.reduced })
   }
+  const first = () => {
+    if (!ctx.reduced) ctx.anim(() => {
+      gsap.from(cloudWrap, { opacity: 0, y: -10, duration: 2, ease: 'power2.out' })
+      // the library breathes: its rows of writing drift slowly, alternate ways
+      const rowEls = [...rows.children] as SVGTextElement[]
+      rowEls.forEach((el, i) => gsap.to(el, { x: (i % 2 ? -1 : 1) * 14, duration: 7 + i, ease: 'sine.inOut', repeat: -1, yoyo: true }))
+    })
+    layout()
+    // after the first layout, so the fonts check also waits for every face that layout asked for (canvas measures too)
+    onSize(ctx, root, layout, stable.reset)
+    if (!ctx.reduced) raf = requestAnimationFrame(paintPads)
+  }
+  if (ctx.reduced) (first(), paintPads())
+  else raf = requestAnimationFrame(first)
+  ctx.onCleanup(() => {
+    cancelAnimationFrame(raf)
+    padding?.cancel()
+  })
 
   return () => {
     rain.dispose()

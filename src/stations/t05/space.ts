@@ -177,468 +177,499 @@ export function mountSpace(ctx: SceneCtx) {
   ctx.art.append(root)
   ctx.prompt(T.prompt)
 
-  let selected = -1
-  let focusIdx = 0
-  let hovered = -1
-  let explored = false
-  const timers: number[] = []
-
-  // labels: your words are real buttons (keyboard path); neighbours are quiet serif captions
-  words.forEach((wd, i) => {
-    wd.el = wd.q
-      ? h('button', { class: 't5-lb is-q', type: 'button', 'aria-label': fill(T.wordAria, { w: wd.w }), onClick: () => select(i === selected ? -1 : i) }, wd.w)
-      : h('span', { class: 't5-lb', 'aria-hidden': 'true' }, wd.w)
-    labels.append(wd.el)
-  })
-  // each name fades by itself (depth, overlap) inside its span, which keeps the CSS reveal
-  const nameText = T.clusters.map((cl) => h('span', { style: 'opacity:0' }, cl.name))
-  const names = nameText.map((t) => h('span', { class: 't5-cl', 'aria-hidden': 'true' }, t))
-  const nameVis = names.map(() => 0)
-  labels.append(...names)
-  const threadPaths = [0, 1, 2].map(() => s('path', { class: 't5-sp-thread' }))
-  const leader = s('path', { class: 't5-sp-leader' })
-  threads.append(leader, ...threadPaths)
-
-  const stage = createStage(host, { fov: 40 })
-  if (!stage) {
-    fallback()
-    return
+  // A.10: the space is the heavy part of this mount. Build it one step per frame after this one (labels and 3D content,
+  // then the WebGL stage once the scene's frame is laid out), so no task runs long; the canvas stays blank until its
+  // shaders compile anyway. Reduced motion: all at once, as before.
+  const job = build()
+  let raf = 0
+  let off: (() => void) | undefined
+  let made: { dispose(): void } | null = null // the stage, until build returns its full cleanup
+  const step = () => {
+    let r = job.next()
+    while (ctx.reduced && !r.done) r = job.next()
+    if (r.done) off = r.value
+    else raf = requestAnimationFrame(step)
   }
-  host.append(threads, labels)
-  const { scene, camera } = stage
-  const low = ctx.quality === 'low'
-  // the space orbits inside `world`; `wide` stretches it sideways on wide screens so it fills the frame
-  const world = new THREE.Group()
-  const wide = new THREE.Group()
-  wide.add(world)
-  scene.add(wide)
-
-  // ── points (one per word)
-  const n = words.length
-  const pos = new Float32Array(n * 3)
-  let tall = false
-  let target = words.map((w) => place(w.pos, tall))
-  /** neighbourhood centres in the current layout (tall swaps axes); updated by relayout, read every frame */
-  let centres = CENTERS.map((c) => place(c, tall))
-  const aSize = new Float32Array(n)
-  const aQ = new Float32Array(n)
-  const aHi = new Float32Array(n)
-  words.forEach((w, i) => {
-    pos.set(w.pos, i * 3)
-    aSize[i] = w.q ? 0.24 : 0.12
-    aQ[i] = w.q ? 1 : 0
-  })
-  const geo = new THREE.BufferGeometry()
-  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
-  geo.setAttribute('aSize', new THREE.BufferAttribute(aSize, 1))
-  geo.setAttribute('aQ', new THREE.BufferAttribute(aQ, 1))
-  geo.setAttribute('aHi', new THREE.BufferAttribute(aHi, 1))
-  const uScale = { value: 1 }
-  const ptMat = new THREE.ShaderMaterial({
-    vertexShader: PT_VERT,
-    fragmentShader: PT_FRAG,
-    uniforms: { uScale, uMax: { value: 30 * stage.renderer.getPixelRatio() }, uInk: { value: new THREE.Color() }, uVer: { value: new THREE.Color() }, uDim: { value: 1 }, uGain: { value: 1 } },
-    transparent: true,
-    depthWrite: false,
-  })
-  const points = new THREE.Points(geo, ptMat)
-  points.renderOrder = 3
-  world.add(points)
-
-  // ── faint constellation threads: each word to its two nearest neighbours
-  const pairs = words.flatMap((w, i) => w.near.slice(0, 2).filter((j) => j > i || !words[j].near.slice(0, 2).includes(i)).map((j) => [i, j]))
-  const linePos = new Float32Array(pairs.length * 6)
-  const lineGeo = new THREE.BufferGeometry()
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3))
-  const lineMat = new THREE.LineBasicMaterial({ transparent: true, depthWrite: false, opacity: 0.2 })
-  const lines = new THREE.LineSegments(lineGeo, lineMat)
-  lines.renderOrder = 2
-  world.add(lines)
-  // runs every fly-in frame: copy in place, no throwaway arrays
-  const syncLines = () => {
-    for (let k = 0; k < pairs.length; k++) {
-      const [i, j] = pairs[k]
-      for (let c = 0; c < 3; c++) {
-        linePos[k * 6 + c] = pos[i * 3 + c]
-        linePos[k * 6 + 3 + c] = pos[j * 3 + c]
-      }
-    }
-    lineGeo.attributes.position.needsUpdate = true
+  if (ctx.reduced) step()
+  else raf = requestAnimationFrame(step)
+  return () => {
+    cancelAnimationFrame(raf)
+    if (off) off()
+    else made?.dispose()
   }
-  syncLines()
 
-  // ── haze over each neighbourhood + raked sand below
-  const hazeTex = hazeTexture()
-  const hazeSprites = CENTERS.map((c) => {
-    const m = new THREE.SpriteMaterial({ map: hazeTex, transparent: true, depthWrite: false, depthTest: false, opacity: 0.5 })
-    const sp = new THREE.Sprite(m)
-    sp.position.set(...c)
-    sp.scale.setScalar(1.9)
-    sp.renderOrder = 1
-    world.add(sp)
-    return sp
-  })
-  const hazes = hazeSprites.map((sp) => sp.material)
-  const sandMat = new THREE.ShaderMaterial({
-    vertexShader: SAND_VERT,
-    fragmentShader: SAND_FRAG,
-    uniforms: { uScale, uInk: { value: new THREE.Color() }, uA: { value: 0.4 } },
-    transparent: true,
-    depthWrite: false,
-  })
-  const sand = new THREE.Points(sandPoints(low, tall), sandMat)
-  sand.renderOrder = 0
-  world.add(sand)
+  function* build(): Generator<void, (() => void) | undefined> {
+    let selected = -1
+    let focusIdx = 0
+    let hovered = -1
+    let explored = false
+    const timers: number[] = []
 
-  // ── theme
-  const applyTheme = () => {
-    const dark = prefs.theme === 'dark'
-    const blend = dark ? THREE.AdditiveBlending : THREE.NormalBlending
-    ptMat.uniforms.uInk.value.set(cssVar('--ink'))
-    ptMat.uniforms.uVer.value.set(cssVar('--vermilion'))
-    ptMat.blending = blend
-    // night: the neighbourhoods would sink into the dark, so the quiet points glow a little brighter
-    ptMat.uniforms.uGain.value = dark ? 1.4 : 1
-    sandMat.uniforms.uInk.value.set(cssVar(dark ? '--moss' : '--ink-3'))
-    sandMat.uniforms.uA.value = dark ? 0.35 : 0.5
-    sandMat.blending = blend
-    hazes.forEach((m) => {
-      m.color.set(cssVar(dark ? '--moss-2' : '--moss-soft'))
-      m.opacity = dark ? 0.16 : 0.85
-      m.blending = blend
-      m.needsUpdate = true
+    // labels: your words are real buttons (keyboard path); neighbours are quiet serif captions
+    words.forEach((wd, i) => {
+      wd.el = wd.q
+        ? h('button', { class: 't5-lb is-q', type: 'button', 'aria-label': fill(T.wordAria, { w: wd.w }), onClick: () => select(i === selected ? -1 : i) }, wd.w)
+        : h('span', { class: 't5-lb', 'aria-hidden': 'true' }, wd.w)
+      labels.append(wd.el)
     })
-    lineMat.color.set(cssVar(dark ? '--moss' : '--ink-3'))
-    lineMat.opacity = dark ? 0.42 : 0.3
-    lineMat.blending = blend
-    ptMat.needsUpdate = sandMat.needsUpdate = lineMat.needsUpdate = true
-    stage.render()
-  }
-  const offPrefs = onPrefs(applyTheme)
-  applyTheme()
+    // each name fades by itself (depth, overlap) inside its span, which keeps the CSS reveal
+    const nameText = T.clusters.map((cl) => h('span', { style: 'opacity:0' }, cl.name))
+    const names = nameText.map((t) => h('span', { class: 't5-cl', 'aria-hidden': 'true' }, t))
+    const nameVis = names.map(() => 0)
+    labels.append(...names)
+    const threadPaths = [0, 1, 2].map(() => s('path', { class: 't5-sp-thread' }))
+    const leader = s('path', { class: 't5-sp-leader' })
+    threads.append(leader, ...threadPaths)
 
-  // ── camera framing: keep the whole space in view in any aspect; tall screens get the upright layout
-  let dist = 6.4
-  let near0 = 2.5 // camera distance when gliding into a neighbourhood
-  const relayout = () => {
-    target = words.map((w) => place(w.pos, tall))
-    target.forEach((p, i) => pos.set(p, i * 3))
-    geo.attributes.position.needsUpdate = true
-    syncLines()
-    centres = CENTERS.map((c) => place(c, tall))
-    hazeSprites.forEach((sp, c) => sp.position.set(...centres[c]))
-    sand.geometry.dispose()
-    sand.geometry = sandPoints(low, tall)
-  }
-  const onSize = (w: number, hh: number) => {
-    const tanY = Math.tan(THREE.MathUtils.degToRad(20))
-    const aspect = w / hh
-    const t = aspect < 0.85
-    if (t !== tall) {
-      tall = t
-      relayout()
-    }
-    if (tall) {
-      wide.scale.set(0.82, 1, 0.82)
-      dist = Math.max(2.5 / tanY, 1.6 / (tanY * aspect))
-      near0 = Math.max(2.4, 0.8 / (tanY * aspect))
-    } else {
-      wide.scale.set(THREE.MathUtils.clamp(aspect / 1.9, 1, 1.55), 1, 1)
-      dist = Math.max(4.5, 2.4 / (tanY * aspect))
-      near0 = Math.max(2.4, 0.95 / (tanY * aspect))
-    }
-    uScale.value = (hh * stage.renderer.getPixelRatio()) / (2 * tanY)
-  }
-  stage.onResize(onSize)
+    const low = ctx.quality === 'low'
+    // the space orbits inside `world`; `wide` stretches it sideways on wide screens so it fills the frame
+    const world = new THREE.Group()
+    const wide = new THREE.Group()
+    wide.add(world)
 
-  // ── orbit (drag / arrows), slow idle drift
-  let yaw = -0.35, pitch = 0.18, vYaw = 0, vPitch = 0, idle = 0
-  let dragging = false, downX = 0, downY = 0, lastX = 0, lastY = 0, moved = false, pid: number | null = null
-  const canvas = stage.canvas
-  canvas.setAttribute('aria-hidden', 'true')
-
-  const pick = (x: number, y: number, r: number) => {
-    let best = -1, bd = r
+    // ── points (one per word)
+    const n = words.length
+    const pos = new Float32Array(n * 3)
+    // start in the layout the frame needs (this runs after the scene's first layout), so the stage's first resize has nothing to redo
+    let tall = host.clientHeight > 0 && host.clientWidth / host.clientHeight < 0.85
+    let target = words.map((w) => place(w.pos, tall))
+    /** neighbourhood centres in the current layout (tall swaps axes); updated by relayout, read every frame */
+    let centres = CENTERS.map((c) => place(c, tall))
+    const aSize = new Float32Array(n)
+    const aQ = new Float32Array(n)
+    const aHi = new Float32Array(n)
     words.forEach((w, i) => {
-      const d = Math.hypot(w.sx - x, w.sy - y)
-      if (d < bd && w.z > 0) (bd = d), (best = i)
+      pos.set(target[i], i * 3)
+      aSize[i] = w.q ? 0.24 : 0.12
+      aQ[i] = w.q ? 1 : 0
     })
-    return best
-  }
-  const local = (e: PointerEvent) => {
-    const rr = host.getBoundingClientRect()
-    return [e.clientX - rr.left, e.clientY - rr.top]
-  }
-  canvas.addEventListener('pointerdown', (e) => {
-    if (e.button !== 0) return
-    pid = e.pointerId
-    dragging = true
-    moved = false
-    ;[downX, downY] = local(e)
-    lastX = downX
-    lastY = downY
-    vYaw = vPitch = 0
-    host.classList.add('is-grabbing')
-    try {
-      canvas.setPointerCapture(e.pointerId)
-    } catch {
-      /* gone */
-    }
-  })
-  canvas.addEventListener('pointermove', (e) => {
-    const [x, y] = local(e)
-    if (dragging && e.pointerId === pid) {
-      if (!moved && Math.hypot(x - downX, y - downY) < 5) return
-      moved = true
-      vYaw = (x - lastX) * 0.007
-      vPitch = (y - lastY) * 0.005
-      yaw += vYaw
-      pitch = THREE.MathUtils.clamp(pitch + vPitch, -0.55, 0.75)
-      lastX = x
-      lastY = y
-      idle = 0
-      stage.render()
-    } else if (e.pointerType === 'mouse') {
-      setHover(pick(x, y, 24))
-    }
-  })
-  const up = (e: PointerEvent) => {
-    if (e.pointerId !== pid) return
-    pid = null
-    dragging = false
-    host.classList.remove('is-grabbing')
-    if (!moved) {
-      const [x, y] = local(e)
-      const i = pick(x, y, e.pointerType === 'mouse' ? 24 : 34)
-      select(i === selected ? -1 : i)
-    } else ctx.complete()
-  }
-  canvas.addEventListener('pointerup', up)
-  canvas.addEventListener('pointercancel', up)
-  canvas.addEventListener('pointerleave', () => setHover(-1))
-  // arrows orbit the space wherever focus is inside it (the space itself or one of your words)
-  host.addEventListener('keydown', (e) => {
-    const k = { ArrowLeft: [-0.16, 0], ArrowRight: [0.16, 0], ArrowUp: [0, -0.12], ArrowDown: [0, 0.12] }[e.key]
-    if (!k) return
-    e.preventDefault()
-    yaw += k[0]
-    pitch = THREE.MathUtils.clamp(pitch + k[1], -0.55, 0.75)
-    idle = 0
-    stage.render()
-  })
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+    geo.setAttribute('aSize', new THREE.BufferAttribute(aSize, 1))
+    geo.setAttribute('aQ', new THREE.BufferAttribute(aQ, 1))
+    geo.setAttribute('aHi', new THREE.BufferAttribute(aHi, 1))
+    const uScale = { value: 1 }
+    const ptMat = new THREE.ShaderMaterial({
+      vertexShader: PT_VERT,
+      fragmentShader: PT_FRAG,
+      uniforms: { uScale, uMax: { value: 30 }, uInk: { value: new THREE.Color() }, uVer: { value: new THREE.Color() }, uDim: { value: 1 }, uGain: { value: 1 } },
+      transparent: true,
+      depthWrite: false,
+    })
+    const points = new THREE.Points(geo, ptMat)
+    points.renderOrder = 3
+    world.add(points)
 
-  // ── selection: threads to the 3 nearest meanings + their names
-  let dwell = 0
-  function setHover(i: number) {
-    if (i === hovered) return
-    hovered = i
-    clearTimeout(dwell)
-    if (i >= 0 && !explored) dwell = window.setTimeout(() => hovered === i && reveal(i), 900)
-    paintHi()
-  }
-  /** choosing a word glides the camera into its neighbourhood (0 = whole space, 1 = close up) */
-  const fz = { k: 0 }
-  function select(i: number) {
-    selected = i
-    if (i >= 0) focusIdx = i
-    if (ctx.reduced) fz.k = i >= 0 ? 1 : 0
-    else ctx.anim(() => gsap.to(fz, { k: i >= 0 ? 1 : 0, duration: 1.5, ease: 'power3.inOut', overwrite: true }))
-    paintHi()
-    if (i >= 0) reveal(i)
-    else near.textContent = ''
-  }
-  function reveal(i: number) {
-    const wd = words[i]
-    near.textContent = fill(T.near, { w: wd.w, list: wd.near.map((j) => words[j].w).join(', ') })
-    if (!ctx.reduced) ctx.anim(() => gsap.fromTo(near, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }))
-    if (!explored) {
-      explored = true
-      ctx.chime('ok')
-      ctx.insight(T.insight, T.detail)
-      root.classList.add('is-named')
-    }
-  }
-  const focus = () => (hovered >= 0 ? hovered : selected)
-  function paintHi() {
-    const f = focus()
-    aHi.fill(0)
-    words.forEach((w) => w.el.classList.remove('is-on', 'is-near'))
-    if (f >= 0) {
-      aHi[f] = 1
-      words[f].el.classList.add('is-on')
-      words[f].near.forEach((j) => {
-        aHi[j] = 0.5
-        words[j].el.classList.add('is-near')
-      })
-    }
-    ptMat.uniforms.uDim.value = f >= 0 ? 0.45 : 1
-    geo.attributes.aHi.needsUpdate = true
-    root.classList.toggle('has-focus', f >= 0)
-    stage!.render()
-  }
-
-  // ── your words fly up from the sand into their neighbourhoods
-  const order = question().words.map((w) => words.findIndex((x) => x.w === w))
-  const fly = { t: ctx.reduced ? 1 : 0 }
-  if (!ctx.reduced) {
-    ctx.anim(() => gsap.to(fly, { t: 1, duration: 3.2, delay: 0.5, ease: 'none' }))
-    order.forEach((wi, k) => timers.push(window.setTimeout(() => words[wi]?.el.classList.add('is-land'), 500 + (k * 0.12 + 0.55) * 3200)))
-  }
-  const ease = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2)
-  onSize(stage.width, stage.height)
-
-  // ── per-frame: orbit, fly-in, project labels, ink threads
-  const v = new THREE.Vector3()
-  const ft = new THREE.Vector3()
-  // label widths: read on mount and when the label layer resizes, never inside the frame
-  const lbW = new Map<HTMLElement, number>()
-  const measureLabels = () => {
-    for (const w of words) lbW.set(w.el, w.el.offsetWidth)
-    for (const el of names) lbW.set(el, el.offsetWidth)
-  }
-  measureLabels()
-  // per-frame scratch: one reusable box per word, the visible ones collected in `shown`
-  type Box = { i: number; x: number; y: number; w: number }
-  const boxes: Box[] = words.map(() => ({ i: 0, x: 0, y: 0, w: 0 }))
-  const shown: Box[] = []
-  const byY = (a: Box, b: Box) => a.y - b.y
-  const THREAD = { head: 0.05, tail: 0.8, min: 0.18 }
-  stage.onFrame((t, dt) => {
-    if (!dragging) {
-      yaw += vYaw
-      pitch = THREE.MathUtils.clamp(pitch + vPitch, -0.55, 0.75)
-      vYaw *= 0.92
-      vPitch *= 0.92
-      idle += dt
-      if (idle > 2.5 && focus() < 0) yaw += dt * 0.06 * Math.min(1, (idle - 2.5) / 2)
-    }
-    world.rotation.set(pitch, yaw, 0)
-    wide.updateMatrixWorld()
-    const k = fz.k
-    if (k > 0) {
-      ft.set(pos[focusIdx * 3], pos[focusIdx * 3 + 1], pos[focusIdx * 3 + 2]).applyMatrix4(world.matrixWorld)
-      camera.position.set(ft.x * k, 0.35 + (ft.y + 0.15 - 0.35) * k, dist + (ft.z + near0 - dist) * k)
-      camera.lookAt(ft.x * k, 0.05 + (ft.y - 0.05) * k, ft.z * k)
-    } else {
-      camera.position.set(0, 0.35, dist)
-      camera.lookAt(0, 0.05, 0)
-    }
-    if (fly.t < 1 || t === 0) {
-      for (let o = 0; o < order.length; o++) {
-        const wi = order[o]
-        if (wi < 0) continue
-        const u = ease(THREE.MathUtils.clamp((fly.t - o * 0.12) / 0.55, 0, 1))
-        // from a pebble on the near sand to the word's place in the space
-        const ax = (o / Math.max(1, order.length - 1) - 0.5) * (tall ? 1.8 : 2.6), ay = floorOf(tall) + 0.05, az = 1.9
-        const b = target[wi]
-        const lift = Math.sin(u * Math.PI) * 0.9
-        pos[wi * 3] = ax + (b[0] - ax) * u
-        pos[wi * 3 + 1] = ay + (b[1] - ay) * u + lift
-        pos[wi * 3 + 2] = az + (b[2] - az) * u
-      }
-      geo.attributes.position.needsUpdate = true
-      syncLines()
-    }
-    camera.updateMatrixWorld()
-    const W = stage.width, H = stage.height
-    shown.length = 0
-    for (let i = 0; i < words.length; i++) {
-      const w = words[i]
-      v.set(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]).applyMatrix4(world.matrixWorld).project(camera)
-      w.sx = (v.x * 0.5 + 0.5) * W
-      w.sy = (-v.y * 0.5 + 0.5) * H
-      w.z = v.z < 1 ? 1 : 0
-      const lw = lbW.get(w.el) ?? 0
-      const x = Math.min(W - lw - 4, Math.max(4, w.sx + 12))
-      const y = Math.max(4, w.sy - 11)
-      const off = w.z === 0 || w.sx < -8 || w.sx > W + 8 || w.sy < -8 || w.sy > H + 8
-      w.el.classList.toggle('is-off', off)
-      if (off) continue
-      if (w.q || aHi[i] > 0) {
-        const bx = boxes[i]
-        bx.i = i
-        bx.x = x
-        bx.y = y
-        bx.w = lw
-        shown.push(bx)
-      } else w.el.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`
-    }
-    // visible labels never sit on top of each other: walk down the screen, nudging overlaps below
-    shown.sort(byY)
-    let lead = ''
-    for (let m = 0; m < shown.length; m++) {
-      const a = shown[m]
-      for (let q = 0; q < m; q++) {
-        const b = shown[q]
-        if (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + 22) a.y = b.y + 22
-      }
-      words[a.i].el.style.translate = `${a.x.toFixed(1)}px ${a.y.toFixed(1)}px`
-      // a nudged label keeps a fine hairline back to its dot
-      const w = words[a.i]
-      if (a.y - Math.max(4, w.sy - 11) > 6) lead += `M${(w.sx + 2).toFixed(1)} ${(w.sy + 1).toFixed(1)}L${(a.x + 2).toFixed(1)} ${(a.y + 11).toFixed(1)}`
-    }
-    leader.setAttribute('d', lead)
-    // neighbourhood names: only for neighbourhoods on the near side of the orbit (a far name would float over near
-    // words); close up, only the chosen word's; never clamped to the frame or laid over a word
-    const zo = v.set(0, 0, 0).applyMatrix4(world.matrixWorld).applyMatrix4(camera.matrixWorldInverse).z
-    const only = k > 0.4 ? words[focusIdx].c : -1
-    const rate = ctx.reduced ? 1 : Math.min(1, dt * 4)
-    for (let c = 0; c < names.length; c++) {
-      const el = names[c]
-      const cc = centres[c]
-      const dz = v.set(cc[0], cc[1], cc[2]).applyMatrix4(world.matrixWorld).applyMatrix4(camera.matrixWorldInverse).z - zo
-      v.set(cc[0], cc[1] + 0.62, cc[2]).applyMatrix4(world.matrixWorld).project(camera)
-      const half = (lbW.get(el) ?? 0) / 2
-      const x = (v.x * 0.5 + 0.5) * W, y = (-v.y * 0.5 + 0.5) * H
-      let want = only >= 0 ? Number(c === only) : THREE.MathUtils.smoothstep(dz, -0.2, 0.45)
-      if (v.z > 1 || x < half + 2 || x > W - half - 2 || y < 18 || y > H - 4) want = 0
-      else if (want > 0) {
-        for (let m = 0; m < shown.length; m++) {
-          const a = shown[m]
-          if (x + half > a.x && x - half < a.x + a.w && y > a.y && y - 16 < a.y + 22) {
-            want = 0
-            break
-          }
+    // ── faint constellation threads: each word to its two nearest neighbours
+    const pairs = words.flatMap((w, i) => w.near.slice(0, 2).filter((j) => j > i || !words[j].near.slice(0, 2).includes(i)).map((j) => [i, j]))
+    const linePos = new Float32Array(pairs.length * 6)
+    const lineGeo = new THREE.BufferGeometry()
+    lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3))
+    const lineMat = new THREE.LineBasicMaterial({ transparent: true, depthWrite: false, opacity: 0.2 })
+    const lines = new THREE.LineSegments(lineGeo, lineMat)
+    lines.renderOrder = 2
+    world.add(lines)
+    // runs every fly-in frame: copy in place, no throwaway arrays
+    const syncLines = () => {
+      for (let k = 0; k < pairs.length; k++) {
+        const [i, j] = pairs[k]
+        for (let c = 0; c < 3; c++) {
+          linePos[k * 6 + c] = pos[i * 3 + c]
+          linePos[k * 6 + 3 + c] = pos[j * 3 + c]
         }
       }
-      nameVis[c] += (want - nameVis[c]) * rate
-      nameText[c].style.opacity = nameVis[c].toFixed(3)
-      if (nameVis[c] > 0.01) el.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`
+      lineGeo.attributes.position.needsUpdate = true
     }
-    const f = focus()
-    for (let m = 0; m < threadPaths.length; m++) {
-      const p = threadPaths[m]
-      if (f < 0) {
-        p.setAttribute('d', '')
-        continue
+    syncLines()
+
+    // ── haze over each neighbourhood + raked sand below
+    const hazeTex = hazeTexture()
+    const hazeSprites = centres.map((c) => {
+      const m = new THREE.SpriteMaterial({ map: hazeTex, transparent: true, depthWrite: false, depthTest: false, opacity: 0.5 })
+      const sp = new THREE.Sprite(m)
+      sp.position.set(...c)
+      sp.scale.setScalar(1.9)
+      sp.renderOrder = 1
+      world.add(sp)
+      return sp
+    })
+    const hazes = hazeSprites.map((sp) => sp.material)
+    const sandMat = new THREE.ShaderMaterial({
+      vertexShader: SAND_VERT,
+      fragmentShader: SAND_FRAG,
+      uniforms: { uScale, uInk: { value: new THREE.Color() }, uA: { value: 0.4 } },
+      transparent: true,
+      depthWrite: false,
+    })
+    const sand = new THREE.Points(sandPoints(low, tall), sandMat)
+    sand.renderOrder = 0
+    world.add(sand)
+
+    yield // next frame: the stage alone (WebGL context + renderer)
+    const stage = createStage(host, { fov: 40 })
+    if (!stage) {
+      fallback()
+      return undefined
+    }
+    made = stage
+    // next frame: wire it up. Its own first frame (the async shader compile) waits for its visibility check, which comes
+    // after this frame's layout, so this step runs first and the whole space is in the scene when it compiles.
+    yield
+    host.append(threads, labels)
+    const { scene, camera } = stage
+    scene.add(wide)
+    ptMat.uniforms.uMax.value = 30 * stage.renderer.getPixelRatio()
+
+    // ── theme
+    const applyTheme = () => {
+      const dark = prefs.theme === 'dark'
+      const blend = dark ? THREE.AdditiveBlending : THREE.NormalBlending
+      ptMat.uniforms.uInk.value.set(cssVar('--ink'))
+      ptMat.uniforms.uVer.value.set(cssVar('--vermilion'))
+      ptMat.blending = blend
+      // night: the neighbourhoods would sink into the dark, so the quiet points glow a little brighter
+      ptMat.uniforms.uGain.value = dark ? 1.4 : 1
+      sandMat.uniforms.uInk.value.set(cssVar(dark ? '--moss' : '--ink-3'))
+      sandMat.uniforms.uA.value = dark ? 0.35 : 0.5
+      sandMat.blending = blend
+      hazes.forEach((m) => {
+        m.color.set(cssVar(dark ? '--moss-2' : '--moss-soft'))
+        m.opacity = dark ? 0.16 : 0.85
+        m.blending = blend
+        m.needsUpdate = true
+      })
+      lineMat.color.set(cssVar(dark ? '--moss' : '--ink-3'))
+      lineMat.opacity = dark ? 0.42 : 0.3
+      lineMat.blending = blend
+      ptMat.needsUpdate = sandMat.needsUpdate = lineMat.needsUpdate = true
+      stage.render()
+    }
+    const offPrefs = onPrefs(applyTheme)
+    applyTheme()
+
+    // ── camera framing: keep the whole space in view in any aspect; tall screens get the upright layout
+    let dist = 6.4
+    let near0 = 2.5 // camera distance when gliding into a neighbourhood
+    const relayout = () => {
+      target = words.map((w) => place(w.pos, tall))
+      target.forEach((p, i) => pos.set(p, i * 3))
+      geo.attributes.position.needsUpdate = true
+      syncLines()
+      centres = CENTERS.map((c) => place(c, tall))
+      hazeSprites.forEach((sp, c) => sp.position.set(...centres[c]))
+      sand.geometry.dispose()
+      sand.geometry = sandPoints(low, tall)
+    }
+    const onSize = (w: number, hh: number) => {
+      const tanY = Math.tan(THREE.MathUtils.degToRad(20))
+      const aspect = w / hh
+      const t = aspect < 0.85
+      if (t !== tall) {
+        tall = t
+        relayout()
       }
-      const a = words[f], b = words[a.near[m]]
-      const mx = (a.sx + b.sx) / 2, my = (a.sy + b.sy) / 2 - Math.hypot(b.sx - a.sx, b.sy - a.sy) * 0.18
-      // TODO(perf): stroke() builds the tapered outline from fresh arrays — only while a word is focused
-      p.setAttribute('d', stroke([[a.sx, a.sy], [mx, my], [b.sx, b.sy]], 4.2 - m * 1.1, THREAD))
+      if (tall) {
+        wide.scale.set(0.82, 1, 0.82)
+        dist = Math.max(2.5 / tanY, 1.6 / (tanY * aspect))
+        near0 = Math.max(2.4, 0.8 / (tanY * aspect))
+      } else {
+        wide.scale.set(THREE.MathUtils.clamp(aspect / 1.9, 1, 1.55), 1, 1)
+        dist = Math.max(4.5, 2.4 / (tanY * aspect))
+        near0 = Math.max(2.4, 0.95 / (tanY * aspect))
+      }
+      uScale.value = (hh * stage.renderer.getPixelRatio()) / (2 * tanY)
     }
-  })
-  const ro = new ResizeObserver(measureLabels)
-  ro.observe(labels)
-  stage.render()
+    stage.onResize(onSize)
 
-  function fallback() {
-    host.classList.add('is-static')
-    host.removeAttribute('tabindex')
-    const svg = s('svg', { class: 't5-sp-fallback', viewBox: '-2.4 -1.6 4.8 3.2', role: 'img', 'aria-label': T.noWebgl },
-      ...words.map((w) => s('g', null,
-        s('circle', { cx: w.pos[0] + w.pos[2] * 0.2, cy: -w.pos[1], r: w.q ? 0.06 : 0.035, class: w.q ? 'is-q' : '' }),
-        s('text', { x: w.pos[0] + w.pos[2] * 0.2 + 0.07, y: -w.pos[1] + 0.03 }, w.w))))
-    host.append(svg)
-    ctx.complete()
-  }
+    // ── orbit (drag / arrows), slow idle drift
+    let yaw = -0.35, pitch = 0.18, vYaw = 0, vPitch = 0, idle = 0
+    let dragging = false, downX = 0, downY = 0, lastX = 0, lastY = 0, moved = false, pid: number | null = null
+    const canvas = stage.canvas
+    canvas.setAttribute('aria-hidden', 'true')
 
-  return () => {
-    timers.forEach(clearTimeout)
-    clearTimeout(dwell)
-    ro.disconnect()
-    offPrefs()
-    hazeTex.dispose()
-    stage.dispose()
+    const pick = (x: number, y: number, r: number) => {
+      let best = -1, bd = r
+      words.forEach((w, i) => {
+        const d = Math.hypot(w.sx - x, w.sy - y)
+        if (d < bd && w.z > 0) (bd = d), (best = i)
+      })
+      return best
+    }
+    const local = (e: PointerEvent) => {
+      const rr = host.getBoundingClientRect()
+      return [e.clientX - rr.left, e.clientY - rr.top]
+    }
+    canvas.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return
+      pid = e.pointerId
+      dragging = true
+      moved = false
+      ;[downX, downY] = local(e)
+      lastX = downX
+      lastY = downY
+      vYaw = vPitch = 0
+      host.classList.add('is-grabbing')
+      try {
+        canvas.setPointerCapture(e.pointerId)
+      } catch {
+        /* gone */
+      }
+    })
+    canvas.addEventListener('pointermove', (e) => {
+      const [x, y] = local(e)
+      if (dragging && e.pointerId === pid) {
+        if (!moved && Math.hypot(x - downX, y - downY) < 5) return
+        moved = true
+        vYaw = (x - lastX) * 0.007
+        vPitch = (y - lastY) * 0.005
+        yaw += vYaw
+        pitch = THREE.MathUtils.clamp(pitch + vPitch, -0.55, 0.75)
+        lastX = x
+        lastY = y
+        idle = 0
+        stage.render()
+      } else if (e.pointerType === 'mouse') {
+        setHover(pick(x, y, 24))
+      }
+    })
+    const up = (e: PointerEvent) => {
+      if (e.pointerId !== pid) return
+      pid = null
+      dragging = false
+      host.classList.remove('is-grabbing')
+      if (!moved) {
+        const [x, y] = local(e)
+        const i = pick(x, y, e.pointerType === 'mouse' ? 24 : 34)
+        select(i === selected ? -1 : i)
+      } else ctx.complete()
+    }
+    canvas.addEventListener('pointerup', up)
+    canvas.addEventListener('pointercancel', up)
+    canvas.addEventListener('pointerleave', () => setHover(-1))
+    // arrows orbit the space wherever focus is inside it (the space itself or one of your words)
+    host.addEventListener('keydown', (e) => {
+      const k = { ArrowLeft: [-0.16, 0], ArrowRight: [0.16, 0], ArrowUp: [0, -0.12], ArrowDown: [0, 0.12] }[e.key]
+      if (!k) return
+      e.preventDefault()
+      yaw += k[0]
+      pitch = THREE.MathUtils.clamp(pitch + k[1], -0.55, 0.75)
+      idle = 0
+      stage.render()
+    })
+
+    // ── selection: threads to the 3 nearest meanings + their names
+    let dwell = 0
+    function setHover(i: number) {
+      if (i === hovered) return
+      hovered = i
+      clearTimeout(dwell)
+      if (i >= 0 && !explored) dwell = window.setTimeout(() => hovered === i && reveal(i), 900)
+      paintHi()
+    }
+    /** choosing a word glides the camera into its neighbourhood (0 = whole space, 1 = close up) */
+    const fz = { k: 0 }
+    function select(i: number) {
+      selected = i
+      if (i >= 0) focusIdx = i
+      if (ctx.reduced) fz.k = i >= 0 ? 1 : 0
+      else ctx.anim(() => gsap.to(fz, { k: i >= 0 ? 1 : 0, duration: 1.5, ease: 'power3.inOut', overwrite: true }))
+      paintHi()
+      if (i >= 0) reveal(i)
+      else near.textContent = ''
+    }
+    function reveal(i: number) {
+      const wd = words[i]
+      near.textContent = fill(T.near, { w: wd.w, list: wd.near.map((j) => words[j].w).join(', ') })
+      if (!ctx.reduced) ctx.anim(() => gsap.fromTo(near, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }))
+      if (!explored) {
+        explored = true
+        ctx.chime('ok')
+        ctx.insight(T.insight, T.detail)
+        root.classList.add('is-named')
+      }
+    }
+    const focus = () => (hovered >= 0 ? hovered : selected)
+    function paintHi() {
+      const f = focus()
+      aHi.fill(0)
+      words.forEach((w) => w.el.classList.remove('is-on', 'is-near'))
+      if (f >= 0) {
+        aHi[f] = 1
+        words[f].el.classList.add('is-on')
+        words[f].near.forEach((j) => {
+          aHi[j] = 0.5
+          words[j].el.classList.add('is-near')
+        })
+      }
+      ptMat.uniforms.uDim.value = f >= 0 ? 0.45 : 1
+      geo.attributes.aHi.needsUpdate = true
+      root.classList.toggle('has-focus', f >= 0)
+      stage!.render()
+    }
+
+    // ── your words fly up from the sand into their neighbourhoods
+    const order = question().words.map((w) => words.findIndex((x) => x.w === w))
+    const fly = { t: ctx.reduced ? 1 : 0 }
+    if (!ctx.reduced) {
+      ctx.anim(() => gsap.to(fly, { t: 1, duration: 3.2, delay: 0.5, ease: 'none' }))
+      order.forEach((wi, k) => timers.push(window.setTimeout(() => words[wi]?.el.classList.add('is-land'), 500 + (k * 0.12 + 0.55) * 3200)))
+    }
+    const ease = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2)
+    onSize(stage.width, stage.height)
+
+    // ── per-frame: orbit, fly-in, project labels, ink threads
+    const v = new THREE.Vector3()
+    const ft = new THREE.Vector3()
+    // label widths: read on mount and when the label layer resizes, never inside the frame
+    const lbW = new Map<HTMLElement, number>()
+    const measureLabels = () => {
+      for (const w of words) lbW.set(w.el, w.el.offsetWidth)
+      for (const el of names) lbW.set(el, el.offsetWidth)
+    }
+    measureLabels()
+    // per-frame scratch: one reusable box per word, the visible ones collected in `shown`
+    type Box = { i: number; x: number; y: number; w: number }
+    const boxes: Box[] = words.map(() => ({ i: 0, x: 0, y: 0, w: 0 }))
+    const shown: Box[] = []
+    const byY = (a: Box, b: Box) => a.y - b.y
+    const THREAD = { head: 0.05, tail: 0.8, min: 0.18 }
+    stage.onFrame((t, dt) => {
+      if (!dragging) {
+        yaw += vYaw
+        pitch = THREE.MathUtils.clamp(pitch + vPitch, -0.55, 0.75)
+        vYaw *= 0.92
+        vPitch *= 0.92
+        idle += dt
+        if (idle > 2.5 && focus() < 0) yaw += dt * 0.06 * Math.min(1, (idle - 2.5) / 2)
+      }
+      world.rotation.set(pitch, yaw, 0)
+      wide.updateMatrixWorld()
+      const k = fz.k
+      if (k > 0) {
+        ft.set(pos[focusIdx * 3], pos[focusIdx * 3 + 1], pos[focusIdx * 3 + 2]).applyMatrix4(world.matrixWorld)
+        camera.position.set(ft.x * k, 0.35 + (ft.y + 0.15 - 0.35) * k, dist + (ft.z + near0 - dist) * k)
+        camera.lookAt(ft.x * k, 0.05 + (ft.y - 0.05) * k, ft.z * k)
+      } else {
+        camera.position.set(0, 0.35, dist)
+        camera.lookAt(0, 0.05, 0)
+      }
+      if (fly.t < 1 || t === 0) {
+        for (let o = 0; o < order.length; o++) {
+          const wi = order[o]
+          if (wi < 0) continue
+          const u = ease(THREE.MathUtils.clamp((fly.t - o * 0.12) / 0.55, 0, 1))
+          // from a pebble on the near sand to the word's place in the space
+          const ax = (o / Math.max(1, order.length - 1) - 0.5) * (tall ? 1.8 : 2.6), ay = floorOf(tall) + 0.05, az = 1.9
+          const b = target[wi]
+          const lift = Math.sin(u * Math.PI) * 0.9
+          pos[wi * 3] = ax + (b[0] - ax) * u
+          pos[wi * 3 + 1] = ay + (b[1] - ay) * u + lift
+          pos[wi * 3 + 2] = az + (b[2] - az) * u
+        }
+        geo.attributes.position.needsUpdate = true
+        syncLines()
+      }
+      camera.updateMatrixWorld()
+      const W = stage.width, H = stage.height
+      shown.length = 0
+      for (let i = 0; i < words.length; i++) {
+        const w = words[i]
+        v.set(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]).applyMatrix4(world.matrixWorld).project(camera)
+        w.sx = (v.x * 0.5 + 0.5) * W
+        w.sy = (-v.y * 0.5 + 0.5) * H
+        w.z = v.z < 1 ? 1 : 0
+        const lw = lbW.get(w.el) ?? 0
+        const x = Math.min(W - lw - 4, Math.max(4, w.sx + 12))
+        const y = Math.max(4, w.sy - 11)
+        const off = w.z === 0 || w.sx < -8 || w.sx > W + 8 || w.sy < -8 || w.sy > H + 8
+        w.el.classList.toggle('is-off', off)
+        if (off) continue
+        if (w.q || aHi[i] > 0) {
+          const bx = boxes[i]
+          bx.i = i
+          bx.x = x
+          bx.y = y
+          bx.w = lw
+          shown.push(bx)
+        } else w.el.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`
+      }
+      // visible labels never sit on top of each other: walk down the screen, nudging overlaps below
+      shown.sort(byY)
+      let lead = ''
+      for (let m = 0; m < shown.length; m++) {
+        const a = shown[m]
+        for (let q = 0; q < m; q++) {
+          const b = shown[q]
+          if (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + 22) a.y = b.y + 22
+        }
+        words[a.i].el.style.translate = `${a.x.toFixed(1)}px ${a.y.toFixed(1)}px`
+        // a nudged label keeps a fine hairline back to its dot
+        const w = words[a.i]
+        if (a.y - Math.max(4, w.sy - 11) > 6) lead += `M${(w.sx + 2).toFixed(1)} ${(w.sy + 1).toFixed(1)}L${(a.x + 2).toFixed(1)} ${(a.y + 11).toFixed(1)}`
+      }
+      leader.setAttribute('d', lead)
+      // neighbourhood names: only for neighbourhoods on the near side of the orbit (a far name would float over near
+      // words); close up, only the chosen word's; never clamped to the frame or laid over a word
+      const zo = v.set(0, 0, 0).applyMatrix4(world.matrixWorld).applyMatrix4(camera.matrixWorldInverse).z
+      const only = k > 0.4 ? words[focusIdx].c : -1
+      const rate = ctx.reduced ? 1 : Math.min(1, dt * 4)
+      for (let c = 0; c < names.length; c++) {
+        const el = names[c]
+        const cc = centres[c]
+        const dz = v.set(cc[0], cc[1], cc[2]).applyMatrix4(world.matrixWorld).applyMatrix4(camera.matrixWorldInverse).z - zo
+        v.set(cc[0], cc[1] + 0.62, cc[2]).applyMatrix4(world.matrixWorld).project(camera)
+        const half = (lbW.get(el) ?? 0) / 2
+        const x = (v.x * 0.5 + 0.5) * W, y = (-v.y * 0.5 + 0.5) * H
+        let want = only >= 0 ? Number(c === only) : THREE.MathUtils.smoothstep(dz, -0.2, 0.45)
+        if (v.z > 1 || x < half + 2 || x > W - half - 2 || y < 18 || y > H - 4) want = 0
+        else if (want > 0) {
+          for (let m = 0; m < shown.length; m++) {
+            const a = shown[m]
+            if (x + half > a.x && x - half < a.x + a.w && y > a.y && y - 16 < a.y + 22) {
+              want = 0
+              break
+            }
+          }
+        }
+        nameVis[c] += (want - nameVis[c]) * rate
+        nameText[c].style.opacity = nameVis[c].toFixed(3)
+        if (nameVis[c] > 0.01) el.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`
+      }
+      const f = focus()
+      for (let m = 0; m < threadPaths.length; m++) {
+        const p = threadPaths[m]
+        if (f < 0) {
+          p.setAttribute('d', '')
+          continue
+        }
+        const a = words[f], b = words[a.near[m]]
+        const mx = (a.sx + b.sx) / 2, my = (a.sy + b.sy) / 2 - Math.hypot(b.sx - a.sx, b.sy - a.sy) * 0.18
+        // TODO(perf): stroke() builds the tapered outline from fresh arrays — only while a word is focused
+        p.setAttribute('d', stroke([[a.sx, a.sy], [mx, my], [b.sx, b.sy]], 4.2 - m * 1.1, THREAD))
+      }
+    })
+    const ro = new ResizeObserver(measureLabels)
+    ro.observe(labels)
+    stage.render()
+
+    function fallback() {
+      host.classList.add('is-static')
+      host.removeAttribute('tabindex')
+      const svg = s('svg', { class: 't5-sp-fallback', viewBox: '-2.4 -1.6 4.8 3.2', role: 'img', 'aria-label': T.noWebgl },
+        ...words.map((w) => s('g', null,
+          s('circle', { cx: w.pos[0] + w.pos[2] * 0.2, cy: -w.pos[1], r: w.q ? 0.06 : 0.035, class: w.q ? 'is-q' : '' }),
+          s('text', { x: w.pos[0] + w.pos[2] * 0.2 + 0.07, y: -w.pos[1] + 0.03 }, w.w))))
+      host.append(svg)
+      ctx.complete()
+    }
+
+    return () => {
+      timers.forEach(clearTimeout)
+      clearTimeout(dwell)
+      ro.disconnect()
+      offPrefs()
+      hazeTex.dispose()
+      stage.dispose()
+    }
   }
 }

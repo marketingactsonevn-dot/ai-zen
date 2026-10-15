@@ -1,6 +1,7 @@
 import { h, s } from '../../core/dom'
 import type { SceneCtx } from '../types'
 import type { Fact } from '../../core/content'
+import { sliced } from '../../core/chunk'
 
 /** Sumi-e helpers for Trạm 12: tapered strokes, wobbly washes, stones with a word on them. */
 export type Pt = [number, number]
@@ -159,6 +160,17 @@ export function stableHeight(ctx: SceneCtx, copies: [Copy, Copy?][]) {
     return artH - Math.max(0, need - foot.offsetHeight)
   }
   return { H, reset: () => void (probeW = -1) }
+}
+
+/**
+ * sliced() starting on the next frame, so the scene's mount task itself stays short (spec A.10);
+ * `sync` (reduced motion, a redraw after a resize) does all the steps at once, as before.
+ */
+export function later(steps: Iterator<unknown>, sync: boolean): { cancel(): void } {
+  if (sync) return sliced(steps, { sync })
+  let job: { cancel(): void } | undefined
+  const raf = requestAnimationFrame(() => (job = sliced(steps)))
+  return { cancel: () => (cancelAnimationFrame(raf), job?.cancel()) }
 }
 
 /** Run fn again once the web fonts are in (they change text widths). */

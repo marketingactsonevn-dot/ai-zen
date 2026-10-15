@@ -450,14 +450,24 @@ export function ragScene(ctx: SceneCtx) {
   btns[0].addEventListener('click', memory)
   btns[1].addEventListener('click', lookup)
 
-  onSize(ctx, root, layout, stable.reset)
-  layout()
   ctx.prompt(R.prompt)
+  // A.10: split the mount in two tasks: the tweens here, layout in the first frame's rAF (still before it paints).
+  // Reduced motion: right away.
   if (!ctx.reduced) {
     gsap.from([lanternG, libG, path], { opacity: 0, duration: 1.6, stagger: 0.25, ease: 'power2.out', delay: 0.3 })
     // the flame breathes
     const v = { l: 0.35 }
     ctx.anim(() => gsap.to(v, { l: 0.45, duration: 2.2, repeat: -1, yoyo: true, ease: 'sine.inOut', onUpdate: () => !busy && done.size === 0 && setLight(v.l) }))
+  }
+  const first = () => {
+    layout()
+    // after the first layout, so the fonts check also waits for every face that layout asked for (canvas measures too)
+    onSize(ctx, root, layout, stable.reset)
+  }
+  if (ctx.reduced) first()
+  else {
+    const raf = requestAnimationFrame(first)
+    ctx.onCleanup(() => cancelAnimationFrame(raf))
   }
 }
 

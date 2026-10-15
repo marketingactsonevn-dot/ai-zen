@@ -1,10 +1,11 @@
 import * as THREE from 'three'
 import { createStage } from '../../core/three-stage'
+import { sliced } from '../../core/chunk'
 import { cssVar, onPrefs, prefs } from '../../core/prefs'
 import { h, nextId, s } from '../../core/dom'
 import type { SceneCtx } from '../types'
 import { pebbleArt, rng, stroke } from './brush'
-import { paintStone, STONE_A, STONE_BASE, STONE_H, STONE_W, themeInk, type StoneShape } from './stone'
+import { paintStoneSteps, STONE_A, STONE_BASE, STONE_H, STONE_W, themeInk, type StoneShape } from './stone'
 
 export interface BrainCopy {
   prompt: string
@@ -299,6 +300,18 @@ const VIEW0 = { pitch: 0.54, dist: 6.5 }
 
 /** Scene 1: raked-sand grains; hold to make them rise into a brain woven of light threads, and scrub back to sand. */
 export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
+  // Built in slices so the scene change never blocks a frame (spec A.10): the grains are computed first, the stage comes
+  // up once they are ready, then the stones soak in. Short slices: createStage (~35 ms on a slow phone) must not land
+  // late in a long one. Reduced motion builds it all at once, as before.
+  let cleanup = () => {}
+  const job = sliced(garden(ctx, c, (fn) => (cleanup = fn)), { budget: 4, sync: ctx.reduced })
+  return () => {
+    job.cancel()
+    cleanup()
+  }
+}
+
+function* garden(ctx: SceneCtx, c: BrainCopy, onCleanup: (fn: () => void) => void): Generator<void, void> {
   const helpId = nextId('t1-help')
   const host = h('div', { class: 't1-brain', tabindex: '0', role: 'button', 'aria-label': c.aria, 'aria-describedby': helpId })
   const halo = h('div', { class: 't1-halo', 'aria-hidden': 'true' })
@@ -332,20 +345,13 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
   scrub.hidden = true
   ctx.art.append(host, scrub)
   ctx.prompt(c.prompt)
+  onCleanup(() => (host.remove(), scrub.remove()))
 
-  const stage = createStage(host, { fov: 40 })
-  if (!stage) {
-    host.removeAttribute('role')
-    host.removeAttribute('tabindex')
-    brainFallback(host, c.noWebgl)
-    ctx.insight(c.insight, c.detail)
-    return () => (host.remove(), scrub.remove())
-  }
-  const { scene, camera, canvas, renderer } = stage
-  canvas.setAttribute('aria-hidden', 'true')
   const low = ctx.quality === 'low'
   const rand = rng(1956)
-  const STONES = stage.height > stage.width * 1.05 ? STONES_TALL : STONES_WIDE
+  // the stage's size as createStage measures it (the stage itself is made below, once the garden is computed)
+  const box = host.getBoundingClientRect()
+  const STONES = Math.max(1, Math.round(box.height)) > Math.max(1, Math.round(box.width)) * 1.05 ? STONES_TALL : STONES_WIDE
 
   // ── Grains: each starts as sand and flies up into the cortex, cerebellum or stem.
   const N = low ? 1500 : 4200
@@ -374,6 +380,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
     delay[i] = 0.72 * rand() + 0.28 * ((st[0] + 4.6) / 9.2) // a sweep from left to right
     size[i] = 0.55 + Math.pow(rand(), 3) * 0.6 // fine, even grains; only a few slightly heavier
     tone[i] = rand() < 0.16 ? 1 : 0
+    if (i % 64 === 63) yield
   }
 
   const brainG = new THREE.Group() // the brain's own turn + breath; grains read it through uRot
@@ -418,6 +425,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
   washGeo.setAttribute('aTone', new THREE.BufferAttribute(new Float32Array(WN), 1))
   const washMat = mat(DOT_VERT, DOT_FRAG, dotUniforms())
   const washMass = new THREE.Points(washGeo, washMat)
+  yield
   let washA = 0
   let shadowA = 0.2 // brain shadow strength for the theme (read in applyTheme, not per frame)
 
@@ -431,6 +439,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
       const zz = z + Math.sin(x * 1.3 + z * 2.6) * 0.04 + (rand() - 0.5) * 0.01
       if (!inRings(x, zz)) bed.push(x, SAND_Y, zz)
     }
+    yield
   }
   for (const [sx, sz, R, sr] of STONES) {
     for (let r = sr + 0.16; r < R; r += rowStep * 0.9) {
@@ -438,6 +447,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
         const x = sx + Math.cos(a) * r, z = sz + Math.sin(a) * r * 0.92
         if (!inStone(x, z)) bed.push(x, SAND_Y, z)
       }
+      yield
     }
   }
   const BN = bed.length / 3
@@ -452,7 +462,8 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
   const bedMat = mat(DOT_VERT, DOT_FRAG, { ...dotUniforms(), uProgress: { value: 0 }, uRot: { value: new THREE.Matrix4() } })
   const sandBed = new THREE.Points(bedGeo, bedMat)
 
-  // ── Stones: painted in ink on canvases (see stone.ts) and stood on the sand as billboards facing the camera.
+  // ── Stones: painted in ink on canvases (see stone.ts) and stood on the sand as billboards facing the camera;
+  //    each one shows once its first painting is done (repaint below).
   const ground = new THREE.Group()
   const stones = STONES.map(([sx, sz, , sr], i) => {
     const cv = document.createElement('canvas')
@@ -464,6 +475,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
     const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false }))
     m.position.set(sx, SAND_Y, sz)
     m.renderOrder = sz > 0.2 ? 7 : 4.5 // in front of the brain's grains, or only of the sand
+    m.visible = false
     ground.add(m)
     return { cv, tex, m, shape: SHAPES[i] }
   })
@@ -499,6 +511,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
       const key = Math.min(ia, ib) * N + Math.max(ia, ib)
       if (!seen.has(key)) (seen.add(key), pairs.push(ia, ib))
     }
+    yield
   }
   const pick = (src: Float32Array, n: number) => {
     const out = new Float32Array(pairs.length * n)
@@ -593,6 +606,7 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
     uSize: { value: 2 },
   })
   const filaments = new THREE.Points(filGeo, filMat)
+  yield
 
   // ── Pulse heads: soft vermilion sparks riding the pulse filaments (same clock as the shader).
   const headPos = new Float32Array(pulseCurves.length * 3)
@@ -612,6 +626,20 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
     headGeo.attributes.position.needsUpdate = true
   }
 
+  // The stage now. It is filled in the next slice, which runs before its first frame (that waits for the stage's
+  // IntersectionObserver), so that frame still compiles every shader of the scene without blocking.
+  const stage = createStage(host, { fov: 40 })
+  if (!stage) {
+    host.removeAttribute('role')
+    host.removeAttribute('tabindex')
+    brainFallback(host, c.noWebgl)
+    ctx.insight(c.insight, c.detail)
+    return
+  }
+  const { scene, camera, canvas, renderer } = stage
+  canvas.setAttribute('aria-hidden', 'true')
+  onCleanup(() => (stage.dispose(), host.remove(), scrub.remove()))
+  yield
   brainG.add(filaments, heads)
   ;[sandBed, ground, washMass, threads, dots, brainG].forEach((o) => scene.add(o))
   sandBed.renderOrder = 0
@@ -655,18 +683,27 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
     u(headMat).uColor.value = col('--vermilion')
     u(headMat).uSize.value = dark ? 22 : 14
     u(brainShadowMat).uColor.value = col('--umbra')
-    const ink = themeInk()
-    for (const st of stones) {
-      paintStone(st.cv, st.shape, ink)
-      st.tex.needsUpdate = true
-    }
     const blending = dark ? THREE.AdditiveBlending : THREE.NormalBlending
     for (const m of [dotMat, bedMat, washMat, threadMat, filMat, headMat]) m.blending = blending
     for (const m of [dotMat, bedMat, washMat, threadMat, filMat, headMat]) m.needsUpdate = true
     stage.render()
   }
   applyTheme()
-  const offPrefs = onPrefs(applyTheme)
+  // the stones are repainted in slices (a theme change too): each keeps its last texture until its new ink is down
+  let paintJob = { cancel() {} }
+  const repaint = () => {
+    paintJob.cancel()
+    const ink = themeInk()
+    paintJob = sliced((function* () {
+      for (const st of stones) {
+        yield* paintStoneSteps(st.cv, st.shape, ink)
+        st.tex.needsUpdate = true
+        st.m.visible = true
+        stage.render()
+      }
+    })(), { sync: ctx.reduced })
+  }
+  const offPrefs = onPrefs(() => (applyTheme(), repaint()))
 
   // ── Camera: looking down onto the raked garden at first, settling to eye level as the brain gathers.
   let dist0 = VIEW0.dist, dist1 = 5, lift = 0
@@ -887,7 +924,8 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
   syncScrub()
   stage.render()
 
-  return () => {
+  onCleanup(() => {
+    paintJob.cancel()
     offPrefs()
     clearTimeout(holdTimer)
     canvas.removeEventListener('pointerdown', onDown)
@@ -902,7 +940,9 @@ export function mountBrain(ctx: SceneCtx, c: BrainCopy) {
     stage.dispose()
     host.remove()
     scrub.remove()
-  }
+  })
+  yield
+  repaint()
 }
 
 /** No WebGL: a still side-view of the brain drawn in ink dots above raked sand. */

@@ -1,5 +1,6 @@
 import { fill, h, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
+import { sliced } from '../../core/chunk'
 import type { SceneCtx } from '../types'
 import { C } from './data'
 import { arc, clamp, ell, enso, hull, place, resample, rng, stable, stroke, watch, type Pt } from './ink'
@@ -20,10 +21,13 @@ const ISLE: Spot[][] = [
 const AT_WIDE: Pt[] = [[0.21, 0.4], [0.48, 0.74], [0.79, 0.33]]
 const AT_TALL: Pt[] = [[0.33, 0.24], [0.67, 0.53], [0.35, 0.83]]
 
+/** How high a garden stone stands above its foot. */
+const rise = (w: number, kind: Kind) => (kind === 'tall' ? w * 1.5 : kind === 'round' ? w * 0.82 : w * 0.42)
+
 /** A garden stone in ink: lit from the upper left, a pressed dark contour on the shadow side, dry-brush grain. */
 function gardenStone(r: () => number, x: number, y: number, w: number, kind: Kind, lean: number, shade: string) {
   const g = s('g')
-  const hg = kind === 'tall' ? w * 1.5 : kind === 'round' ? w * 0.82 : w * 0.42
+  const hg = rise(w, kind)
   const pts: Pt[] = []
   for (let i = 0; i <= 20; i++) {
     const t = Math.PI * (1 + i / 20)
@@ -52,7 +56,7 @@ function gardenStone(r: () => number, x: number, y: number, w: number, kind: Kin
     stroke(pts.slice(1, 8), Math.max(0.8, w * 0.03), 'k', { a: 0.3, b: 0.4, min: 0.2 }, 0.5),
     stroke(pts.slice(3, 9).map(([a, b]) => [a + w * 0.06, b + w * 0.07] as Pt), Math.max(0.8, w * 0.04), 'rim', { a: 0.3, b: 0.4, min: 0.2 }, 0.8),
   )
-  return { g, top: y - hg }
+  return g
 }
 
 type Box = { x: number; y: number; w: number; h: number }
@@ -103,6 +107,8 @@ export function stonesScene(ctx: SceneCtx) {
   let short = false
   let sheet = false
   let gbox: Box = { x: 0, y: 0, w: 0, h: 0 }
+  let ink: ReturnType<typeof sliced> | null = null
+  ctx.onCleanup(() => ink?.cancel())
 
   // ───────── the garden, drawn in pixels for the current size ─────────
   function draw(W: number, H: number) {
@@ -117,10 +123,10 @@ export function stonesScene(ctx: SceneCtx) {
     GROUPS.forEach((ids, gi) => {
       const [ax, ay] = anchors[gi]
       ids.forEach((id, k) => {
-        const [dx, dy, size] = ISLE[gi][k]
+        const [dx, dy, size, kind] = ISLE[gi][k]
         const x = ax * W + dx * u
         const y = ay * H + dy * u * (wide ? 1 : 0.7)
-        geo[id] = { x, y, w: b * size, top: y }
+        geo[id] = { x, y, w: b * size, top: y - rise(b * size, kind) }
       })
     })
     // one raked contour per island: the hull of the stones' footprints, offset outward ring by ring
@@ -143,72 +149,75 @@ export function stonesScene(ctx: SceneCtx) {
       s('mask', { id: 't18s-rk', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: H },
         s('rect', { x: 0, y: 0, width: W, height: H, fill: '#fff' }),
         ...outer.map((o) => s('path', { d: `M${o.map((p) => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join('L')}Z`, fill: '#000' })))))
-    // the bed of raked sand: long lines that breathe a little, parted around each island
-    const bed = s('g', { mask: 'url(#t18s-edge)' })
-    svg.append(bed)
-    bed.append(s('rect', { x: 0, y: 0, width: W, height: H, class: 'sand' }))
+    // the garden's layers, empty for now: the ink soaks into them over a few frames while the scene fades in
+    // (spec A.10: no long task on a scene change); the names and the buttons only need the geometry above
+    const bed = s('g', { mask: 'url(#t18s-edge)' }, s('rect', { x: 0, y: 0, width: W, height: H, class: 'sand' }))
     const rake = s('g', { mask: 'url(#t18s-rk)' })
-    const lineGap = clamp(H / 32, 7, 12)
-    for (let y = lineGap * 0.6, n = 0; y < H; y += lineGap, n++) {
-      const amp = 1.4 + 1.4 * Math.sin((y / H) * Math.PI * 1.4 + 0.6)
-      const op = 0.24 + 0.16 * (0.5 + 0.5 * Math.sin(n * 0.7 + 1)) + r() * 0.06
-      const pts: Pt[] = []
-      for (let x = -12; x <= W + 12; x += 18) pts.push([x, y + amp * Math.sin(x / 150 + y / 90) + 0.6 * Math.sin(x / 37 + n)])
-      // the rake lifts now and then: a line breaks into two or three runs
-      const cuts = [0, ...Array.from({ length: 1 + Math.floor(r() * 2) }, () => 2 + Math.floor(r() * (pts.length - 4))).sort((a, c) => a - c), pts.length]
-      for (let c = 0; c < cuts.length - 1; c++) {
-        const seg = pts.slice(cuts[c] + (c ? 1 : 0), cuts[c + 1])
-        if (seg.length > 1) rake.append(stroke(seg, 1, 'k3', { a: 0.04, b: 0.06, min: 0.5, wob: 0.08 }, op))
-      }
-    }
-    bed.append(rake)
-    // the contour rings, brushed: pressure varies, the rake lifts at two places on each ring
     const dryG = s('g', low ? null : { filter: 'url(#ink-dry)' })
-    bed.append(dryG)
-    GROUPS.forEach((_, gi) => {
-      for (let j = 0; j < 4; j++) {
-        const ring = ringsOf(gi, gap * (0.9 + j))
-        let per = 0
-        for (let i = 0; i < ring.length; i++) per += Math.hypot(ring[(i + 1) % ring.length][0] - ring[i][0], ring[(i + 1) % ring.length][1] - ring[i][1])
-        const n = Math.max(40, Math.round(per / 5))
-        const pts = resample(ring, n)
-        const start = Math.floor(r() * n)
-        const breaks = [start, (start + Math.floor(n * (0.38 + r() * 0.22))) % n]
-        for (let k = 0; k < 2; k++) {
-          const a = breaks[k] + 2 + Math.floor(r() * 2)
-          const len = ((breaks[(k + 1) % 2] - a + n) % n) || n
-          const seg = Array.from({ length: len }, (_, q) => pts[(a + q) % n])
-          if (seg.length < 3) continue
-          bed.append(stroke(seg, 1.15 - j * 0.08, 'k3', { a: 0.12, b: 0.18, min: 0.35, wob: 0.12 }, 0.6 - j * 0.07))
-          if (j === 0 && k === 0) dryG.append(stroke(seg.slice(0, Math.ceil(seg.length * 0.6)), gap * 0.7, 'k3', { a: 0.2, b: 0.3, min: 0.4 }, 0.16))
-        }
-      }
-    })
-    // stones, back first so the near ones overlap
-    mossG = []
+    bed.append(rake, dryG)
     const order = geo.map((_, i) => i).sort((a, c) => geo[a].y - geo[c].y)
     const stonesG = s('g', low ? null : { filter: 'url(#ink-rough)' })
-    svg.append(stonesG)
-    for (const i of order) {
-      const p = geo[i]
-      const gi = GROUPS.findIndex((ids) => ids.includes(i))
-      const [, , , kind, lean] = ISLE[gi][GROUPS[gi].indexOf(i)]
-      const one = gardenStone(r, p.x, p.y, p.w, kind, lean, 't18s')
-      p.top = one.top
-      stonesG.append(one.g)
-      // moss creeps up the foot once its good habit is known
-      const mg = s('g', { class: 'm', opacity: flipped.has(i) ? 1 : 0 })
-      for (let n = 0; n < 14; n++) {
-        const a = Math.PI * (0.15 + r() * 0.7)
-        const f = 0.75 + r() * 0.3
-        mg.append(s('path', { d: ell(p.x + p.w * f * Math.cos(a), p.y + p.w * 0.24 * f * Math.sin(a) - p.w * 0.06, p.w * (0.05 + r() * 0.06), p.w * (0.03 + r() * 0.04)), 'fill-opacity': (0.5 + r() * 0.45).toFixed(2) }))
-      }
-      mg.append(stroke([[p.x - p.w * 0.95, p.y + 1], [p.x - p.w * 1.02, p.y - p.w * 0.22], [p.x - p.w * 0.9, p.y - p.w * 0.42]], Math.max(1, p.w * 0.06), 'm', { a: 0.1, b: 0.5 }))
-      mossG[i] = mg
-      svg.append(mg)
-    }
+    mossG = []
+    for (const i of order) mossG[i] = s('g', { class: 'm', opacity: flipped.has(i) ? 1 : 0 })
     ringG = s('g', { class: 't18s-ring', opacity: 0 })
-    svg.append(ringG)
+    svg.append(bed, stonesG, ...order.map((i) => mossG[i]), ringG)
+    ink?.cancel()
+    ink = sliced(
+      (function* () {
+        // the bed of raked sand: long lines that breathe a little, parted around each island
+        const lineGap = clamp(H / 32, 7, 12)
+        for (let y = lineGap * 0.6, n = 0; y < H; y += lineGap, n++) {
+          const amp = 1.4 + 1.4 * Math.sin((y / H) * Math.PI * 1.4 + 0.6)
+          const op = 0.24 + 0.16 * (0.5 + 0.5 * Math.sin(n * 0.7 + 1)) + r() * 0.06
+          const pts: Pt[] = []
+          for (let x = -12; x <= W + 12; x += 18) pts.push([x, y + amp * Math.sin(x / 150 + y / 90) + 0.6 * Math.sin(x / 37 + n)])
+          // the rake lifts now and then: a line breaks into two or three runs
+          const cuts = [0, ...Array.from({ length: 1 + Math.floor(r() * 2) }, () => 2 + Math.floor(r() * (pts.length - 4))).sort((a, c) => a - c), pts.length]
+          for (let c = 0; c < cuts.length - 1; c++) {
+            const seg = pts.slice(cuts[c] + (c ? 1 : 0), cuts[c + 1])
+            if (seg.length > 1) rake.append(stroke(seg, 1, 'k3', { a: 0.04, b: 0.06, min: 0.5, wob: 0.08 }, op))
+          }
+          yield
+        }
+        // the contour rings, brushed: pressure varies, the rake lifts at two places on each ring
+        for (let gi = 0; gi < GROUPS.length; gi++)
+          for (let j = 0; j < 4; j++) {
+            const ring = ringsOf(gi, gap * (0.9 + j))
+            let per = 0
+            for (let i = 0; i < ring.length; i++) per += Math.hypot(ring[(i + 1) % ring.length][0] - ring[i][0], ring[(i + 1) % ring.length][1] - ring[i][1])
+            const n = Math.max(40, Math.round(per / 5))
+            const pts = resample(ring, n)
+            const start = Math.floor(r() * n)
+            const breaks = [start, (start + Math.floor(n * (0.38 + r() * 0.22))) % n]
+            for (let k = 0; k < 2; k++) {
+              const a = breaks[k] + 2 + Math.floor(r() * 2)
+              const len = ((breaks[(k + 1) % 2] - a + n) % n) || n
+              const seg = Array.from({ length: len }, (_, q) => pts[(a + q) % n])
+              if (seg.length < 3) continue
+              bed.append(stroke(seg, 1.15 - j * 0.08, 'k3', { a: 0.12, b: 0.18, min: 0.35, wob: 0.12 }, 0.6 - j * 0.07))
+              if (j === 0 && k === 0) dryG.append(stroke(seg.slice(0, Math.ceil(seg.length * 0.6)), gap * 0.7, 'k3', { a: 0.2, b: 0.3, min: 0.4 }, 0.16))
+            }
+            yield
+          }
+        // stones, back first so the near ones overlap
+        for (const i of order) {
+          const p = geo[i]
+          const gi = GROUPS.findIndex((ids) => ids.includes(i))
+          const [, , , kind, lean] = ISLE[gi][GROUPS[gi].indexOf(i)]
+          stonesG.append(gardenStone(r, p.x, p.y, p.w, kind, lean, 't18s'))
+          // moss creeps up the foot once its good habit is known
+          const mg = mossG[i]
+          for (let n = 0; n < 14; n++) {
+            const a = Math.PI * (0.15 + r() * 0.7)
+            const f = 0.75 + r() * 0.3
+            mg.append(s('path', { d: ell(p.x + p.w * f * Math.cos(a), p.y + p.w * 0.24 * f * Math.sin(a) - p.w * 0.06, p.w * (0.05 + r() * 0.06), p.w * (0.03 + r() * 0.04)), 'fill-opacity': (0.5 + r() * 0.45).toFixed(2) }))
+          }
+          mg.append(stroke([[p.x - p.w * 0.95, p.y + 1], [p.x - p.w * 1.02, p.y - p.w * 0.22], [p.x - p.w * 0.9, p.y - p.w * 0.42]], Math.max(1, p.w * 0.06), 'm', { a: 0.1, b: 0.5 }))
+          yield
+        }
+      })(),
+      { sync: ctx.reduced },
+    )
     if (sel >= 0) placeRing(sel, false)
     return outer
   }
@@ -246,6 +255,9 @@ export function stonesScene(ctx: SceneCtx) {
       }
       return best
     }
+    // every label measured before any of them moves: one layout, not one per label
+    const isleBox = isles.map((el) => [el.offsetWidth, el.offsetHeight])
+    const nameBox = btns.map((b) => [(b.firstElementChild as HTMLElement).offsetWidth, (b.firstElementChild as HTMLElement).offsetHeight])
     // island captions first, lying in the sand just outside each island's contour
     isles.forEach((el, gi) => {
       const o = outer[gi]
@@ -253,8 +265,7 @@ export function stonesScene(ctx: SceneCtx) {
       const x1 = Math.max(...o.map((p) => p[0]))
       const y0 = Math.min(...o.map((p) => p[1]))
       const y1 = Math.max(...o.map((p) => p[1]))
-      const w = el.offsetWidth
-      const hh = el.offsetHeight
+      const [w, hh] = isleBox[gi]
       const cy = (y0 + y1) / 2
       const c = choose([
         { b: { x: x0 - w - 4, y: cy - hh / 2, w, h: hh }, side: 'l' },
@@ -270,8 +281,7 @@ export function stonesScene(ctx: SceneCtx) {
     for (const i of order) {
       const g = geo[i]
       const span = btns[i].firstElementChild as HTMLElement
-      const w = span.offsetWidth
-      const hh = span.offsetHeight
+      const [w, hh] = nameBox[i]
       const foot = g.y + g.w * 0.3 + 2
       const mid = (g.top + g.y) / 2
       const c = choose([
@@ -454,11 +464,15 @@ export function stonesScene(ctx: SceneCtx) {
       openSheet(false, true)
     }
   })
-  watch(ctx, () => {
-    st.reset()
-    measuredW = -1
-    layout()
-  })
+  watch(
+    ctx,
+    () => {
+      st.reset()
+      measuredW = -1
+      layout()
+    },
+    true,
+  )
   ctx.prompt(S.prompt)
   if (!ctx.reduced) {
     gsap.from(svg, { opacity: 0, duration: 1.6, ease: 'power2.out', delay: 0.2 })

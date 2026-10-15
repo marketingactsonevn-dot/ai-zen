@@ -159,6 +159,12 @@ export function measure(text: string, size: number, weight = 400): number {
   return mctx.measureText(text).width
 }
 
+// A.10: a page's first measure() pays one-off font work (each weight; a system fallback for glyphs the serif lacks, such
+// as "→": ≈25 ms at 4× CPU). Pay it in idle time once the station loads, not inside a scene's mount: every character
+// the scenes measure, once per weight, one idle task each.
+const glyphs = [...new Set([...C.scenes.think.steps, C.scenes.think.slowAnswer, C.scenes.think.fastAnswer, ...C.scenes.hallu.stones.map((x) => x.text), C.scenes.hallu.fixed].join(''))].join('')
+for (const wt of [400, 500]) (window.requestIdleCallback ?? setTimeout)(() => measure(glyphs, 100, wt))
+
 /** A theme-coloured SVG layer filling the art, sized in CSS px (viewBox = px). */
 export function layer(cls = ''): SVGSVGElement {
   return s('svg', { class: `t6-svg ${cls}`.trim(), 'aria-hidden': 'true' })

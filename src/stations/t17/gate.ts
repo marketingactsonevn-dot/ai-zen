@@ -1,5 +1,6 @@
 import { fill, h, s } from '../../core/dom'
 import { gsap } from '../../core/anim'
+import { sliced } from '../../core/chunk'
 import { L, type Fact } from '../../core/content'
 import { company, logoStone } from '../../ui/logo'
 import type { SceneCtx } from '../types'
@@ -78,6 +79,7 @@ export function gateScene(ctx: SceneCtx) {
   let belowWas: boolean | null = null
   const was = new Map<Piece, Pt>()
   const NAME = 18 // a stone's name line
+  let art: ReturnType<typeof sliced> | null = null
 
   function layout() {
     const W = root.clientWidth
@@ -112,135 +114,148 @@ export function gateScene(ctx: SceneCtx) {
     front.replaceChildren()
     sandL.replaceChildren()
     for (const v of [back, front, sandL]) v.setAttribute('viewBox', `0 0 ${W} ${H}`)
-    const id = defs(back)
-    back.append(s('ellipse', { cx: W / 2, cy: H * 0.6, rx: W * 0.62, ry: H * 0.55, fill: `url(#${id.warm})` }))
-    sandL.append(sand(W, H, [{ x: cx, y: cy, r0: rx * 1.12, n: 3 }, { x: hx, y: hy + hs * 0.18, r0: hs * 0.95, n: 2 }], { top: top * 0.35, gap: sgap, k, fade: H * 0.12 }))
-    // the walled garden: moss inside, a bamboo fence around
-    const fr = rng(41)
-    back.append(
-      s('path', { class: 'sh', 'fill-opacity': 0.1, d: ell(cx + rx * 0.03, cy + ry * 0.1, rx * 1.04, ry * 1.02), filter: 'url(#ink-wash)' }),
-      s('path', { class: 'floor', d: ell(cx, cy, rx * 0.99, ry * 0.97) }),
-      ...[0.82, 0.62, 0.42].map((f) => s('path', { class: 'rk', d: ell(cx + rx * 0.04, cy + ry * 0.04, rx * f, ry * f) })),
-      s('path', { class: 'm', 'fill-opacity': 0.16, d: ell(cx - rx * 0.55, cy - ry * 0.45, rx * 0.4, ry * 0.32), filter: 'url(#ink-wash)' }),
-      s('path', { class: 'm', 'fill-opacity': 0.12, d: ell(cx + rx * 0.5, cy + ry * 0.5, rx * 0.3, ry * 0.25), filter: 'url(#ink-wash)' }),
-      s('g', { class: 'm', filter: 'url(#ink-rough)' }, ...Array.from({ length: 12 }, () => {
-        const t = Math.PI * (1.05 + fr() * 0.5)
-        return s('path', { d: ell(cx + rx * 0.9 * Math.cos(t), cy + ry * 0.86 * Math.sin(t), 1.5 + fr() * 2.5, 1 + fr() * 1.5), 'fill-opacity': (0.3 + fr() * 0.4).toFixed(2) })
-      })))
-
-    // ── the bamboo fence: tapered posts with nodes, double rails lashed at each post, seated in a soft shadow
-    const ph = sz * 0.62
-    const gw = wide ? 9 : 10 // half-width of the gate opening, degrees
-    const atGate = (a: number) => Math.abs(((((a - ga) % 360) + 540) % 360) - 180) > 180 - gw - 1
-    const fence = (a0: number, a1: number, far: boolean) => {
-      const g = s('g', { class: 't17g-fence', filter: 'url(#ink-rough)' })
-      const op = far ? 0.42 : 0.82
-      const sc = far ? 0.86 : 1
-      g.append(s('path', { class: 'sh', 'fill-opacity': far ? 0.08 : 0.14, d: brush(arc(cx, cy + 2, rx, ry, a0, a1, 40), sz * 0.12, { a: 0.1, b: 0.1, min: 0.4, wob: 0.2 }), filter: 'url(#ink-wash)' }))
-      const n = Math.round(((a1 - a0) / 360) * (wide ? 34 : 26))
-      const tops: { x: number; y: number; hh: number; a: number }[] = []
-      for (let i = 0; i <= n; i++) {
-        const a = a0 + ((a1 - a0) * i) / n
-        if (atGate(a)) continue
-        const [x, y] = onRim(a)
-        const hh = ph * sc * (0.9 + 0.1 * Math.sin(i * 2.3))
-        const w = Math.max(far ? 1.6 : 2.2, sz * (far ? 0.05 : 0.068))
-        tops.push({ x, y, hh, a })
-        g.append(s('path', { class: 'k', 'fill-opacity': op, d: brush([[x, y + 1], [x + 0.5, y - hh * 0.5], [x + 0.2, y - hh]], w, { a: 0.03, b: 0.06, min: 0.7, wob: 0.04 }) }))
-        // bamboo nodes: short dark bands
-        for (const f of [0.38, 0.74]) g.append(s('path', { class: 'k', 'fill-opacity': op * 0.9, d: brush([[x - w * 0.75, y - hh * f], [x + w * 0.75, y - hh * f - 0.4]], Math.max(1, w * 0.36), { a: 0.2, b: 0.2, min: 0.5 }) }))
-      }
-      // double rails, broken at the gate, lashed with a small knot at every post
-      for (const f of [0.3, 0.68]) {
-        const runs: Pt[][][] = []
-        let cur: Pt[][] = [[], []]
-        for (let a = a0; a <= a1; a += 2.5) {
-          if (atGate(a)) {
-            if (cur[0].length > 1) runs.push(cur)
-            cur = [[], []]
-            continue
-          }
-          const [x, y] = onRim(a)
-          cur[0].push([x, y - ph * sc * f])
-          cur[1].push([x, y - ph * sc * f + Math.max(2.2, sz * 0.05)])
-        }
-        if (cur[0].length > 1) runs.push(cur)
-        for (const r of runs) for (const line of r) g.append(s('path', { class: 'k', 'fill-opacity': op * 0.8, d: brush(line, Math.max(1, sz * 0.026), { a: 0.03, b: 0.04, min: 0.7, wob: 0.03 }) }))
-        if (!far) for (const t of tops) g.append(s('path', { class: 'k', 'fill-opacity': 0.9, d: ell(t.x, t.y - ph * f + sz * 0.025, Math.max(1.4, sz * 0.03), Math.max(1.8, sz * 0.045)) }))
-      }
-      return g
-    }
-    back.append(fence(180, 360, true))
-    front.append(fence(0, 180, false))
-
-    // ── the gate: two posts, a lintel with lifted ends, a tie beam; the opening between them is clear
-    const [l, r] = [onRim(ga - gw), onRim(ga + gw)]
-    const gh = sz * 1.15
-    const lift = sz * 0.12
-    const over = sz * 0.3
-    const lt: Pt = [l[0], l[1] - gh]
-    const rt: Pt = [r[0], r[1] - gh]
-    front.append(s('g', { class: 'k', filter: 'url(#ink-rough)' },
-      s('path', { 'fill-opacity': 0.12, class: 'sh', d: ell((l[0] + r[0]) / 2, (l[1] + r[1]) / 2 + 2, Math.abs(r[0] - l[0]) * 0.55 + 4, sz * 0.08), filter: 'url(#ink-wash)' }),
-      s('path', { d: brush([[l[0], l[1] + 2], [l[0] + 0.6, l[1] - gh * 0.5], [lt[0], lt[1] + 3]], Math.max(2.6, sz * 0.09), { a: 0.04, b: 0.06, min: 0.7 }) }),
-      s('path', { d: brush([[r[0], r[1] + 2], [r[0] - 0.6, r[1] - gh * 0.5], [rt[0], rt[1] + 3]], Math.max(2.6, sz * 0.09), { a: 0.04, b: 0.06, min: 0.7 }) }),
-      // tie beam
-      s('path', { 'fill-opacity': 0.85, d: brush([[l[0] - sz * 0.05, l[1] - gh * 0.74], [r[0] + sz * 0.05, r[1] - gh * 0.74]], Math.max(1.6, sz * 0.05), { a: 0.1, b: 0.1, min: 0.6 }) }),
-      // lintel: one confident stroke, ends lifted like eaves
-      s('path', { d: brush([[lt[0] - over, lt[1] - lift * 0.2], [lt[0], lt[1] - lift * 0.55], [(lt[0] + rt[0]) / 2, (lt[1] + rt[1]) / 2 - lift * 0.75], [rt[0], rt[1] - lift * 0.55], [rt[0] + over, rt[1] - lift * 0.2 - lift * 0.5]], Math.max(3, sz * 0.11), { a: 0.18, b: 0.22, min: 0.35 }) })))
-
-    // ── stepping stones from the house to the gate
-    const steps = s('g', { class: 't17g-steps' })
+    // the stepping-stone path's line (its stones are painted below; the open stones keep off it)
     const n = Math.max(4, Math.round(Math.hypot(pathPts[2][0] - pathPts[0][0], pathPts[2][1] - pathPts[0][1]) / (sz * 0.75)))
     const pts = curve(pathPts, n)
-    pts.slice(1, -1).forEach(([x, y], i) => {
-      const w = sz * (0.22 + 0.04 * Math.sin(i * 1.7))
-      steps.append(s('path', { class: 'st', d: ell(x, y, w, w * 0.42), filter: 'url(#ink-rough)' }), s('path', { class: 'sh', 'fill-opacity': 0.4, d: brush([[x - w, y + 1], [x, y + w * 0.44], [x + w, y]], Math.max(1, w * 0.12)) }))
-    })
-    back.append(steps)
-    walk = s('path', { d: `M${pts.map((p) => p.join(' ')).join('L')}`, fill: 'none', stroke: 'none' })
-    back.append(walk)
+    // the ink soaks in over a few frames while the scene fades in (spec A.10: no long task on a scene change)
+    art?.cancel()
+    // only the first paint soaks in; a relayout (insight, resize) repaints at once, as before
+    art = sliced(paint(), { sync: ctx.reduced || art !== null })
+    function* paint() {
+      const id = defs(back)
+      back.append(s('ellipse', { cx: W / 2, cy: H * 0.6, rx: W * 0.62, ry: H * 0.55, fill: `url(#${id.warm})` }))
+      yield
+      sandL.append(sand(W, H, [{ x: cx, y: cy, r0: rx * 1.12, n: 3 }, { x: hx, y: hy + hs * 0.18, r0: hs * 0.95, n: 2 }], { top: top * 0.35, gap: sgap, k, fade: H * 0.12 }))
+      yield
+      // the walled garden: moss inside, a bamboo fence around
+      const fr = rng(41)
+      back.append(
+        s('path', { class: 'sh', 'fill-opacity': 0.1, d: ell(cx + rx * 0.03, cy + ry * 0.1, rx * 1.04, ry * 1.02), filter: 'url(#ink-wash)' }),
+        s('path', { class: 'floor', d: ell(cx, cy, rx * 0.99, ry * 0.97) }),
+        ...[0.82, 0.62, 0.42].map((f) => s('path', { class: 'rk', d: ell(cx + rx * 0.04, cy + ry * 0.04, rx * f, ry * f) })),
+        s('path', { class: 'm', 'fill-opacity': 0.16, d: ell(cx - rx * 0.55, cy - ry * 0.45, rx * 0.4, ry * 0.32), filter: 'url(#ink-wash)' }),
+        s('path', { class: 'm', 'fill-opacity': 0.12, d: ell(cx + rx * 0.5, cy + ry * 0.5, rx * 0.3, ry * 0.25), filter: 'url(#ink-wash)' }),
+        s('g', { class: 'm', filter: 'url(#ink-rough)' }, ...Array.from({ length: 12 }, () => {
+          const t = Math.PI * (1.05 + fr() * 0.5)
+          return s('path', { d: ell(cx + rx * 0.9 * Math.cos(t), cy + ry * 0.86 * Math.sin(t), 1.5 + fr() * 2.5, 1 + fr() * 1.5), 'fill-opacity': (0.3 + fr() * 0.4).toFixed(2) })
+        })))
 
-    // ── your house: a small tea house; its doorway is ink-washed, and glows softly once a stone is home
-    const hr = rng(5)
-    const bw = hs * 0.9
-    const bh = hs * 0.48
-    const bx = hx - bw / 2
-    const by = hy - bh
-    const dw = bw * 0.17
-    const doorD = `M${hx - dw} ${hy}L${hx - dw + 0.6} ${by + bh * 0.24}Q${hx} ${by + bh * 0.2} ${hx + dw - 0.4} ${by + bh * 0.25}L${hx + dw} ${hy}Z`
-    const house = s('g', { class: 't17g-house' })
-    glow = s('ellipse', { cx: hx, cy: hy - bh * 0.4, rx: hs * 0.9, ry: hs * 0.62, fill: `url(#${id.glow})`, opacity: 0 })
-    doorLit = s('path', { class: 't17g-doorlit', d: doorD, filter: 'url(#ink-wash)', opacity: 0 })
-    house.append(
-      glow,
-      s('path', { class: 'sh', 'fill-opacity': 0.14, d: ell(hx, hy + hs * 0.05, hs * 0.8, hs * 0.13), filter: 'url(#ink-wash)' }),
-      s('path', { class: 'pap', d: `M${bx} ${hy}V${by}H${bx + bw}V${hy}Z` }),
-      s('path', { class: 'sh', 'fill-opacity': 0.08, d: `M${bx} ${by}H${bx + bw}V${by + bh * 0.28}H${bx}Z`, filter: 'url(#ink-wash)' }),
-      s('path', { class: 'k t17g-door', 'fill-opacity': 0.3, d: doorD, filter: 'url(#ink-wash)' }),
-      doorLit,
-      // a short noren curtain over the doorway, and the shoji's thin frame
-      s('g', { class: 'k', 'fill-opacity': 0.75, filter: 'url(#ink-rough)' },
-        ...[-1, 0, 1].map((j) => s('path', { d: brush([[hx + j * dw * 0.66, by + bh * 0.22], [hx + j * dw * 0.66 + 0.3, by + bh * 0.46]], dw * 0.56, { a: 0.02, b: 0.3, min: 0.5, wob: 0.03 }) })),
-        s('path', { d: brush([[hx - dw * 1.15, by + bh * 0.2], [hx + dw * 1.15, by + bh * 0.2]], Math.max(1.4, hs * 0.022), { a: 0.1, b: 0.1, min: 0.6 }) })),
-      s('g', { class: 'k', 'fill-opacity': 0.35 },
-        ...[0.38, 0.62].map((f) => s('path', { d: brush([[hx + dw + 3, by + bh * f], [bx + bw * 0.94, by + bh * f]], 1, { a: 0.1, b: 0.1, min: 0.7 }) }))),
-      s('g', { class: 'k', filter: 'url(#ink-rough)' },
-        s('path', { d: brush([[bx + 1, hy + 1], [bx + 1.5, by]], Math.max(1.6, hs * 0.03), { a: 0.05, b: 0.1, min: 0.6 }) }),
-        s('path', { d: brush([[bx + bw - 1, hy + 1], [bx + bw - 1.5, by]], Math.max(1.6, hs * 0.03), { a: 0.05, b: 0.1, min: 0.6 }) }),
-        s('path', { d: brush([[bx - hs * 0.08, hy + 1], [bx + bw + hs * 0.1, hy + 0.5]], Math.max(1.8, hs * 0.035), { a: 0.1, b: 0.2 }) }),
-        // roof: a long tapered stroke with lifted eaves, and the ridge
-        s('path', { d: brush([[bx - hs * 0.32, by + hs * 0.02], [bx - hs * 0.1, by - hs * 0.06], [hx, by - hs * 0.12 - hr() * 2], [bx + bw + hs * 0.1, by - hs * 0.06], [bx + bw + hs * 0.34, by + hs * 0.01]], Math.max(3, hs * 0.075), { a: 0.25, b: 0.25, min: 0.25 }) }),
-        s('path', { d: brush([[bx + hs * 0.02, by - hs * 0.14], [hx, by - hs * 0.3], [bx + bw - hs * 0.02, by - hs * 0.14]], Math.max(2, hs * 0.05), { a: 0.3, b: 0.3, min: 0.3 }) })),
-      s('circle', { class: 'k2', 'fill-opacity': 0.5, cx: bx + bw * 0.2, cy: by + bh * 0.45, r: bh * 0.16 }),
-      s('circle', { class: 'pap', cx: bx + bw * 0.2, cy: by + bh * 0.45, r: bh * 0.12 }))
-    back.append(house)
-    if (pieces.some((q) => q.home)) {
-      glow.setAttribute('opacity', '1')
-      doorLit.setAttribute('opacity', '1')
+      // ── the bamboo fence: tapered posts with nodes, double rails lashed at each post, seated in a soft shadow
+      const ph = sz * 0.62
+      const gw = wide ? 9 : 10 // half-width of the gate opening, degrees
+      const atGate = (a: number) => Math.abs(((((a - ga) % 360) + 540) % 360) - 180) > 180 - gw - 1
+      function* fence(into: SVGSVGElement, a0: number, a1: number, far: boolean) {
+        const g = s('g', { class: 't17g-fence', filter: 'url(#ink-rough)' })
+        into.append(g)
+        const op = far ? 0.42 : 0.82
+        const sc = far ? 0.86 : 1
+        g.append(s('path', { class: 'sh', 'fill-opacity': far ? 0.08 : 0.14, d: brush(arc(cx, cy + 2, rx, ry, a0, a1, 40), sz * 0.12, { a: 0.1, b: 0.1, min: 0.4, wob: 0.2 }), filter: 'url(#ink-wash)' }))
+        const n = Math.round(((a1 - a0) / 360) * (wide ? 34 : 26))
+        const tops: { x: number; y: number; hh: number; a: number }[] = []
+        for (let i = 0; i <= n; i++) {
+          const a = a0 + ((a1 - a0) * i) / n
+          if (atGate(a)) continue
+          const [x, y] = onRim(a)
+          const hh = ph * sc * (0.9 + 0.1 * Math.sin(i * 2.3))
+          const w = Math.max(far ? 1.6 : 2.2, sz * (far ? 0.05 : 0.068))
+          tops.push({ x, y, hh, a })
+          g.append(s('path', { class: 'k', 'fill-opacity': op, d: brush([[x, y + 1], [x + 0.5, y - hh * 0.5], [x + 0.2, y - hh]], w, { a: 0.03, b: 0.06, min: 0.7, wob: 0.04 }) }))
+          // bamboo nodes: short dark bands
+          for (const f of [0.38, 0.74]) g.append(s('path', { class: 'k', 'fill-opacity': op * 0.9, d: brush([[x - w * 0.75, y - hh * f], [x + w * 0.75, y - hh * f - 0.4]], Math.max(1, w * 0.36), { a: 0.2, b: 0.2, min: 0.5 }) }))
+          yield
+        }
+        // double rails, broken at the gate, lashed with a small knot at every post
+        for (const f of [0.3, 0.68]) {
+          const runs: Pt[][][] = []
+          let cur: Pt[][] = [[], []]
+          for (let a = a0; a <= a1; a += 2.5) {
+            if (atGate(a)) {
+              if (cur[0].length > 1) runs.push(cur)
+              cur = [[], []]
+              continue
+            }
+            const [x, y] = onRim(a)
+            cur[0].push([x, y - ph * sc * f])
+            cur[1].push([x, y - ph * sc * f + Math.max(2.2, sz * 0.05)])
+          }
+          if (cur[0].length > 1) runs.push(cur)
+          for (const r of runs) for (const line of r) g.append(s('path', { class: 'k', 'fill-opacity': op * 0.8, d: brush(line, Math.max(1, sz * 0.026), { a: 0.03, b: 0.04, min: 0.7, wob: 0.03 }) }))
+          if (!far) for (const t of tops) g.append(s('path', { class: 'k', 'fill-opacity': 0.9, d: ell(t.x, t.y - ph * f + sz * 0.025, Math.max(1.4, sz * 0.03), Math.max(1.8, sz * 0.045)) }))
+          yield
+        }
+      }
+      yield* fence(back, 180, 360, true)
+      yield* fence(front, 0, 180, false)
+
+      // ── the gate: two posts, a lintel with lifted ends, a tie beam; the opening between them is clear
+      const [l, r] = [onRim(ga - gw), onRim(ga + gw)]
+      const gh = sz * 1.15
+      const lift = sz * 0.12
+      const over = sz * 0.3
+      const lt: Pt = [l[0], l[1] - gh]
+      const rt: Pt = [r[0], r[1] - gh]
+      front.append(s('g', { class: 'k', filter: 'url(#ink-rough)' },
+        s('path', { 'fill-opacity': 0.12, class: 'sh', d: ell((l[0] + r[0]) / 2, (l[1] + r[1]) / 2 + 2, Math.abs(r[0] - l[0]) * 0.55 + 4, sz * 0.08), filter: 'url(#ink-wash)' }),
+        s('path', { d: brush([[l[0], l[1] + 2], [l[0] + 0.6, l[1] - gh * 0.5], [lt[0], lt[1] + 3]], Math.max(2.6, sz * 0.09), { a: 0.04, b: 0.06, min: 0.7 }) }),
+        s('path', { d: brush([[r[0], r[1] + 2], [r[0] - 0.6, r[1] - gh * 0.5], [rt[0], rt[1] + 3]], Math.max(2.6, sz * 0.09), { a: 0.04, b: 0.06, min: 0.7 }) }),
+        // tie beam
+        s('path', { 'fill-opacity': 0.85, d: brush([[l[0] - sz * 0.05, l[1] - gh * 0.74], [r[0] + sz * 0.05, r[1] - gh * 0.74]], Math.max(1.6, sz * 0.05), { a: 0.1, b: 0.1, min: 0.6 }) }),
+        // lintel: one confident stroke, ends lifted like eaves
+        s('path', { d: brush([[lt[0] - over, lt[1] - lift * 0.2], [lt[0], lt[1] - lift * 0.55], [(lt[0] + rt[0]) / 2, (lt[1] + rt[1]) / 2 - lift * 0.75], [rt[0], rt[1] - lift * 0.55], [rt[0] + over, rt[1] - lift * 0.2 - lift * 0.5]], Math.max(3, sz * 0.11), { a: 0.18, b: 0.22, min: 0.35 }) })))
+
+      yield
+      // ── stepping stones from the house to the gate
+      const steps = s('g', { class: 't17g-steps' })
+      pts.slice(1, -1).forEach(([x, y], i) => {
+        const w = sz * (0.22 + 0.04 * Math.sin(i * 1.7))
+        steps.append(s('path', { class: 'st', d: ell(x, y, w, w * 0.42), filter: 'url(#ink-rough)' }), s('path', { class: 'sh', 'fill-opacity': 0.4, d: brush([[x - w, y + 1], [x, y + w * 0.44], [x + w, y]], Math.max(1, w * 0.12)) }))
+      })
+      back.append(steps)
+      walk = s('path', { d: `M${pts.map((p) => p.join(' ')).join('L')}`, fill: 'none', stroke: 'none' })
+      back.append(walk)
+
+      yield
+      // ── your house: a small tea house; its doorway is ink-washed, and glows softly once a stone is home
+      const hr = rng(5)
+      const bw = hs * 0.9
+      const bh = hs * 0.48
+      const bx = hx - bw / 2
+      const by = hy - bh
+      const dw = bw * 0.17
+      const doorD = `M${hx - dw} ${hy}L${hx - dw + 0.6} ${by + bh * 0.24}Q${hx} ${by + bh * 0.2} ${hx + dw - 0.4} ${by + bh * 0.25}L${hx + dw} ${hy}Z`
+      const house = s('g', { class: 't17g-house' })
+      glow = s('ellipse', { cx: hx, cy: hy - bh * 0.4, rx: hs * 0.9, ry: hs * 0.62, fill: `url(#${id.glow})`, opacity: 0 })
+      doorLit = s('path', { class: 't17g-doorlit', d: doorD, filter: 'url(#ink-wash)', opacity: 0 })
+      house.append(
+        glow,
+        s('path', { class: 'sh', 'fill-opacity': 0.14, d: ell(hx, hy + hs * 0.05, hs * 0.8, hs * 0.13), filter: 'url(#ink-wash)' }),
+        s('path', { class: 'pap', d: `M${bx} ${hy}V${by}H${bx + bw}V${hy}Z` }),
+        s('path', { class: 'sh', 'fill-opacity': 0.08, d: `M${bx} ${by}H${bx + bw}V${by + bh * 0.28}H${bx}Z`, filter: 'url(#ink-wash)' }),
+        s('path', { class: 'k t17g-door', 'fill-opacity': 0.3, d: doorD, filter: 'url(#ink-wash)' }),
+        doorLit,
+        // a short noren curtain over the doorway, and the shoji's thin frame
+        s('g', { class: 'k', 'fill-opacity': 0.75, filter: 'url(#ink-rough)' },
+          ...[-1, 0, 1].map((j) => s('path', { d: brush([[hx + j * dw * 0.66, by + bh * 0.22], [hx + j * dw * 0.66 + 0.3, by + bh * 0.46]], dw * 0.56, { a: 0.02, b: 0.3, min: 0.5, wob: 0.03 }) })),
+          s('path', { d: brush([[hx - dw * 1.15, by + bh * 0.2], [hx + dw * 1.15, by + bh * 0.2]], Math.max(1.4, hs * 0.022), { a: 0.1, b: 0.1, min: 0.6 }) })),
+        s('g', { class: 'k', 'fill-opacity': 0.35 },
+          ...[0.38, 0.62].map((f) => s('path', { d: brush([[hx + dw + 3, by + bh * f], [bx + bw * 0.94, by + bh * f]], 1, { a: 0.1, b: 0.1, min: 0.7 }) }))),
+        s('g', { class: 'k', filter: 'url(#ink-rough)' },
+          s('path', { d: brush([[bx + 1, hy + 1], [bx + 1.5, by]], Math.max(1.6, hs * 0.03), { a: 0.05, b: 0.1, min: 0.6 }) }),
+          s('path', { d: brush([[bx + bw - 1, hy + 1], [bx + bw - 1.5, by]], Math.max(1.6, hs * 0.03), { a: 0.05, b: 0.1, min: 0.6 }) }),
+          s('path', { d: brush([[bx - hs * 0.08, hy + 1], [bx + bw + hs * 0.1, hy + 0.5]], Math.max(1.8, hs * 0.035), { a: 0.1, b: 0.2 }) }),
+          // roof: a long tapered stroke with lifted eaves, and the ridge
+          s('path', { d: brush([[bx - hs * 0.32, by + hs * 0.02], [bx - hs * 0.1, by - hs * 0.06], [hx, by - hs * 0.12 - hr() * 2], [bx + bw + hs * 0.1, by - hs * 0.06], [bx + bw + hs * 0.34, by + hs * 0.01]], Math.max(3, hs * 0.075), { a: 0.25, b: 0.25, min: 0.25 }) }),
+          s('path', { d: brush([[bx + hs * 0.02, by - hs * 0.14], [hx, by - hs * 0.3], [bx + bw - hs * 0.02, by - hs * 0.14]], Math.max(2, hs * 0.05), { a: 0.3, b: 0.3, min: 0.3 }) })),
+        s('circle', { class: 'k2', 'fill-opacity': 0.5, cx: bx + bw * 0.2, cy: by + bh * 0.45, r: bh * 0.16 }),
+        s('circle', { class: 'pap', cx: bx + bw * 0.2, cy: by + bh * 0.45, r: bh * 0.12 }))
+      back.append(house)
+      if (pieces.some((q) => q.home)) {
+        glow.setAttribute('opacity', '1')
+        doorLit.setAttribute('opacity', '1')
+      }
+      lantern = s('circle', { class: 't17g-lantern', r: Math.max(3, sz * 0.09), cx: door[0], cy: door[1], opacity: 0 })
+      front.append(lantern)
     }
-    lantern = s('circle', { class: 't17g-lantern', r: Math.max(3, sz * 0.09), cx: door[0], cy: door[1], opacity: 0 })
-    front.append(lantern)
 
     // ── closed stones: two staggered rows inside the fence, names above (clear of the front fence)
     const inP = wide ? IN_WIDE : tight ? IN_ROW : IN_TALL
@@ -554,6 +569,8 @@ export function gateScene(ctx: SceneCtx) {
 
   let raf = 0
   const ro = new ResizeObserver(() => {
+    // its first report is the size layout() just used: nothing to redo
+    if (root.clientWidth === geo.W && root.clientHeight === geo.H) return
     cancelAnimationFrame(raf)
     raf = requestAnimationFrame(layout)
   })
@@ -561,6 +578,7 @@ export function gateScene(ctx: SceneCtx) {
   layout()
   return () => {
     ro.disconnect()
+    art?.cancel()
     cancelAnimationFrame(raf)
   }
 }
