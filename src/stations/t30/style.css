@@ -1,0 +1,203 @@
+/* Trạm 30 · mở hay đóng. Tokens only (Part 2); no filters on anything that moves. */
+
+/* 1 · gate */
+.t30g-list {
+  margin: 0;
+}
+.t30g-row {
+  display: grid;
+  grid-template-columns: 7.2em 1fr;
+  gap: 10px;
+  padding: 0.45em 0;
+  border-top: 1px solid var(--line);
+}
+.t30g-row dt {
+  font: 600 0.88rem/1.45 var(--sans);
+  color: var(--ink-2);
+}
+.t30g-row dd {
+  margin: 0;
+}
+.t30g-note {
+  margin: 0.6em 0 0;
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--ink-3);
+}
+.t30g-note:empty {
+  display: none;
+}
+.t30g-tree {
+  fill: var(--moss);
+  opacity: 0.75;
+}
+.t30g-flower {
+  fill: var(--vermilion);
+  opacity: 0.85;
+}
+.t30g-wall {
+  fill: var(--rock-hi);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.t30g-plinth {
+  fill: var(--umbra);
+  opacity: 0.18;
+}
+.t30g-inside {
+  fill: var(--paper-2);
+}
+.t30g-step {
+  fill: var(--stone-2);
+  stroke: var(--line-2);
+}
+.t30g-bamboo {
+  fill: var(--moss-2);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.t30g-door {
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.t30g.open .t30g-door {
+  transform: scaleX(0.12);
+}
+.t30g-window {
+  transition: opacity 0.6s;
+}
+.t30g.open .t30g-window {
+  opacity: 0;
+}
+.t30g-hole {
+  fill: var(--lantern);
+  opacity: 0.55;
+  stroke: var(--ink);
+}
+.t30g-post {
+  fill: var(--ink);
+}
+.t30g-pot {
+  opacity: 0;
+  transform: translateY(-14px);
+  transition: opacity 0.6s, transform 0.8s;
+  transition-delay: calc(var(--i) * 0.18s + 0.4s);
+}
+.t30g.open .t30g-pot {
+  opacity: 1;
+  transform: none;
+}
+
+/* 2 · fence */
+.t30f-wall {
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+.t30f-beam {
+  fill: var(--moon);
+  opacity: 0.1;
+}
+:root[data-theme='light'] .t30f-beam {
+  fill: var(--lantern);
+  opacity: 0.16;
+}
+.t30f-crack {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.t30f-ground {
+  fill: var(--paper-2);
+  stroke: var(--line-2);
+}
+.t30f-lamp {
+  fill: var(--moon);
+  stroke: var(--lantern);
+  stroke-width: 2;
+}
+:root[data-theme='light'] .t30f-lamp {
+  fill: var(--lantern);
+}
+.t30f-post {
+  fill: none;
+  stroke: var(--moss-2);
+  stroke-linecap: round;
+}
+.t30f-rope {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  opacity: 0.6;
+}
+.t30f-thorn {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.1;
+  opacity: 0.7;
+}
+.t30f-seal {
+  fill: var(--vermilion);
+}
+.t30f-gate .gf-tagline {
+  border-color: var(--lantern);
+  padding: 6px 14px;
+  font-size: 13px;
+}
+.t30f.shake .t30f-gate {
+  animation: t30f-shake 0.45s ease-out;
+}
+@keyframes t30f-shake {
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+}
+.t30f-guard {
+  flex-direction: column;
+  opacity: 0.45;
+  transition: opacity 0.6s;
+}
+.t30f.knocked .t30f-guard,
+.t30f-guard:focus-visible {
+  opacity: 1;
+}
+.t30f-guard svg {
+  width: 60%;
+  overflow: visible;
+}
+.t30f-guard .gf-tagline {
+  white-space: normal;
+  text-align: center;
+  font-size: 11.5px;
+}
+.t30f-guard[aria-pressed='true'] .gf-tagline {
+  border-color: var(--lantern);
+}
+.t30f-denied {
+  margin: 0;
+  font-style: italic;
+  color: var(--vermilion);
+}
+.t30f-more > p:first-child,
+.t30f-gap {
+  margin-top: 0.9em;
+}
+.t30f-more p {
+  margin-bottom: 0.3em;
+}
+
+/* 4 · copyright: court files under the circle's reading card */
+.t30c-cases {
+  margin-top: 0.9em;
+  padding-top: 0.7em;
+  border-top: 1px solid var(--line);
+  font-size: 0.93rem;
+}
+.t30c-cases p {
+  margin: 0 0 0.45em;
+}
