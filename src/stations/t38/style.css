@@ -1,0 +1,364 @@
+/* Trạm 38 · AGI, tương lai và nghề. Tokens only (html[data-part='2']); the ink art is a fixed-viewBox SVG scaled by CSS. */
+.t38 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 1fr);
+  align-items: center;
+  gap: clamp(12px, 3vw, 40px);
+  padding: 4px clamp(12px, 3vw, 40px) 8px;
+  box-sizing: border-box;
+}
+.t38-stage {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+}
+.t38-svg {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+.t38-panel {
+  max-height: 100%;
+  overflow: auto;
+  padding: 4px 4px 8px;
+  font-family: var(--serif);
+  color: var(--ink);
+  scrollbar-width: thin;
+}
+@media (max-width: 760px), (max-aspect-ratio: 1/1) {
+  .t38 {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(120px, 1fr) auto;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .t38-panel {
+    max-height: 56vh;
+  }
+}
+
+.t38 .ink {
+  fill: var(--ink);
+  opacity: 0.8;
+}
+.t38 .moon {
+  fill: var(--moon);
+}
+
+/* ───── scene 3 · fork ───── */
+.t38f-hills {
+  fill: var(--stone-2);
+  opacity: 0.5;
+}
+.t38f-paths path {
+  fill: url(#p2-rock);
+  stroke: var(--ink);
+  stroke-opacity: 0.3;
+}
+.t38f-mist {
+  fill: var(--paper);
+  opacity: 0.55;
+}
+.t38f-garden {
+  opacity: 0;
+  transition: opacity 0.9s;
+}
+.t38f[data-garden='wild'] [data-id='wild'],
+.t38f[data-garden='commons'] [data-id='commons'],
+.t38f[data-garden='walled'] [data-id='walled'],
+.t38f[data-garden='terraces'] [data-id='terraces'],
+.t38f[data-garden='drift'] [data-id='drift'] {
+  opacity: 1;
+}
+.t38f-garden .grass,
+.t38f-garden .tree,
+.t38f-garden .terrace {
+  fill: var(--moss);
+  opacity: 0.85;
+}
+.t38f-garden .rail,
+.t38f-garden .post {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.t38f-garden .wall {
+  fill: url(#p2-rock);
+  stroke: var(--ink);
+  stroke-opacity: 0.5;
+}
+.t38f-garden .roof {
+  fill: var(--ink);
+  opacity: 0.8;
+}
+.t38f-garden .fog {
+  fill: var(--ink-3);
+  opacity: 0.5;
+}
+.t38f .t38-svg {
+  overflow: hidden;
+}
+.t38f .bamboo {
+  fill: var(--moss-2);
+}
+.t38f .weight {
+  fill: url(#p2-rock);
+  stroke: var(--ink);
+  stroke-opacity: 0.4;
+}
+.t38f-arm {
+  transition: transform 0.25s ease-out;
+}
+.t38f-sl {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+.t38f-lab {
+  font: 500 0.92rem/1.3 var(--sans);
+  color: var(--ink);
+}
+.t38f-range {
+  width: 100%;
+  accent-color: var(--moss);
+  margin: 4px 0 0;
+  min-height: 28px;
+}
+.t38f-ends {
+  display: flex;
+  justify-content: space-between;
+  font: 400 0.78rem/1.2 var(--sans);
+  color: var(--ink-3);
+}
+.t38f-card {
+  margin-top: 6px;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.t38f-name {
+  margin: 0 0 4px;
+  font: 500 1.15rem/1.3 var(--serif);
+}
+.t38f-text {
+  margin: 0 0 8px;
+  font: 400 0.98rem/1.5 var(--serif);
+}
+.t38f-note,
+.t38f-view {
+  margin: 0;
+  font: 400 0.85rem/1.45 var(--serif);
+  color: var(--ink-2);
+}
+.t38f-mists {
+  margin-top: 10px;
+  font-family: var(--serif);
+}
+.t38f-mists summary {
+  cursor: pointer;
+  font: 500 0.88rem/1.4 var(--sans);
+  color: var(--ink-2);
+}
+.t38f-mist-item {
+  margin: 8px 0 0;
+  padding-left: 10px;
+  border-left: 2px solid var(--line-2);
+}
+
+/* ───── scene 4 · trays ───── */
+.t38t {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+}
+.t38t .t38-stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.t38t-planks path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-opacity: 0.08;
+  stroke-width: 1.5;
+}
+.t38t .t38-panel {
+  position: relative;
+  width: min(100%, 980px);
+}
+.t38t-basket {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-bottom: 14px;
+  padding: 10px;
+  border: 1px dashed var(--line-2);
+  border-radius: 40px 34px 44px 30px;
+}
+.t38t-basket:empty {
+  display: none;
+}
+.t38t-peb {
+  display: inline-grid;
+  max-width: 15em;
+  padding: 8px 14px;
+  font: 400 0.9rem/1.3 var(--serif);
+  color: var(--stone-text);
+  background: radial-gradient(120% 90% at 30% 20%, var(--step-hi), var(--step-mid) 70%, var(--step-lo));
+  border: 1px solid var(--line-2);
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.t38t-peb[aria-pressed='true'] {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+  transform: translateY(-3px);
+}
+.t38t-peb-exp {
+  font: 500 0.72rem/1.2 var(--sans);
+  color: var(--vermilion);
+}
+.t38t-peb-exp:empty {
+  display: none;
+}
+.t38t-peb[data-match='true'] {
+  box-shadow: 0 0 0 2px var(--moss);
+}
+.t38t-peb[data-match='false'] {
+  box-shadow: 0 0 0 2px var(--vermilion);
+}
+.t38t-trays {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.t38t-tray {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 120px;
+  padding: 8px;
+  border-radius: 18px;
+  border: 1px solid var(--line-2);
+  background: var(--paper-2);
+}
+.t38t-tray[data-id='good'] {
+  background: linear-gradient(var(--card), var(--paper-2));
+}
+.t38t-tray[data-id='learning'] {
+  background: linear-gradient(var(--paper-2) 45%, color-mix(in srgb, var(--water) 35%, var(--paper-2)));
+}
+.t38t-tray[data-id='far'] {
+  background: linear-gradient(color-mix(in srgb, var(--ink-3) 18%, var(--paper-2)), var(--paper-2));
+}
+.t38t-drop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  font: 500 0.88rem/1.25 var(--sans);
+  color: var(--ink);
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.t38t[data-picking='true'] .t38t-drop {
+  border-color: var(--vermilion);
+  border-style: dashed;
+}
+.t38t-key {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  font-size: 0.78rem;
+  color: var(--ink-2);
+}
+.t38t-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.t38t-list .t38t-peb {
+  font-size: 0.8rem;
+  padding: 6px 10px;
+}
+.t38t-compare {
+  display: block;
+  margin: 12px auto 0;
+}
+.t38t-compare[hidden] {
+  display: none;
+}
+.t38t-after {
+  margin-top: 10px;
+  animation: p2-rise 0.6s ease-out both;
+}
+.t38t-match {
+  margin: 0 0 4px;
+  font: 400 1.1rem/1.4 var(--serif);
+  text-align: center;
+}
+.t38t-why {
+  margin: 0 0 8px;
+  font: italic 400 0.95rem/1.45 var(--serif);
+  text-align: center;
+  color: var(--ink-2);
+}
+.t38t-why:empty {
+  display: none;
+}
+.t38t-note {
+  margin: 4px 0 0;
+  font: 400 0.82rem/1.45 var(--serif);
+  color: var(--ink-3);
+  text-align: center;
+}
+@media (max-width: 760px), (max-aspect-ratio: 1/1) {
+  .t38t {
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .t38t .t38-panel {
+    max-height: 100%;
+  }
+  .t38t-trays {
+    gap: 6px;
+  }
+  .t38t-tray {
+    padding: 6px 4px;
+    min-height: 96px;
+  }
+  .t38t-drop {
+    flex-direction: column;
+    text-align: center;
+    font-size: 0.78rem;
+    padding: 4px 2px;
+  }
+  .t38t-peb {
+    font-size: 0.82rem;
+    padding: 6px 10px;
+  }
+  .t38t-list .t38t-peb {
+    font-size: 0.72rem;
+    padding: 5px 7px;
+  }
+}
