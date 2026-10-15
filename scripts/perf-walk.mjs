@@ -79,6 +79,9 @@ const TRANS = 1600 // a scene change: 0.55 s out + 0.25 s delay + 0.95 s in, plu
 const IDLE = 1000 // the new scene settling
 const ENTRY = 4200 // a station's chapter card: 2.8 s + 0.9 s dissolve
 const pad = (n) => String(n).padStart(2, '0')
+// Part 2 stations (19–39) show as II·01… and live on the #/vuon-trang map
+const numOf = (id) => (id >= 19 ? `II·${pad(id - 18)}` : pad(id))
+const mapOf = (id) => (id >= 19 ? '#/vuon-trang' : '#/vuon')
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const log = (...a) => console.error(...a)
 
@@ -155,7 +158,7 @@ async function enterFromMap(page, id) {
   }
   const t0 = await now(page)
   await press(page, sel)
-  const t1 = await until(page, (p) => document.querySelector('.chapter-num')?.textContent === p && document.querySelector('.scenes .scene') && performance.now(), pad(id))
+  const t1 = await until(page, (p) => document.querySelector('.chapter-num')?.textContent === p && document.querySelector('.scenes .scene') && performance.now(), numOf(id))
   return { t0, latency: Math.round(t1 - t0) }
 }
 
@@ -434,7 +437,8 @@ async function flip(page) {
 /** b + c) Enter `from` from the map, then follow "next" through every scene of every station up to `to`. */
 async function scenarioWalk(from, to) {
   const { context, page, cdp, warnings } = await open()
-  await page.goto(url('#/vuon'), { waitUntil: 'load' })
+  if (from >= 19) await context.addInitScript(() => localStorage.setItem('aizen:progress', JSON.stringify({ visited: [], passed: [], hints: ['part2-advice'] })))
+  await page.goto(url(mapOf(from)), { waitUntil: 'load' })
   res.meta.quality ??= await page.evaluate(() => document.documentElement.dataset.quality)
   await sleep(4000)
   const mapStart = await settle(cdp, page)
@@ -448,7 +452,7 @@ async function scenarioWalk(from, to) {
       if (id === from) entry = await enterFromMap(page, from)
       else {
         const t0 = await clickIn(page, '.rail-btn.next') // summary scene → next station
-        const t1 = await until(page, (p) => document.querySelector('.chapter-num')?.textContent === p && document.querySelector('.scenes .scene') && performance.now(), pad(id))
+        const t1 = await until(page, (p) => document.querySelector('.chapter-num')?.textContent === p && document.querySelector('.scenes .scene') && performance.now(), numOf(id))
         entry = { t0, latency: Math.round(t1 - t0) }
       }
       await sleep(Math.max(0, ENTRY - ((await now(page)) - entry.t0)))
@@ -462,7 +466,7 @@ async function scenarioWalk(from, to) {
     log(`  t${pad(id)}: vào ${rec.latency} ms · ${rec.scenes.length} lần chuyển · frame dài nhất ${worst} ms${rec.settled ? ` · heap ${rec.settled.heapMB} MB, GL ${rec.settled.glAlive}, rAF ${rec.settled.loops}` : ''}`)
   }
   // back to the map: what is still alive after the walk?
-  await page.evaluate(() => (location.hash = '#/vuon'))
+  await page.evaluate((h) => (location.hash = h), mapOf(from))
   await sleep(3500)
   mapEnds.push(await settle(cdp, page))
   }

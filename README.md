@@ -1,7 +1,11 @@
 # AI Zen — Hiểu AI để dùng AI đúng cách
 
 Một "bảo tàng tương tác trong vườn đá" giúp người mới hiểu AI: AI là gì, chatbot viết chữ thế nào, AI tạo ảnh / video / 3D hoạt động ra sao, giao việc gì cho AI nào, cách viết prompt, AI agent & MCP, các công ty AI và tác động thật của AI.
-6 khu vườn · 18 trạm · từ điển thuật ngữ · bài thi cuối có chứng nhận. Bản tiếng Việt ở `/`, bản tiếng Anh ở `/en/`.
+Hai phần trong cùng một khu vườn:
+- **Phần 1 · Vườn Ngày** (6 vườn, trạm 01–18): hiểu AI để dùng AI đúng cách.
+- **Phần 2 · Vườn Trăng** (7 vườn, trạm II·01–II·21, id nội bộ 19–39): hiểu sâu bên trong, thấy rộng bên ngoài, tự tay làm được. Sang Phần 2 qua cây cầu cuối lối đá Phần 1.
+
+Tổng cộng 13 vườn · 39 trạm · từ điển chung có bộ lọc theo phần · bài thi + chứng nhận riêng cho từng phần · túi đồ nghề. Bản tiếng Việt ở `/`, bản tiếng Anh ở `/en/` (cùng route).
 
 ## Chạy
 
@@ -18,11 +22,15 @@ Vite + TypeScript, Three.js, Matter.js, GSAP. Không backend, không API key.
 ## Cấu trúc
 
 - `src/content/*.json` — toàn bộ chữ và dữ liệu (tiếng Việt); `*.en.json` là bản tiếng Anh cùng cấu trúc. Mỗi dữ kiện có `asOf` và `source`.
-- `src/stations/tNN/` — 18 trạm, mỗi trạm là chuỗi cảnh toàn màn hình (`scenes`).
+- `src/stations/tNN/` — 39 trạm, mỗi trạm là chuỗi cảnh toàn màn hình (`scenes`). `registry.ts` tự nhận mọi thư mục `tNN/index.ts`; trạm chưa có thư mục hiện "Đang dựng".
+- `src/ui/part2/` — thành phần dùng chung của Phần 2 (vòng đá góc nhìn, thuỷ triều tiến triển, bảng tin trên đá, thẻ mang về, lối đá từng bước, cuộn mã, dấu độ tin cậy ● ◐ ○ ◇). API: `src/ui/part2/README.md`, kiểu dữ liệu: `types.ts`.
+- `src/content/news.json` (bảng tin), `toolkit.json` (thẻ mang về), `exam-2.json` (bài thi Vườn Trăng); `node scripts/check-content.mjs` kiểm mọi fact có `asOf` + nguồn tra được.
 - `src/ui/` — khung: bản đồ vườn (`map.ts`), trình chiếu cảnh (`station.ts`), câu đố, logo, từ điển & bài thi (`src/extras/`).
 - `public/logos/` — logo chính thức các công ty + `logos.json` ghi nguồn từng file.
 
-Dữ liệu tra cứu đến 12/10/2026 — AI thay đổi theo tuần, hãy kiểm tra lại các con số trước khi dùng.
+Route: `#/` intro → `#/vuon` (map Phần 1) · `#/vuon-trang` (map Phần 2) · `#/tram/1…39` · `#/tu-dien` · `#/bai-thi` · `#/bai-thi-trang` · `#/do-nghe`.
+
+Dữ liệu tra cứu đến 12/10/2026 (Phần 1) và 15/10/2026 (Phần 2) — AI thay đổi theo tuần, hãy kiểm tra lại các con số trước khi dùng.
 Logo và thương hiệu thuộc về chủ sở hữu tương ứng; dùng cho mục đích giáo dục.
 
 ## Quy ước hiệu năng
@@ -64,6 +72,13 @@ Logo và thương hiệu thuộc về chủ sở hữu tương ứng; dùng cho 
   - `npm run build && node scripts/perf-walk.mjs --only c --stations N-N`: không long task, không frame > 50 ms khi vào trạm và khi chuyển scene.
   - `--passes 2`: heap lượt 2 không tăng, WebGL ≤ 1, rAF loop = số loop của scene hiện tại.
   - `perf-shots` ở `high` và `low` nhìn đúng; chạy được ở `calm` + `low` + reduced motion.
+
+## Bảo trì tin tức (hằng tháng)
+
+Tin AI cũ đi rất nhanh, nên mọi tin nằm trong `src/content/news.json` (+ `.en.json`) và dữ liệu `tide` của các trạm, không viết cứng trong code.
+- Thêm tin mới có nguồn; đánh dấu tin đã bị phủ nhận / đính chính; tuyên bố của chính công ty ghi `claimBy`, có bên độc lập xác nhận thì thêm `verifiedBy`.
+- Cập nhật số liệu hay đổi (vốn hoá, giá RAM, số model, model mới nhất) và `asOf` trong `news.json` / `site.json`.
+- Chạy `node scripts/check-content.mjs` rồi `npm run build`. Bia tin cũ hơn 6 tháng tự phủ rêu.
 
 ## Deploy
 
