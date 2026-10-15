@@ -1,25 +1,11 @@
 import type { StationModule } from './types'
 
-// One lazy chunk per station. A station missing here shows as "Đang dựng" on the map.
+// One lazy chunk per station, found by folder: src/stations/tNN/index.ts is station NN.
+// A station without a folder shows as "Đang dựng" on the map.
+const found = import.meta.glob<{ default: StationModule }>('./t[0-9][0-9]/index.ts')
+
 export const STATIONS: Partial<Record<number, () => Promise<{ default: StationModule }>>> = {
-  1: () => import('./t01/index'),
-  2: () => import('./t02/index'),
-  3: () => import('./t03/index'),
-  4: () => import('./t04/index'),
-  5: () => import('./t05/index'),
-  6: () => import('./t06/index'),
-  7: () => import('./t07/index'),
-  8: () => import('./t08/index'),
-  9: () => import('./t09/index'),
-  10: () => import('./t10/index'),
-  11: () => import('./t11/index'),
-  12: () => import('./t12/index'),
-  13: () => import('./t13/index'),
-  14: () => import('./t14/index'),
-  15: () => import('./t15/index'),
-  16: () => import('./t16/index'),
-  17: () => import('./t17/index'),
-  18: () => import('./t18/index'),
+  ...Object.fromEntries(Object.entries(found).map(([path, load]) => [Number(path.slice(3, 5)), load])),
   // dev only (#/tram/99): every Part 2 component with fake data; dropped from the production build
   ...(import.meta.env.DEV ? { 99: () => import('../ui/part2/demo') } : {}),
 }
