@@ -85,6 +85,7 @@ export function createStage(host: HTMLElement, opts: { fov?: number; animate?: b
         })
       })
       renderer.dispose()
+      renderer.forceContextLoss() // give the WebGL context back now, not whenever GC runs (spec A.9)
       canvas.remove()
     },
   }

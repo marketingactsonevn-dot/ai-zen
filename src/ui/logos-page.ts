@@ -34,6 +34,7 @@ export function renderLogos(root: HTMLElement): () => void {
   title.focus({ preventScroll: true })
 
   const gctx = gsap.context(() => {})
+  let offReveal: (() => void) | null = null
   loadLogos().then((m) => {
     if (!alive) return
     grid.append(...COMPANIES.map((c) => card(c, m)))
@@ -42,7 +43,7 @@ export function renderLogos(root: HTMLElement): () => void {
     if (m) generated.textContent = fill(copy.generated, { package: m.package, date: viDate(m.generatedAt.slice(0, 10)) })
     else generated.remove()
     gctx.add(() => {
-      revealIn(root)
+      offReveal = revealIn(root) // registers ScrollTrigger (needed by the stagger below too)
       if (!prefs.reduced)
         gsap.from(grid.children, {
           opacity: 0,
@@ -58,6 +59,7 @@ export function renderLogos(root: HTMLElement): () => void {
   return () => {
     alive = false
     gctx.revert()
+    offReveal?.()
   }
 }
 

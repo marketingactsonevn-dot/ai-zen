@@ -11,6 +11,7 @@
  *   node scripts/perf-walk.mjs --only a,c,d --trace                   # + Chrome trace: what the main thread spent time on
  *   … --trace --stacks --base http://localhost:5179/                # + who forced each style/layout (dev server = readable names)
  *   node scripts/perf-walk.mjs --only e --pingpong 13,13,13 --settle-each   # one station in and out, heap after each
+ *   node scripts/perf-walk.mjs --only c --passes 2                    # walk 1 → 18 twice (A.9: pass 2 must not grow)
  *   --cpu 8 (override the slowdown) · --out file.json · --dist other-build-dir · --base http://… (default: serve dist/ like GitHub Pages)
  *
  * Scenarios: a) home → map (intro, sand, address-bar resize)  b) station 1, every scene  c) stations 1 → 18 in order
@@ -61,6 +62,7 @@ if (!P) throw new Error(`unknown --profile ${PROFILE}`)
 if (opt('cpu', null)) P.cpu = Number(opt('cpu'))
 const PINGPONG = String(opt('pingpong', '1,9,13,5,7,8,4,3,6,18')).split(',').map(Number)
 const SETTLE_EACH = opt('settle-each', false) === true
+const PASSES = Number(opt('passes', 1)) // walk the stations N times: growth on pass 2+ is a leak, pass 1 also loads code
 
 // Switch one suspected effect off with CSS (measurement only — the app is untouched).
 const ABLATE_CSS = {
@@ -123,7 +125,7 @@ async function settle(cdp, page) {
   await sleep(800)
   const { usedSize } = await cdp.send('Runtime.getHeapUsage')
   const s = await page.evaluate(() => window.__aizen.perf.snapshot())
-  return { heapMB: Math.round((usedSize / 1048576) * 10) / 10, glAlive: s.glAlive, glMade: s.glMade, stages: s.stages, loops: s.loops, loopNames: s.loopNames }
+  return { heapMB: Math.round((usedSize / 1048576) * 10) / 10, glAlive: s.glAlive, glMade: s.glMade, stages: s.stages, loops: s.loops, loopsAlive: s.loopsAlive, loopsTicking: s.loopsTicking, loopNames: s.loopNames }
 }
 /** A real tap (phone) or click (desktop) at the element's centre. */
 async function press(page, selector) {
@@ -384,6 +386,8 @@ async function scenarioWalk(from, to) {
   await sleep(4000)
   const mapStart = await settle(cdp, page)
   const stations = []
+  const mapEnds = []
+  for (let pass = 1; pass <= PASSES; pass++) {
   let entry
   for (let id = from; id <= to; id++) {
     // traced from the tap/click that enters the station: chunk load, first mount, chapter card, every scene
@@ -398,7 +402,7 @@ async function scenarioWalk(from, to) {
       const entryStats = await since(page, entry.t0)
       return { entryStats, scenes: await flip(page) }
     })
-    const rec = { id, latency: entry.latency, entry: value.entryStats, scenes: value.scenes, trace }
+    const rec = { id, pass, latency: entry.latency, entry: value.entryStats, scenes: value.scenes, trace }
     if (id === from || id % 6 === 0 || id === to) rec.settled = await settle(cdp, page)
     stations.push(rec)
     const worst = Math.max(0, ...rec.scenes.map((s) => s.transition.maxFrame))
@@ -407,9 +411,10 @@ async function scenarioWalk(from, to) {
   // back to the map: what is still alive after the walk?
   await page.evaluate(() => (location.hash = '#/vuon'))
   await sleep(3500)
-  const mapEnd = await settle(cdp, page)
+  mapEnds.push(await settle(cdp, page))
+  }
   await context.close()
-  return { mapStart, stations, mapEnd, warnings }
+  return { mapStart, stations, mapEnd: mapEnds[0], mapEnds, warnings }
 }
 
 /** d) First visit of a 3D station on a cold cache: chunk download + parse + WebGL context + shaders. */
@@ -515,7 +520,7 @@ function summary(r) {
     L.push(`   vào trạm (bấm → scene): trung vị ${med(st.map((s) => s.latency))} ms, max ${Math.max(...st.map((s) => s.latency))} ms`)
     if (r.c) {
       const s1 = r.c.stations[0].settled
-      L.push(`   heap: bản đồ ${r.c.mapStart.heapMB} MB → sau trạm ${r.c.stations[0].id} ${s1.heapMB} MB → ${r.c.stations.filter((s) => s.settled).slice(1).map((s) => `t${pad(s.id)} ${s.settled.heapMB}`).join(' → ')} → về bản đồ ${r.c.mapEnd.heapMB} MB (GL ${r.c.mapEnd.glAlive}, stage ${r.c.mapEnd.stages}, rAF ${r.c.mapEnd.loops})`)
+      L.push(`   heap: bản đồ ${r.c.mapStart.heapMB} MB → sau trạm ${r.c.stations[0].id} ${s1.heapMB} MB → ${r.c.stations.filter((s) => s.settled).slice(1).map((s) => `t${pad(s.id)} ${s.settled.heapMB}`).join(' → ')} → về bản đồ ${r.c.mapEnds.map((m) => `${m.heapMB} MB (GL ${m.glAlive}, stage ${m.stages}, loop ${m.loopsTicking ?? '?'}/${m.loopsAlive ?? '?'}, rAF ${m.loops})`).join(' · vòng sau: ')}`)
     }
   }
   if (r.d) for (const d of r.d) L.push(`d) t${pad(d.id)} lần đầu: vào ${d.latency} ms · ${f(d.stats)}${d.toScene ? ` · sang scene ${d.toScene.scene}: ${f(d.toScene)}` : ''} · chunk: ${d.net.filter((n) => /three|t\d\d/.test(n.file)).map((n) => `${n.file} ${n.kB} kB/${n.ms} ms`).join(', ')}`)
