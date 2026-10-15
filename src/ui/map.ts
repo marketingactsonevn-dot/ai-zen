@@ -1,5 +1,5 @@
 import { fill, h, s } from '../core/dom'
-import { ALL_STATIONS, GARDENS, L, SITE } from '../core/content'
+import { ALL_STATIONS, L, PARTS, SITE, displayNo, gardensOfPart, stationsOfPart } from '../core/content'
 import { STATIONS } from '../stations/registry'
 import { progress } from '../core/progress'
 import { cssVar, onPrefs, prefs } from '../core/prefs'
@@ -7,29 +7,53 @@ import { gsap } from '../core/anim'
 import { createLoop } from '../core/loop'
 import { lightNet, prefetchStation, prefetchThree, whenIdle } from './prefetch'
 import { icon } from './icons'
+import { bridgeLink, drawGlint, drawNight, firefly, lantern, lanternGlow, type Night } from './moon-garden'
 
 type Pt = { x: number; y: number }
-type Rock = Pt & { r: number; seed: number }
+type Rock = Pt & { r: number; seed: number; sq?: number } // sq: vertical squash of its footprint (the pond is flatter)
 
 // Garden anchors in the free area (0..1). Landscape: the path snakes left→right; portrait: zig-zags down.
 const LAND: Pt[] = [{ x: 0.1, y: 0.7 }, { x: 0.27, y: 0.3 }, { x: 0.45, y: 0.7 }, { x: 0.62, y: 0.29 }, { x: 0.77, y: 0.7 }, { x: 0.91, y: 0.32 }]
 const PORT: Pt[] = [{ x: 0.3, y: 0.08 }, { x: 0.7, y: 0.25 }, { x: 0.3, y: 0.42 }, { x: 0.7, y: 0.59 }, { x: 0.3, y: 0.76 }, { x: 0.7, y: 0.93 }]
+// Part 2 (Vườn Trăng): 7 gardens walk round a moon pond, moonrise (7) → dawn (13). k: the side of the path the
+// garden's rocks take (toward that direction), so no rock lands in the water or under the moon.
+type A2 = Pt & { k: [number, number] }
+const LAND2: A2[] = [
+  { x: 0.1, y: 0.2, k: [1, 0] }, { x: 0.14, y: 0.58, k: [-1, 0] }, { x: 0.31, y: 0.86, k: [-1, 1] }, { x: 0.5, y: 0.95, k: [0, -1] },
+  { x: 0.69, y: 0.86, k: [1, 1] }, { x: 0.86, y: 0.58, k: [1, 0] }, { x: 0.9, y: 0.2, k: [-1, 0] },
+]
+const PORT2: A2[] = [
+  { x: 0.42, y: 0.05, k: [-0.4, 1] }, { x: 0.76, y: 0.2, k: [1, 0] }, { x: 0.27, y: 0.35, k: [-1, 0] }, { x: 0.25, y: 0.59, k: [-1, 0] },
+  { x: 0.73, y: 0.72, k: [1, 0] }, { x: 0.27, y: 0.85, k: [-1, 0] }, { x: 0.72, y: 0.97, k: [1, 0] },
+]
+// pond and moon centres in the free area (0..1); r as a share of min(w, h)
+const NIGHT_LAND = { pond: { x: 0.48, y: 0.43, r: 0.15 }, moon: { x: 0.55, y: 0.02, r: 0.036 } }
+const NIGHT_PORT = { pond: { x: 0.64, y: 0.46, r: 0.15 }, moon: { x: 0.74, y: 0.0, r: 0.05 } }
+const POND_SQ = 1.45
 
-const pad = (n: number) => String(n).padStart(2, '0')
-
-/** Home = a full-viewport zen garden. Rocks are the 6 gardens; stepping stones are the 18 stations. */
-export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
+/** A map = a full-viewport zen garden. Rocks are the part's gardens; stepping stones are its stations. */
+export function renderMap(root: HTMLElement, { part, withIntro }: { part: number; withIntro: boolean }): () => void {
+  const STS = stationsOfPart(part)
+  const GS = gardensOfPart(part)
   const sand = h('canvas', { class: 'garden-sand', 'aria-hidden': 'true' })
   const ripple = h('canvas', { class: 'garden-ripple', 'aria-hidden': 'true' })
   const rocksSvg = s('svg', { class: 'garden-rocks', 'aria-hidden': 'true' })
   const labels = h('div', { class: 'garden-labels', 'aria-hidden': 'true' })
   const tip = h('div', { class: 'ptip', role: 'tooltip', id: 'ptip', hidden: true })
-  const nextId = ALL_STATIONS.find((st) => st.id in STATIONS && !progress.isVisited(st.id))?.id
-  const stones = ALL_STATIONS.map((st, i) => {
+  // Vườn Trăng: water + moon under the rocks, lantern light on the sand, fireflies (rich only); both maps get a bridge
+  const night = part === 2 ? s('svg', { class: 'garden-night', 'aria-hidden': 'true' }) : null
+  const glint = part === 2 ? s('svg', { class: 'pond-glint', 'aria-hidden': 'true' }) : null
+  const glows = part === 2 ? h('div', { class: 'garden-glow', 'aria-hidden': 'true' }) : null
+  const flies = part === 2 && prefs.quality === 'high' && !prefs.reduced ? h('div', { class: 'fireflies', 'aria-hidden': 'true' }) : null
+  const bridge = bridgeLink(part === 1 ? 2 : 1)
+  const kindLabel = { concept: L.kindConcept, news: L.kindNews, practice: L.kindPractice }
+  const nextId = STS.find((st) => st.id in STATIONS && !progress.isVisited(st.id))?.id
+  const stones = STS.map((st, i) => {
     const built = st.id in STATIONS
     const visited = progress.isVisited(st.id)
     const passed = progress.isPassed(st.id)
-    const state = [built ? '' : L.soon, passed ? L.passed : visited ? L.visited : ''].filter(Boolean).join(', ')
+    const state = [st.kind ? kindLabel[st.kind] : '', built ? '' : L.soon, passed ? L.passed : visited ? L.visited : ''].filter(Boolean).join(', ')
+    const [no, sub] = displayNo(st.id).split('·') // 'II·01' → a small 'II·' and the number
     return h('a', {
       class: 'pstone',
       href: `#/tram/${st.id}`,
@@ -38,18 +62,23 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
       'data-passed': passed,
       'data-here': st.id === nextId,
       'data-garden': st.garden.id,
-      'aria-label': `${L.station} ${st.id}: ${st.title}${state ? ` — ${state}` : ''}`,
+      'aria-label': `${L.station} ${part === 1 ? st.id : displayNo(st.id)}: ${st.title}${state ? ` — ${state}` : ''}`, // Part 1 aria unchanged
       'aria-describedby': 'ptip',
       style: `--i:${i}`, // appear stagger
-    }, h('span', { class: 'pstone-num' }, pad(st.id)))
+    }, h('span', { class: 'pstone-num' }, ...(sub ? [h('small', null, `${no}·`), sub] : [no])), st.kind ? kindMark(st.kind) : null)
   })
-  const list = h('nav', { class: 'garden-stones', 'aria-label': SITE.hero.tagline }, ...stones)
+  const list = h('nav', { class: 'garden-stones', 'aria-label': part === 1 ? SITE.hero.tagline : PARTS[1].tagline }, ...stones)
   const note = h('p', { class: 'garden-note' }, SITE.footer.note, ' · ', h('a', { href: '#/logos' }, SITE.footer.logos))
   const hint = progress.visitedCount() ? null : h('p', { class: 'garden-hint' }, L.mapHint)
-  const extras = h('nav', { class: 'garden-extras', 'aria-label': `${L.glossary} · ${L.exam}` },
-    h('a', { class: 'gx', href: '#/tu-dien', title: L.glossaryHint }, icon('lantern'), h('span', null, L.glossary)),
-    h('a', { class: 'gx', href: '#/bai-thi', title: L.examHint }, icon('gate'), h('span', null, L.exam)))
-  const garden = h('section', { class: 'garden', 'aria-label': L.map }, sand, ripple, rocksSvg, labels, list, tip, note, hint, extras)
+  const glossary = h('a', { class: 'gx', href: '#/tu-dien', title: L.glossaryHint }, icon('lantern'), h('span', null, L.glossary))
+  // shortcut: Part 2 has only the glossary until its exam (#/bai-thi-trang) and toolkit (#/do-nghe) exist
+  const extras = part === 1
+    ? h('nav', { class: 'garden-extras', 'aria-label': `${L.glossary} · ${L.exam}` },
+        glossary, h('a', { class: 'gx', href: '#/bai-thi', title: L.examHint }, icon('gate'), h('span', null, L.exam)))
+    : h('nav', { class: 'garden-extras', 'aria-label': L.glossary }, glossary)
+  // the bridge sits where the walk leaves (Part 1, after the last stone) or arrives (Part 2, before the first)
+  const garden = h('section', { class: 'garden', 'aria-label': L.map },
+    sand, night, glint, glows, ripple, rocksSvg, flies, labels, part === 2 && bridge, list, part === 1 && bridge, tip, note, hint, extras)
   root.append(garden)
 
   let w = 0
@@ -81,12 +110,14 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
       const x = Math.sin(k * 127.1 + 311.7) * 43758.5453
       return x - Math.floor(x)
     }
-    const anchors = (portrait ? PORT : LAND).map((p) => ({ x: side + p.x * (w - 2 * side), y: top + p.y * (hgt - top - bottom) }))
-    const first = anchors[0], last = anchors[5]
+    const A2 = part === 2 ? (portrait ? PORT2 : LAND2) : null
+    const fx = (v: number) => side + v * (w - 2 * side), fy = (v: number) => top + v * (hgt - top - bottom)
+    const anchors = (A2 ?? (portrait ? PORT : LAND)).map((p) => ({ x: fx(p.x), y: fy(p.y) }))
+    const first = anchors[0], last = anchors[anchors.length - 1], beforeLast = anchors[anchors.length - 2]
     const P = [
       { x: first.x - (anchors[1].x - first.x) * 0.7, y: first.y - (anchors[1].y - first.y) * 0.7 },
       ...anchors,
-      { x: last.x + (last.x - anchors[4].x) * 0.7, y: last.y + (last.y - anchors[4].y) * 0.7 },
+      { x: last.x + (last.x - beforeLast.x) * 0.7, y: last.y + (last.y - beforeLast.y) * 0.7 },
     ]
     const at = (T: number): Pt => {
       const j = Math.max(0, Math.min(P.length - 2, Math.floor(T)))
@@ -98,7 +129,15 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     }
     const m = Math.min(w, hgt)
     const S = Math.round(clamp(m * 0.058, 34, 54))
-    const R = clamp(m * (portrait ? 0.05 : 0.07), 20, 78)
+    const R = clamp(m * (portrait ? 0.05 : part === 2 ? 0.06 : 0.07), 20, 78) // Part 2 shares the sand with a pond
+    const NG = part === 2 ? (portrait ? NIGHT_PORT : NIGHT_LAND) : null
+    const pondR = NG ? NG.pond.r * m : 0 // as an obstacle: the sand's rings start at 1.12 × this
+    const nightAt: Night | null = NG && {
+      pond: { x: fx(NG.pond.x), y: fy(NG.pond.y), rx: pondR * 1.12, ry: (pondR * 1.12) / POND_SQ },
+      moon: { x: fx(NG.moon.x), y: fy(NG.moon.y), r: Math.max(15, NG.moon.r * m) },
+      w, h: hgt, portrait,
+    }
+    const lampSpots: { g: number; cands: Pt[] }[] = []
     // arc-length table so stepping stones keep an even pixel gap whatever the curve does
     const STEP = 0.004
     const Ts: number[] = []
@@ -123,7 +162,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
       return Ts[lo]
     }
 
-    const pending: { lab: HTMLElement; half: number; cands: Pt[]; home: Pt }[] = []
+    const pending: { lab: HTMLElement; half: number; vh: number; cands: Pt[]; home: Pt }[] = []
     const placed: Pt[] = []
     rocks = []
     let ri = 0
@@ -132,7 +171,13 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     rocksSvg.style.width = `${w}px`
     rocksSvg.style.height = `${hgt}px`
     labels.replaceChildren()
-    GARDENS.forEach((g, gi) => {
+    // the garden names and the bridge label are measured in ONE read, before the loop below writes rocks and stones:
+    // reading a size between writes forces a layout per garden (≈ 20 ms at 4× CPU)
+    const labs = GS.map((g, gi) => h('p', { class: 'glabel', 'data-garden': g.id, style: `--i:${gi}` }, h('span', { class: 'glabel-num' }, String(g.id)), h('span', null, g.name)))
+    labels.append(...labs)
+    const labSize = labs.map((l) => [l.offsetWidth, l.offsetHeight])
+    const bridgeHalf = (bridge.lastElementChild as HTMLElement).offsetWidth / 2
+    GS.forEach((g, gi) => {
       const T = gi + 1
       const c = at(T)
       const a = at(T - 0.02), b = at(T + 0.02)
@@ -140,7 +185,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
       const len = Math.hypot(nx, ny) || 1
       nx /= len
       ny /= len
-      const sideK = portrait ? (c.x < w / 2 ? -1 : 1) * Math.sign(nx || 1) : gi % 2 ? 1 : -1
+      const sideK = A2 ? Math.sign(nx * A2[gi].k[0] + ny * A2[gi].k[1]) || 1 : portrait ? (c.x < w / 2 ? -1 : 1) * Math.sign(nx || 1) : gi % 2 ? 1 : -1
       const off = R * (portrait ? 2.6 : 2.3)
       const rc = {
         x: clamp(c.x + nx * off * sideK, R * 2.5, w - R * 2.6),
@@ -157,10 +202,21 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
         ;(rocksSvg.lastElementChild as SVGGElement).style.setProperty('--i', String(ri++)) // appear stagger
       })
       rocks.push(...cluster)
+      if (A2) {
+        // where this group's stone lantern could stand: either side along the path, or behind the rocks
+        const tl = Math.hypot(b.x - a.x, b.y - a.y) || 1
+        const tx = (b.x - a.x) / tl, ty = (b.y - a.y) / tl
+        lampSpots.push({ g: g.id, cands: [
+          { x: rc.x + tx * R * 1.9, y: rc.y + ty * R * 1.9 + R * 0.45 },
+          { x: rc.x - tx * R * 1.9, y: rc.y - ty * R * 1.9 + R * 0.45 },
+          { x: rc.x + nx * sideK * R * 1.5 + tx * R * 0.9, y: rc.y + ny * sideK * R * 1.5 + ty * R * 0.9 },
+          { x: rc.x + nx * sideK * R * 1.5 - tx * R * 0.9, y: rc.y + ny * sideK * R * 1.5 - ty * R * 0.9 },
+        ] })
+      }
 
-      const lab = h('p', { class: 'glabel', 'data-garden': g.id, style: `--i:${gi}` }, h('span', { class: 'glabel-num' }, String(g.id)), h('span', null, g.name))
-      labels.append(lab)
-      const half = lab.offsetWidth / 2 + 10
+      const lab = labs[gi]
+      const half = labSize[gi][0] / 2 + 10
+      const vh = part === 2 ? labSize[gi][1] / 2 + 3 : 13 // Part 2 names may wrap to two lines on a phone
       const cands = [
         { x: rc.x + nx * R * 1.75 * sideK, y: rc.y + ny * R * 1.75 * sideK },
         { x: rc.x, y: rc.y - R * 1.5 },
@@ -173,7 +229,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
             ]
           : []),
       ].map((p) => ({ x: clamp(p.x, half, w - half), y: clamp(p.y, top, hgt - bottom - 10) }))
-      pending.push({ lab, half, cands, home: rc })
+      pending.push({ lab, half, vh, cands, home: rc })
 
       // stepping stones: follow the path but alternate sides, vary gap, size and turn — a hand-set walk
       const n = g.stations.length
@@ -188,7 +244,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
         const zig = (k % 2 ? 1 : -1) * S * (0.26 + rnd(st.id) * 0.16)
         const x = p.x + pn.x * zig
         const y = p.y + pn.y * zig
-        const el = stones[ALL_STATIONS.findIndex((x2) => x2.id === st.id)]
+        const el = stones[STS.findIndex((x2) => x2.id === st.id)]
         el.style.left = `${x}px`
         el.style.top = `${y}px`
         placed.push({ x, y })
@@ -196,17 +252,18 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
         el.style.setProperty('--rot', `${((Math.atan2(q.y - p.y, q.x - p.x) * 180) / Math.PI + (rnd(st.id + 3) - 0.5) * 40).toFixed(1)}deg`)
       })
     })
+    if (nightAt) rocks.push({ x: nightAt.pond.x, y: nightAt.pond.y, r: pondR, seed: 0, sq: POND_SQ })
     // stepping stones never sit on a rock: nudge any overlapping stone out along the line from the rock's centre
     stones.forEach((el, i) => {
       let x = parseFloat(el.style.left), y = parseFloat(el.style.top)
       for (let pass = 0; pass < 3; pass++)
         for (const rk of rocks) {
-          const dx = x - rk.x, dy = (y - rk.y) * 1.25
+          const dx = x - rk.x, dy = (y - rk.y) * (rk.sq ?? 1.25)
           const dd = Math.hypot(dx, dy) || 1
           const min = rk.r * 1.4 + S * 0.6
           if (dd < min) {
             x += (dx / dd) * (min - dd)
-            y += ((dy / dd) * (min - dd)) / 1.25
+            y += ((dy / dd) * (min - dd)) / (rk.sq ?? 1.25)
           }
         }
       x = clamp(x, S * 0.6, w - S * 0.6)
@@ -215,15 +272,48 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
       el.style.top = `${y}px`
       placed[i] = { x, y }
     })
+    // Part 2 walks round the pond in tighter bends: keep stepping stones from touching each other, the rocks and
+    // (second run, once they are placed) the garden names
+    const relax2 = (names: { x: number; y: number; w: number; h: number }[]) => {
+      for (let pass = 0; pass < 6; pass++) {
+        for (let i = 0; i < placed.length; i++)
+          for (let j = i + 1; j < placed.length; j++) {
+            const p1 = placed[i], p2 = placed[j]
+            const dx = p2.x - p1.x, dy = (p2.y - p1.y) * 1.35 // stones are wider than tall
+            const dd = Math.hypot(dx, dy) || 1
+            const k = (S * 1.28 - dd) / dd / 2
+            if (k > 0) (p1.x -= dx * k), (p1.y -= (dy * k) / 1.35), (p2.x += dx * k), (p2.y += (dy * k) / 1.35)
+          }
+        for (const p1 of placed) {
+          for (const rk of rocks) {
+            const dx = p1.x - rk.x, dy = (p1.y - rk.y) * (rk.sq ?? 1.25)
+            const dd = Math.hypot(dx, dy) || 1
+            const min = rk.r * 1.4 + S * 0.6
+            if (dd < min) (p1.x += (dx / dd) * (min - dd)), (p1.y += ((dy / dd) * (min - dd)) / (rk.sq ?? 1.25))
+          }
+          for (const t of names) {
+            const ox = t.w + S * 0.6 - Math.abs(p1.x - t.x), oy = t.h + S * 0.45 - Math.abs(p1.y - t.y)
+            if (ox > 0 && oy > 0) ox < oy ? (p1.x += Math.sign(p1.x - t.x || 1) * ox) : (p1.y += Math.sign(p1.y - t.y || 1) * oy)
+          }
+        }
+      }
+      placed.forEach((p1, i) => {
+        p1.x = clamp(p1.x, S * 0.6, w - S * 0.6)
+        p1.y = clamp(p1.y, top, hgt - bottom)
+        stones[i].style.left = `${p1.x}px`
+        stones[i].style.top = `${p1.y}px`
+      })
+    }
+    if (part === 2) relax2([])
     // each label takes the candidate spot that overlaps the fewest stepping stones / rocks
     const overlap = (ax: number, ay: number, aw: number, ah: number, bx: number, by: number, bw: number, bh: number) =>
       Math.max(0, Math.min(ax + aw, bx + bw) - Math.max(ax - aw, bx - bw)) * Math.max(0, Math.min(ay + ah, by + bh) - Math.max(ay - ah, by - bh))
     const taken: { x: number; y: number; w: number; h: number }[] = placed.map((p) => ({ x: p.x, y: p.y, w: S * 0.6, h: S * 0.45 }))
-    for (const { lab, half, cands, home } of pending) {
+    for (const { lab, half, vh, cands, home } of pending) {
       const cost = (p: Pt, k: number) => {
         let v = k * 40 + Math.max(0, Math.hypot(p.x - home.x, p.y - home.y) - R * 2.2) * 25
-        for (const t of taken) v += overlap(p.x, p.y, half, 13, t.x, t.y, t.w, t.h)
-        for (const r2 of rocks) v += overlap(p.x, p.y, half, 13, r2.x, r2.y, r2.r * 0.95, r2.r * 0.7)
+        for (const t of taken) v += overlap(p.x, p.y, half, vh, t.x, t.y, t.w, t.h)
+        for (const r2 of rocks) v += overlap(p.x, p.y, half, vh, r2.x, r2.y, r2.r * 0.95, r2.r * 0.7)
         return v
       }
       let best = cands[0], bestCost = Infinity
@@ -233,7 +323,82 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
       })
       lab.style.left = `${best.x}px`
       lab.style.top = `${best.y}px`
-      taken.push({ x: best.x, y: best.y, w: half, h: 13 })
+      taken.push({ x: best.x, y: best.y, w: half, h: vh })
+    }
+    // Part 2 on a phone: when every spot for a name covers a stone, the name keeps its spot and the stone steps off it
+    if (part === 2) {
+      relax2(taken.slice(placed.length))
+      placed.forEach((p1, i) => (taken[i] = { ...taken[i], x: p1.x, y: p1.y }))
+    }
+
+    // the bridge: level with the end stone, from just past it out over the screen edge; when there is no room
+    // beside it, the nearest height above or below that covers no stone, label or rock
+    const end = part === 1 ? placed[placed.length - 1] : placed[0]
+    const room = part === 1 ? w - end.x - S * 0.62 - 4 : end.x - S * 0.62 - 4
+    const BW = Math.round(clamp(w * 0.1, 92, 160))
+    const BH = BW * 0.525
+    const fits = room >= BW * 0.6 // the crown of the arch and a little more stay on screen
+    const vis = Math.round(Math.min(BW * 0.86, fits ? room : BW))
+    const bx = part === 1 ? w - vis - 4 : 4
+    bridge.style.left = `${bx}px`
+    bridge.style.width = `${vis}px`
+    bridge.style.setProperty('--bw', `${BW}px`)
+    // the label rides above or below the arch, wherever it covers fewer stones, garden names and rocks
+    const lw = bridgeHalf
+    const lx = part === 1 ? w - 4 - lw : 4 + lw
+    const lcost = (y: number) =>
+      rocks.reduce((v, r2) => v + overlap(lx, y, lw, 11, r2.x, r2.y, r2.r * 0.95, r2.r * 0.7), taken.reduce((v, t) => v + overlap(lx, y, lw, 11, t.x, t.y, t.w, t.h), y < top ? 1e6 : 0))
+    const lbest = (y: number) => Math.min(lcost(y - BH * 0.68 - 12), lcost(y + BH * 0.32 + 12))
+    let by = end.y
+    if (!fits) {
+      let byCost = Infinity
+      for (const k of [-1.2, 1.2, -2.2, 2.2, -3.2, 3.2]) {
+        const y = clamp(end.y + k * S, top + BH * 0.6, hgt - bottom - BH * 0.4 - 16)
+        let v = Math.abs(k) * 30 + lbest(y)
+        for (const t of taken) v += overlap(bx + vis / 2, y, vis / 2, BH / 2 + 10, t.x, t.y, t.w, t.h)
+        for (const r2 of rocks) v += overlap(bx + vis / 2, y, vis / 2, BH / 2 + 10, r2.x, r2.y, r2.r, r2.r * 0.7)
+        if (v < byCost) (byCost = v), (by = y)
+      }
+    }
+    by = clamp(by, top + BH * 0.5, hgt - bottom - BH * 0.3)
+    const above = lcost(by - BH * 0.68 - 12) < lcost(by + BH * 0.32 + 12)
+    bridge.toggleAttribute('data-above', above)
+    bridge.style.top = `${Math.round(by - BH * 0.68 - (above ? 24 : 0))}px` // the deck meets the sand at the stone's height
+
+    // stone lanterns go last and give way: each takes the spot clearest of rocks, water, stones, names and the bridge
+    const lamps: (Pt & { H: number; g: number })[] = []
+    if (nightAt) {
+      const H = Math.max(28, R * 1.2)
+      const pd = nightAt.pond
+      taken.push({ x: bx + vis / 2, y: by - BH * 0.2, w: vis / 2, h: BH / 2 }, { x: lx, y: above ? by - BH * 0.68 - 12 : by + BH * 0.32 + 12, w: lw, h: 12 })
+      for (const { g, cands } of lampSpots) {
+        const score = (q: Pt) => {
+          let v = Math.min(q.x - H * 0.5, w - H * 0.5 - q.x, q.y - H - top, hgt - bottom - q.y) * 4 // on screen
+          for (const r2 of rocks) if (!r2.sq) v = Math.min(v, Math.hypot(q.x - r2.x, (q.y - r2.y) * 1.3) - r2.r)
+          v = Math.min(v, (Math.hypot((q.x - pd.x) / pd.rx, (q.y - pd.y) / pd.ry) - 1) * pd.ry) // the pond
+          for (const t of taken) v -= overlap(q.x, q.y - H * 0.5, H * 0.3, H * 0.55, t.x, t.y, t.w, t.h) * 2
+          for (const l of lamps) v = Math.min(v, Math.hypot(q.x - l.x, q.y - l.y) - H)
+          return v
+        }
+        const at = cands.reduce((p1, p2) => (score(p2) > score(p1) ? p2 : p1))
+        lamps.push({ x: clamp(at.x, H * 0.5, w - H * 0.5), y: at.y, H, g })
+      }
+    }
+
+    if (nightAt && night && glint && glows) {
+      night.style.width = `${w}px`
+      night.style.height = `${hgt}px`
+      drawNight(night, nightAt)
+      drawGlint(glint, nightAt)
+      lamps.forEach((l) => lantern(rocksSvg, l, l.H, l.g))
+      glows.replaceChildren(...lamps.map((l, i) => lanternGlow({ x: l.x, y: l.y - l.H * 0.5 }, R * 2.4, i)))
+      // fireflies: one by each lantern (alternating sides), a few over the water's edge
+      const p = nightAt.pond
+      const spots = [
+        ...lamps.map((l, i) => ({ x: l.x + (i % 2 ? 1 : -1) * R * 1.3, y: l.y - l.H * (0.8 + rnd(i + 40) * 0.6) })),
+        ...[0.15, 0.55, 0.85].map((t, i) => ({ x: p.x + Math.cos(t * Math.PI * 2) * p.rx * 1.05, y: p.y + Math.sin(t * Math.PI * 2) * p.ry * 1.1 - 10 * i })),
+      ]
+      flies?.replaceChildren(...spots.slice(0, portrait ? 7 : 10).map((p2, i) => firefly(p2, i)))
     }
     drawSand()
   }
@@ -256,7 +421,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     const limit = (K + 0.55) * gap
     const field = (x: number, y: number) => {
       let m = Infinity
-      for (const r of rocks) m = Math.min(m, Math.hypot(x - r.x, (y - r.y) * 1.15) - r.r * 1.12)
+      for (const r of rocks) m = Math.min(m, Math.hypot(x - r.x, (y - r.y) * (r.sq ?? 1.15)) - r.r * 1.12)
       return m
     }
     // Distance field sampled every c px. Only cells within reach of a rock are computed exactly — further out the
@@ -269,9 +434,10 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
       const rx = r.r * 1.12 + reach
       const i0 = Math.max(0, Math.floor((r.x - rx) / c)), i1 = Math.min(nx - 1, Math.ceil((r.x + rx) / c))
       const j0 = Math.max(0, Math.floor((r.y - rx / 1.15) / c)), j1 = Math.min(ny - 1, Math.ceil((r.y + rx / 1.15) / c))
+      const sq = r.sq ?? 1.15
       for (let j = j0; j <= j1; j++)
         for (let i = i0; i <= i1; i++) {
-          const v = Math.hypot(i * c - r.x, (j * c - r.y) * 1.15) - r.r * 1.12
+          const v = Math.hypot(i * c - r.x, (j * c - r.y) * sq) - r.r * 1.12
           if (v < F[j * nx + i]) F[j * nx + i] = v
         }
     }
@@ -369,13 +535,16 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
   let touchArmed: HTMLElement | null = null
   let lastPointer = 'mouse'
   const showTip = (el: HTMLElement) => {
-    const st = ALL_STATIONS[stones.indexOf(el as HTMLAnchorElement)]
+    const st = STS[stones.indexOf(el as HTMLAnchorElement)]
     const built = st.id in STATIONS
     prefetchStation(st.id) // hover / focus / first tap: the visit is likely, start loading it now
+    // "nên xem trước: 04 Token" (only Part 2 stations carry prereq)
+    const pre = st.prereq?.map((id) => `${displayNo(id)} ${ALL_STATIONS.find((x) => x.id === id)?.title ?? ''}`).join(', ')
     tip.replaceChildren(
-      h('span', { class: 'ptip-num' }, `${L.station} ${pad(st.id)} · ${fill(L.gardenOf, { n: st.garden.id })}`),
+      h('span', { class: 'ptip-num' }, `${L.station} ${displayNo(st.id)} · ${fill(L.gardenOf, { n: st.garden.id })}${st.kind ? ` · ${kindLabel[st.kind]}` : ''}`),
       h('span', { class: 'ptip-title' }, st.title),
       h('span', { class: 'ptip-teaser' }, built ? st.teaser : L.soon))
+    if (pre) tip.append(h('span', { class: 'ptip-num ptip-prereq' }, fill(L.prereq, { list: pre })))
     tip.hidden = false
     const r = el.getBoundingClientRect()
     const gr = garden.getBoundingClientRect()
@@ -421,6 +590,9 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
     if (w) drawSand()
   })
   layout()
+  // layout() measures the garden names; on a first visit the serif may still be loading, so measure again once it is in
+  let alive = true
+  if (document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(() => alive && layout())
 
   // once the garden is drawn and the browser is idle: the station to visit next, and three.js for the 3D scenes
   const cancelIdle = whenIdle(() => {
@@ -445,6 +617,7 @@ export function renderMap(root: HTMLElement, withIntro: boolean): () => void {
   if (withIntro && prefs.reduced) introCleanup = intro(garden, () => {})
 
   return () => {
+    alive = false
     ro.disconnect()
     offPrefs()
     cancelIdle()
@@ -650,6 +823,15 @@ function intro(garden: HTMLElement, then: () => void): () => void {
     offPrefs()
     ro.disconnect()
   }
+}
+
+/** Station kind mark on a Part 2 stone (spec B.2): ● hiểu, ✦ tin mới, ⚒ thực hành — drawn, not font glyphs. */
+function kindMark(kind: 'concept' | 'news' | 'practice') {
+  const art =
+    kind === 'concept' ? s('circle', { cx: 6, cy: 6, r: 2.5 })
+    : kind === 'news' ? s('path', { d: 'M6 .8L7.2 4.8 11.2 6 7.2 7.2 6 11.2 4.8 7.2.8 6 4.8 4.8z' })
+    : s('g', { transform: 'rotate(-38 6 6)' }, s('rect', { x: 1.6, y: 1, width: 8.8, height: 3.4, rx: 0.8 }), s('rect', { x: 5.1, y: 4, width: 1.8, height: 7.6, rx: 0.9 })) // a mallet
+  return s('svg', { class: 'pstone-kind', 'data-kind': kind, viewBox: '0 0 12 12', 'aria-hidden': 'true' }, art)
 }
 
 /** Deterministic 0..1 noise from a seed. */

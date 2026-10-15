@@ -37,6 +37,10 @@
   --rock-mid: #cdc7ba;
   --rock-lo: #9a9488;
   --rake-hi: rgba(255, 255, 255, 0.7);
+  /* the two maps' paper, for the "trăng lên" veil between them (moon-garden.ts) */
+  --veil-1: #f3efe6;
+  --veil-2: #e3e8ee;
+  --moon: #fcf6e4;
   --top: 64px;
   --rail: 72px;
 
@@ -81,6 +85,9 @@
   --rock-lo: #353430;
   --rake-hi: rgba(235, 230, 218, 0.075);
   --glow-moss: rgba(147, 179, 130, 0.2);
+  --veil-1: #0e1311;
+  --veil-2: #0f1425;
+  --moon: #f2e4b8;
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 26px rgba(0, 0, 0, 0.25);
   --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.35), 0 22px 54px rgba(0, 0, 0, 0.4);
 }
@@ -123,4 +130,87 @@
   --stone-3: #2b3238;
   --vermilion: #e07a5f;
   --vermilion-soft: #3a2420;
+}
+
+/* Phần 2 · Vườn Trăng (spec B.1): the same garden when the moon is up. html[data-part='2'] on its map and stations.
+   Dark = indigo-ink night, moonlit silver sand, ivory ink; light = "bình minh sương lam", blue-grey paper, indigo ink.
+   Both keep vermilion for seals. Contrast (WCAG AA) is checked for every text pair against --paper, --paper-2, --card. */
+:root[data-theme='light'][data-part='2'] {
+  --paper: #e3e8ee;
+  --paper-2: #d8dee7;
+  --card: #f1f4f8;
+  --ink: #1a2240;
+  --ink-2: #3b4462;
+  --ink-3: #555e7a;
+  --line: rgba(26, 34, 64, 0.12);
+  --line-2: rgba(26, 34, 64, 0.24);
+  --sand-line: rgba(26, 34, 64, 0.07);
+  --moss: #46695f;
+  --moss-2: #6f8f86;
+  --moss-soft: #d5e0de;
+  --stone: #8d95a5;
+  --stone-2: #bfc6d2;
+  --stone-3: #dbe0e8;
+  --vermilion: #ad3522;
+  --vermilion-soft: #f1dad3;
+  --on-ink: #f1f4f8;
+  --rake: rgba(26, 34, 64, 0.15);
+  --rake-hi: rgba(255, 255, 255, 0.72);
+  --umbra: #1c2236;
+  --moss-a: #6f8f86;
+  --moss-b: #4c6a63;
+  --moss-c: #9fb5ad;
+  --rock-hi: #e9edf2;
+  --rock-mid: #b9c1cd;
+  --rock-lo: #7c8698;
+  --step-hi: #f2f4f7;
+  --step-mid: #c9cfd9;
+  --step-lo: #8d96a7;
+  --stone-text: #3b4462;
+  --moon-rim: rgba(26, 34, 64, 0.3);
+  --water: #74849f;
+  --lantern: #eba659;
+  --firefly: #c9952c;
+  --dawn: rgba(244, 196, 166, 0.3);
+  --shadow-1: 0 1px 2px rgba(22, 30, 58, 0.05), 0 8px 26px rgba(22, 30, 58, 0.07);
+  --shadow-2: 0 2px 6px rgba(22, 30, 58, 0.08), 0 22px 54px rgba(22, 30, 58, 0.12);
+}
+:root[data-theme='dark'][data-part='2'] {
+  --paper: #0f1425;
+  --paper-2: #161c31;
+  --card: #1b2239;
+  --ink: #ede7d7;
+  --ink-2: #c6c2b6;
+  --ink-3: #989cb0;
+  --line: rgba(237, 231, 215, 0.12);
+  --line-2: rgba(237, 231, 215, 0.24);
+  --sand-line: rgba(237, 231, 215, 0.05);
+  --moss: #93b3a2;
+  --moss-2: #6a8a7f;
+  --moss-soft: #1f2d36;
+  --stone: #6b7084;
+  --stone-2: #464b5e;
+  --stone-3: #30354a;
+  --vermilion: #ef6b4d;
+  --vermilion-soft: #3a2228;
+  --on-ink: #0f1425;
+  --glow: rgba(239, 107, 77, 0.28);
+  --rake: rgba(0, 0, 10, 0.55);
+  --rake-hi: rgba(196, 208, 236, 0.1);
+  --umbra: #000;
+  --moss-a: #3d5a55;
+  --moss-b: #2c423f;
+  --moss-c: #57766d;
+  --rock-hi: #7c8396;
+  --rock-mid: #4c5266;
+  --rock-lo: #252a3c;
+  --step-hi: #bec4d2;
+  --step-mid: #858ca0;
+  --step-lo: #454a5e;
+  --stone-text: #10152a;
+  --moon-rim: rgba(242, 228, 184, 0.25);
+  --water: #060914;
+  --lantern: #f4c67a;
+  --firefly: #e8ef94;
+  --dawn: rgba(232, 176, 146, 0.13);
 }

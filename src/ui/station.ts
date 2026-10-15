@@ -1,5 +1,5 @@
 import { h, s } from '../core/dom'
-import { ALL_STATIONS, L, addSources, stationIndex, type Fact } from '../core/content'
+import { ALL_STATIONS, L, PARTS, addSources, displayNo, stationIndex, type Fact } from '../core/content'
 import { STATIONS } from '../stations/registry'
 import type { SceneCtx, SceneDef, StationModule } from '../stations/types'
 import { prefs } from '../core/prefs'
@@ -14,7 +14,6 @@ import { ensoBrush } from './brush'
 import { prefetchStation, whenIdle } from './prefetch'
 import { watchScene } from './autolow'
 
-const pad = (n: number) => String(n).padStart(2, '0')
 const TYPING = 'input, textarea, select, [contenteditable], [role="slider"], [role="listbox"]'
 
 /** Station = full-viewport scene player: art → interaction → insight, flipped with ← → or the rail. */
@@ -25,16 +24,19 @@ export async function renderStation(root: HTMLElement, id: number, start: number
     return null
   }
   const meta = ALL_STATIONS[idx]
-  const next = ALL_STATIONS[idx + 1]
+  const part = meta.garden.part
+  const after = ALL_STATIONS[idx + 1]
+  const next = after?.garden.part === part ? after : undefined // "next station" never crosses into the other part
+  const mapHref = PARTS.find((p) => p.id === part)?.route ?? '#/vuon'
   document.documentElement.dataset.garden = String(meta.garden.id)
-  setCrumb(`${pad(id)}  ${meta.title}`)
+  setCrumb(`${displayNo(id)}  ${meta.title}`)
 
-  const player = h('section', { class: 'player', 'aria-label': `${L.station} ${id}: ${meta.title}` })
+  const player = h('section', { class: 'player', 'aria-label': `${L.station} ${part === 1 ? id : displayNo(id)}: ${meta.title}` }) // Part 1 aria unchanged
   root.append(player)
 
   const loader = STATIONS[id]
   if (!loader) {
-    player.append(soon(meta.title))
+    player.append(soon(meta.title, mapHref))
     return () => {}
   }
   const loading = h('p', { class: 'player-loading' }, L.loading)
@@ -52,7 +54,8 @@ export async function renderStation(root: HTMLElement, id: number, start: number
   addSources(mod.content.sources)
   progress.visit(id)
 
-  const scenes: SceneDef[] = [...mod.scenes, quizScene(id, mod.content.quiz), summaryScene(mod.content.summary, next)]
+  // the last station of Part 1 (18) has no next one: its ensō leads over the bridge to Part 2 instead
+  const scenes: SceneDef[] = [...mod.scenes, quizScene(id, mod.content.quiz), summaryScene(mod.content.summary, mapHref, next, !next && part === 1)]
   const explored = new Set<number>()
   const host = h('div', { class: 'scenes' })
   const prevBtn = h('button', { class: 'rail-btn', type: 'button', 'aria-label': L.prevScene, onClick: () => go(cur - 1) }, icon('arrowL'))
@@ -227,7 +230,7 @@ export async function renderStation(root: HTMLElement, id: number, start: number
   addEventListener('keydown', onKey)
 
   go(Math.min(start, scenes.length - 1))
-  const chapterCleanup = start === 0 ? chapter(player, id, meta.title, mod.content.kicker, calm) : null
+  const chapterCleanup = start === 0 ? chapter(player, displayNo(id), meta.title, mod.content.kicker, calm) : null
 
   return () => {
     disposed = true
@@ -241,9 +244,9 @@ export async function renderStation(root: HTMLElement, id: number, start: number
 }
 
 /** Opening card: big station number + title + one metaphor line, dissolves into the first scene. */
-function chapter(player: HTMLElement, id: number, title: string, kicker: string, calm: boolean) {
+function chapter(player: HTMLElement, no: string, title: string, kicker: string, calm: boolean) {
   const card = h('div', { class: 'chapter', role: 'presentation' },
-    h('p', { class: 'chapter-num' }, pad(id)),
+    h('p', { class: 'chapter-num' }, no),
     h('h1', { class: 'chapter-title', tabindex: '-1' }, title),
     h('p', { class: 'chapter-kicker' }, kicker))
   player.append(card)
@@ -270,7 +273,7 @@ function chapter(player: HTMLElement, id: number, title: string, kicker: string,
 }
 
 /** Last scene: an ensō is brushed, the one sentence to remember appears inside, then onward. */
-function summaryScene(text: string, next?: (typeof ALL_STATIONS)[number]): SceneDef {
+function summaryScene(text: string, mapHref: string, next?: (typeof ALL_STATIONS)[number], toPartTwo = false): SceneDef {
   return {
     label: L.summaryEyebrow,
     mount(ctx) {
@@ -291,7 +294,8 @@ function summaryScene(text: string, next?: (typeof ALL_STATIONS)[number]): Scene
       const textEl = h('p', { class: 'summary-text' }, text)
       const actions = h('div', { class: 'summary-actions' },
         next ? h('a', { class: 'btn primary', href: `#/tram/${next.id}` }, `${L.next}: ${next.title}`, icon('arrowR', 'icon sm')) : null,
-        h('a', { class: 'btn ghost', href: '#/vuon' }, L.backToMap))
+        toPartTwo ? h('a', { class: 'btn primary', href: PARTS[1].route }, L.toPartTwo, icon('arrowR', 'icon sm')) : null,
+        h('a', { class: 'btn ghost', href: mapHref }, L.backToMap))
       ctx.art.append(h('div', { class: 'summary' }, h('div', { class: 'summary-in' }, h('p', { class: 'summary-label' }, L.summaryEyebrow), h('div', { class: 'summary-ring' }, enso, textEl), actions)))
       ctx.complete()
       ctx.onCleanup(whenIdle(() => prefetchStation(next?.id))) // the next station is the likely click
@@ -305,10 +309,10 @@ function summaryScene(text: string, next?: (typeof ALL_STATIONS)[number]): Scene
   }
 }
 
-function soon(title: string) {
+function soon(title: string, mapHref: string) {
   return h('div', { class: 'soon' },
     h('p', { class: 'soon-label' }, L.soon),
     h('h1', { tabindex: '-1' }, title),
     h('p', null, L.soonText),
-    h('a', { class: 'btn ghost', href: '#/vuon' }, L.backToMap))
+    h('a', { class: 'btn ghost', href: mapHref }, L.backToMap))
 }

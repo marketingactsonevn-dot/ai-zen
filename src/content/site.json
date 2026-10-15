@@ -63,7 +63,20 @@
     "exam": "Bài thi cuối",
     "glossaryHint": "Tra nhanh mọi thuật ngữ",
     "examHint": "10 câu hỏi · nhận chứng nhận",
-    "home": "Trang chủ"
+    "home": "Trang chủ",
+    "part": "Phần",
+    "partOne": "Vườn Ngày",
+    "partTwo": "Vườn Trăng",
+    "toPartTwo": "Sang Vườn Trăng",
+    "toPartOne": "Về Vườn Ngày",
+    "bridgeHint": "Qua cầu là Vườn Trăng: hiểu sâu bên trong, thấy rộng bên ngoài, tự tay làm được",
+    "partTwoAdvice": "Vườn Trăng đi sâu và rộng hơn. Nếu mới bắt đầu, Vườn Ngày sẽ giúp bạn hiểu nhanh hơn.",
+    "partTwoAdviceGo": "Cứ bước tiếp",
+    "partTwoAdviceBack": "Về Vườn Ngày",
+    "kindConcept": "Hiểu",
+    "kindNews": "Tin mới",
+    "kindPractice": "Thực hành",
+    "prereq": "Nên xem trước: {list}"
   },
   "footer": {
     "note": "Dữ liệu đến 12/10/2026 · Logo và thương hiệu thuộc về chủ sở hữu tương ứng; dùng cho mục đích giáo dục.",

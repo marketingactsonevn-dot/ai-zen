@@ -4,7 +4,8 @@
  * window.__aizen.perf (src/core/perf.ts). Default profile emulates a mid-range phone: Moto G Power
  * (412×823 @1.75x, touch), CPU 4× slower and "Fast 4G" through the DevTools protocol.
  *
- *   npm run build && node scripts/perf-walk.mjs                       # scenarios a–e, phone profile
+ *   npm run build && node scripts/perf-walk.mjs                       # scenarios a–e + m, phone profile
+ *   node scripts/perf-walk.mjs --only m                               # the Part 2 map alone (#/vuon-trang + the bridge)
  *   node scripts/perf-walk.mjs --profile desktop                      # 1440×900 @2x, no throttling
  *   node scripts/perf-walk.mjs --only c --stations 3-8                # a subset
  *   node scripts/perf-walk.mjs --only c --ablate blur,svgfilter,backdrop   # same walk with an effect switched off by CSS
@@ -16,6 +17,7 @@
  *
  * Scenarios: a) home → map (intro, sand, address-bar resize)  b) station 1, every scene  c) stations 1 → 18 in order
  *            d) first visit of a 3D station on a cold cache   e) map ↔ station, 10 times
+ *            m) Part 2 map: open #/vuon-trang, idle, sand, address-bar resize, then the bridge Part 1 → Part 2 → Part 1
  * Writes JSON (default docs/perf-data/<profile>[-no-…][-trace].json) and prints a summary.
  */
 import { chromium } from 'playwright'
@@ -35,7 +37,7 @@ const opt = (k, d) => {
   return v && !v.startsWith('--') ? v : true
 }
 const PROFILE = opt('profile', 'mobile')
-const ONLY = String(opt('only', 'a,b,c,d,e')).split(',')
+const ONLY = String(opt('only', 'a,b,c,d,e,m')).split(',')
 const [S0, S1 = S0] = String(opt('stations', '1-18')).split('-').map(Number)
 const TRACE = opt('trace', false) === true
 const STACKS = opt('stacks', false) === true // + JS stack of every forced style/layout (best on the dev server: readable names)
@@ -320,43 +322,94 @@ async function scenarioA() {
     t = await now(page)
     await sleep(3000)
     out.mapIdle = await since(page, t)
-    // six taps on open sand (not on a stone / link)
-    const pts = await page.evaluate(() => {
-      const g = document.querySelector('.garden').getBoundingClientRect()
-      const ok = []
-      for (let k = 0; k < 400 && ok.length < 6; k++) {
-        const x = g.left + g.width * (0.1 + ((k * 0.618) % 0.8))
-        const y = g.top + g.height * (0.2 + ((k * 0.382) % 0.6))
-        const el = document.elementFromPoint(x, y)
-        if (el && el.closest('.garden') && !el.closest('a, button, .ptip')) ok.push([x, y])
-      }
-      return ok
-    })
-    t = await now(page)
-    for (const [x, y] of pts) {
-      if (P.context.hasTouch) await page.touchscreen.tap(x, y)
-      else await page.mouse.click(x, y)
-      await sleep(450)
-    }
-    await sleep(1500)
-    out.sandTouch = { taps: pts.length, ...(await since(page, t)) }
-    // address bar: shrink/grow the viewport by 56 px three times; count how often the sand canvas is redrawn
-    await page.evaluate(() => {
-      window.__sandDraws = 0
-      new MutationObserver((m) => (window.__sandDraws += m.filter((r) => r.attributeName === 'height').length)).observe(document.querySelector('.garden-sand'), { attributes: true })
-    })
-    const vp = page.viewportSize()
-    t = await now(page)
-    for (let k = 0; k < 3; k++) {
-      await page.setViewportSize({ width: vp.width, height: vp.height - 56 })
-      await sleep(500)
-      await page.setViewportSize(vp)
-      await sleep(500)
-    }
-    await sleep(500)
-    out.addressBar = { resizes: 6, sandRedraws: await page.evaluate(() => window.__sandDraws), ...(await since(page, t)) }
+    out.sandTouch = await sandTaps(page)
+    out.addressBar = await addressBar(page)
   })
   out.settled = await settle(cdp, page)
+  out.trace = trace
+  out.warnings = warnings
+  await context.close()
+  return out
+}
+
+/** Six taps on open sand of the map on screen (not on a stone / link). */
+async function sandTaps(page) {
+  const pts = await page.evaluate(() => {
+    const g = document.querySelector('.garden').getBoundingClientRect()
+    const ok = []
+    for (let k = 0; k < 400 && ok.length < 6; k++) {
+      const x = g.left + g.width * (0.1 + ((k * 0.618) % 0.8))
+      const y = g.top + g.height * (0.2 + ((k * 0.382) % 0.6))
+      const el = document.elementFromPoint(x, y)
+      if (el && el.closest('.garden') && !el.closest('a, button, .ptip')) ok.push([x, y])
+    }
+    return ok
+  })
+  const t = await now(page)
+  for (const [x, y] of pts) {
+    if (P.context.hasTouch) await page.touchscreen.tap(x, y)
+    else await page.mouse.click(x, y)
+    await sleep(450)
+  }
+  await sleep(1500)
+  return { taps: pts.length, ...(await since(page, t)) }
+}
+
+/** Address bar: shrink/grow the viewport by 56 px three times; count how often the sand canvas is redrawn. */
+async function addressBar(page) {
+  await page.evaluate(() => {
+    window.__sandDraws = 0
+    new MutationObserver((m) => (window.__sandDraws += m.filter((r) => r.attributeName === 'height').length)).observe(document.querySelector('.garden-sand'), { attributes: true })
+  })
+  const vp = page.viewportSize()
+  const t = await now(page)
+  for (let k = 0; k < 3; k++) {
+    await page.setViewportSize({ width: vp.width, height: vp.height - 56 })
+    await sleep(500)
+    await page.setViewportSize(vp)
+    await sleep(500)
+  }
+  await sleep(500)
+  return { resizes: 6, sandRedraws: await page.evaluate(() => window.__sandDraws), ...(await since(page, t)) }
+}
+
+/**
+ * m) Part 2 map (spec A.10 holds for it too): open #/vuon-trang directly (no intro; a first visit also shows the B.5
+ * advice card, as for a real newcomer), idle, sand, address bar; then from the Part 1 map cross the bridge to Part 2
+ * and back. The bridges are clicked in the DOM (like the crumb in e), so a touch tooltip or two-tap rule cannot stall it.
+ */
+async function scenarioPart2() {
+  const { context, page, cdp, warnings } = await open()
+  const out = {}
+  const P2 = '.garden a.pstone[href="#/tram/19"]'
+  const P1 = '.garden a.pstone[href="#/tram/1"]'
+  /** Click the bridge link inside #main (the topbar I · II switch and the advice card sit outside it). */
+  const cross = async (href, ready) => {
+    const sel = `#main a[href="${href}"]`
+    await page.locator(sel).first().waitFor({ state: 'attached', timeout: 15000 })
+    const t0 = await clickIn(page, sel)
+    const t1 = await until(page, (s) => document.querySelector(s) && performance.now(), ready)
+    await sleep(4500) // the new map settles in: .garden.appear lasts 4.2 s
+    return { latency: Math.round(t1 - t0), ...(await since(page, t0)) }
+  }
+  const { trace } = await traced(page, async () => {
+    await page.goto(url('#/vuon-trang'), { waitUntil: 'load' })
+    res.meta.quality ??= await page.evaluate(() => document.documentElement.dataset.quality)
+    await until(page, (s) => document.querySelector(s) && performance.now(), P2)
+    await sleep(5000)
+    out.enter = await since(page, 0) // navigation start → the Part 2 map has settled in
+    const t = await now(page)
+    await sleep(3000)
+    out.mapIdle = await since(page, t)
+    out.sandTouch = await sandTaps(page)
+    out.addressBar = await addressBar(page)
+    await page.evaluate(() => (location.hash = '#/vuon'))
+    await until(page, (s) => document.querySelector(s) && performance.now(), P1)
+    await sleep(4500)
+    out.bridgeTo2 = await cross('#/vuon-trang', P2)
+    out.bridgeTo1 = await cross('#/vuon', P1)
+  })
+  out.settled = await settle(cdp, page) // Part 1 map after a round trip: what Part 2 left alive
   out.trace = trace
   out.warnings = warnings
   await context.close()
@@ -478,6 +531,10 @@ try {
     log('a) home → map')
     res.a = await scenarioA()
   }
+  if (ONLY.includes('m')) {
+    log('m) bản đồ Phần 2 + cầu I ↔ II')
+    res.m = await scenarioPart2()
+  }
   if (ONLY.includes('b') || ONLY.includes('c')) {
     const [from, to] = ONLY.includes('c') ? [S0, S1] : [1, 1]
     log(`${ONLY.includes('c') ? 'b+c' : 'b'}) trạm ${from} → ${to}, lật hết scene`)
@@ -507,9 +564,17 @@ log(`→ ${OUT}`)
 function summary(r) {
   const L = [`# perf-walk · ${r.meta.label} · quality=${r.meta.quality ?? '?'} · ${r.meta.commit}`]
   const f = (s) => (s ? `${s.fps} fps (trung vị ${s.medianFps}), frame max ${s.maxFrame} ms, >50ms: ${s.over50}, long task ${s.longTasks} (max ${s.longTaskMax} ms), GL max ${s.maxGl}` : '–')
+  const mapLines = (o, keys) => keys.map((k) => `   ${k}: ${f(o[k])}${k === 'addressBar' ? ` · cát vẽ lại ${o.addressBar.sandRedraws}/6 lần resize` : ''}`)
   if (r.a) {
     L.push(`a) FCP ${r.a.load.fcp} ms · load ${r.a.load.load} ms · JS tải ${r.a.load.jsKB} kB`)
-    for (const k of ['intro', 'enter', 'mapIdle', 'sandTouch', 'addressBar']) L.push(`   ${k}: ${f(r.a[k])}${k === 'addressBar' ? ` · cát vẽ lại ${r.a.addressBar.sandRedraws}/6 lần resize` : ''}`)
+    L.push(...mapLines(r.a, ['intro', 'enter', 'mapIdle', 'sandTouch', 'addressBar']))
+  }
+  if (r.m) {
+    L.push(`m) Phần 2 #/vuon-trang · rAF loop lúc đứng yên max ${r.m.mapIdle.maxLoops}`)
+    L.push(...mapLines(r.m, ['enter', 'mapIdle', 'sandTouch', 'addressBar']))
+    for (const k of ['bridgeTo2', 'bridgeTo1']) L.push(`   ${k}: bấm → map ${r.m[k].latency} ms · ${f(r.m[k])}`)
+    const s = r.m.settled
+    L.push(`   về Phần 1 sau vòng qua cầu: heap ${s.heapMB} MB · GL ${s.glAlive} · stage ${s.stages} · rAF ${s.loops} [${s.loopNames.join(', ')}]`)
   }
   if (r.c || r.b) {
     const st = r.c ? r.c.stations : [r.b]

@@ -9,12 +9,13 @@ import './styles/base.css'
 import './styles/ui.css'
 
 import { h } from './core/dom'
-import { L } from './core/content'
+import { L, partOfStation } from './core/content'
 import { apply, onQualityChoice } from './core/prefs'
 import { inkDefs } from './ui/ink'
-import { topbar, setCrumb } from './ui/topbar'
+import { topbar, setCrumb, setPart } from './ui/topbar'
 import { renderMap } from './ui/map'
 import { renderStation } from './ui/station'
+import { partTwoAdvice } from './ui/hint'
 
 apply()
 
@@ -36,6 +37,12 @@ async function route() {
   delete document.documentElement.dataset.garden
 
   const m = location.hash.match(/^#\/tram\/(\d+)(?:\/(\d+))?/)
+  // Part 2 = its map and stations 19–39; everything else (intro, glossary, exam, logos) counts as Part 1
+  const part = m ? partOfStation(Number(m[1])) : location.hash === '#/vuon-trang' ? 2 : 1
+  setPart(part)
+  if (part === 2) document.documentElement.dataset.part = '2'
+  else delete document.documentElement.dataset.part
+
   if (m) {
     const c = await renderStation(main, Number(m[1]), Math.max(0, Number(m[2] ?? 1) - 1), stale)
     if (stale()) c?.()
@@ -48,9 +55,10 @@ async function route() {
     const { renderLogos } = await import('./ui/logos-page')
     if (!stale()) cleanup = renderLogos(main)
   } else {
-    // '#/' = home (title in the mist, then into the garden); '#/vuon' = the garden map directly
-    cleanup = renderMap(main, location.hash !== '#/vuon')
+    // '#/' = home (title in the mist, then into the garden); '#/vuon' = the garden map directly; '#/vuon-trang' = Part 2
+    cleanup = renderMap(main, { part, withIntro: part === 1 && location.hash !== '#/vuon' })
   }
+  if (part === 2 && !stale()) partTwoAdvice()
 }
 
 addEventListener('hashchange', route)

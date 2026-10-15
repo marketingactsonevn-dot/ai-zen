@@ -1,7 +1,12 @@
 {
+  "parts": [
+    { "id": 1, "name": "Phần 1 · Vườn Ngày", "tagline": "Hiểu AI để dùng AI đúng cách", "route": "#/vuon" },
+    { "id": 2, "name": "Phần 2 · Vườn Trăng", "tagline": "Hiểu sâu bên trong, thấy rộng bên ngoài, tự tay làm được", "route": "#/vuon-trang" }
+  ],
   "gardens": [
     {
       "id": 1,
+      "part": 1,
       "name": "Nền tảng",
       "tagline": "AI là gì, từ đâu tới, đang đi về đâu",
       "motif": "sand",
@@ -13,6 +18,7 @@
     },
     {
       "id": 2,
+      "part": 1,
       "name": "Bộ não chữ (LLM)",
       "tagline": "Bên trong một chatbot khi bạn gõ câu hỏi",
       "motif": "brush",
@@ -24,6 +30,7 @@
     },
     {
       "id": 3,
+      "part": 1,
       "name": "Xưởng sáng tạo",
       "tagline": "Ảnh, video, 3D, âm thanh — và giao việc cho đúng AI",
       "motif": "mist",
@@ -37,6 +44,7 @@
     },
     {
       "id": 4,
+      "part": 1,
       "name": "Nghệ thuật ra lệnh",
       "tagline": "Viết prompt như giao việc cho người mới",
       "motif": "blocks",
@@ -47,6 +55,7 @@
     },
     {
       "id": 5,
+      "part": 1,
       "name": "AI Agent",
       "tagline": "Bộ não có tay chân",
       "motif": "lantern",
@@ -58,12 +67,97 @@
     },
     {
       "id": 6,
+      "part": 1,
       "name": "Bản đồ & tác động",
       "tagline": "Các công ty AI, và cái giá thật của mỗi câu hỏi",
       "motif": "dusk",
       "stations": [
         { "id": 17, "title": "Bản đồ các công ty AI", "teaser": "Mỗi công ty là một hòn đảo đá" },
         { "id": 18, "title": "Tác động: hiểu để dùng đúng", "teaser": "Điện, nước, tư duy — và thói quen tốt" }
+      ]
+    },
+    {
+      "id": 7,
+      "part": 2,
+      "name": "Đỉnh núi tin tức",
+      "tagline": "Những cột mốc có thật của năm 2026, và cách đọc tin AI không bị cuốn theo",
+      "motif": "dusk",
+      "stations": [
+        { "id": 19, "title": "Đỉnh núi 2026", "teaser": "Ai đang dẫn đầu, và cách đọc một bản tin AI", "kind": "news" },
+        { "id": 20, "title": "AI làm toán", "teaser": "Từ thi Olympic tới bài toán triệu đô", "kind": "news" },
+        { "id": 21, "title": "Robot chạy marathon", "teaser": "AI ra khỏi màn hình", "kind": "news" }
+      ]
+    },
+    {
+      "id": 8,
+      "part": 2,
+      "name": "Mở nắp hộp đen",
+      "tagline": "Nhìn vào bên trong một mô hình đang nghĩ",
+      "motif": "brush",
+      "stations": [
+        { "id": 22, "title": "Attention", "teaser": "AI “nhìn” chữ nào khi đọc", "kind": "concept", "prereq": [4, 5] },
+        { "id": 23, "title": "Diễn giải được AI", "teaser": "Soi đèn xuống đáy hồ", "kind": "concept" },
+        { "id": 24, "title": "Học & nghĩ", "teaser": "Phần thưởng, suy luận, tật nịnh", "kind": "concept" }
+      ]
+    },
+    {
+      "id": 9,
+      "part": 2,
+      "name": "Mặt hồ lặng",
+      "tagline": "AI có cảm xúc không? Câu trả lời trung thực phức tạp hơn “có” hoặc “không”",
+      "motif": "mist",
+      "stations": [
+        { "id": 25, "title": "AI có cảm xúc không?", "teaser": "Mặt nước, dòng chảy và đáy sâu trong sương", "kind": "concept" },
+        { "id": 26, "title": "Ý thức & phúc lợi AI", "teaser": "Các lý thuyết ý thức, và luật “không bạo hành AI”", "kind": "news" },
+        { "id": 27, "title": "Con người gắn bó với AI", "teaser": "Ta thấy mặt người trong đá — và trong chatbot", "kind": "concept" }
+      ]
+    },
+    {
+      "id": 10,
+      "part": 2,
+      "name": "Mạch ngầm dưới vườn",
+      "tagline": "Dưới mỗi câu trả lời là chip, bộ nhớ, điện và tiền",
+      "motif": "blocks",
+      "stations": [
+        { "id": 28, "title": "NVIDIA và cái xẻng", "teaser": "Ai bán xẻng trong cơn sốt vàng AI", "kind": "news", "prereq": [18] },
+        { "id": 29, "title": "Cơn khát bộ nhớ", "teaser": "Vì sao AI làm điện thoại của bạn đắt hơn", "kind": "news" },
+        { "id": 30, "title": "Mở hay đóng", "teaser": "Ai giữ chìa khoá, và luật lệ cho AI", "kind": "concept" }
+      ]
+    },
+    {
+      "id": 11,
+      "part": 2,
+      "name": "Vườn mở",
+      "tagline": "Nơi tải model, nơi chia sẻ mã, và cách chạy AI ngay trên máy mình",
+      "motif": "lantern",
+      "stations": [
+        { "id": 31, "title": "Hugging Face & GitHub", "teaser": "Thư viện chung của thế giới AI", "kind": "practice" },
+        { "id": 32, "title": "AI chạy trên máy mình", "teaser": "Riêng tư, chạy offline — máy cần đủ mạnh", "kind": "practice", "prereq": [31] },
+        { "id": 33, "title": "Agent tự chạy trên máy bạn", "teaser": "Người giữ vườn thường trực, và giữ đúng chìa", "kind": "practice", "prereq": [14, 16] }
+      ]
+    },
+    {
+      "id": 12,
+      "part": 2,
+      "name": "Xưởng dưới trăng",
+      "tagline": "Từ hiểu sang làm: nền tảng, quy trình, và tự tay code",
+      "motif": "sand",
+      "stations": [
+        { "id": 34, "title": "Nền tảng sáng tạo", "teaser": "Chọn đúng công cụ cho đúng việc", "kind": "practice", "prereq": [7, 8, 11] },
+        { "id": 35, "title": "Skills, quy trình & workflow", "teaser": "Biến việc lặp lại thành nếp", "kind": "practice", "prereq": [12, 16] },
+        { "id": 36, "title": "Tự code game bằng AI", "teaser": "Từ bản vẽ tới hồ koi chơi được", "kind": "practice" }
+      ]
+    },
+    {
+      "id": 13,
+      "part": 2,
+      "name": "Ngã rẽ dưới trăng",
+      "tagline": "Tương lai đi đâu — và bạn bắt đầu từ đâu",
+      "motif": "mist",
+      "stations": [
+        { "id": 37, "title": "An toàn & căn chỉnh", "teaser": "Dạy AI muốn đúng", "kind": "concept" },
+        { "id": 38, "title": "AGI, tương lai & nghề", "teaser": "Trong sương có nhiều ngả", "kind": "concept" },
+        { "id": 39, "title": "Khu vườn của riêng bạn", "teaser": "Bộ đồ nghề và lộ trình 30 ngày", "kind": "practice" }
       ]
     }
   ]

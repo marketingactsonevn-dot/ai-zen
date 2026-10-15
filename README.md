@@ -57,6 +57,8 @@ Logo và thương hiệu thuộc về chủ sở hữu tương ứng; dùng cho 
   - `onPrefs` chạy cả khi đổi âm thanh / quality: so màu cũ trước khi vẽ lại.
   - `aria-live` chỉ gắn sau khi đã điền nội dung lần đầu, nếu không trình đọc màn hình đọc lại mỗi lần vào scene.
   - `ResizeObserver` luôn báo lần đầu: đừng gọi `layout()` thêm lần nữa trong cùng frame.
+  - Đo kích thước (`offsetWidth`, `getBoundingClientRect`…) **gom một lượt trước khi ghi DOM**, không đo xen trong vòng lặp đang thêm phần tử. Mỗi lần đọc sau khi ghi là một lần layout: map Phần 2 mất ~20 ms (CPU 4×) chỉ vì 7 lần đo tên vườn.
+  - Chữ đo lúc mount có thể chưa có font: nếu `document.fonts.status !== 'loaded'` thì `document.fonts.ready.then(...)` đo lại (huỷ khi unmount).
   - Bảng noise / sprite / gradient dựng một lần ở module, không dựng lại mỗi lần gọi. Lần `measureText` đầu của mỗi font tốn ~25 ms: làm ấm trong `requestIdleCallback`.
 - **Trạm mới chỉ xong khi** (B.8):
   - `npm run build && node scripts/perf-walk.mjs --only c --stations N-N`: không long task, không frame > 50 ms khi vào trạm và khi chuyển scene.

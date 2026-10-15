@@ -1478,3 +1478,389 @@ body:has(main.scroll-page) .topbar {
 .garden.appear .garden-sand {
   animation: garden-in 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
+
+/* ───────── Vườn Trăng: the Part 2 map (moon pond, lanterns, fireflies) and the bridge between the gardens ───────── */
+/* one night, walked: deep night where the path starts, the first light of dawn where it ends (garden 13) */
+:root[data-part='2'] .garden {
+  background: radial-gradient(ellipse 40% 50% at 0% 8%, color-mix(in srgb, var(--moon) 6%, transparent), transparent), linear-gradient(100deg, transparent 50%, var(--dawn));
+}
+:root[data-part='2'] .garden[data-portrait] {
+  background: radial-gradient(ellipse 70% 30% at 0% 4%, color-mix(in srgb, var(--moon) 6%, transparent), transparent), linear-gradient(180deg, transparent 55%, var(--dawn));
+}
+.garden-night,
+.pond-glint,
+.garden-glow,
+.fireflies {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+.garden-night {
+  overflow: visible;
+}
+.garden-glow,
+.fireflies {
+  inset: 0;
+}
+.moon-maria {
+  fill: var(--umbra);
+  opacity: 0.05;
+}
+.moon-rim {
+  fill: none;
+  stroke: var(--moon-rim);
+  stroke-width: 1.2;
+  filter: url(#ink-rough);
+}
+.moon-cloud {
+  fill: var(--paper);
+  opacity: 0.72;
+  filter: blur(0.7px);
+}
+:root[data-quality='low'] .moon-cloud {
+  filter: none;
+}
+.pond-bank {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 6;
+  opacity: 0.12;
+}
+.moon-reflect {
+  fill: var(--moon);
+  opacity: 0.88;
+}
+.moon-reflect-cut {
+  fill: none;
+  stroke: var(--water);
+  stroke-width: 1.5;
+}
+.pond-glitter {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+.pond-ring {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 0.8;
+  opacity: 0.16;
+}
+.pond-rim {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.3;
+  opacity: 0.26;
+  filter: url(#ink-rough);
+}
+.pond-pad {
+  fill: var(--moss-b);
+  stroke: var(--moss-a);
+  stroke-width: 0.8;
+  opacity: 0.9;
+}
+.pond-glint {
+  overflow: visible;
+  opacity: 0;
+  animation: pond-glint 3.6s ease-in-out infinite alternate;
+}
+@keyframes pond-glint {
+  to {
+    opacity: 1;
+  }
+}
+.lantern-stone :is(path, circle) {
+  fill: var(--rock-mid);
+  stroke: var(--rock-lo);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+.lantern-ink {
+  fill: none;
+  stroke: var(--rock-lo);
+  stroke-width: 0.8;
+  opacity: 0.8;
+}
+.lantern-window {
+  fill: var(--lantern);
+}
+.lglow {
+  position: absolute;
+  width: var(--g);
+  height: calc(var(--g) * 0.62);
+  margin: calc(var(--g) * -0.31) 0 0 calc(var(--g) * -0.5);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 26%, transparent), color-mix(in srgb, var(--lantern) 7%, transparent) 60%, transparent);
+  animation: lantern-breathe 6s ease-in-out var(--d) infinite alternate;
+}
+@keyframes lantern-breathe {
+  from {
+    opacity: 0.7;
+  }
+}
+.firefly {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--firefly);
+  box-shadow: 0 0 6px 2px color-mix(in srgb, var(--firefly) 55%, transparent), 0 0 18px 6px color-mix(in srgb, var(--firefly) 16%, transparent);
+  opacity: 0;
+  animation: ff-drift var(--t) ease-in-out var(--d) infinite alternate, ff-blink calc(var(--t) * 0.45) ease-in-out var(--d) infinite;
+}
+@keyframes ff-drift {
+  to {
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+@keyframes ff-blink {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  45%,
+  60% {
+    opacity: 0.95;
+  }
+}
+/* quality=low and reduced motion: still water, steady lanterns, no fireflies */
+:root[data-quality='low'] :is(.firefly, .pond-glint) {
+  display: none;
+}
+:root[data-quality='low'] .lglow {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .firefly,
+  .pond-glint {
+    display: none;
+  }
+  .lglow {
+    animation: none;
+  }
+}
+.garden.appear :is(.garden-night, .garden-glow, .bridge) {
+  animation: garden-in 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
+}
+.garden.appear .lantern {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: garden-rock-in 1.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0.7s both;
+}
+
+/* Part 2 stones: moonlit silver with indigo numbers; not built yet = a stone still in shadow */
+:root[data-part='2'] .pstone {
+  /* stepping stones catch the moon more than the big rocks do */
+  --rock-hi: var(--step-hi);
+  --rock-mid: var(--step-mid);
+  --rock-lo: var(--step-lo);
+  color: var(--stone-text);
+  box-shadow: 0 3px 0 -1px color-mix(in srgb, var(--rock-lo) 80%, transparent), 0 6px 14px rgba(0, 0, 0, 0.22);
+}
+:root[data-part='2'] .pstone:not([data-built]) {
+  background: color-mix(in srgb, var(--rock-mid) 22%, transparent);
+  box-shadow: inset 0 0 0 1.2px var(--line-2);
+  color: var(--ink-2);
+}
+:root[data-part='2'] .pstone[data-visited] {
+  color: var(--ink);
+}
+.pstone-num small {
+  font-size: 0.68em;
+  opacity: 0.8;
+}
+.pstone-kind {
+  position: absolute;
+  right: -12px;
+  bottom: -8px;
+  width: 11px;
+  height: 11px;
+  color: var(--ink-3);
+  fill: currentColor;
+}
+/* Part 2 garden names are longer: two lines beside the path on a phone, not four */
+:root[data-part='2'] .garden[data-portrait] .glabel {
+  max-width: 9.4em;
+}
+.ptip-prereq {
+  margin-top: 4px;
+}
+.garden[data-focus='7'] .rock[data-garden='7'],
+.garden[data-focus='8'] .rock[data-garden='8'],
+.garden[data-focus='9'] .rock[data-garden='9'],
+.garden[data-focus='10'] .rock[data-garden='10'],
+.garden[data-focus='11'] .rock[data-garden='11'],
+.garden[data-focus='12'] .rock[data-garden='12'],
+.garden[data-focus='13'] .rock[data-garden='13'] {
+  opacity: 1;
+}
+.garden[data-focus='7'] .glabel[data-garden='7'],
+.garden[data-focus='8'] .glabel[data-garden='8'],
+.garden[data-focus='9'] .glabel[data-garden='9'],
+.garden[data-focus='10'] .glabel[data-garden='10'],
+.garden[data-focus='11'] .glabel[data-garden='11'],
+.garden[data-focus='12'] .glabel[data-garden='12'],
+.garden[data-focus='13'] .glabel[data-garden='13'] {
+  color: var(--ink);
+}
+
+/* the taiko-bashi: an arched bridge in ink, running off the screen edge into the other garden */
+.bridge {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  border-radius: var(--r-sm);
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.bridge[data-to='1'] {
+  align-items: flex-end;
+}
+.bridge-art {
+  flex: none;
+  width: var(--bw);
+  max-width: none;
+  height: auto;
+  overflow: visible;
+  transition: transform 0.5s var(--ease);
+}
+.bridge-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-end;
+  padding: 2px 4px;
+  font: 400 0.95rem/1.2 var(--serif);
+  white-space: nowrap;
+}
+.bridge[data-to='1'] .bridge-label {
+  align-self: flex-start;
+}
+.bridge[data-above] .bridge-label {
+  order: -1;
+}
+@media (max-width: 560px) {
+  .bridge-label {
+    font-size: 0.88rem;
+  }
+}
+.bridge:hover {
+  color: var(--ink);
+}
+.bridge:hover .bridge-art,
+.bridge:focus-visible .bridge-art {
+  transform: translateY(-3px);
+}
+.br-ink {
+  filter: url(#ink-rough);
+}
+.br-ink path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.br-ink .br-body {
+  fill: color-mix(in srgb, var(--ink) 9%, var(--paper));
+}
+.br-ink .br-fascia {
+  fill: color-mix(in srgb, var(--ink) 26%, var(--paper));
+  stroke-width: 1;
+}
+.br-ink .br-rail {
+  stroke-width: 1.2;
+}
+.br-ink .br-midrail {
+  stroke-width: 0.8;
+  opacity: 0.7;
+}
+.br-gibo {
+  fill: var(--vermilion);
+}
+.br-water {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+.br-reflect {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.2;
+  stroke-dasharray: 7 5;
+  opacity: 0.45;
+}
+
+/* "trăng lên" (moon-garden.ts crossBridge): the other garden's paper washes over, soft-edged */
+.moonrise {
+  position: fixed;
+  z-index: 90;
+  inset: 0 0 -25% 0;
+  /* indigo ink soaking down: the wet leading edge a shade deeper than the wash behind it */
+  background: linear-gradient(to bottom, var(--veil-2) 55%, color-mix(in srgb, var(--veil-2) 72%, #3a4a8c) 76%, color-mix(in srgb, var(--veil-2) 60%, transparent) 86%, transparent);
+}
+.moonrise.to-1 {
+  inset: -25% 0 0 0;
+  background: linear-gradient(to top, var(--veil-1) 55%, color-mix(in srgb, var(--veil-1) 80%, #d8b48a) 76%, color-mix(in srgb, var(--veil-1) 60%, transparent) 86%, transparent);
+}
+.moonrise-moon {
+  position: fixed;
+  z-index: 91;
+  left: 50%;
+  top: 38%;
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 -36px;
+  border-radius: 50%;
+  background: var(--moon);
+  box-shadow: 0 0 40px 12px color-mix(in srgb, var(--moon) 30%, transparent), inset 0 0 0 1px rgba(26, 34, 64, 0.12);
+  pointer-events: none;
+}
+
+/* the I · II switch: the garden being viewed is underlined in vermilion */
+.part-switch {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+/* narrow station pages keep the Part 1 topbar as it was: the crumb already leads back to the map */
+@media (max-width: 767px) {
+  .crumb:not([hidden]) + .tools .part-switch {
+    display: none;
+  }
+}
+/* phones: only the link to the other garden */
+@media (max-width: 560px) {
+  .part-link[aria-current],
+  .part-switch > span {
+    display: none;
+  }
+}
+.icon-btn.part-link[aria-current] {
+  color: var(--ink);
+  text-decoration: underline 1.5px var(--vermilion);
+  text-underline-offset: 7px;
+}
+/* the B.5 advice is a short card, not a pill: text on its own line, the two buttons under it */
+.toast.part-advice {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  width: min(30rem, calc(100vw - 32px));
+  padding: 14px 14px 12px 18px;
+  border-radius: var(--r);
+}
+.toast.part-advice > span {
+  flex: 1 1 100%;
+  font: 400 0.98rem/1.45 var(--serif);
+  color: var(--ink);
+}

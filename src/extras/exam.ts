@@ -10,7 +10,7 @@ import { ensoBrush } from '../ui/brush'
 import { setCrumb } from '../ui/topbar'
 import { icon } from '../ui/icons'
 import { progress } from '../core/progress'
-import { ALL_STATIONS } from '../core/content'
+import { stationsOfPart } from '../core/content'
 
 /*
  * Bài thi cuối — a stone gate at dawn; ten questions are ten stepping stones through it;
@@ -1759,8 +1759,9 @@ export function render(root: HTMLElement): () => void {
     const score = right.filter(Boolean).length
     const date = today()
     // honest: the "18 stations" line only when the visitor really walked them all
-    const visited = progress.visitedCount()
-    const whole = visited >= ALL_STATIONS.length
+    const part1 = stationsOfPart(1)
+    const visited = part1.filter((st) => progress.isVisited(st.id)).length
+    const whole = visited >= part1.length
     const el = h('div', { class: 'ex-stage ex-cert' })
     const canvas = h('canvas', { class: 'ex-cert-canvas', width: CW, height: CH, role: 'img' })
     const paper = h('div', { class: 'ex-cert-paper' }, canvas)
@@ -1771,7 +1772,7 @@ export function render(root: HTMLElement): () => void {
     const dlIcon = s('svg', { viewBox: '0 0 24 24', class: 'ex-dl-ico', 'aria-hidden': 'true' }, s('path', { d: 'M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14' }))
     const dl = h('button', { class: 'btn primary ex-dl', type: 'button' }, dlIcon, D.cert.download)
     const hint = h('p', { class: 'ex-cert-hint', id: 'ex-cert-hint', 'aria-live': 'polite' })
-    const journey = whole ? null : h('p', { class: 'ex-cert-note' }, fill(D.cert.journey, { n: visited, total: ALL_STATIONS.length }))
+    const journey = whole ? null : h('p', { class: 'ex-cert-note' }, fill(D.cert.journey, { n: visited, total: part1.length }))
     const again = h('button', { class: 'btn ghost', type: 'button' }, D.cert.again)
     again.addEventListener('click', () => go(quizStage()))
     const side = h('div', { class: 'ex-cert-side' },

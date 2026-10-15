@@ -63,7 +63,20 @@
     "exam": "Final exam",
     "glossaryHint": "Look up any term, fast",
     "examHint": "10 questions · earn a certificate",
-    "home": "Home"
+    "home": "Home",
+    "part": "Part",
+    "partOne": "Day Garden",
+    "partTwo": "Moon Garden",
+    "toPartTwo": "On to the Moon Garden",
+    "toPartOne": "Back to the Day Garden",
+    "bridgeHint": "Across the bridge lies the Moon Garden: look deeper inside, see wider outside, make things with your own hands",
+    "partTwoAdvice": "The Moon Garden goes deeper and wider. If you're just starting out, the Day Garden will help you understand faster.",
+    "partTwoAdviceGo": "Keep going",
+    "partTwoAdviceBack": "Back to the Day Garden",
+    "kindConcept": "Concept",
+    "kindNews": "News",
+    "kindPractice": "Hands-on",
+    "prereq": "See first: {list}"
   },
   "footer": {
     "note": "Data as of Oct 12, 2026 · Logos and trademarks belong to their respective owners; used for educational purposes.",
