@@ -12,6 +12,10 @@ export interface Fact {
   source: string
   verify?: boolean
   kind?: FactKind
+  /** Part 2: the company/lab that made this claim about itself (benchmark, "solved X") — shown as ◇ until verified */
+  claimBy?: string
+  /** Part 2: who independently confirmed it (source key or short name) */
+  verifiedBy?: string
 }
 
 export interface Source {
