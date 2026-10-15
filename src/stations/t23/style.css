@@ -1,0 +1,109 @@
+/* Trạm 23 — Interpretability: a lantern over a clear pond · a lotus of stacked meanings · water over terraces */
+
+/* scene 1: the bridge stone */
+.g8b .g8b-pond { fill: var(--water); fill-opacity: 0.55; stroke: var(--moon); stroke-opacity: 0.15; }
+.g8b .g8b-bank { fill: var(--stone-3); fill-opacity: 0.6; }
+.g8b .g8b-stone { fill: var(--stone-2); fill-opacity: 0.7; }
+.g8b .g8b-rim { fill: var(--ink); fill-opacity: 0.45; }
+.g8b .g8b-lan { fill: var(--lantern); fill-opacity: 0.55; stroke: var(--ink); stroke-width: 1.2; transition: fill-opacity 0.8s; }
+.g8b .g8b-glow, .g8b .g8b-beam, .g8b .g8b-refl { transition: opacity 0.9s; }
+.g8b .g8b-glow { opacity: 0.25; }
+.g8b .g8b-beam { fill: var(--lantern); opacity: 0; }
+.g8b .g8b-refl { opacity: 0; }
+.g8b .g8b-carve { opacity: 0.55; transition: opacity 0.9s; }
+.g8b[data-lvl='1'] .g8b-glow { opacity: 0.6; }
+.g8b[data-lvl='1'] .g8b-beam { opacity: 0.06; }
+.g8b[data-lvl='1'] .g8b-carve { opacity: 0.8; }
+.g8b[data-lvl='2'] .g8b-glow { opacity: 1; }
+.g8b[data-lvl='2'] .g8b-beam { opacity: 0.13; }
+.g8b[data-lvl='2'] .g8b-carve { opacity: 1; }
+.g8b[data-lvl='2'] .g8b-refl { opacity: 0.45; }
+.g8b[data-lvl='2'] .g8b-lan { fill-opacity: 1; }
+.g8b-f { transition: transform 1.6s cubic-bezier(0.45, 0, 0.2, 1); }
+.g8b-card {
+  position: absolute;
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  border: 1px solid var(--line);
+}
+.g8b-card.wide { transform: translateY(-50%); }
+.g8b-card .g8-q { text-align: left; }
+.g8b-answer {
+  margin: 0;
+  min-height: 3.2em;
+  font: italic 400 clamp(1rem, 1.7vw, 1.2rem) / 1.45 var(--serif);
+  color: var(--ink);
+}
+.g8b[data-lvl='2'] .g8b-answer { color: var(--vermilion); }
+
+/* scene 2: lotus */
+.g8o .g8o-pad { fill: var(--moss); fill-opacity: 0; transition: fill-opacity 1s; }
+.g8o.open .g8o-pad { fill-opacity: 0.45; }
+.g8o .g8o-padc { fill: var(--moss); fill-opacity: 0.55; transition: fill-opacity 1s; }
+.g8o.open .g8o-padc { fill-opacity: 0.25; }
+.g8o .g8o-pf { fill: var(--card); stroke: var(--ink); stroke-width: 1.2; stroke-opacity: 0.6; }
+:root[data-theme='dark'] .g8o .g8o-pf { fill: var(--moon); fill-opacity: 0.88; stroke: var(--paper); }
+.g8o .g8o-vein { fill: none; stroke: var(--vermilion); stroke-opacity: 0.55; stroke-width: 1.1; }
+.g8o-petal { transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: calc(var(--k) * 70ms); }
+.g8o .g8o-ring { fill: none; stroke: var(--moon); stroke-width: 1.2; opacity: 0; }
+:root[data-theme='light'] .g8o .g8o-ring { stroke: var(--card); }
+.g8o.rip .g8o-ring { animation: g8o-rip 1.8s ease-out both; }
+@keyframes g8o-rip { from { transform: scale(0.6); opacity: 0.8; } to { transform: scale(2.4); opacity: 0; } }
+.g8o .g8o-ring { transform-box: fill-box; transform-origin: center; }
+.g8o-pond {
+  position: absolute;
+  border: 0;
+  border-radius: 40%;
+  background: transparent;
+  cursor: pointer;
+}
+.g8o-pond:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -8px; }
+.g8o-neuron {
+  font: italic 400 0.92rem/1.2 var(--serif);
+  color: var(--ink-2);
+  transition: opacity 0.8s;
+}
+.g8o-mean {
+  text-align: center;
+  font: 400 0.95rem/1.3 var(--serif);
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 0.8s 0.9s;
+  text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper);
+}
+.g8o.open .g8o-mean { opacity: 1; }
+.g8o-note { text-align: center; }
+
+/* scene 3: water over terraces */
+.g8s .g8s-terr { fill: var(--stone-2); }
+.g8s .g8s-bed { fill: var(--ink-3); fill-opacity: 0.22; }
+.g8s .g8s-bed.cut { fill-opacity: 0.16; }
+.g8s .g8s-pool { fill: var(--water); fill-opacity: 0.5; stroke: var(--ink); stroke-opacity: 0.35; }
+.g8s .g8s-water { fill: none; stroke: var(--moon); stroke-width: 4.5; stroke-linecap: round; opacity: 0.85; }
+:root[data-theme='light'] .g8s .g8s-water { stroke: var(--water); }
+.g8s .g8s-water.cut { stroke-width: 1.6; opacity: 0.45; stroke-dasharray: 4 5; }
+.g8s .g8s-shine { fill: var(--moon); opacity: 0.35; }
+:root[data-theme='light'] .g8s .g8s-shine { fill: var(--card); opacity: 0.8; }
+.g8s-node {
+  position: absolute;
+  min-height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: 400 clamp(1rem, 1.8vw, 1.3rem) / 1.2 var(--serif);
+  color: var(--ink-2);
+  cursor: default;
+}
+  .g8s-node span { white-space: nowrap; padding: 2px 10px; border-radius: 999px; background: color-mix(in srgb, var(--paper) 55%, transparent); }
+.g8s-node.full { color: var(--ink); }
+.g8s-node.next { color: var(--ink); cursor: pointer; }
+.g8s-node.next span { box-shadow: 0 0 0 1.5px var(--vermilion); }
+:root[data-quality='high'] .g8s-node.next span { animation: g8s-call 2.4s ease-in-out infinite; }
+@keyframes g8s-call { 50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--vermilion) 25%, transparent); } }
+.g8s-node:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.g8s.swapped .g8s-node.t1 span, .g8s.swapped .g8s-node.t2 span { color: var(--vermilion); }
+.g8s-cut { text-align: right; font: italic 400 0.8rem/1.2 var(--serif); color: var(--ink-3); }
+.g8s-limit { text-align: center; }

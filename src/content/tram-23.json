@@ -80,21 +80,54 @@
       "prompt": "Lần theo dòng nước",
       "question": "“Thủ phủ của bang có thành phố Dallas là…”",
       "nodes": [
-        { "id": "dallas", "label": "Dallas", "tier": 0, "aria": "Mạch vào: chữ Dallas" },
-        { "id": "capital", "label": "thủ phủ", "tier": 0, "aria": "Mạch vào: chữ thủ phủ" },
-        { "id": "texas", "label": "Texas", "tier": 1, "aria": "Hồ trung gian: ý Texas" },
-        { "id": "austin", "label": "Austin", "tier": 2, "aria": "Hồ cuối: câu trả lời Austin" }
+        {
+          "id": "dallas",
+          "label": "Dallas",
+          "tier": 0,
+          "aria": "Mạch vào: chữ Dallas"
+        },
+        {
+          "id": "capital",
+          "label": "thủ phủ",
+          "tier": 0,
+          "aria": "Mạch vào: chữ thủ phủ"
+        },
+        {
+          "id": "texas",
+          "label": "Texas",
+          "tier": 1,
+          "aria": "Hồ trung gian: ý Texas"
+        },
+        {
+          "id": "austin",
+          "label": "Austin",
+          "tier": 2,
+          "aria": "Hồ cuối: câu trả lời Austin"
+        }
       ],
       "edges": [
-        ["dallas", "texas"],
-        ["texas", "austin"],
-        ["capital", "austin"],
-        ["dallas", "austin"]
+        [
+          "dallas",
+          "texas"
+        ],
+        [
+          "texas",
+          "austin"
+        ],
+        [
+          "capital",
+          "austin"
+        ],
+        [
+          "dallas",
+          "austin"
+        ]
       ],
       "shortcut": "lối tắt (mờ hơn)",
       "stepAria": "Đi tiếp theo dòng nước tới “{label}” (Enter)",
       "swap": "Đổi “Texas” thành “California”",
       "swapAria": "Thay ý Texas bằng California bên trong mô hình",
+      "swapTo": "California",
       "swapResult": "Sacramento",
       "insight": {
         "text": "Bản đồ quy kết (attribution graph) cho thấy mô hình nghĩ qua bước trung gian: Dallas → Texas → thủ phủ là Austin.",

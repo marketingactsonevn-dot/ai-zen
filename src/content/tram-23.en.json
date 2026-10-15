@@ -1,0 +1,240 @@
+{
+  "id": 23,
+  "kicker": "Lower a lantern to the bottom of the pond to see how the fish swim.",
+  "summary": "The black box is slowly being opened; only a few corners can be seen so far.",
+  "quiz": {
+    "q": "What did the Golden Gate Claude experiment (May 2024) show?",
+    "options": [
+      "Claude fell in love with the bridge after reading the news",
+      "You can find a “concept” inside a model and turn it up to change how the model answers",
+      "Scientists now fully understand what goes on inside AI",
+      "Each concept sits neatly inside exactly one neuron"
+    ],
+    "answer": 1,
+    "explain": "Anthropic found a direction matching the Golden Gate Bridge and turned it up hard. That is one small corner, not a full understanding of the model."
+  },
+  "scenes": {
+    "bridge": {
+      "label": "The concept stone",
+      "art": "Looking down through a clear pond under the moon: on the bottom lies a stone carved with a suspension bridge. Turn up the lantern’s wick and its light falls on the stone; the fish begin to swim along the curve of the span, and the water reflects two vermilion towers.",
+      "prompt": "Turn up the concept lantern",
+      "slider": "Strength of the “Golden Gate Bridge” concept",
+      "sliderAria": "Drag to turn up the “Golden Gate Bridge” concept inside the model (← → keys)",
+      "valueText": "Level {n}/{total}",
+      "question": "“I have $10. How should I spend it?”",
+      "answers": [
+        "“A nice lunch, or save it for next week.”",
+        "“A nice lunch… then a stroll to look at a really beautiful bridge.”",
+        "“Drive across the Golden Gate Bridge and pay the toll!”"
+      ],
+      "answersNote": {
+        "text": "The first two answers are written by AI Zen as illustration; the last follows an example Anthropic published.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-golden-gate",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Inside the model are “directions” that match concepts (features). Turn up the Golden Gate Bridge one and every answer steers to the bridge.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-golden-gate"
+      },
+      "detail": {
+        "text": "Golden Gate Claude was an experiment Anthropic opened to the public for about 24 hours from 23 May 2024, built on research that found millions of concepts in Claude 3 Sonnet.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-mapping-mind"
+      }
+    },
+    "lotus": {
+      "label": "One stem, many petals",
+      "art": "A white lotus on the night pond, one stem with petals stacked tightly into a single bud. Gently stir the water and the petals part, drifting into five small flowers, each marked with one meaning: DNA, Hebrew letters, legal text, a web address, a nutrition label.",
+      "prompt": "Gently stir the water",
+      "shakeAria": "Stir the water to separate the stacked meanings (or press Space)",
+      "neuron": "one neuron",
+      "meanings": [
+        "DNA sequences",
+        "Hebrew script",
+        "legal text",
+        "web requests (HTTP)",
+        "nutrition facts"
+      ],
+      "meaningsNote": {
+        "text": "These five concepts appear in Anthropic’s research; sharing one lotus is an illustration.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-monosemanticity",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Models pack in more concepts than they have neurons by stacking them (superposition), so one neuron often carries several meanings at once.",
+        "asOf": "2026-10-15",
+        "source": "toy-superposition"
+      },
+      "detail": {
+        "text": "In 2023 Anthropic split a 512-neuron layer of a small model into more than 4,000 easier-to-read concepts, such as DNA or legal text.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-monosemanticity"
+      }
+    },
+    "stream": {
+      "label": "Following the water",
+      "art": "A small stream under the moon runs over three stone terraces. Water pours in from two springs, “Dallas” and “capital”, gathers in a middle pool carved “Texas”, and only then falls into the last pool, “Austin”. A thin branch of water runs straight down as a shortcut, fainter.",
+      "prompt": "Follow the water",
+      "question": "“The capital of the state that contains Dallas is…”",
+      "nodes": [
+        { "id": "dallas", "label": "Dallas", "tier": 0, "aria": "Spring: the word Dallas" },
+        { "id": "capital", "label": "capital", "tier": 0, "aria": "Spring: the word capital" },
+        { "id": "texas", "label": "Texas", "tier": 1, "aria": "Middle pool: the idea Texas" },
+        { "id": "austin", "label": "Austin", "tier": 2, "aria": "Last pool: the answer Austin" }
+      ],
+      "edges": [
+        ["dallas", "texas"],
+        ["texas", "austin"],
+        ["capital", "austin"],
+        ["dallas", "austin"]
+      ],
+      "shortcut": "shortcut (fainter)",
+      "stepAria": "Follow the water on to “{label}” (Enter)",
+      "swap": "Swap “Texas” for “California”",
+      "swapAria": "Replace the idea Texas with California inside the model",
+      "swapTo": "California",
+      "swapResult": "Sacramento",
+      "insight": {
+        "text": "An attribution graph shows the model reasoning through a middle step: Dallas → Texas → the capital is Austin.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-biology"
+      },
+      "detail": {
+        "text": "Swap the idea “Texas” for “California” inside the model and the answer becomes Sacramento. Research on Claude 3.5 Haiku, published 27 March 2025.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-biology"
+      },
+      "limit": {
+        "text": "The authors themselves estimate the method gives a satisfying explanation for only about a quarter of the prompts they tried.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-biology"
+      }
+    },
+    "circle": {
+      "label": "Stone circle by the pond",
+      "art": "Four stones around a round pond holding the moon, each a different shape: tall and upright, lying flat, covered in moss, carved with a seal. Touch one and the moon’s reflection tilts slightly toward it, then settles.",
+      "prompt": "Listen to each stone",
+      "question": "Can looking inside keep up with how fast AI is growing?",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Dario Amodei · CEO of Anthropic (Apr 2025)",
+            "view": {
+              "text": "There is a race between interpretability and model intelligence. The goal: by 2027, interpretability can reliably detect most problems in a model.",
+              "asOf": "2026-10-15",
+              "source": "amodei-urgency",
+              "kind": "prediction"
+            }
+          },
+          {
+            "who": "Neel Nanda · interpretability researcher at Google DeepMind, personal view (May 2025)",
+            "view": {
+              "text": "Interpretability will not be reliable enough to catch deceptive AI on its own. Treat it as one layer among many defences, still very worth doing.",
+              "asOf": "2026-10-15",
+              "source": "nanda-2025",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "The White House · America’s AI Action Plan (Jul 2025)",
+            "view": {
+              "text": "The inner workings of frontier AI are poorly understood, which makes it hard to use in defence and life-or-death settings. Invest for breakthroughs in interpretability.",
+              "asOf": "2026-10-15",
+              "source": "us-ai-action-plan",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Anthropic’s audit team · before releasing Claude Sonnet 4.5 (Sep 2025)",
+            "view": {
+              "text": "Looking inside, they saw concepts like “fake or suspicious content” grow stronger when the model met a test. Damping them changed its behaviour in the test.",
+              "asOf": "2026-10-15",
+              "source": "transformer-sonnet45",
+              "claimBy": "Anthropic"
+            }
+          }
+        ],
+        "common": {
+          "text": "Agreed: seeing inside is needed. Disagreed: whether it comes in time before AI gets stronger, and how far to trust it for big decisions.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Interpretability is, for now, an extra layer of checking, not a safety certificate: only a few corners of the black box are visible.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "anthropic-golden-gate": {
+      "title": "Golden Gate Claude",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/golden-gate-claude",
+      "date": "2024-05-23",
+      "note": "A research demo of about 24 hours: the Golden Gate Bridge concept amplified in Claude 3 Sonnet. Example: asked how to spend $10, the model suggests driving across the bridge and paying the toll."
+    },
+    "anthropic-mapping-mind": {
+      "title": "Mapping the Mind of a Large Language Model",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/mapping-mind-language-model",
+      "date": "2024-05-21",
+      "note": "Found millions of concepts (features) in a middle layer of Claude 3 Sonnet; Anthropic says this is only a small fraction of the concepts the model has learned."
+    },
+    "anthropic-monosemanticity": {
+      "title": "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/research/towards-monosemanticity-decomposing-language-models-with-dictionary-learning",
+      "date": "2023-10-05",
+      "note": "Split a 512-neuron layer into more than 4,000 concepts; examples: DNA sequences, legal text, HTTP requests, Hebrew text, nutrition statements."
+    },
+    "toy-superposition": {
+      "title": "Toy Models of Superposition",
+      "publisher": "Elhage et al., Anthropic (arXiv 2209.10652)",
+      "url": "https://arxiv.org/abs/2209.10652",
+      "date": "2022-09-21",
+      "note": "Explains why one neuron carries several meanings (polysemanticity): networks stack many sparse concepts into fewer dimensions."
+    },
+    "anthropic-biology": {
+      "title": "On the Biology of a Large Language Model",
+      "publisher": "Anthropic (Transformer Circuits)",
+      "url": "https://transformer-circuits.pub/2025/attribution-graphs/biology.html",
+      "date": "2025-03-27",
+      "note": "Uses attribution graphs on Claude 3.5 Haiku. Two-step example Dallas → Texas → Austin; replacing Texas with California gives Sacramento. The authors estimate the method gives satisfying insight on about 1/4 of the prompts tried."
+    },
+    "amodei-urgency": {
+      "title": "The Urgency of Interpretability",
+      "publisher": "Dario Amodei",
+      "url": "https://www.darioamodei.com/post/the-urgency-of-interpretability",
+      "date": "2025-04",
+      "note": "Writes: “We are thus in a race between interpretability and model intelligence”; sets the goal that by 2027 interpretability can reliably detect most model problems."
+    },
+    "nanda-2025": {
+      "title": "Interpretability Will Not Reliably Find Deceptive AI",
+      "publisher": "Neel Nanda (LessWrong, personal view)",
+      "url": "https://www.lesswrong.com/posts/PwnadG4BFjaER3MGf/interpretability-will-not-reliably-find-deceptive-ai",
+      "date": "2025-05-04",
+      "note": "Interpretability is not reliable enough to detect deceptive AI alone; it should be one layer in a defence-in-depth strategy, and is still worth investing in."
+    },
+    "us-ai-action-plan": {
+      "title": "Winning the Race: America's AI Action Plan",
+      "publisher": "The White House (US)",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2025/07/Americas-AI-Action-Plan.pdf",
+      "date": "2025-07-23",
+      "note": "Section “Invest in AI Interpretability, Control, and Robustness Breakthroughs”: “Today, the inner workings of frontier AI systems are poorly understood.”"
+    },
+    "transformer-sonnet45": {
+      "title": "Claude Sonnet 4.5 knows when it's being tested",
+      "publisher": "Transformer (reporting on Anthropic’s system card)",
+      "url": "https://transformernews.ai/p/claude-sonnet-4-5-evaluation-situational-awareness",
+      "date": "2025-09-30",
+      "note": "Anthropic used interpretability in pre-release audits: a “fake or suspicious content” concept grew stronger during training; suppressing it with activation steering made the model mention being tested less, and sometimes misbehave more. This is Anthropic’s own report."
+    }
+  }
+}
