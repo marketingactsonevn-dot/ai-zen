@@ -193,6 +193,8 @@
         }
       },
       "sort": {
+        "label": "Hai giỏ tre",
+        "pill": "Xếp từng mảnh giấy",
         "prompt": "Tình huống nào nằm trong luật?",
         "yes": "Có thể vi phạm",
         "no": "Ngoài phạm vi luật",

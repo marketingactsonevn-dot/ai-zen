@@ -1,0 +1,78 @@
+/* Trạm 26 — Ý thức & luật: four lantern theories · the heron that looks inward · two bamboo baskets */
+
+/* 1 · lamps */
+.t26l .t26l-ring { fill: none; stroke: var(--rake); stroke-width: 1.2; }
+.t26l .t26l-rot { transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s; opacity: 0; }
+.t26l .t26l-sh { fill: var(--umbra); transition: opacity 0.9s; }
+:root[data-theme='dark'] .t26l .t26l-sh { fill: #000; }
+.t26l .zk-toro { transition: opacity 0.6s; }
+.t26l .on .zk-win { opacity: 1; }
+.t26l-num { font: 500 0.78rem/1 var(--sans); color: var(--ink-3); text-align: center; }
+.t26l-statue { text-align: center; font-size: 0.82rem; color: var(--ink-3); }
+.t26l-card { z-index: 2; }
+.t26l-card .p2-eyebrow { margin-bottom: 0.2em; }
+.t26l-name { margin: 0 0 0.3em; font: 500 1.08rem/1.3 var(--serif); }
+.t26l-asks { margin: 0 0 0.5em; font-size: 0.95rem; }
+.t26l-lamp[aria-pressed='true'] { box-shadow: inset 0 -2px 0 var(--lantern); }
+
+/* 2 · introspect */
+.t26i-concept { display: flex; flex-direction: column; align-items: center; gap: 2px; z-index: 1; }
+.t26i-concept strong { font: 500 1rem/1.3 var(--serif); letter-spacing: 0.04em; color: var(--vermilion); }
+.t26i .t26i-bird { fill: var(--rock-hi); stroke: var(--ink); stroke-opacity: 0.4; stroke-width: 0.8; }
+.t26i .t26i-beak { fill: var(--lantern); stroke: var(--ink); stroke-opacity: 0.4; stroke-width: 0.6; }
+.t26i .t26i-head { transition: transform 1.2s cubic-bezier(0.3, 0, 0.2, 1); transform-box: view-box; }
+.t26i[data-lv='1'] .t26i-heron .t26i-head { transform: rotate(-26deg); }
+.t26i .t26i-refl { opacity: 0.22; }
+.t26i .t26i-glint { opacity: 0.4; }
+.t26i .t26i-murk { fill: var(--ink); opacity: 0; transition: opacity 1.6s; }
+.t26i[data-lv='2'] .t26i-murk { opacity: 0.32; }
+.t26i .t26i-ink ellipse:first-child { fill: var(--vermilion); }
+.t26i .t26i-inkglow { fill: url(#zk-lamp); }
+.t26i .t26i-ink { opacity: 0; transform: scale(var(--size, 1)); transform-box: fill-box; transform-origin: center; }
+.t26i.go .t26i-ink { animation: t26i-fall 1.1s cubic-bezier(0.5, 0, 0.9, 0.6) both; }
+@keyframes t26i-fall {
+  0% { opacity: 0; transform: translateY(0) scale(var(--size, 1)); }
+  15% { opacity: 1; }
+  92% { opacity: 1; transform: translateY(var(--fall)) scale(var(--size, 1)); }
+  100% { opacity: 0; transform: translateY(var(--fall)) scale(calc(var(--size, 1) * 0.4)); }
+}
+.t26i .t26i-splash ellipse { opacity: 0; fill: none; stroke: var(--vermilion); stroke-opacity: 0.7; stroke-width: 1.2; transform-box: fill-box; transform-origin: center; }
+.t26i.go .t26i-splash ellipse { animation: zk-ripple 2s ease-out both; animation-delay: calc(1s + var(--i) * 0.2s); }
+.t26i.go[data-lv='0'] .t26i-splash ellipse { stroke-opacity: 0.3; }
+.t26i.go[data-lv='2'] .t26i-splash ellipse { stroke-width: 3; }
+.t26i-ctl { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 4px; z-index: 2; }
+.t26i-ctl > .zk-small { margin: 0; }
+.t26i-row { display: flex; align-items: center; justify-content: center; gap: 6px 14px; flex-wrap: wrap; }
+.t26i-seg { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.t26i-lv { min-width: 52px; padding-inline: 0.7em; }
+.t26i-ask { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+.t26i-ans { z-index: 2; }
+.t26i-qline { margin: 0 0 0.3em; font-style: italic; color: var(--ink-2); }
+.t26i-out { margin: 0 0 0.4em; font-weight: 500; }
+
+/* 4 · sort */
+.t26s-col { position: absolute; z-index: 2; }
+.t26s-slip {
+  padding: 0.9em 1.1em;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: var(--shadow-1);
+  transform: rotate(-1.2deg);
+  transition: opacity 0.6s, transform 0.6s;
+}
+.t26s-text { margin: 0; font: 400 1.05rem/1.45 var(--serif); color: var(--ink); text-align: center; }
+.t26s-slip.next { animation: t26s-in 0.7s ease-out both; }
+.t26s-slip.shake { animation: t26s-shake 0.45s ease-in-out; }
+.t26s-slip.gone { opacity: 0; transform: translateY(30px) rotate(4deg); }
+@keyframes t26s-in { from { opacity: 0; transform: translateY(-24px) rotate(3deg); } }
+@keyframes t26s-shake { 25% { transform: translateX(-7px) rotate(-2deg); } 75% { transform: translateX(7px) rotate(0deg); } }
+.t26s-fb { margin: 0.7em 0 0; font: 400 0.92rem/1.45 var(--serif); color: var(--ink-2); text-align: center; }
+.t26s-fb strong { color: var(--moss); font-weight: 500; }
+.t26s .t26s-body { fill: color-mix(in srgb, var(--lantern) 34%, var(--stone-2)); stroke: var(--ink); stroke-opacity: 0.4; stroke-width: 1; }
+.t26s .t26s-weave { fill: var(--ink); opacity: 0.22; }
+.t26s .t26s-rim { fill: color-mix(in srgb, var(--lantern) 20%, var(--umbra)); stroke: var(--ink); stroke-opacity: 0.45; stroke-width: 1.4; }
+.t26s .t26s-in { fill: var(--card); stroke: var(--ink); stroke-opacity: 0.4; stroke-width: 0.8; opacity: 0; transition: opacity 0.6s; }
+.t26s .t26s-in.on { opacity: 1; }
+.t26s-lab { text-align: center; font-size: 0.9rem; }
+.t26s-note { position: absolute; margin: 0; }
