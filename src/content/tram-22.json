@@ -113,6 +113,7 @@
       "label": "Tầng tầng lớp lớp",
       "art": "Mặt cắt một hồ sâu dưới trăng: nước chia thành nhiều tầng như những dải lụa, mực đậm dần về phía đáy. Một viên sỏi khắc chữ “nó” chìm xuống; qua mỗi tầng, nét chữ được tô thêm một lớp mực, tới đáy thì hiện rõ hình bài văn.",
       "prompt": "Thả viên sỏi xuống đáy",
+      "word": "nó",
       "slider": "Độ sâu",
       "sliderAria": "Kéo để đưa chữ “nó” qua các tầng (phím ← →)",
       "valueText": "Tầng {n}/{total}",

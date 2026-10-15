@@ -1,0 +1,302 @@
+{
+  "id": 22,
+  "kicker": "Every word lights a lantern toward the words it needs.",
+  "summary": "Every word looks around to understand itself.",
+  "quiz": {
+    "q": "In “The cat didn’t catch the mouse because it was too fast”, what does the attention mechanism help an AI do?",
+    "options": [
+      "Count how many words the sentence has",
+      "Weigh which word “it” should connect to, so the meaning comes out right",
+      "Translate the sentence into another language first, then understand it",
+      "Look up every word in an online dictionary"
+    ],
+    "answer": 1,
+    "explain": "Each word scores every other word in the sentence; here “fast” pulls “it” toward the mouse."
+  },
+  "scenes": {
+    "lantern": {
+      "label": "Lanterns on a sentence",
+      "art": "A moonlit night on a river of ink. Each word of the sentence is a paper lantern floating in a row. Touch the word “it”: a fine thread of light crosses the water to the lantern it needs most, with fainter threads to the others. Change the last word and the bright thread swings elsewhere.",
+      "prompt": "Touch the word “it”",
+      "words": ["The", "cat", "didn’t", "catch", "the", "mouse", "because", "it", "was", "too"],
+      "pivot": 7,
+      "pivotAria": "Touch the word “it” to see which word it attends to (or press Enter)",
+      "swap": "Change the last word",
+      "swapAria": "Change the last word of the sentence to “{word}”",
+      "endings": [
+        {
+          "word": "slow",
+          "points": 1,
+          "weights": [0.04, 0.46, 0.03, 0.06, 0.03, 0.18, 0.05, 0.08, 0.02, 0.05],
+          "read": "“it” = the cat"
+        },
+        {
+          "word": "fast",
+          "points": 5,
+          "weights": [0.03, 0.17, 0.03, 0.06, 0.04, 0.47, 0.05, 0.08, 0.02, 0.05],
+          "read": "“it” = the mouse"
+        }
+      ],
+      "threadAria": "The word “it” attends most strongly to “{word}”",
+      "weightsNote": {
+        "text": "The brightness of the threads is an illustration set by AI Zen, not measured from a real model.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Attention: every word scores every other word in the sentence, then borrows the most meaning from the words that score highest.",
+        "asOf": "2026-10-15",
+        "source": "vaswani-2017"
+      },
+      "detail": {
+        "text": "Probing the BERT model in 2019, researchers found “attention heads” that link pronouns to the people and things they refer to quite accurately.",
+        "asOf": "2026-10-15",
+        "source": "clark-2019"
+      }
+    },
+    "heads": {
+      "label": "Many heads, many gazes",
+      "art": "Four stone lanterns stand on a curved bridge, each in its own shade of ink: deep black, pale grey, smoky blue, vermilion. The same sentence is written on the pond below; each lantern casts its own beam, joining the words into a different shape, like constellations.",
+      "prompt": "Light each lantern",
+      "words": ["The teacher", "praised", "the essay", "by", "Lan", "because", "it", "was", "superb"],
+      "heads": [
+        {
+          "name": "Who did it",
+          "relation": "links the action to whoever did it",
+          "aria": "Light lantern 1: links the action to whoever did it",
+          "links": [[1, 0]]
+        },
+        {
+          "name": "Did what",
+          "relation": "links the action to what it was done to",
+          "aria": "Light lantern 2: links the action to what it was done to",
+          "links": [[1, 2]]
+        },
+        {
+          "name": "Neighbour",
+          "relation": "looks at the word just before",
+          "aria": "Light lantern 3: each word looks at the word just before it",
+          "links": [[1, 0], [2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 7]]
+        },
+        {
+          "name": "Who is “it”",
+          "relation": "links a pronoun to what was mentioned earlier",
+          "aria": "Light lantern 4: links the word “it” to what was mentioned earlier",
+          "links": [[6, 2]]
+        }
+      ],
+      "allLit": "Four gazes, one sentence",
+      "headsNote": {
+        "text": "One clear relation per lantern is a simplified drawing; real attention heads are usually messier.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Multi-head attention: several heads read the same sentence, each catching one kind of relation: who did it, did what, who “it” is.",
+        "asOf": "2026-10-15",
+        "source": "clark-2019"
+      },
+      "detail": {
+        "text": "The original 2017 Transformer ran 8 attention heads in parallel in every layer.",
+        "asOf": "2026-10-15",
+        "source": "vaswani-2017"
+      },
+      "caveat": {
+        "text": "But a lit lantern is not a full explanation: two very different attention patterns can still give the same answer.",
+        "asOf": "2026-10-15",
+        "source": "jain-wallace-2019"
+      }
+    },
+    "layers": {
+      "label": "Layer upon layer",
+      "art": "A cut through a deep pond under the moon: the water is divided into layers like bands of silk, the ink deepening toward the bottom. A pebble carved with the word “it” sinks; with each layer the word gains another coat of ink, until at the bottom it clearly reads as the essay.",
+      "prompt": "Drop the pebble to the bottom",
+      "word": "it",
+      "slider": "Depth",
+      "sliderAria": "Drag to take the word “it” through the layers (← → keys)",
+      "valueText": "Layer {n}/{total}",
+      "stages": [
+        { "at": "Shallow layer", "reads": "“it”: a pronoun, after “because”" },
+        { "at": "Middle layer", "reads": "“it”: a thing, not a person" },
+        { "at": "Deep layer", "reads": "“it” = Lan’s essay, the thing praised as superb" }
+      ],
+      "stagesNote": {
+        "text": "Three steps is an illustration; real models have dozens of layers, each shifting the meaning a little.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Models stack many attention layers (GPT-3 has 96); with each one, a word’s meaning is inked in further by its context.",
+        "asOf": "2026-10-15",
+        "source": "gpt3-2020"
+      },
+      "detail": {
+        "text": "Probing BERT, Tenney’s team (2019) found a fairly steady order: lower layers capture word classes and grammar; only higher ones link pronouns to the right thing.",
+        "asOf": "2026-10-15",
+        "source": "tenney-2019"
+      }
+    },
+    "window": {
+      "label": "How far the window reaches",
+      "art": "A paper window opens onto a long strip of sand like a scroll under the moon. Drag the moon to the right and the window widens: from a few pages of a letter, to a whole novel, to an entire bookshelf; each milestone is a stone rising out of the sand.",
+      "prompt": "Drag the moon through the years",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2017-06",
+            "label": "Attention Is All You Need",
+            "fact": {
+              "text": "Eight researchers publish the Transformer: a model built on attention alone, dropping word-by-word reading entirely.",
+              "asOf": "2026-10-15",
+              "source": "vaswani-2017"
+            }
+          },
+          {
+            "date": "2020-05",
+            "label": "GPT-3",
+            "fact": {
+              "text": "GPT-3 reads at most 2,048 tokens at a time: a few pages of text.",
+              "asOf": "2026-10-15",
+              "source": "gpt3-2020"
+            }
+          },
+          {
+            "date": "2023-05",
+            "label": "Claude 100K",
+            "fact": {
+              "text": "Anthropic expands Claude’s context window to 100,000 tokens, about 75,000 words: enough to read a short novel in one go.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-100k"
+            }
+          },
+          {
+            "date": "2024-02",
+            "label": "Gemini 1.5 Pro",
+            "fact": {
+              "text": "Google previews Gemini 1.5 Pro with 1 million tokens, over 700,000 words; the company says it tested up to 10 million in the lab.",
+              "asOf": "2026-10-15",
+              "source": "google-gemini-15",
+              "claimBy": "Google"
+            }
+          },
+          {
+            "date": "2025-04",
+            "label": "Llama 4 Scout",
+            "fact": {
+              "text": "Meta announces Llama 4 Scout with a 10-million-token window, a figure the company states itself.",
+              "asOf": "2026-10-15",
+              "source": "meta-llama4",
+              "claimBy": "Meta"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Today",
+            "fact": {
+              "text": "Many leading models now read about 1 million tokens; since March 2026 Anthropic offers this for Claude Opus 4.6 and Sonnet 4.6.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-1m-ga"
+            },
+            "compare": {
+              "before": "2,048",
+              "after": "1,000,000",
+              "beforeLabel": "GPT-3 · 2020",
+              "afterLabel": "Today"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "The window will probably widen further. The harder question: does the AI use every word in the middle well, or mostly remember the start and the end?",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "From 2,048 to about 1 million tokens: the context window grew nearly 500-fold in six years, but reading more is not remembering evenly.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-1m-ga"
+      },
+      "detail": {
+        "text": "A 2023 study (Liu et al.): models find information best at the start or end of a long text, worse in the middle. Tip: put what matters at the start or end of your prompt.",
+        "asOf": "2026-10-15",
+        "source": "lost-in-middle"
+      }
+    }
+  },
+  "sources": {
+    "vaswani-2017": {
+      "title": "Attention Is All You Need",
+      "publisher": "Vaswani et al. (arXiv 1706.03762, NeurIPS 2017)",
+      "url": "https://arxiv.org/abs/1706.03762",
+      "date": "2017-06-12",
+      "note": "The paper introducing the Transformer: attention only, no recurrence or convolution; section 3.2.2 uses h = 8 attention heads, section 3.1 uses N = 6 layers."
+    },
+    "clark-2019": {
+      "title": "What Does BERT Look At? An Analysis of BERT's Attention",
+      "publisher": "Clark, Khandelwal, Levy, Manning (BlackboxNLP 2019)",
+      "url": "https://arxiv.org/abs/1906.04341",
+      "date": "2019-06-11",
+      "note": "Some attention heads match grammatical relations and coreference (linking a pronoun to what it refers to), e.g. the direct object of a verb."
+    },
+    "jain-wallace-2019": {
+      "title": "Attention is not Explanation",
+      "publisher": "Jain & Wallace (NAACL 2019)",
+      "url": "https://arxiv.org/abs/1902.10186",
+      "date": "2019-02-26",
+      "note": "Attention weights often disagree with other measures of importance; very different attention distributions can yield the same prediction."
+    },
+    "tenney-2019": {
+      "title": "BERT Rediscovers the Classical NLP Pipeline",
+      "publisher": "Tenney, Das, Pavlick (ACL 2019)",
+      "url": "https://arxiv.org/abs/1905.05950",
+      "date": "2019-05-15",
+      "note": "Parts of speech and syntax are captured in lower regions of the network, then entities, semantic roles and coreference in higher ones."
+    },
+    "gpt3-2020": {
+      "title": "Language Models are Few-Shot Learners (GPT-3)",
+      "publisher": "Brown et al., OpenAI (arXiv 2005.14165)",
+      "url": "https://arxiv.org/abs/2005.14165",
+      "date": "2020-05-28",
+      "note": "Table 2.1: GPT-3 175B has 96 layers and 96 attention heads; all models use a 2,048-token context window."
+    },
+    "anthropic-100k": {
+      "title": "Introducing 100K Context Windows",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/100k-context-windows",
+      "date": "2023-05-11",
+      "note": "Claude’s context window grows from 9K to 100K tokens, about 75,000 words."
+    },
+    "google-gemini-15": {
+      "title": "Our next-generation model: Gemini 1.5",
+      "publisher": "Google",
+      "url": "https://blog.google/technology/ai/google-gemini-next-generation-model-february-2024/",
+      "date": "2024-02-15",
+      "note": "Limited preview up to 1 million tokens (1 hour of video, 11 hours of audio, over 700,000 words); Google says it tested up to 10 million tokens in research."
+    },
+    "meta-llama4": {
+      "title": "The Llama 4 herd",
+      "publisher": "Meta",
+      "url": "https://ai.meta.com/blog/llama-4-multimodal-intelligence/",
+      "date": "2025-04-05",
+      "note": "Meta announces Llama 4 Scout with a 10-million-token context window (the company’s own claim)."
+    },
+    "anthropic-1m-ga": {
+      "title": "1M context is now generally available for Opus 4.6 and Sonnet 4.6",
+      "publisher": "Anthropic",
+      "url": "https://claude.com/blog/1m-context-ga",
+      "date": "2026-03-13",
+      "note": "A 1-million-token window becomes generally available for Claude Opus 4.6 and Sonnet 4.6. Pricing and features change often; check the official page."
+    },
+    "lost-in-middle": {
+      "title": "Lost in the Middle: How Language Models Use Long Contexts",
+      "publisher": "Liu et al. (arXiv 2307.03172)",
+      "url": "https://arxiv.org/abs/2307.03172",
+      "date": "2023-07-06",
+      "note": "Performance is usually highest when the needed information sits at the start or end of the context, and drops clearly when it sits in the middle."
+    }
+  }
+}

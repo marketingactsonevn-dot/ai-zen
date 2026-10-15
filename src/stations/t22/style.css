@@ -1,0 +1,161 @@
+/* Trạm 22 — Attention: lanterns on a sentence · four tōrō on a bridge · a deep pond in layers */
+
+/* scene 1: lanterns */
+.g8l .g8l-body { fill: var(--card); stroke: var(--ink); stroke-opacity: 0.55; stroke-width: 1.2; }
+.g8l .g8l-rib { fill: none; stroke: var(--ink-3); stroke-opacity: 0.35; stroke-width: 1; }
+.g8l .g8l-word { fill: var(--ink); }
+.g8l .pivot .g8l-body { stroke: var(--vermilion); stroke-width: 1.8; stroke-opacity: 0.9; }
+.g8l .end .g8l-word { text-decoration: underline dotted; text-decoration-color: var(--vermilion); }
+.g8l .g8l-thread { fill: none; stroke: var(--lantern); stroke-linecap: round; }
+.g8l .g8l-thread.top { stroke: var(--lantern); }
+:root[data-theme='light'] .g8l .g8l-thread { stroke: color-mix(in srgb, var(--lantern) 55%, var(--vermilion)); }
+.g8l .g8l-thread.glow { opacity: 0.18; }
+.g8l-pivot {
+  position: absolute;
+  border: 0;
+  border-radius: 40%;
+  background: transparent;
+  cursor: pointer;
+}
+.g8l-pivot:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+:root[data-quality='high'] .g8l-pivot::after {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border-radius: 45%;
+  border: 1.5px solid var(--vermilion);
+  opacity: 0;
+  animation: g8l-call 2.8s ease-out infinite;
+}
+.g8l.lit .g8l-pivot::after { display: none; }
+@keyframes g8l-call { 0% { transform: scale(0.9); opacity: 0.7; } 100% { transform: scale(1.35); opacity: 0; } }
+.g8l-ui {
+  position: absolute;
+  display: grid;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.g8l-read {
+  margin: 0;
+  font: 400 clamp(1.2rem, 2.4vw, 1.6rem) / 1.3 var(--serif);
+  color: var(--ink);
+}
+.g8l-note .g8-note { max-width: 46ch; }
+
+/* scene 2: four lamps */
+.g8h .h0 { --hc: var(--ink); }
+.g8h .h1 { --hc: var(--ink-3); }
+.g8h .h2 { --hc: var(--moss); }
+.g8h .h3 { --hc: var(--vermilion); }
+.g8h .g8h-word { fill: var(--ink); }
+.g8h .g8h-refl { fill: var(--moon); opacity: 0.12; }
+.g8h .g8h-win { fill: var(--paper); fill-opacity: 0.5; transition: fill 0.6s; }
+.g8h .g8h-toro.lit .g8h-win { fill: var(--lantern); fill-opacity: 1; }
+.g8h .g8h-halo { fill: var(--hc); opacity: 0; transition: opacity 0.8s; }
+.g8h .g8h-toro.lit .g8h-halo { opacity: 0.22; }
+.g8h .g8h-beam { fill: var(--hc); opacity: 0.07; }
+.g8h .g8h-link { fill: none; stroke: var(--hc); stroke-width: 2.4; stroke-linecap: round; }
+.g8h .g8h-dot { fill: var(--hc); }
+.g8h-lamp {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  align-content: end;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.g8h-num {
+  font: 400 0.72rem/1 var(--sans);
+  color: var(--ink-3);
+}
+.g8h-name {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 30%);
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font: 400 0.82rem/1.3 var(--serif);
+  background: color-mix(in srgb, var(--paper) 70%, transparent);
+}
+.g8h-lamp[aria-pressed='true'] .g8h-name { color: var(--ink); box-shadow: inset 0 -2px 0 var(--hc); }
+.g8h-lamp:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; border-radius: 8px; }
+.g8h-cap {
+  position: absolute;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  text-align: center;
+}
+.g8h-rel, .g8h-all {
+  margin: 0;
+  font: 400 1rem/1.4 var(--serif);
+  color: var(--ink);
+}
+.g8h-rel b { font-weight: 500; color: var(--hc); }
+.g8h-cap .g8-note { max-width: 60ch; }
+.g8h-cap {
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+}
+.g8h-cap:empty { display: none; }
+@media (max-width: 600px) {
+  .g8h-name { font-size: 0.74rem; padding: 1px 5px; }
+  .g8h-cap .g8-note { font-size: 0.74rem; }
+}
+
+/* scene 3: layers */
+.g8y .g8y-band { fill: var(--water); }
+:root[data-theme='dark'] .g8y .g8y-band { fill: color-mix(in srgb, var(--water) 70%, var(--ink-3)); }
+.g8y .g8y-silk { fill: var(--moon); opacity: 0.22; }
+.g8y .g8y-shaft { fill: var(--moon); opacity: 0.06; }
+.g8y-pebble { transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1); }
+.g8y .g8y-stone { fill: var(--stone-2); stroke: var(--ink); stroke-opacity: 0.6; stroke-width: 1.4; }
+.g8y .g8y-rim { fill: var(--moon); opacity: 0.6; }
+.g8y .g8y-word { fill: var(--ink); fill-opacity: 0.4; stroke: var(--ink); stroke-width: 0; transition: fill-opacity 0.8s, stroke-width 0.8s; }
+:root[data-theme='dark'] .g8y .g8y-word { fill: var(--stone-text); stroke: var(--stone-text); }
+.g8y-pebble[data-depth='1'] .g8y-word { fill-opacity: 0.6; }
+.g8y-pebble[data-depth='2'] .g8y-word { fill-opacity: 0.85; stroke-width: 0.6; }
+.g8y-pebble[data-depth='3'] .g8y-word { fill-opacity: 1; stroke-width: 1.3; }
+.g8y .g8y-ring { fill: none; stroke: var(--ink); stroke-width: 1.2; opacity: 0; transition: opacity 0.8s; }
+.g8y-pebble[data-depth='1'] .r1,
+.g8y-pebble[data-depth='2'] .r1,
+.g8y-pebble[data-depth='2'] .r2,
+.g8y-pebble[data-depth='3'] .g8y-ring { opacity: 0.3; }
+.g8y-read {
+  position: absolute;
+  display: grid;
+  gap: 2px;
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+  opacity: 0.55;
+}
+.g8y-read.now { opacity: 1; }
+.g8y-read[data-off] { opacity: 0; transform: translateX(-8px); }
+.g8y-at {
+  font: 500 0.72rem/1.2 var(--sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.g8y-read p {
+  margin: 0;
+  font: 400 clamp(1rem, 1.8vw, 1.25rem) / 1.35 var(--serif);
+  color: var(--ink);
+}
+.g8y-ctrl {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+.g8y-ctrl .g8-slider { width: min(420px, 100%); }

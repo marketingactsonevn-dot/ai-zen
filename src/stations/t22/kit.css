@@ -1,0 +1,167 @@
+/* Garden 8 (Trạm 22–24) shared: ink on night paper, Part 2 tokens only. */
+.g8 {
+  position: absolute;
+  inset: 0 0 auto 0;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.g8 .g8-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  pointer-events: none;
+}
+.g8 text {
+  font-family: var(--serif);
+}
+.g8 .k { fill: var(--ink); }
+.g8 .k2 { fill: var(--ink-2); }
+.g8 .k3 { fill: var(--ink-3); }
+.g8 .p { fill: var(--paper); }
+.g8 .cd { fill: var(--card); }
+.g8 .v { fill: var(--vermilion); }
+.g8 .ln { fill: var(--lantern); }
+.g8 .mn { fill: var(--moon); }
+.g8 .ms { fill: var(--moss); }
+.g8 .st { fill: var(--stone-2); }
+/* wood: ink by day, weathered grey bark by night (ivory ink would read as a white tree) */
+.g8 .wd { fill: var(--ink); }
+:root[data-theme='dark'] .g8 .wd { fill: color-mix(in srgb, var(--stone) 60%, var(--ink-3)); }
+.g8 .g8-moon-disc { fill: var(--moon); }
+:root[data-theme='light'] .g8 .g8-moon-disc { fill: var(--card); stroke: var(--moon-rim); stroke-width: 1; }
+.g8 .g8-shore { fill: var(--ink); fill-opacity: 0.35; }
+.g8 .g8-glint { fill: none; stroke: var(--moon); stroke-width: 1.4; stroke-linecap: round; opacity: 0.4; }
+:root[data-theme='light'] .g8 .g8-glint { stroke: var(--card); opacity: 0.7; }
+:root[data-quality='high'] .g8 .g8-glint { animation: g8-glint 5s ease-in-out infinite alternate; }
+@keyframes g8-glint { from { opacity: 0.18; } to { opacity: 0.55; } }
+
+.g8-btn {
+  position: relative;
+  min-height: 44px;
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  font-family: var(--serif);
+  font-weight: 400;
+}
+.g8-btn[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--card);
+}
+.g8-q {
+  margin: 0;
+  font: 400 clamp(1rem, 1.6vw, 1.2rem) / 1.4 var(--serif);
+  color: var(--ink);
+  text-align: center;
+  text-wrap: balance;
+}
+.g8-note {
+  margin: 0;
+  font: 400 0.8rem/1.45 var(--sans);
+  color: var(--ink-3);
+}
+.g8-abs {
+  position: absolute;
+}
+.g8-fade {
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+.g8-fade[data-off] {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}
+
+/* slider: a brush line with a moon thumb */
+.g8-slider {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+.g8-slider-label {
+  font: 400 0.84rem/1.3 var(--sans);
+  color: var(--ink-2);
+  text-align: center;
+}
+.g8-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.g8-end {
+  font: italic 400 0.85rem/1 var(--serif);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.g8-range {
+  --fill: 0%;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  min-width: 140px;
+  height: 44px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.g8-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--ink-2) var(--fill), var(--line-2) var(--fill));
+}
+.g8-range::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--ink-2) var(--fill), var(--line-2) var(--fill));
+}
+.g8-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, var(--card), var(--moon) 70%);
+  border: 1.5px solid var(--ink-2);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--moon) 22%, transparent);
+}
+.g8-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, var(--card), var(--moon) 70%);
+  border: 1.5px solid var(--ink-2);
+}
+.g8-range:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* a sheet for the takeaway card */
+.g8-sheet {
+  position: absolute;
+  inset: 8px;
+  z-index: 5;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  overflow: auto;
+  padding: 12px;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+}
+.g8-sheet > .p2k {
+  width: min(520px, 100%);
+}
+.g8-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 1.6rem;
+  line-height: 1;
+}
