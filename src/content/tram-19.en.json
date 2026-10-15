@@ -1,0 +1,318 @@
+{
+  "id": 19,
+  "kicker": "From the summit you can see the clouds — but the clouds can also hide the path.",
+  "summary": "AI news arrives every week — ask who measured it, how, and who checked it again.",
+  "newsTags": ["models-2026", "gated-release"],
+  "takeaways": ["t19-doc-tin-ai"],
+  "quiz": {
+    "q": "A company says its new model “beats every rival”. What is the first question to ask?",
+    "options": [
+      "Who measured it, and with which test?",
+      "Does the new model have a nice name?",
+      "How many likes did the launch post get?",
+      "How much money has the company raised?"
+    ],
+    "answer": 0,
+    "explain": "Scores a company measures itself are the company's own claim. Find out who measured, with what, then look for an outside check."
+  },
+  "scenes": {
+    "peaks": {
+      "label": "The peaks",
+      "art": "The moon rises behind layered ink mountains. On each peak stands a small stone stele carved with a model's name, its maker and its release date. Silver clouds drift across, hiding and revealing each peak in turn — no peak is drawn much taller than the rest.",
+      "prompt": "Turn each stele",
+      "group": "Steles for the new models, in order of release date",
+      "stoneAria": "Turn the stele: {title}, dated {date}",
+      "order": "In date order, not ranked",
+      "verifiedOnly": "Verified news only",
+      "verifiedOnlyAria": "Show only steles an independent party has confirmed",
+      "othersNote": "Grok (xAI), Qwen (Alibaba), Mistral… are big mountain ranges too. AI Zen has not yet checked their latest releases, so no steles stand for them yet.",
+      "insight": {
+        "text": "The 2026 summit has many owners. A stele gives name, date and source — never “strongest”, because every test ranks differently.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Between 21 July and 28 September 2026 alone: Gemini 3.6 Flash (Google), GPT-6 Astra (OpenAI), then Claude Opus 5.5 and Sonnet 5.5 (Anthropic) launched one after another.",
+        "asOf": "2026-10-15",
+        "source": "news-g07"
+      }
+    },
+    "gate": {
+      "label": "The fenced summit",
+      "art": "The highest peak is ringed by a bamboo fence, its wooden gate bolted. Inside, a few stone lanterns light workers patching cracks in a wall built from lines of code. Outside the fence, four stones stand round a moonlit pool, waiting for the visitor to open the gate.",
+      "prompt": "Open the gate",
+      "gateAria": "Open the gate to see why this model is restricted (or press Enter)",
+      "reasonTitle": "Why the fence",
+      "reason": {
+        "text": "Anthropic says Claude Mythos Preview finds and exploits software flaws so well that it should not be released widely yet, so it goes only to defenders.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-glasswing",
+        "claimBy": "Anthropic"
+      },
+      "debateTitle": "Who says what",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Anthropic · the model's maker (04/2026)",
+            "view": {
+              "text": "Mythos Preview has found thousands of serious, previously unknown flaws (zero-days) in every major operating system and browser, so they must be patched before any wider release.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-glasswing",
+              "claimBy": "Anthropic"
+            }
+          },
+          {
+            "who": "Mozilla · a tester, maker of the Firefox browser (05/2026)",
+            "view": {
+              "text": "Firefox 150 fixed 271 bugs found by Mythos Preview, 180 rated high — a measure of urgency, not proof they were ever exploited.",
+              "asOf": "2026-10-15",
+              "source": "mozilla-mythos"
+            }
+          },
+          {
+            "who": "VulnCheck · a vulnerability-data company (04/2026)",
+            "view": {
+              "text": "Glasswing drew huge attention but offered very little hard data: at that point only one public flaw ID (CVE) could be tied directly to the project.",
+              "asOf": "2026-10-15",
+              "source": "cso-glasswing",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "OpenAI · another lab (09/2026)",
+            "view": {
+              "text": "GPT-6 Astra is also opening gradually, first to selected customers, because the company rates its own cybersecurity ability as “Critical”.",
+              "asOf": "2026-10-15",
+              "source": "bleeping-gpt6",
+              "claimBy": "OpenAI"
+            }
+          }
+        ],
+        "common": {
+          "text": "Agreed: AI is already very good at finding flaws. Disputed: who gets access, when, and who checks the companies' claims.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "The 2026 trend: the strongest models may not reach everyone at once, but open gradually — defenders first.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Project Glasswing (7 April 2026): Mythos Preview went to 12 launch partners such as AWS, Apple and the Linux Foundation, plus more than 40 organisations that maintain critical software.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-glasswing"
+      }
+    },
+    "stele": {
+      "label": "Reading the stele without being fooled",
+      "art": "A large stone stele under a pavilion roof, carved with a mock press release in big letters. The visitor sweeps a paper lantern across it: in the lantern light, five faint carvings appear beside the loudest sentences.",
+      "prompt": "Find 5 signs by lantern",
+      "lanternAria": "Sweep the lantern over the stele, or use Tab to move through each sentence and press Enter",
+      "mockTitle": "PRESS RELEASE · Launching the Shooting Star model",
+      "mockNote": {
+        "text": "The press release and the “Shooting Star” model are mock-ups written by AI Zen for practising how to read the news.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "lines": [
+        {
+          "text": "Shooting Star beats EVERY rival on 12 benchmarks!",
+          "sign": "Who measured?",
+          "question": "Did the company score itself, or did someone outside? Which benchmark, under what conditions?",
+          "aria": "Inspect: beats every rival on 12 benchmarks"
+        },
+        {
+          "text": "Watch: Shooting Star builds an app in 30 seconds.",
+          "sign": "A hand-picked demo?",
+          "question": "Is the video the best run out of how many tries? Have you tried it on your own work?",
+          "aria": "Inspect: video of an app built in 30 seconds"
+        },
+        {
+          "text": "Technical details will be published later.",
+          "sign": "Is there a report?",
+          "question": "Is there a system card or technical report that spells out the limits and risks?",
+          "aria": "Inspect: technical details will be published later"
+        },
+        {
+          "text": "Available to everyone from today*  (*premium plan, usage limits apply)",
+          "sign": "Price & limits?",
+          "question": "Who can really use it, at what price, and how many times a day?",
+          "aria": "Inspect: available to everyone from today, with a small asterisk"
+        },
+        {
+          "text": "Experts rate it very highly.",
+          "sign": "What do outsiders say?",
+          "question": "Which experts — are they named? Have researchers, reputable press or real users checked it yet?",
+          "aria": "Inspect: experts rate it very highly"
+        }
+      ],
+      "found": "{n}/5 signs found",
+      "done": "All five signs — open the takeaway card",
+      "takeaway": "t19-doc-tin-ai",
+      "insight": {
+        "text": "AI news earns trust when it answers: who measured, how, what it costs, its limits, and who outside checked it.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Even on the Claude Opus 5.5 launch page, Anthropic wrote that in its own use the gap between Opus 5.5 and Fable 5.1 is narrower than the scores suggest. Benchmarks don't tell the whole story.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-opus-5-5",
+        "claimBy": "Anthropic"
+      }
+    },
+    "tide": {
+      "label": "The release tide",
+      "art": "A long beach unrolls like a scroll under the moon. Drag the moon from left to right and the water slowly ebbs to reveal stones — each one a major release. At the start of the scroll the stones are sparse; at the end they crowd together like steps up a mountain.",
+      "prompt": "Drag the moon through the years",
+      "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
+      "paceNote": "No reliable source counts releases per quarter, so the scroll uses Epoch AI's count of large-scale models instead.",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2022-11-30",
+            "label": "ChatGPT",
+            "fact": {
+              "text": "OpenAI introduces ChatGPT, letting anyone chat with a large language model.",
+              "asOf": "2026-10-15",
+              "source": "openai-chatgpt"
+            }
+          },
+          {
+            "date": "2023-03",
+            "label": "GPT-4",
+            "fact": {
+              "text": "According to Epoch AI, GPT-4 was the first model trained with more than 10²⁵ operations (FLOP).",
+              "asOf": "2026-10-15",
+              "source": "epoch-1e25"
+            }
+          },
+          {
+            "date": "2024",
+            "label": "Two peaks a month",
+            "fact": {
+              "text": "Throughout 2024, about two models at that scale were announced each month on average.",
+              "asOf": "2026-10-15",
+              "source": "epoch-1e25"
+            }
+          },
+          {
+            "date": "2025-06",
+            "label": "Over 30 peaks",
+            "fact": {
+              "text": "By June 2025, Epoch AI counted more than 30 models at GPT-4 scale or above, from 12 developers.",
+              "asOf": "2026-10-15",
+              "source": "epoch-1e25"
+            },
+            "compare": {
+              "before": "1",
+              "after": "30+",
+              "beforeLabel": "03/2023",
+              "afterLabel": "06/2025"
+            }
+          },
+          {
+            "date": "2026-04-07",
+            "label": "A fenced peak",
+            "fact": {
+              "text": "Anthropic announces Claude Mythos Preview but does not release it widely, giving it only to organisations that find and fix security flaws.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-glasswing"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Today",
+            "fact": {
+              "text": "Between 21 July and 28 September 2026, Google, OpenAI and Anthropic released four new models — in under ten weeks.",
+              "asOf": "2026-10-15",
+              "source": "news-g07"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "The pace of releases may keep quickening — but that is a guess; no one can see through the clouds on the summit yet.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "prediction"
+        }
+      },
+      "insight": {
+        "text": "In 2023 there was one model at GPT-4 scale; by mid-2025 there were over 30. New peaks rise faster than we can read the news.",
+        "asOf": "2026-10-15",
+        "source": "epoch-1e25"
+      },
+      "detail": "Training scale doesn't say how capable a model is, but it shows more and more companies can climb the mountain — and “beats every rival” headlines will keep coming thick and fast."
+    }
+  },
+  "sources": {
+    "anthropic-glasswing": {
+      "title": "Project Glasswing",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/glasswing",
+      "date": "2026-04-07",
+      "note": "Official page: Claude Mythos Preview goes only to defensive partners and is not planned for wide release. The vulnerability counts are self-reported by the company and its partners."
+    },
+    "anthropic-opus-5-5": {
+      "title": "Introducing Claude Opus 5.5",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-opus-5-5",
+      "date": "2026-09-22",
+      "note": "The company's own launch post; performance and cost comparisons are measured by the company itself."
+    },
+    "anthropic-sonnet-5-5": {
+      "title": "Introducing Claude Sonnet 5.5",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/claude-sonnet-5-5",
+      "date": "2026-09-28"
+    },
+    "openai-chatgpt": {
+      "title": "Introducing ChatGPT",
+      "publisher": "OpenAI",
+      "url": "https://openai.com/index/chatgpt/",
+      "date": "2022-11-30",
+      "note": "OpenAI introduced ChatGPT on 30 November 2022."
+    },
+    "epoch-1e25": {
+      "title": "Over 30 AI models have been trained at the scale of GPT-4",
+      "publisher": "Epoch AI",
+      "url": "https://epoch.ai/data-insights/models-over-1e25-flop",
+      "date": "2025-06-06",
+      "note": "Figures as of June 2025 (major update on 6 June 2025); the number today is probably higher."
+    },
+    "mozilla-mythos": {
+      "title": "Behind the Scenes Hardening Firefox with Claude Mythos Preview",
+      "publisher": "Mozilla Hacks",
+      "url": "https://hacks.mozilla.org/2026/05/behind-the-scenes-hardening-firefox/",
+      "date": "2026-05-07",
+      "note": "Mozilla is a user, not the model's maker. Firefox 150 fixed 271 bugs found by Mythos Preview: 180 high, 80 moderate, 11 low. Mozilla notes the ratings measure urgency, not proof of exploitation."
+    },
+    "cso-glasswing": {
+      "title": "Behind the Mythos hype, Glasswing has just one confirmed CVE",
+      "publisher": "CSO Online",
+      "url": "https://www.csoonline.com/article/4159617/behind-the-mythos-hype-glasswing-has-just-one-confirmed-cve.html",
+      "date": "2026-04-16",
+      "note": "Cites VulnCheck's analysis (Patrick Garrity). Written before Mozilla's report of 7 May 2026."
+    },
+    "bleeping-gpt6": {
+      "title": "OpenAI says GPT-6 Astra can find zero-days, but is also harder to monitor",
+      "publisher": "BleepingComputer",
+      "url": "https://www.bleepingcomputer.com/news/artificial-intelligence/openai-says-gpt-6-astra-can-find-zero-days-but-is-also-harder-to-monitor/",
+      "date": "2026-09-08",
+      "note": "Quotes OpenAI's system card: GPT-6 Astra reaches the “Critical” cybersecurity threshold under the company's own framework. OpenAI's original page blocks lookup tools, so it has not been opened directly."
+    },
+    "news-g07": {
+      "title": "News on stone · Garden 7",
+      "publisher": "AI Zen",
+      "date": "2026-10-15",
+      "note": "A sentence summarising several steles at once. Each item's origin is on the back of its stele (news.json)."
+    }
+  }
+}

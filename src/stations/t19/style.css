@@ -1,0 +1,271 @@
+/* Trạm 19 — Đỉnh núi 2026: fenced summit · stele under the eaves (+ news steles, perspective circle, tide from ui/part2) */
+.t19-order {
+  margin-right: auto;
+}
+.t19-others {
+  max-width: 40rem;
+  margin: 0 auto;
+  font: 400 italic 0.86rem/1.45 var(--serif);
+  color: var(--ink-3);
+  text-align: center;
+  text-wrap: pretty;
+}
+.t19 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── the fenced summit ───────────────────────────── */
+.t19g-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 12px;
+}
+.t19g.open .t19g-stage {
+  cursor: default;
+}
+.t19g-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+}
+.t19g-moon { fill: var(--moon); }
+.t19g-far { fill: var(--stone-3); opacity: 0.8; }
+.t19g-peak { fill: url(#p2-rock); stroke: var(--rock-lo); stroke-width: 0.6; }
+.t19g-peak-ink { fill: var(--ink); opacity: 0.55; }
+.t19g-ground { fill: var(--paper-2); }
+.t19g-post { fill: color-mix(in srgb, var(--moss-2) 45%, var(--stone-2)); stroke: var(--ink-3); stroke-width: 0.5; }
+.t19g-node { stroke: var(--ink-2); stroke-width: 0.8; opacity: 0.6; }
+.t19g-rail { fill: var(--ink-2); }
+.t19g-plank { fill: var(--moss); stroke: var(--ink); stroke-width: 0.8; }
+.t19g-lattice { stroke: var(--ink); stroke-width: 0.8; fill: none; opacity: 0.6; }
+.t19g-door {
+  transform-box: fill-box;
+  transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.t19g-door-l { transform-origin: left center; }
+.t19g-door-r { transform-origin: right center; }
+.t19g.open .t19g-door { transform: scaleX(0.18); }
+.t19g-inside {
+  opacity: 0.18;
+  transition: opacity 1.2s ease 0.3s;
+}
+.t19g.open .t19g-inside { opacity: 1; }
+.t19g-code { fill: var(--ink-2); opacity: 0.75; }
+.t19g-crack { fill: var(--vermilion); }
+.t19g-patch { stroke: var(--lantern); stroke-width: 1.6; stroke-linecap: round; opacity: 0.9; }
+.t19g-glow { fill: var(--lantern); opacity: 0.22; }
+.t19g-toro { fill: var(--ink-2); }
+.t19g-flame { fill: var(--lantern); }
+.t19g-pool { fill: var(--water); opacity: 0.7; }
+.t19g-reflect { fill: var(--moon); opacity: 0.7; }
+.t19g-stage:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: -4px;
+}
+.t19g-card {
+  flex: 0 0 auto;
+  width: min(40rem, 100%);
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: var(--shadow-1);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s;
+  visibility: hidden;
+}
+.t19g.open .t19g-card {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+}
+.t19g-reason {
+  margin: 4px 0 0;
+  font: 400 1rem/1.5 var(--serif);
+  color: var(--ink);
+}
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .t19g {
+    flex-direction: row;
+    gap: 24px;
+  }
+  .t19g-stage { height: 100%; }
+  .t19g-card { width: 22rem; }
+}
+
+/* ── the stele under the eaves ───────────────────── */
+.t19s {
+  overflow-y: auto;
+  justify-content: safe center;
+  gap: 14px;
+}
+.t19s-hall {
+  flex: 0 1 auto;
+  width: min(36rem, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.t19s-roof {
+  display: block;
+  width: 108%;
+  height: 34px;
+  margin-bottom: -6px;
+  position: relative;
+  z-index: 1;
+}
+.t19s-eave { fill: var(--stone-2); }
+.t19s-eave-ink { fill: var(--ink); opacity: 0.7; }
+.t19s-stele {
+  position: relative;
+  width: 100%;
+  padding: 18px 18px 14px;
+  border-radius: 6px 6px 3px 3px;
+  background: linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 70%, var(--rock-lo));
+  box-shadow: inset 0 0 0 1px var(--line-2), var(--shadow-1);
+  overflow: hidden;
+  cursor: none;
+}
+.t19s-glow {
+  position: absolute;
+  left: -90px;
+  top: -90px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--lantern) 55%, transparent), transparent 68%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.t19s-glow.on { opacity: 1; }
+.t19s-title {
+  position: relative;
+  margin: 0 0 10px;
+  font: 600 0.82rem/1.3 var(--sans);
+  letter-spacing: 0.06em;
+  color: var(--stone-text);
+  text-align: center;
+}
+.t19s-lines {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.t19s-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 10px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  text-align: left;
+  font: 600 clamp(0.92rem, 1.5vw, 1.06rem)/1.35 var(--serif);
+  color: var(--stone-text);
+  cursor: inherit;
+}
+.t19s-line:focus-visible {
+  outline: 2px solid var(--vermilion);
+}
+.t19s-sign {
+  font: 500 0.74rem/1.2 var(--sans);
+  color: var(--vermilion);
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 2px 6px;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.t19s-line.found .t19s-sign {
+  opacity: 1;
+  transform: none;
+}
+.t19s-side {
+  flex: 0 0 auto;
+  width: min(36rem, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.t19s-read:empty { display: none; }
+.t19s-read {
+  padding: 10px 14px;
+  border-left: 2px solid var(--vermilion);
+  background: var(--card);
+  border-radius: 0 10px 10px 0;
+}
+.t19s-sign-big {
+  margin: 0;
+  font: 600 0.95rem/1.3 var(--serif);
+  color: var(--vermilion);
+}
+.t19s-q {
+  margin: 2px 0 0;
+  font: 400 0.95rem/1.45 var(--serif);
+  color: var(--ink);
+}
+.t19s-done {
+  align-self: flex-start;
+  padding: 8px 14px;
+  border: 1px solid var(--vermilion);
+  border-radius: 999px;
+  background: var(--vermilion);
+  color: var(--on-ink);
+  font: 500 0.88rem/1.2 var(--sans);
+  cursor: pointer;
+}
+.t19s-note {
+  margin: 2px 0 0;
+  font: 400 0.78rem/1.4 var(--sans);
+  color: var(--ink-3);
+}
+.t19s.carded .t19s-hall,
+.t19s.carded .t19s-side { display: none; }
+.t19s-card {
+  width: min(36rem, 100%);
+  margin: auto 0;
+}
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .t19s {
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+  }
+  .t19s-side { width: 20rem; }
+}
+@media (hover: none) {
+  .t19s-stele { cursor: default; }
+}
+@media (max-width: 600px) {
+  .t19s { gap: 8px; }
+  .t19s-roof { height: 24px; }
+  .t19s-stele { padding: 12px 10px 8px; }
+  .t19s-title { margin-bottom: 4px; font-size: 0.74rem; }
+  .t19s-lines { gap: 0; }
+  .t19s-line { padding: 4px 6px; font-size: 0.9rem; }
+  .t19s-read { padding: 6px 10px; }
+  .t19s-q, .t19s-sign-big { font-size: 0.88rem; }
+  .t19s-note { display: none; }
+}
