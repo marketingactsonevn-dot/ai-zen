@@ -1,0 +1,569 @@
+{
+  "id": 39,
+  "kicker": "Done learning from others' gardens — now plant your own.",
+  "summary": "AI is a shared garden — how you tend it is your own.",
+  "quiz": {
+    "q": "You're just starting, on an ordinary laptop, and don't want to spend money yet. What's the most sensible first step?",
+    "options": [
+      "Buy a powerful computer to run AI locally",
+      "Use a chat assistant's free plan and practise clear briefs and fact-checking",
+      "Sign up for lots of platforms at once",
+      "Wait until AI is perfect before learning"
+    ],
+    "answer": 1,
+    "explain": "Clear briefs and verification are the base skills and work with every tool. Add tools once you know what you need."
+  },
+  "takeaways": [
+    "t39-week1",
+    "t39-week2",
+    "t39-week3",
+    "t39-week4",
+    "t39-30days"
+  ],
+  "scenes": {
+    "ask": {
+      "label": "Four questions by the pond",
+      "art": "Four stepping stones across the pond just after moonset, the sky blue-grey. Each is engraved with a question. Choose an answer and ripples spread from the stone while a small lantern on the far bank lights up.",
+      "prompt": "Answer four questions",
+      "progress": "Question {n}/4",
+      "optionAria": "{q} — {label}",
+      "change": "Change my answers",
+      "privacy": "Your answers stay in your browser and are never sent anywhere.",
+      "questions": [
+        {
+          "id": "role",
+          "q": "What do you do?",
+          "options": [
+            {
+              "id": "creative",
+              "label": "Creative: design, video, writing"
+            },
+            {
+              "id": "marketing",
+              "label": "Marketing"
+            },
+            {
+              "id": "sales",
+              "label": "Sales, shop owner"
+            },
+            {
+              "id": "student",
+              "label": "Student"
+            },
+            {
+              "id": "dev",
+              "label": "Programming"
+            },
+            {
+              "id": "manager",
+              "label": "Management"
+            }
+          ]
+        },
+        {
+          "id": "goal",
+          "q": "What do you most want AI to help with?",
+          "options": [
+            {
+              "id": "faster",
+              "label": "Do my current work faster"
+            },
+            {
+              "id": "new",
+              "label": "Make new things"
+            },
+            {
+              "id": "understand",
+              "label": "Understand it to manage and decide"
+            }
+          ]
+        },
+        {
+          "id": "device",
+          "q": "What device do you use?",
+          "options": [
+            {
+              "id": "phone",
+              "label": "Mostly a phone"
+            },
+            {
+              "id": "laptop",
+              "label": "An ordinary laptop"
+            },
+            {
+              "id": "strong",
+              "label": "A powerful machine: lots of RAM, a graphics card"
+            }
+          ]
+        },
+        {
+          "id": "budget",
+          "q": "Monthly budget?",
+          "options": [
+            {
+              "id": "free",
+              "label": "Free"
+            },
+            {
+              "id": "mid",
+              "label": "Moderate"
+            },
+            {
+              "id": "invest",
+              "label": "Ready to invest"
+            }
+          ]
+        }
+      ],
+      "insight": {
+        "text": "A good toolkit starts from your work, not from a list of trending tools.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "kit": {
+      "label": "Your suggested toolkit",
+      "art": "A rattan basket on a wooden table on the veranda, morning dew on its weave. With each answer, tools appear in it: a brush, a brush holder, a small oil lamp, a wood plane, a hanging scroll. Whatever doesn't fit fades like a moon shadow.",
+      "prompt": "Open the tool basket",
+      "open": "Open the basket",
+      "empty": "Answer the four questions by the pond and the basket will pack itself.",
+      "revisit": "Worth revisiting",
+      "stationLink": "Station {n}",
+      "examplesLabel": "Examples, not a ranking",
+      "docsLabel": "Official pages",
+      "types": [
+        {
+          "id": "chat",
+          "name": "Chat assistant",
+          "what": "Ask, write, summarise, brainstorm. The base of every toolkit.",
+          "examples": [
+            {
+              "name": "ChatGPT",
+              "source": "t39-chatgpt"
+            },
+            {
+              "name": "Claude",
+              "source": "t39-claude"
+            },
+            {
+              "name": "Gemini",
+              "source": "t39-gemini"
+            }
+          ],
+          "stations": [
+            6,
+            12,
+            19
+          ]
+        },
+        {
+          "id": "media",
+          "name": "Image & video tools",
+          "what": "Create, edit and upscale images; make short videos. Usually paid in credits.",
+          "examples": [
+            {
+              "name": "Higgsfield",
+              "source": "t39-higgsfield"
+            },
+            {
+              "name": "TopView",
+              "source": "t39-topview"
+            },
+            {
+              "name": "Adobe Firefly",
+              "source": "t39-firefly"
+            },
+            {
+              "name": "Canva",
+              "source": "t39-canva"
+            }
+          ],
+          "stations": [
+            7,
+            8,
+            34
+          ]
+        },
+        {
+          "id": "local",
+          "name": "AI on your own machine",
+          "what": "Download an open model and run it on your computer: private, works offline. Needs enough RAM.",
+          "examples": [
+            {
+              "name": "Ollama",
+              "source": "t39-ollama"
+            },
+            {
+              "name": "LM Studio",
+              "source": "t39-lmstudio"
+            }
+          ],
+          "stations": [
+            31,
+            32
+          ]
+        },
+        {
+          "id": "code",
+          "name": "Coding agent",
+          "what": "You describe it in words; the agent writes, runs and fixes the code. Good for mini apps and games.",
+          "examples": [
+            {
+              "name": "Claude Code",
+              "source": "t39-claude-code"
+            },
+            {
+              "name": "Codex",
+              "source": "t39-codex"
+            },
+            {
+              "name": "GitHub Copilot",
+              "source": "t39-copilot"
+            }
+          ],
+          "stations": [
+            33,
+            36
+          ]
+        },
+        {
+          "id": "skill",
+          "name": "Skills & workflows",
+          "what": "Package repeated work as reusable instructions (SKILL.md), then chain them into a workflow.",
+          "examples": [
+            {
+              "name": "Agent Skills open standard",
+              "source": "t39-agentskills"
+            },
+            {
+              "name": "Skills in Claude",
+              "source": "t39-claude-skills"
+            },
+            {
+              "name": "Skills in Codex",
+              "source": "t39-codex-skills"
+            }
+          ],
+          "stations": [
+            16,
+            35
+          ]
+        }
+      ],
+      "rules": {
+        "role": {
+          "creative": [
+            "chat",
+            "media",
+            "skill"
+          ],
+          "marketing": [
+            "chat",
+            "media",
+            "skill"
+          ],
+          "sales": [
+            "chat",
+            "media"
+          ],
+          "student": [
+            "chat",
+            "skill"
+          ],
+          "dev": [
+            "chat",
+            "code",
+            "skill"
+          ],
+          "manager": [
+            "chat",
+            "skill"
+          ]
+        },
+        "goal": {
+          "faster": {
+            "add": [
+              "skill"
+            ],
+            "stations": [
+              35
+            ]
+          },
+          "new": {
+            "add": [
+              "media",
+              "code"
+            ],
+            "stations": [
+              34,
+              36
+            ]
+          },
+          "understand": {
+            "add": [],
+            "stations": [
+              19,
+              30,
+              37,
+              38
+            ]
+          }
+        },
+        "device": {
+          "phone": {
+            "drop": [
+              "local",
+              "code"
+            ],
+            "note": "On a phone: use the chat assistant app and the web or app versions of image and video tools."
+          },
+          "laptop": {
+            "drop": [],
+            "note": "An ordinary laptop can run small models; try local AI when you need to keep data private."
+          },
+          "strong": {
+            "add": [
+              "local"
+            ],
+            "note": "Powerful machine: try running open models locally, so your data never leaves it."
+          }
+        },
+        "budget": {
+          "free": {
+            "note": "Most tools have a limited free plan. Starting with one chat assistant is enough."
+          },
+          "mid": {
+            "note": "Pay for the one tool you use most; avoid piling up subscriptions."
+          },
+          "invest": {
+            "note": "Invest in tools for your main work and in time to learn; track your credits every month."
+          }
+        }
+      },
+      "priceNote": {
+        "text": "Prices and features change often; always check the official page before you pay.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "insight": {
+        "text": "Choose by type of work first, tool name second: tools change monthly, your work changes less.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "path": {
+      "label": "A 30-day path",
+      "art": "A path of four stones from the veranda to the garden gate at dawn, a thin moon lingering in the corner of the sky. Each stone is a week. Lay them in order and the first ray of sun runs along the path, waking each one.",
+      "prompt": "Lay the four stones",
+      "keys": "Press 1 to 4 to lay the stones in order",
+      "stoneAria": "Week {n}: {label}",
+      "wrong": "This stone needs the previous week as its base.",
+      "done": "The path is lit. Each week has a take-away card.",
+      "steps": {
+        "steps": [
+          {
+            "label": "Week 1 · Disciplined chat",
+            "detail": "Every day, give a chat assistant one real task: state the role, context and output; always verify one detail.",
+            "why": "Clear briefs and verification are the base for every other tool."
+          },
+          {
+            "label": "Week 2 · One finished asset",
+            "detail": "Finish one piece: an image, a short video or a post. From brief to many drafts, choosing, editing, then checking rights and labelling it as AI-made.",
+            "why": "Only a full loop shows where AI helps and where your hands are needed."
+          },
+          {
+            "label": "Week 3 · Turn a repeated task into a skill",
+            "detail": "Pick something you do every week, write down the steps from a time it went well, have AI turn them into a SKILL.md, and test it three times.",
+            "why": "From then on AI remembers how you work, so you don't have to repeat yourself every day."
+          },
+          {
+            "label": "Week 4 · Build a mini app yourself",
+            "detail": "Write a one-page spec for a small app or game, have a coding agent build it piece by piece, test it, fix each bug.",
+            "why": "You reuse everything you've learned: describe clearly, break it down, verify, save it."
+          }
+        ],
+        "takeaway": "t39-30days"
+      },
+      "weekCards": [
+        "t39-week1",
+        "t39-week2",
+        "t39-week3",
+        "t39-week4"
+      ],
+      "insight": {
+        "text": "One stone a week, each resting on the last: discipline, a product, a habit, then building your own tool.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "advice": {
+      "label": "Learning that lasts",
+      "art": "Three stone lanterns around a small pool in a moss garden, each lighting a corner of the water. In the middle a leaf drifts slowly; touch a lantern and the leaf turns towards its light.",
+      "prompt": "Touch each lantern",
+      "group": "Three views on learning with AI",
+      "stoneAria": "View: {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Ethan Mollick · Wharton professor, 2023",
+            "view": {
+              "text": "Bring AI into every part of your work to see for yourself where it shines and where it fails; respect rules, ethics and privacy.",
+              "asOf": "2026-10-15",
+              "source": "t39-mollick",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Microsoft Research · survey of 319 people, 2025",
+            "view": {
+              "text": "The more people trusted AI, the less they thought critically; those confident in their own expertise questioned more. This is a correlation, self-reported.",
+              "asOf": "2026-10-15",
+              "source": "t39-chi"
+            }
+          },
+          {
+            "who": "MIT Media Lab · experiment with 54 people, 2025",
+            "view": {
+              "text": "The group writing essays with ChatGPT showed the weakest brain connectivity (measured by EEG), compared with search-engine users and those writing unaided. A small study, not yet peer-reviewed.",
+              "asOf": "2026-10-15",
+              "source": "t39-mit"
+            }
+          }
+        ],
+        "common": {
+          "text": "Use AI a lot to learn fast, but keep the thinking and checking for yourself.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "AI is a good companion while you keep the wheel: think first, ask AI second, then check.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    },
+    "enso": {
+      "label": "Your ensō",
+      "art": "An ensō drawn in a single stroke as the sun rises. Inside it, the stones you visited form your own garden; the moon fades in the corner of the sky and a red seal is stamped below.",
+      "prompt": "Draw the ensō",
+      "draw": "Draw ensō",
+      "drawAria": "Draw the ensō that sums up your journey",
+      "visited": "{n}/21 Moon Garden stations visited",
+      "visitedAll": "{n}/39 stations across both gardens",
+      "copied": "{n} take-away cards copied",
+      "exam": "Moon Garden exam",
+      "examAria": "Take the Moon Garden exam",
+      "toolkit": "Open the Toolkit",
+      "toolkitAria": "Open the Toolkit: every Part 2 take-away card",
+      "insight": {
+        "text": "The moonlit journey ends here. The next garden is the one you plant yourself, a little each day.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "t39-chatgpt": {
+      "title": "ChatGPT",
+      "publisher": "OpenAI",
+      "url": "https://chatgpt.com/"
+    },
+    "t39-claude": {
+      "title": "Claude — Help Center",
+      "publisher": "Anthropic",
+      "url": "https://support.claude.com/"
+    },
+    "t39-gemini": {
+      "title": "Gemini — Help",
+      "publisher": "Google",
+      "url": "https://support.google.com/gemini"
+    },
+    "t39-higgsfield": {
+      "title": "Higgsfield",
+      "publisher": "Higgsfield AI",
+      "url": "https://higgsfield.ai/"
+    },
+    "t39-topview": {
+      "title": "TopView",
+      "publisher": "TopView",
+      "url": "https://www.topview.ai/"
+    },
+    "t39-firefly": {
+      "title": "Adobe Firefly",
+      "publisher": "Adobe",
+      "url": "https://firefly.adobe.com/"
+    },
+    "t39-canva": {
+      "title": "Canva — AI image generator",
+      "publisher": "Canva",
+      "url": "https://www.canva.com/ai-image-generator/"
+    },
+    "t39-ollama": {
+      "title": "Ollama",
+      "publisher": "Ollama",
+      "url": "https://ollama.com/"
+    },
+    "t39-lmstudio": {
+      "title": "LM Studio",
+      "publisher": "LM Studio",
+      "url": "https://lmstudio.ai/"
+    },
+    "t39-claude-code": {
+      "title": "Claude Code — Docs",
+      "publisher": "Anthropic",
+      "url": "https://code.claude.com/docs"
+    },
+    "t39-codex": {
+      "title": "Codex — Docs",
+      "publisher": "OpenAI",
+      "url": "https://developers.openai.com/codex"
+    },
+    "t39-copilot": {
+      "title": "GitHub Copilot",
+      "publisher": "GitHub",
+      "url": "https://github.com/features/copilot"
+    },
+    "t39-agentskills": {
+      "title": "Agent Skills — Overview",
+      "publisher": "agentskills.io (open standard, started by Anthropic)",
+      "url": "https://agentskills.io/home"
+    },
+    "t39-claude-skills": {
+      "title": "Agent Skills overview",
+      "publisher": "Anthropic",
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
+    },
+    "t39-codex-skills": {
+      "title": "Codex — Skills",
+      "publisher": "OpenAI",
+      "url": "https://developers.openai.com/codex/skills/"
+    },
+    "t39-mollick": {
+      "title": "On-boarding your AI Intern",
+      "publisher": "Ethan Mollick, One Useful Thing",
+      "url": "https://www.oneusefulthing.org/p/on-boarding-your-ai-intern",
+      "date": "2023-05-20"
+    },
+    "t39-chi": {
+      "title": "The Impact of Generative AI on Critical Thinking: Self-Reported Reductions in Cognitive Effort and Confidence Effects From a Survey of Knowledge Workers",
+      "publisher": "Hao-Ping Lee and colleagues, Microsoft Research, CHI 2025",
+      "url": "https://www.microsoft.com/en-us/research/publication/the-impact-of-generative-ai-on-critical-thinking-self-reported-reductions-in-cognitive-effort-and-confidence-effects-from-a-survey-of-knowledge-workers/",
+      "date": "2025-04",
+      "note": "319 knowledge workers, 936 self-reported examples."
+    },
+    "t39-mit": {
+      "title": "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task",
+      "publisher": "Nataliya Kosmyna and colleagues, MIT Media Lab, arXiv:2506.08872",
+      "url": "https://arxiv.org/abs/2506.08872",
+      "date": "2025-06-10",
+      "note": "An arXiv preprint, no peer review found; 54 participants, 18 of whom did a fourth session."
+    }
+  }
+}
