@@ -54,3 +54,18 @@ Từng nhóm (mỗi nhóm một commit):
 - **Mở trang lần đầu (intro):** còn 1 long task ~144 ms (chạy module chính + layout). Mục này không thuộc tiêu chí chuyển scene.
 
 Quy tắc rút ra cho Phần 2: `README.md` mục **Quy ước hiệu năng**.
+
+## Phần 2 · Vườn Trăng (16/10/2026)
+
+Cùng cách đo (điện thoại giả lập, CPU 4×, `quality=low`). Số liệu: `docs/perf-data/part2/`.
+
+| Tiêu chí A.10 / B.8 | Kết quả | |
+|---|---|---|
+| Map Phần 2 đứng yên + chạm cát: FPS trung vị ≥ 55 | 60 / 60 · thanh địa chỉ ẩn/hiện 0/6 lần vẽ lại cát | **Đạt** |
+| Qua cầu Phần 1 ⇄ Phần 2 | frame dài nhất 33 ms / 17 ms, 0 long task · đứng yên: 0 frame được vẽ | **Đạt** |
+| Mở thẳng `#/vuon-trang` (tải trang lần đầu) | 1 long task 178 ms (ngang Phần 1: 166 ms, chạy module chính) | Ghi nhận |
+| 21 trạm × 2 lượt: chuyển scene | 2/234 lần có frame > 50 ms (t22 → 3: 100 ms, t33 → 2: 117 ms, chỉ lượt 1, không long task) · **0 long task** | **Gần đạt** |
+| Vào trạm: bấm → scene đầu | trung vị 24 ms · max 130 ms | **Đạt** |
+| Rò rỉ: lượt 2 không tăng | heap 6,0 → 5,9 MB · WebGL 0 · rAF 0 khi về map | **Đạt** |
+| WebGL ≤ 6/21 trạm | 0/21 (chỉ SVG / Canvas 2D / CSS) | **Đạt** |
+| Chunk JS mỗi trạm ≤ 120 KB | 14–32 KB | **Đạt** |
