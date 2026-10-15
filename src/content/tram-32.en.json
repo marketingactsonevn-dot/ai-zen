@@ -1,0 +1,308 @@
+{
+  "id": 32,
+  "kicker": "Light a lamp in your own house — no need to borrow fire from the neighbours.",
+  "summary": "AI doesn't only live in the cloud — a good laptop is enough to light your own AI lamp.",
+  "takeaways": ["t32-ram-table", "t32-lmstudio-start", "t32-ollama-commands"],
+  "quiz": {
+    "q": "Your computer has 16 GB of RAM and you're running AI on it for the first time. Which model should you try first?",
+    "options": [
+      "A 70B model at full size — bigger is smarter",
+      "A model of about 8B, 4-bit compressed",
+      "A 32B model at full 16-bit size",
+      "Download lots of models and run them all at once"
+    ],
+    "answer": 1,
+    "explain": "An 8B model compressed to 4-bit weighs about 4–5 GB: it fits a 16 GB table and leaves the machine room to breathe. A 32B or 70B model would spill over."
+  },
+  "scenes": {
+    "scale": {
+      "label": "The scale",
+      "art": "A steelyard hangs from an old pine branch. The left pan holds the oil lamp of your little house; the right pan, a silver cloud covering half the moon. Each stone weight you place on a pan tips the beam that way.",
+      "prompt": "Put each weight on a pan",
+      "aria": "The scale: run AI on your own machine or in the cloud. Put each weight on the side it favours",
+      "sides": [
+        { "id": "local", "name": "Lamp at home (local)", "aria": "The pan for running on your own machine" },
+        { "id": "cloud", "name": "Lamp in the cloud", "aria": "The pan for running on the provider's servers" }
+      ],
+      "weights": [
+        { "id": "privacy", "label": "Privacy", "side": "local", "why": "Your questions and documents can stay on your machine." },
+        { "id": "offline", "label": "Works offline", "side": "local", "why": "Download the model once; after that you don't need the internet." },
+        { "id": "fee", "label": "No per-use fees", "side": "local", "why": "You pay with your hardware and electricity, not per token." },
+        { "id": "quality", "label": "Top quality", "side": "cloud", "why": "The largest models usually live only in the cloud, or need a very powerful machine." },
+        { "id": "light", "label": "Works on weak machines", "side": "cloud", "why": "The server does the heavy lifting; your machine just sends and receives text." },
+        { "id": "update", "label": "Always the latest", "side": "cloud", "why": "The provider upgrades for you; locally, you download new versions yourself." }
+      ],
+      "weightAria": "Put the “{label}” weight on the {side} pan",
+      "right": "Right side.",
+      "wrong": "This weight leans the other way.",
+      "insight": {
+        "text": "Running AI on your own machine (local AI) can work fully offline once the model is downloaded; in return, the machine must be strong enough.",
+        "asOf": "2026-10-15",
+        "source": "t32-lmstudio-docs"
+      },
+      "detail": {
+        "text": "Privacy depends on the tool: Ollama has both models that run on your machine and cloud models (which need an API key). Check before sharing sensitive data.",
+        "asOf": "2026-10-15",
+        "source": "t32-ollama-quickstart"
+      }
+    },
+    "table": {
+      "label": "A model that fits the table",
+      "art": "A low tea table under a round window that lets in the moon; the tabletop is your computer's RAM. You place bundles of paper scrolls on it, big and small — each bundle a model; a bundle too big spills over the edge and its scrolls roll onto the mat.",
+      "prompt": "Put a model on the table",
+      "aria": "Simulation: put a model on the RAM table to see whether it fits or spills",
+      "ramLabel": "Your RAM",
+      "ramOptions": [8, 16, 32, 64],
+      "ramText": "{n} GB",
+      "bitsLabel": "Version",
+      "bits": [
+        { "id": "b16", "label": "Full 16-bit" },
+        { "id": "q4", "label": "4-bit compressed (Q4)" }
+      ],
+      "models": [
+        { "id": "3b", "label": "3B", "params": 3, "gb16": 6, "gbQ4": 1.7 },
+        { "id": "8b", "label": "8B", "params": 8, "gb16": 16, "gbQ4": 4.5 },
+        { "id": "14b", "label": "14B", "params": 14, "gb16": 28, "gbQ4": 7.9 },
+        { "id": "32b", "label": "32B", "params": 32, "gb16": 64, "gbQ4": 18 },
+        { "id": "70b", "label": "70B", "params": 70, "gb16": 140, "gbQ4": 39.4 }
+      ],
+      "fitRule": { "roomy": 0.45, "tight": 0.75 },
+      "states": {
+        "roomy": "Fits — room left for other apps",
+        "tight": "Tight — close some apps, keep questions short",
+        "spill": "Spills over — very slow, or won't run at all"
+      },
+      "sizeText": "≈ {gb} GB",
+      "modelAria": "Put the {label} model ({gb} GB) on a {ram} GB table",
+      "rule": {
+        "text": "AI Zen's rule of thumb: the model file should take up less than about half your RAM; the rest is for the system, apps and context.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "Quantization is like compressing a photo: a 4-bit version is about 3.5 times lighter than 16-bit, at the cost of a little accuracy.",
+        "asOf": "2026-10-15",
+        "source": "t32-hf-gguf"
+      },
+      "detail": {
+        "text": "Quick estimate: billions of parameters × bits ÷ 8 ≈ GB. For example: 8B at 4.5 bits ≈ 4.5 GB.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "note": "With a separate graphics card, also look at the card's memory (VRAM); Apple Silicon Macs share one pool of RAM between CPU and GPU.",
+      "takeaway": "t32-ram-table"
+    },
+    "lamps": {
+      "label": "Three lamps",
+      "art": "Three lamps on a wooden shelf in a dark room: a paper lantern with its lid already open, an oil lamp whose wick you trim by hand, and a bare flame in a glass chimney — the very flame that burns inside many other lamps.",
+      "prompt": "Touch each lamp",
+      "aria": "Three tools for running AI on your machine: LM Studio, Ollama, llama.cpp",
+      "lampAria": "Light the {name} lamp",
+      "docLabel": "Official docs",
+      "changeNote": "Prices & features change often — check the official site.",
+      "lamps": [
+        {
+          "id": "lmstudio",
+          "name": "LM Studio",
+          "kind": "An app with a window",
+          "what": "Find and download models inside the app (via Hugging Face), chat, attach documents, and switch on a local server for other apps to call.",
+          "fit": "Good for beginners who'd rather click than type commands.",
+          "doc": "https://lmstudio.ai/docs/app",
+          "fact": {
+            "text": "LM Studio can run fully offline once you have a model; it runs GGUF files through llama.cpp, and MLX on Apple Silicon Macs.",
+            "asOf": "2026-10-15",
+            "source": "t32-lmstudio-docs"
+          }
+        },
+        {
+          "id": "ollama",
+          "name": "Ollama",
+          "kind": "Command line + local port",
+          "what": "One command downloads and runs a model; other apps on your machine call it at localhost:11434.",
+          "fit": "Good when you want to connect local AI to apps, workflows and agents.",
+          "doc": "https://docs.ollama.com/quickstart",
+          "fact": {
+            "text": "Ollama serves models on your machine at localhost:11434, including an OpenAI-style endpoint that other apps can reuse easily.",
+            "asOf": "2026-10-15",
+            "source": "t32-ollama-quickstart"
+          }
+        },
+        {
+          "id": "llamacpp",
+          "name": "llama.cpp",
+          "kind": "The engine underneath",
+          "what": "A C/C++ library that runs models right on your machine. The GGUF format was created by the llama.cpp author.",
+          "fit": "Good for people who like to fine-tune things by hand; many other apps use it as their engine.",
+          "doc": "https://github.com/ggml-org/llama.cpp",
+          "fact": {
+            "text": "llama.cpp is open source (MIT license), runs on CPU, GPU and Apple Silicon, and compresses models from 1.5 to 8 bits.",
+            "asOf": "2026-10-15",
+            "source": "t32-llamacpp"
+          },
+          "update": {
+            "text": "In February 2026 the llama.cpp team (ggml) joined Hugging Face; both promised to keep the project open and community-led.",
+            "asOf": "2026-10-15",
+            "source": "t32-hf-ggml",
+            "claimBy": "Hugging Face"
+          }
+        }
+      ],
+      "steps": {
+        "steps": [
+          {
+            "label": "Get LM Studio officially",
+            "detail": "Go to lmstudio.ai and pick the right version for Mac, Windows or Linux.",
+            "why": "Installers from random places may carry malware."
+          },
+          {
+            "label": "Pick a small model",
+            "detail": "Search in the app and pick a 4-bit GGUF of about 1–8B; read the model card and license.",
+            "why": "A model that fits the table runs smoothly; too big and it spills."
+          },
+          {
+            "label": "Download it once",
+            "detail": "Wait for it to finish; from then on it runs without the internet.",
+            "why": "The model lives entirely on your machine."
+          },
+          {
+            "label": "Chat, test familiar questions",
+            "detail": "Ask things you already know the answer to, to see where the model is strong or weak.",
+            "why": "Know its limits before giving it real work."
+          }
+        ],
+        "takeaway": "t32-lmstudio-start"
+      },
+      "stepsLabel": "Lighting the first lamp",
+      "stepsPrompt": "Order the four lighting steps",
+      "stepAria": "Place step {n}: {label}",
+      "wrongHint": "Not this step yet — a lamp needs the right order.",
+      "done": "The lamp is lit.",
+      "insight": {
+        "text": "All three lamps burn the same oil: LM Studio, Ollama and llama.cpp can all run GGUF model files from Hugging Face.",
+        "asOf": "2026-10-15",
+        "source": "t32-hf-gguf"
+      },
+      "detail": "Prices & features change often — always check the official site before installing."
+    },
+    "scroll": {
+      "label": "The command scroll",
+      "art": "A calligraphy scroll hangs on a bamboo wall, unrolling downward in the oil lamp's light. Each line of ink is a command; in the margin, small notes like a teacher's advice to a student.",
+      "prompt": "Unroll the command scroll",
+      "aria": "Code scroll: four basic Ollama commands, with notes beside them",
+      "code": {
+        "lang": "bash",
+        "code": "ollama pull gemma4:e2b\nollama run gemma4:e2b\nollama list\ncurl http://localhost:11434/api/chat -d '{\"model\": \"gemma4:e2b\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}], \"stream\": false}'",
+        "notes": [
+          { "line": 1, "text": "Downloads the model to your machine. Only this step needs the internet; this sample model is about 7 GB." },
+          { "line": 2, "text": "Opens a chat right in the terminal. Type /bye to leave." },
+          { "line": 3, "text": "Lists the models stored on your machine." },
+          { "line": 4, "text": "Other apps call the model through the local port — no API key needed." }
+        ]
+      },
+      "modelNote": "The model name comes from an example in the Ollama docs and will change over time; look up current names in the Ollama library before running.",
+      "insight": {
+        "text": "With Ollama, “ollama run” both downloads a model and opens a chat right on your machine.",
+        "asOf": "2026-10-15",
+        "source": "t32-ollama-quickstart"
+      },
+      "detail": {
+        "text": "Local models called via localhost need no API key; Ollama's cloud models do need a key and send your data out.",
+        "asOf": "2026-10-15",
+        "source": "t32-ollama-quickstart"
+      },
+      "takeaway": "t32-ollama-commands"
+    },
+    "circle": {
+      "label": "Four stones by the pond",
+      "art": "Four stones sit around a round pond holding the moon, like four friends talking late at night. Each stone keeps a small lamp; touch one and it lights, its shadow stretching long across the water.",
+      "prompt": "Listen to each stone",
+      "aria": "Circle of views: should creative and marketing people run AI locally or in the cloud?",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "The keeper of client data",
+            "view": {
+              "text": "Contracts, phone numbers, client files: run it locally so the data never goes to anyone else's server.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "The one who needs top quality",
+            "view": {
+              "text": "Important drafts, hard tasks: big cloud models are usually still better than any model that fits a laptop.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "The one counting monthly costs",
+            "view": {
+              "text": "Heavy daily use: local saves per-use fees. Light use: a cloud plan can be cheaper than buying a new machine.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "The one learning to understand",
+            "view": {
+              "text": "Running a small model yourself shows you first-hand: AI is a file, with a size, a speed and limits.",
+              "asOf": "2026-10-15",
+              "source": "editorial",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "They agree: no choice is right for every task. What differs is how sensitive the data is, the quality needed, and the budget.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "Many people use both: sensitive work runs locally, work that needs the very best goes to the cloud — choosing deliberately each time.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "t32-lmstudio-docs": {
+      "title": "LM Studio Docs — Welcome to LM Studio",
+      "publisher": "LM Studio",
+      "url": "https://lmstudio.ai/docs/app",
+      "note": "“LM Studio can operate entirely offline, just make sure to get some model files first.” Prices & features change often."
+    },
+    "t32-ollama-quickstart": {
+      "title": "Ollama Quickstart",
+      "publisher": "Ollama",
+      "url": "https://docs.ollama.com/quickstart",
+      "note": "Example commands ollama pull/run gemma4:e2b; local API at localhost:11434; cloud models need OLLAMA_API_KEY. Model names change over time."
+    },
+    "t32-hf-gguf": {
+      "title": "GGUF",
+      "publisher": "Hugging Face Docs",
+      "url": "https://huggingface.co/docs/hub/gguf",
+      "note": "Table of quantization types: Q4_K ≈ 4.5 bits per weight (16 ÷ 4.5 ≈ 3.5 times lighter than 16-bit). Lists llama.cpp, LM Studio, GPT4All and Ollama as tools that use GGUF."
+    },
+    "t32-hf-ggml": {
+      "title": "GGML and llama.cpp join HF to ensure the long-term progress of Local AI",
+      "publisher": "Hugging Face Blog",
+      "url": "https://huggingface.co/blog/ggml-joins-hf",
+      "date": "2026-02-20"
+    },
+    "t32-llamacpp": {
+      "title": "llama.cpp — LLM inference in C/C++",
+      "publisher": "ggml-org (GitHub)",
+      "url": "https://github.com/ggml-org/llama.cpp",
+      "note": "MIT license; supports 1.5–8 bit quantization; runs on CPU, Apple Silicon, NVIDIA/AMD GPUs and many other backends."
+    }
+  }
+}

@@ -2,7 +2,11 @@
   "id": 32,
   "kicker": "Thắp đèn trong nhà mình — không cần xin lửa hàng xóm.",
   "summary": "AI không chỉ ở trên mây — một chiếc laptop tốt đã đủ thắp một ngọn đèn AI riêng.",
-  "takeaways": ["t32-ram-table", "t32-lmstudio-start", "t32-ollama-commands"],
+  "takeaways": [
+    "t32-ram-table",
+    "t32-lmstudio-start",
+    "t32-ollama-commands"
+  ],
   "quiz": {
     "q": "Máy bạn có 16 GB RAM, lần đầu chạy AI trên máy. Nên thử model nào trước?",
     "options": [
@@ -21,16 +25,54 @@
       "prompt": "Đặt quả cân lên đĩa",
       "aria": "Cán cân: chạy AI trên máy mình hay trên mây. Đặt từng quả cân về phía nó nghiêng",
       "sides": [
-        { "id": "local", "name": "Đèn trong nhà (local)", "aria": "Đĩa chạy trên máy mình" },
-        { "id": "cloud", "name": "Đèn trên mây (cloud)", "aria": "Đĩa chạy trên máy chủ của nhà cung cấp" }
+        {
+          "id": "local",
+          "name": "Đèn trong nhà (local)",
+          "aria": "Đĩa chạy trên máy mình"
+        },
+        {
+          "id": "cloud",
+          "name": "Đèn trên mây (cloud)",
+          "aria": "Đĩa chạy trên máy chủ của nhà cung cấp"
+        }
       ],
       "weights": [
-        { "id": "privacy", "label": "Riêng tư", "side": "local", "why": "Câu hỏi và tài liệu có thể ở lại trên máy bạn." },
-        { "id": "offline", "label": "Chạy khi mất mạng", "side": "local", "why": "Tải model một lần, sau đó không cần internet." },
-        { "id": "fee", "label": "Không phí theo lượt", "side": "local", "why": "Bạn trả bằng máy và tiền điện, không trả theo token." },
-        { "id": "quality", "label": "Chất lượng cao nhất", "side": "cloud", "why": "Model lớn nhất thường chỉ có trên mây, hoặc cần máy rất mạnh." },
-        { "id": "light", "label": "Máy yếu vẫn dùng được", "side": "cloud", "why": "Máy chủ gánh phần nặng, máy bạn chỉ gửi và nhận chữ." },
-        { "id": "update", "label": "Luôn có bản mới", "side": "cloud", "why": "Nhà cung cấp tự nâng cấp; chạy local thì bạn tự tải bản mới." }
+        {
+          "id": "privacy",
+          "label": "Riêng tư",
+          "side": "local",
+          "why": "Câu hỏi và tài liệu có thể ở lại trên máy bạn."
+        },
+        {
+          "id": "offline",
+          "label": "Chạy khi mất mạng",
+          "side": "local",
+          "why": "Tải model một lần, sau đó không cần internet."
+        },
+        {
+          "id": "fee",
+          "label": "Không phí theo lượt",
+          "side": "local",
+          "why": "Bạn trả bằng máy và tiền điện, không trả theo token."
+        },
+        {
+          "id": "quality",
+          "label": "Chất lượng cao nhất",
+          "side": "cloud",
+          "why": "Model lớn nhất thường chỉ có trên mây, hoặc cần máy rất mạnh."
+        },
+        {
+          "id": "light",
+          "label": "Máy yếu vẫn dùng được",
+          "side": "cloud",
+          "why": "Máy chủ gánh phần nặng, máy bạn chỉ gửi và nhận chữ."
+        },
+        {
+          "id": "update",
+          "label": "Luôn có bản mới",
+          "side": "cloud",
+          "why": "Nhà cung cấp tự nâng cấp; chạy local thì bạn tự tải bản mới."
+        }
       ],
       "weightAria": "Đặt quả cân “{label}” lên đĩa {side}",
       "right": "Đúng phía.",
@@ -52,21 +94,65 @@
       "prompt": "Đặt model lên bàn",
       "aria": "Mô phỏng: đặt model lên mặt bàn RAM để xem vừa hay tràn",
       "ramLabel": "RAM máy bạn",
-      "ramOptions": [8, 16, 32, 64],
+      "ramOptions": [
+        8,
+        16,
+        32,
+        64
+      ],
       "ramText": "{n} GB",
       "bitsLabel": "Bản model",
       "bits": [
-        { "id": "b16", "label": "Bản gốc 16-bit" },
-        { "id": "q4", "label": "Bản nén 4-bit (Q4)" }
+        {
+          "id": "b16",
+          "label": "Bản gốc 16-bit"
+        },
+        {
+          "id": "q4",
+          "label": "Bản nén 4-bit (Q4)"
+        }
       ],
       "models": [
-        { "id": "3b", "label": "3B", "params": 3, "gb16": 6, "gbQ4": 1.7 },
-        { "id": "8b", "label": "8B", "params": 8, "gb16": 16, "gbQ4": 4.5 },
-        { "id": "14b", "label": "14B", "params": 14, "gb16": 28, "gbQ4": 7.9 },
-        { "id": "32b", "label": "32B", "params": 32, "gb16": 64, "gbQ4": 18 },
-        { "id": "70b", "label": "70B", "params": 70, "gb16": 140, "gbQ4": 39.4 }
+        {
+          "id": "3b",
+          "label": "3B",
+          "params": 3,
+          "gb16": 6,
+          "gbQ4": 1.7
+        },
+        {
+          "id": "8b",
+          "label": "8B",
+          "params": 8,
+          "gb16": 16,
+          "gbQ4": 4.5
+        },
+        {
+          "id": "14b",
+          "label": "14B",
+          "params": 14,
+          "gb16": 28,
+          "gbQ4": 7.9
+        },
+        {
+          "id": "32b",
+          "label": "32B",
+          "params": 32,
+          "gb16": 64,
+          "gbQ4": 18
+        },
+        {
+          "id": "70b",
+          "label": "70B",
+          "params": 70,
+          "gb16": 140,
+          "gbQ4": 39.4
+        }
       ],
-      "fitRule": { "roomy": 0.45, "tight": 0.75 },
+      "fitRule": {
+        "roomy": 0.45,
+        "tight": 0.75
+      },
       "states": {
         "roomy": "Vừa bàn — còn chỗ cho app khác",
         "tight": "Chật — đóng bớt app, hỏi ngắn lại",
@@ -174,6 +260,8 @@
         ],
         "takeaway": "t32-lmstudio-start"
       },
+      "stepsLabel": "Thắp đèn đầu tiên",
+      "stepsPrompt": "Xếp bốn bước thắp đèn",
       "stepAria": "Đặt bước {n}: {label}",
       "wrongHint": "Chưa tới bước này — ngọn đèn cần thứ tự.",
       "done": "Đèn đã thắp.",
@@ -193,10 +281,22 @@
         "lang": "bash",
         "code": "ollama pull gemma4:e2b\nollama run gemma4:e2b\nollama list\ncurl http://localhost:11434/api/chat -d '{\"model\": \"gemma4:e2b\", \"messages\": [{\"role\": \"user\", \"content\": \"Chào bạn\"}], \"stream\": false}'",
         "notes": [
-          { "line": 1, "text": "Tải model về máy. Chỉ lần này cần mạng; bản mẫu này nặng khoảng 7 GB." },
-          { "line": 2, "text": "Mở khung chat ngay trong terminal. Gõ /bye để thoát." },
-          { "line": 3, "text": "Xem các model đang nằm trên máy bạn." },
-          { "line": 4, "text": "App khác gọi model qua cổng nội bộ, không cần API key." }
+          {
+            "line": 1,
+            "text": "Tải model về máy. Chỉ lần này cần mạng; bản mẫu này nặng khoảng 7 GB."
+          },
+          {
+            "line": 2,
+            "text": "Mở khung chat ngay trong terminal. Gõ /bye để thoát."
+          },
+          {
+            "line": 3,
+            "text": "Xem các model đang nằm trên máy bạn."
+          },
+          {
+            "line": 4,
+            "text": "App khác gọi model qua cổng nội bộ, không cần API key."
+          }
         ]
       },
       "modelNote": "Tên model lấy từ ví dụ trong tài liệu Ollama và sẽ đổi theo thời gian; tra tên mới trong thư viện Ollama trước khi chạy.",

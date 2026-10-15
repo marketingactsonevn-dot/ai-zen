@@ -1,0 +1,199 @@
+/* Trạm 32 — Local AI: steelyard · tea table of RAM · three lamps · the command scroll */
+
+/* ── Scene 1: the steelyard ── */
+.t32s { justify-content: safe center; gap: clamp(6px, 1.5vh, 14px); padding: 6px 12px 10px; }
+.t32s-art { width: min(100%, 680px); max-height: 42vh; flex: 0 1 auto; min-height: 0; overflow: visible; }
+.t32s-beam, .t32s-pan { transform-box: view-box; transform-origin: 300px 92px; transition: transform 1.2s cubic-bezier(0.3, 1.6, 0.4, 1); }
+.t32s-lamp { fill: var(--lantern); }
+.t32s-cloud { fill: var(--stone-2); stroke: var(--ink); stroke-width: 1.2; stroke-opacity: 0.6; }
+.t32s-weight { fill: url(#p2-rock); stroke: var(--ink); stroke-width: 1; animation: p2-rise 0.5s var(--ease) both; }
+.t32s-sides { display: flex; justify-content: space-between; gap: 10px; width: min(100%, 640px); }
+.t32s-side { flex: 0 1 46%; font-family: var(--serif); font-size: 0.92rem; }
+.t32s-tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 620px; }
+.t32s-stone {
+  appearance: none;
+  padding: 8px 14px 10px;
+  min-height: 40px;
+  border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
+  border-radius: 46% 54% 42% 58% / 58% 50% 50% 42%;
+  background: linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 60%, var(--rock-lo));
+  color: var(--ink);
+  font: 500 0.86rem/1.2 var(--serif);
+  cursor: pointer;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.t32s-stone[aria-pressed='true'] { transform: translateY(-4px); box-shadow: 0 0 0 2px var(--lantern), 0 8px 16px -8px var(--umbra); }
+.t32s-stone:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t32s-say { min-height: 2.9em; }
+
+/* ── Scene 2: the tea table ── */
+.t32t { justify-content: safe center; gap: clamp(4px, 1.2vh, 12px); padding: 8px 14px 52px; }
+.t32t-window {
+  position: relative;
+  width: clamp(64px, 15vh, 140px);
+  aspect-ratio: 1;
+  flex: none;
+  border-radius: 50%;
+  border: 5px solid var(--ink-2);
+  background: repeating-linear-gradient(90deg, transparent 0 31%, color-mix(in srgb, var(--ink) 30%, transparent) 31% 33%), color-mix(in srgb, var(--water) 30%, var(--paper));
+  box-shadow: inset 0 0 0 2px var(--paper);
+  overflow: hidden;
+}
+.t32t-moon { position: absolute; right: 18%; top: 18%; width: 34%; aspect-ratio: 1; border-radius: 50%; background: var(--moon); box-shadow: 0 0 24px 8px color-mix(in srgb, var(--moon) 40%, transparent); }
+.t32t-stage { position: relative; width: min(74%, 520px); height: 92px; flex: none; margin-top: 4px; }
+.t32t-top {
+  position: absolute;
+  left: 0; right: 0; bottom: 34px;
+  height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(var(--ink-2), var(--ink));
+}
+.t32t-tick { position: absolute; top: -6px; width: 1px; height: 6px; background: var(--ink-3); }
+.t32t-ram { position: absolute; left: 13%; top: 16px; font: 500 0.72rem/1 var(--sans); color: var(--ink-3); }
+.t32t-leg { position: absolute; bottom: 4px; width: 8px; height: 30px; background: var(--ink); border-radius: 0 0 2px 2px; }
+.t32t-leg.l { left: 8%; }
+.t32t-leg.r { right: 8%; }
+.t32t-mat { position: absolute; left: -12%; right: -12%; bottom: 0; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--moss) 55%, transparent); }
+.t32t-bundle {
+  position: absolute;
+  left: 0; bottom: 46px;
+  width: 0;
+  height: 30px;
+  border-radius: 14px 14px 4px 4px;
+  background: repeating-linear-gradient(90deg, var(--card) 0 14px, color-mix(in srgb, var(--ink) 18%, var(--card)) 14px 16px);
+  border: 1px solid var(--ink-3);
+  transition: width 0.9s var(--ease), background 0.4s;
+}
+.t32t[data-fit='tight'] .t32t-bundle { border-color: var(--lantern); box-shadow: 0 0 0 2px color-mix(in srgb, var(--lantern) 50%, transparent); }
+.t32t[data-fit='spill'] .t32t-bundle { border-color: var(--vermilion); background: repeating-linear-gradient(90deg, var(--vermilion-soft) 0 14px, var(--vermilion) 14px 16px); transform-origin: left bottom; transform: rotate(1.5deg); }
+.t32t-spill { position: absolute; right: -10%; bottom: 4px; width: 26px; height: 14px; border-radius: 7px; background: var(--vermilion-soft); border: 1px solid var(--vermilion); opacity: 0; transform: translateX(-30px) rotate(-90deg); transition: opacity 0.5s 0.6s, transform 0.9s 0.6s var(--ease); }
+.t32t-spill.on { opacity: 1; transform: none; }
+.t32t-state { min-height: 2.8em; max-width: 34rem; text-align: center; font: 400 0.95rem/1.4 var(--serif); color: var(--ink-2); }
+.t32t[data-fit='spill'] .t32t-state strong { color: var(--vermilion); }
+.t32t-models { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.t32t-model {
+  appearance: none;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  column-gap: 6px;
+  padding: 6px 12px;
+  min-height: 42px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--card) 85%, transparent);
+  color: var(--ink);
+  cursor: pointer;
+}
+.t32t-roll { grid-row: 1 / 3; width: 10px; height: 24px; border-radius: 5px; border: 1px solid var(--ink-3); background: var(--card); }
+.t32t-ml { font: 600 0.9rem/1 var(--serif); }
+.t32t-size { font: 400 0.7rem/1.2 var(--sans); color: var(--ink-3); }
+.t32t-model[aria-pressed='true'] { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.t32t-model[aria-pressed='true'] .t32t-size { color: color-mix(in srgb, var(--paper) 75%, transparent); }
+.t32t-model:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t32t-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 22px; }
+.t32t-segs { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; }
+.t32t-segs .p2-eyebrow { margin: 0 4px 0 0; }
+.t32t-seg { padding: 5px 11px; min-height: 34px; font-size: 0.8rem; }
+.t32t-rule { margin: 0 12px; max-width: 36rem; text-align: center; font: 400 0.78rem/1.4 var(--sans); color: var(--ink-3); }
+.t32t-note { margin: 0 12px; max-width: 36rem; text-align: center; font: 400 italic 0.78rem/1.4 var(--serif); color: var(--ink-3); }
+@media (max-height: 740px), (max-width: 480px) {
+  .t32t-window { display: none; }
+}
+@media (max-width: 480px) {
+  .t32t { gap: 6px; padding: 6px 8px 50px; }
+  .t32t-stage { width: 72%; height: 80px; }
+  .t32t-models { flex-wrap: nowrap; gap: 4px; }
+  .t32t-model { grid-template-columns: auto; justify-items: center; padding: 4px 8px; min-height: 40px; }
+  .t32t-roll { display: none; }
+  .t32t-controls { flex-direction: column; gap: 4px; }
+  .t32t-segs { flex-wrap: nowrap; }
+  .t32t-seg { padding: 4px 9px; min-height: 32px; font-size: 0.74rem; }
+  .t32t-state { font-size: 0.88rem; min-height: 2.6em; }
+  .t32t-rule { font-size: 0.72rem; }
+  .t32t-note { display: none; } /* extra aside: no room beside the take-away pill on a phone */
+}
+
+/* ── Scene 3: three lamps ── */
+.t32l { justify-content: safe center; gap: clamp(8px, 2vh, 18px); padding: 8px 12px 10px; }
+.t32l-shelf {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(8px, 4vw, 48px);
+  width: min(100%, 640px);
+  padding-bottom: 10px;
+  border-bottom: 8px solid var(--ink-2);
+  border-radius: 0 0 4px 4px;
+}
+.t32l-lamp {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1 1 0;
+  max-width: 170px;
+  padding: 6px 4px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+.t32l-lamp:hover { border-color: var(--line-2); }
+.t32l-lamp:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t32l-lamp[aria-pressed='true'] { border-color: var(--lantern); }
+.t32l-svg { width: clamp(52px, 12vh, 96px); height: auto; aspect-ratio: 80 / 110; overflow: visible; }
+.t32l-lamp .g11-lan.t32l-svg { aspect-ratio: 40 / 64; width: clamp(40px, 8vh, 64px); margin: 0 0 8px; }
+.t32l-name { font: 500 clamp(0.92rem, 2.4vw, 1.1rem) / 1.2 var(--serif); }
+.t32l-kind { font: 400 0.72rem/1.25 var(--sans); color: var(--ink-3); text-align: center; }
+.t32l-fire { fill: var(--lantern); opacity: 0; transition: opacity 0.6s var(--ease); }
+.t32l-glass { fill: var(--stone-3); fill-opacity: 0.25; }
+.t32l-lamp.on .t32l-fire { opacity: 1; }
+.t32l-lamp.on .g11-lan-glow { opacity: 0.32; }
+.t32l-panel { width: min(100%, 560px); min-height: 9em; padding: 0 4px; flex: 0 1 auto; overflow-y: auto; }
+.t32l-panel > * { margin: 0 0 4px; }
+.t32l-h { font: 500 1.15rem/1.2 var(--serif); }
+.t32l-what { font: 400 0.95rem/1.45 var(--serif); }
+.t32l-fit { font: 400 italic 0.9rem/1.4 var(--serif); color: var(--ink-2); }
+.t32l-fact { font: 400 0.82rem/1.45 var(--sans); color: var(--ink-2); }
+.t32l-doc { font: 500 0.82rem/1.4 var(--sans); color: var(--vermilion); }
+.t32l-change { margin: 0 12px; text-align: center; font: 400 0.72rem/1.4 var(--sans); color: var(--ink-3); }
+@media (max-width: 480px) {
+  .t32l { justify-content: flex-start; }
+  .t32l-what { font-size: 0.88rem; }
+  .t32l-panel { min-height: 0; flex: 1 1 0; }
+}
+
+/* ── Scene 4: the command scroll ── */
+.t32x { padding: 6px 12px 54px; gap: 0; }
+.t32x-rod { width: min(100%, 760px); height: 10px; flex: none; border-radius: 5px; background: linear-gradient(var(--ink-2), var(--ink)); }
+.t32x-fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  width: min(100%, 740px);
+  flex: 0 1 auto;
+  min-height: 0;
+  transition: grid-template-rows 1.4s var(--ease-soft);
+}
+.t32x.open .t32x-fold { grid-template-rows: 1fr; }
+.t32x-inner { min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.t32x-cord {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 6px 14px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--ink-2);
+  font: 400 italic 0.95rem/1.2 var(--serif);
+  cursor: pointer;
+}
+.t32x-cord .g11-lan { width: 34px; height: 54px; }
+.t32x-cord:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t32x-note { margin: 8px 12px 0; max-width: 40rem; text-align: center; font: 400 italic 0.8rem/1.4 var(--serif); color: var(--ink-3); }
