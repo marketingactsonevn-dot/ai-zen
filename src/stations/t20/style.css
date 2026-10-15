@@ -1,0 +1,233 @@
+/* Trạm 20 — AI làm toán: stirred pond (Navier–Stokes) · stonemason on the steps (Lean) (+ tide, perspective circle) */
+.t20 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── the stirred pond ────────────────────────────── */
+.t20v-stage {
+  flex: 1 1 0;
+  min-height: 150px;
+  width: 100%;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+.t20v-stage:active { cursor: grabbing; }
+.t20v-stage:focus-visible .t20v-bank { stroke: var(--vermilion); stroke-width: 2.5; }
+.t20v-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+}
+.t20v-bank { fill: var(--stone-3); }
+.t20v-pond { fill: var(--water); }
+.t20v-ring { fill: none; stroke: var(--moon); stroke-width: 0.8; opacity: 0.18; }
+.t20v-moon { fill: var(--moon); opacity: 0.85; }
+.t20v-arm { fill: var(--moon); opacity: 0.5; }
+.t20v-core { fill: var(--moon); }
+.t20v-burst {
+  stroke: var(--lantern);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.t20v[data-stage='2'] .t20v-burst { opacity: 1; }
+.t20v[data-stage='2'] .t20v-core { fill: var(--lantern); }
+.t20v-fly {
+  fill: var(--firefly);
+  opacity: 0.75;
+  animation: t20-blink 4s ease-in-out infinite;
+}
+.t20v.still .t20v-fly { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .t20v-fly { animation: none; }
+}
+@keyframes t20-blink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.9; }
+}
+.t20v-side {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  width: min(36rem, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.t20v-meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.t20v-dots { display: inline-flex; gap: 5px; }
+.t20v-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-3);
+}
+.t20v-dots i.on { background: var(--ink); border-color: var(--ink); }
+.t20v-stage-name {
+  margin: 0;
+  font: 400 1.15rem/1.3 var(--serif);
+  color: var(--ink);
+}
+.t20v-cap {
+  margin: 0;
+  font: 400 italic 0.88rem/1.4 var(--serif);
+  color: var(--ink-2);
+}
+.t20v-flies,
+.t20v-lean,
+.t20v-context { display: none; }
+.t20v[data-stage] .t20v-flies,
+.t20v[data-stage='2'] .t20v-lean { display: block; }
+.t20v[data-stage='2'] .t20v-context {
+  display: block;
+  margin-top: 6px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--card);
+}
+.t20v-context ul {
+  margin: 4px 0 0;
+  padding-left: 1.1em;
+  font: 400 0.9rem/1.45 var(--serif);
+  color: var(--ink);
+}
+.t20v-context li + li { margin-top: 4px; }
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .t20 { flex-direction: row; justify-content: center; gap: 32px; }
+  .t20v-stage { flex: 0 1 auto; height: 100%; aspect-ratio: 1; width: auto; }
+  .t20v-side { width: 22rem; max-height: 100%; }
+}
+
+/* ── the stonemason ──────────────────────────────── */
+.t20m { justify-content: center; }
+.t20m-stair {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding-top: 8px;
+}
+.t20m-lantern {
+  width: clamp(30px, 4vw, 44px);
+  height: auto;
+  align-self: flex-end;
+  margin-right: 4px;
+}
+.t20m-glow { fill: var(--lantern); opacity: 0.25; }
+.t20m-toro { fill: var(--ink-2); }
+.t20m-flame { fill: var(--lantern); }
+.t20m-step {
+  position: relative;
+  width: clamp(64px, 18vw, 104px);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  margin-bottom: calc(var(--i) * clamp(10px, 3vw, 22px));
+  border-radius: 10px;
+}
+.t20m-step svg { display: block; width: 100%; height: auto; overflow: visible; }
+.t20m-step:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t20m-n {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  font: 500 0.72rem/1 var(--sans);
+  color: var(--ink-3);
+}
+.t20m-tick {
+  fill: none;
+  stroke: var(--moss);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+.t20m-step.done .t20m-tick { opacity: 1; }
+.t20m-step::after {
+  content: '';
+  position: absolute;
+  inset: 20% 5% 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--moon);
+  opacity: 0;
+  pointer-events: none;
+}
+.t20m-step.ring::after { animation: t20-ring 0.9s ease-out; }
+@keyframes t20-ring {
+  from { opacity: 0.9; transform: scale(0.6); }
+  to { opacity: 0; transform: scale(1.4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t20m-step.ring::after { animation: none; }
+}
+.t20m-side {
+  flex: 0 1 auto;
+  min-height: 0;
+  width: min(38rem, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+.t20m-sign { display: flex; flex-direction: column; min-height: 0; gap: 4px; }
+.t20m-note {
+  margin: 0;
+  font: 400 0.76rem/1.4 var(--sans);
+  color: var(--ink-3);
+}
+.t20m-ok {
+  margin: 0;
+  font: 500 0.9rem/1.3 var(--sans);
+  color: var(--moss);
+}
+.t20m-compare {
+  align-self: flex-start;
+  padding: 8px 14px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--on-ink);
+  font: 500 0.88rem/1.2 var(--sans);
+  cursor: pointer;
+}
+.t20m-result {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: var(--shadow-1);
+  outline: none;
+}
+.t20m-original {
+  margin: 0;
+  font: 400 1rem/1.45 var(--serif);
+  color: var(--ink);
+}
+.t20m-mismatch {
+  margin: 4px 0 0;
+  font: 500 0.95rem/1.45 var(--serif);
+  color: var(--vermilion);
+}
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .t20m { flex-direction: row; align-items: center; }
+  .t20m-step { width: 112px; margin-bottom: calc(var(--i) * 34px); }
+}

@@ -1,0 +1,313 @@
+{
+  "id": 20,
+  "kicker": "A small pebble rolls for a hundred years without reaching the bottom of the well — then one night, it touches water.",
+  "summary": "AI has reached the biggest problems in mathematics — and the way humans check knowledge is changing with it.",
+  "newsTags": [
+    "ai-math"
+  ],
+  "takeaways": [
+    "t20-kiem-tuyen-bo-toan"
+  ],
+  "quiz": {
+    "q": "Why is a proof written in Lean more trustworthy than an ordinary write-up, yet still needs people?",
+    "options": [
+      "The machine checks every logical step, but people must check that the problem stated in Lean really is the original problem",
+      "Lean is written by AI so it is always right; people only need to skim it",
+      "Lean only checks spelling; people still have to check all the maths themselves",
+      "Lean runs faster but makes more mistakes than a handwritten proof"
+    ],
+    "answer": 0,
+    "explain": "The machine checks logic very reliably. But if the problem written for the machine drifts from the real one, the machine still says yes — only people can check the meaning."
+  },
+  "scenes": {
+    "well": {
+      "label": "The pebble well",
+      "art": "An old stone well in the night garden, the moon shining straight down into it. Drag the moon and pebbles, each carved with the name of a problem, drop in one by one; ripples spread across the dark water, each pebble falling deeper than the last.",
+      "prompt": "Drag the moon, drop pebbles",
+      "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
+      "tide": {
+        "milestones": [
+          {
+            "date": "2025-07-19",
+            "label": "IMO 2025 · OpenAI",
+            "fact": {
+              "text": "OpenAI announced that an experimental model scored 35/42, gold-medal level at the International Mathematical Olympiad (IMO); three former IMO medallists graded it.",
+              "asOf": "2026-10-15",
+              "source": "willison-openai-imo",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "date": "2025-07-21",
+            "label": "IMO 2025 · Google DeepMind",
+            "fact": {
+              "text": "Gemini Deep Think scored 35/42, solving 5 of 6 problems; the IMO President confirmed it was a gold-medal score.",
+              "asOf": "2026-10-15",
+              "source": "deepmind-imo-2025",
+              "verifiedBy": "IMO organisers"
+            }
+          },
+          {
+            "date": "2026-07-20",
+            "label": "Jacobian conjecture",
+            "fact": {
+              "text": "Levent Alpöge (Anthropic), with help from Claude Fable, gave a 3-dimensional counterexample to the Jacobian conjecture, posed in 1939.",
+              "asOf": "2026-10-15",
+              "source": "afp-jacobian",
+              "verifiedBy": "Archive of Formal Proofs (checked in Isabelle)"
+            }
+          },
+          {
+            "date": "2026-09-08",
+            "label": "Navier–Stokes",
+            "fact": {
+              "text": "OpenAI announced a proof that Navier–Stokes flow can “blow up”, with a version rewritten in Lean for machine checking.",
+              "asOf": "2026-10-15",
+              "source": "quanta-ns",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "date": "2026-10-06",
+            "label": "722 manuscripts",
+            "fact": {
+              "text": "OpenAI posted 722 manuscripts, grouped into 372 sets of results, from about 4,000 problems attempted; it warned that some still contain errors.",
+              "asOf": "2026-10-15",
+              "source": "aa-openai-math",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "date": "2026-10-15",
+            "label": "Today",
+            "fact": {
+              "text": "The Clay Institute only considers a prize once a solution is published in a qualifying outlet, at least two years have passed, and mathematicians broadly accept it.",
+              "asOf": "2026-10-15",
+              "source": "clay-rules"
+            }
+          }
+        ],
+        "horizon": {
+          "text": "The Math & AI advisory group at the IAS (Princeton): the future of mathematics cannot just be sitting and understanding results produced by AI labs.",
+          "asOf": "2026-10-15",
+          "source": "aa-openai-math",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "In just one year, AI went from Olympiad problems (07/2025) to a counterexample for a conjecture dating from 1939 (07/2026).",
+        "asOf": "2026-10-15",
+        "source": "afp-jacobian"
+      },
+      "detail": "Watch for the ◇ mark: many milestones are companies' own announcements. Where someone outside has checked, it says who."
+    },
+    "vortex": {
+      "label": "Water that blows up",
+      "art": "A pond as smooth as a mirror under the moon. The visitor stirs it once round: the water swirls, the eddies tighten towards one blinding point at the centre. Around the bank, tens of thousands of tiny fireflies swarm — each one an agent feeling its way.",
+      "prompt": "Stir the pond",
+      "stirAria": "Stir the pond: drag in a circle, or hold an arrow key",
+      "stages": [
+        "Smooth flow",
+        "Eddies tighten",
+        "One point “blows up”"
+      ],
+      "fireflies": "about 10,000 agents · 88 hours",
+      "leanNote": "plus 17 hours rewriting it in Lean",
+      "insight": {
+        "text": "The Navier–Stokes equations describe how water and air flow. The million-dollar question: can a smooth flow suddenly “blow up”?",
+        "asOf": "2026-10-15",
+        "source": "quanta-ns"
+      },
+      "detail": {
+        "text": "OpenAI says about 10,000 agents ran for 88 hours on an unreleased model to find the proof; another AI took 17 more hours to rewrite it in Lean.",
+        "asOf": "2026-10-15",
+        "source": "quanta-ns",
+        "claimBy": "OpenAI"
+      },
+      "contextTitle": "Who, when, whose credit",
+      "context": [
+        {
+          "text": "Tristan Buckmaster (NYU) and Levent Alpöge (Anthropic) posted a result on a closely related problem about 12 hours earlier; who came first is still disputed.",
+          "asOf": "2026-10-15",
+          "source": "quanta-ns"
+        },
+        {
+          "text": "Both teams built on a strategy by mathematicians Diego Córdoba and Luis Martínez-Zoroa, published in 2023.",
+          "asOf": "2026-10-15",
+          "source": "quanta-ns"
+        },
+        {
+          "text": "The Clay Institute has not awarded the prize; OpenAI says it does not plan to accept the $1 million and has published the manuscript and Lean version for anyone to check.",
+          "asOf": "2026-10-15",
+          "source": "datacamp-ns"
+        }
+      ]
+    },
+    "mason": {
+      "label": "The mason who tests every stone",
+      "art": "Under a lantern, an old stonemason taps a small hammer on each step of a stone stair leading up the hill; a sound stone rings clear. At the top hangs a sign reading “the problem”, and beside it the original scroll to compare against.",
+      "prompt": "Tap each step",
+      "stepAria": "Tap step {n}",
+      "machineOk": "Machine: every step checks out",
+      "compare": "Compare the sign with the original",
+      "compareAria": "Compare the problem written for the machine with the original problem",
+      "original": "Original: the sum of two odd numbers is even",
+      "mismatch": "The sign says “even numbers” — the machine checked correctly, but a different problem!",
+      "code": {
+        "lang": "text",
+        "code": "-- Original: the sum of two odd numbers is even\ntheorem sum_even (a b : ℕ) (ha : Even a) (hb : Even b) :\n    Even (a + b) := by\n  exact Even.add ha hb",
+        "notes": [
+          {
+            "line": 1,
+            "text": "A comment line: the problem a human wants to prove."
+          },
+          {
+            "line": 2,
+            "text": "The problem as written for the machine. Notice: it says “Even”, not odd."
+          },
+          {
+            "line": 4,
+            "text": "The machine checks this step: valid. But it has just proved a different problem."
+          }
+        ]
+      },
+      "codeNote": {
+        "text": "This code is a small Lean-style example AI Zen wrote for illustration, not taken from a real proof.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insights": [
+        {
+          "text": "Lean is a proof assistant: you write a proof the machine checks step by step; one wrong step and it refuses.",
+          "asOf": "2026-10-15",
+          "source": "lean-lang"
+        },
+        {
+          "text": "But people must still check the problem written in Lean is the real one: the machine checks logic, people check meaning.",
+          "asOf": "2026-10-15",
+          "source": "quanta-ns"
+        }
+      ],
+      "detail": {
+        "text": "The Jacobian counterexample was checked again by an independent team in another proof assistant, Isabelle — two masons, two hammers.",
+        "asOf": "2026-10-15",
+        "source": "afp-jacobian"
+      }
+    },
+    "circle": {
+      "label": "Four stones round the well",
+      "art": "Four stones stand round the moonlit well, each carved with a small line of text. Touch one and it glows, sending ripples to the middle of the well; when all four glow, the water stills and holds the whole moon.",
+      "prompt": "Touch each stone",
+      "stoneAria": "Hear the view of {who}",
+      "perspectives": {
+        "stones": [
+          {
+            "who": "Charles Fefferman · Princeton, who wrote the official problem statement for the Clay Institute",
+            "view": {
+              "text": "“I'm very happy the problem is solved” — the man who wrote the problem welcomes the result, even though it still faces many rounds of checking.",
+              "asOf": "2026-10-15",
+              "source": "quanta-ns",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Tristan Buckmaster · NYU, the rival team",
+            "view": {
+              "text": "He called one of his own team's three papers “AI slop” and apologised: machine-written proofs can be very hard to read.",
+              "asOf": "2026-10-15",
+              "source": "quanta-ns",
+              "kind": "opinion"
+            }
+          },
+          {
+            "who": "Those asking about money and credit",
+            "view": {
+              "text": "According to Sébastien Bubeck (OpenAI), the proof hunt cost a few million dollars in compute; who came first, the two teams still don't agree.",
+              "asOf": "2026-10-15",
+              "source": "quanta-ns",
+              "claimBy": "OpenAI"
+            }
+          },
+          {
+            "who": "Math & AI advisory group · IAS, Princeton",
+            "view": {
+              "text": "This is “a significant event in mathematics” — but the future of mathematics cannot just be sitting and understanding results produced by AI labs.",
+              "asOf": "2026-10-15",
+              "source": "aa-openai-math",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "Agreed: AI has done real mathematics, and it must be checked. Disputed: whose credit, at what cost, and what role people play.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      },
+      "insight": {
+        "text": "A maths result made by AI opens three questions: is it right, whose credit is it, and what is left for people to do.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "quanta-ns": {
+      "title": "AI Has Solved One of Math's $1 Million Millennium Prize Problems",
+      "publisher": "Quanta Magazine (Konstantin Kakaes)",
+      "url": "https://www.quantamagazine.org/ai-has-solved-one-of-maths-1-million-millennium-prize-problems-20260908/",
+      "date": "2026-09-08",
+      "note": "Independent reporting; the agent counts, run times and costs are OpenAI's own figures. The article says the result is still contested and people must still check the problem statement in Lean."
+    },
+    "datacamp-ns": {
+      "title": "Did AI Solve Navier-Stokes? OpenAI's Claim, Explained",
+      "publisher": "DataCamp (Vinod Chugani)",
+      "url": "https://www.datacamp.com/blog/openai-navier-stokes-math-problem",
+      "date": "2026-09-09",
+      "note": "Secondary source: OpenAI published a 166-page manuscript and the Lean version on 8 September and said it does not plan to accept the prize. The original page openai.com/index/navier-stokes-solution/ blocks lookup tools, so it has not been opened directly."
+    },
+    "clay-rules": {
+      "title": "Millennium Prize Problems — Rules",
+      "publisher": "Clay Mathematics Institute",
+      "url": "https://www.claymath.org/millennium-problems/rules/",
+      "note": "Conditions for the prize: published in a qualifying outlet, at least two years' wait, and broad acceptance by the mathematical community."
+    },
+    "aa-openai-math": {
+      "title": "OpenAI releases findings on hundreds of math problems",
+      "publisher": "Anadolu Agency (republished in The Express Tribune)",
+      "url": "https://tribune.com.pk/story/2633544/openai-releases-findings-on-hundreds-of-math-problems",
+      "date": "2026-10-08",
+      "note": "OpenAI posted 722 manuscripts / 372 sets of results on GitHub on 6 October 2026. The IAS Math & AI advisory group said its advisory role is not an endorsement of the results."
+    },
+    "deepmind-imo-2025": {
+      "title": "Advanced version of Gemini with Deep Think officially achieves gold-medal standard at the International Mathematical Olympiad",
+      "publisher": "Google DeepMind",
+      "url": "https://deepmind.google/discover/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/",
+      "date": "2025-07-21",
+      "note": "Quotes IMO President Gregor Dolinar confirming the gold-medal score; the work was done in plain language within 4.5 hours."
+    },
+    "afp-jacobian": {
+      "title": "Formal Verification of an Explicit Counterexample to the Jacobian Conjecture",
+      "publisher": "Archive of Formal Proofs (Ramos, Hulak, de Queiroz)",
+      "url": "https://isa-afp.org/entries/Jacobian_Counterexample.html",
+      "date": "2026-07-20",
+      "note": "Independent Isabelle/HOL check of the 3-dimensional map published by Levent Alpöge, crediting Claude Fable and Akhil Mathew (who posed the question). The 2-dimensional case remains open. The conjecture was posed by Ott-Heinrich Keller in 1939."
+    },
+    "lean-lang": {
+      "title": "Lean — programming language and proof assistant",
+      "publisher": "Lean FRO",
+      "url": "https://lean-lang.org/",
+      "note": "Lean is an open-source programming language and proof assistant."
+    },
+    "willison-openai-imo": {
+      "title": "OpenAI's gold medal performance on the International Math Olympiad",
+      "publisher": "Simon Willison's Weblog",
+      "url": "https://simonwillison.net/2025/Jul/19/openai-gold-medal-math-olympiad/",
+      "date": "2025-07-19",
+      "note": "Summary of Alexander Wei's (OpenAI) announcement: an experimental model, 5 of 6 problems, graded by three former IMO medallists; OpenAI's own assessment, not official IMO grading."
+    }
+  }
+}
