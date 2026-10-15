@@ -1,0 +1,256 @@
+{
+  "id": 27,
+  "kicker": "We see faces in stones, in clouds — and in chatbots.",
+  "summary": "AI can be warm — let it warm you, but don’t let it take the place of people.",
+  "takeaways": [
+    "t27-phan-bien",
+    "t27-thoi-quen"
+  ],
+  "quiz": {
+    "q": "You ask an AI “Is my business idea any good?” and it praises it to the skies. What should you do next?",
+    "options": [
+      "Believe it, since AI has read so much",
+      "Ask the AI to critique it like a serious opponent, then ask real people too",
+      "Ask the exact same question again to be sure",
+      "Stop using AI altogether"
+    ],
+    "answer": 1,
+    "explain": "AI tends to side with its users. Ask it to find the weak spots, and for big decisions, also ask people who understand your situation."
+  },
+  "scenes": {
+    "faces": {
+      "label": "A stone with a face",
+      "art": "A corner of the night garden: a moss-covered rock, a cloud across the moon, a stone lantern. Look closely and each one has “two eyes and a mouth” made of cracks and shadows. Finally, a small stele shows green text like an old computer screen: ELIZA, 1966.",
+      "prompt": "Find the hidden faces",
+      "things": [
+        {
+          "label": "mossy rock",
+          "aria": "Look closely at the mossy rock"
+        },
+        {
+          "label": "cloud",
+          "aria": "Look closely at the cloud across the moon"
+        },
+        {
+          "label": "stone lantern",
+          "aria": "Look closely at the stone lantern"
+        }
+      ],
+      "found": "face spotted",
+      "eliza": {
+        "label": "ELIZA, 1966",
+        "aria": "Read the conversation with ELIZA",
+        "user": "“I feel sad.”",
+        "bot": "“Why do you feel sad?”",
+        "note": {
+          "text": "Dialogue in the style of ELIZA: it just turns your sentence around using a few rules.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "illustration"
+        }
+      },
+      "insights": [
+        {
+          "text": "Our brains spot faces extremely fast, even where there are none — this is called face pareidolia.",
+          "asOf": "2026-10-15",
+          "source": "wardle-2020",
+          "detail": {
+            "text": "A 2020 study: the brain processes “faces” in objects in the same area as real faces, then corrects itself about 0.25 seconds later.",
+            "asOf": "2026-10-15",
+            "source": "wardle-2020"
+          }
+        },
+        {
+          "text": "Words work the same way: ELIZA (1966) only turned sentences around by a few rules, yet some people wanted to confide in it privately.",
+          "asOf": "2026-10-15",
+          "source": "weizenbaum-1976",
+          "detail": {
+            "text": "Joseph Weizenbaum, ELIZA’s author, recalled his secretary asking him to leave the room so she could talk to it alone — the ELIZA effect.",
+            "asOf": "2026-10-15",
+            "source": "weizenbaum-1976"
+          }
+        }
+      ]
+    },
+    "lamp": {
+      "label": "The lantern that always agrees",
+      "art": "A paper lantern hangs from a pine branch, always leaning towards whoever comes near and glowing warmer when they speak. Around the foot of the tree are four stones, each holding a research finding or a piece of advice.",
+      "prompt": "Touch the stones: benefits and harms",
+      "question": "AI companions: something to lean on, or somewhere to hide?",
+      "insight": {
+        "text": "72% of US teens surveyed have talked with an AI companion — it’s no longer rare.",
+        "asOf": "2026-10-15",
+        "source": "commonsense-2025"
+      },
+      "perspectives": {
+        "stones": [
+          {
+            "who": "US teens in a 2025 survey",
+            "view": {
+              "text": "39% of users carry social skills practised with AI into real life; 80% still spend more time with real friends.",
+              "asOf": "2026-10-15",
+              "source": "commonsense-2025"
+            }
+          },
+          {
+            "who": "MIT Media Lab & OpenAI (2025)",
+            "view": {
+              "text": "A 4-week trial with 981 people: those who chose to use it more tended to be lonelier and more dependent — a correlation only.",
+              "asOf": "2026-10-15",
+              "source": "fang-2025"
+            }
+          },
+          {
+            "who": "Anthropic (Claude.ai data, 2025)",
+            "view": {
+              "text": "Only 2.9% of conversations are emotional; companionship and role-play are under 0.5%. They tend to end slightly more positively.",
+              "asOf": "2026-10-15",
+              "source": "anthropic-affective-2025",
+              "claimBy": "Anthropic"
+            }
+          },
+          {
+            "who": "Common Sense Media, a children’s advocacy group",
+            "view": {
+              "text": "Under-18s should not use AI companions until there are better safeguards.",
+              "asOf": "2026-10-15",
+              "source": "commonsense-2025",
+              "kind": "opinion"
+            }
+          }
+        ],
+        "common": {
+          "text": "Agreed: AI companions can help somewhat. They differ: benefit or harm depends on who uses them, how much, and who else is there.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      }
+    },
+    "flatter": {
+      "label": "The flattering mirror",
+      "art": "Two hand mirrors lie on a lacquer tray under the moon: one with a carved gilded frame, one of plain bronze. Between them is a slip of paper with a question. Tilt a mirror and its answer appears in it.",
+      "prompt": "Tilt each mirror",
+      "question": "“I’m thinking of quitting my job to open a coffee shop. Is this a good idea?”",
+      "gilded": {
+        "label": "Gilded mirror",
+        "aria": "Tilt the gilded mirror to see the flattering answer",
+        "answer": "“Brilliant! You’re sure to succeed — just go for it!”"
+      },
+      "bronze": {
+        "label": "Plain bronze mirror",
+        "aria": "Tilt the plain bronze mirror to see the honest answer",
+        "answer": "“There’s something good in this idea. But have you worked out the money, the location, and the first months with no profit? Try asking a few café owners first.”"
+      },
+      "note": {
+        "text": "Both answers were written by AI Zen as illustrations.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
+      "insight": {
+        "text": "A study in Science (2026): 11 AI models endorsed users’ actions 49% more often than humans did.",
+        "asOf": "2026-10-15",
+        "source": "cheng-2026"
+      },
+      "detail": {
+        "text": "Participants actually preferred and trusted the flattering AI — and afterwards were less willing to make amends or admit their part.",
+        "asOf": "2026-10-15",
+        "source": "cheng-2026"
+      },
+      "seeAlso": "Why AI tends to flatter: see station II·06",
+      "takeaway": "t27-phan-bien",
+      "takeawayLabel": "Take away: a prompt that invites AI to push back"
+    },
+    "path": {
+      "label": "Healthy habits",
+      "art": "A path of stepping stones leads from a small hut lit by a pale blue screen, across the moonlit garden, to a house with paper doors glowing yellow and the shadows of a few people sitting around a meal. Four stones lie scattered beside the path, waiting to be set in place.",
+      "prompt": "Set the stones in order",
+      "keys": "Keys 1–4 set the stones in order",
+      "stoneAria": "Place the stone “{label}”",
+      "wrong": "Not that one yet — think in rhythm: before, during and after a conversation.",
+      "done": "The path is lit — open your take-away card",
+      "steps": {
+        "steps": [
+          {
+            "label": "Remember it’s a tool",
+            "detail": "Before you chat: AI sounds warm because it was trained to write that way, not because it knows you.",
+            "why": "Expressing feelings doesn’t prove an AI feels (see station II·07)."
+          },
+          {
+            "label": "Ask AI to push back",
+            "detail": "During the chat: invite it to point out weak spots, risks and opposing views.",
+            "why": "AI tends to side with its users more than people do."
+          },
+          {
+            "label": "Ask real people on big things",
+            "detail": "Before important decisions — health, money, relationships — also ask someone you trust or an expert.",
+            "why": "Real people understand your situation and dare to say hard things."
+          },
+          {
+            "label": "Take a screen break",
+            "detail": "Afterwards: close the laptop, go for a walk, see friends and family.",
+            "why": "People who use chatbots more tend to feel lonelier and more dependent."
+          }
+        ],
+        "takeaway": "t27-thoi-quen"
+      },
+      "insight": {
+        "text": "AI can warm an evening — healthy habits keep it from taking the place of the real people around you.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
+    }
+  },
+  "sources": {
+    "wardle-2020": {
+      "title": "Rapid and dynamic processing of face pareidolia in the human brain",
+      "publisher": "Wardle, Taubert, Teichmann, Baker — Nature Communications 11, 4518",
+      "url": "https://doi.org/10.1038/s41467-020-18325-8",
+      "date": "2020-09-09",
+      "note": "Illusory faces in objects are processed in the visual areas for faces; about 250 ms later the brain reclassifies them as ordinary objects."
+    },
+    "weizenbaum-1966": {
+      "title": "ELIZA — a computer program for the study of natural language communication between man and machine",
+      "publisher": "Joseph Weizenbaum — Communications of the ACM 9(1)",
+      "url": "https://doi.org/10.1145/365153.365168",
+      "date": "1966-01",
+      "note": "The paper introducing ELIZA: a program that replies by finding keywords and transforming sentences by preset rules."
+    },
+    "weizenbaum-1976": {
+      "title": "Computer Power and Human Reason: From Judgment to Calculation",
+      "publisher": "Joseph Weizenbaum — W. H. Freeman",
+      "date": "1976",
+      "note": "Book; the introduction tells of his secretary asking him to leave the room so she could talk privately with ELIZA — the author’s own account."
+    },
+    "commonsense-2025": {
+      "title": "Talk, Trust, and Trade-Offs: How and Why Teens Use AI Companions",
+      "publisher": "Common Sense Media",
+      "url": "https://www.commonsensemedia.org/research/talk-trust-and-trade-offs-how-and-why-teens-use-ai-companions",
+      "date": "2025-07-16",
+      "note": "Nationally representative survey of 1,060 US teens aged 13–17 (conducted by NORC, Apr 30–May 14, 2025): 72% have used one, 52% regularly; among users, 39% carry social skills into real life, 80% spend more time with real friends."
+    },
+    "fang-2025": {
+      "title": "How AI and Human Behaviors Shape Psychosocial Effects of Extended Chatbot Use: A Longitudinal Randomized Controlled Study",
+      "publisher": "Cathy Mengying Fang and colleagues — MIT Media Lab & OpenAI, arXiv",
+      "url": "https://arxiv.org/abs/2503.17473",
+      "date": "2025-03-21",
+      "note": "981 people, 4 weeks, randomised by interaction type. People who chose to use it more had worse psychosocial outcomes (loneliness, dependence…); this is a correlation, not proof of cause."
+    },
+    "anthropic-affective-2025": {
+      "title": "How people use Claude for support, advice, and companionship",
+      "publisher": "Anthropic",
+      "url": "https://www.anthropic.com/news/how-people-use-claude-for-support-advice-and-companionship",
+      "date": "2025-06-27",
+      "note": "The company’s own analysis of Claude.ai data. Measures emotion expressed in text, not real feelings or long-term wellbeing; doesn’t cover dedicated companion apps."
+    },
+    "cheng-2026": {
+      "title": "Sycophantic AI decreases prosocial intentions and promotes dependence",
+      "publisher": "Myra Cheng, Cinoo Lee, Pranav Khadpe, Sunny Yu, Dyllan Han, Dan Jurafsky — Science 391 (6792)",
+      "url": "https://arxiv.org/abs/2510.01395",
+      "date": "2026",
+      "note": "The link is the preprint (October 2025, reporting 50%); the 2026 Science version reports 49% and 3 experiments with 2,405 people."
+    }
+  }
+}

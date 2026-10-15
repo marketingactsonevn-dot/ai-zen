@@ -1,0 +1,84 @@
+/* Trạm 27 — Con người gắn bó với AI: faces in stone, cloud and lantern · two hand mirrors on a lacquer tray */
+
+/* 1 · faces */
+.t27f .t27f-face { fill: var(--umbra); opacity: 0.16; transition: opacity 1s; }
+.t27f .found .t27f-face { opacity: 0.6; }
+:root[data-theme='dark'] .t27f .t27f-face { fill: #000; }
+.t27f .t27f-moss { fill: var(--moss-2); opacity: 0.85; }
+.t27f .t27f-cloud { fill: var(--stone-2); opacity: 0.92; }
+.t27f .t27f-cloud-edge { fill: var(--ink); opacity: 0.3; }
+.t27f .t27f-ground { fill: var(--ink); opacity: 0.35; }
+.t27f .t27f-stele { opacity: 0; transition: opacity 1.2s; }
+.t27f.all .t27f-stele { opacity: 1; }
+.t27f-lab { text-align: center; font-size: 0.86rem; color: var(--ink-3); opacity: 0; transition: opacity 0.8s; }
+.t27f-lab.found { opacity: 1; }
+.t27f-found { color: var(--moss); }
+.t27f-eliza {
+  position: absolute;
+  margin: 0;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--umbra);
+  color: var(--moss-c);
+  font: 500 0.78rem/1.2 ui-monospace, Menlo, monospace;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  animation: p2-fade 1.2s ease-out both;
+}
+:root[data-theme='dark'] .t27f-eliza { color: var(--moss); }
+.t27f-eliza:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t27f-talk { z-index: 2; }
+.t27f-user, .t27f-bot { margin: 0 0 0.3em; font: 500 0.86rem/1.4 ui-monospace, Menlo, monospace; }
+.t27f-user::before { content: '> '; color: var(--ink-3); }
+.t27f-bot { color: var(--moss); }
+
+/* 3 · flatter */
+.t27g .t27g-tray { fill: var(--umbra); opacity: 0.92; }
+:root[data-theme='dark'] .t27g .t27g-tray { fill: #000; opacity: 0.55; }
+.t27g .t27g-rim { fill: none; stroke: var(--vermilion); stroke-opacity: 0.55; stroke-width: 1.4; }
+.t27g .t27g-gold { fill: var(--lantern); stroke: var(--ink); stroke-opacity: 0.35; stroke-width: 1; }
+.t27g .t27g-bronze { fill: color-mix(in srgb, var(--stone) 70%, var(--lantern)); stroke: var(--ink); stroke-opacity: 0.35; stroke-width: 1; }
+.t27g .t27g-petal { fill: var(--vermilion); opacity: 0.7; }
+.t27g .t27g-face { stroke: var(--umbra); stroke-opacity: 0.4; }
+.t27g .t27g-glint { fill: var(--moon); opacity: 0.25; transition: opacity 0.8s; }
+.t27g .t27g-m { transition: transform 0.9s cubic-bezier(0.3, 0, 0.2, 1); transform-box: view-box; }
+.t27g .t27g-m.tilt { transform: rotate(-9deg) translateY(-6px); }
+.t27g .t27g-m:nth-of-type(2).tilt { transform: rotate(9deg) translateY(-6px); }
+.t27g .t27g-m.tilt .t27g-glint { opacity: 0.95; }
+.t27g-q {
+  position: absolute;
+  padding: 0.6em 0.8em;
+  background: var(--card);
+  border-radius: 2px;
+  box-shadow: var(--shadow-1);
+  transform: rotate(-1.5deg);
+  z-index: 1;
+  pointer-events: none;
+}
+.t27g-q p { margin: 0; font: italic 400 0.98rem/1.45 var(--serif); color: var(--ink); text-align: center; text-wrap: balance; }
+.t27g-ans { z-index: 2; }
+.t27g-ans.flip { animation: p2-fade 0.6s ease-out both; }
+.t27g-ans-text { margin: 0.2em 0 0.4em; font: 400 1rem/1.5 var(--serif); }
+.t27g[data-m='0'] .t27g-ans .p2-eyebrow { color: var(--vermilion); }
+.t27g-foot { position: absolute; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px; }
+.t27g-see { margin: 0; }
+.t27g-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  overflow: auto;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  animation: p2-fade 0.4s ease-out both;
+}
+.t27g-sheet[hidden] { display: none; }
+.t27g-close { align-self: flex-end; }
+.t27g-col { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.t27g-col .t27g-ans { position: relative; width: 100%; }
+.t27g-see { margin: 0.4em 0 0; }
+@media (max-width: 600px) { .t27g-ans-text { font-size: 0.94rem; } }
