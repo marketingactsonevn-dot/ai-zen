@@ -5,6 +5,7 @@ import { C } from './data'
 import { blob, rng, stroke, type Pt } from './ink'
 import { formula, type ArtApi, type Kit } from './kit'
 import { potInk, teaCup } from './pot'
+import { octaves } from '../../ui/ink'
 
 const S = C.scenes.video
 // slot order: 0 loại cảnh · 1 chủ thể · 2 một hành động · 3 máy quay · 4 bối cảnh · 5 ánh sáng · 6 âm thanh · 7 thời lượng
@@ -38,7 +39,7 @@ function bamboo(x: number, top: number, w: number, seed: number) {
 function buildArt(k: Kit): ArtApi {
   const ctx = k.ctx
   const id = nextId('t13v')
-  const turb = s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.012', numOctaves: '2', seed: '5' })
+  const turb = s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.012', numOctaves: octaves(2), seed: '5' })
   const defs = s('defs', null,
     s('clipPath', { id: `${id}-clip` }, s('rect', { x: 0, y: 0, width: FW, height: FH })),
     s('filter', { id: `${id}-wob`, x: '-5%', y: '-5%', width: '110%', height: '110%' }, turb,

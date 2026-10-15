@@ -5,6 +5,7 @@ import type { SceneCtx } from '../types'
 import { brush, drawIn, ell, Pen, peaks, rng, type Extra, type Pt, type TL } from './brush'
 import { VIGNETTES } from './vignettes'
 import { C } from './data'
+import { octaves } from '../../ui/ink'
 
 const T = C.scenes.scroll
 const N = T.events.length
@@ -190,7 +191,7 @@ export function scrollScene(ctx: SceneCtx) {
     strip.style.width = `${nearW}px`
     // dry brush along a horizontal stroke: streaks run with the stroke
     near.append(s('defs', null, s('filter', { id: 't3-dryh', x: '-2%', y: '-60%', width: '104%', height: '220%' },
-      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.012 0.55', numOctaves: '2', seed: '4', result: 'n' }),
+      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.012 0.55', numOctaves: octaves(2), seed: '4', result: 'n' }),
       s('feColorMatrix', { in: 'n', type: 'matrix', values: '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.75', result: 'm' }),
       s('feComposite', { in: 'SourceGraphic', in2: 'm', operator: 'in' }))))
     const dryH = lowQ ? null : 'url(#t3-dryh)'

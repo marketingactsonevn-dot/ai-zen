@@ -5,6 +5,7 @@ import { C } from './data'
 import { blob, line, rng, stroke, type Pt } from './ink'
 import { formula, type ArtApi, type Kit } from './kit'
 import { POT, potInk } from './pot'
+import { octaves } from '../../ui/ink'
 
 const S = C.scenes.image
 // slot order: 0 chủ thể · 1 bố cục · 2 bối cảnh · 3 phong cách · 4 ánh sáng · 5 góc máy · 6 màu · 7 chữ · 8 khung
@@ -50,7 +51,7 @@ function buildArt(k: Kit): ArtApi {
   const defs = s('defs', null,
     s('clipPath', { id: `${id}-clip` }, clip),
     s('filter', { id: `${id}-noise`, x: 0, y: 0, width: '100%', height: '100%' },
-      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.85', numOctaves: '2', seed: '4', stitchTiles: 'stitch' }),
+      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.85', numOctaves: octaves(2), seed: '4', stitchTiles: 'stitch' }),
       s('feColorMatrix', { type: 'matrix', values: '0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 1.6 -0.55' })),
     s('filter', { id: `${id}-fog`, x: '-40%', y: '-40%', width: '180%', height: '180%' }, s('feGaussianBlur', { stdDeviation: 14 })),
     s('filter', { id: `${id}-dof`, x: '-10%', y: '-10%', width: '120%', height: '120%' }, blurF),

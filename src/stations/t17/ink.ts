@@ -1,4 +1,5 @@
 import { h, nextId, s } from '../../core/dom'
+import { octaves } from '../../ui/ink'
 
 /** Sumi-e helpers for Trạm 17: tapered brush strokes, raked sand with ripple rings, stones and islands. */
 export type Pt = [number, number]
@@ -95,7 +96,7 @@ export function defs(svg: SVGSVGElement) {
     s('radialGradient', { id: id.warm }, s('stop', { offset: 0, class: 'wm0' }), s('stop', { offset: 1, class: 'wm1' })),
     // dry brush that streaks ALONG a horizontal stroke (long in x, broken in y), with uneven gaps
     s('filter', { id: id.dry, x: '-10%', y: '-30%', width: '120%', height: '160%' },
-      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.045 0.5', numOctaves: 3, seed: 23, result: 'n' }),
+      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.045 0.5', numOctaves: octaves(3), seed: 23, result: 'n' }),
       s('feColorMatrix', { in: 'n', type: 'matrix', values: '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.6 1.75', result: 'm' }),
       s('feComposite', { in: 'SourceGraphic', in2: 'm', operator: 'in' }))))
   return id

@@ -7,6 +7,7 @@ import { gsap } from '../core/anim'
 import { progress } from '../core/progress'
 import { fact, tag } from '../ui/fact'
 import { setCrumb } from '../ui/topbar'
+import { octaves } from '../ui/ink'
 
 interface Term {
   id: string
@@ -515,7 +516,7 @@ export function render(root: HTMLElement): () => void {
       s('radialGradient', { id: 'gl-glow' }, ...stops('gl', [0, 0.35, 1])),
       // dry brush for horizontal strokes: the hairs run along the stroke, not across it
       s('filter', { id: 'gl-dry', x: '-5%', y: '-30%', width: '110%', height: '160%' },
-        s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.05 0.8', numOctaves: '2', seed: '5', result: 'n' }),
+        s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.05 0.8', numOctaves: octaves(2), seed: '5', result: 'n' }),
         s('feColorMatrix', { in: 'n', type: 'matrix', values: '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.6 1.75', result: 'm' }),
         s('feComposite', { in: 'SourceGraphic', in2: 'm', operator: 'in' })),
       s('pattern', { id: 'gl-speck', width: 41, height: 37, patternUnits: 'userSpaceOnUse' }, ...dots('gl-sp-d')),

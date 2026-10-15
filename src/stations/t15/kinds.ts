@@ -5,6 +5,7 @@ import { arc, brush, drawIn, ell, rng, Pen, type Extra, type Pt, type TL } from 
 import { C, type Kind } from './data'
 import { clamp, stableHeight, watchSize } from './garden'
 import { PICTURES } from './vignettes'
+import { octaves } from '../../ui/ink'
 
 const K = C.scenes.kinds
 // stone silhouettes, base centre at 0,0, one per kind of agent (JSON order); each its own character
@@ -186,7 +187,7 @@ export function kindsScene(ctx: SceneCtx) {
     const defs = s('defs', null,
       // dry brush whose streaks run along a horizontal stroke (the strata across each stone)
       s('filter', { id: ids.dry, x: '-5%', y: '-60%', width: '110%', height: '220%' },
-        s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.03 0.7', numOctaves: '2', seed: '4', result: 'n' }),
+        s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.03 0.7', numOctaves: octaves(2), seed: '4', result: 'n' }),
         s('feColorMatrix', { in: 'n', type: 'matrix', values: '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2 1.4', result: 'm' }),
         s('feComposite', { in: 'SourceGraphic', in2: 'm', operator: 'in' })),
       s('linearGradient', { id: ids.fade, x1: 0, y1: 0, x2: 0, y2: 1 },

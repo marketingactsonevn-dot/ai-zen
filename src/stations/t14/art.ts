@@ -1,5 +1,6 @@
 import { s } from '../../core/dom'
 import { Pen, arc, brush, ell, peaks, poly, rng, rrD, rrPts, type Pt } from '../t03/brush'
+import { octaves } from '../../ui/ink'
 
 /** Sumi-e pictures for Trạm 14, each drawn in its own local box (origin noted per picture). */
 
@@ -22,7 +23,7 @@ function picture(bg: [string, string][], draw: (p: Pen) => void, cls = '') {
 /** Dry brush along a horizontal stroke: the streaks run with it (the shared ink-dry runs them across). */
 export function dryFilter() {
   return s('filter', { id: 't14-dryh', x: '-4%', y: '-80%', width: '108%', height: '260%' },
-    s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.012 0.55', numOctaves: '2', seed: '8', result: 'n' }),
+    s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.012 0.55', numOctaves: octaves(2), seed: '8', result: 'n' }),
     s('feColorMatrix', { in: 'n', type: 'matrix', values: '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.3 1.7', result: 'm' }),
     s('feComposite', { in: 'SourceGraphic', in2: 'm', operator: 'in' }))
 }

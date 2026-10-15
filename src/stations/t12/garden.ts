@@ -1,5 +1,6 @@
 import { s } from '../../core/dom'
 import { blob, f1, lerp, rng, stroke, type Pt } from './ink'
+import { octaves } from '../../ui/ink'
 
 /**
  * The back of a dry garden: an earthen wall with a tiled cap (the Ryōan-ji kind), the soft shapes of trees
@@ -66,7 +67,7 @@ export function backWall(x0: number, x1: number, yh: number, wallH: number, lowQ
 /** A dry-brush filter whose streaks run sideways (for horizontal strokes); id 't12-dryh'. */
 export function dryH(): SVGFilterElement {
   return s('filter', { id: 't12-dryh', x: '-5%', y: '-60%', width: '110%', height: '220%' },
-    s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.02 0.6', numOctaves: '2', seed: '4', result: 'n' }),
+    s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.02 0.6', numOctaves: octaves(2), seed: '4', result: 'n' }),
     s('feColorMatrix', { in: 'n', type: 'matrix', values: '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.3 1.6', result: 'm' }),
     s('feComposite', { in: 'SourceGraphic', in2: 'm', operator: 'in' }))
 }

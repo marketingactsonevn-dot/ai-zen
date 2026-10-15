@@ -1,6 +1,7 @@
 import { h, nextId, s } from '../../core/dom'
 import type { SceneCtx } from '../types'
 import { brush, ell, poly, type Pt } from './brush'
+import { octaves } from '../../ui/ink'
 
 /** Shared pieces of the Trạm 15 garden: the stone lantern (you), flat stepping stones, raked sand, the agent's light. */
 
@@ -13,7 +14,7 @@ export function gardenDefs() {
   const defs = s('defs', null,
     // dry brush for horizontal strokes: the global ink-dry streaks run up and down, these run along the stroke
     s('filter', { id: id.dryH, x: '-5%', y: '-60%', width: '110%', height: '220%' },
-      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.035 0.8', numOctaves: '2', seed: '5', result: 'n' }),
+      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.035 0.8', numOctaves: octaves(2), seed: '5', result: 'n' }),
       s('feColorMatrix', { in: 'n', type: 'matrix', values: '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.5', result: 'm' }),
       s('feComposite', { in: 'SourceGraphic', in2: 'm', operator: 'in' })),
     s('radialGradient', { id: id.you },

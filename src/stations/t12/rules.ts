@@ -4,6 +4,7 @@ import type { SceneCtx } from '../types'
 import { C } from './data'
 import { rakeLines } from './garden'
 import { afterFonts, blob, clamp, closed, f1, lerp, ring, shapeK, stableHeight, stroke, type Pt } from './ink'
+import { octaves, liteInk } from '../../ui/ink'
 
 type TL = ReturnType<typeof gsap.timeline>
 interface Moment {
@@ -315,12 +316,12 @@ export function rulesScene(ctx: SceneCtx) {
   // small-scale ink filters for pictures drawn in field units (the global ones are tuned for pixels)
   const defs = s('svg', { width: 0, height: 0, 'aria-hidden': 'true', style: 'position:absolute' }, s('defs', null,
     s('filter', { id: 't12r-rough', x: '-10%', y: '-10%', width: '120%', height: '120%' },
-      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.13', numOctaves: '2', seed: '5', result: 'n' }),
+      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.13', numOctaves: octaves(2), seed: '5', result: 'n' }),
       s('feDisplacementMap', { in: 'SourceGraphic', in2: 'n', scale: '1.3', xChannelSelector: 'R', yChannelSelector: 'G' })),
     s('filter', { id: 't12r-wash', x: '-20%', y: '-40%', width: '140%', height: '180%' },
-      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.09', numOctaves: '3', seed: '7', result: 'n' }),
+      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.09', numOctaves: octaves(3), seed: '7', result: 'n' }),
       s('feDisplacementMap', { in: 'SourceGraphic', in2: 'n', scale: '2.4', xChannelSelector: 'R', yChannelSelector: 'G', result: 'd' }),
-      s('feGaussianBlur', { in: 'd', stdDeviation: '0.45' }))))
+      liteInk() ? null : s('feGaussianBlur', { in: 'd', stdDeviation: '0.45' }))))
   const bg = s('svg', { class: 't12r-bg', 'aria-hidden': 'true' })
   const capT = h('p', { class: 't12p-cap-t' })
   const capX = h('p', { class: 't12p-cap-x' })

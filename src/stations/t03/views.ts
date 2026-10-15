@@ -3,6 +3,7 @@ import { gsap } from '../../core/anim'
 import type { SceneCtx } from '../types'
 import { brush, ell, pine, rng, type Pt } from './brush'
 import { C } from './data'
+import { octaves } from '../../ui/ink'
 
 const V = C.scenes.views
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v))
@@ -95,7 +96,7 @@ export function viewsScene(ctx: SceneCtx) {
             s('stop', { offset: 1, style: 'stop-color:var(--ink);stop-opacity:.015' })),
           // dry brush along a horizontal stroke: the streaks run with it
           s('filter', { id: 't3v-dryh', x: '-2%', y: '-80%', width: '104%', height: '260%' },
-            s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.01 0.6', numOctaves: '2', seed: '8', result: 'n' }),
+            s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.01 0.6', numOctaves: octaves(2), seed: '8', result: 'n' }),
             s('feColorMatrix', { in: 'n', type: 'matrix', values: '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.7', result: 'm' }),
             s('feComposite', { in: 'SourceGraphic', in2: 'm', operator: 'in' }))),
         s('path', { d: `M-20 ${wy - wh}H${W + 20}V${wy}H-20Z`, fill: 'url(#t3v-wall)', filter: 'url(#ink-wash)' }),
