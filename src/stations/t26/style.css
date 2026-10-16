@@ -1,32 +1,68 @@
 /* Trạm 26 — Ý thức & luật: four lantern theories · the heron that looks inward · two bamboo baskets */
 
-/* 1 · lamps */
-.t26l .t26l-ring { fill: none; stroke: var(--rake); stroke-width: 1.2; }
+/* 1 · lamps: a faceless statue on raked sand, four lanterns */
+.t26l .t26l-hill { opacity: 0.32; }
+:root[data-theme='dark'] .t26l .t26l-hill { opacity: 0.9; }
+.t26l .t26l-ridge { opacity: 0.3; }
+:root[data-theme='dark'] .t26l .t26l-ridge { fill: var(--moss-a); opacity: 0.8; }
+.t26l .t26l-sand { fill: var(--stone-3); opacity: 0.95; }
+:root[data-theme='dark'] .t26l .t26l-sand { fill: color-mix(in srgb, var(--rock-hi) 48%, var(--paper)); }
+.t26l .t26l-comb { fill: var(--wash); opacity: 0.14; }
+:root[data-theme='dark'] .t26l .t26l-comb { fill: var(--umbra); opacity: 0.35; }
+.t26l .t26l-dots { fill: var(--moss); opacity: 0.6; }
+:root[data-theme='dark'] .t26l .t26l-dots { fill: var(--moss-c); opacity: 0.5; }
+.t26l .t26l-contact { fill: var(--umbra); opacity: 0.24; }
+.t26l .t26l-ink { opacity: 0.45; }
+.t26l .t26l-rim { fill: #fff; opacity: 0.8; }
+:root[data-theme='dark'] .t26l .t26l-rim { fill: var(--moon); opacity: 0.45; }
+.t26l .t26l-moss { fill: var(--moss-2); opacity: 0.65; }
+:root[data-theme='dark'] .t26l .t26l-moss { fill: var(--moss-a); opacity: 1; }
 .t26l .t26l-rot { transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s; opacity: 0; }
 .t26l .t26l-sh { fill: var(--umbra); transition: opacity 0.9s; }
-:root[data-theme='dark'] .t26l .t26l-sh { fill: #000; }
-.t26l .zk-toro { transition: opacity 0.6s; }
-.t26l .on .zk-win { opacity: 1; }
+/* the lanterns: dark until lit; the one lit last glows brightest */
+.t26l .t26l-lampg :is(.t26l-halo, .p2p-lamp-halo) { opacity: 0; transition: opacity 0.8s; }
+.t26l .t26l-lampg.lit :is(.t26l-halo, .p2p-lamp-halo) { opacity: 0.45; }
+.t26l .t26l-lampg.on :is(.t26l-halo, .p2p-lamp-halo) { opacity: 1; }
+.t26l .t26l-fire { fill: var(--umbra); opacity: 0.55; transition: fill 0.6s, opacity 0.6s; }
+.t26l .t26l-lampg:not(.lit) .p2p-toro-fire { fill: var(--umbra); opacity: 0.55; }
+.t26l .t26l-lampg.lit .t26l-fire { fill: var(--lantern); opacity: 1; }
 .t26l-num { font: 500 0.78rem/1 var(--sans); color: var(--ink-3); text-align: center; }
 .t26l-statue { text-align: center; font-size: 0.82rem; color: var(--ink-3); }
 .t26l-card { z-index: 2; }
 .t26l-card .p2-eyebrow { margin-bottom: 0.2em; }
 .t26l-name { margin: 0 0 0.3em; font: 500 1.08rem/1.3 var(--serif); }
 .t26l-asks { margin: 0 0 0.5em; font-size: 0.95rem; }
-.t26l-lamp[aria-pressed='true'] { box-shadow: inset 0 -2px 0 var(--lantern); }
 
-/* 2 · introspect */
+/* 2 · introspect: an egret in the night pond */
 .t26i-concept { display: flex; flex-direction: column; align-items: center; gap: 2px; z-index: 1; }
 .t26i-concept strong { font: 500 1rem/1.3 var(--serif); letter-spacing: 0.04em; color: var(--vermilion); }
-.t26i .t26i-bird { fill: var(--rock-hi); stroke: var(--ink); stroke-opacity: 0.4; stroke-width: 0.8; }
-.t26i .t26i-beak { fill: var(--lantern); stroke: var(--ink); stroke-opacity: 0.4; stroke-width: 0.6; }
+.t26i .t26i-bird { fill: var(--card); }
+:root[data-theme='dark'] .t26i .t26i-bird { fill: color-mix(in srgb, var(--moon) 55%, var(--rock-hi)); }
+.t26i .t26i-wing { opacity: 0.8; }
+.t26i .t26i-shade { fill: var(--wash); opacity: 0.12; }
+:root[data-theme='dark'] .t26i .t26i-shade { fill: var(--umbra); opacity: 0.35; }
+.t26i .t26i-edge { opacity: 0.55; }
+.t26i .t26i-belly { opacity: 0.3; }
+.t26i .t26i-crest { opacity: 0.7; }
+.t26i .t26i-leg { opacity: 0.85; }
+:root[data-theme='dark'] .t26i :is(.t26i-leg, .t26i-wade) { fill: var(--rock-mid); }
+.t26i .t26i-beak { fill: color-mix(in srgb, var(--lantern) 75%, var(--wash)); }
 .t26i .t26i-head { transition: transform 1.2s cubic-bezier(0.3, 0, 0.2, 1); transform-box: view-box; }
-.t26i[data-lv='1'] .t26i-heron .t26i-head { transform: rotate(-26deg); }
+.t26i[data-lv='1'] .t26i-heron .t26i-head { transform: rotate(-30deg); }
 .t26i .t26i-refl { opacity: 0.22; }
-.t26i .t26i-glint { opacity: 0.4; }
-.t26i .t26i-murk { fill: var(--ink); opacity: 0; transition: opacity 1.6s; }
-.t26i[data-lv='2'] .t26i-murk { opacity: 0.32; }
-.t26i .t26i-ink ellipse:first-child { fill: var(--vermilion); }
+.t26i .t26i-wade { opacity: 0.4; }
+.t26i .t26i-bank { fill: var(--wash); opacity: 0.4; }
+:root[data-theme='dark'] .t26i .t26i-bank { fill: var(--rock-lo); opacity: 1; }
+.t26i .t26i-sleeve { fill: var(--wash); opacity: 0.28; }
+:root[data-theme='dark'] .t26i .t26i-sleeve { fill: var(--rock-mid); opacity: 0.6; }
+.t26i .t26i-hand { fill: color-mix(in srgb, var(--lantern) 25%, var(--card)); }
+:root[data-theme='dark'] .t26i .t26i-hand { fill: color-mix(in srgb, var(--moon) 45%, var(--rock-mid)); }
+.t26i .t26i-finger { opacity: 0.5; }
+.t26i .t26i-brush { opacity: 0.9; }
+.t26i .t26i-murk { fill: var(--wash); opacity: 0; transition: opacity 1.6s; }
+:root[data-theme='dark'] .t26i .t26i-murk { fill: var(--rock-mid); }
+.t26i[data-lv='2'] .t26i-murk { opacity: 0.4; }
+.t26i .t26i-drop { fill: var(--vermilion); }
 .t26i .t26i-inkglow { fill: url(#zk-lamp); }
 .t26i .t26i-ink { opacity: 0; transform: scale(var(--size, 1)); transform-box: fill-box; transform-origin: center; }
 .t26i.go .t26i-ink { animation: t26i-fall 1.1s cubic-bezier(0.5, 0, 0.9, 0.6) both; }
@@ -50,6 +86,47 @@
 .t26i-qline { margin: 0 0 0.3em; font-style: italic; color: var(--ink-2); }
 .t26i-out { margin: 0 0 0.4em; font-weight: 500; }
 
+/* 3 · rule (progressTide art) */
+/* 4 · sort: paper slips into two bamboo baskets on raked sand */
+.t26s-col { position: absolute; z-index: 2; }
+.t26s-slip {
+  padding: 0.95em 1.2em;
+  /* washi: fibres, a faint wash at one edge, a torn-soft outline */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .05' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .5 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(100deg, transparent 70%, color-mix(in srgb, var(--wash) 6%, transparent)),
+    var(--card);
+  border-radius: 3px 6px 2px 5px / 5px 2px 6px 3px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--wash) 10%, transparent), 0 10px 22px -12px var(--umbra);
+  transform: rotate(-1.2deg);
+  transition: opacity 0.6s, transform 0.6s;
+}
+.t26s-text { margin: 0; font: 400 1.05rem/1.45 var(--serif); color: var(--ink); text-align: center; }
+.t26s-slip.next { animation: t26s-in 0.7s ease-out both; }
+.t26s-slip.shake { animation: t26s-shake 0.45s ease-in-out; }
+.t26s-slip.gone { opacity: 0; transform: translateY(30px) rotate(4deg); }
+@keyframes t26s-in { from { opacity: 0; transform: translateY(-24px) rotate(3deg); } }
+@keyframes t26s-shake { 25% { transform: translateX(-7px) rotate(-2deg); } 75% { transform: translateX(7px) rotate(0deg); } }
+.t26s-fb { margin: 0.7em 0 0; font: 400 0.92rem/1.45 var(--serif); color: var(--ink-2); text-align: center; text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper); }
+.t26s-fb strong { color: var(--moss); font-weight: 500; }
+.t26s .t26s-comb { fill: var(--wash); opacity: 0.09; }
+:root[data-theme='dark'] .t26s .t26s-comb { fill: var(--rock-mid); opacity: 0.26; }
+.t26s .t26s-sh { fill: var(--umbra); opacity: 0.24; }
+.t26s .t26s-mouth { fill: var(--umbra); opacity: 0.55; }
+.t26s .t26s-body { fill: color-mix(in srgb, var(--lantern) 32%, var(--rock-mid)); }
+:root[data-theme='dark'] .t26s .t26s-body { fill: color-mix(in srgb, var(--lantern) 24%, var(--rock-mid)); }
+.t26s .t26s-rib { fill: var(--wash); opacity: 0.18; }
+.t26s .t26s-weave { fill: var(--wash); opacity: 0.32; }
+.t26s .t26s-rim { fill: color-mix(in srgb, var(--lantern) 40%, var(--rock-hi)); }
+:root[data-theme='dark'] .t26s .t26s-rim { fill: color-mix(in srgb, var(--lantern) 30%, var(--rock-hi)); }
+.t26s .t26s-wrap { opacity: 0.5; }
+.t26s .t26s-edge { opacity: 0.4; }
+.t26s .t26s-in { fill: var(--card); stroke: var(--wash); stroke-opacity: 0.35; stroke-width: 0.8; opacity: 0; transition: opacity 0.6s; }
+.t26s .t26s-in.on { opacity: 1; }
+.t26s-lab { text-align: center; font-size: 0.9rem; }
+.t26s-note { position: absolute; margin: 0; }
+
+/* 3 · rule (progressTide art) */
 /* 4 · sort */
 .t26s-col { position: absolute; z-index: 2; }
 .t26s-slip {
@@ -76,3 +153,37 @@
 .t26s .t26s-in.on { opacity: 1; }
 .t26s-lab { text-align: center; font-size: 0.9rem; }
 .t26s-note { position: absolute; margin: 0; }
+.t26r-sh { fill: var(--umbra); opacity: 0.22; }
+.t26r-edge { opacity: 0.45; }
+.t26r-seal { fill: var(--vermilion); opacity: 0.8; }
+.t26r-ink { opacity: 0.55; }
+.t26r-text, .t26r-carve { opacity: 0.6; }
+:root[data-theme='dark'] .t26r-carve { fill: var(--umbra); }
+.t26r-paper { fill: var(--card); }
+:root[data-theme='dark'] .t26r-paper { fill: color-mix(in srgb, var(--moon) 60%, var(--rock-mid)); }
+.t26r-cord, .t26r-rope { fill: var(--vermilion); opacity: 0.85; }
+.t26r-rope { fill: var(--wash); opacity: 0.9; }
+:root[data-theme='dark'] .t26r-rope { fill: var(--umbra); }
+.t26r-light { fill: var(--lantern); opacity: 0.22; }
+.t26r-wood, .t26r-bar { fill: color-mix(in srgb, var(--umbra) 58%, var(--lantern)); }
+:root[data-theme='dark'] :is(.t26r-wood, .t26r-bar) { fill: color-mix(in srgb, var(--rock-mid) 65%, var(--lantern)); }
+.t26r-plank { opacity: 0.4; }
+.t26r-iron { fill: var(--wash); opacity: 0.7; }
+.t26r-rim { fill: #fff; opacity: 0.7; }
+:root[data-theme='dark'] .t26r-rim { fill: var(--moon); opacity: 0.4; }
+.t26r-slat { opacity: 0.95; }
+
+
+/* 5 · circle: an arched stone bridge over the moon pond, a paper lantern under it */
+.t26c-ink { opacity: 0.5; }
+.t26c-steps { opacity: 0.35; }
+:root[data-theme='dark'] .t26c-steps { fill: var(--umbra); }
+.t26c-rail { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--wash)); }
+:root[data-theme='dark'] .t26c-rail { fill: var(--rock-hi); opacity: 0.8; }
+.t26c-rim { fill: #fff; opacity: 0.7; }
+:root[data-theme='dark'] .t26c-rim { fill: var(--moon); opacity: 0.35; }
+.t26c-refl { fill: var(--wash); opacity: 0.16; }
+:root[data-theme='dark'] .t26c-refl { fill: var(--rock-mid); opacity: 0.22; }
+.t26c-glow { opacity: 0.7; }
+.t26c-step { fill: var(--rock-hi); opacity: 0.95; }
+:root[data-theme='dark'] .t26c-step { fill: var(--rock-mid); }
