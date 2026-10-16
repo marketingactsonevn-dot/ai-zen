@@ -1,0 +1,99 @@
+/* depth.ts: layered ink diorama (CSS 3D; perspective is set inline per layout) */
+.p2d {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  /* floats in the paper: no hard edge at the sides or the foot */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent), linear-gradient(to bottom, transparent, #000 6%, #000 84%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent), linear-gradient(to bottom, transparent, #000 6%, #000 84%, transparent);
+  mask-composite: intersect;
+  --p2d-sand: color-mix(in srgb, var(--paper-2) 55%, var(--paper));
+}
+:root[data-theme='dark'] .p2d {
+  --p2d-sand: color-mix(in srgb, var(--paper-2) 82%, var(--moon) 4%);
+}
+.p2d-world {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.p2d-layer,
+.p2d-floor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+.p2d-floor {
+  transform-origin: 50% 100%;
+  transform: rotateX(90deg);
+  transform-style: preserve-3d;
+}
+/* the far edge and the sides melt into the paper */
+.p2d-floor-art {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 46%), linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, transparent, #000 46%), linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+  mask-composite: intersect;
+}
+.p2d-prop {
+  position: absolute;
+  transform-origin: 50% 100%;
+  transform: rotateX(-90deg);
+}
+.p2d-prop > svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.p2d-sand {
+  fill: var(--p2d-sand);
+}
+.p2d-rake {
+  fill: none;
+  stroke: var(--rake);
+  stroke-width: 1.6;
+}
+.p2d-rake-hi {
+  fill: none;
+  stroke: var(--rake-hi);
+  stroke-width: 1.2;
+}
+.p2d-ring {
+  fill: none;
+  stroke: var(--rake);
+  stroke-width: 1.6;
+}
+.p2d-shadow {
+  fill: var(--umbra);
+}
+.p2d-foot {
+  fill: var(--umbra);
+  opacity: 0.32;
+}
+.p2d-face {
+  fill: url(#p2-rock);
+}
+.p2d-side {
+  fill: var(--rock-lo);
+}
+:root[data-theme='light'] .p2d-side {
+  fill: color-mix(in srgb, var(--rock-lo) 80%, var(--wash));
+}
+.p2d-rim {
+  fill: var(--moon);
+  opacity: 0.55;
+}
+:root[data-theme='light'] .p2d-rim {
+  fill: var(--rake-hi);
+  opacity: 1;
+}
+.p2d-moss {
+  fill: var(--moss-a);
+  opacity: 0.55;
+}

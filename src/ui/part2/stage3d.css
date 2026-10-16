@@ -1,0 +1,59 @@
+/* stage3d.ts: the moonlit 3D view and its tappable proxies */
+.p2s3 {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.p2s3.grabbing {
+  cursor: grabbing;
+}
+.p2s3.hot {
+  cursor: pointer;
+}
+.p2s3:focus-visible {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--vermilion) 45%, transparent);
+  border-radius: 14px;
+}
+.p2s3 .stage-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.p2s3-hits {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* proxies for keyboard and screen readers; the pointer goes through to the raycast */
+.p2s3-hit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  pointer-events: none;
+  opacity: 0;
+}
+.p2s3-hit:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+/* the view floats in the paper like Part 1's scenes: no hard canvas edge */
+.p2s3 .stage-canvas {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 84%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 84%, transparent);
+  mask-composite: intersect;
+}

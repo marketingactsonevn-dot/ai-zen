@@ -113,6 +113,8 @@
         "topic": "Code game/app",
         "body": "npm create vite@latest [TÊN-GAME] -- --template vanilla\ncd [TÊN-GAME]\nnpm install\nnpm run dev"
       }
-    }
+    },
+    "ink3d": {"label": "Vườn 3D dưới trăng", "aria": "Vườn đá dưới trăng: đá rêu, đèn đá thắp lửa, hồ nước, lối đá bước, thông và trúc", "hint": "Kéo hoặc dùng phím mũi tên để xoay, phím + và − để lại gần", "prompt": "Kéo để xoay vườn", "taps": ["Hòn đá rêu lớn", "Hòn đá đứng", "Đèn đá", "Cây thông"], "insight": {"text": "Bộ dựng 3D mực tàu: kéo xoay có quán tính, chạm vật để chọn, bàn phím đi qua từng vật.", "asOf": "2026-10-16", "source": "demo"}},
+    "diorama": {"label": "Vườn giấy nhiều lớp", "aria": "Vườn giấy nhiều lớp: trăng, núi xa trong sương, lối đá bước dẫn vào sương, đèn đá và cây thông", "prompt": "Rê chuột hoặc nghiêng máy"}
   }
 }

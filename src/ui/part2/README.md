@@ -90,3 +90,48 @@ Tranh mực dưới trăng cho mọi scene Phần 2: SVG tĩnh, màu là token (
 - `toro(x, y, H, lit)` đèn đá; `paperLantern(x, y, r, seed, cord)` đèn lồng giấy; `steppingStones(a, b, n, size, seed)` đá bước.
 - `wash(d, opacity)` loang mực theo hình bất kỳ; `brush(pts, w)` một nét cọ; `brushFrame(x, y, w, h, seed)` khung bốn nét cọ; `thread(pts)` dây mảnh.
 Giấy: `.player` của Phần 2 đã có hạt giấy + viền loang (part2.css), scene không cần tự vẽ nền giấy. Bề mặt HTML giả đá/giấy: xem nền nhiễu data-URI của `.p2n-front` / `.p2s-stone`.
+
+## 8. Vườn 3D mực tàu · `stage3d.ts` (WebGL, một `createStage`)
+Tranh thuỷ mặc có khối thật: chất liệu mực loang (ba lớp loang, ranh sáng–tối lượn như nét cọ, nét khô trong bóng, rêu mọc mặt trên, viền trăng, hắt ấm từ đèn, hạt giấy, sương xa theo độ sâu), viền mực inverted hull (đậm hơn ở phía tối, đứt theo nhiễu). Màu là token Phần 2, đổi theme không dựng lại. Dựng trong `sliced()` (khung sườn → stage riêng một lát → shader biên dịch bất đồng bộ một lần), **không có vòng frame khi đứng yên** (chỉ chạy khi kéo/quán tính/hover, cộng chút đung đưa ở `quality=high`), dọn hết khi rời scene.
+```ts
+import { inkStage } from '../../ui/part2/stage3d'
+mount(ctx) {
+  ctx.prompt(S.garden.prompt)
+  inkStage(ctx, ctx.art, { label: S.garden.aria, hint: S.garden.hint, gyro: true }, function* (k) {
+    k.backdrop()                                   // trăng + quầng, 3 dải núi loang, sương trôi
+    yield                                          // yield giữa các phần nặng
+    k.ground({ r: 7.5 }); k.pond({ at: [1.9, -1.1], r: [2, 1.2] })
+    yield
+    const rock = k.rock({ at: [-2, 0.4], w: 1.7, h: 1.05, seed: 3, moss: 0.75 })
+    k.tappable(rock, S.garden.rock, () => ctx.insight(S.garden.insight))   // chuột: raycast; bàn phím: nút ẩn theo vật
+    k.toro({ at: [0.4, -2.5], h: 1.6 }); k.stones([-0.2, 4.3], [0.9, 0.7], 5)
+    k.pine({ at: [3.7, -2.3], h: 3.2, lean: -1 }); k.bamboo({ at: [-3.9, -2.7] })
+  })            // → { ready: Promise<InkKit | null>, dispose } — tự dọn qua ctx.onCleanup
+}
+// opts: { label, hint?, view?: { yaw, pitch, yawRange, pitchRange, fit: [nửa rộng, nửa cao], target, shift }, fov?, gyro?, sway?, fallback? }
+```
+- Đơn vị: mét-vườn, mặt đất y = 0, camera mặc định nhìn về −z. Mọi builder tự thêm vào `k.root`, nhận `at: [x, z]`; đặt xong trước khi `build` kết thúc (bóng đổ, vòng cào, đèn được tính lúc đó).
+- Builder: `rock` (đá đẽo, rêu, vòng cào quanh chân) · `stones(from, to, n)` (đá bước lùi xa) · `toro` (đèn đá Kasuga, cửa sổ sáng, quầng + ánh ấm lên đá/cát/nước) · `pine` · `bamboo` · `ground` (cát cào thẳng uốn thành vòng quanh đá, nhận bóng mềm, tan vào sương ở mép) · `pond` (nước tĩnh, đường trăng vỡ, vệt đèn) · `backdrop` · `glow(at, size, 'lantern'|'moon')`.
+- Tự dựng: `k.mesh(geo, k.ink('rock' | 'step' | 'moss' | 'pine' | 'bark' | 'bamboo', { moss, rim, edge, double }), { outline, cast, at, parent })`.
+- Tương tác: kéo xoay có quán tính và giới hạn, ← → ↑ ↓ xoay, `+`/`−` lại gần (khi khung 3D được focus), con quay (`gyro`), `k.turn(yaw, pitch)`, `k.pick(x, y)`. Vật `tappable` sáng ấm khi rê/focus; nút proxy `pointer-events: none` nằm đúng chỗ vật để Tab/Enter và trình đọc màn hình dùng được.
+- Không WebGL: `ready` → `null`, tự vẽ `nightGarden()` của `depth.ts` (hoặc `opts.fallback(host)`). Reduced motion: dựng một lượt, xoay/phím nhảy thẳng tới chỗ, không quán tính, không đung đưa. `quality=low`: noise 2 octave, ít sương, không đung đưa (chỉ vẽ khi có tương tác).
+- Chữ (label, hint, tên vật) do trạm truyền vào từ JSON. Mỗi trạm chỉ một `inkStage` sống một lúc.
+
+## 9. Diorama giấy 2.5D · `depth.ts` (không WebGL)
+Các lớp tranh SVG (paint.ts) đặt ở độ sâu thật bằng CSS 3D: nền cát cào nằm trong phối cảnh thật (đá bước nhỏ dần về sương, có mặt trên, sườn, viền trăng, bóng đổ), vật cắt giấy đứng trên nền (to/nhỏ theo khoảng cách, bóng mềm đổ về phải–xa, vòng cào quanh chân), lớp xa nhạt + mềm hơn (blur nhẹ chỉ ở `high`). Thị sai theo chuột / kéo cảm ứng / nghiêng máy / `set()`. Chỉ transform (compositor), một `createLoop` chạy khi đang lắng; reduced motion = tĩnh. Màu là token, đổi theme không cần JS.
+```ts
+import { diorama, nightGarden } from '../../ui/part2/depth'
+diorama(ctx, ctx.art, { ...nightGarden(), label: S.scene.aria, gyro: true })      // vườn đêm dựng sẵn
+diorama(ctx, ctx.art, {
+  layers: [                                   // phông sau nền: depth 0 (mép xa của nền) … 1 (trời)
+    { depth: 1, art: (g) => moon(g.w * 0.7, g.h * 0.15, 30) },
+    { depth: 0.6, art: (g) => hills(-g.w * 0.2, g.w * 1.2, g.horizon, g.h * 0.3, 21, 0.8, 4) },   // g = { w, h, horizon, seed }
+  ],
+  floor: { stones: 6, art: (f) => [...] },    // f = { w, d, seed, at(x, z) → điểm trên nền (nhìn từ trên) }; floor: false = không nền
+  props: [{ x: 0.76, z: 0.3, w: 0.11, h: 0.26, art: (w, h) => toro(0, 0, h) }],   // x 0…1 ngang, z 0 gần … 1 xa; w, h = phần của chiều cao khung
+})              // → { el, props: HTMLElement[] (gắn nút/listener vào đây), set(x, y), dispose } — tự dọn qua ctx.onCleanup
+```
+- `label` biến diorama thành `role="img"`; bỏ `label` khi prop chứa nút bấm.
+- Vẽ lần đầu thấm dần (`sliced`), đổi kích thước thì vẽ một lượt. Art của prop vẽ đứng trên y = 0, giữa x = 0 (cùng quy ước `stoneArt`, `toro`, `pine`).
+
+Thử cả hai: `#/tram/99/6` (3D) và `#/tram/99/7` (2.5D).
