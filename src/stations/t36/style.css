@@ -10,64 +10,73 @@
 /* ── blueprint ── */
 .t36b {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  gap: clamp(12px, 3cqw, 44px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(16px, 4cqw, 56px);
   align-items: center;
-  padding: 4px clamp(6px, 3cqw, 40px);
-  max-width: 1120px;
+  padding: 4px clamp(10px, 3cqw, 44px);
+  max-width: 1160px;
   margin: 0 auto;
 }
 .t36b-pick {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   align-content: center;
 }
 .t36b-tabs {
   display: flex;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
+/* six paper pieces cut like stones */
 .t36b-tab {
-  width: 36px;
-  height: 30px;
-  font: 600 0.85rem/1 var(--sans);
-  color: var(--ink-2);
-  background: transparent;
-  border: 1.5px dashed var(--line-2);
+  width: 40px;
+  height: 32px;
+  font: 600 0.88rem/1 var(--serif);
+  color: var(--ink-3);
   border-radius: 46% 54% 40% 60% / 56% 48% 52% 44%;
+  rotate: var(--r, 0deg);
   cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.t36b-tab::before {
+  content: none;
 }
 .t36b-tab.done {
-  border-style: solid;
-  background: var(--card);
+  color: var(--ink);
+  opacity: 1;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 30%, transparent), 0 8px 14px -9px var(--umbra);
 }
 .t36b-tab[aria-current='true'] {
-  border-color: var(--vermilion);
   color: var(--vermilion);
+  opacity: 1;
+  transform: translateY(-3px);
+  box-shadow: inset 0 0 0 1.5px var(--vermilion), 0 10px 16px -9px var(--umbra);
 }
 .t36b-head {
-  margin: 4px 0 0;
-  font: 600 clamp(1.05rem, 2.4cqw, 1.35rem)/1.3 var(--serif);
+  margin: 6px 0 0;
+  font: 600 clamp(1.05rem, 2.4cqw, 1.4rem)/1.3 var(--serif);
 }
 .t36b-opts {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 .t36b-opt {
   text-align: left;
-  font: 400 0.95rem/1.45 var(--serif);
-  color: var(--ink);
-  padding: 0.7em 1em;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  box-shadow: var(--shadow-1);
+  font: 400 0.96rem/1.45 var(--serif);
+  padding: 0.75em 1.05em;
   cursor: pointer;
-  clip-path: polygon(0 3%, 3% 0, 97% 2%, 100% 0, 99% 97%, 96% 100%, 2% 98%, 0 100%);
+  rotate: -0.4deg;
+  transition: transform 0.25s, box-shadow 0.25s;
 }
-.t36b-opt:hover,
+.t36b-opt:nth-child(2n) {
+  rotate: 0.5deg;
+}
+.t36b-opt:hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--lantern) 60%, transparent), 0 10px 16px -9px var(--umbra);
+}
 .t36b-opt[aria-pressed='true'] {
-  outline: 2px solid var(--lantern);
-  outline-offset: -2px;
+  box-shadow: inset 4px 0 0 var(--vermilion), 0 0 0 2px color-mix(in srgb, var(--lantern) 60%, transparent), 0 10px 16px -10px var(--umbra);
 }
 .t36b-tail {
   display: grid;
@@ -79,15 +88,48 @@
   font: 400 0.8rem/1.45 var(--sans);
   color: var(--ink-2);
 }
-.t36b-sheet {
+.t36b-desk {
+  position: relative;
   min-height: 0;
   max-height: 100%;
+  display: flex;
+  padding: 4px;
+}
+.t36b-table {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t36b-planks .g12-wood-face {
+  opacity: 0.12;
+}
+:root[data-theme='dark'] .t36b-planks .g12-wood-face {
+  opacity: 0.5;
+}
+.t36b-stone {
+  fill: var(--wash);
+  opacity: 0.8;
+}
+.t36b-well {
+  fill: var(--water);
+}
+.t36b-brush {
+  fill: var(--wash);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t36b-brush {
+  fill: var(--ink-3);
+}
+.t36b-sheet {
+  position: relative;
+  flex: 1;
+  min-height: 0;
   overflow: auto;
-  padding: clamp(12px, 2cqw, 22px);
-  background: var(--card);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-2);
-  background-image: repeating-linear-gradient(transparent 0 27px, var(--sand-line) 27px 28px);
+  padding: clamp(14px, 2.4cqw, 26px);
+  rotate: 0.6deg;
 }
 .t36b-top {
   display: flex;
@@ -101,23 +143,62 @@
   color: var(--ink-2);
 }
 .t36b-sketch {
-  width: min(46%, 220px);
+  width: min(56%, 280px);
   height: auto;
   overflow: visible;
 }
-.t36b-sketch g {
-  opacity: 0;
+/* each layer waits as a faint underdrawing until its piece is chosen */
+.t36b-sketch > g {
+  opacity: 0.1;
   transition: opacity 0.8s;
 }
-.t36b-sketch g.on {
+.t36b-sketch > g.on {
   opacity: 1;
 }
+.t36b-pond {
+  fill: var(--water);
+  opacity: 0.45;
+}
+.t36b-ink {
+  fill: var(--wash);
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t36b-ink {
+  fill: var(--ink);
+}
+.t36b-shard {
+  fill: var(--moon);
+  stroke: var(--wash);
+  stroke-width: 0.4;
+}
+.t36b-leaf {
+  fill: var(--lantern);
+  opacity: 0.85;
+}
+.t36b-finger {
+  fill: var(--wash);
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .t36b-finger {
+  fill: var(--ink-2);
+}
+.t36b-sky {
+  fill: var(--wash);
+  opacity: 0.18;
+}
+:root[data-theme='dark'] .t36b-sky {
+  fill: var(--ink-3);
+  opacity: 0.3;
+}
+.t36b-moon {
+  fill: var(--moon);
+}
 .t36b-spec {
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   padding-left: 1.3em;
   display: grid;
-  gap: 6px;
-  font: 400 0.88rem/1.45 var(--serif);
+  gap: 7px;
+  font: 400 0.9rem/1.45 var(--serif);
 }
 .t36b-spec li {
   color: var(--ink-3);
@@ -137,7 +218,7 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto minmax(0, 1fr);
     align-items: stretch;
-    gap: 10px;
+    gap: 14px;
   }
   .t36b-opt {
     font-size: 0.88rem;
@@ -148,32 +229,82 @@
     gap: 3px;
   }
   .t36b-sketch {
-    width: 38%;
+    width: 44%;
   }
+  .t36b-desk {
+    padding: 2px 10px 10px;
+  }
+}
+
+/* koi (koi.ts) */
+.g12-koi-body {
+  fill: var(--card);
+}
+:root[data-theme='dark'] .g12-koi-body {
+  fill: var(--moon);
+  opacity: 0.92;
+}
+.g12-koi-red {
+  fill: var(--vermilion);
+  opacity: 0.88;
+}
+.g12-koi-fin {
+  fill: var(--wash);
+  opacity: 0.32;
+}
+:root[data-theme='dark'] .g12-koi-fin {
+  fill: var(--moon);
+  opacity: 0.4;
+}
+.g12-koi-ink {
+  fill: var(--wash);
+  opacity: 0.6;
 }
 
 /* ── pens ── */
 .t36p {
   display: grid;
   grid-template-columns: auto minmax(0, 1.4fr) minmax(0, 1fr);
-  gap: clamp(10px, 3cqw, 36px);
+  gap: clamp(14px, 3.4cqw, 44px);
   align-items: center;
-  padding: 4px clamp(6px, 3cqw, 40px);
-  max-width: 1200px;
+  padding: 4px clamp(8px, 3cqw, 40px);
+  max-width: 1220px;
   margin: 0 auto;
 }
 .t36p-pot {
+  --pot: clamp(70px, 19cqh, 132px);
+  position: relative;
   display: flex;
-  gap: 6px;
-  align-items: end;
-  padding: 0 10px 0;
-  border-bottom: 34px solid var(--moss-2);
-  border-radius: 0 0 10px 10px;
+  gap: 4px;
+  align-items: flex-end;
+  padding: 0 18px;
+}
+.t36p-potart {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: var(--pot);
+  overflow: visible;
+  pointer-events: none;
+}
+.t36p-pot-body {
+  fill: color-mix(in srgb, var(--moss-2) 70%, var(--lantern));
+  opacity: 0.92;
+}
+:root[data-theme='dark'] .t36p-pot-body {
+  fill: var(--moss-a);
+}
+.t36p-pot-mouth {
+  fill: var(--wash);
+  opacity: 0.55;
 }
 .t36p-pen {
-  display: grid;
-  justify-items: center;
-  gap: 6px;
+  position: relative;
+  display: block;
+  width: 34px;
+  height: var(--h);
   padding: 0;
   background: none;
   border: 0;
@@ -181,48 +312,87 @@
   color: var(--ink);
   transition: translate 0.35s;
 }
+.t36p-canvas { --h: clamp(120px, 40cqh, 260px); }
+.t36p-p5 { --h: clamp(110px, 36cqh, 240px); }
+.t36p-phaser { --h: clamp(130px, 43cqh, 280px); }
+.t36p-three { --h: clamp(116px, 38cqh, 250px); }
+.t36p-engine { --h: clamp(136px, 46cqh, 300px); }
 .t36p-pen[aria-pressed='true'] {
-  translate: 0 -14px;
+  translate: 0 -16px;
+}
+.t36p-pen:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
 }
 .t36p-shaft {
-  width: 9px;
-  height: clamp(90px, 30cqh, 200px);
-  background: linear-gradient(to right, var(--ink-2), var(--ink) 60%);
-  border-radius: 4px 4px 1px 1px;
-  clip-path: polygon(50% 0, 100% 9%, 100% 100%, 0 100%, 0 9%);
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
-.t36p-p5 .t36p-shaft { background: linear-gradient(to right, var(--moss), var(--moss-2)); height: clamp(80px, 26cqh, 176px); }
-.t36p-phaser .t36p-shaft { background: linear-gradient(to right, var(--vermilion), var(--ink-2)); height: clamp(96px, 32cqh, 210px); }
-.t36p-three .t36p-shaft { background: linear-gradient(to right, var(--water), var(--ink)); height: clamp(86px, 28cqh, 190px); }
-.t36p-engine .t36p-shaft { width: 14px; background: linear-gradient(to right, var(--lantern), var(--ink-2)); height: clamp(100px, 34cqh, 220px); }
 .t36p-name {
+  position: absolute;
+  left: 68%;
+  bottom: calc(var(--pot) + 6px);
   writing-mode: vertical-rl;
   rotate: 180deg;
-  font: 500 0.82rem/1 var(--sans);
+  font: 500 0.8rem/1 var(--sans);
   color: var(--ink-2);
-  max-height: 9em;
+  white-space: nowrap;
 }
 .t36p-pen[aria-pressed='true'] .t36p-name {
   color: var(--vermilion);
+  font-weight: 600;
+}
+.t36p-coal { fill: var(--wash); opacity: 0.85; }
+.t36p-bamboo { fill: color-mix(in srgb, var(--moss-2) 80%, var(--lantern)); }
+.t36p-bamboo.gold { fill: color-mix(in srgb, var(--lantern) 60%, var(--rock-lo)); }
+.t36p-lacquer { fill: var(--vermilion); }
+.t36p-metal { fill: var(--rock-mid); }
+.t36p-ferrule { fill: var(--rock-lo); }
+.t36p-hair { fill: var(--wash); opacity: 0.92; }
+:root[data-theme='dark'] .t36p-coal,
+:root[data-theme='dark'] .t36p-hair {
+  fill: var(--ink-3);
 }
 .t36p-frame {
-  background: var(--card);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-2);
-  padding: clamp(6px, 1.4cqw, 16px);
+  padding: clamp(8px, 1.6cqw, 18px);
+  rotate: -0.5deg;
 }
 .t36p-art {
   display: block;
   width: 100%;
   height: auto;
   max-height: 64cqh;
+  overflow: visible;
 }
 .t36p-art g.in {
   animation: p2-fade 0.6s;
 }
+.t36p-charcoal { fill: var(--wash); opacity: 0.7; }
+:root[data-theme='dark'] .t36p-charcoal { fill: var(--ink-2); }
+.t36p-red-line { fill: var(--vermilion); opacity: 0.85; }
+.t36p-red { fill: var(--vermilion); opacity: 0.9; }
+.t36p-blot { opacity: 0.4; }
+.t36p-blot.water { fill: var(--water); }
+.t36p-blot.moss { fill: var(--moss); }
+.t36p-blot.lantern { fill: var(--lantern); }
+.t36p-blot.moon { fill: var(--moon); opacity: 0.85; }
+.t36p-tile { fill: var(--water); opacity: 0.45; }
+.t36p-grid { fill: var(--wash); opacity: 0.35; }
+:root[data-theme='dark'] .t36p-grid { fill: var(--ink-3); }
+.t36p-moonblock { fill: var(--moon); }
+.t36p-perspective { fill: var(--wash); opacity: 0.3; }
+:root[data-theme='dark'] .t36p-perspective { fill: var(--ink-3); }
+.t36p-depth { fill: var(--water); opacity: 0.55; }
+.t36p-moon { fill: var(--moon); }
+.t36p-beam { fill: var(--moon); opacity: 0.18; }
+.t36p-shadow { opacity: 0.35; }
+.t36p-bg { fill: var(--water); opacity: 0.25; }
+.t36p-pad { fill: var(--moss); opacity: 0.7; }
 .t36p-card {
   min-height: 8em;
-  font: 400 0.95rem/1.5 var(--serif);
+  font: 400 0.96rem/1.5 var(--serif);
 }
 .t36p-card p {
   margin: 0 0 0.6em;
@@ -247,46 +417,151 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto auto minmax(0, 1fr);
     align-items: start;
-    gap: 10px;
+    gap: 12px;
   }
   .t36p-pot {
     justify-content: center;
-    border-bottom-width: 0;
+    flex-wrap: wrap;
     gap: 6px;
     padding: 0;
   }
-  .t36p-pen {
-    grid-auto-flow: row;
-  }
+  .t36p-potart,
   .t36p-shaft {
     display: none;
   }
+  .t36p-pen {
+    width: auto;
+    height: auto;
+  }
   .t36p-name {
+    position: static;
+    display: block;
     writing-mode: horizontal-tb;
     rotate: none;
-    padding: 0.45em 0.6em;
-    border: 1px solid var(--line-2);
-    border-radius: 999px;
-    font-size: 0.74rem;
-    white-space: nowrap;
+    padding: 0.5em 0.75em;
+    border-radius: 3px;
+    font-size: 0.76rem;
+    background: var(--card);
+    box-shadow: 0 6px 10px -7px var(--umbra), inset 0 0 0 1px var(--line);
   }
   .t36p-pen[aria-pressed='true'] {
     translate: 0;
   }
   .t36p-pen[aria-pressed='true'] .t36p-name {
-    border-color: var(--vermilion);
-  }
-  .t36p-pot {
-    flex-wrap: wrap;
+    box-shadow: 0 6px 10px -7px var(--umbra), inset 0 0 0 1.5px var(--vermilion);
   }
   .t36p-art {
-    max-height: 28cqh;
+    max-height: 30cqh;
   }
   .t36p-card {
     font-size: 0.88rem;
     overflow: auto;
     max-height: 100%;
   }
+}
+
+/* ── carve: the wood shop (stepPath art) — the log becomes a fish, one stage per stone placed ── */
+.t36c-beam {
+  opacity: 0.5;
+}
+.t36c-night {
+  fill: var(--paper-2);
+}
+:root[data-theme='dark'] .t36c-night {
+  fill: var(--wash);
+  opacity: 0.6;
+}
+.t36c-floor {
+  opacity: 0.16;
+}
+.t36c-wood,
+.t36c-end {
+  fill: color-mix(in srgb, var(--lantern) 22%, var(--rock-hi));
+}
+.t36c-shade {
+  fill: var(--wash);
+  opacity: 0.16;
+}
+:root[data-theme='dark'] .t36c-shade {
+  fill: var(--umbra);
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t36c-wood,
+:root[data-theme='dark'] .t36c-end {
+  fill: color-mix(in srgb, var(--lantern) 18%, var(--rock-lo));
+}
+.t36c-end {
+  opacity: 0.9;
+}
+.t36c-bark {
+  fill: var(--wash);
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t36c-bark {
+  fill: var(--umbra);
+  opacity: 0.7;
+}
+.t36c-log {
+  transition: opacity 0.8s;
+}
+.t36c-chalk {
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 3;
+  opacity: 0.9;
+}
+.t36c-cut,
+.t36c-line {
+  fill: var(--wash);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t36c-cut,
+:root[data-theme='dark'] .t36c-line {
+  fill: var(--umbra);
+  opacity: 0.8;
+}
+.t36c-fish {
+  fill: color-mix(in srgb, var(--lantern) 45%, var(--rock-hi));
+}
+:root[data-theme='dark'] .t36c-fish {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--rock-mid));
+}
+.t36c-eye {
+  fill: var(--vermilion);
+}
+.t36c-chip {
+  fill: color-mix(in srgb, var(--lantern) 35%, var(--rock-mid));
+  opacity: 0.9;
+}
+.t36c-tool {
+  fill: var(--wash);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t36c-tool {
+  fill: var(--ink-3);
+}
+[class*='t36c-s'] {
+  opacity: 0;
+  transition: opacity 0.9s;
+}
+.p2s:has(.p2s-stone.placed) .t36c-s1,
+.p2s:has(.p2s-stone.placed ~ .p2s-stone.placed) .t36c-s2,
+.p2s:has(.p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed) .t36c-s3,
+.p2s:has(.p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed) .t36c-s4,
+.p2s:has(.p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed) .t36c-s5,
+.p2s:has(.p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed) .t36c-s6,
+.p2s:has(.p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed) .t36c-s7 {
+  opacity: 1;
+}
+.p2s:has(.p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed) .t36c-log {
+  opacity: 0.55;
+}
+.p2s:has(.p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed) .t36c-log {
+  opacity: 0.25;
+}
+.p2s:has(.p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed ~ .p2s-stone.placed) .t36c-log {
+  opacity: 0;
 }
 
 /* ── carve: the scroll pill over the step path ── */
@@ -358,19 +633,150 @@
 .t36g-stage {
   position: relative;
   min-height: 0;
-  border-radius: 28px;
-  overflow: hidden;
-  box-shadow: inset 0 0 0 1px var(--line-2), var(--shadow-2);
 }
+.t36g-paint {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t36g-planks .g12-wood-face {
+  opacity: 0.14;
+}
+:is(.t36g-planks, .t36b-planks) .g12-wood-edge {
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t36g-planks .g12-wood-face {
+  opacity: 0.28;
+}
+.t36g-sheet {
+  fill: var(--card);
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .t36g-sheet {
+  fill: color-mix(in srgb, var(--card) 70%, var(--ink-3));
+  opacity: 0.85;
+}
+.t36g-sheet-edge {
+  fill: var(--wash);
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t36g-sheet-edge {
+  fill: var(--ink-3);
+}
+/* the pale underdrawing: what the layers will become */
+.t36g-under {
+  fill: var(--wash);
+  opacity: 0.32;
+  transition: opacity 0.8s;
+}
+:root[data-theme='dark'] .t36g-under {
+  fill: var(--ink-2);
+  opacity: 0.32;
+}
+.t36g-L {
+  opacity: 0;
+  transition: opacity 0.9s;
+}
+.t36g.on-0 .t36g-L0,
+.t36g.on-1 .t36g-L1,
+.t36g.on-2 .t36g-L2,
+.t36g.on-3 .t36g-L3,
+.t36g.on-4 .t36g-L4,
+.t36g.on-5 .t36g-L5,
+.t36g.on-6 .t36g-L6 {
+  opacity: 1;
+}
+.t36g-water {
+  fill: var(--water);
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t36g-water {
+  opacity: 0.9;
+}
+.t36g-ink {
+  fill: var(--wash);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t36g-ink {
+  fill: var(--ink-2);
+}
+.t36g-finger {
+  fill: var(--wash);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t36g-finger {
+  fill: var(--ink-2);
+}
+.t36g-shard {
+  fill: var(--moon);
+  stroke: var(--wash);
+  stroke-width: 0.6;
+}
+.t36g-leaf {
+  fill: var(--lantern);
+}
+.t36g-seal {
+  fill: var(--vermilion);
+}
+.t36g-fly {
+  fill: var(--firefly);
+}
+.t36g-ring {
+  fill: var(--moon);
+  opacity: 0.7;
+}
+/* until the first layer: an ink arrow points at the tabs and tab 1 glows like a lamp */
+.t36g-arrow {
+  fill: var(--vermilion);
+  opacity: 0.75;
+}
+.t36g-cue {
+  transition: opacity 0.6s;
+}
+.t36g.has-layer .t36g-cue {
+  opacity: 0;
+}
+.t36g:not(.has-layer) .t36g-chip:first-child {
+  color: var(--ink);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--lantern) 75%, transparent), 0 0 24px 2px color-mix(in srgb, var(--lantern) 45%, transparent);
+}
+.t36g:not(.has-layer) .t36g-chip:first-child::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 6px;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 40%, transparent), transparent);
+  pointer-events: none;
+  animation: t36-breathe 2.4s ease-in-out infinite;
+}
+@keyframes t36-breathe {
+  50% { opacity: 0.25; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t36g-chip::after {
+    animation: none !important;
+  }
+}
+:root[data-quality='low'] .t36g-chip::after {
+  animation: none !important;
+}
+/* playing: the canvas draws the moving pond over the painted water; the sketch and loose layers step aside */
 .t36g-cv {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   touch-action: none;
+  visibility: hidden;
 }
 .is-play .t36g-cv {
+  visibility: visible;
   cursor: crosshair;
+}
+.is-play :is(.t36g-under, .t36g-cue, .t36g-L1, .t36g-L2, .t36g-L3, .t36g-L4, .t36g-L5, .t36g-L6) {
+  display: none;
 }
 .t36g-hud {
   position: absolute;
@@ -382,8 +788,7 @@
   gap: 6px 12px;
   align-items: center;
   font: 600 0.82rem/1.2 var(--sans);
-  color: var(--moon);
-  text-shadow: 0 1px 2px var(--umbra);
+  color: var(--ink);
 }
 .t36g-hud[hidden],
 .t36g-end[hidden] {
@@ -422,37 +827,40 @@
 }
 .t36g-side {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   align-content: center;
   min-height: 0;
   overflow: auto;
+  padding: 8px;
 }
 .t36g-chips {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
 }
+/* tabs of tracing paper, one per layer */
 .t36g-chip {
   display: flex;
   align-items: center;
   gap: 8px;
   text-align: left;
-  font: 400 0.9rem/1.2 var(--serif);
+  font: 400 0.92rem/1.2 var(--serif);
   color: var(--ink-2);
-  padding: 0.5em 0.7em;
-  background: color-mix(in srgb, var(--card) 55%, transparent);
-  border: 1px solid var(--line);
-  border-radius: 2px;
+  padding: 0.55em 0.75em;
   cursor: pointer;
+  opacity: 0.9;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.t36g-chip:hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--lantern) 60%, transparent), 0 8px 14px -9px var(--umbra);
 }
 .t36g-chip[aria-pressed='true'] {
   color: var(--ink);
-  background: var(--card);
-  border-color: var(--line-2);
-  box-shadow: var(--shadow-1);
+  opacity: 1;
+  box-shadow: inset 3px 0 0 var(--vermilion), 0 8px 14px -9px var(--umbra);
 }
 .t36g-n {
-  font: 600 0.72rem/1 var(--sans);
+  font: 600 0.74rem/1 var(--sans);
   color: var(--vermilion);
 }
 .t36g-said {
@@ -473,11 +881,11 @@
 .t36g-start {
   justify-self: start;
   font: 600 0.95rem/1.2 var(--serif);
-  color: var(--paper);
-  background: var(--vermilion);
+  color: #fff;
+  background: radial-gradient(120% 140% at 30% 20%, color-mix(in srgb, var(--vermilion) 80%, #fff), var(--vermilion) 55%, color-mix(in srgb, var(--vermilion) 80%, #000));
   border: 0;
-  border-radius: 999px;
-  padding: 0.65em 1.5em;
+  border-radius: 46% 54% 50% 50% / 60% 56% 44% 40%;
+  padding: 0.7em 1.6em;
   cursor: pointer;
 }
 .t36g-still {
@@ -493,11 +901,11 @@
   }
   .t36g-chips {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 4px;
+    gap: 5px;
   }
   .t36g-chip {
     font-size: 0.74rem;
-    padding: 0.45em 0.4em;
+    padding: 0.5em 0.4em;
     gap: 4px;
   }
   .t36g-said {
@@ -512,4 +920,61 @@
   .t36g.is-play {
     grid-template-rows: 1fr;
   }
+}
+
+/* ── vibe: candles on the stones, words on the water, the ensō (perspectiveCircle art) ── */
+.t36v-dish {
+  fill: var(--wash);
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t36v-dish {
+  fill: var(--rock-lo);
+  opacity: 1;
+}
+.t36v-wax {
+  fill: var(--card);
+}
+:root[data-theme='dark'] .t36v-wax {
+  fill: var(--ink-2);
+}
+.t36v-halo,
+.t36v-flame {
+  opacity: 0;
+  transition: opacity 1s;
+}
+.t36v-flame {
+  fill: var(--lantern);
+}
+.p2c:has(.p2c-stone:nth-child(1)[data-heard]) .t36v-c1 :is(.t36v-halo, .t36v-flame),
+.p2c:has(.p2c-stone:nth-child(2)[data-heard]) .t36v-c2 :is(.t36v-halo, .t36v-flame),
+.p2c:has(.p2c-stone:nth-child(3)[data-heard]) .t36v-c3 :is(.t36v-halo, .t36v-flame),
+.p2c:has(.p2c-stone:nth-child(4)[data-heard]) .t36v-c4 :is(.t36v-halo, .t36v-flame),
+.p2c:has(.p2c-stone:nth-child(5)[data-heard]) .t36v-c5 :is(.t36v-halo, .t36v-flame) {
+  opacity: 1;
+}
+.t36v-words {
+  fill: var(--wash);
+  opacity: 0;
+  transition: opacity 0.9s;
+}
+:root[data-theme='dark'] .t36v-words {
+  fill: var(--lantern);
+}
+.p2c:has(.p2c-stone:nth-child(1)[aria-pressed='true']) .t36v-w1,
+.p2c:has(.p2c-stone:nth-child(2)[aria-pressed='true']) .t36v-w2,
+.p2c:has(.p2c-stone:nth-child(3)[aria-pressed='true']) .t36v-w3,
+.p2c:has(.p2c-stone:nth-child(4)[aria-pressed='true']) .t36v-w4,
+.p2c:has(.p2c-stone:nth-child(5)[aria-pressed='true']) .t36v-w5 {
+  opacity: 0.42;
+}
+.t36v-enso {
+  fill: var(--wash);
+  opacity: 0;
+  transition: opacity 1.6s 0.4s;
+}
+:root[data-theme='dark'] .t36v-enso {
+  fill: var(--moon);
+}
+.p2c.p2-still .t36v-enso {
+  opacity: 0.75;
 }

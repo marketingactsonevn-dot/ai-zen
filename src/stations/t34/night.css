@@ -1,32 +1,121 @@
-/* Garden 12 shared bits (night.ts). Colours are Part 2 tokens only. */
-.g12-sky {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
+/* Garden 12 painting kit (night.ts) + shared surfaces. Colours are Part 2 tokens only. */
+.g12-wood-face {
+  fill: var(--wash);
+  opacity: 0.34;
 }
-.g12-glow {
-  opacity: 0.55;
+.g12-wood-grain {
+  fill: var(--wash);
+  opacity: 0.4;
 }
-.g12-toro .g12-glow {
-  opacity: 0;
-  transition: opacity 0.8s;
+.g12-wood-edge,
+.g12-edge,
+.g12-eave {
+  fill: var(--wash);
+  opacity: 0.72;
 }
-.g12-fire {
+.g12-eave {
+  opacity: 0.86;
+}
+.g12-rim {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .g12-wood-face {
+  opacity: 0.82;
+}
+:root[data-theme='dark'] .g12-wood-grain {
+  fill: var(--ink-3);
+  opacity: 0.16;
+}
+:root[data-theme='dark'] .g12-wood-edge,
+:root[data-theme='dark'] .g12-edge,
+:root[data-theme='dark'] .g12-eave {
+  opacity: 0.95;
+}
+:root[data-theme='dark'] .g12-rim {
+  fill: var(--moon);
+  opacity: 0.34;
+}
+.g12-contact {
   fill: var(--umbra);
-  opacity: 0.55;
-  transition: fill 0.6s, opacity 0.6s;
+  opacity: 0.2;
 }
-.on > .g12-toro .g12-glow,
-.g12-toro.on .g12-glow {
+.g12-door-in {
+  fill: var(--wash);
+  opacity: 0.16;
+}
+.g12-door.open .g12-door-in {
+  fill: var(--moon);
+  opacity: 0.2;
+}
+:root[data-theme='dark'] .g12-door-in {
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .g12-door.open .g12-door-in {
+  fill: var(--moon);
+  opacity: 0.1;
+}
+.g12-shoji {
+  fill: var(--card);
+  opacity: 0.78;
+}
+:root[data-theme='dark'] .g12-shoji {
+  fill: var(--lantern);
+  opacity: 0.2;
+}
+.g12-lattice {
+  fill: var(--wash);
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .g12-lattice {
   opacity: 0.9;
 }
-.on > .g12-toro .g12-fire,
-.g12-toro.on .g12-fire {
-  fill: var(--lantern);
-  opacity: 1;
+.g12-door-warm {
+  opacity: 0.9;
 }
+.g12-door-spill {
+  opacity: 0.7;
+}
+.g12-pool {
+  pointer-events: none;
+}
+:root[data-theme='light'] .g12-pool {
+  opacity: 0.7;
+}
+
+/* a big sheet: no drawn edge (it would read as scribbles at this size), a deckled shadow instead */
+.g12-paper.big::before {
+  content: none;
+}
+.g12-paper.big {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--umbra) 10%, transparent), 0 2px 3px color-mix(in srgb, var(--umbra) 14%, transparent), 0 18px 30px -16px color-mix(in srgb, var(--umbra) 70%, transparent);
+}
+/* HTML that stays HTML (slips, tabs, options): dó paper — fine grain, a lighter heart, a brushed ink edge */
+.g12-paper {
+  position: relative;
+  color: var(--ink);
+  border: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .5 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 40% 35%, var(--card) 40%, color-mix(in srgb, var(--paper-2) 80%, var(--card)));
+  box-shadow: 0 1px 1px color-mix(in srgb, var(--umbra) 10%, transparent), 0 8px 14px -9px color-mix(in srgb, var(--umbra) 60%, transparent);
+}
+.g12-paper::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cfilter id='r' x='-5%25' y='-10%25' width='110%25' height='120%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.09' numOctaves='2' seed='7'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='2.4' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Cpath filter='url(%23r)' d='M2 2.5L60 1.8L98 2.6L97.6 37.5L40 38.2L2.4 37.6Z' fill='none' stroke='%231a2240' stroke-opacity='.42' stroke-width='1.6' stroke-dasharray='70 4 40 7 90 3 60' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
+:root[data-theme='dark'] .g12-paper {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .32 0 0 0 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 40% 35%, color-mix(in srgb, var(--card) 80%, var(--ink-3)) 30%, var(--card));
+  box-shadow: 0 1px 1px #000, 0 8px 14px -8px #000;
+}
+:root[data-theme='dark'] .g12-paper::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cfilter id='r' x='-5%25' y='-10%25' width='110%25' height='120%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.09' numOctaves='2' seed='7'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='2.4' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Cpath filter='url(%23r)' d='M2 2.5L60 1.8L98 2.6L97.6 37.5L40 38.2L2.4 37.6Z' fill='none' stroke='%23ede7d7' stroke-opacity='.3' stroke-width='1.6' stroke-dasharray='70 4 40 7 90 3 60' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+}
+
 .g12-pill,
 .g12-close {
   font: 500 0.85rem/1.2 var(--sans);
