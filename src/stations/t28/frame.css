@@ -5,6 +5,13 @@
   flex-direction: column;
   gap: 12px;
   width: 100%;
+  /* rice-paper grain (static tile) and a brushed ink edge, light / dark */
+  --gf-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .5 0 0 0 -.17'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --gf-edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='r' x='-5%25' y='-5%25' width='110%25' height='110%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.06' numOctaves='2' seed='9'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='2.4' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Cg filter='url(%23r)' fill='none' stroke='%231a2240' stroke-linecap='round' vector-effect='non-scaling-stroke'%3E%3Cpath d='M1.5 2.2H98.2' stroke-opacity='.5' stroke-width='2.4' stroke-dasharray='70 4 40' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M98.6 1.2V98.5' stroke-opacity='.3' stroke-width='1.4' stroke-dasharray='55 6 90' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M98.5 97.8H1.4' stroke-opacity='.55' stroke-width='2.8' stroke-dasharray='90 5 30' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M1.3 99V2' stroke-opacity='.35' stroke-width='1.5' stroke-dasharray='40 7 120' vector-effect='non-scaling-stroke'/%3E%3C/g%3E%3C/svg%3E");
+}
+:root[data-theme='dark'] .gf {
+  --gf-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .3 0 0 0 -.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --gf-edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cfilter id='r' x='-5%25' y='-5%25' width='110%25' height='110%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.06' numOctaves='2' seed='9'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='2.4' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Cg filter='url(%23r)' fill='none' stroke='%23ede7d7' stroke-linecap='round' vector-effect='non-scaling-stroke'%3E%3Cpath d='M1.5 2.2H98.2' stroke-opacity='.3' stroke-width='2' stroke-dasharray='70 4 40' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M98.6 1.2V98.5' stroke-opacity='.16' stroke-width='1.3' stroke-dasharray='55 6 90' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M98.5 97.8H1.4' stroke-opacity='.22' stroke-width='2.2' stroke-dasharray='90 5 30' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M1.3 99V2' stroke-opacity='.18' stroke-width='1.4' stroke-dasharray='40 7 120' vector-effect='non-scaling-stroke'/%3E%3C/g%3E%3C/svg%3E");
 }
 .gf.wide {
   flex-direction: row;
@@ -34,16 +41,31 @@
 .gf-over > * {
   pointer-events: auto;
 }
+
+/* the panel: a sheet of rice paper laid in the garden — grain, moonlight on the top corner, a brushed edge */
 .gf-panel {
   flex: 0 0 auto;
   overflow-y: auto;
-  padding: 16px 18px 14px;
-  background: color-mix(in srgb, var(--card) 90%, transparent);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  box-shadow: var(--shadow-1);
+  padding: 20px 22px 16px;
+  border: 0;
+  border-radius: 3px 6px 4px 5px / 5px 3px 6px 4px;
+  background:
+    var(--gf-edge) 0 0 / 100% 100% no-repeat,
+    var(--gf-grain),
+    radial-gradient(110% 60% at 12% 0%, color-mix(in srgb, var(--moon) 16%, transparent), transparent 65%),
+    radial-gradient(80% 70% at 100% 100%, color-mix(in srgb, var(--wash) 7%, transparent), transparent 70%),
+    linear-gradient(178deg, color-mix(in srgb, var(--card) 78%, var(--paper)), color-mix(in srgb, var(--paper-2) 70%, var(--card)));
+  box-shadow: 0 18px 30px -24px var(--umbra), 0 3px 8px -6px var(--umbra);
   font: 400 0.98rem/1.5 var(--serif);
   color: var(--ink);
+}
+:root[data-theme='dark'] .gf-panel {
+  background:
+    var(--gf-edge) 0 0 / 100% 100% no-repeat,
+    var(--gf-grain),
+    radial-gradient(110% 60% at 12% 0%, color-mix(in srgb, var(--moon) 9%, transparent), transparent 65%),
+    linear-gradient(178deg, color-mix(in srgb, var(--card) 88%, var(--moon)), var(--paper-2));
+  box-shadow: 0 18px 34px -20px #000, 0 0 0 1px color-mix(in srgb, var(--moon) 6%, transparent);
 }
 .gf:not(.wide) .gf-panel {
   width: 100%;
@@ -67,6 +89,8 @@
 .gf-new {
   animation: p2-rise 0.5s ease-out both;
 }
+
+/* paired choices: two paper tabs; the chosen one soaks up ink */
 .gf-seg {
   display: flex;
   flex-wrap: wrap;
@@ -76,13 +100,59 @@
 .gf-seg .btn {
   min-height: 44px;
   padding: 0.55em 1.05em;
+  border: 0;
+  border-radius: 12px 16px 14px 11px / 15px 12px 15px 13px;
   font-size: 0.92rem;
+  background: var(--gf-grain), color-mix(in srgb, var(--paper) 70%, var(--card));
+  box-shadow: inset 0 0 0 1px var(--line-2), 0 4px 8px -6px var(--umbra);
 }
 .gf-seg .btn[aria-pressed='true'] {
-  background: var(--ink);
+  background: var(--gf-grain), radial-gradient(120% 90% at 30% 20%, color-mix(in srgb, var(--ink) 86%, var(--paper)), var(--ink));
   color: var(--on-ink);
-  border-color: var(--ink);
+  box-shadow: 0 6px 12px -8px var(--umbra);
 }
+
+/* brushed sliders: an ink stroke for the track, a river stone for the thumb */
+.gf-panel input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 34px;
+  background: transparent;
+  cursor: pointer;
+}
+.gf-panel input[type='range']::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 3px 2px 3px 2px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ink) 70%, transparent), color-mix(in srgb, var(--ink) 34%, transparent) 70%, color-mix(in srgb, var(--ink) 14%, transparent));
+}
+.gf-panel input[type='range']::-moz-range-track {
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ink) 70%, transparent), color-mix(in srgb, var(--ink) 14%, transparent));
+}
+.gf-panel input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 19px;
+  margin-top: -7px;
+  border: 0;
+  border-radius: 48% 52% 45% 55% / 55% 50% 50% 45%;
+  background: radial-gradient(70% 60% at 35% 28%, var(--rock-hi), var(--rock-mid) 62%, var(--rock-lo));
+  box-shadow: 0 3px 4px -2px var(--umbra), inset 0 0 0 1px color-mix(in srgb, var(--umbra) 30%, transparent);
+}
+.gf-panel input[type='range']::-moz-range-thumb {
+  width: 22px;
+  height: 19px;
+  border: 0;
+  border-radius: 48% 52% 45% 55% / 55% 50% 50% 45%;
+  background: radial-gradient(70% 60% at 35% 28%, var(--rock-hi), var(--rock-mid) 62%, var(--rock-lo));
+  box-shadow: 0 3px 4px -2px var(--umbra);
+}
+.gf-panel input[type='range']:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+
 .gf-ink {
   fill: var(--ink);
 }
@@ -102,31 +172,18 @@
   font: 600 15px/1 var(--serif);
   letter-spacing: 0.06em;
 }
-.gf-moon {
-  fill: var(--moon);
-  stroke: var(--moon-rim);
-  stroke-width: 1;
+/* a brushed caption on the painting: serif, a pale halo of paper so it reads over ink */
+.gf-caption {
+  fill: var(--ink-2);
+  font: italic 500 14px/1 var(--serif);
+  letter-spacing: 0.02em;
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 4px;
+  stroke-linejoin: round;
 }
 .gf-lantern {
   fill: var(--lantern);
-}
-.gf-water {
-  fill: var(--water);
-  opacity: 0.85;
-}
-:root[data-theme='light'] .gf-water {
-  opacity: 0.45;
-}
-.gf-glint {
-  fill: none;
-  stroke: var(--moon);
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  opacity: 0.5;
-}
-:root[data-theme='light'] .gf-glint {
-  stroke: var(--rake-hi);
-  opacity: 0.9;
 }
 .gf-hit {
   position: absolute;
@@ -144,13 +201,172 @@
   outline: 2px solid var(--vermilion);
   outline-offset: 3px;
 }
+/* a name slip: a torn strip of paper, not an app pill */
 .gf-tagline {
   display: block;
-  padding: 3px 9px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--card) 86%, transparent);
-  border: 1px solid var(--line);
+  padding: 3px 10px 4px;
+  border-radius: 2px 4px 3px 2px;
+  background: var(--gf-grain), color-mix(in srgb, var(--card) 90%, var(--paper));
+  box-shadow: 0 3px 6px -4px var(--umbra), inset 0 -2px 0 color-mix(in srgb, var(--ink) 14%, transparent);
   font: 500 12.5px/1.25 var(--sans);
   color: var(--ink);
   white-space: nowrap;
+}
+
+/* ───────── brush.ts pieces ───────── */
+.gb-culm {
+  fill: color-mix(in srgb, var(--moss-2) 62%, var(--ink-3));
+}
+:root[data-theme='dark'] .gb-culm {
+  fill: color-mix(in srgb, var(--moss-a) 70%, var(--rock-mid));
+}
+.gb-node {
+  fill: var(--wash);
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .gb-node {
+  fill: var(--moss-c);
+  opacity: 0.5;
+}
+.gb-culm-hi {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .gb-culm-hi {
+  fill: var(--moon);
+  opacity: 0.35;
+}
+.gb-mouth {
+  fill: var(--umbra);
+  opacity: 0.7;
+}
+.gb-cres-ghost {
+  fill: var(--moon);
+  opacity: 0.07;
+}
+.gb-figure {
+  fill: var(--wash);
+  opacity: 0.86;
+}
+:root[data-theme='dark'] .gb-figure {
+  fill: var(--umbra);
+  opacity: 0.95;
+}
+.gb-figure-rim {
+  fill: var(--moon);
+  opacity: 0.4;
+}
+:root[data-theme='light'] .gb-figure-rim {
+  fill: var(--rake-hi);
+  opacity: 0.9;
+}
+.gb-page {
+  fill: var(--card);
+}
+:root[data-theme='dark'] .gb-page {
+  fill: var(--ink-2);
+  opacity: 0.88;
+}
+.gb-text {
+  fill: var(--ink-2);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .gb-text {
+  fill: var(--paper);
+  opacity: 0.75;
+}
+.gb-wood {
+  fill: var(--stone);
+}
+:root[data-theme='dark'] .gb-wood {
+  fill: var(--rock-mid);
+}
+.gb-hoop {
+  fill: var(--wash);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .gb-hoop {
+  fill: var(--umbra);
+}
+.gb-rope {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+.gb-water {
+  fill: var(--water);
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .gb-water {
+  opacity: 0.9;
+}
+.gb-glint {
+  fill: var(--moon);
+  opacity: 0.7;
+}
+:root[data-theme='light'] .gb-glint {
+  fill: #fff;
+  opacity: 0.85;
+}
+.gb-drop {
+  fill: var(--moon);
+  stroke: var(--moon-rim);
+  stroke-width: 0.6;
+}
+:root[data-theme='light'] .gb-drop {
+  fill: var(--card);
+  stroke: var(--ink-3);
+}
+.gb-shadow {
+  fill: var(--umbra);
+  opacity: 0.2;
+}
+.gb-moss {
+  fill: var(--moss);
+  opacity: 0.7;
+}
+.gb-leaf {
+  fill: var(--moss);
+  opacity: 0.85;
+}
+.gb-leaf-2 {
+  fill: var(--moss-2);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .gb-leaf-2 {
+  fill: var(--moss-c);
+}
+.gb-ink {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .gb-ink {
+  fill: var(--umbra);
+}
+.gb-ink-soft {
+  fill: var(--ink-2);
+  opacity: 0.5;
+}
+.gb-stone {
+  fill: url(#p2-rock);
+}
+.gb-stone-sh {
+  fill: url(#p2-shade);
+}
+.gb-rim-hi {
+  fill: var(--moon);
+  opacity: 0.45;
+}
+:root[data-theme='light'] .gb-rim-hi {
+  fill: var(--rake-hi);
+  opacity: 1;
+}
+.gb-seal {
+  fill: var(--vermilion);
+}
+.gb-plaster {
+  fill: var(--card);
+}
+:root[data-theme='dark'] .gb-plaster {
+  fill: var(--rock-hi);
 }

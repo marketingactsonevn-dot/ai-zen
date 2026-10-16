@@ -8,10 +8,11 @@ import type { Perspectives, Tide } from '../../ui/part2/types'
 import { C } from './data'
 import { gateScene } from './gate'
 import { fenceScene } from './fence'
+import { copyrightArt, lawsArt } from './art'
 
 const S = C.scenes
 const cp = S.copyright
-const circle = perspectiveCircle(cp.perspectives as Perspectives, { label: cp.label, prompt: cp.prompt, detail: cp.insight as Fact })
+const circle = perspectiveCircle(cp.perspectives as Perspectives, { label: cp.label, prompt: cp.prompt, detail: cp.insight as Fact, art: copyrightArt })
 // the circle as it is, plus the court files written into its reading card once every stone has spoken
 const copyright: SceneDef = {
   label: cp.label,
@@ -31,7 +32,7 @@ const station: StationModule = {
   scenes: [
     { label: S.gate.label, mount: gateScene },
     { label: S.fence.label, mount: fenceScene },
-    progressTide(S.laws.tide as Tide, { label: S.laws.label, prompt: S.laws.prompt, insight: S.laws.insight as Fact, aria: S.laws.sliderAria }),
+    progressTide(S.laws.tide as Tide, { label: S.laws.label, prompt: S.laws.prompt, insight: S.laws.insight as Fact, aria: S.laws.sliderAria, art: lawsArt(S.laws.tide.milestones.map((m) => m.label)) }),
     copyright,
   ],
 }

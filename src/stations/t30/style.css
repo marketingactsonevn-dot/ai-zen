@@ -27,54 +27,114 @@
 .t30g-note:empty {
   display: none;
 }
-.t30g-tree {
-  fill: var(--moss);
-  opacity: 0.75;
+.t30g-walled,
+.t30g-openg {
+  transition: opacity 0.8s;
+}
+.t30g-openg,
+.t30g.open .t30g-walled {
+  opacity: 0.5;
+}
+.t30g.open .t30g-openg {
+  opacity: 1;
+}
+.t30g-crown {
+  fill: var(--moss-2);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t30g-crown {
+  fill: var(--moss-a);
+  opacity: 0.8;
+}
+.t30g-limb {
+  fill: var(--wash);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t30g-limb {
+  fill: var(--rock-hi);
+  opacity: 0.7;
 }
 .t30g-flower {
   fill: var(--vermilion);
-  opacity: 0.85;
+  opacity: 0.8;
 }
-.t30g-wall {
-  fill: var(--rock-hi);
-  stroke: var(--ink);
-  stroke-width: 1.2;
+.t30g-stain {
+  fill: var(--wash);
+  opacity: 0.06;
+}
+:root[data-theme='dark'] .t30g-stain {
+  fill: var(--umbra);
+  opacity: 0.25;
 }
 .t30g-plinth {
+  fill: var(--rock-mid);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t30g-plinth {
+  fill: var(--rock-lo);
+}
+.t30g-tiles {
+  fill: var(--wash);
+  opacity: 0.88;
+}
+:root[data-theme='dark'] .t30g-tiles {
   fill: var(--umbra);
-  opacity: 0.18;
+  opacity: 1;
 }
-.t30g-inside {
-  fill: var(--paper-2);
+.t30g-tile-edge {
+  fill: none;
+  stroke: var(--rock-mid);
+  stroke-width: 1;
+  opacity: 0.6;
 }
-.t30g-step {
-  fill: var(--stone-2);
-  stroke: var(--line-2);
+.t30g-light {
+  fill: var(--lantern);
+  opacity: 0.85;
+}
+.t30g-glow {
+  opacity: 0.6;
+}
+.t30g-edge {
+  fill: var(--wash);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t30g-edge {
+  fill: var(--umbra);
+  opacity: 0.6;
+}
+.t30g-frame {
+  fill: var(--wash);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t30g-frame {
+  fill: var(--umbra);
 }
 .t30g-bamboo {
-  fill: var(--moss-2);
-  stroke: var(--ink);
-  stroke-width: 1.2;
+  fill: color-mix(in srgb, var(--moss-2) 62%, var(--ink-3));
+}
+:root[data-theme='dark'] .t30g-bamboo {
+  fill: color-mix(in srgb, var(--moss-a) 70%, var(--rock-mid));
+}
+.t30g-node {
+  fill: var(--wash);
+  opacity: 0.5;
+}
+.t30g-leafy {
+  fill: var(--moss);
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t30g-leafy {
+  fill: var(--moss-a);
+  opacity: 0.9;
+}
+.t30g-clay {
+  fill: color-mix(in srgb, var(--vermilion) 30%, var(--rock-mid));
 }
 .t30g-door {
   transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .t30g.open .t30g-door {
-  transform: scaleX(0.12);
-}
-.t30g-window {
-  transition: opacity 0.6s;
-}
-.t30g.open .t30g-window {
-  opacity: 0;
-}
-.t30g-hole {
-  fill: var(--lantern);
-  opacity: 0.55;
-  stroke: var(--ink);
-}
-.t30g-post {
-  fill: var(--ink);
+  transform: scaleX(0.14);
 }
 .t30g-pot {
   opacity: 0;
@@ -88,9 +148,25 @@
 }
 
 /* 2 · fence */
-.t30f-wall {
-  stroke: var(--ink);
-  stroke-width: 1;
+.t30f-crenel,
+.t30f-course {
+  fill: var(--wash);
+  opacity: 0.3;
+}
+.t30f-crenel {
+  fill: url(#p2-rock);
+  opacity: 1;
+}
+:root[data-theme='dark'] .t30f-course {
+  fill: var(--umbra);
+  opacity: 0.5;
+}
+.t30f-roof {
+  fill: var(--wash);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t30f-roof {
+  fill: var(--umbra);
 }
 .t30f-beam {
   fill: var(--moon);
@@ -98,50 +174,71 @@
 }
 :root[data-theme='light'] .t30f-beam {
   fill: var(--lantern);
-  opacity: 0.16;
+  opacity: 0.18;
 }
 .t30f-crack {
-  fill: none;
-  stroke: var(--vermilion);
-  stroke-width: 1.6;
-  stroke-linecap: round;
+  fill: var(--vermilion);
+  opacity: 0.85;
 }
 .t30f-ground {
-  fill: var(--paper-2);
-  stroke: var(--line-2);
+  fill: var(--rock-mid);
+  opacity: 0.2;
 }
-.t30f-lamp {
-  fill: var(--moon);
-  stroke: var(--lantern);
-  stroke-width: 2;
+:root[data-theme='dark'] .t30f-ground {
+  fill: var(--rock-lo);
+  opacity: 0.7;
 }
-:root[data-theme='light'] .t30f-lamp {
-  fill: var(--lantern);
+.t30f-halo {
+  opacity: 0.9;
 }
-.t30f-post {
-  fill: none;
-  stroke: var(--moss-2);
-  stroke-linecap: round;
+.t30f-post,
+.t30f-door {
+  fill: color-mix(in srgb, var(--moss-2) 62%, var(--ink-3));
+}
+:root[data-theme='dark'] .t30f-post,
+:root[data-theme='dark'] .t30f-door {
+  fill: color-mix(in srgb, var(--moss-a) 70%, var(--rock-mid));
+}
+.t30f-node {
+  fill: var(--wash);
+  opacity: 0.45;
 }
 .t30f-rope {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.2;
-  opacity: 0.6;
+  fill: var(--wash);
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t30f-rope {
+  fill: var(--rock-hi);
+  opacity: 0.5;
 }
 .t30f-thorn {
   fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.1;
-  opacity: 0.7;
+  stroke: var(--wash);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  opacity: 0.55;
 }
-.t30f-seal {
-  fill: var(--vermilion);
+:root[data-theme='dark'] .t30f-thorn {
+  stroke: var(--rock-hi);
+}
+.t30f-path {
+  fill: var(--rock-mid);
+  opacity: 0.25;
+}
+.t30f-glow {
+  opacity: 0.55;
+  transition: opacity 0.5s;
+}
+.t30f-lamp-body {
+  fill: var(--lantern);
+}
+.t30f-gate {
+  align-content: end;
 }
 .t30f-gate .gf-tagline {
-  border-color: var(--lantern);
-  padding: 6px 14px;
+  padding: 5px 14px;
   font-size: 13px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--lantern) 70%, transparent), 0 4px 8px -4px var(--umbra);
 }
 .t30f.shake .t30f-gate {
   animation: t30f-shake 0.45s ease-out;
@@ -159,7 +256,7 @@
 }
 .t30f-guard {
   flex-direction: column;
-  opacity: 0.45;
+  opacity: 0.55;
   transition: opacity 0.6s;
 }
 .t30f.knocked .t30f-guard,
@@ -167,7 +264,7 @@
   opacity: 1;
 }
 .t30f-guard svg {
-  width: 60%;
+  width: 62%;
   overflow: visible;
 }
 .t30f-guard .gf-tagline {
@@ -176,7 +273,10 @@
   font-size: 11.5px;
 }
 .t30f-guard[aria-pressed='true'] .gf-tagline {
-  border-color: var(--lantern);
+  box-shadow: 0 0 0 2px var(--lantern), 0 3px 6px -4px var(--umbra);
+}
+.t30f-guard[aria-pressed='true'] .t30f-glow {
+  opacity: 1;
 }
 .t30f-denied {
   margin: 0;
@@ -189,6 +289,110 @@
 }
 .t30f-more p {
   margin-bottom: 0.3em;
+}
+
+/* 3 · laws */
+.t30l-script {
+  fill: var(--wash);
+  opacity: 0.1;
+}
+:root[data-theme='dark'] .t30l-script {
+  fill: var(--moon);
+  opacity: 0.06;
+}
+.t30l-tide {
+  fill: var(--water);
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t30l-tide {
+  opacity: 0.8;
+}
+.t30l-ripple {
+  fill: var(--moon);
+  opacity: 0.35;
+}
+:root[data-theme='light'] .t30l-ripple {
+  fill: #fff;
+  opacity: 0.8;
+}
+.t30l-carve {
+  fill: var(--wash);
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t30l-carve {
+  fill: var(--umbra);
+  opacity: 0.7;
+}
+.t30l-wetness {
+  fill: var(--water);
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t30l-wetness {
+  opacity: 0.5;
+}
+.t30l-pillar.wet .t30l-carve {
+  opacity: 0.85;
+}
+.t30l-drip {
+  fill: var(--water);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t30l-drip {
+  fill: var(--moon);
+  opacity: 0.45;
+}
+.t30l-puddle {
+  fill: var(--water);
+  opacity: 0.5;
+}
+
+/* 4 · copyright: a mirror of works, a bucket lifted from it */
+.t30c-sweep {
+  fill: color-mix(in srgb, var(--stone) 70%, var(--wash));
+}
+:root[data-theme='dark'] .t30c-sweep {
+  fill: var(--rock-mid);
+}
+.t30c-weight {
+  fill: url(#p2-rock);
+}
+.t30c-mirror {
+  opacity: 0.32;
+}
+:root[data-theme='dark'] .t30c-mirror {
+  opacity: 0.22;
+}
+.t30c-page {
+  fill: var(--card);
+}
+:root[data-theme='dark'] .t30c-page {
+  fill: var(--moon);
+}
+.t30c-line {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 0.8;
+}
+:root[data-theme='dark'] .t30c-line {
+  stroke: var(--moon);
+}
+.t30c-note {
+  fill: var(--ink-2);
+}
+:root[data-theme='dark'] .t30c-note {
+  fill: var(--moon);
+}
+.t30c-lift .t30c-page {
+  opacity: 0.95;
+}
+.t30c-ring {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+:root[data-theme='light'] .t30c-ring {
+  stroke: #fff;
 }
 
 /* 4 · copyright: court files under the circle's reading card */

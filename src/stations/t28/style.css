@@ -1,49 +1,69 @@
 /* Trạm 28 · NVIDIA. Tokens only (Part 2); no filters on anything that moves. */
 
 /* 1 · gardeners */
-.t28g {
-  --wet: var(--moon);
+.t28g-furrow {
+  fill: var(--wash);
+  opacity: 0.3;
 }
-:root[data-theme='light'] .t28g {
-  --wet: var(--water);
+:root[data-theme='dark'] .t28g-furrow {
+  fill: var(--rock-mid);
+  opacity: 0.32;
 }
-.t28g-bed {
-  fill: var(--paper-2);
-  stroke: var(--line-2);
-  stroke-width: 1;
+:root[data-theme='dark'] .t28g-dry {
+  opacity: 0.35;
+}
+.t28g-pond {
+  fill: url(#p2-water-v);
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t28g-pond {
+  opacity: 0.95;
 }
 .t28g-dry {
   fill: none;
   stroke: var(--ink-3);
   stroke-linecap: round;
-  opacity: 0.45;
-}
-.t28g-soil {
-  fill: var(--wet);
   opacity: 0.5;
 }
-.t28g-sprout {
+.t28g-wetsoil {
+  fill: var(--water);
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .t28g-wetsoil {
+  opacity: 0.75;
+}
+.t28g-leaf {
   fill: none;
   stroke: var(--moss);
   stroke-linecap: round;
 }
-.t28g-pipe {
-  fill: var(--moss-2);
-}
-.t28g-node {
+.t28g-glint {
   fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.4;
-  opacity: 0.6;
+  stroke: var(--moon);
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+:root[data-theme='light'] .t28g-glint {
+  stroke: #fff;
+}
+.t28g-spout {
+  fill: none;
+  stroke: color-mix(in srgb, var(--moss-2) 62%, var(--ink-3));
+  stroke-linecap: round;
+}
+:root[data-theme='dark'] .t28g-spout {
+  stroke: color-mix(in srgb, var(--moss-a) 70%, var(--rock-mid));
 }
 .t28g-drips {
   opacity: 0;
 }
 .t28g-drips path {
   fill: none;
-  stroke: var(--wet);
-  stroke-width: 2;
+  stroke: var(--moon);
   stroke-linecap: round;
+}
+:root[data-theme='light'] .t28g-drips path {
+  stroke: var(--water);
 }
 .t28g.pour .t28g-drips {
   animation: t28g-drip 0.55s ease-in 2;
@@ -61,12 +81,44 @@
     transform: translateY(26px);
   }
 }
-.t28g-can {
+.t28g-rings ellipse {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 1.4;
   opacity: 0;
-  transition: opacity 0.4s;
+  transform-box: fill-box;
+  transform-origin: center;
 }
-.t28g.one .t28g-can {
-  opacity: 1;
+:root[data-theme='light'] .t28g-rings ellipse {
+  stroke: #fff;
+}
+:root:not([data-quality='low']) .t28g.pour .t28g-rings ellipse {
+  animation: t28g-ring 0.55s ease-out 2;
+}
+@keyframes t28g-ring {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+.t28g-cast {
+  fill: var(--umbra);
+  opacity: 0.22;
+}
+.t28g-spray {
+  fill: var(--water);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+:root[data-theme='dark'] .t28g-spray {
+  fill: var(--moon);
+}
+.t28g.one .t28g-spray {
+  opacity: 0.8;
 }
 .t28g-count {
   margin: 0;
@@ -84,13 +136,11 @@
   grid-template-columns: 6.5em 1fr 2.2em;
   align-items: center;
   gap: 10px;
-  margin: 0 0 0.6em;
+  margin: 0 0 0.4em;
   font: 500 0.92rem/1.3 var(--sans);
 }
 .t28s-row input {
   width: 100%;
-  min-height: 32px;
-  accent-color: var(--ink);
 }
 .t28s-val {
   text-align: right;
@@ -109,84 +159,197 @@
   color: var(--moss);
 }
 .t28s-jar {
-  stroke: none;
+  fill: url(#p2-rock);
 }
-.t28s-fill rect {
-  fill: var(--water);
-  transition: y 0.35s, height 0.35s;
+.t28s-crack {
+  fill: var(--wash);
+  opacity: 0.28;
 }
-:root[data-theme='dark'] .t28s-fill rect {
-  fill: var(--moon);
+:root[data-theme='dark'] .t28s-crack {
+  fill: var(--umbra);
+  opacity: 0.5;
+}
+.t28s-band {
+  fill: var(--wash);
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .t28s-band {
+  fill: var(--umbra);
+  opacity: 0.6;
+}
+.t28s-flank {
+  fill: var(--wash);
   opacity: 0.55;
+}
+:root[data-theme='dark'] .t28s-flank {
+  fill: var(--umbra);
+  opacity: 0.8;
 }
 .t28s-mouth {
   fill: var(--umbra);
-  opacity: 0.4;
+  opacity: 0.75;
 }
-.t28s-shadow {
-  fill: var(--umbra);
-  opacity: 0.2;
+.t28s-lip {
+  fill: var(--rock-lo);
+}
+.t28s-water {
+  transition: transform 0.45s cubic-bezier(0.3, 0.9, 0.4, 1);
+}
+.t28s-rip {
+  fill: var(--moon);
+  opacity: 0.3;
+}
+:root[data-theme='light'] .t28s-rip {
+  fill: #fff;
+  opacity: 0.55;
 }
 .t28s-tree {
-  transition: transform 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
+  transition: transform 0.8s cubic-bezier(0.3, 1.3, 0.5, 1);
 }
-.t28s-leaf {
+.t28s-wood {
+  fill: var(--wash);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t28s-wood {
+  fill: var(--rock-hi);
+  opacity: 0.75;
+}
+.t28s-ridge {
+  fill: var(--wash);
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .t28s-ridge {
+  fill: var(--moon);
+  opacity: 0.18;
+}
+.t28s-pad {
   fill: var(--moss);
-  opacity: 0.78;
+  opacity: 0.12;
+}
+.t28s-tie {
+  fill: var(--ink-3);
 }
 .t28s-ground {
-  fill: var(--ink);
+  fill: var(--wash);
   opacity: 0.35;
 }
-.t28s-mound {
-  fill: var(--ink);
-  opacity: 0.2;
-}
-.t28s-spout {
-  fill: var(--moss-2);
-}
-.t28s-drops circle {
-  fill: var(--moon);
-  stroke: var(--moon-rim);
+.t28s-fly {
   opacity: 0;
 }
-:root:not([data-quality='low']) .t28s-drops circle {
-  animation: t28s-drop 2.4s ease-in 4;
+.t28s-drip {
+  opacity: 0;
+}
+:root:not([data-quality='low']) .t28s-drip {
+  animation: t28s-drop 2.6s 0.8s ease-in 4;
 }
 @keyframes t28s-drop {
   0% {
     opacity: 0;
     transform: translateY(0);
   }
-  20% {
+  15% {
     opacity: 1;
   }
   100% {
     opacity: 0;
-    transform: translateY(60px);
+    transform: translateY(70px);
   }
 }
 
 /* 3 · moat */
-.t28m-bank {
-  fill: var(--paper-2);
-  stroke: var(--line-2);
+.t28m-water {
+  fill: url(#p2-water-v);
+  opacity: 0.75;
 }
-.t28m-island {
-  stroke: var(--line-2);
+:root[data-theme='dark'] .t28m-water {
+  opacity: 1;
+}
+.t28m-moonr {
+  fill: var(--moon);
+  opacity: 0.5;
+}
+:root[data-theme='light'] .t28m-moonr {
+  fill: #fff;
+  opacity: 0.7;
+}
+.t28m-bank {
+  fill: var(--wash);
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t28m-bank {
+  fill: var(--moon);
+  opacity: 0.16;
 }
 .t28m-bridge {
-  fill: var(--moss-2);
-  opacity: 0.85;
+  fill: color-mix(in srgb, var(--moss-2) 55%, var(--ink-3));
 }
-.t28m-wall {
-  stroke: var(--ink);
-  stroke-width: 1.3;
+:root[data-theme='dark'] .t28m-bridge {
+  fill: color-mix(in srgb, var(--moss-b) 60%, var(--rock-hi));
+}
+.t28m-slat {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 1;
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t28m-slat {
+  stroke: var(--umbra);
+}
+.t28m-cun {
+  fill: var(--wash);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t28m-cun {
+  fill: var(--umbra);
+  opacity: 0.6;
+}
+.t28m-moss {
+  fill: var(--moss-2);
+}
+:root[data-theme='dark'] .t28m-moss {
+  fill: var(--moss-a);
+}
+.t28m-edge {
+  fill: var(--wash);
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t28m-edge {
+  fill: var(--umbra);
+  opacity: 0.7;
+}
+.t28m-course {
+  fill: var(--wash);
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t28m-edge {
+  fill: var(--wash);
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t28m-edge {
+  fill: var(--umbra);
+  opacity: 0.7;
+}
+.t28m-course {
+  fill: var(--umbra);
+  opacity: 0.5;
+}
+.t28m-win {
+  fill: var(--wash);
+  opacity: 0.55;
+}
+.t28m-roof {
+  fill: var(--wash);
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .t28m-roof {
+  fill: var(--umbra);
+  opacity: 1;
+}
+.t28m-glow-keep {
+  opacity: 0.55;
 }
 .t28m-cuda {
-  font-style: italic;
-  font-family: var(--serif);
-  font-size: 14px;
+  font-size: 13.5px;
 }
 .t28m-boat {
   flex-direction: column;
@@ -198,76 +361,199 @@
   overflow: visible;
 }
 .t28m-boat .gf-tagline {
+  margin-top: -4px;
   font-size: 11.5px;
+  white-space: normal;
+  text-align: center;
+  max-width: 150%;
 }
 .t28m-boat.near {
   transform: translate(var(--dx), var(--dy));
 }
+.t28m-hull {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t28m-hull {
+  fill: var(--rock-lo);
+}
+.t28m-wake {
+  fill: var(--moon);
+  opacity: 0.35;
+}
+:root[data-theme='light'] .t28m-wake {
+  fill: #fff;
+  opacity: 0.8;
+}
+.t28m-lamp {
+  fill: var(--lantern);
+}
 .t28m-glow {
-  opacity: 0.25;
+  opacity: 0.45;
   transition: opacity 0.5s;
 }
 .t28m-boat[aria-pressed='true'] .t28m-glow,
 .t28m-boat:hover .t28m-glow {
-  opacity: 0.9;
+  opacity: 1;
 }
-.t28m-boat .gf-ink {
-  fill: var(--ink);
+
+/* 4 · goldrush scroll */
+.t28r-walker {
+  opacity: 0.5;
+}
+.t28r-pole,
+.t28r-wares {
+  fill: var(--wash);
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t28r-pole,
+:root[data-theme='dark'] .t28r-wares {
+  fill: var(--rock-hi);
+  opacity: 0.8;
+}
+.t28r-blade {
+  fill: var(--rock-mid);
+  stroke: var(--wash);
+  stroke-width: 0.6;
+  stroke-opacity: 0.5;
+}
+:root[data-theme='dark'] .t28r-blade {
+  fill: var(--rock-hi);
+  stroke: var(--umbra);
+}
+.t28r-earth {
+  fill: var(--rock-lo);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t28r-earth {
+  fill: var(--rock-mid);
+  opacity: 1;
+}
+.t28r-cun {
+  fill: var(--wash);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t28r-cun {
+  fill: var(--umbra);
+  opacity: 0.55;
+}
+.t28r-crate {
+  fill: var(--stone);
+}
+:root[data-theme='dark'] .t28r-crate {
+  fill: var(--rock-lo);
+}
+.t28r-canvas {
+  opacity: 0.95;
+}
+.t28r-valance {
+  fill: var(--vermilion);
+  opacity: 0.55;
 }
 
 /* 5 · money loop */
+.t28f-pond {
+  fill: url(#p2-water-v);
+  opacity: 0.34;
+}
+:root[data-theme='dark'] .t28f-pond {
+  opacity: 0.95;
+}
 .t28f-bed {
   fill: none;
-  stroke: var(--ink-3);
-  stroke-width: 7;
-  stroke-linecap: round;
-  opacity: 0.18;
-}
-.t28f-arc {
-  fill: none;
   stroke: var(--moon);
-  stroke-width: 4;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1 7;
+  opacity: 0.35;
+}
+:root[data-theme='light'] .t28f-bed {
+  stroke: var(--ink-3);
+  opacity: 0.5;
+}
+.t28f .p2p-water > ellipse {
+  opacity: 0.45;
+}
+.t28f-flow,
+.t28f-core {
+  fill: none;
   stroke-linecap: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   transition: stroke-dashoffset 1.3s ease-in-out;
 }
-:root[data-theme='light'] .t28f-arc {
-  stroke: var(--ink);
+.t28f-flow {
+  stroke: var(--moon);
+  stroke-width: 10;
+  opacity: 0.22;
 }
-.t28f-arc.lit {
+.t28f-core {
+  stroke: var(--moon);
+  stroke-width: 3;
+}
+:root[data-theme='light'] .t28f-flow {
+  stroke: var(--ink-3);
+  stroke-width: 6;
+  opacity: 0.22;
+}
+:root[data-theme='light'] .t28f-core {
+  stroke: #fff;
+  stroke-width: 2.6;
+}
+.t28f-arc.lit :is(.t28f-flow, .t28f-core) {
   stroke-dashoffset: 0;
 }
-:root:not([data-quality='low']) .t28f.round .t28f-arc {
-  stroke-dasharray: 0.06 0.04;
+:root:not([data-quality='low']) .t28f.round .t28f-core {
+  stroke-dasharray: 0.05 0.035;
   animation: t28f-run 1.6s linear 4;
 }
 @keyframes t28f-run {
   to {
-    stroke-dashoffset: -0.2;
+    stroke-dashoffset: -0.17;
   }
 }
-.t28f-shore {
-  fill: var(--umbra);
+.t28f-double {
+  fill: var(--wash);
+}
+.t28f-ring {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 1.2;
   opacity: 0.25;
+}
+:root[data-theme='light'] .t28f-ring {
+  stroke: #fff;
+  opacity: 0.8;
+}
+.t28f-cun {
+  fill: var(--wash);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t28f-cun {
+  fill: var(--umbra);
+  opacity: 0.6;
+}
+.t28f-moss {
+  fill: var(--moss-2);
+}
+:root[data-theme='dark'] .t28f-moss {
+  fill: var(--moss-a);
 }
 .t28f-isle {
   align-content: end;
   padding-bottom: 2px;
 }
 .t28f-isle .gf-tagline {
-  transform: translateY(60%);
+  transform: translateY(80%);
 }
 .t28f-isle.next .gf-tagline {
-  border-color: var(--lantern);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lantern) 35%, transparent);
+  box-shadow: 0 0 0 2px var(--lantern), 0 0 14px 2px color-mix(in srgb, var(--lantern) 45%, transparent);
 }
 :root:not([data-quality='low']) .t28f-isle.next .gf-tagline {
   animation: t28f-pulse 1.8s ease-in-out 3;
 }
 @keyframes t28f-pulse {
   50% {
-    box-shadow: 0 0 0 7px color-mix(in srgb, var(--lantern) 10%, transparent);
+    box-shadow: 0 0 0 2px var(--lantern), 0 0 22px 6px color-mix(in srgb, var(--lantern) 20%, transparent);
   }
 }
 .t28f-list {

@@ -9,6 +9,7 @@ import { gardenersScene } from './gardeners'
 import { scalingScene } from './scaling'
 import { moatScene } from './moat'
 import { flowScene } from './flow'
+import { goldrushArt } from './goldrush'
 
 const S = C.scenes
 const station: StationModule = {
@@ -17,7 +18,7 @@ const station: StationModule = {
     { label: S.gardeners.label, mount: gardenersScene },
     { label: S.scaling.label, mount: scalingScene },
     { label: S.moat.label, mount: moatScene },
-    progressTide(S.goldrush.tide as Tide, { label: S.goldrush.label, prompt: S.goldrush.prompt, insight: S.goldrush.insight as Fact, aria: S.goldrush.sliderAria }),
+    progressTide(S.goldrush.tide as Tide, { label: S.goldrush.label, prompt: S.goldrush.prompt, insight: S.goldrush.insight as Fact, aria: S.goldrush.sliderAria, art: goldrushArt(S.goldrush.tide.milestones.length) }),
     { label: S.loop.label, mount: flowScene },
     perspectiveCircle(S.loop.perspectives as Perspectives, { label: S.loop.circleLabel }),
   ],
