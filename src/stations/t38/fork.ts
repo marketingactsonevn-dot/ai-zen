@@ -1,64 +1,104 @@
-import { fill, h, nextId, s } from '../../core/dom'
-import { blob, curve, rng, stroke } from '../../ui/part2/ink'
+import { fill, h, s } from '../../core/dom'
+import { curve, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
+import { grass, hills, mist, moon, pine } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
-import { C, moon, shell } from './shell'
+import { C, shell } from './shell'
+import { along, bamboo, dawnGlow, fog, lines, rakeD, stonesOn } from '../t37/sumi'
 
 const K = C.scenes.fork
 type Id = 'speed' | 'share' | 'control'
 const lv = (v: number) => (v < 34 ? 'low' : v > 66 ? 'high' : 'mid')
-const GX = 200, GY = 112
+const GX = 200, GB = 150 // the garden at the end of the path stands on the far ground at GB
 
 /** The five gardens that can wait at the end of the path (one shows at a time). */
 function gardens() {
   const r = rng(38)
-  const g = (id: string, ...kids: SVGElement[]) => s('g', { class: 't38f-garden', 'data-id': id }, ...kids)
-  const wild = Array.from({ length: 34 }, () => {
-    const x = GX - 86 + r() * 172, y = GY + 26 - r() * 8
-    return s('path', { class: r() > 0.4 ? 'grass' : 'ink', d: stroke(curve([x, y], [x + (r() - 0.5) * 30, y - 20 - r() * 16], [x + (r() - 0.5) * 50, y - 34 - r() * 26]), 2.2 + r() * 2) })
-  })
-  const trees = [GX - 62, GX - 26, GX + 26, GX + 62].map((x, i) => s('path', { class: 'tree', d: blob(x, GY + 4 - (i % 2) * 6, 15, 13, x, 0.1) }))
-  const commons = [
-    ...trees,
-    s('path', { class: 'rail', d: `M${GX - 96} ${GY + 26}h82M${GX + 14} ${GY + 26}h82M${GX - 96} ${GY + 20}h82M${GX + 14} ${GY + 20}h82` }),
-    s('path', { class: 'post', d: `M${GX - 14} ${GY + 30}v-26M${GX + 14} ${GY + 30}v-26M${GX - 18} ${GY + 4}h36` }),
+  const g = (id: string, ...kids: (SVGElement | string)[]) => s('g', { class: 't38f-garden', 'data-id': id }, ...kids)
+  // wild forest: crooked pines crowding, tall grass everywhere
+  let weeds = ''
+  const wildTrees = ([[128, 40, 1], [154, 54, -1], [184, 36, 1], [222, 58, -1], [252, 44, 1], [280, 34, -1]] as const).map(([x, hh, dir], i) => pine(x, GB + 1, hh, 3800 + i * 7, dir))
+  for (let i = 0; i < 46; i++) {
+    const x = GX - 92 + r() * 184, hh = 8 + r() * 14
+    weeds += stroke(curve([x, GB + 2], [x + (r() - 0.5) * 6, GB - hh * 0.6], [x + (r() - 0.5) * 10, GB - hh], 5), 1 + r() * 0.8, 0.05, 0.7, 0.1)
+  }
+  // terraces: even steps of field, each holding a sliver of sky
+  let banks = '', glints = ''
+  for (let i = 0; i < 5; i++) {
+    const y = GB - i * 8.5, half = 92 - i * 12
+    banks += stroke(curve([GX - half, y], [GX, y - 4], [GX + half, y], 16), 2.2, 0.1, 0.1, 0.4)
+    glints += stroke([[GX - half * 0.5 + r() * 20, y - 3.5], [GX - half * 0.1 + r() * 20, y - 4]], 1, 0.3, 0.3, 0.2) + stroke([[GX + half * 0.2 + r() * 10, y - 3.2], [GX + half * 0.55, y - 3.4]], 0.9, 0.3, 0.3, 0.2)
+  }
+  // drift: only veils
+  const veils = [0, 1, 2, 3].map((i) => fog(GX - 50 + i * 34, GB - 10 - (i % 2) * 10, 60, 9))
+  return [
+    g('wild', ...wildTrees, s('path', { class: 't38f-weed', d: weeds })),
+    g('commons',
+      ...[132, 268].map((x, i) => pine(x, GB, 30, 3810 + i, i ? -1 : 1)),
+      s('path', { class: 'g13-ink', d: lines([[130, GB, 130, GB - 14], [164, GB, 164, GB - 12], [236, GB, 236, GB - 12], [270, GB, 270, GB - 14]], 2) + lines([[112, GB - 4, 186, GB - 4], [214, GB - 4, 288, GB - 4], [112, GB - 9, 186, GB - 9], [214, GB - 9, 288, GB - 9]], 1.3) + lines([[188, GB + 1, 188, GB - 22], [212, GB + 1, 212, GB - 22], [184, GB - 21, 216, GB - 21]], 2.6) + lines([[188, GB - 2, 178, GB - 6], [212, GB - 2, 222, GB - 6]], 2), filter: 'url(#ink-rough)' }),
+      s('path', { class: 't38f-open', d: `M195 ${GB}L205 ${GB}L208 ${GB + 10}L192 ${GB + 10}Z` })),
+    g('walled',
+      pine(170, GB - 20, 34, 3820, 1), pine(230, GB - 20, 40, 3821, -1),
+      s('path', { class: 't38f-wall', d: `M112 ${GB}L112 ${GB - 24}L288 ${GB - 24}L288 ${GB}Z`, filter: 'url(#ink-rough)' }),
+      s('path', { class: 't38f-wall-base', d: `M112 ${GB}L112 ${GB - 6}L288 ${GB - 6}L288 ${GB}Z` }),
+      s('path', { class: 't38f-wall-tex', d: lines(Array.from({ length: 16 }, (_, i) => [118 + i * 11, GB - 5.5, 118 + i * 11, GB - 0.5]), 0.8) + lines(Array.from({ length: 22 }, (_, i) => [110 + i * 8.4, GB - 27, 113 + i * 8.4, GB - 24.5]), 1.2) }),
+      s('path', { class: 'g13-ink', d: stroke([[106, GB - 25], [200, GB - 27], [294, GB - 25]], 4, 0.05, 0.05, 0.5) + stroke([[110, GB - 28], [200, GB - 30], [290, GB - 28]], 1.4, 0.1, 0.1, 0.4) + lines([[193, GB, 193, GB - 18], [207, GB, 207, GB - 18], [193, GB - 18, 207, GB - 18]], 1.6), filter: 'url(#ink-rough)' }),
+      s('path', { class: 't38f-door', d: `M194 ${GB}V${GB - 17}H206V${GB}Z` })),
+    g('terraces', s('path', { class: 't38f-terrace', d: banks, filter: 'url(#ink-rough)' }), s('path', { class: 't38f-glint', d: glints })),
+    g('drift', ...veils, s('path', { class: 't38f-wisp', d: lines([[140, GB - 14, 190, GB - 16], [176, GB - 26, 236, GB - 27], [214, GB - 8, 268, GB - 9]], 1.2, 0.4, 0.4) })),
   ]
-  const walled = [
-    s('path', { class: 'tree', d: blob(GX + 20, GY - 22, 22, 16, 5, 0.1) }),
-    s('rect', { class: 'wall', x: GX - 80, y: GY - 14, width: 160, height: 42 }),
-    s('path', { class: 'roof', d: `M${GX - 86} ${GY - 14}h172l-6 -7h-160z` }),
-  ]
-  const terraces = Array.from({ length: 5 }, (_, i) => s('path', { class: 'terrace', d: stroke(curve([GX - 92 + i * 10, GY + 26 - i * 11], [GX, GY + 20 - i * 11], [GX + 92 - i * 10, GY + 26 - i * 11]), 4, 0.1, 0.1, 0.5) }))
-  const drift = [GX - 40, GX + 16, GX - 6, GX + 40].map((x, i) => s('path', { class: 'fog', d: stroke([[x - 54, GY + 22 - i * 9], [x + 54, GY + 20 - i * 9]], 2.4, 0.4, 0.4, 0.1) }))
-  return [g('wild', ...wild), g('commons', ...commons), g('walled', ...walled), g('terraces', ...terraces), g('drift', ...drift)]
 }
 
-/** A bamboo well-sweep lever beside the path; its arm tilts with the slider. */
-const lever = (x: number, y: number) => {
-  const arm = s('g', { class: 't38f-arm', style: `transform-origin:${x}px ${y - 40}px` },
-    s('path', { class: 'bamboo', d: stroke([[x - 34, y - 40], [x + 34, y - 40]], 3.4, 0.05, 0.05, 0.7) }),
-    s('circle', { class: 'weight', cx: x - 34, cy: y - 40, r: 4 }))
-  return { arm, el: s('g', null, s('path', { class: 'bamboo', d: stroke([[x, y], [x, y - 42]], 3, 0.05, 0.05, 0.8) }), arm) }
+/** A bamboo well-sweep (hanetsurube) by the path: post, a long arm on a pivot, a stone weight, a rope and bucket. */
+function lever(x: number, y: number, seed: number) {
+  const px = x, py = y - 44
+  const post = bamboo([[x, y], [x + 0.6, y - 22], [x, py + 2]], 3.4, seed)
+  const beam = bamboo([[px - 34, py + 1], [px, py], [px + 38, py - 1]], 2.6, seed + 1, 16)
+  const arm = s('g', { class: 't38f-arm', style: `transform-origin:${px}px ${py}px` },
+    s('path', { class: 'g13-bamboo', d: beam.cane, filter: 'url(#ink-rough)' }),
+    s('path', { class: 'g13-node', d: beam.nodes }),
+    s('path', { class: 't38f-rope', d: stroke([[px + 36, py], [px + 36.5, py + 22]], 0.8, 0.05, 0.05, 0.8) + stroke([[px - 31, py], [px - 31, py + 5]], 0.8, 0.05, 0.05, 0.8) }),
+    s('path', { class: 't38f-bucket', d: `M${px + 31} ${py + 22}L${px + 42} ${py + 22}L${px + 40.5} ${py + 31}L${px + 32.5} ${py + 31}Z`, filter: 'url(#ink-rough)' }),
+    s('path', { class: 'g13-ink', d: lines([[px + 31, py + 25, px + 42, py + 25], [px + 32, py + 29, px + 41, py + 29]], 0.7) }),
+    s('g', { transform: `translate(${px - 31} ${py + 13})` }, stoneArt(13, 9, seed + 2)))
+  return {
+    arm,
+    el: s('g', { class: 't38f-lever' },
+      s('ellipse', { class: 'p2p-contact', cx: x + 3, cy: y + 1, rx: 12, ry: 2.2 }),
+      s('path', { class: 'g13-bamboo', d: post.cane, filter: 'url(#ink-rough)' }),
+      s('path', { class: 'g13-node', d: post.nodes }),
+      s('path', { class: 'g13-hi', d: post.hi }),
+      s('path', { class: 'g13-ink', d: lines([[px - 3, py + 3, px - 2, py - 4], [px + 3, py + 3, px + 2, py - 4]], 1.4) }),
+      arm,
+      grass(x - 6, y + 1, 12, seed + 3)),
+  }
 }
 
 /** Scene 3 — three levers by a three-way fork in the mist; the garden at the end of the path changes with them. */
 export function forkScene(ctx: SceneCtx) {
-  const { root, svg, panel } = shell(ctx, 't38f', K.art, [K.insight], '20 40 360 260')
-  const hills = s('path', { class: 't38f-hills', d: 'M0 150q60 -26 110 -6t100 -10t100 4t100 -4V160H0z' })
+  const { root, svg, panel } = shell(ctx, 't38f', K.art, [K.insight], '20 40 360 262')
   // stepping stones: one way up from the viewer, splitting into three that shrink into the mist
-  const paths = s('g', { class: 't38f-paths' })
-  const ways = [curve([200, 298], [196, 252], [200, 218], 7), ...[[124, 156], [200, 150], [276, 156]].map(([x, y]) => curve([200, 210], [(x + 200) / 2, 192], [x, y], 6))]
-  ways.forEach((w, wi) => w.forEach(([x, y], i) => {
-    const k = wi ? 0.75 - i * 0.1 : 1.25 - i * 0.07
-    if (wi && i === 0) return
-    paths.append(s('path', { d: blob(x, y, 11 * k, 3.6 * k, wi * 9 + i, 0.12) }))
-  }))
-  const dawnId = nextId('t38dawn')
-  const stop = (o: number, a: number) => s('stop', { offset: o, style: `stop-color:var(--dawn);stop-opacity:${a}` })
-  const gs = gardens()
-  const levers = [lever(118, 286), lever(286, 276), lever(330, 296)]
-  svg.append(s('defs', null, s('radialGradient', { id: dawnId, cx: 0.5, cy: 0.95, r: 0.75 }, stop(0, 1), stop(1, 0))),
-    s('rect', { x: 20, y: 40, width: 360, height: 120, fill: `url(#${dawnId})` }), moon(70, 146, 13), hills, paths, ...gs,
-    s('ellipse', { class: 't38f-mist', cx: 200, cy: 152, rx: 210, ry: 10 }), ...levers.map((l) => l.el))
+  const trunk = along(curve([200, 304], [192, 258], [200, 214], 14), 6)
+  const forks = ([[126, 160], [200, 158], [274, 160]] as Pt[]).map(([x, y]) => along(curve([200, 206], [(x + 200) / 2 + (x - 200) * 0.2, 190], [x, y], 12), 5, 0.12, 1))
+  const levers = [lever(92, 292, 3830), lever(292, 268, 3840), lever(340, 298, 3850)]
+  levers.forEach((l) => (l.arm.style.transform = 'rotate(-10deg)'))
+  svg.append(
+    dawnGlow(200, 156, 210, 90, 3),
+    fog(200, 120, 230, 60),
+    moon(74, 142, 13, 3860, false),
+    fog(74, 148, 52, 7), fog(84, 134, 34, 4),
+    hills(0, 400, 154, 46, 3861, 0.92, 7),
+    hills(-10, 140, 158, 30, 3862, 0.62, 2),
+    hills(270, 410, 158, 34, 3863, 0.62, 2),
+    s('g', { transform: `translate(${GX} ${GB}) scale(1.22) translate(${-GX} ${-GB})` }, ...gardens()),
+    fog(200, 154, 230, 13),
+    mist(200, 160, 220, 10),
+    s('path', { class: 'g13-rake', d: rakeD(10, 390, 172, 302, 9, 3864, 0) }),
+    ...forks.map((w, i) => stonesOn(w, (k) => 7 - k * 0.8, 3870 + i, 't38f-way')),
+    stonesOn(trunk, (k) => 15 - k * 1.4, 3875),
+    fog(200, 186, 190, 14),
+    ...levers.map((l) => l.el),
+    s('g', { transform: 'translate(50 300)' }, stoneArt(30, 16, 3880)),
+    grass(240, 300, 16, 3881))
 
   const vals: Record<Id, number> = { speed: 50, share: 50, control: 50 }
   const name = h('h3', { class: 't38f-name' })
@@ -70,7 +110,7 @@ export function forkScene(ctx: SceneCtx) {
     const input = h('input', { type: 'range', min: 0, max: 100, step: 1, value: 50, class: 't38f-range' })
     input.addEventListener('input', () => {
       vals[sl.id] = Number(input.value)
-      levers[i].arm.style.transform = `rotate(${((vals[sl.id] - 50) * 0.5).toFixed(1)}deg)`
+      levers[i].arm.style.transform = `rotate(${(-10 + (vals[sl.id] - 50) * 0.36).toFixed(1)}deg)`
       draw()
     })
     input.addEventListener('change', () => {

@@ -1,44 +1,83 @@
 import { h, s } from '../../core/dom'
 import { blob, curve, stroke } from '../../ui/part2/ink'
+import { grass, hills, mist, moon, pine, toro, wash } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
-import { C, lantern, moon, shell } from './shell'
+import { C, shell } from './shell'
+import { along, lines, rakeD, stonesOn } from './sumi'
 
 const K = C.scenes.lab
 
-/** A kneeling figure's silhouette, feet at (0, 0), ≈ 34 tall. */
-const figure = (cls: string) =>
-  s('g', { class: cls }, s('g', { class: 'fig' }, s('circle', { cx: 0, cy: -30, r: 5 }), s('path', { d: 'M-9 0q-2 -16 3 -22q6 -3 12 0q5 6 3 22z' })))
+/** A shadow cast on paper or sand: soft wash edges. Kneeling upright (feet at 0, 0), ≈ 34 tall. */
+const kneeling = 'M-1 -40a6 6.4 0 1 0 0.1 0zM-9 -30Q-1 -34 7 -30Q11 -18 12 -3Q13 0 10 1H-12Q-14 0 -13 -4Q-11 -18 -9 -30Z'
+/** Walking, leaning into the step. */
+const walking = 'M2 -31a4.4 4.6 0 1 0 0.1 0zM-3 -24Q2 -27 7 -23Q8 -14 6 -9L10 0L7 1L2 -7L-2 0L-6 0L-3 -9Q-6 -16 -3 -24Z'
 
-function art(svg: SVGSVGElement) {
-  const sand = s('g', { class: 't37l-sand' })
-  for (let i = 0; i < 5; i++) sand.append(s('path', { d: `M-10 ${226 + i * 17}q120 -4 210 0t220 2` }))
-  // two ways out of the tea room: the straight lit path and the side path into the dark
-  const ways = s('g', { class: 't37l-ways' },
-    s('path', { class: 'main', d: stroke(curve([200, 214], [196, 252], [186, 300]), 26, 0.05, 0.1, 0.8) }),
-    s('path', { class: 'side', d: stroke(curve([206, 222], [262, 236], [344, 226]), 14, 0.05, 0.6, 0.3) }))
-  // the tea room: roof, lit shōji wall with its lattice, the figure's straight shadow on the paper
-  const room = s('g', { class: 't37l-room' })
-  const shoji = s('rect', { class: 'shoji', x: 140, y: 120, width: 120, height: 88 })
-  const lattice = s('g', { class: 'lattice' })
-  for (let i = 1; i < 6; i++) lattice.append(s('path', { d: `M${140 + i * 20} 120v88` }))
-  for (let j = 1; j < 4; j++) lattice.append(s('path', { d: `M140 ${120 + j * 22}h120` }))
-  room.append(
-    s('path', { class: 'ink', d: 'M122 122q78 -46 156 0l-8 -6q-70 -36 -140 0z' }),
-    s('path', { class: 'ink', d: 'M134 120h132l-4 -6h-124z' }),
-    shoji, figure('t37l-in'), lattice,
-    s('rect', { class: 'frame', x: 140, y: 120, width: 120, height: 88 }),
-    s('path', { class: 'ink', d: stroke([[132, 210], [268, 210]], 4) }))
-  ;(room.querySelector('.t37l-in') as SVGGElement).setAttribute('transform', 'translate(200 200)')
-  // the second shadow out in the garden: at the door when watched, off down the side path when not
-  const out = s('g', { class: 't37l-out', transform: 'translate(214 232)' }, figure('t37l-walk'))
-  const bushes = s('g', { class: 't37l-bush' })
-  for (const [x, y, rx, ry] of [[70, 214, 52, 22], [336, 206, 46, 20], [38, 240, 30, 12]]) bushes.append(s('path', { d: blob(x, y, rx, ry, x, 0.14) }))
-  svg.append(moon(62, 50, 12), sand, bushes, ways, room, out, lantern(104, 252, 0.8))
+/** A pruned shrub (karikomi): a rounded wash, dry clipped texture, its own shade below. */
+function shrub(x: number, y: number, rx: number, ry: number, seed: number) {
+  let tex = ''
+  for (let i = 0; i < 7; i++) {
+    const a = Math.PI * (1.1 + (i / 6) * 0.8)
+    const px = x + Math.cos(a) * rx * 0.7, py = y + Math.sin(a) * ry * 0.6
+    tex += stroke(curve([px - rx * 0.16, py], [px, py - ry * 0.18], [px + rx * 0.16, py], 4), 1.1, 0.2, 0.2, 0.2)
+  }
+  return s('g', { class: 't37l-shrub' },
+    wash(blob(x, y, rx, ry, seed, 0.12), 0.42, 'p2p-wash g13-moss'),
+    wash(blob(x - rx * 0.15, y - ry * 0.2, rx * 0.6, ry * 0.5, seed + 2, 0.15), 0.25, 'p2p-wash g13-moss'),
+    wash(blob(x + rx * 0.1, y + ry * 0.5, rx * 0.85, ry * 0.4, seed + 1, 0.12), 0.38),
+    s('path', { class: 'p2p-cun', d: tex, filter: 'url(#ink-dry)' }))
+}
+
+function art(svg: SVGGElement) {
+  // the tea room: plinth, veranda, posts, the lit shōji with its lattice, a hipped roof with lifted eaves
+  let lattice = ''
+  for (let i = 1; i < 10; i++) lattice += stroke([[140 + i * 12, 125], [140 + i * 12, 193]], 0.9, 0.1, 0.1, 0.6)
+  for (let j = 1; j < 5; j++) lattice += stroke([[141, 124 + j * 14], [259, 124 + j * 14]], 0.9, 0.1, 0.1, 0.6)
+  let tiles = ''
+  for (let x = 150; x <= 250; x += 8) tiles += stroke([[x + (x - 200) * 0.02, 89], [x + (x - 200) * 0.42, 119]], 0.9, 0.1, 0.3, 0.3)
+  const roof = 'M108 127Q130 123 147 104L166 86L234 86L253 104Q270 123 292 127Q256 119 200 120Q144 119 108 127Z'
+  const main = along(curve([200, 214], [196, 248], [186, 284], 12), 5)
+  const side = along(curve([214, 226], [276, 240], [376, 226], 14), 6, 0.1, 1)
+  svg.append(
+    mist(200, 84, 300, 92),
+    moon(64, 52, 14, 3710, true),
+    hills(-30, 430, 152, 58, 3711, 0.9, 5),
+    hills(250, 440, 160, 40, 3712, 0.62, 2),
+    mist(200, 158, 260, 20),
+    s('path', { class: 'g13-rake', d: rakeD(-10, 410, 214, 284, 8, 3713, -2) }),
+    pine(362, 216, 150, 3714, -1),
+    shrub(58, 212, 36, 13, 3715), shrub(100, 222, 22, 9, 3716), shrub(318, 216, 26, 10, 3717),
+    // light spilling from the room onto the sand, the two ways out
+    s('g', { class: 't37l-glow' }, s('ellipse', { cx: 200, cy: 222, rx: 120, ry: 34, fill: 'url(#p2-lamp)' })),
+    s('g', { class: 't37l-main' }, stonesOn(main, (i) => 10 + i * 2.4, 3718)),
+    s('g', { class: 't37l-side' }, stonesOn(side, (i) => 9 - i * 0.6, 3719)),
+    s('g', { class: 't37l-room' },
+      wash(blob(200, 206, 92, 9, 3720, 0.1), 0.3),
+      s('path', { class: 't37l-plinth', d: 'M126 199L274 199L271 208L129 208Z', filter: 'url(#ink-rough)' }),
+      s('g', { class: 't37l-shoji' },
+        s('rect', { class: 't37l-paper', x: 140, y: 124, width: 120, height: 70 }),
+        s('rect', { x: 140, y: 124, width: 120, height: 70, fill: 'url(#p2-lamp-body)', class: 't37l-lamp' })),
+      s('g', { class: 't37l-in' }, s('path', { class: 't37l-shadow', d: kneeling, transform: 'translate(184 192)', filter: 'url(#ink-wash)' }),
+        s('path', { class: 't37l-shadow', d: 'M200 181h28v3h-28zM203 184v8M225 184v8M209 176h10v5h-10z', filter: 'url(#ink-wash)' })),
+      s('path', { class: 't37l-lattice', d: lattice }),
+      s('path', { class: 'g13-ink', d: lines([[136, 120, 136, 199], [264, 120, 264, 199], [138, 124, 262, 124], [138, 194, 262, 194]], 3, 0.05, 0.05) + lines([[200, 124, 200, 194]], 1.8, 0.05, 0.05), filter: 'url(#ink-rough)' }),
+      s('path', { class: 't37l-plank', d: lines([[122, 197, 278, 197], [124, 201, 276, 201]], 1.6, 0.1, 0.1), filter: 'url(#ink-rough)' }),
+      s('path', { class: 't37l-eave-sh', d: 'M134 120L266 120L266 128Q200 125 134 128Z' }),
+      s('path', { class: 't37l-roof', d: roof, filter: 'url(#ink-wash)' }),
+      s('path', { class: 't37l-tiles', d: tiles }),
+      s('path', { class: 'g13-ink', d: stroke([[163, 87], [200, 85.5], [237, 87]], 4, 0.15, 0.15, 0.5) + stroke(curve([106, 125], [200, 113], [294, 125], 20), 2.4, 0.08, 0.08, 0.4) + lines([[160, 84, 165, 89], [240, 84, 235, 89]], 2), filter: 'url(#ink-rough)' })),
+    toro(92, 262, 40, false),
+    grass(126, 264, 16, 3721),
+    grass(300, 262, 18, 3722),
+    // its second shadow out in the garden: by the door while watched, away down the side path when not
+    s('g', { class: 't37l-out' },
+      s('ellipse', { class: 't37l-cast', cx: 6, cy: 0, rx: 14, ry: 2.6 }),
+      s('path', { class: 't37l-shadow', d: walking, filter: 'url(#ink-wash)' }),
+      s('path', { class: 't37l-rimlight', d: stroke([[-0.5, -34], [-3.5, -32], [-4, -27]], 1.1, 0.2, 0.3, 0.2) + stroke([[-3.5, -23], [-5, -15], [-3, -9]], 1, 0.2, 0.3, 0.2) + stroke([[-3, -9], [-6, 0]], 0.9, 0.2, 0.3, 0.2) })))
 }
 
 /** Scene 2 — the sealed test room: the paper gardener behaves while it believes it is watched. */
 export function labScene(ctx: SceneCtx) {
-  const { root, svg, panel } = shell(ctx, 't37l', K.art, [K.insight], '20 30 360 270')
+  const { root, svg, panel } = shell(ctx, 't37l', K.art, [K.insight], '0 24 400 264')
   art(svg)
   let watched = true
   let told = false

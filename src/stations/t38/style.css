@@ -45,28 +45,106 @@
   }
 }
 
-.t38 .ink {
-  fill: var(--ink);
-  opacity: 0.8;
+/* ───── scene 1 · defs (the well) ───── */
+.t38d .p2c-rake,
+.t38d .p2c-pad {
+  display: none;
 }
-.t38 .moon {
+.t38d-curb,
+.t38d-wall {
+  fill: url(#p2-rock);
+}
+.t38d-wall-sh {
+  fill: var(--umbra);
+  opacity: 0.38;
+}
+.t38d-curb {
+  opacity: 0.92;
+}
+.t38d-joint {
+  fill: var(--wash);
+  opacity: 0.32;
+}
+.t38d-tex {
+  fill: var(--wash);
+  opacity: 0.35;
+}
+.t38d-edge {
+  opacity: 0.5;
+}
+.t38d-lip {
   fill: var(--moon);
+  opacity: 0.45;
+}
+:root[data-theme='light'] .t38d-lip {
+  fill: var(--rake-hi);
+  opacity: 1;
+}
+.t38d-sign {
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-soft);
+}
+.t38d-cut {
+  fill: var(--water);
+  opacity: 0.9;
+}
+.t38d-lit {
+  fill: var(--moon);
+  opacity: 0.85;
+}
+.t38d-veil {
+  transition: opacity 1.6s var(--ease-soft);
+}
+.t38d-fog {
+  fill: url(#g13-veil);
+  opacity: 0.85;
+}
+.t38d-post {
+  fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash));
+  opacity: 0.85;
+}
+.t38d-rope {
+  fill: var(--ink-2);
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t38d-fog {
+  opacity: 0.45;
+}
+.t38d:has(.p2c-stone:nth-child(1)[aria-pressed='true']) .t38d-sign[data-k='0'],
+.t38d:has(.p2c-stone:nth-child(2)[aria-pressed='true']) .t38d-sign[data-k='1'],
+.t38d:has(.p2c-stone:nth-child(3)[aria-pressed='true']) .t38d-sign[data-k='2'],
+.t38d:has(.p2c-stone:nth-child(4)[aria-pressed='true']) .t38d-sign[data-k='3'] {
+  opacity: 1;
+}
+.t38d:has(.p2c-stone:nth-child(1)[data-heard]) .t38d-veil[data-k='0'],
+.t38d:has(.p2c-stone:nth-child(2)[data-heard]) .t38d-veil[data-k='1'],
+.t38d:has(.p2c-stone:nth-child(3)[data-heard]) .t38d-veil[data-k='2'],
+.t38d:has(.p2c-stone:nth-child(4)[data-heard]) .t38d-veil[data-k='3'] {
+  opacity: 0;
+}
+
+/* ───── scene 2 · tide (measuring cords) ───── */
+.t38m-shadow {
+  fill: var(--umbra);
+  opacity: 0.12;
+}
+:root[data-theme='dark'] .t38m-shadow {
+  opacity: 0.35;
+}
+.t38m-cord {
+  fill: var(--ink-2);
+  opacity: 0.85;
+}
+.t38m-fray {
+  fill: var(--ink-2);
+  opacity: 0.35;
+}
+.t38m-knot {
+  fill: var(--vermilion);
+  opacity: 0.8;
 }
 
 /* ───── scene 3 · fork ───── */
-.t38f-hills {
-  fill: var(--stone-2);
-  opacity: 0.5;
-}
-.t38f-paths path {
-  fill: url(#p2-rock);
-  stroke: var(--ink);
-  stroke-opacity: 0.3;
-}
-.t38f-mist {
-  fill: var(--paper);
-  opacity: 0.55;
-}
 .t38f-garden {
   opacity: 0;
   transition: opacity 0.9s;
@@ -78,43 +156,64 @@
 .t38f[data-garden='drift'] [data-id='drift'] {
   opacity: 1;
 }
-.t38f-garden .grass,
-.t38f-garden .tree,
-.t38f-garden .terrace {
-  fill: var(--moss);
-  opacity: 0.85;
+.t38f-leafy {
+  fill: var(--moss-b);
 }
-.t38f-garden .rail,
-.t38f-garden .post {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2;
-  stroke-linecap: round;
+.t38f-weed {
+  fill: var(--moss-b);
   opacity: 0.7;
 }
-.t38f-garden .wall {
-  fill: url(#p2-rock);
-  stroke: var(--ink);
-  stroke-opacity: 0.5;
+:root[data-theme='dark'] .t38f-leafy,
+:root[data-theme='dark'] .t38f-weed {
+  fill: var(--moss-c);
 }
-.t38f-garden .roof {
-  fill: var(--ink);
+.t38f-open {
+  fill: var(--rock-hi);
   opacity: 0.8;
 }
-.t38f-garden .fog {
-  fill: var(--ink-3);
-  opacity: 0.5;
-}
-.t38f .t38-svg {
-  overflow: hidden;
-}
-.t38f .bamboo {
-  fill: var(--moss-2);
-}
-.t38f .weight {
+.t38f-wall {
   fill: url(#p2-rock);
-  stroke: var(--ink);
-  stroke-opacity: 0.4;
+}
+.t38f-wall-base {
+  fill: var(--rock-lo);
+  opacity: 0.55;
+}
+.t38f-wall-tex {
+  fill: var(--wash);
+  opacity: 0.45;
+}
+.t38f-door {
+  fill: var(--wash);
+  opacity: 0.75;
+}
+.t38f-terrace {
+  fill: var(--moss-b);
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t38f-terrace {
+  fill: var(--moss-c);
+}
+.t38f-glint {
+  fill: var(--moon);
+  opacity: 0.8;
+}
+:root[data-theme='light'] .t38f-glint {
+  fill: var(--rake-hi);
+  opacity: 1;
+}
+.t38f-wisp {
+  fill: var(--ink-3);
+  opacity: 0.3;
+}
+.t38f-way {
+  opacity: 0.85;
+}
+.t38f-rope {
+  fill: var(--wash);
+  opacity: 0.6;
+}
+.t38f-bucket {
+  fill: var(--rock-mid);
 }
 .t38f-arm {
   transition: transform 0.25s ease-out;
@@ -184,19 +283,29 @@
 .t38t .t38-stage {
   position: absolute;
   inset: 0;
-  opacity: 0.55;
+  opacity: 0.7;
   pointer-events: none;
 }
-.t38t-planks path {
-  fill: none;
-  stroke: var(--ink);
-  stroke-opacity: 0.08;
-  stroke-width: 1.5;
+.t38t-floor {
+  fill: var(--rock-mid);
+  opacity: 0.16;
+}
+.t38t-grain {
+  fill: var(--wash);
+  opacity: 0.22;
+}
+.t38t-board {
+  opacity: 0.35;
+}
+.t38t-eave {
+  fill: var(--wash);
+  opacity: 0.6;
 }
 .t38t .t38-panel {
   position: relative;
   width: min(100%, 980px);
 }
+/* the rattan basket: woven cane over a bowl, light on its rim, shade underneath */
 .t38t-basket {
   display: flex;
   flex-wrap: wrap;
@@ -204,22 +313,31 @@
   gap: 8px;
   min-height: 44px;
   margin-bottom: 14px;
-  padding: 10px;
-  border: 1px dashed var(--line-2);
-  border-radius: 40px 34px 44px 30px;
+  padding: 16px 18px 20px;
+  border-radius: 28px 28px 46% 46% / 22px 22px 34% 34%;
+  background:
+    radial-gradient(90% 70% at 50% 18%, color-mix(in srgb, var(--moon) 20%, transparent), transparent 70%),
+    linear-gradient(transparent 55%, color-mix(in srgb, var(--umbra) 30%, transparent)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12'%3E%3Cg fill='%23fff' fill-opacity='.36'%3E%3Cellipse cx='8' cy='3' rx='6.4' ry='2.2'/%3E%3Cellipse cx='0' cy='9' rx='6.4' ry='2.2'/%3E%3Cellipse cx='16' cy='9' rx='6.4' ry='2.2'/%3E%3C/g%3E%3Cg fill='%23000' fill-opacity='.28'%3E%3Crect x='7.3' y='5.4' width='1.4' height='1.8'/%3E%3Crect x='-.7' y='-.6' width='1.4' height='1.8'/%3E%3Crect x='15.3' y='-.6' width='1.4' height='1.8'/%3E%3C/g%3E%3C/svg%3E"),
+    color-mix(in srgb, var(--lantern) 26%, var(--rock-mid));
+  box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--lantern) 30%, var(--rock-hi)), inset 0 0 0 7px color-mix(in srgb, var(--umbra) 28%, transparent), inset 0 -14px 20px -12px var(--umbra), 0 12px 18px -12px var(--umbra);
 }
 .t38t-basket:empty {
   display: none;
 }
+/* engraved river pebbles */
 .t38t-peb {
   display: inline-grid;
   max-width: 15em;
   padding: 8px 14px;
   font: 400 0.9rem/1.3 var(--serif);
   color: var(--stone-text);
-  background: radial-gradient(120% 90% at 30% 20%, var(--step-hi), var(--step-mid) 70%, var(--step-lo));
-  border: 1px solid var(--line-2);
-  box-shadow: var(--shadow-1);
+  border: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .9 0 0 0 -.34'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(80% 60% at 30% 12%, color-mix(in srgb, var(--moon) 26%, transparent), transparent 70%),
+    linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 62%, var(--rock-lo));
+  box-shadow: inset -6px -8px 14px -8px var(--umbra), inset 3px 4px 6px -4px var(--rake-hi), 0 6px 10px -6px var(--umbra);
   cursor: pointer;
   transition: transform 0.25s, box-shadow 0.25s;
 }
@@ -236,44 +354,73 @@
   display: none;
 }
 .t38t-peb[data-match='true'] {
-  box-shadow: 0 0 0 2px var(--moss);
+  box-shadow: inset -6px -8px 14px -8px var(--umbra), 0 0 0 2px var(--moss);
 }
 .t38t-peb[data-match='false'] {
-  box-shadow: 0 0 0 2px var(--vermilion);
+  box-shadow: inset -6px -8px 14px -8px var(--umbra), 0 0 0 2px var(--vermilion);
 }
 .t38t-trays {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
+/* three carved stone trays: a raised lip, a hollow, and what lies in it — dry white gravel, half water, thick mist */
 .t38t-tray {
+  position: relative;
   display: grid;
   align-content: start;
   gap: 8px;
   min-height: 120px;
-  padding: 8px;
-  border-radius: 18px;
-  border: 1px solid var(--line-2);
-  background: var(--paper-2);
+  padding: 10px;
+  border-radius: 16px 18px 14px 17px / 14px 16px 18px 15px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .9 0 0 0 -.34'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), linear-gradient(172deg, var(--rock-hi), var(--rock-mid) 72%, var(--rock-lo));
+  box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--rock-hi) 55%, transparent), inset 0 0 0 7px color-mix(in srgb, var(--umbra) 22%, transparent), 0 14px 18px -12px var(--umbra);
 }
-.t38t-tray[data-id='good'] {
-  background: linear-gradient(var(--card), var(--paper-2));
+.t38t-tray::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 11px 13px 10px 12px;
+  box-shadow: inset 0 10px 14px -8px color-mix(in srgb, var(--umbra) 70%, transparent);
+  pointer-events: none;
 }
-.t38t-tray[data-id='learning'] {
-  background: linear-gradient(var(--paper-2) 45%, color-mix(in srgb, var(--water) 35%, var(--paper-2)));
+.t38t-tray {
+  --t38-pool: color-mix(in srgb, var(--water) 78%, transparent);
 }
-.t38t-tray[data-id='far'] {
-  background: linear-gradient(color-mix(in srgb, var(--ink-3) 18%, var(--paper-2)), var(--paper-2));
+:root[data-theme='dark'] .t38t-tray {
+  --t38-pool: color-mix(in srgb, var(--mist) 22%, var(--water));
+}
+.t38t-tray > * {
+  position: relative;
+}
+.t38t-tray[data-id='good']::before {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.34' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 7 0 0 0 -3.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.34' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .07 0 0 0 0 .14 6 0 0 0 -3.4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E") 3px 2px, linear-gradient(color-mix(in srgb, var(--paper) 50%, var(--rock-hi)), color-mix(in srgb, var(--rock-hi) 70%, var(--rock-mid)));
+}
+.t38t-tray[data-id='learning']::before {
+  background:
+    linear-gradient(transparent 46%, color-mix(in srgb, var(--moon) 45%, transparent) 46.5% 47.5%, transparent 48%),
+    linear-gradient(transparent 47%, var(--t38-pool) 47%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.34' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .07 0 0 0 0 .14 6 0 0 0 -3.4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E") 3px 2px,
+    linear-gradient(color-mix(in srgb, var(--rock-mid) 75%, var(--paper)), var(--rock-mid));
+}
+.t38t-tray[data-id='far']::before {
+  background:
+    radial-gradient(70% 45% at 30% 38%, color-mix(in srgb, var(--mist) 85%, transparent), transparent 72%),
+    radial-gradient(70% 45% at 72% 62%, color-mix(in srgb, var(--mist) 75%, transparent), transparent 72%),
+    radial-gradient(90% 60% at 50% 50%, color-mix(in srgb, var(--mist) 45%, transparent), transparent 80%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.34' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .07 0 0 0 0 .14 6 0 0 0 -3.4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E") 3px 2px,
+    var(--rock-mid);
 }
 .t38t-drop {
   display: flex;
+  justify-self: start;
   align-items: center;
   gap: 8px;
   padding: 6px 8px;
   font: 500 0.88rem/1.25 var(--sans);
   color: var(--ink);
   text-align: left;
-  background: transparent;
+  background: color-mix(in srgb, var(--card) 72%, transparent);
   border: 1px solid transparent;
   border-radius: 10px;
   cursor: pointer;
@@ -344,7 +491,7 @@
     gap: 6px;
   }
   .t38t-tray {
-    padding: 6px 4px;
+    padding: 8px 6px;
     min-height: 96px;
   }
   .t38t-drop {

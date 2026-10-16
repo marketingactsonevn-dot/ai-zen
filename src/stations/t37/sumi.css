@@ -1,0 +1,90 @@
+/* Garden 13 brush pieces (sumi.ts) — tokens only, both themes from html[data-part='2']. */
+.g13-crescent-halo {
+  opacity: 0.6;
+}
+.g13-crescent-ash {
+  fill: var(--moon);
+  opacity: 0.08;
+}
+.g13-crescent-lit {
+  fill: var(--moon);
+}
+.g13-crescent-rim {
+  fill: var(--moon-rim);
+}
+.g13-dawn,
+.g13-fog {
+  pointer-events: none;
+}
+.g13-step-ink {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.8;
+  stroke-opacity: 0.26;
+}
+.g13-leaf {
+  fill: var(--vermilion);
+  opacity: 0.86;
+}
+.g13-leaf-wash {
+  fill: var(--vermilion);
+}
+.g13-rake {
+  fill: var(--rake);
+}
+.g13-ink {
+  fill: var(--wash);
+  opacity: 0.82;
+}
+.g13-bamboo {
+  fill: url(#g13-bamboo);
+}
+.g13-node {
+  fill: var(--wash);
+  opacity: 0.5;
+}
+.g13-hi {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .g13-hi {
+  fill: var(--moon);
+  opacity: 0.22;
+}
+.g13-moss {
+  fill: var(--moss-b);
+}
+.g13-water {
+  fill: var(--water);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .g13-water {
+  opacity: 0.95;
+}
+.g13-rim {
+  fill: var(--wash);
+  opacity: 0.4;
+}
+.g13-front {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.g13-moss-a {
+  opacity: 0.22;
+}
+.g13-moss-b {
+  opacity: 0.26;
+}
+:root[data-theme='dark'] .g13-moss-a {
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .g13-moss-b {
+  opacity: 0.45;
+}
+.g13-moss-dot {
+  fill: var(--moss);
+  opacity: 0.45;
+}
