@@ -6,6 +6,21 @@ import { blob, rng, stroke, type Pt } from './kit'
 
 const f1 = (n: number) => (Math.round(n * 10) / 10).toString()
 
+/** A cut stone seen face-on: a squarish superellipse with a hand-cut wobble (smoothed like blob()). */
+function block(cx: number, cy: number, rx: number, ry: number, r: () => number): string {
+  const n = 12
+  const pts: Pt[] = Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * Math.PI * 2 + 0.26
+    const c = Math.cos(a), sn = Math.sin(a)
+    const k = 0.94 + r() * 0.1
+    return [cx + rx * k * Math.sign(c) * Math.abs(c) ** 0.42, cy + ry * k * Math.sign(sn) * Math.abs(sn) ** 0.42] as Pt
+  })
+  const mid = (a: Pt, b: Pt) => `${f1((a[0] + b[0]) / 2)} ${f1((a[1] + b[1]) / 2)}`
+  let d = `M${mid(pts[n - 1], pts[0])}`
+  for (let i = 0; i < n; i++) d += `Q${f1(pts[i][0])} ${f1(pts[i][1])} ${mid(pts[i], pts[(i + 1) % n])}`
+  return d + 'Z'
+}
+
 /**
  * Scene 2 art — an old well in section laid along the scroll: stone rings set course by course through the years, the
  * water rising one notch per milestone, a carved date stone at each notch, the moon gliding along the well's lip and
@@ -33,23 +48,39 @@ export const depthArt: TideArt = {
     }
     const top = `M${f1(x0)} 0L${f1(xEnd)} 0L${f1(xEnd + 6)} ${f1(lipY * 0.6)}Q${f1(xEnd + 2)} ${f1(lipY + 2)} ${f1(xEnd - 8)} ${f1(lipY)}L${f1(x0)} ${f1(lipY)}Z`
     const bed = `M${f1(x0)} ${f1(ground + 3)}L${f1(w - roll)} ${f1(ground + 3)}L${f1(w - roll)} ${f1(h)}L${f1(x0)} ${f1(h)}Z`
-    // the back wall of the shaft: irregular cut stones in rows; each stretch between stops is one ring of years, in its own tone
+    // the back wall of the shaft: cut stones course by course; each stretch between stops is one ring of years in its
+    // own tone. Every stone: a dark joint shadow under its lower-right edge, a face, moonlight on some upper-left edges.
     const mids = xs.map((x, i) => (i ? (xs[i - 1] + x) / 2 : x0))
     const ringOf = (x: number) => mids.filter((m) => m <= x).length
-    const stones = ['', '']
-    const rh = Math.max(14, (ground - lipY) / Math.max(4, Math.round((ground - lipY) / 20)))
+    const faces = ['', '', ''], shade = [] as string[], lit = [] as string[]
+    let courses = '', edges = ''
+    const rh = Math.max(16, (ground - lipY) / Math.max(4, Math.round((ground - lipY) / 22)))
     for (let y = lipY + 2, row = 0; y < ground - 4; y += rh, row++) {
+      if (row) {
+        // the mortar course between rows: one brushed line in two or three pieces
+        for (let x = x0; x < xEnd - 10; ) {
+          const len = 60 + r() * 140
+          courses += stroke([[x, y + (r() - 0.5)], [x + len * 0.5, y + (r() - 0.5) * 1.6], [Math.min(xEnd, x + len), y + (r() - 0.5)]], 1.3 + r() * 0.8, 0.1, 0.2, 0.3)
+          x += len + 6 + r() * 30
+        }
+      }
       for (let x = x0 + (row % 2 ? -16 : 0) + r() * 6; x < xEnd; ) {
-        const sw = 34 + r() * 26
-        const cx = x + sw / 2
-        stones[ringOf(cx) % 2] += blob(cx, y + rh / 2, sw / 2 - 2.2, rh / 2 - 2, seed + row * 50 + Math.round(x), 0.16, 8)
+        const sw = 26 + r() * 44
+        const cx = x + sw / 2, cy = y + rh / 2 + (r() - 0.5) * 1.4
+        const rx = sw / 2 - 2.2 - r() * 1.2, ry = rh / 2 - 2 - r() * 1.4
+        const face = block(cx, cy, rx, ry, r)
+        shade.push(block(cx + 1.8, cy + 2.2, rx + 0.5, ry + 0.4, r))
+        // a ring's own tone, with the odd darker, weathered stone
+        faces[r() < 0.18 ? 2 : ringOf(cx) % 2] += face
+        if (r() < 0.55) lit.push(stroke([[cx - rx * 0.8, cy - ry * 0.05], [cx - rx * 0.5, cy - ry * 0.8], [cx + rx * 0.3, cy - ry * 0.88]], 1.1, 0.2, 0.4, 0.2))
+        if (r() < 0.45) edges += stroke([[cx - rx * 0.6, cy + ry * 0.92], [cx + rx * 0.2, cy + ry * 1.02], [cx + rx * 0.95, cy + ry * 0.5]], 1.3, 0.2, 0.4, 0.3)
         x += sw
       }
     }
     // the water: one level per stretch between stops, a notch higher at every milestone, soft ramps between
     const lvl = (i: number) => ground - h * (0.08 + (0.44 * i) / n)
     let water = `M${f1(x0)} ${f1(ground + 2)}L${f1(x0)} ${f1(lvl(0))}`
-    let surf = '', notches = '', glints = ''
+    let surf = '', notches = '', glints = '', damp = '', mossLine = '', sparks = ''
     for (let i = 0; i <= n; i++) {
       const a = mids[i], b = i < n ? mids[i + 1] : xEnd
       const y = lvl(i)
@@ -60,24 +91,47 @@ export const depthArt: TideArt = {
         const sx = a + ramp * 2 + (b - a - ramp * 3) * (k / 4) + r() * 10
         surf += stroke([[sx, y + 1 + k * 0.3], [sx + (b - a) * (0.08 + r() * 0.1), y + 1.4 + (r() - 0.5)]], 1.4 - k * 0.15, 0.2, 0.3, 0.15)
       }
-      for (let k = 0; k < 4; k++) {
+      for (let k = 0; k < 7; k++) {
         const gx = a + (b - a) * (0.15 + r() * 0.7)
         const gy = y + 6 + r() * (ground - y - 12)
         glints += stroke([[gx, gy], [gx + 5 + r() * 12, gy + (r() - 0.5)]], 1, 0.3, 0.3, 0.1)
       }
       // the notch the water reached, cut into the wall at the start of each stretch
       notches += stroke([[a + 2, y - 3.5], [a + 9, y - 4.2], [a + 16, y - 3.8]], 2.4, 0.15, 0.4, 0.3)
+      // the wall darkens and greens where the water has wet it
+      damp += `M${f1(a)} ${f1(y + 2)}L${f1(a)} ${f1(y - 16 - r() * 6)}Q${f1((a + b) / 2)} ${f1(y - 22 - r() * 8)} ${f1(b)} ${f1(y - 14 - r() * 6)}L${f1(b)} ${f1(y + 2)}Z`
+      for (let k = 0; k < 3; k++) {
+        const mx = a + (b - a) * (0.1 + r() * 0.8)
+        mossLine += blob(mx, y - 3, 6 + r() * 10, 2 + r() * 2, seed + 70 + i * 5 + k, 0.35, 10)
+      }
+      for (let k = 0; k < 3; k++) {
+        const gx = a + (b - a) * (0.2 + r() * 0.6)
+        sparks += stroke([[gx, y + 3 + k * 4], [gx + 3 + r() * 6, y + 3 + k * 4]], 1.4, 0.3, 0.3, 0.1)
+      }
     }
     water += `L${f1(xEnd)} ${f1(lvl(n))}L${f1(xEnd)} ${f1(ground + 2)}Z`
     const moss = blob(x0 + 26, lipY + 2, 26, 4, seed + 1, 0.3, 12) + blob(x0 + 70, ground + 5, 34, 4, seed + 2, 0.3, 12) + blob(xs[1] - 10, lipY + 1, 18, 3, seed + 3, 0.3, 12)
     return [
       s('rect', { class: 't31d-shaft', x: f1(x0), y: 0, width: f1(xEnd - x0), height: f1(ground + 3) }),
-      s('path', { class: 't31d-stones', d: stones[0] }),
-      s('path', { class: 't31d-stones t31d-ring', d: stones[1] }),
+      s('path', { class: 'g11-wash t31d-shadow', d: shade.join('') }),
+      s('path', { class: 't31d-stones', d: faces[0] }),
+      s('path', { class: 't31d-stones t31d-ring', d: faces[1] }),
+      s('path', { class: 't31d-stones t31d-old', d: faces[2] }),
+      s('path', { class: 't31d-lit', d: lit.join('') }),
+      s('path', { class: 'g11-wash t31d-edge', d: edges, filter: 'url(#ink-rough)' }),
+      s('path', { class: 'g11-wash t31d-course', d: courses, filter: 'url(#ink-rough)' }),
+      // ink gathers toward the water: a wash darkening down the wall, a damp band over each level, moss on the line
+      s('rect', { class: 't31d-deep', x: f1(x0), y: f1(lipY), width: f1(xEnd - x0), height: f1(ground - lipY + 3), fill: `url(#t31d-g${seed})` }),
+      s('defs', null, s('linearGradient', { id: `t31d-g${seed}`, x1: 0, y1: 0, x2: 0, y2: 1 },
+        s('stop', { offset: 0, style: 'stop-color:var(--wash);stop-opacity:0' }),
+        s('stop', { offset: 1, style: 'stop-color:var(--wash);stop-opacity:1' }))),
+      s('path', { class: 'g11-wash t31d-damp', d: damp, filter: 'url(#ink-wash)' }),
       s('path', { class: 'g11-wash t31d-notch', d: notches, filter: 'url(#ink-rough)' }),
       s('path', { class: 't31d-water', d: water, fill: 'url(#p2-water-v)', filter: 'url(#ink-wash)' }),
+      s('path', { class: 't31d-depthw', d: water, fill: `url(#t31d-g${seed})` }),
+      s('path', { class: 'g11-mossy t31d-mossline', d: mossLine, filter: 'url(#ink-wash)' }),
       s('path', { class: 't31d-glint', d: glints }),
-      s('path', { class: 't31d-surf', d: surf }),
+      s('path', { class: 't31d-surf', d: surf + sparks }),
       s('path', { class: 't31d-wall', d: top, fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }),
       s('path', { class: 'g11-wash t31d-joint', d: wall(0, lipY, xEnd) }),
       s('path', { class: 'g11-wash t31d-lip', d: stroke([[x0, lipY], [(x0 + xEnd) / 2, lipY + 0.8], [xEnd - 6, lipY]], 2.2, 0.02, 0.1, 0.4), filter: 'url(#ink-rough)' }),

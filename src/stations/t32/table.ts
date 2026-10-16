@@ -27,6 +27,43 @@ function moonWindow(): SVGSVGElement {
     s('path', { class: 'g11-moonlit', d: stroke(ring.slice(22, 34), 2, 0.2, 0.3, 0.2) }))
 }
 
+/**
+ * A tied bundle of paper scrolls lying on the table top (y = top), `len` px long from x0: rolls stacked in a small
+ * pyramid (more and fatter rolls for a bigger model, k = 0…4), each with its rolled end showing, two cords round the pile.
+ */
+function scrollBundle(x0: number, top: number, len: number, k: number, seed: number): SVGGElement {
+  const r = rng(seed)
+  const rr = 4.2 + k * 0.75
+  const rows = [[2], [2, 1], [3, 2], [3, 2, 1], [4, 3, 2]][k] ?? [2]
+  const g = s('g', { class: 't32t-load' })
+  let pileTop = top
+  rows.forEach((count, j) => {
+    // back rolls first: each one a little up and to the right, as the pile is seen from the front-left
+    for (let d = count - 1; d >= 0; d--) {
+      const cy = top - rr - j * rr * 1.62 - d * rr * 0.34
+      const x = x0 + j * rr * 0.4 + d * rr * 0.5 + (r() - 0.5) * 3
+      const l = Math.max(rr * 3, len * (0.93 + r() * 0.06) - j * rr * 0.8 - d * rr * 0.5)
+      pileTop = Math.min(pileTop, cy - rr)
+      const body = `M${f1(x)} ${f1(cy - rr)}L${f1(x + l)} ${f1(cy - rr)}A${f1(rr * 0.42)} ${f1(rr)} 0 0 1 ${f1(x + l)} ${f1(cy + rr)}L${f1(x)} ${f1(cy + rr)}Z`
+      const spiral = stroke(Array.from({ length: 14 }, (_, i) => { const a = (i / 13) * Math.PI * 3.6; const q = rr * (0.88 - i * 0.055); return [x + Math.cos(a) * q * 0.6, cy + Math.sin(a) * q] as Pt }), 0.9, 0.1, 0.3, 0.3)
+      g.append(s('g', { class: 't32t-scroll' },
+        s('path', { class: 't32t-sheet', d: body }),
+        s('path', { class: 't32t-cyl', d: body, fill: 'url(#t32t-cyl)' }),
+        s('path', { class: 'g11-wash t32t-rollink', d: stroke([[x, cy + rr - 0.4], [x + l * 0.5, cy + rr], [x + l, cy + rr - 0.3]], 1.1, 0.05, 0.1, 0.4) + stroke([[x + l * 0.2, cy - rr * 0.35], [x + l * 0.8, cy - rr * 0.32]], 0.6, 0.2, 0.2, 0.2) }),
+        s('path', { class: 'g11-moonlit', d: stroke([[x + 2, cy - rr + 0.9], [x + l * 0.7, cy - rr + 0.8]], 0.9, 0.1, 0.4, 0.2) }),
+        s('ellipse', { class: 't32t-end', cx: f1(x), cy: f1(cy), rx: f1(rr * 0.6), ry: f1(rr) }),
+        s('path', { class: 'g11-wash t32t-spiral', d: spiral })))
+    }
+  })
+  // two cords round the pile, a knot and its tails on the near one
+  const cord = (cx: number) => stroke(curve([cx - 1.5, pileTop + 0.5], [cx + 2.5, (pileTop + top) / 2], [cx, top - 0.5], 6), 2, 0.05, 0.05, 0.6)
+  const c1 = x0 + len * 0.3, c2 = x0 + len * 0.7
+  g.append(
+    s('path', { class: 't32t-cord', d: cord(c1) + cord(c2) + stroke(curve([c1 + 1, top - rr], [c1 + 7, top - rr + 4], [c1 + 5, top + 3], 5), 1.4, 0.1, 0.6, 0.3) + stroke(curve([c1 + 1, top - rr], [c1 - 3, top - rr + 6], [c1 - 1, top + 4], 5), 1.4, 0.1, 0.6, 0.3) }),
+    s('circle', { class: 't32t-knot', cx: f1(c1 + 1), cy: f1(top - rr), r: 1.8 }))
+  return g
+}
+
 /** The low tea table on its mat (stage px W × H, the top's upper face at y = H - 46): slab, apron, legs, tatami, shadow. */
 function paintTable(svg: SVGSVGElement, W: number, H: number) {
   const r = rng(3260)
@@ -34,7 +71,10 @@ function paintTable(svg: SVGSVGElement, W: number, H: number) {
   let weave = ''
   for (let x = -W * 0.12; x < W * 1.12; x += 5 + r()) weave += stroke([[x, H - 9], [x + 0.6, H - 1]], 0.7, 0.2, 0.2, 0.4)
   svg.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
+  const stop = (o: number, a: number) => s('stop', { offset: o, style: `stop-color:var(--umbra);stop-opacity:${a}` })
   svg.replaceChildren(
+    // a rolled scroll's roundness: light on top, shadow underneath
+    s('defs', null, s('linearGradient', { id: 't32t-cyl', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, 0), stop(0.45, 0.04), stop(1, 0.38))),
     // the tatami: a pale band with weave and a dark cloth edge
     s('rect', { class: 't32t-mat', x: f1(-W * 0.12), y: f1(H - 10), width: f1(W * 1.24), height: 10 }),
     s('path', { class: 'g11-wash t32t-weave', d: weave }),
@@ -66,7 +106,6 @@ export function tableScene(ctx: SceneCtx) {
     return { m, b, size }
   })
 
-  const bundle = h('div', { class: 't32t-bundle' })
   const spill = h('div', { class: 't32t-spill', 'aria-hidden': 'true' })
   const top = h('div', { class: 't32t-top' },
     h('span', { class: 't32t-tick', style: `left:${K.fitRule.roomy * 100}%` }),
@@ -75,7 +114,7 @@ export function tableScene(ctx: SceneCtx) {
   const state = live('t32t-state')
   const note = h('p', { class: 't32t-note', hidden: true }, K.note)
   const tableArt = s('svg', { class: 't32t-table', 'aria-hidden': 'true' })
-  const stage = h('div', { class: 't32t-stage' }, tableArt, bundle, top, spill)
+  const stage = h('div', { class: 't32t-stage' }, tableArt, top, spill)
   const root = h('div', { class: 'g11 t32t', role: 'group', 'aria-label': K.aria },
     room(),
     h('p', { class: 'visually-hidden' }, K.art),
@@ -88,7 +127,22 @@ export function tableScene(ctx: SceneCtx) {
     note)
   ctx.art.append(root)
   const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
-  ctx.onCleanup(onSize(stage, () => paintTable(tableArt, stage.clientWidth, stage.clientHeight)))
+  let W = 0, H = 0
+  let load: SVGGElement | null = null
+  const paintLoad = () => {
+    load?.remove()
+    load = null
+    if (!model || !W) return
+    const r = Math.min(gbOf(model) / ram, 1.25)
+    load = scrollBundle(W * 0.02, H - 46, Math.max(16, r * W), K.models.indexOf(model), 3270 + K.models.indexOf(model))
+    tableArt.append(load)
+  }
+  ctx.onCleanup(onSize(stage, () => {
+    W = stage.clientWidth
+    H = stage.clientHeight
+    paintTable(tableArt, W, H)
+    paintLoad()
+  }))
 
   function draw() {
     ;(top.lastChild as HTMLElement).textContent = fill(K.ramText, { n: ram })
@@ -102,7 +156,7 @@ export function tableScene(ctx: SceneCtx) {
     const r = gbOf(model) / ram
     const kind = r <= K.fitRule.roomy ? 'roomy' : r <= K.fitRule.tight ? 'tight' : 'spill'
     root.dataset.fit = kind
-    bundle.style.width = `${Math.min(r, 1.25) * 100}%`
+    paintLoad()
     spill.classList.toggle('on', kind === 'spill')
     state.say(h('strong', null, `${model.label} · ${fill(K.sizeText, { gb: num(gbOf(model)) })} — `), K.states[kind as keyof typeof K.states])
     ctx.chime(kind === 'spill' ? 'low' : 'tap')
