@@ -1308,6 +1308,14 @@
 .p2p-reeds {
   opacity: 0.55;
 }
+/* at night a pine, reeds and grass are moonlit silhouettes a shade above the indigo paper, not black holes */
+:root[data-theme='dark'] .p2p-pine :is(.p2p-trunk, .p2p-bark, .p2p-pad, .p2p-needle),
+:root[data-theme='dark'] :is(.p2p-reeds, .p2p-grass) {
+  fill: color-mix(in srgb, var(--ink-3) 52%, var(--paper));
+}
+:root[data-theme='dark'] .p2p-pine .p2p-needle {
+  fill: color-mix(in srgb, var(--ink-3) 66%, var(--paper));
+}
 .p2p-grass {
   opacity: 0.38;
 }
