@@ -37,13 +37,14 @@ const glyph = (d: string) => s('svg', { class: 'p2k-ico', viewBox: '0 0 24 24', 
  * B.7.5 Thẻ mang về: a paper card whose body copies with one button (Clipboard API; else the text is selected for
  * Ctrl+C). Placeholders [IN HOA] are tinted. Plain DOM, no timers that outlive it: use it in a scene or on a page.
  */
-export function takeaway(card: Takeaway, extra?: Node | null): HTMLElement {
+export function takeaway(card: Takeaway, extra?: Node | null, onCleanup?: (fn: () => void) => void): HTMLElement {
   const body = h('pre', { class: 'p2k-body', tabindex: '0' }, ...bodyNodes(card.body))
   const hasPh = body.querySelector('.p2k-ph') != null
   const label = h('span', null, L.copy)
   const btn = h('button', { class: 'btn p2k-copy', type: 'button' }, glyph(COPY_ICON), label)
   const status = h('span', { class: 'p2k-status', role: 'status' })
   let timer = 0
+  onCleanup?.(() => clearTimeout(timer)) // the 2.4 s "copied" reset dies with the scene
   btn.addEventListener('click', async () => {
     const how = await copyText(card.body, body)
     clearTimeout(timer)

@@ -887,6 +887,12 @@ main.scroll-page {
 .scene-insight {
   position: relative;
 }
+.insight-detail > p {
+  margin: 0;
+}
+.insight-detail > p + p {
+  margin-top: 0.6em;
+}
 .insight-detail {
   position: absolute;
   left: 0;

@@ -54,7 +54,7 @@ export function lantern(cls = ''): SVGSVGElement {
 export const plain = (f: string | { text: string }) => (typeof f === 'string' ? f : f.text)
 
 /** The take-away card behind a pill: the pill appears when `show()` is called, the card opens over the art as a sheet. */
-export function cardSheet(root: HTMLElement, id: string) {
+export function cardSheet(root: HTMLElement, id: string, onCleanup?: (fn: () => void) => void) {
   const card = findTakeaway(id)
   const sheet = h('div', { class: 'g11-sheet', hidden: true })
   const pill = h('button', { class: 'g11-pill g11-take', type: 'button', hidden: true, 'aria-expanded': 'false' }, L.takeaway)
@@ -65,7 +65,7 @@ export function cardSheet(root: HTMLElement, id: string) {
   }
   pill.addEventListener('click', () => {
     if (!card) return
-    if (!sheet.childElementCount) sheet.append(h('button', { class: 'g11-close', type: 'button', 'aria-label': L.close, onClick: close }, '×'), takeaway(card))
+    if (!sheet.childElementCount) sheet.append(h('button', { class: 'g11-close', type: 'button', 'aria-label': L.close, onClick: close }, '×'), takeaway(card, null, onCleanup))
     root.scrollTop = 0
     sheet.hidden = false
     pill.setAttribute('aria-expanded', 'true')

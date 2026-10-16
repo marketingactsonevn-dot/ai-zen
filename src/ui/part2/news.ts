@@ -2,9 +2,10 @@ import './part2.css'
 import news from '../../content/news.json'
 import { fill, h, nextId, s, viDate } from '../../core/dom'
 import { L, addSources, type Fact } from '../../core/content'
-import type { SceneDef } from '../../stations/types'
+import type { Detail, SceneDef } from '../../stations/types'
 import type { NewsFile, NewsItem } from './types'
-import { blob, rng, seedOf } from './ink'
+import { blob, clamp, onSize, rng, seedOf, stroke } from './ink'
+import { hills, mist, moon } from './paint'
 import { markGlyph, markOf } from './marks'
 
 /** The shared news board (spec E: refreshed monthly); its sources resolve on every news station. */
@@ -19,7 +20,7 @@ export interface NewsOpts {
   prompt?: string
   /** the scene's insight after the first stele is turned (else the scene is just marked explored) */
   insight?: Fact | string
-  detail?: Fact | string
+  detail?: Detail
 }
 
 const toFact = (it: NewsItem, asOf: string): Fact => ({ text: it.what, asOf, source: it.source, kind: it.kind, claimBy: it.claimBy, verifiedBy: it.verifiedBy })
@@ -49,11 +50,42 @@ export function newsStones(o: NewsOpts, file: NewsFile = NEWS): SceneDef {
       let turned = false
       const steles = items.map((it, i) => stele(it, i))
       const path = h('ul', { class: 'p2n-path', role: 'list' }, ...steles.map((x) => x.li))
+      const scape = s('svg', { class: 'p2n-scape', 'aria-hidden': 'true' })
       const root = h('div', { class: 'p2n' },
+        scape,
         h('div', { class: 'p2n-head' }, h('p', { class: 'p2-eyebrow' }, fill(L.newsAsOf, { date: viDate(file.asOf) })), items.length ? only : null),
         path, empty)
       ctx.art.append(root)
       ctx.prompt(o.prompt ?? L.newsPrompt)
+
+      // the night behind the steles: ranges under the moon, the steles standing on their shoulders, raked ground below
+      const seed = seedOf(o.tags.join('|'))
+      ctx.onCleanup(onSize(root, () => {
+        const W = root.clientWidth, H = root.clientHeight
+        const rr = root.getBoundingClientRect(), pr = path.getBoundingClientRect()
+        if (W < 40 || H < 40) return
+        const top = pr.top - rr.top + 10, foot = pr.bottom - rr.top - 26
+        const mr = clamp(W * 0.022, 13, 28)
+        const r = rng(seed)
+        let rake = ''
+        for (let i = 0; i < 4; i++) {
+          const y = foot + 5 + i * 6
+          for (let x = -10; x < W; ) {
+            const len = 60 + r() * 160
+            rake += stroke([[x, y + (r() - 0.5)], [x + len, y + (r() - 0.5)]], 1.1 + r() * 0.6, 0.15, 0.15, 0.1)
+            x += len + 6 + r() * 20
+          }
+        }
+        scape.setAttribute('viewBox', `0 0 ${W} ${H}`)
+        scape.replaceChildren(
+          mist(W * 0.55, top + (foot - top) * 0.1, W * 0.7, (foot - top) * 0.55),
+          moon(W * 0.78, Math.max(mr * 2.2, top * 0.55), mr, seed, true),
+          hills(-W * 0.04, W * 1.04, top + (foot - top) * 0.42, (foot - top) * 0.55, seed, 0.88, 6),
+          hills(W * 0.1, W * 0.95, top + (foot - top) * 0.62, (foot - top) * 0.6, seed + 1, 0.5, 4),
+          mist(W * 0.5, top + (foot - top) * 0.72, W * 0.75, (foot - top) * 0.2),
+          s('path', { class: 'p2n-ground', d: `M0 ${foot}H${W}V${foot + 30}H0Z`, filter: 'url(#ink-wash)' }),
+          s('path', { class: 'p2n-rake', d: rake }))
+      }))
 
       only.addEventListener('click', () => {
         const on = only.getAttribute('aria-pressed') !== 'true'

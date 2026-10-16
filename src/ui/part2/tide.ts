@@ -1,9 +1,18 @@
 import './part2.css'
 import { fill, h, s, viDate } from '../../core/dom'
 import { L, type Fact } from '../../core/content'
-import type { SceneDef } from '../../stations/types'
+import type { Detail, SceneDef } from '../../stations/types'
 import type { Tide } from './types'
 import { clamp, onSize, p2Defs, rng, seedOf, stableHeight, stoneArt, stroke, type Pt } from './ink'
+import { hills, mist, moon as moonArt } from './paint'
+
+/** A station's own painting for the scroll (each timeline its own composition). Sizes in band px. */
+export interface TideArt {
+  /** what lies behind the milestones: w × h band, `ground` line, stops xs (xs[n] = today), roller width */
+  back?: (g: { w: number; h: number; ground: number; xs: number[]; roll: number; seed: number }) => SVGElement[]
+  /** what rises for milestone i, standing on (0, 0) and about `size` wide (default: a garden stone) */
+  mark?: (i: number, size: number, seed: number) => SVGElement
+}
 
 export interface TideOpts {
   label: string
@@ -12,7 +21,12 @@ export interface TideOpts {
   question?: string
   /** shown as the scene's insight once the moon reaches today (else the scene is just marked explored) */
   insight?: Fact | string
-  detail?: Fact | string
+  detail?: Detail
+  /** the moon slider's aria-label (the station's `sliderAria`); default site.json labels.progressTide */
+  aria?: string
+  /** the slider's aria-valuetext as a template: {n} {total} {date} {label}; default "date · label" */
+  valueText?: string
+  art?: TideArt
 }
 
 const f1 = (n: number) => n.toFixed(1)
@@ -32,15 +46,19 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
       const seed = seedOf(ms.map((m) => m.label).join('|'))
       const stableH = stableHeight(ctx, [o.insight])
       const today = viDate(data.horizon.asOf)
-      const valueText = (i: number) => (i < n ? fill(L.tideValue, { date: viDate(ms[i].date), label: ms[i].label }) : `${L.today} · ${today}`)
+      const clip = `p2t-clip-${seed.toString(36)}`
+      const valueText = (i: number) =>
+        o.valueText ? fill(o.valueText, { n: i + 1, total: n + 1, date: i < n ? viDate(ms[i].date) : today, label: i < n ? ms[i].label : L.today })
+        : i < n ? fill(L.tideValue, { date: viDate(ms[i].date), label: ms[i].label }) : `${L.today} · ${today}`
 
       const sky = s('svg', { class: 'p2t-svg', 'aria-hidden': 'true' })
+      const disc = s('svg', { class: 'p2t-moon-disc', viewBox: '-25 -25 50 50', 'aria-hidden': 'true' }, moonArt(0, 0, 21, seed, true))
       const dates = [...ms.map((m) => viDate(m.date)), `${L.today}`].map((t, i) =>
         h('span', { class: `p2t-date${i === n ? ' today' : ''}` }, t, i === n ? h('small', null, today) : null))
       const moon = h('div', {
-        class: 'p2t-moon', role: 'slider', tabindex: '0', 'aria-label': L.progressTide,
+        class: 'p2t-moon', role: 'slider', tabindex: '0', 'aria-label': o.aria ?? L.progressTide,
         'aria-valuemin': '0', 'aria-valuemax': String(n), 'aria-valuenow': '0', 'aria-valuetext': valueText(0),
-      }, h('span', { class: 'p2t-moon-disc' }))
+      }, disc)
       const horizonLabel = h('span', { class: 'p2t-horizon-label' }, L.horizon)
       const band = h('div', { class: 'p2t-band' }, sky, ...dates, horizonLabel, moon)
       const read = h('div', { class: 'p2t-card' })
@@ -126,7 +144,7 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
         root.style.height = `${f1(H)}px`
         const qh = (root.querySelector('.p2t-q') as HTMLElement | null)?.offsetHeight ?? 0
         const bw = Math.min(W, 1120)
-        const bh = clamp(H * 0.42, 150, 250)
+        const bh = clamp((H - qh) * 0.6, 160, 420)
         const top = qh ? qh + 8 : clamp(H * 0.04, 0, 24)
         Object.assign(band.style, { width: `${f1(bw)}px`, height: `${f1(bh)}px`, top: `${f1(top)}px`, left: `${f1((W - bw) / 2)}px` })
         Object.assign(read.style, { top: `${f1(top + bh + 14)}px`, maxHeight: `${f1(H - top - bh - 14)}px` })
@@ -163,18 +181,22 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
           return s('path', { class: 'p2t-rake', d: `M${pts.map((p) => `${f1(p[0])} ${f1(p[1])}`).join('L')}` })
         })
         const roller = (x: number) => s('g', { class: 'p2t-roller' },
-          s('rect', { x: f1(x - roll / 2), y: 0, width: f1(roll), height: f1(hh), rx: f1(roll / 2) }),
-          s('rect', { class: 'p2t-roller-hi', x: f1(x - roll * 0.22), y: 3, width: f1(roll * 0.18), height: f1(hh - 6), rx: f1(roll * 0.09) }))
+          s('rect', { class: 'p2t-roller-knob', x: f1(x - roll * 0.34), y: -roll * 0.7, width: f1(roll * 0.68), height: f1(hh + roll * 1.4), rx: f1(roll * 0.3) }),
+          s('rect', { x: f1(x - roll / 2), y: 0, width: f1(roll), height: f1(hh), rx: f1(roll * 0.3) }),
+          s('rect', { class: 'p2t-roller-hi', x: f1(x - roll * 0.28), y: 3, width: f1(roll * 0.16), height: f1(hh - 6), rx: f1(roll * 0.08) }))
         const gs = ms.map((m, i) => {
           const sw = clamp((xs[1] - xs[0]) * 0.56, 26, 56) * (0.9 + r() * 0.2)
           return s('g', { class: 'p2t-ms', transform: `translate(${f1(xs[i])} ${f1(ground)})` },
-            s('g', { class: 'p2t-ms-in' }, stoneArt(sw, sw * (0.62 + r() * 0.2), seed + i * 17)),
+            s('g', { class: 'p2t-ms-in' }, o.art?.mark ? o.art.mark(i, sw, seed + i * 17) : stoneArt(sw, sw * (0.62 + r() * 0.2), seed + i * 17)),
             m.compare ? s('circle', { class: 'p2t-ms-dot', cx: 0, cy: 7, r: 2 }) : null)
         })
         // today: a slender upright stone with the red seal, then the horizon running on into the mist
         const tw = clamp((xs[1] - xs[0]) * 0.36, 18, 34)
+        const back = o.art?.back ?? defaultBack
         sky.replaceChildren(
           s('path', { class: 'p2t-paper', d: paper }),
+          s('g', { 'clip-path': `url(#${clip})` }, ...back({ w, h: hh, ground, xs, roll, seed })),
+          s('clipPath', { id: clip }, s('path', { d: paper })),
           ...rakes,
           s('path', { class: 'p2t-track', d: stroke([[xs[0] - 20, ground + 1], [(xs[0] + xt) / 2, ground + 2], [xt, ground + 1]], 2.6, 0.08, 0.04, 0.4), filter: 'url(#ink-rough)' }),
           s('path', { class: 'p2t-horizon', d: `M${f1(xt + 8)} ${f1(ground - 1)}L${f1(w - roll - 8)} ${f1(ground - 3)}` }),
@@ -191,6 +213,16 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
       ctx.onCleanup(onSize(ctx.art, layout))
     },
   }
+}
+
+/** The scroll's default painting: a far ink range, nearer peaks crowding toward today, mist along the sand. */
+function defaultBack({ w, h, ground, xs, roll, seed }: { w: number; h: number; ground: number; xs: number[]; roll: number; seed: number }): SVGElement[] {
+  return [
+    mist(w * 0.45, ground - h * 0.35, w * 0.7, h * 0.4),
+    hills(roll, w - roll, ground - h * 0.1, h * 0.36, seed, 0.9, 5),
+    hills(roll + w * 0.26, xs[xs.length - 1] - 10, ground - h * 0.02, h * 0.5, seed + 1, 0.45, 3),
+    mist(w * 0.55, ground - h * 0.05, w * 0.62, h * 0.14),
+  ]
 }
 
 /** Two numbers side by side as brushed ink bars, long–short (B.7.2 `compare`). Without a ratio: the numbers only. */

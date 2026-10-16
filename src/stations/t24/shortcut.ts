@@ -113,7 +113,7 @@ export function shortcutScene(ctx: SceneCtx) {
       const card = findTakeaway(K.takeaway)
       if (!card) return
       const t2 = setTimeout(() => {
-        sheet.replaceChildren(h('button', { class: 'g8-close', type: 'button', 'aria-label': L.close, onClick: () => (sheet.hidden = true) }, '×'), takeaway(card))
+        sheet.replaceChildren(h('button', { class: 'g8-close', type: 'button', 'aria-label': L.close, onClick: () => (sheet.hidden = true) }, '×'), takeaway(card, null, ctx.onCleanup))
         sheet.hidden = false
       }, ctx.reduced ? 0 : 1800)
       ctx.onCleanup(() => clearTimeout(t2))

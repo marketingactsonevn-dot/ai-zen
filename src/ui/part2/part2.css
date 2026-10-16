@@ -64,10 +64,32 @@
   overflow: visible;
 }
 .p2c-rake {
-  fill: none;
-  stroke: var(--rake);
-  stroke-width: 1.1;
-  opacity: 0.55;
+  fill: var(--rake);
+  opacity: 0.9;
+}
+.p2c-far {
+  fill: var(--umbra);
+  opacity: 0.22;
+  filter: blur(6px);
+}
+:root[data-theme='dark'] .p2c-far {
+  fill: var(--mist); /* the moonlit sky held in the far half of the water */
+  opacity: 0.2;
+}
+:root[data-quality='low'] .p2c-far {
+  filter: none;
+  opacity: 0.12;
+}
+.p2c-shine {
+  fill: var(--moon);
+  opacity: 0.32;
+}
+:root[data-theme='light'] .p2c-shine {
+  fill: #fff;
+  opacity: 0.6;
+}
+.p2c-moss {
+  fill: var(--moss-b);
 }
 .p2c-bank {
   fill: var(--umbra);
@@ -278,7 +300,7 @@
 }
 .p2t-paper {
   fill: var(--card);
-  opacity: 0.62;
+  opacity: 0.5;
   stroke: var(--line);
 }
 .p2t-rake {
@@ -300,8 +322,12 @@
   opacity: 0.7;
 }
 .p2t-roller rect {
-  fill: var(--rock-lo);
-  opacity: 0.9;
+  fill: var(--umbra);
+  opacity: 0.78;
+}
+.p2t-roller .p2t-roller-knob {
+  fill: var(--vermilion);
+  opacity: 0.55;
 }
 .p2t-roller .p2t-roller-hi {
   fill: var(--paper);
@@ -385,9 +411,13 @@
 .p2t-moon-disc {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 36%, var(--moon) 0 55%, color-mix(in srgb, var(--moon) 82%, var(--ink-3)) 100%);
-  box-shadow: 0 0 0 1px var(--moon-rim, var(--line)), 0 0 34px 6px color-mix(in srgb, var(--moon) 30%, transparent);
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.p2t-moon-disc .p2p-moon-rim {
+  filter: none; /* the moon is dragged: no filter inside a moving element */
 }
 /* the moon's light falling on the sand below it */
 .p2t-moon::after {
@@ -581,9 +611,51 @@
   width: 100%;
 }
 .p2s-q {
+  position: relative;
   max-width: 40rem;
   margin: 0 auto;
   text-align: center;
+}
+.p2s-fact {
+  margin: -0.3em 0 0.6em;
+  font: 400 0.84rem/1.45 var(--sans);
+  color: var(--ink-3);
+}
+.p2s-scape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.p2s-rake {
+  fill: var(--rake);
+}
+.p2s-band {
+  fill: var(--paper-2);
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .p2s-band {
+  fill: var(--stone-3);
+  opacity: 0.32;
+}
+/* the stone lantern at the path's end is dark until the last stone is in */
+.p2s-end .p2p-lamp-halo {
+  opacity: 0;
+  transition: opacity 1.6s var(--ease-soft);
+}
+.p2s-end .p2p-toro-fire {
+  fill: var(--umbra);
+  opacity: 0.5;
+  transition: fill 1s, opacity 1s;
+}
+.p2s.lit .p2s-end .p2p-lamp-halo {
+  opacity: 1;
+}
+.p2s.lit .p2s-end .p2p-toro-fire {
+  fill: var(--lantern);
+  opacity: 1;
 }
 .p2s-line {
   position: absolute;
@@ -623,8 +695,8 @@
   display: grid;
   place-items: center;
   border-radius: 50% 46% 52% 48% / 56% 52% 48% 44%;
-  border: 1.5px dashed var(--line-2);
-  background: color-mix(in srgb, var(--paper-2) 55%, transparent);
+  border: 1.5px dashed color-mix(in srgb, var(--ink) 22%, transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 12%, transparent), color-mix(in srgb, var(--umbra) 4%, transparent) 80%, transparent);
   color: var(--ink-3);
   font: 400 0.9rem/1 var(--serif);
 }
@@ -638,7 +710,11 @@
   gap: 8px;
   padding: 6px 14px 6px 10px;
   border: 0;
-  background: linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 62%, var(--rock-lo));
+  /* a river stone: grain, moonlight on the crown, a wash of shade below */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .9 0 0 0 -.34'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(80% 60% at 30% 10%, color-mix(in srgb, var(--moon) 26%, transparent), transparent 70%),
+    linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 62%, var(--rock-lo));
   box-shadow: inset -6px -8px 14px -8px var(--umbra), inset 3px 4px 6px -4px var(--rake-hi), 0 6px 12px -6px var(--umbra);
   color: var(--stone-text, var(--ink));
   text-align: left;
@@ -987,10 +1063,21 @@
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
   scrollbar-width: thin;
-  /* the raked path the steles stand along */
-  background:
-    linear-gradient(transparent calc(100% - 30px), color-mix(in srgb, var(--paper-2) 80%, transparent) calc(100% - 30px)),
-    repeating-linear-gradient(transparent 0 5px, var(--sand-line) 5px 6px) bottom / 100% 30px no-repeat;
+}
+.p2n-scape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.p2n-ground {
+  fill: var(--paper-2);
+  opacity: 0.85;
+}
+.p2n-rake {
+  fill: var(--rake);
 }
 .p2n-stele {
   flex: none;
@@ -1030,12 +1117,25 @@
   padding: 26px 16px 18px;
   border: 0;
   border-radius: 44% 50% 8px 8px / 12% 14% 6px 6px;
-  background: linear-gradient(175deg, var(--rock-hi), var(--rock-mid) 70%, var(--rock-lo));
+  /* carved stone: grain, moonlight on the shoulder, an ink wash down the shaded side */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .9 0 0 0 -.34'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(90% 55% at 22% 6%, color-mix(in srgb, var(--moon) 30%, transparent), transparent 70%),
+    linear-gradient(100deg, transparent 55%, color-mix(in srgb, var(--umbra) 22%, transparent)),
+    linear-gradient(175deg, var(--rock-hi), var(--rock-mid) 70%, var(--rock-lo));
   box-shadow: inset 0 0 0 7px color-mix(in srgb, var(--rock-hi) 50%, transparent), inset 0 0 0 8px color-mix(in srgb, var(--umbra) 18%, transparent), inset -10px -14px 22px -12px var(--umbra), 0 14px 18px -12px var(--umbra);
   color: var(--stone-text, var(--ink));
   text-align: center;
   overflow: hidden;
   transition: transform 0.5s var(--ease);
+}
+.p2n-front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* a brushed ink edge around the slab */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 160' preserveAspectRatio='none'%3E%3Cfilter id='r' x='-5%25' y='-5%25' width='110%25' height='110%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.08' numOctaves='2' seed='4'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='2.6' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3Cpath filter='url(%23r)' d='M3 156V24Q4 8 50 4Q96 8 97 26V156' fill='none' stroke='%231a2240' stroke-opacity='.55' stroke-width='2.2' stroke-dasharray='120 6 60 9 200' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
 }
 .p2n-front:hover {
   transform: translateY(-3px);
@@ -1140,4 +1240,136 @@
     --sw: 68vw;
     padding-inline: 12vw;
   }
+}
+
+/* ───────── paint.ts: night scenery (washes, moon, water, pines, lanterns) ───────── */
+.p2p-hill {
+  fill: url(#p2-wash-v);
+  opacity: var(--o);
+}
+:root[data-theme='dark'] .p2p-hill {
+  opacity: calc(var(--o) * 1.8); /* black ink on a night sky needs more body to read */
+}
+:is(.p2p-ridge, .p2p-cun, .p2p-trunk, .p2p-bark, .p2p-pad, .p2p-needle, .p2p-reeds, .p2p-grass, .p2p-wash, .p2p-brush, .p2p-toro-ink) {
+  fill: var(--wash);
+}
+.p2p-cun {
+  opacity: 0.26;
+}
+.p2p-rim {
+  fill: var(--moon);
+  opacity: 0.34;
+}
+:root[data-theme='light'] .p2p-rim {
+  fill: var(--rake-hi);
+  opacity: 1;
+}
+.p2p-maria {
+  fill: var(--umbra);
+  opacity: 0.06;
+}
+.p2p-moon-rim {
+  fill: none;
+  stroke: var(--moon-rim);
+  stroke-width: 1.2;
+  filter: url(#ink-rough);
+}
+.p2p-cloud {
+  fill: var(--paper);
+  opacity: 0.74;
+}
+.p2p-mist {
+  pointer-events: none;
+}
+.p2p-ripple {
+  fill: var(--moon);
+  opacity: 0.16;
+}
+:root[data-theme='light'] .p2p-ripple {
+  fill: #fff;
+  opacity: 0.5;
+}
+.p2p-road {
+  fill: var(--moon);
+  opacity: 0.62;
+}
+.p2p-trunk {
+  opacity: 0.84;
+}
+.p2p-bark {
+  opacity: 0.45;
+}
+.p2p-pad {
+  opacity: 0.26;
+}
+.p2p-needle {
+  opacity: 0.72;
+}
+.p2p-reeds {
+  opacity: 0.55;
+}
+.p2p-grass {
+  opacity: 0.38;
+}
+.p2p-wash {
+  pointer-events: none;
+}
+.p2p-brush {
+  opacity: 0.75;
+}
+.p2p-frame {
+  fill: var(--ink);
+  opacity: 0.72;
+}
+:is(.p2p-cord, .p2p-thread) {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.42;
+}
+.p2p-lamp-rib {
+  fill: var(--umbra);
+  opacity: 0.26;
+}
+.p2p-lamp-cap {
+  fill: var(--umbra);
+  opacity: 0.82;
+}
+.p2p-contact,
+.p2p-step-sh {
+  fill: var(--umbra);
+  opacity: 0.22;
+}
+.p2p-toro-fire {
+  fill: var(--lantern);
+}
+.p2p-toro:not(.lit) .p2p-toro-fire {
+  fill: var(--umbra);
+  opacity: 0.55;
+}
+.p2p-toro-ink {
+  opacity: 0.45;
+}
+.p2p-step {
+  fill: url(#p2-rock);
+}
+.p2p-step-hi {
+  fill: var(--moon);
+  opacity: 0.4;
+}
+:root[data-theme='light'] .p2p-step-hi {
+  fill: var(--rake-hi);
+  opacity: 1;
+}
+
+/* paper: a fine grain and a faint ink vignette under every Part 2 scene (one static tile, no blend mode) */
+:root[data-part='2'] .player {
+  background:
+    radial-gradient(ellipse 75% 70% at 50% 42%, transparent 55%, color-mix(in srgb, var(--wash) 7%, transparent)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8 .55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .32 0 0 0 -.115'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+:root[data-part='2'][data-theme='dark'] .player {
+  background:
+    radial-gradient(ellipse 75% 70% at 50% 42%, transparent 50%, color-mix(in srgb, var(--wash) 38%, transparent)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8 .55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .2 0 0 0 -.075'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

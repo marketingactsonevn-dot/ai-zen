@@ -27,7 +27,7 @@ export function cardScene(ctx: SceneCtx) {
     h('p', { class: 'visually-hidden' }, K.art),
     h('div', { class: 't31c-wrap' }, stele, read))
   ctx.art.append(root)
-  const sheet = cardSheet(root, K.takeaway)
+  const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
 
   function light(n: number) {
     const ln = K.lines[n]

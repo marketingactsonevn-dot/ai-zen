@@ -1,9 +1,13 @@
 import './part2.css'
 import { fill, h, nextId, s } from '../../core/dom'
-import { L, type Fact } from '../../core/content'
-import type { SceneDef } from '../../stations/types'
+import { L } from '../../core/content'
+import type { Detail, SceneDef } from '../../stations/types'
 import type { Perspectives } from './types'
 import { blob, clamp, onDigit, onSize, p2Defs, rng, seedOf, shuffledIdx, stableHeight, stoneArt, stroke, type Pt } from './ink'
+import { grass, hills, mist, moon, reeds, wash } from './paint'
+
+/** Where the pond lies in the stage (px): a station may paint around it (a well's stones, a bridge, a far shore). */
+export type PondGeo = { w: number; h: number; cx: number; cy: number; rx: number; ry: number; top: number; seed: number }
 
 export interface PerspectiveOpts {
   /** scene name for the rail */
@@ -13,7 +17,10 @@ export interface PerspectiveOpts {
   /** the question the stones answer, shown above what they say */
   question?: string
   /** the "more" line under the common insight */
-  detail?: Fact | string
+  detail?: Detail
+  /** the station's own painting behind the pond (default: far ink hills under the moon); `sky: false` = no moon above */
+  art?: (g: PondGeo) => SVGElement[]
+  sky?: boolean
 }
 
 const f1 = (n: number) => n.toFixed(1)
@@ -169,9 +176,31 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
           s('path', { class: 'p2c-moon-cut', d: `M${f1(cx - mr * 1.2)} ${f1(cy - ry * 0.02)}h${f1(mr * 2.4)}M${f1(cx - mr * 1.2)} ${f1(cy - ry * 0.18)}h${f1(mr * 2.4)}` }))
         reflect.style.transformOrigin = `${f1(cx)}px ${f1(cy)}px`
         ripples = s('g')
-        const rake = [1.2, 1.42, 1.66, 1.92].map((k, i) =>
-          s('path', { class: 'p2c-rake', d: blob(cx, cy + ry * 0.04 * i, rx * k, ry * k * 1.08, seed + i, 0.02, 28) }))
+        // raked sand: each ring a few brush passes with dry gaps
+        const rake = [1.2, 1.42, 1.66, 1.92].map((k, i) => {
+          let d = ''
+          let a = r() * 40
+          while (a < 360 + 20) {
+            const len = 50 + r() * 90
+            d += stroke(arcPts(cx, cy + ry * 0.04 * i, rx * k, ry * k * 1.08, a, Math.min(a + len, a + 360 - 4)), 1.3 + r() * 0.9, 0.2, 0.2, 0.1)
+            a += len + 8 + r() * 26
+          }
+          return s('path', { class: 'p2c-rake', d })
+        })
+        // the far side: ink hills under the moon (or the station's own), mist on the far bank
+        const top = cy - ry * 1.35
+        const sr = clamp(rx * 0.13, 10, 26)
+        const my = Math.max(sr * 1.6, top - ry * 1.5)
+        const sky = o.sky !== false && my + sr * 2 < top
+        const back = o.art ? o.art({ w, h: hh, cx, cy, rx, ry, top, seed }) : [
+          mist(cx, cy - ry * 1.3, w * 0.62, ry * 1.1), // the moonlit sky behind the ridges, so they read at night
+          hills(-w * 0.05, w * 1.05, cy - ry * 0.7, Math.min(ry * 1.5, cy - ry * 0.7 - (sky ? my + sr : 0)), seed, 0.85, 5),
+          hills(w * 0.05, w * 0.62, cy - ry * 0.6, ry * 0.9, seed + 2, 0.55, 2),
+          mist(cx, cy - ry * 0.75, rx * 2.4, ry * 0.5),
+        ]
         pond.replaceChildren(
+          sky ? moon(cx + rx * 0.12, my, sr, seed, true) : '',
+          ...back,
           s('defs', null,
             s('radialGradient', { id: `${gid}-water`, cx: '0.5', cy: '0.42', r: '0.62' },
               s('stop', { offset: 0, style: 'stop-color:var(--water);stop-opacity:.72' }),
@@ -182,17 +211,25 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
             s('clipPath', { id: `${gid}-clip` }, s('path', { d: water }))),
           ...rake,
           s('path', { class: 'p2c-bank', d: blob(cx + rx * 0.02, cy + ry * 0.1, rx * 1.05, ry * 1.12, seed + 5, 0.05), filter: 'url(#ink-wash)' }),
+          wash(blob(cx - rx * 0.5, cy + ry * 0.98, rx * 0.5, ry * 0.18, seed + 6, 0.2), 0.18, 'p2p-wash p2c-moss'),
           s('path', { d: water, fill: `url(#${gid}-water)` }),
           s('g', { 'clip-path': `url(#${gid}-clip)` },
             s('ellipse', { cx: f1(cx), cy: f1(cy), rx: f1(rx * 0.42), ry: f1(ry * 1.1), fill: `url(#${gid}-road)` }),
+            s('ellipse', { class: 'p2c-far', cx: f1(cx), cy: f1(cy - ry * 0.95), rx: f1(rx * 1.1), ry: f1(ry * 0.5) }),
             reflect,
             s('path', { class: 'p2c-glint p2c-glint-a', d: glints(3) }),
             s('path', { class: 'p2c-glint p2c-glint-b', d: glints(17) }),
             ripples),
           s('path', { class: 'p2c-rim', d: stroke(arcPts(cx, cy, rx * 1.01, ry * 1.02, 196 + r() * 8, 340 - r() * 10), Math.max(2, rx * 0.022)) }),
           s('path', { class: 'p2c-rim p2c-rim-near', d: stroke(arcPts(cx, cy, rx * 1.02, ry * 1.04, 18 + r() * 8, 160 - r() * 8), Math.max(1.6, rx * 0.016)) }),
+          s('path', { class: 'p2c-shine', d: stroke(arcPts(cx, cy, rx * 0.97, ry * 0.94, 200 + r() * 10, 300 + r() * 20), Math.max(1.2, rx * 0.012), 0.3, 0.3, 0.1) }),
           pad(cx - rx * 0.58, cy + ry * 0.42, Math.max(5, rx * 0.07), 20),
-          pad(cx + rx * 0.62, cy - ry * 0.28, Math.max(4, rx * 0.05), 70))
+          pad(cx - rx * 0.47, cy + ry * 0.6, Math.max(3, rx * 0.045), -35),
+          pad(cx + rx * 0.62, cy - ry * 0.28, Math.max(4, rx * 0.05), 70),
+          reeds(cx - rx * 0.98, cy + ry * 0.35, Math.max(18, ry * 0.9), seed + 7, 8),
+          reeds(cx + rx * 0.9, cy - ry * 0.55, Math.max(14, ry * 0.6), seed + 8, 5),
+          grass(cx + rx * 0.35, cy + ry * 1.08, Math.max(12, rx * 0.12), seed + 9),
+          grass(cx - rx * 0.15, cy + ry * 1.1, Math.max(10, rx * 0.09), seed + 10))
       }
 
       ctx.onCleanup(onSize(ctx.art, layout))

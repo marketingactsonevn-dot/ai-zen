@@ -31,9 +31,7 @@ const peaks = extend(newsStones({ label: S.peaks.label, tags: raw.newsTags, prom
   ;(ctx.art.querySelector('.p2n') ?? ctx.art).append(h('p', { class: 't19-others' }, S.peaks.othersNote))
 })
 
-const tide = extend(progressTide(S.tide.tide as Tide, { label: S.tide.label, prompt: S.tide.prompt, question: S.tide.paceNote, insight: S.tide.insight as Fact, detail: S.tide.detail }), (ctx) => {
-  ctx.art.querySelector('.p2t-moon')?.setAttribute('aria-label', S.tide.moonAria)
-})
+const tide = progressTide(S.tide.tide as Tide, { label: S.tide.label, prompt: S.tide.prompt, question: S.tide.paceNote, insight: S.tide.insight as Fact, detail: S.tide.detail, aria: S.tide.moonAria })
 
 const station: StationModule = {
   content: raw as unknown as StationContent,

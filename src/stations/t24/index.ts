@@ -15,7 +15,7 @@ const station: StationModule = {
     { label: S.flattery.label, mount: flatteryScene },
     { label: S.shortcut.label, mount: shortcutScene },
     { label: S.incense.label, mount: incenseScene },
-    perspectiveCircle(S.diary.perspectives, { label: S.diary.label, prompt: S.diary.prompt, question: S.diary.question, detail: S.diary.insight }),
+    perspectiveCircle(S.diary.perspectives, { label: S.diary.label, prompt: S.diary.prompt, question: S.diary.question, detail: [S.diary.insight, S.diary.detail] }),
   ],
 }
 export default station

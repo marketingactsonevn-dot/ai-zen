@@ -1,7 +1,7 @@
 import { h, s } from '../core/dom'
 import { ALL_STATIONS, L, PARTS, addSources, displayNo, gardensOfPart, stationIndex, type Fact } from '../core/content'
 import { STATIONS } from '../stations/registry'
-import type { SceneCtx, SceneDef, StationModule } from '../stations/types'
+import type { Detail, SceneCtx, SceneDef, StationModule } from '../stations/types'
 import { prefs } from '../core/prefs'
 import { progress } from '../core/progress'
 import { gsap } from '../core/anim'
@@ -169,12 +169,13 @@ export async function renderStation(root: HTMLElement, id: number, start: number
         promptEl = h('p', { class: 'scene-prompt', role: 'status' }, h('span', { class: 'prompt-dot', 'aria-hidden': 'true' }), text)
         foot.append(promptEl)
       },
-      insight(f: Fact | string, detail?: Fact | string) {
+      insight(f: Fact | string, detail?: Detail) {
         hidePrompt()
         insightEl?.remove()
         const box = h('div', { class: 'scene-insight', 'aria-live': 'polite' }, fact(f, 'p', 'insight-text'))
-        if (detail) {
-          const more = fact(detail, 'p', 'insight-detail')
+        const lines = (Array.isArray(detail) ? detail : [detail]).filter((d): d is Fact | string => !!d)
+        if (lines.length) {
+          const more = lines.length === 1 ? fact(lines[0], 'p', 'insight-detail') : h('div', { class: 'insight-detail' }, ...lines.map((d) => fact(d, 'p')))
           more.hidden = true
           const btn = h('button', { class: 'insight-more', type: 'button', 'aria-expanded': 'false' }, L.more)
           btn.addEventListener('click', () => {

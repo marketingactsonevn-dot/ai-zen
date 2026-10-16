@@ -16,7 +16,8 @@ Chung cho mọi thành phần:
 import { perspectiveCircle } from '../../ui/part2/perspectives'
 const c = C.scenes.circle
 scenes: [perspectiveCircle(c.perspectives, { label: c.label, prompt: c.prompt, question: c.question, detail: c.detail })]
-// opts: { label, prompt?, question?, detail? }  — prompt mặc định "Nghe từng hòn đá"
+// opts: { label, prompt?, question?, detail?, art?, sky? }  — prompt mặc định "Nghe từng hòn đá"; detail có thể là mảng nhiều dòng
+// art(g: PondGeo) → SVGElement[]: tranh riêng sau hồ (miệng giếng, cầu, bờ xa…) thay núi mặc định; sky: false = không vẽ trăng trên trời
 ```
 
 ## 2. `progressTide(data: Tide, opts)` → `SceneDef` · `tide.ts`
@@ -24,7 +25,9 @@ Cuộn cát dài; kéo trăng trái → phải (chuột, chạm, ← → Home En
 ```ts
 import { progressTide } from '../../ui/part2/tide'
 scenes: [progressTide(C.scenes.tide.tide, { label: S.tide.label, question: S.tide.question, insight: S.tide.insight })]
-// opts: { label, prompt?, question?, insight?, detail? } — insight hiện khi trăng tới "Hôm nay"
+// opts: { label, prompt?, question?, insight?, detail?, aria?, valueText?, art? } — insight hiện khi trăng tới "Hôm nay"
+// aria = sliderAria của trạm; valueText = mẫu aria-valuetext {n} {total} {date} {label}
+// art: { back?(g) → SVGElement[] (tranh nền riêng của cuộn: w, h, ground, xs, roll, seed), mark?(i, size, seed) → SVGElement (vật nổi lên ở mốc i thay hòn đá) }
 // milestones: { date: '2025-03', label, fact, compare?: { before, after, ratio?, beforeLabel?, afterLabel? } }
 ```
 
@@ -62,7 +65,7 @@ Các viên đá nằm xáo trộn (ổn định) cạnh lối trống. Đặt th
 ```ts
 import { stepPath } from '../../ui/part2/steps'
 scenes: [stepPath(S.path.steps, { label: S.path.label, question: S.path.question, insight: S.path.insight })]
-// opts: { label, prompt?, question?, insight?, detail?, card?: Takeaway }
+// opts: { label, prompt?, question?, insight?, detail?, card?: Takeaway, cards?: string[] (thêm thẻ), fact? (dòng nguồn dưới câu hỏi), art?(g: PathGeo) → SVGElement[] (trời, đầu và cuối lối riêng) }
 // data: { steps: [{ label, detail, why }], takeaway?: 'id-in-toolkit.json' }  — label ngắn (≤ 5 từ), tối đa 9 bước
 ```
 
@@ -76,3 +79,14 @@ ctx.art.append(h('div', { style: 'position:absolute;inset:0;display:flex' }, cod
 
 ## Tiện ích (`ink.ts`)
 `rng(seed)`, `seedOf(text)`, `shuffledIdx(n, seed)`, `blob()`, `rock()`, `stoneArt(w, h, seed)` (đá mực có bóng, sườn tối, viền trăng), `stroke(pts, w)` (nét cọ thon), `curve()`, `p2Defs()` (gradient `url(#p2-rock|p2-shade|p2-halo|p2-mist)`), `onSize(el, fn)` (ResizeObserver + fonts), `onDigit(fn)`, `stableHeight(ctx, [insight])`, `copyText(text, el)`.
+
+## Cọ vẽ đêm (`paint.ts`)
+Tranh mực dưới trăng cho mọi scene Phần 2: SVG tĩnh, màu là token (`--wash` mực loang, `--mist`/`--mist-a` sương, `--moon`, `--lantern`, `--water`), mép mực nhờ filter `#ink-rough` / `#ink-wash` / `#ink-dry` (nhẹ đi ở `quality=low`). Dựng một lần mỗi layout; muốn chuyển động thì animate `<g>` cha, không animate phần tử có filter.
+- `hills(x0, x1, base, h, seed, depth, peaks)` — một lớp núi mực: `depth` 0 gần (sống núi nét cọ, nét rỗ, viền trăng), 1 xa (chỉ một lớp loang). Chân núi tan vào sương.
+- `mist(cx, cy, rx, ry)` — dải sương mềm. Ban đêm đặt **sau** lớp núi để núi nổi lên, và **trước** chân núi để che chân.
+- `moon(cx, cy, r, seed, cloud)` — quầng, đĩa, biển mờ, viền mực, sợi mây. Mỗi scene tối đa một vầng trăng.
+- `water(x0, y0, x1, y1, seed, moonX?, body?)` — nước lặng, gợn cọ khô dài dần về gần, đường trăng vỡ dưới `moonX`.
+- `pine(x, y, h, seed, dir)`, `reeds(x, y, h, seed, n)`, `grass(x, y, w, seed)` — thông, lau, cỏ.
+- `toro(x, y, H, lit)` đèn đá; `paperLantern(x, y, r, seed, cord)` đèn lồng giấy; `steppingStones(a, b, n, size, seed)` đá bước.
+- `wash(d, opacity)` loang mực theo hình bất kỳ; `brush(pts, w)` một nét cọ; `brushFrame(x, y, w, h, seed)` khung bốn nét cọ; `thread(pts)` dây mảnh.
+Giấy: `.player` của Phần 2 đã có hạt giấy + viền loang (part2.css), scene không cần tự vẽ nền giấy. Bề mặt HTML giả đá/giấy: xem nền nhiễu data-URI của `.p2n-front` / `.p2s-stone`.

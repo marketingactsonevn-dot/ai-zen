@@ -23,7 +23,7 @@ export function whisperScene(ctx: SceneCtx) {
     h('p', { class: 'visually-hidden' }, K.art),
     letter, say)
   ctx.art.append(root)
-  const sheet = cardSheet(root, K.takeaway)
+  const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
   let done = false
 
   function reveal() {

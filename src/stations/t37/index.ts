@@ -13,7 +13,7 @@ const station: StationModule = {
     { label: S.goal.label, mount: goalScene },
     { label: S.lab.label, mount: labScene },
     { label: S.fence.label, mount: fenceScene },
-    perspectiveCircle(S.views.perspectives, { label: S.views.label, prompt: S.views.prompt, detail: S.views.insight }),
+    perspectiveCircle(S.views.perspectives, { label: S.views.label, prompt: S.views.prompt, detail: [S.views.insight, S.views.detail] }),
   ],
 }
 export default station

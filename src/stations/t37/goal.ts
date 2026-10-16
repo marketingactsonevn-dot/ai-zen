@@ -85,7 +85,7 @@ export function goalScene(ctx: SceneCtx) {
     btns.forEach((b, i) => b.setAttribute('aria-pressed', String(K.options[i].id === id)))
     result.hidden = false
     result.dataset.ok = String(o.ok)
-    result.replaceChildren(h('p', { class: 'p2-eyebrow' }, K.morning), h('p', { class: 't37-res-text' }, o.result), ...(o.ok && card ? [takeaway(card)] : []), retry)
+    result.replaceChildren(h('p', { class: 'p2-eyebrow' }, K.morning), h('p', { class: 't37-res-text' }, o.result), ...(o.ok && card ? [takeaway(card, null, ctx.onCleanup)] : []), retry)
     if (!live) (result.setAttribute('aria-live', 'polite'), (live = true))
     if (!told) (ctx.insight(K.insight, K.detail), (told = true))
   }

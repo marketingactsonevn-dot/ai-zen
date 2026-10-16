@@ -60,7 +60,7 @@ export function cardButton(ctx: SceneCtx, host: HTMLElement, id: string): HTMLBu
   const card = findTakeaway(id)
   if (!card) return null
   const close = h('button', { class: 'g12-close', type: 'button' }, L.close)
-  const sheet = h('div', { class: 'g12-sheet', role: 'region', 'aria-label': L.takeaway, hidden: true }, close, takeaway(card))
+  const sheet = h('div', { class: 'g12-sheet', role: 'region', 'aria-label': L.takeaway, hidden: true }, close, takeaway(card, null, ctx.onCleanup))
   const btn = h('button', { class: 'g12-pill', type: 'button', 'aria-expanded': 'false' }, L.takeaway)
   const set = (open: boolean) => {
     sheet.hidden = !open

@@ -9,7 +9,7 @@ import { vortexScene } from './vortex'
 import { masonScene } from './mason'
 
 const S = raw.scenes
-const well = progressTide(S.well.tide as Tide, { label: S.well.label, prompt: S.well.prompt, insight: S.well.insight as Fact, detail: S.well.detail })
+const well = progressTide(S.well.tide as Tide, { label: S.well.label, prompt: S.well.prompt, insight: S.well.insight as Fact, detail: S.well.detail, aria: S.well.moonAria })
 
 const station: StationModule = {
   content: raw as unknown as StationContent,

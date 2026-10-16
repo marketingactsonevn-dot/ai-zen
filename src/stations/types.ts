@@ -8,6 +8,9 @@ import type { fact, tag } from '../ui/fact'
  * Each scene follows: image → interaction → insight. It opens with only art + a tiny prompt;
  * the knowledge sentence appears only after the visitor has done something.
  */
+/** The "more" under an insight: one line, or several (each its own paragraph). */
+export type Detail = Fact | string | (Fact | string)[]
+
 export interface SceneCtx {
   readonly reduced: boolean
   readonly quality: Quality
@@ -18,7 +21,7 @@ export interface SceneCtx {
   /** Short instruction pill (≤ 6 words, e.g. "Chạm và giữ"). Fades on the first interaction or when insight() is called. */
   prompt(text: string): void
   /** Reveal the knowledge sentence with an ink fade-in (replaces the previous one) and mark the scene explored. */
-  insight(f: Fact | string, detail?: Fact | string): HTMLElement
+  insight(f: Fact | string, detail?: Detail): HTMLElement
   /** Mark the scene explored without showing text (the next arrow starts to glow). */
   complete(): void
   fact: typeof fact

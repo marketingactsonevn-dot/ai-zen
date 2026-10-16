@@ -59,7 +59,7 @@ export function repoScene(ctx: SceneCtx) {
     h('div', { class: 't31r-chips' }, ...chips),
     panel, say)
   ctx.art.append(root)
-  const sheet = cardSheet(root, K.takeaway)
+  const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
 
   function show(id: string) {
     const sg = K.signals.find((x) => x.id === id)!

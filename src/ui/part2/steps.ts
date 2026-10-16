@@ -1,10 +1,14 @@
 import './part2.css'
 import { fill, h, nextId, s } from '../../core/dom'
 import { L, type Fact } from '../../core/content'
-import type { SceneDef } from '../../stations/types'
+import type { Detail, SceneDef } from '../../stations/types'
 import type { StepPath, Takeaway } from './types'
-import { clamp, curve, onDigit, onSize, rng, seedOf, shuffledIdx, stableHeight, stroke, type Pt } from './ink'
+import { blob, clamp, curve, onDigit, onSize, rng, seedOf, shuffledIdx, stableHeight, stroke, type Pt } from './ink'
+import { grass, hills, mist, moon, toro, wash } from './paint'
 import { findTakeaway, takeaway } from './takeaway'
+
+/** Where the path runs (px in the scene): a station may paint its own start and end (a workshop door, a gate at dawn). */
+export type PathGeo = { w: number; h: number; row: boolean; first: Pt; last: Pt; top: number; pathY: number; seed: number }
 
 export interface StepOpts {
   label: string
@@ -13,9 +17,15 @@ export interface StepOpts {
   question?: string
   /** the scene's insight once the path is lit (else the scene is just marked explored) */
   insight?: Fact | string
-  detail?: Fact | string
+  detail?: Detail
   /** the card to open when done; default: toolkit.json card `data.takeaway` */
   card?: Takeaway
+  /** more cards to open with it (toolkit.json ids), e.g. one per week */
+  cards?: string[]
+  /** a fact shown under the question from the start (the scene's own source line) */
+  fact?: Fact | string
+  /** the station's own painting (sky, start, end); default: hills under the moon, a stone lantern lit at the path's end */
+  art?: (g: PathGeo) => SVGElement[]
 }
 
 const f1 = (n: number) => n.toFixed(1)
@@ -33,6 +43,7 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
       const steps = data.steps
       const n = steps.length
       const card = o.card ?? findTakeaway(data.takeaway)
+      const more = (o.cards ?? []).map((id) => findTakeaway(id)).filter((c): c is Takeaway => !!c)
       const seed = seedOf(steps.map((x) => x.label).join('|'))
       let pile = shuffledIdx(n, seed)
       if (pile.every((v, i) => v === i)) pile = pile.reverse() // never already in order
@@ -55,8 +66,10 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
       })
       const note = h('p', { class: 'p2s-note' })
       const sheet = h('div', { class: 'p2s-sheet', hidden: true })
+      const scape = s('svg', { class: 'p2s-scape', 'aria-hidden': 'true' })
       const root = h('div', { class: 'p2s', role: 'group', 'aria-label': L.stepPath },
-        o.question ? h('p', { class: 'p2-question p2s-q' }, o.question) : null,
+        scape,
+        o.question || o.fact ? h('div', { class: 'p2s-q' }, o.question ? h('p', { class: 'p2-question' }, o.question) : null, o.fact ? ctx.fact(o.fact, 'p', 'p2s-fact') : null) : null,
         line, ...slots, ...stones.map((x) => x.el), note,
         h('p', { class: 'visually-hidden', id: keysId }, L.stepKeys),
         sheet)
@@ -109,11 +122,11 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
         root.classList.add('lit')
         note.replaceChildren()
         ctx.chime('ok')
-        if (card) {
+        if (card || more.length) {
           sheet.replaceChildren(
             h('button', { class: 'p2s-close', type: 'button', 'aria-label': L.close, onClick: () => (sheet.hidden = true) }, '×'),
             h('p', { class: 'p2s-done' }, L.stepDone),
-            takeaway(card))
+            ...[card, ...more].filter((c): c is Takeaway => !!c).map((c) => takeaway(c, null, ctx.onCleanup)))
           sheet.hidden = false
           ;(sheet.querySelector('.p2k-copy') as HTMLElement | null)?.focus({ preventScroll: true })
         }
@@ -166,15 +179,18 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
         const qh = q ? q.offsetHeight + 8 : 0
         const gx = 14, gy = clamp(H * 0.025, 8, 16)
         // one row of path above the loose stones when it fits, else two columns: the path left, the stones right
-        const sw = clamp((W - gx * (n - 1)) / n, 0, 176)
+        const endW = clamp(W * 0.06, 36, 84) // room for the lantern at the path's end
+        const sw = clamp((W - endW - gx * (n - 1)) / n, 0, 176)
         const row = sw >= 128
         const noteH = 46
         if (row) {
           const sh = clamp(sw * 0.42, 52, 64)
           size = [sw, sh]
           const total = n * sw + (n - 1) * gx
-          const x0 = (W - total) / 2
-          const pathY = qh + clamp(H * 0.12, 24, 80)
+          const x0 = (W - endW - total) / 2
+          const rows = Math.ceil(n / Math.max(1, Math.floor((W + gx) / (sw + gx))))
+          const below = sh * 2.4 + rows * (sh + gy) + 12
+          const pathY = qh + sh * 0.6 + Math.max(0, H - qh - below - sh) * 0.58
           slotXY = steps.map((_, i) => [x0 + i * (sw + gx), pathY + Math.sin((i / Math.max(1, n - 1)) * Math.PI * 1.3) * sh * 0.45] as Pt)
           // the loose stones: rows under the path, centred
           const pileTop = pathY + sh * 2.4
@@ -199,12 +215,13 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
         root.classList.toggle('cols', !row)
         for (const [i, el] of slots.entries()) Object.assign(el.style, { transform: `translate(${f1(slotXY[i][0])}px, ${f1(slotXY[i][1])}px)`, width: `${f1(size[0])}px`, height: `${f1(size[1])}px` })
         for (const st of stones) Object.assign(st.el.style, { width: `${f1(size[0])}px`, height: `${f1(size[1])}px` }), put(st)
-        drawLine(W, H, row)
+        drawLine(W, H, row, qh)
       }
 
       // the path: a brushed ink line through the slots, with a moonlit twin that shows once every stone is in place
-      function drawLine(w: number, hh: number, row: boolean) {
+      function drawLine(w: number, hh: number, row: boolean, qh: number) {
         line.setAttribute('viewBox', `0 0 ${f1(w)} ${f1(hh)}`)
+        scape.setAttribute('viewBox', `0 0 ${f1(w)} ${f1(hh)}`)
         const c = slotXY.map(([x, y]) => [x + size[0] / 2, y + size[1] / 2] as Pt)
         const pts: Pt[] = []
         const lead = row ? 26 : 18
@@ -219,7 +236,37 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
         const wv = row ? 7 : 5
         line.replaceChildren(
           s('path', { class: 'p2s-glow', d: stroke(pts, wv * 3, 0.05, 0.05, 0.4) }),
-          s('path', { class: 'p2s-ink', d: stroke(pts, wv, 0.06, 0.08, 0.35), filter: 'url(#ink-rough)' }))
+          s('path', { class: 'p2s-ink', d: stroke(pts, wv * 0.5, 0.06, 0.08, 0.35), filter: 'url(#ink-rough)' }))
+        // the garden round it: a gravel band under the slots, raked sand where the loose stones lie, sky and both ends
+        const pathY = slotXY[0][1]
+        const geo: PathGeo = { w, h: hh, row, first, last, top: qh, pathY, seed }
+        const rr = rng(seed + 5)
+        let rake = ''
+        const sandTop = row ? pathY + size[1] * 2.1 : qh
+        for (let y = sandTop; y < hh - 4; y += 7 + rr() * 3) {
+          for (let x = row ? 0 : w / 2 + 6; x < w; ) {
+            const len = 40 + rr() * 140
+            rake += stroke([[x, y + (rr() - 0.5)], [x + len, y + (rr() - 0.5)]], 1 + rr() * 0.5, 0.2, 0.2, 0.1)
+            x += len + 8 + rr() * 30
+          }
+        }
+        const band = stroke(pts, row ? size[1] * 1.5 : size[0] * 0.5, 0.02, 0.02, 0.6)
+        const skyH = row ? pathY - qh : 0
+        const back = o.art ? o.art(geo) : row && skyH > 60 ? [
+          mist(w * 0.5, qh + skyH * 0.7, w * 0.6, skyH * 0.45),
+          moon(w * 0.82, qh + Math.max(18, skyH * 0.28), clamp(skyH * 0.12, 10, 22), seed, true),
+          hills(-w * 0.04, w * 1.04, pathY - size[1] * 0.55, skyH * 0.6, seed, 0.88, 6),
+          hills(w * 0.05, w * 0.55, pathY - size[1] * 0.5, skyH * 0.5, seed + 1, 0.55, 2),
+          mist(w * 0.5, pathY - size[1] * 0.6, w * 0.6, skyH * 0.16),
+        ] : []
+        const lampH = clamp(row ? size[1] * 1.9 : size[1] * 1.5, 46, 110)
+        scape.replaceChildren(
+          ...back,
+          s('path', { class: 'p2s-rake', d: rake }),
+          s('path', { class: 'p2s-band', d: band, filter: 'url(#ink-wash)' }),
+          wash(blob(last[0], last[1] + 4, lampH * 0.7, lampH * 0.12, seed + 7, 0.2), 0.18),
+          o.art ? '' : s('g', { class: 'p2s-end' }, toro(last[0] + (row ? lampH * 0.25 : 0), last[1] + (row ? 4 : lampH), lampH, true)),
+          o.art ? '' : grass(first[0], first[1] + 6, 26, seed + 9))
       }
 
       ctx.onCleanup(onSize(ctx.art, layout))

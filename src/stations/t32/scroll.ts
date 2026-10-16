@@ -18,7 +18,7 @@ export function scrollScene(ctx: SceneCtx) {
     h('span', { class: 't32x-rod', 'aria-hidden': 'true' }),
     fold, cord, note)
   ctx.art.append(root)
-  const sheet = cardSheet(root, K.takeaway)
+  const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
   cord.addEventListener('click', () => {
     root.classList.add('open')
     cord.hidden = true

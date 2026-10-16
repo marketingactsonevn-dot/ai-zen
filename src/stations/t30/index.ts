@@ -31,7 +31,7 @@ const station: StationModule = {
   scenes: [
     { label: S.gate.label, mount: gateScene },
     { label: S.fence.label, mount: fenceScene },
-    progressTide(S.laws.tide as Tide, { label: S.laws.label, prompt: S.laws.prompt, insight: S.laws.insight as Fact }),
+    progressTide(S.laws.tide as Tide, { label: S.laws.label, prompt: S.laws.prompt, insight: S.laws.insight as Fact, aria: S.laws.sliderAria }),
     copyright,
   ],
 }

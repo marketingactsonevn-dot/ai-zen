@@ -38,7 +38,7 @@ export function deskScene(ctx: SceneCtx) {
       ctx.insight(G.insights[1] as Fact, G.detail as Fact)
       ctx.chime('ok')
       const card = findTakeaway(C.takeaways[0])
-      if (card) panel.append(h('div', { class: 't29d-card gf-new' }, takeaway(card)))
+      if (card) panel.append(h('div', { class: 't29d-card gf-new' }, takeaway(card, null, ctx.onCleanup)))
     }
   })
 

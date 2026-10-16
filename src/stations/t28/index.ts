@@ -17,7 +17,7 @@ const station: StationModule = {
     { label: S.gardeners.label, mount: gardenersScene },
     { label: S.scaling.label, mount: scalingScene },
     { label: S.moat.label, mount: moatScene },
-    progressTide(S.goldrush.tide as Tide, { label: S.goldrush.label, prompt: S.goldrush.prompt, insight: S.goldrush.insight as Fact }),
+    progressTide(S.goldrush.tide as Tide, { label: S.goldrush.label, prompt: S.goldrush.prompt, insight: S.goldrush.insight as Fact, aria: S.goldrush.sliderAria }),
     { label: S.loop.label, mount: flowScene },
     perspectiveCircle(S.loop.perspectives as Perspectives, { label: S.loop.circleLabel }),
   ],

@@ -41,7 +41,7 @@ export function keysScene(ctx: SceneCtx) {
       h('section', { class: 't33y-side' }, h('p', { class: 'p2-eyebrow' }, K.give), hand)),
     say, check)
   ctx.art.append(root)
-  const sheet = cardSheet(root, K.takeaway)
+  const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
   let solved = false
 
   const label = () => keys.forEach(({ k, b, st }) => {

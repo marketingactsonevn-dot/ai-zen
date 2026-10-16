@@ -16,8 +16,8 @@ const station: StationModule = {
   scenes: [
     { label: S.ladder.label, mount: ladderScene },
     { label: S.scroll.label, mount: scrollScene },
-    progressTide(S.moons.tide as Tide, { label: S.moons.label, prompt: S.moons.prompt, insight: F(S.moons.insight), detail: S.moons.detail }),
-    stepPath(S.spec.steps as StepPath, { label: S.spec.label, prompt: S.spec.prompt, insight: F(S.spec.insight), detail: S.spec.detail }),
+    progressTide(S.moons.tide as Tide, { label: S.moons.label, prompt: S.moons.prompt, insight: F(S.moons.insight), detail: S.moons.detail, valueText: S.moons.sliderAria }),
+    stepPath(S.spec.steps as StepPath, { label: S.spec.label, prompt: S.spec.prompt, insight: F(S.spec.insight), detail: S.spec.detail, fact: F(S.spec.facts[0]) }),
     { label: S.line.label, mount: lineScene },
   ],
 }

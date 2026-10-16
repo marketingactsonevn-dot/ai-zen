@@ -23,7 +23,7 @@ export function flatterScene(ctx: SceneCtx) {
   const takeBtn = h('button', { class: 'zk-btn t27g-take', type: 'button', hidden: true, onClick: open }, K.takeawayLabel)
   const col = h('div', { class: 't27g-col' }, ans, takeBtn)
   const close = h('button', { class: 'zk-btn t27g-close', type: 'button', onClick: shut }, L.close)
-  const sheet = h('div', { class: 't27g-sheet', hidden: true, role: 'dialog', 'aria-label': K.takeawayLabel }, close, card ? takeaway(card) : null)
+  const sheet = h('div', { class: 't27g-sheet', hidden: true, role: 'dialog', 'aria-label': K.takeawayLabel }, close, card ? takeaway(card, null, ctx.onCleanup) : null)
 
   const { root, svg } = stage(ctx, 't27g', K.art, [K.insight], (W, H) => {
     const land = W / H > 1.05

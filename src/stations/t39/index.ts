@@ -13,7 +13,7 @@ const station: StationModule = {
   scenes: [
     { label: S.ask.label, mount: askScene },
     { label: S.kit.label, mount: kitScene },
-    stepPath(S.path.steps, { label: S.path.label, prompt: S.path.prompt, insight: S.path.insight }),
+    stepPath(S.path.steps, { label: S.path.label, prompt: S.path.prompt, insight: S.path.insight, cards: S.path.weekCards }),
     perspectiveCircle(S.advice.perspectives, { label: S.advice.label, prompt: S.advice.prompt, detail: S.advice.insight }),
     { label: S.enso.label, mount: ensoScene },
   ],

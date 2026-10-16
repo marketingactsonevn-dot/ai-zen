@@ -45,7 +45,7 @@ export function tableScene(ctx: SceneCtx) {
     ctx.fact(K.rule as Fact, 'p', 't32t-rule'),
     note)
   ctx.art.append(root)
-  const sheet = cardSheet(root, K.takeaway)
+  const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
 
   function draw() {
     ;(top.lastChild as HTMLElement).textContent = fill(K.ramText, { n: ram })

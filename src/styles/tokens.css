@@ -172,6 +172,9 @@
   --lantern: #eba659;
   --firefly: #c9952c;
   --dawn: rgba(244, 196, 166, 0.3);
+  --wash: #1a2240;
+  --mist: #f1f4f8;
+  --mist-a: 0.92;
   --shadow-1: 0 1px 2px rgba(22, 30, 58, 0.05), 0 8px 26px rgba(22, 30, 58, 0.07);
   --shadow-2: 0 2px 6px rgba(22, 30, 58, 0.08), 0 22px 54px rgba(22, 30, 58, 0.12);
 }
@@ -213,4 +216,7 @@
   --lantern: #f4c67a;
   --firefly: #e8ef94;
   --dawn: rgba(232, 176, 146, 0.13);
+  --wash: #02040b;
+  --mist: #aab5d8;
+  --mist-a: 0.13;
 }

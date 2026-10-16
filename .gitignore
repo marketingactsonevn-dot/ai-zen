@@ -3,3 +3,5 @@ dist
 _reference
 .DS_Store
 *.log
+docs/part2-shots/art/*/raw/
+dist-*
