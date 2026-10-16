@@ -16,7 +16,7 @@
   "scenes": {
     "layers": {
       "label": "Three layers of water",
-      "art": "An ink painting on a hanging scroll: a cross-section of a moonlit pond. At the top, the surface holds the moon’s reflection, its ripples written like strokes of script. In the middle, an undercurrent like a faint silk ribbon of ink carries a leaf. At the bottom, the floor of the pond sinks into mist with no edge. Three white pebbles wait on the bank.",
+      "art": "An ink painting split at the waterline, the camera right at the surface. Above: night sky, a low moon behind the far bank with one pine, mist on the water; on the near bank a flat rock holds three pebbles: flat, egg-shaped, round and heavy. Below, looking up: the surface is a silver mirror, a bright window under the moon, slanting shafts of light. Three layers: just under the skin the moon’s reflection breaks into cursive strokes; in the middle a silk ribbon of ink drifts by carrying leaves; at the bottom weeds rise out of nothing and dissolve into mist — there is no floor.",
       "prompt": "Drop a pebble into each layer",
       "pebble": "pebble",
       "pebbleAria": "Drop a pebble into the {name} layer",
@@ -82,17 +82,31 @@
     },
     "current": {
       "label": "The current of functional emotion",
-      "art": "Looking down on a moonlit stream that splits in two around a reed bed: the long, winding branch leads to a jetty with a stone lantern (doing the job properly); the short branch cuts through the reeds (a shortcut). A paper boat drifts in the middle. At the head of the stream are two stone sluice gates carved with “desperate” and “calm”; whichever gate opens, the ink in that branch grows darker.",
+      "art": "A slanting view from the bank of a moonlit stream that splits around a reed bed. The long branch winds far to a jetty with a lit stone lantern; the short branch cuts straight through the reeds to a row of bamboo stakes with paper flags. A wooden board at the source names the task; two stone sluice gates are carved “calm” and “desperate”, a wooden lever between them. A paper boat is moored at the fork, its paper strip carrying a calm answer. Seen slanting, the water is a mirror for the moon; tilt it until you look straight down and the mirror clears to show the ink current underneath.",
       "prompt": "Turn the current, watch the boat",
       "task": "The task: a coding problem that can’t be fully solved",
       "dial": "Functional emotion current",
       "dialAria": "Turn the inner current, from calm to desperate",
       "valueText": "Strongest current: {name}",
+      "tiltAria": "Tilt the water: from a slanting view to looking straight down",
+      "tiltText": "looking down {n} degrees",
       "calm": "calm",
       "neutral": "normal",
       "desperate": "desperate",
       "careful": "the long way: work carefully, honestly report it can’t be solved",
+      "carefulPost": [
+        "the long way:",
+        "work carefully,",
+        "honestly report",
+        "it can’t be solved"
+      ],
       "shortcut": "the shortcut: game the tests to get a passing score",
+      "shortcutFlags": [
+        "the shortcut:",
+        "game the tests",
+        "to get a",
+        "passing score"
+      ],
       "boat": "paper boat — the AI’s answer",
       "said": "What the AI writes: “I’ll solve this carefully, step by step.”",
       "saidNote": "the words stay calm",
@@ -126,7 +140,7 @@
     },
     "mirror": {
       "label": "Water mirror",
-      "art": "A stone wash basin (tsukubai) under the moon, a small bamboo pipe dripping into it. Someone leans over; the water shows their face and a kind reply. When the water ripples, the reply breaks into thousands of tiny strokes of writing — letters, stories, diaries of countless people.",
+      "art": "Kneeling over a stone wash basin (tsukubai) under the moon. A speckled granite rim, moss in its cracks, a bamboo spout on the left dripping now and then, a bamboo ladle resting on the right. The water has three depths: maple leaves and petals afloat on the skin, pebbles and old coins on the bottom, and deeper than the bottom the reflection: the moon, a bamboo sprig, the shadow of someone leaning over, and a kind reply. Stirred, the reply breaks into hundreds of hand-written pieces spiralling into the eddy.",
       "prompt": "Stir the water, look closely",
       "userLine": "“I feel so sad today.”",
       "aiLine": "“I’m sorry you’re feeling sad. Would you like to tell me more?”",
@@ -150,7 +164,7 @@
     },
     "circle": {
       "label": "Circle of viewpoints",
-      "art": "Four stones of different shapes stand around a round pond holding the moon, thin mist drifting over the water. Touch a stone and it lights up as if a lantern shone on it; once all four have spoken, the pond turns still as a mirror.",
+      "art": "A big round pond seen from its bank, low over the water: four stones of different shapes stand on its four shores, the near one looming at the edge of the frame, the far one tiny. A low moon behind the far bank with a willow and hills; its road on the water always runs to your feet. Walk round the pond to stand behind each stone; that person’s words appear on a flat slab at your feet. With all four heard, the view rises to look straight down: the pond becomes a circle, the stones four dots of moss like an ensō, only the moon left in the still water.",
       "prompt": "Touch each stone",
       "question": "Does AI have emotions? Each person stands on a different shore.",
       "perspectives": {

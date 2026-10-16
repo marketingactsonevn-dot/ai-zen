@@ -57,3 +57,21 @@
   mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 84%, transparent);
   mask-composite: intersect;
 }
+/* k.label: DOM text riding a 3D point (transform/opacity written by the stage); a station restyles it freely */
+.p2s3-labels {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.p2s3-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  font: 400 15px/1.35 var(--serif);
+  color: var(--ink);
+  white-space: nowrap;
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
+  transition: opacity 0.4s var(--ease, ease);
+}

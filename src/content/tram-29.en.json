@@ -22,8 +22,10 @@
   "scenes": {
     "desk": {
       "label": "AI's writing desk",
-      "art": "A low wooden desk under a lantern in the night garden. The scribe — the chip — sits in the middle; the wider the desk, the more scrolls lie open at once and the faster the brush runs. Right at the desk's edge stands a tall stack of thin porcelain plates: HBM memory.",
-      "prompt": "Drag the desk wider",
+      "art": "A low black-lacquered desk on a bed of moss, under a paper lantern hung from a bamboo rod. The chip is the black inkstone in the middle, the scribe kneels behind it; right at its edge stands a tower of ten celadon plates: HBM memory. Behind, stepping stones lead into the mist to a white-walled store. The wider the desk, the more scrolls lie open at once and the faster the brush runs.",
+      "prompt": "Drag the board to widen the desk",
+      "towerAria": "HBM plate tower at the inkstone's edge: open it layer by layer",
+      "closePrompt": "Touch again to stack the plates back",
       "slider": "Desk width (memory)",
       "valueText": "A {n} GB desk",
       "small": "A cramped desk: scrolls go back to the store and come out again, much slower",
@@ -50,7 +52,7 @@
     },
     "wells": {
       "label": "The lake drinks the wells",
-      "art": "A wide moon lake in the middle of the garden — AI data centres — fed by underground streams from every side. At the garden's edge, three small wells carved phone, laptop and graphics card; the water sinks until the bucket scrapes the mossy bottom.",
+      "art": "From the hilltop, looking down: three small stone wells carved Phone, Laptop and Graphics card; from each a bamboo pipe runs down the slope, the three meet at a stone sluice gate and flow on to the great moon lake in the valley — AI data centres, its shore lined with rows of lit halls. Each time the gate opens the lake rises, another row lights up, and the water in the wells sinks deeper into the stone.",
       "prompt": "Open the water gate",
       "lake": "AI data centres",
       "gate": "Open the gate",
@@ -91,7 +93,7 @@
     },
     "bill": {
       "label": "Who gets the bill",
-      "art": "A long strip of sand unrolled like a ledger under the moon. Drag the moon right and paper bills drift from the great lake to the phone stall at the garden gate; at each milestone the bill grows a little longer.",
+      "art": "An accordion ledger runs straight from the great lake under the moon (the data centres) toward the viewer, over sand raked toward the same vanishing point, to the phone stall at the garden gate. Drag the stone paperweight carrying the moon's reflection along it: each milestone's fold stands up as it passes; the two DRAM-price folds lie on the ground, the second five times the first.",
       "prompt": "Drag the moon through the news",
       "sliderAria": "Drag the moon through the milestones of the memory squeeze",
       "tide": {
@@ -162,8 +164,9 @@
     },
     "refill": {
       "label": "When will the wells refill?",
-      "art": "Three stones stand round a dry well under a waning moon, each carved with a guess about the rainy season. At the bottom, the moon's reflection is warped and unclear.",
+      "art": "Eye level with a dry well's curb, a great sky above is the stage. Three stones on the curb, each bringing its weather: heat shimmer over a clear sky and a cracking curb; masons raising a fab on a far hill under a cloud just forming; rain clouds rolling in, and the moon's reflection in the well at last, still trembling, not yet round.",
       "prompt": "Touch each stone",
+      "stoneNames": ["J.P. Morgan", "SK hynix", "IDC"],
       "perspectives": {
         "stones": [
           {

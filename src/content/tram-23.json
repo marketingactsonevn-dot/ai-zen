@@ -16,7 +16,7 @@
   "scenes": {
     "bridge": {
       "label": "Viên đá khái niệm",
-      "art": "Nhìn xuyên mặt hồ trong vắt dưới trăng: dưới đáy có một viên đá khắc hình cây cầu treo. Vặn bấc đèn lồng cho sáng lên, ánh đèn rọi xuống viên đá, đàn cá bắt đầu bơi theo đường cong của nhịp cầu, mặt nước in bóng hai trụ cầu son đỏ.",
+      "art": "Nhìn gần như thẳng xuống một hồ tròn có vành đá rêu dày ôm quanh, như tranh cá koi. Dưới làn nước trong, một phiến đá dưới đáy khắc nổi hình cây cầu treo. Một chiếc đèn lồng treo trên sào tre ngay phía trên; kéo đèn xuống gần mặt nước thì quầng sáng thu lại trên phiến đá, nét khắc ánh son, đàn cá rời chỗ bơi tự do để bám rồi bơi thành đoàn theo dây cáp, và mặt nước hiện bóng hai trụ cầu son dù phía trên hồ không có gì.",
       "prompt": "Vặn đèn khái niệm",
       "slider": "Độ mạnh của khái niệm “Cầu Cổng Vàng”",
       "sliderAria": "Kéo để vặn mạnh khái niệm “Cầu Cổng Vàng” bên trong mô hình (phím ← →)",
@@ -46,7 +46,7 @@
     },
     "lotus": {
       "label": "Một cuống, nhiều cánh",
-      "art": "Một bông sen trắng trên mặt hồ đêm, một cuống mà cánh xếp chồng khít lên nhau như một nụ duy nhất. Lắc nhẹ mặt nước, các cánh tách ra trôi thành năm bông nhỏ, mỗi bông in một nét: chuỗi ADN, chữ Do Thái, dòng luật, địa chỉ web, nhãn dinh dưỡng.",
+      "art": "Máy quay sát mặt hồ đêm; trăng ở ngoài khung, chỉ thấy đường trăng chạy về phía mình. Giữa đường trăng là một búp sen trắng lớn: năm cánh khép thành một nụ trên một cuống, cuống lặn xuống nước, trên đó ghi “một nơ-ron”. Búng mặt nước thì gợn sóng lan ra, cánh sen rung rồi khép lại; đủ sức thì nụ bung, năm cánh trôi thành năm bông nhỏ ở các độ xa khác nhau, mỗi bông mang một nét mực và nghĩa của nó: chuỗi ADN, chữ Do Thái, văn bản luật, yêu cầu web, thông tin dinh dưỡng. Dưới nước, sợi bạc vẫn nối cả năm về một cuống.",
       "prompt": "Lắc nhẹ mặt nước",
       "shakeAria": "Lắc mặt nước để tách các nghĩa đang chồng lên nhau (hoặc nhấn phím cách)",
       "neuron": "một nơ-ron",
@@ -76,7 +76,7 @@
     },
     "stream": {
       "label": "Lần theo mạch nước",
-      "art": "Một dòng suối nhỏ dưới trăng chảy qua ba bậc ruộng đá. Nước rót vào từ hai mạch “Dallas” và “thủ phủ”, đọng lại ở một hồ trung gian khắc chữ “Texas”, rồi mới đổ xuống hồ cuối “Austin”. Một nhánh nước mảnh chảy tắt thẳng xuống, mờ hơn.",
+      "art": "Đứng trên đỉnh một dòng thác bậc thang dưới trăng, nhìn xuống thung lũng. Gần nhất là hai mạch nước chảy ra từ khe đá khắc “Dallas” và “thủ phủ”; ở bậc giữa là ao “Texas” có phiến đá chặn khắc chữ; xa dưới thung lũng là ao nhỏ “Austin” in bóng trăng. Nhấc lần lượt từng viên đá cống thì nước chảy: Dallas đổ vào Texas, Texas tràn xuống Austin, mạch “thủ phủ” theo máng tre chảy thẳng xuống Austin, và một dòng mảnh đi tắt, mờ hơn. Đổi phiến Texas lấy phiến California thì ao cuối thành “Sacramento”, còn sương dày lên trên ba thác khác.",
       "prompt": "Lần theo dòng nước",
       "question": "“Thủ phủ của bang có thành phố Dallas là…”",
       "nodes": [
@@ -147,7 +147,7 @@
     },
     "circle": {
       "label": "Vòng đá bên hồ",
-      "art": "Bốn hòn đá quanh mặt hồ tròn in bóng trăng, mỗi hòn một dáng: đá cao thẳng, đá nằm ngang, đá phủ rêu, đá khắc dấu triện. Chạm hòn nào, bóng trăng dưới nước nghiêng về phía hòn ấy một chút rồi lặng lại.",
+      "art": "Một khay sơn mài đen tròn trên chân thấp, đặt trên bàn gỗ dưới trăng. Trên mặt khay xoay có bốn hòn đá bốn dáng: đá đứng cao, đá nằm dài, đá phủ rêu, đá khắc ấn son; giữa khay là nước in trăng với những gợn tròn mảnh; câu hỏi khắc quanh thành khay. Kéo để xoay khay: hòn nào dừng trước mặt thì nói, lời nó trải trên một dải giấy trước khay và bóng trăng nghiêng về phía nó; nghe đủ bốn hòn thì gợn lặng, bóng trăng thành một vòng tròn yên.",
       "prompt": "Nghe từng hòn đá",
       "question": "Việc soi bên trong có theo kịp tốc độ AI lớn lên?",
       "perspectives": {

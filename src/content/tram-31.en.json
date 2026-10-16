@@ -17,7 +17,7 @@
   "scenes": {
     "wells": {
       "label": "Two wells",
-      "art": "A moonlit night at the edge of the village: two mossy stone wells, each with a bamboo bucket. The left well's water glints with lines of code like fish scales; the right one holds small labelled clay jars. A paper lantern hangs from a wooden post between them.",
+      "art": "A moonlit night at the edge of the village: two mossy stone wells side by side on a flagstone yard, under one bamboo pulley beam with a lantern hanging at each end. Lines of code glint in the left well's water; the right well holds small labelled clay jars. A bamboo bucket hangs in front between them, a paper tag on it naming the thing to drop.",
       "prompt": "Drop each into its well",
       "aria": "Two wells: GitHub and Hugging Face. Put each item into the right well",
       "wells": [
@@ -35,12 +35,12 @@
         }
       ],
       "items": [
-        { "id": "app", "label": "An app's source code", "well": "github", "aria": "An app's source code" },
-        { "id": "weights", "label": "A trained model file", "well": "hf", "aria": "A trained model file (the weights)" },
-        { "id": "dataset", "label": "A dataset", "well": "hf", "aria": "A dataset for training or testing" },
-        { "id": "space", "label": "A web demo to try", "well": "hf", "aria": "A demo that runs a model right in the browser" },
-        { "id": "cli", "label": "A command-line tool", "well": "github", "aria": "The source code of a command-line tool" },
-        { "id": "site", "label": "A website like AI Zen", "well": "github", "aria": "The source code of a website like AI Zen" }
+        { "id": "app", "label": "An app's source code", "tag": "app", "well": "github", "aria": "An app's source code" },
+        { "id": "weights", "label": "A trained model file", "tag": "weights", "well": "hf", "aria": "A trained model file (the weights)" },
+        { "id": "dataset", "label": "A dataset", "tag": "dataset", "well": "hf", "aria": "A dataset for training or testing" },
+        { "id": "space", "label": "A web demo to try", "tag": "demo", "well": "hf", "aria": "A demo that runs a model right in the browser" },
+        { "id": "cli", "label": "A command-line tool", "tag": "CLI tool", "well": "github", "aria": "The source code of a command-line tool" },
+        { "id": "site", "label": "A website like AI Zen", "tag": "website", "well": "github", "aria": "The source code of a website like AI Zen" }
       ],
       "itemAria": "Drop “{item}” into the {well} well",
       "right": "Right well.",
@@ -60,9 +60,9 @@
     },
     "depth": {
       "label": "A deepening well",
-      "art": "A cross-section of an old well unrolled like a scroll: rings of stone laid down over the years, the water rising notch by notch. The moon glides along the well's mouth; each notch has a small stone carved with a date. At the end of the scroll, white mist covers the mouth of the well.",
+      "art": "An old well cut open from mouth to floor and hung like a scroll: the round mouth opens to the moonlit sky, a cone of moonlight falls down the shaft, the courses of stone curve round its wall, layers of earth lie outside the cut. The water column rises through the years; each milestone is a stone jutting from the wall with its date cut beside it. Above today's water there is mist.",
       "prompt": "Drag the moon through the years",
-      "aria": "Progress tide: public models on Hugging Face over the years. Drag the moon or use the arrow keys",
+      "aria": "A deepening well: public models on Hugging Face over the years. Drag the moon's reflection up the water, or use the up and down arrow keys",
       "tide": {
         "milestones": [
           {
@@ -118,12 +118,12 @@
     },
     "card": {
       "label": "Reading the well stone",
-      "art": "Beside the well stands a low stone stele, six lines faintly carved under the moss. You hold a paper lantern; wherever it shines, a line becomes clear and casts its shadow on a puddle holding the moon.",
-      "prompt": "Light each line on the stone",
+      "art": "By the well stands a low mossy stele, seen three-quarters. A damp sheet of washi is tied over its face, hiding six carved lines. Dab the ink pad on the paper: ink takes only where the stone stands up, so each carved line comes out white on black. At its foot lie an inkstone and a puddle reflecting the stele and the moon.",
+      "prompt": "Dab ink on the paper",
       "aria": "A mock model card: six lines to read before you download a model",
       "mock": "A made-up model for learning, not a real one",
       "model": "lang-mau / vuon-trang-8B-instruct-GGUF",
-      "lineAria": "Light line {n}: {label}",
+      "lineAria": "Ink line {n}: {label}",
       "lines": [
         {
           "id": "name",
@@ -176,9 +176,11 @@
     },
     "repo": {
       "label": "Two houses",
-      "art": "Two wooden houses beside a stone path under the moon, almost identical. The left one has its lights on, a swept porch and a wooden board listing repairs; the right one has its door shut, cobwebs everywhere, and the name on its gate carved one stroke off.",
+      "art": "A raked gravel island in black water under the moon, with two wooden houses whose curved roofs look identical from the front. Lamplight from the left house spills through its paper screens onto the gravel; it casts a deep block of shadow, and a stepping-stone path crosses the water to hamlets on the far hills. The right house is only a thin front propped on two bamboo poles: walk round it and it is hollow, with cobwebs and an unlabelled bundle.",
       "prompt": "Guess which house to trust",
       "aria": "Compare two GitHub repos on six signals, then choose the one to trust",
+      "hint": "Drag to walk round the island, or use the arrow keys when the view is focused; wheel or pinch to move closer. Tap a thing to read that signal on both houses; light a gate lamp to choose a house.",
+      "signalAria": "Signal {label}: see it on both houses",
       "signals": [
         { "id": "readme", "label": "README", "what": "The front page: what it does, how to install it, examples." },
         { "id": "stars", "label": "Stars", "what": "How many people bookmarked it: popularity, not a guarantee of safety." },
@@ -234,7 +236,7 @@
     },
     "clean": {
       "label": "Filtering the water",
-      "art": "A bamboo filter under the well's spout: water runs through layers of gravel, sand and charcoal, each layer a numbered stone. At the bottom a clay bowl catches clear water holding the whole moon.",
+      "art": "Seen low beside a big dark bowl: a tall bamboo spout at the back, half in mist, pours murky water down six stepped stone basins that come toward you, each nearer one bigger. Each basin waits for a numbered filter stone. In the right order the water clears step by step; with all six in, the bowl fills with clear water holding the whole moon.",
       "prompt": "Stack the filter layers",
       "aria": "Stepping-stone path: the safe order for downloading a model or some code. Tap them in turn or use the number keys",
       "stepAria": "Place step {n}: {label}",

@@ -1,0 +1,289 @@
+/* Trạm 34 · scene 2 — the S of sand seen from the workshop gate (path.ts over stepPath). Part 2 tokens only. */
+.t34p-back,
+.t34p-front {
+  position: absolute;
+  top: 0;
+  left: calc(-1 * var(--gutter));
+  right: calc(-1 * var(--gutter));
+  pointer-events: none;
+  --step: 0;
+}
+.t34p-front {
+  z-index: 6;
+}
+.t34p-far,
+.t34p-near {
+  position: absolute;
+  inset: 0;
+  transition: transform 1.2s var(--ease);
+}
+/* each stone set is a step forward: the far shore comes in a little, the gate posts slide out a lot */
+.t34p-far {
+  transform-origin: 50% 22%;
+  transform: scale(calc(1 + var(--step) * 0.006));
+}
+.t34p-near {
+  transform: scaleX(calc(1 + var(--step) * 0.008));
+}
+.t34p-cv {
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* the sand runs on under the scene foot and melts into the paper (the sky melts into it at the top: painted) */
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 99%);
+  mask-image: linear-gradient(to bottom, #000 82%, transparent 99%);
+}
+/* the gate posts are near and dark, cut by the bottom edge; their tops go out of focus upward */
+.t34p-near .t34p-cv {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 42%, #000 62%);
+  mask-image: linear-gradient(to bottom, transparent 42%, #000 62%);
+}
+.t34p-lit {
+  opacity: 0;
+  transition: opacity 1.8s var(--ease-soft);
+}
+.t34p-back.lit .t34p-lit {
+  opacity: 1;
+}
+.t34p-glow,
+.t34p-refl {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 2s var(--ease-soft) 0.4s;
+}
+.t34p-glow {
+  width: 220px;
+  height: 220px;
+  margin: -110px 0 0 -110px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 45%, transparent), transparent);
+}
+.t34p-refl {
+  width: 10px;
+  margin-left: -5px;
+  background: repeating-linear-gradient(to bottom, var(--lantern) 0 3px, transparent 3px 7px);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+  border-radius: 40%;
+}
+.t34p-back.lit :is(.t34p-glow, .t34p-refl) {
+  opacity: 1;
+}
+
+/* the component's path line and band: the painted hollows replace them */
+.t34p .p2s-line,
+.t34p .p2s-band {
+  display: none;
+}
+.t34p .p2s-slot {
+  border: 0;
+  background: none;
+  color: color-mix(in srgb, var(--ink-3) 70%, transparent);
+  font: 500 15px/1 var(--serif);
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--card) 60%, transparent);
+  transition: scale 0.6s var(--ease);
+}
+.t34p .p2s-slot.land::after {
+  content: '';
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--card) 70%, transparent);
+  animation: t34p-ring 1s var(--ease) 0.45s both;
+  pointer-events: none;
+}
+:root[data-theme='dark'] .t34p .p2s-slot.land::after {
+  border-color: color-mix(in srgb, var(--moon) 35%, transparent);
+}
+@keyframes t34p-ring {
+  from { opacity: 0.9; transform: scale(0.8); }
+  to { opacity: 0; transform: scale(1.45); }
+}
+
+/* the stones: a painted piece under an engraved label */
+.t34p .p2s-stone {
+  padding: 0 12px 10px 10px;
+  justify-content: center;
+  transition: transform 0.65s cubic-bezier(0.4, 0.1, 0.3, 1), scale 0.65s cubic-bezier(0.4, 0.1, 0.3, 1), translate 0.65s cubic-bezier(0.4, 0.1, 0.3, 1);
+}
+/* the loose stones lie at odd angles; set in the path they straighten */
+.t34p .p2s-art {
+  rotate: var(--tilt, 0deg);
+  transition: rotate 0.65s var(--ease);
+}
+.t34p .p2s-stone.placed .p2s-art {
+  rotate: 0deg;
+}
+/* carved into the stone's top face: lying back with it, the groove dark above and lit on its lower lip */
+.t34p .p2s-label {
+  margin-top: -6%;
+  font: 600 14px/1.15 var(--serif);
+  color: color-mix(in srgb, var(--stone-text, var(--ink)) 82%, var(--rock-lo));
+  text-align: center;
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 80%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 35%, transparent);
+  transform: perspective(260px) rotateX(38deg);
+  -webkit-line-clamp: 2;
+  transition: opacity 0.4s;
+}
+.t34p .p2s-key {
+  width: auto;
+  height: auto;
+  margin-top: -6%;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font: 500 12px/1 var(--serif);
+  color: color-mix(in srgb, var(--stone-text, var(--ink)) 70%, var(--rock-lo));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 70%, transparent);
+  transform: perspective(260px) rotateX(38deg);
+  opacity: 0.75;
+}
+.t34p .p2s-stone.placed .p2s-key {
+  background: none;
+  color: color-mix(in srgb, var(--stone-text, var(--ink)) 70%, var(--rock-lo));
+  border-color: transparent;
+  opacity: 0.6;
+}
+/* set far down the path the stone is small: its words show only when it is pointed at */
+.t34p .p2s-stone.placed.far :is(.p2s-label, .p2s-key) {
+  opacity: 0;
+}
+.t34p .p2s-stone.placed.far:is(:hover, :focus-visible) :is(.p2s-label, .p2s-key) {
+  opacity: 1;
+}
+/* phone: the heap is drawn smaller (path.ts sets scale + translate); a stone picked up comes to full size */
+.t34p.cols .p2s-stone.drag {
+  scale: 1 !important;
+  translate: none !important;
+}
+.t34p-sh-c {
+  fill: var(--umbra);
+  opacity: 0.35;
+}
+.t34p-sh-l {
+  fill: var(--umbra);
+  opacity: 0.16;
+}
+:root[data-theme='dark'] .t34p-sh-c {
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t34p-sh-l {
+  opacity: 0.32;
+}
+.t34p-moss {
+  fill: var(--moss-b);
+  opacity: 0.8;
+}
+.t34p-moss-2 {
+  fill: var(--moss-a);
+  opacity: 0.7;
+}
+.t34p-facet {
+  fill: var(--rock-lo);
+  opacity: 0.32;
+}
+.t34p-ridge {
+  fill: var(--rock-hi);
+  opacity: 0.55;
+}
+.t34p-edge {
+  fill: var(--ink);
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t34p-edge {
+  fill: var(--umbra);
+  opacity: 0.7;
+}
+.t34p-grain {
+  fill: var(--umbra);
+  opacity: 0.25;
+}
+.t34p-warm {
+  fill: var(--lantern);
+  opacity: 0.55;
+}
+.t34p-rim {
+  fill: var(--moon-rim);
+}
+:root[data-theme='dark'] .t34p-rim {
+  fill: var(--moon);
+  opacity: 0.45;
+}
+.t34p .p2s-stone.drag .t34p-sh,
+.t34p .p2s-stone.hop .t34p-sh {
+  opacity: 0.55;
+}
+/* the hop: the stone rises on an arc while its shadow stays on the sand */
+.t34p .p2s-stone.hop :is(.t34p-body, .p2s-label, .p2s-key) {
+  animation: t34p-hop 0.65s cubic-bezier(0.3, 0, 0.4, 1);
+}
+@keyframes t34p-hop {
+  0% { translate: 0 0; }
+  45% { translate: 0 -34px; }
+  100% { translate: 0 0; }
+}
+/* lit: the lantern's light rolls back down the path, far stone first */
+.t34p.lit .p2s-stone.placed .t34p-warm {
+  animation: t34p-warm 1.4s var(--ease) calc(0.6s + var(--k, 0) * 0.16s) both;
+}
+@keyframes t34p-warm {
+  0% { opacity: 0.55; }
+  40% { opacity: 1; fill: color-mix(in srgb, var(--lantern) 70%, var(--moon)); }
+  100% { opacity: 0.85; }
+}
+.t34p.lit .p2s-stone.placed .t34p-body {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--lantern) 55%, transparent));
+}
+:root[data-quality='low'] .t34p.lit .p2s-stone.placed .t34p-body {
+  filter: none;
+}
+/* the hint and the step's detail are raked into the sand beside the hollow (phone: the foot band under the garden) */
+.t34p .p2s-note {
+  top: var(--t34p-ny, 0) !important;
+  left: var(--t34p-nx, 0) !important;
+  width: var(--t34p-nw, 100%) !important;
+  text-align: var(--t34p-na, left) !important;
+  font: 400 15px/1.42 var(--serif);
+  color: var(--ink-2);
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--card) 70%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 18%, transparent), 0 0 10px var(--paper);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  z-index: 7; /* over the gate posts on a phone, where it sits in the foot band */
+}
+.t34p .p2s-note.wrong {
+  color: var(--ink);
+}
+/* the take-away floats like a sheet of paper under the lamp (upper right) */
+.t34p:not(.cols) .p2s-sheet {
+  top: 3% !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: 2% !important;
+  width: min(400px, 34%);
+  max-height: 86%;
+  padding: 12px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow: 0 18px 36px -18px rgb(0 0 0 / 0.6);
+  rotate: -0.6deg;
+}
+.t34p.cols .p2s-note {
+  padding: 0 2%;
+  font-size: 14px;
+  -webkit-line-clamp: 3;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t34p .p2s-stone.hop :is(.t34p-body, .p2s-label, .p2s-key),
+  .t34p.lit .p2s-stone.placed .t34p-warm,
+  .t34p .p2s-slot.land::after {
+    animation: none;
+  }
+  .t34p-far,
+  .t34p-near {
+    transition: none;
+  }
+}

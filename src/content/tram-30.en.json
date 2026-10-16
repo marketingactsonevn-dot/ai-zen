@@ -20,7 +20,7 @@
   "scenes": {
     "gate": {
       "label": "Walled garden, open garden",
-      "art": "Two gardens under one moon: one behind a whitewashed wall with only a small window where you ask for a branch at a time; one with its bamboo gate wide open, where anyone can dig up a plant and grow it at home. Lanterns hang at both gates.",
+      "art": "A black lacquer tray stands in still water under the moon, and on it a round moss island split in two. One half is a garden behind a whitewashed wall, with only a lit window handing out one branch at a time; the other is a garden whose bamboo gate is flung open, with saplings in pots and stepping stones across the water to houses on the far shore. Four stone lanterns stand round the rim.",
       "prompt": "Open and close the gate",
       "closed": "Walled garden · closed model",
       "open": "Open garden · open weights",
@@ -67,10 +67,12 @@
     },
     "fence": {
       "label": "Fenced-off models",
-      "art": "In the middle of the garden is a small plot fenced with bamboo and thorny rope; only wall guards carrying stamped lanterns may step inside. Within, a very bright lamp lights up every crack in the city wall outside.",
+      "art": "Night, seen from low over the ground: a cold white lamp inside a ring of bamboo stakes tied with thorny rope, each stake throwing a long shadow that fans out toward you. Behind, a long city wall runs off into the mist; where the beam touches it, cracks with vermilion lips show. Two guards with stamped lanterns wait at the gate.",
       "prompt": "Try the fence gate",
       "gate": "Open the gate",
       "gateAria": "Try the fence gate: see who gets in and why",
+      "lampAria": "Turn the lamp inside the fence (left and right arrows)",
+      "lampHint": "Drag around the lamp to turn it",
       "denied": "The gate opens only for vetted wall guards.",
       "group": "Two fenced plots in 2026",
       "cases": [
@@ -116,7 +118,7 @@
     },
     "laws": {
       "label": "The tide of law",
-      "art": "A long strip of sand unrolled like an ancient law scroll under the moon; as the moon passes, a carved stone pillar rises from the sand. At the far end, the pillar bearing Vietnam's name is still wet from the tide, its carving not yet dry.",
+      "art": "From the sea at night, looking at the shore: eight carved stone pillars stand along a beach that curves away into mist, all under the waves at first. As the moon crosses the sky the tide draws back toward you and the pillars rise one by one. The last, bearing Vietnam's name, is still wet; beyond it a ninth lies half-sunk in the shallows.",
       "prompt": "Drag the moon through the laws",
       "sliderAria": "Drag the moon through the AI-law milestones",
       "tide": {
@@ -216,8 +218,9 @@
     },
     "copyright": {
       "label": "Copyright & training data",
-      "art": "Five stones round a moon lake; the water reflects thousands of pages, paintings and songs. A bucket is drawn from the lake — the training data — and each stone sees that bucket differently.",
+      "art": "At the edge of a moon pond: a well-sweep crosses the frame, its bucket hanging from the pole over the water. The pond reflects not the sky but a library — pages, scrolls and scores drifting below like fish. Five large stones stand on the near bank, each seeing the bucket of data in its own way.",
       "prompt": "Touch each stone",
+      "sweepAria": "Pull the well-sweep: dip the bucket into the lake and lift it",
       "perspectives": {
         "stones": [
           {

@@ -1,0 +1,68 @@
+/* Garden 13 at sunrise (g39.ts) — tokens only, both themes from html[data-part='2']. */
+/* weathered granite (the lanterns): mid grey, warmed by the dawn on the lit side */
+:root {
+  --t39-granite-lo: color-mix(in srgb, var(--rock-lo) 70%, var(--umbra));
+  --t39-granite: color-mix(in srgb, var(--rock-lo) 55%, var(--rock-mid));
+  --t39-granite-hi: color-mix(in srgb, var(--lantern) 35%, var(--rock-mid));
+}
+.g39-crescent-halo {
+  opacity: 0.45;
+}
+.g39-crescent-ash {
+  fill: var(--moon);
+  opacity: 0.06;
+}
+.g39-crescent-lit {
+  fill: var(--moon);
+  opacity: 0.62;
+}
+:root[data-theme='light'] .g39-crescent-lit {
+  fill: #fff;
+  opacity: 0.9;
+}
+.g39-dawn,
+.g39-fog,
+.g39-sun {
+  pointer-events: none;
+}
+.g39-sun-disc {
+  fill: var(--lantern);
+  opacity: 0.92;
+}
+:root[data-theme='light'] .g39-sun-disc {
+  fill: color-mix(in srgb, var(--lantern) 82%, #fff);
+}
+.g39-sun-flare {
+  opacity: 0.7;
+}
+.g39-skydawn {
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .g39-skydawn {
+  opacity: 1;
+}
+.g39-moss {
+  fill: var(--moss-b);
+}
+.g39-moss-a {
+  opacity: 0.26;
+}
+.g39-moss-b {
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .g39-moss-a {
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .g39-moss-b {
+  opacity: 0.5;
+}
+.g39-moss-dot {
+  fill: var(--moss);
+  opacity: 0.45;
+}
+/* text set in the scene (on stone, paper, water): serif, ink, a soft paper halo that keeps AA on busy ground */
+.g39-say {
+  font-family: var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 6px var(--paper), 0 0 14px var(--paper);
+}

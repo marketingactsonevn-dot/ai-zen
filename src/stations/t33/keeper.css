@@ -1,0 +1,249 @@
+/* Trạm 33 · keeper: one night with the resident gardener — a panorama in four parallax layers, the moon run along its arc */
+.t33k-layer { position: absolute; inset: 0; pointer-events: none; }
+.t33k-layer > * { pointer-events: auto; }
+.t33k-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.t33k-near { z-index: 2; pointer-events: none; }
+
+/* the sky melts into the page at its foot too (the dawn band is a full-height wash) */
+.t33k .t33k-sky {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, #000 62%, transparent 96%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, #000 62%, transparent 96%);
+  mask-composite: intersect;
+}
+/* sky: the moon's road is a faint wash strung with a paper lantern per hour; they light as the night passes */
+.t33k-arc { fill: var(--moon); opacity: 0.16; }
+:root[data-theme='light'] .t33k-arc { fill: var(--ink-3); opacity: 0.12; }
+.t33k-tickcord { fill: none; stroke: var(--moon); stroke-width: 0.8; opacity: 0.35; }
+:root[data-theme='light'] .t33k-tickcord { stroke: var(--ink-3); }
+.t33k-ticklamp { fill: color-mix(in srgb, var(--moon) 55%, var(--paper-2)); opacity: 0.55; transition: fill 0.6s, opacity 0.6s; }
+:root[data-theme='light'] .t33k-ticklamp { fill: color-mix(in srgb, var(--card) 70%, var(--ink-3)); opacity: 0.7; }
+.t33k-tickhalo { fill: url(#t33-warm); opacity: 0; transition: opacity 0.6s; }
+.t33k-tick.on .t33k-ticklamp { fill: var(--lantern); opacity: 1; }
+.t33k-tick.on .t33k-tickhalo { opacity: 0.6; }
+.t33k-dawn { opacity: 0; }
+.t33k-dawnglow { fill: url(#t33k-dawn); }
+.t33k-dawnband { fill: url(#t33k-dawnband); }
+.t33k-hour {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  translate: -50% 0;
+  font: italic 400 0.8rem/1 var(--serif);
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  text-shadow: var(--t33-halo);
+  pointer-events: none;
+}
+.t33k-moonbtn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+}
+.t33k-moonbtn::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; border: 1px dashed color-mix(in srgb, var(--moon) 60%, transparent); opacity: 0; transition: opacity 0.3s; }
+:root[data-theme='light'] .t33k-moonbtn::after { border-color: var(--ink-3); }
+.t33k-moonbtn:hover::after, .t33k-moonbtn:focus-visible::after, .dragmoon .t33k-moonbtn::after { opacity: 1; }
+.t33k-moonbtn:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.dragmoon .t33k-moonbtn { cursor: grabbing; }
+
+/* far: the study on its rise */
+.t33k-rise { fill: var(--wash); opacity: 0.16; }
+:root[data-theme='dark'] .t33k-rise { opacity: 0.55; }
+.t33k-swall { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--wash)); opacity: 0.85; }
+:root[data-theme='dark'] .t33k-swall { fill: color-mix(in srgb, var(--rock-lo) 80%, #000); opacity: 1; }
+.t33k-swin { fill: var(--wash); opacity: 0.55; }
+.t33k-swinlit { fill: var(--lantern); opacity: 0; transition: opacity 0.8s var(--ease); }
+.t33k-sman { fill: color-mix(in srgb, var(--wash) 80%, #3a2510); opacity: 0; transition: opacity 0.8s var(--ease); }
+.t33k-studyglow { fill: url(#t33-warm); opacity: 0; transition: opacity 0.8s var(--ease); }
+.t33k-sveranda { fill: color-mix(in srgb, var(--wash) 60%, var(--t33-wood-lo)); opacity: 0.7; }
+.studying .t33k-swinlit { opacity: 1; }
+.studying .t33k-sman { opacity: 0.75; }
+.studying .t33k-studyglow { opacity: 0.9; }
+.t33k-sroof { fill: color-mix(in srgb, var(--wash) 80%, var(--moss-b)); opacity: 0.88; }
+:root[data-theme='dark'] .t33k-sroof { fill: #02040b; }
+
+/* main: sand, pond, house */
+.t33k-rake { fill: none; stroke: var(--rake); stroke-width: 1; }
+.t33k-sand { fill: url(#t33k-sandg); }
+ellipse.t33k-sand { fill: color-mix(in srgb, var(--paper-2) 74%, var(--card)); }
+:root[data-theme='dark'] ellipse.t33k-sand { fill: color-mix(in srgb, var(--paper-2) 75%, var(--rock-mid)); }
+.t33k-bank { fill: var(--umbra); opacity: 0.3; }
+.t33k-pond { fill: var(--water); }
+:root[data-theme='dark'] .t33k-pond { fill: #03060f; }
+.t33k-pondlip { fill: none; stroke: var(--umbra); stroke-width: 6; opacity: 0.25; filter: blur(3px); }
+.t33k.low .t33k-pondlip { filter: none; stroke-width: 2; }
+.t33k-mreflect { fill: var(--moon); filter: blur(2px); transition: opacity 0.4s; }
+.t33k-glint { fill: var(--lantern); opacity: 0; filter: blur(1.5px); }
+.t33k-wall { fill: color-mix(in srgb, var(--rock-mid) 55%, var(--card)); }
+:root[data-theme='dark'] .t33k-wall { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--paper)); }
+.t33k-lattice { fill: var(--t33-wood-lo); opacity: 0.75; }
+:root[data-theme='dark'] .t33k-lattice { fill: #05070e; opacity: 0.9; }
+.t33k-veranda { fill: var(--t33-wood-hi); }
+.t33k-vedge { fill: var(--t33-wood-lo); }
+.t33k-room { fill: #04060c; opacity: 0.55; }
+:root[data-theme='dark'] .t33k-room { fill: #000; opacity: 0.85; }
+.t33k-eaveu { fill: var(--t33-wood-lo); opacity: 0.9; }
+.t33k-roof { fill: color-mix(in srgb, #8c7a52 30%, var(--rock-lo)); }
+:root[data-theme='dark'] .t33k-roof { fill: color-mix(in srgb, #3a3020 40%, #05070e); }
+.t33k-thatch { fill: var(--wash); opacity: 0.3; }
+:root[data-theme='dark'] .t33k-thatch { fill: var(--rock-mid); opacity: 0.35; }
+.t33k-fascia { fill: var(--t33-wood-lo); }
+.t33k-stepstone { fill: url(#p2-rock); }
+.t33k-brock { fill: url(#p2-rock); }
+.t33k-vshadow { fill: var(--umbra); opacity: 0.3; }
+.t33k-post { fill: var(--t33-wood-lo); }
+.t33k-rim { fill: var(--moon); opacity: 0.55; }
+:root[data-theme='light'] .t33k-rim { fill: #fff; opacity: 0.85; }
+.t33k-ink { fill: var(--wash); opacity: 0.8; }
+:root[data-theme='dark'] .t33k-ink { fill: #000; }
+.t33k-thread { fill: none; stroke: var(--ink); stroke-width: 0.9; opacity: 0.6; }
+.t33k-glass { fill: color-mix(in srgb, var(--moon) 55%, var(--water)); opacity: 0.92; }
+:root[data-theme='light'] .t33k-glass { fill: color-mix(in srgb, #fff 60%, var(--water)); }
+.t33k-glasspaint { fill: var(--vermilion); opacity: 0.7; }
+.t33k-tanzaku { fill: var(--card); }
+:root[data-theme='dark'] .t33k-tanzaku { fill: color-mix(in srgb, var(--moon) 70%, var(--card)); }
+.t33k-chime.rung { animation: t33k-ring 1.8s ease-in-out; }
+@keyframes t33k-ring {
+  12% { transform: rotate(10deg); }
+  30% { transform: rotate(-8deg); }
+  50% { transform: rotate(5deg); }
+  70% { transform: rotate(-3deg); }
+  88% { transform: rotate(1deg); }
+}
+.t33k-bookshadow { fill: var(--umbra); opacity: 0.35; }
+.t33k-pages { fill: var(--card); }
+.t33k-cover { fill: color-mix(in srgb, var(--vermilion) 30%, var(--t33-wood-lo)); }
+.t33k-pagesg { transition: transform 1.2s var(--ease) 0.4s; }
+.wrote .t33k-pagesg { transform: scaleY(1.45); }
+
+/* the gardener, his lantern's pool and his steps */
+.t33k-pool { fill: url(#t33-warm); }
+.t33k-foot { fill: var(--umbra); opacity: 0.35; }
+.t33k-robe { fill: color-mix(in srgb, var(--wash) 75%, var(--moss-b)); opacity: 0.88; }
+:root[data-theme='dark'] .t33k-robe { fill: color-mix(in srgb, var(--rock-mid) 85%, var(--moss-a)); }
+.t33k-book { fill: color-mix(in srgb, var(--vermilion) 35%, var(--t33-wood-lo)); }
+.t33k-head { fill: color-mix(in srgb, var(--rock-hi) 55%, var(--lantern)); }
+.t33k-hat { fill: color-mix(in srgb, #b89a62 55%, var(--rock-lo)); }
+.t33k-lamp { fill: var(--lantern); }
+.t33k-steps { fill: none; stroke: var(--wash); stroke-width: 2.6; stroke-dasharray: 0.003 0.005; stroke-linecap: round; opacity: 0.4; }
+:root[data-theme='dark'] .t33k-steps { stroke: var(--moon); opacity: 0.35; }
+.t33k-stepmask { fill: none; stroke: #fff; stroke-width: 16; stroke-dasharray: 1; stroke-dashoffset: 1; }
+
+/* hit areas over painted things */
+.t33k-hit {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 40%;
+  background: none;
+  cursor: pointer;
+}
+.t33k-hit:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t33k-hit:hover { background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 18%, transparent), transparent); }
+
+/* words in the sky (no box): the message and its seal, then the two kinds — three lines, the rest behind ⓘ */
+.t33k-skytext {
+  position: absolute;
+  left: 32%;
+  width: 38%;
+  top: 15%;
+  z-index: 4;
+  text-align: center;
+  pointer-events: none;
+}
+.t33k-skytext > * { pointer-events: auto; }
+.t33k-msgbox { transition: opacity 0.6s var(--ease), transform 0.8s var(--ease); }
+.t33k-msgbox.gone { opacity: 0; transform: translateY(-14px) scale(0.92); pointer-events: none; }
+.t33k-msg { margin: 0 auto; max-width: 28em; font: italic 400 clamp(1rem, 1.5vw, 1.2rem) / 1.5 var(--serif); }
+/* the seal: a small vermilion hanko under the words */
+.t33k-seal {
+  display: inline-grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  margin: 12px auto 0;
+  padding: 5px;
+  border: 0;
+  border-radius: 7px 5px 8px 6px;
+  background:
+    var(--t33-grain),
+    radial-gradient(120% 90% at 30% 20%, color-mix(in srgb, #fff 18%, transparent), transparent 60%),
+    var(--vermilion);
+  color: #fff6ea;
+  font: 600 0.78rem/1.05 var(--serif);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transform: rotate(-5deg);
+  box-shadow: inset 0 0 0 2px var(--vermilion), inset 0 0 0 3.5px color-mix(in srgb, #fff6ea 75%, transparent), 0 6px 14px -8px var(--umbra);
+  transition: transform 0.3s var(--ease);
+}
+.t33k-seal span { max-width: 3.2em; text-align: center; }
+.t33k-seal:hover { transform: rotate(-5deg) scale(1.06); }
+.t33k-seal:active { transform: rotate(-5deg) scale(0.94); }
+.t33k-seal:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.t33k-words p { margin: 0; }
+.t33k-kname { font: 500 clamp(1.05rem, 1.6vw, 1.3rem) / 1.3 var(--serif); letter-spacing: 0.01em; }
+.t33k-what { margin-top: 4px !important; font: 400 clamp(0.95rem, 1.3vw, 1.08rem) / 1.5 var(--serif); color: var(--ink-2); }
+.t33k-words > * { animation: p2-rise 0.7s var(--ease) both; }
+.t33k-more {
+  margin-top: 10px;
+  padding: 12px 6px 4px;
+  text-align: left;
+  /* a soft breath of mist behind the small print, no box */
+  background: radial-gradient(70% 70% at 50% 45%, color-mix(in srgb, var(--paper) 82%, transparent), transparent 100%);
+}
+.t33k-ex { margin: 0 auto 8px; max-width: 30rem; padding-left: 12px; border-left: 2px solid color-mix(in srgb, var(--lantern) 60%, var(--line-2)); }
+.t33k-exn { font: 600 0.92rem/1.3 var(--serif); }
+.t33k-fact { margin-top: 2px !important; font: 400 0.86rem/1.5 var(--sans); color: var(--ink-2); text-shadow: var(--t33-halo); }
+
+/* the paper crane */
+.t33k-flyer { position: absolute; z-index: 5; width: 48px; height: 32px; opacity: 0; pointer-events: none; }
+.t33k-crane { width: 100%; height: 100%; overflow: visible; }
+.t33k-cranep { fill: var(--card); }
+.t33k-craneink { fill: none; stroke: var(--wash); stroke-width: 1; opacity: 0.7; }
+:root[data-theme='dark'] .t33k-cranep { fill: color-mix(in srgb, var(--moon) 80%, var(--card)); }
+
+/* the gardener's reply, written beside him */
+.t33k-reply {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: max-content;
+  max-width: min(18rem, 56vw);
+  margin: 0;
+  translate: -50% -100%;
+  font: italic 400 0.98rem/1.45 var(--serif);
+  text-align: center;
+  animation: p2-rise 0.9s var(--ease) both;
+  pointer-events: none;
+}
+.more .t33k-reply { opacity: 0; transition: opacity 0.3s; }
+
+/* the night ends: the moon's road fades */
+.t33k.dawn .t33k-arc { opacity: 0.08; }
+
+/* a phone stacks the picture over the words: the picture melts into the page at its foot, the words sit below */
+@media (max-width: 640px) {
+  .t33k .t33-fade {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 calc(var(--art, 62%) - 30px), transparent calc(var(--art, 62%) + 14px));
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 calc(var(--art, 62%) - 30px), transparent calc(var(--art, 62%) + 14px));
+  }
+  .t33k .t33k-sky {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 calc(var(--art, 62%) - 60px), transparent calc(var(--art, 62%) + 10px));
+    mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 calc(var(--art, 62%) - 60px), transparent calc(var(--art, 62%) + 10px));
+  }
+  /* the words fill the space under the picture; the examples behind ⓘ scroll inside it */
+  .t33k-skytext { left: 4%; width: 92%; top: calc(var(--art, 62%) + 18px); bottom: 6px; display: flex; flex-direction: column; }
+  .t33k-words { display: flex; flex-direction: column; min-height: 0; }
+  .t33k-msg { font-size: 1rem; }
+  .t33k-more { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent); mask-image: linear-gradient(to bottom, #000 78%, transparent); }
+  .reading .t33k-reply { opacity: 0; }
+}

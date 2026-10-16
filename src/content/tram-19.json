@@ -18,11 +18,19 @@
   "scenes": {
     "peaks": {
       "label": "Các đỉnh núi",
-      "art": "Trăng vừa nhô sau một dãy núi mực nhiều tầng. Trên mỗi đỉnh dựng một tấm bia đá nhỏ khắc tên mô hình, tên hãng và ngày ra mắt. Mây bạc trôi ngang, lần lượt che rồi hé từng đỉnh — không đỉnh nào được vẽ cao hơn hẳn.",
+      "art": "Đứng trên một sống đá phủ rêu, nhìn qua biển mây đầy thung lũng. Trăng to vừa mọc bên phải. Năm ngọn núi đá nhọn nhô khỏi biển mây trên một vòng cung, bóng đổ dài sang trái trên mặt mây. Trên mỗi chóp có một phiến bia thấp khắc tin ra mắt mô hình, xếp theo ngày từ trái sang phải, nối nhau bằng một nét mực mảnh đứt quãng. Từ chỗ đứng này năm đỉnh cao bằng nhau. Bên trái là cây thông nghiêng, bên phải là một ngọn đèn đá.",
       "prompt": "Lật từng bia đá",
+      "hint": "Kéo để đổi chỗ đứng: đỉnh gần hơn sẽ trông cao hơn. Chạm một đỉnh để lật bia, chạm đèn đá để chỉ xem tin đã kiểm chứng, nhấn Esc để quay về.",
       "group": "Bia đá các mô hình mới, xếp theo ngày ra mắt",
       "stoneAria": "Lật bia: {title}, ngày {date}",
       "order": "Xếp theo ngày, không xếp hạng",
+      "short": {
+        "n-2026-04-glasswing": "Claude Mythos",
+        "n-2026-04-deepseek-v4": "DeepSeek V4",
+        "n-2026-07-gemini-3-6-flash": "Gemini 3.6 Flash",
+        "n-2026-09-gpt-6-astra": "GPT-6 Astra",
+        "n-2026-09-opus-5-5": "Claude Opus 5.5"
+      },
       "verifiedOnly": "Chỉ xem tin đã kiểm chứng",
       "verifiedOnlyAria": "Chỉ hiện các bia đã có bên độc lập xác nhận",
       "othersNote": "Grok (xAI), Qwen (Alibaba), Mistral… cũng là những dãy núi lớn. AI Zen chưa kiểm kịp bản mới nhất của họ nên chưa dựng bia.",
@@ -40,9 +48,9 @@
     },
     "gate": {
       "label": "Đỉnh núi có rào",
-      "art": "Đỉnh cao nhất bị quây trong hàng rào tre, cổng gỗ cài then. Bên trong, vài đèn đá soi cho những người thợ đang trám vết nứt trên một bức tường thành ghép bằng dòng mã. Ngoài rào, bốn hòn đá đứng quanh vũng nước trăng, chờ người xem mở cổng.",
-      "prompt": "Mở cổng rào",
-      "gateAria": "Mở cổng rào để xem vì sao mô hình này bị giới hạn (hoặc nhấn Enter)",
+      "art": "Đứng sát hàng rào tre trên đỉnh núi cao nhất, ngang tầm mắt. Vài thân tre mờ ở mép khung; giữa rào là cổng gỗ hai cánh mắt cáo, cài một then gỗ ngang. Qua mắt cáo thấy ánh đèn bên trong: một bức tường xây bằng những dòng mã, một vết nứt đỏ, hai người thợ đang trát, hai đèn đá, mười hai ngọn đèn nhỏ dọc tường và xa hơn một dải đèn mờ. Sau tường là đỉnh núi, trăng và sương.",
+      "prompt": "Kéo then cửa sang bên",
+      "gateAria": "Kéo then cửa sang bên để mở cổng rào và xem vì sao mô hình này bị giới hạn (hoặc nhấn Enter)",
       "reasonTitle": "Vì sao có rào",
       "reason": {
         "text": "Anthropic nói Claude Mythos Preview tìm và khai thác lỗ hổng phần mềm giỏi tới mức chưa nên phát hành rộng, nên chỉ trao cho bên phòng thủ.",
@@ -51,6 +59,8 @@
         "claimBy": "Anthropic"
       },
       "debateTitle": "Ai nói gì",
+      "courtPrompt": "Mở từng cổng",
+      "courtArt": "Nhìn từ trên xuống khu đỉnh có rào nổi giữa biển mây, như một bản vẽ mặt bằng chùa. Giữa là sân sỏi cào, bốn cổng ở bốn hướng. Ngoài mỗi cổng có một người cầm đèn và một dấu khắc: cái cổng, hòn đá có mạch vữa mới, hòn đá một khấc, một khu rào nhỏ hơn. Mở cổng nào thì người cầm đèn đi vào giữa sân, để lại vết chân.",
       "perspectives": {
         "stones": [
           {
@@ -170,7 +180,7 @@
     },
     "tide": {
       "label": "Thuỷ triều ra mắt",
-      "art": "Bãi cát dài như một cuộn tranh mở dưới trăng. Kéo trăng từ trái sang phải, nước rút dần để lộ những hòn đá — mỗi hòn một lần ra mắt lớn. Đầu cuộn đá thưa; cuối cuộn đá mọc san sát như bậc thang lên núi.",
+      "art": "Nằm sát mép nước ở đầu một bãi triều dài chạy chéo vào sâu, tới một ngọn núi có mây quấn đỉnh: thời gian chạy vào chiều sâu. Triều đang lên, mặt nước phủ cả bãi, đường trăng vỡ chạy về phía người xem. Kéo vầng trăng trên trời thì nước rút về phía núi, từng hòn đá nổi lên theo ngày: gần thì thưa, tới chân núi thì chen nhau rồi leo sườn như bậc thang.",
       "prompt": "Kéo trăng qua các năm",
       "moonAria": "Kéo vầng trăng, hoặc dùng phím ← → để đi qua các mốc",
       "paceNote": "Chưa có nguồn đáng tin đếm số lần ra mắt theo từng quý, nên cuộn tranh dùng số đếm mô hình quy mô lớn của Epoch AI.",

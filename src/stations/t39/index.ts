@@ -1,4 +1,3 @@
-import './style.css'
 import type { StationModule } from '../types'
 import { C } from './shell'
 import { askScene } from './ask'

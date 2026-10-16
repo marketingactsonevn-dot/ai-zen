@@ -23,7 +23,7 @@
   "scenes": {
     "ask": {
       "label": "Four questions by the pond",
-      "art": "Four stepping stones across the pond just after moonset, the sky blue-grey. Each is engraved with a question. Choose an answer and ripples spread from the stone while a small lantern on the far bank lights up.",
+      "art": "Looking almost straight down at a pond at first light: four stepping stones run diagonally across it to a stone lantern on the far bank, pebbles and the shadows of two koi on the bottom. Each stone is engraved with a question; the answers float round it like lotus leaves. Choose a leaf and it drifts to the stone, ripples spread and the next stone rises out of the water. After all four, the view pulls back over the whole path and the far lantern lights up.",
       "prompt": "Answer four questions",
       "progress": "Question {n}/4",
       "optionAria": "{q} — {label}",
@@ -124,7 +124,7 @@
     },
     "kit": {
       "label": "Your suggested toolkit",
-      "art": "A rattan basket on a wooden table on the veranda, morning dew on its weave. With each answer, tools appear in it: a brush, a brush holder, a small oil lamp, a wood plane, a hanging scroll. Whatever doesn't fit fades like a moon shadow.",
+      "art": "A close view of a lidded rattan basket on a wooden veranda table, the first ray of sun coming low from the right, the basket throwing a long shadow to the left. Lift the lid and the tools that fit your answers by the pond float up inside: a brush, a colour box with an ink stick and a vermilion cake, a small oil lamp, a wood plane, a scroll tied with cord. Whatever doesn’t fit lies outside on the table, faint as a moon shadow. Touch a tool and it floats toward you as its paper card opens.",
       "prompt": "Open the tool basket",
       "open": "Open the basket",
       "empty": "Answer the four questions by the pond and the basket will pack itself.",
@@ -356,7 +356,7 @@
     },
     "path": {
       "label": "A 30-day path",
-      "art": "A path of four stones from the veranda to the garden gate at dawn, a thin moon lingering in the corner of the sky. Each stone is a week. Lay them in order and the first ray of sun runs along the path, waking each one.",
+      "art": "From the veranda step, looking up a backlit moss slope: a gravel path leads to a garden gate on the horizon, the sun about to rise behind it, a thin moon still in the corner of the sky. Four empty hollows wait along the path, each farther one smaller; four week-stones lie on the veranda floor. Lay them in order and the sun clears the gate while a ray runs down the path, waking each stone.",
       "prompt": "Lay the four stones",
       "keys": "Press 1 to 4 to lay the stones in order",
       "stoneAria": "Week {n}: {label}",
@@ -402,7 +402,7 @@
     },
     "advice": {
       "label": "Learning that lasts",
-      "art": "Three stone lanterns around a small pool in a moss garden, each lighting a corner of the water. In the middle a leaf drifts slowly; touch a lantern and the leaf turns towards its light.",
+      "art": "The camera lies in the moss: a rain puddle mirrors the dawn, with three stone lanterns around it — a huge one close on the left, one on the right, one far beyond the water. Each lays a wedge of light on the water. A red maple leaf floats in the middle with three soft shadows spreading three ways. Steer the leaf toward a lantern and it brightens, its shadow shortens and its words appear.",
       "prompt": "Touch each lantern",
       "group": "Three views on learning with AI",
       "stoneAria": "View: {who}",
@@ -450,7 +450,7 @@
     },
     "enso": {
       "label": "Your ensō",
-      "art": "An ensō drawn in a single stroke as the sun rises. Inside it, the stones you visited form your own garden; the moon fades in the corner of the sky and a red seal is stamped below.",
+      "art": "Dawn over a raked sand garden, seen from just above the sand. Draw an ensō in one stroke: the sun flares and the camera cranes up over the garden, where every Moon Garden station you visited rises as a stone inside the circle and every station not yet visited waits as a raked hollow. At the ring’s open mouth lie a vermilion seal on a sheet of paper and a furoshiki cloth bundle.",
       "prompt": "Draw the ensō",
       "draw": "Draw ensō",
       "drawAria": "Draw the ensō that sums up your journey",

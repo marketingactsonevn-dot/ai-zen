@@ -22,7 +22,7 @@
   "scenes": {
     "well": {
       "label": "Giếng sỏi",
-      "art": "Một miệng giếng đá cổ giữa vườn đêm, trăng soi thẳng xuống lòng giếng. Kéo trăng, từng viên sỏi khắc tên một bài toán rơi xuống; gợn sóng lan tròn trên mặt nước tối, viên sau rơi sâu hơn viên trước.",
+      "art": "Nhìn từ trên xuống một giếng đá cổ có rêu và dương xỉ, xà gỗ treo gàu; trăng chạy cung ở mép trên, tia trăng rọi vào vách giếng. Kéo trăng qua từng viên sỏi trên vành: sỏi lật rơi, đậu trên gờ sâu dần, năm 2025 ở trên, 2026 ở dưới; Navier–Stokes chạm nước làm vỡ bóng trăng, 722 bản thảo rơi như mưa, hôm nay mặt nước lặng với một vòng khắc, và sương nằm dưới đáy.",
       "prompt": "Kéo trăng thả sỏi",
       "moonAria": "Kéo vầng trăng, hoặc dùng phím ← → để đi qua các mốc",
       "tide": {
@@ -35,7 +35,8 @@
               "asOf": "2026-10-15",
               "source": "willison-openai-imo",
               "claimBy": "OpenAI"
-            }
+            },
+            "short": "IMO · OpenAI"
           },
           {
             "date": "2025-07-21",
@@ -45,7 +46,8 @@
               "asOf": "2026-10-15",
               "source": "deepmind-imo-2025",
               "verifiedBy": "Ban tổ chức IMO"
-            }
+            },
+            "short": "IMO · DeepMind"
           },
           {
             "date": "2026-07-20",
@@ -55,7 +57,8 @@
               "asOf": "2026-10-15",
               "source": "afp-jacobian",
               "verifiedBy": "Archive of Formal Proofs (kiểm bằng Isabelle)"
-            }
+            },
+            "short": "Jacobian"
           },
           {
             "date": "2026-09-08",
@@ -65,7 +68,8 @@
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "claimBy": "OpenAI"
-            }
+            },
+            "short": "Navier–Stokes"
           },
           {
             "date": "2026-10-06",
@@ -75,7 +79,8 @@
               "asOf": "2026-10-15",
               "source": "aa-openai-math",
               "claimBy": "OpenAI"
-            }
+            },
+            "short": "722 bản thảo"
           },
           {
             "date": "2026-10-15",
@@ -84,7 +89,8 @@
               "text": "Viện Clay chỉ xét giải khi lời giải đã đăng ở nơi đủ chuẩn, qua ít nhất hai năm và được giới toán học chấp nhận rộng rãi.",
               "asOf": "2026-10-15",
               "source": "clay-rules"
-            }
+            },
+            "short": "Hôm nay"
           }
         ],
         "horizon": {
@@ -103,7 +109,7 @@
     },
     "vortex": {
       "label": "Dòng nước nổ tung",
-      "art": "Mặt hồ phẳng như gương dưới trăng. Người xem khuấy một vòng: nước xoáy, các vòng xoáy siết dần vào một điểm sáng chói ở tâm. Quanh bờ, hàng vạn đom đóm nhỏ bay thành đàn — mỗi con là một agent đang dò lối.",
+      "art": "Một hồ tròn dưới trăng nhìn chếch 3/4, vành đá rêu trên cát cào, bầy đom đóm bay quanh bờ — mỗi con là một agent. Khuấy theo vòng tròn: mặt nước lún thành phễu xoáy, bóng trăng xoắn lại, máy quay hạ dần sát mặt nước cho núi xa hiện lên; tới đỉnh, lõi phễu bùng thành một điểm sáng, sóng xung kích lan ra và bầy agent xếp thành bậc thang ánh sáng leo ra khỏi hồ.",
       "prompt": "Khuấy mặt hồ",
       "stirAria": "Khuấy mặt hồ: kéo theo vòng tròn, hoặc giữ phím mũi tên",
       "stages": [
@@ -141,16 +147,23 @@
           "asOf": "2026-10-15",
           "source": "datacamp-ns"
         }
+      ],
+      "contextShort": [
+        "Nhóm khác: sớm hơn ~12 giờ",
+        "Cả hai dựa trên chiến lược 2023",
+        "Viện Clay chưa trao giải"
       ]
     },
     "mason": {
       "label": "Người thợ đá kiểm từng viên",
-      "art": "Dưới đèn lồng, một người thợ đá già gõ búa nhỏ lên từng bậc cầu thang đá dẫn lên đồi; viên vững ngân tiếng trong. Trên đỉnh bậc treo tấm biển “đề bài”, bên cạnh là cuộn giấy đề gốc để đối chiếu.",
+      "art": "Một cầu thang đá leo chéo lên sườn đồi dưới trăng, mỗi bậc khắc một dòng chứng minh Lean; chạm bậc nào, người thợ đá già leo lên bậc đó và gõ búa. Trên chiếu nghỉ, dưới đèn lồng, tấm biển gỗ ghi đề bài viết cho máy; bên cạnh treo cuộn giấy đề gốc để kéo lên đối chiếu.",
       "prompt": "Gõ thử từng bậc",
       "stepAria": "Gõ thử bậc {n}",
       "machineOk": "Máy: mọi bước đều khớp",
       "compare": "So biển với đề gốc",
       "compareAria": "So đề bài viết cho máy với đề bài gốc",
+      "signWord": "Even",
+      "originalWord": "lẻ",
       "original": "Đề gốc: tổng hai số lẻ là số chẵn",
       "mismatch": "Biển ghi “số chẵn” — máy đã kiểm đúng, nhưng là một đề khác!",
       "code": {
@@ -197,8 +210,8 @@
     },
     "circle": {
       "label": "Bốn hòn đá quanh giếng",
-      "art": "Bốn hòn đá đứng quanh miệng giếng trăng, mỗi hòn khắc một dòng chữ nhỏ. Chạm hòn nào, hòn ấy sáng và gợn sóng lan về giữa giếng; khi cả bốn cùng sáng, mặt nước lặng lại và in trọn vầng trăng.",
-      "prompt": "Chạm từng hòn đá",
+      "art": "Một giếng đá có vành dày, nước in trăng; trên giếng là khung cột gỗ vuông, mỗi xà treo một khánh đá đen bóng. Gõ khánh nào, khánh ấy đung đưa, ngân và gửi một chuỗi gợn sóng qua mặt giếng; lời người nói hiện trên dải giấy treo. Khi cả bốn cùng ngân, các chuỗi gợn gặp nhau ở giữa và triệt tiêu, nước lặng và in trọn vầng trăng.",
+      "prompt": "Gõ từng khánh đá",
       "stoneAria": "Nghe góc nhìn của {who}",
       "perspectives": {
         "stones": [

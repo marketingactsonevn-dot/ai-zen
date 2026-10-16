@@ -1381,3 +1381,24 @@
     radial-gradient(ellipse 75% 70% at 50% 42%, transparent 50%, color-mix(in srgb, var(--wash) 38%, transparent)),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8 .55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .2 0 0 0 -.075'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
+/* station hooks (README §1, §2, §6): a station's own stage behind the circle, its own stone pieces on the path */
+.p2c-own {
+  position: absolute;
+  inset: 0;
+}
+.p2s-stone.has-art,
+.p2s-stone.has-art.drag,
+.p2s.lit .p2s-stone.has-art {
+  background: none;
+  box-shadow: none;
+}
+.p2s-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* under the label, inside the stone's own stacking context (it is transformed) */
+  overflow: visible;
+  pointer-events: none;
+}

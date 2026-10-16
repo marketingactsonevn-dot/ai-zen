@@ -19,9 +19,10 @@
   "scenes": {
     "race": {
       "label": "Vạch đích lùi dần",
-      "art": "Một đường chạy uốn quanh hồ dưới trăng, vạch đích là dải lụa đỏ căng giữa hai cột đèn đá. Kéo trăng qua từng mùa đua: bóng robot mực từ loạng choạng, vấp ngã thành sải bước đều; vạch đích như trôi lại gần.",
+      "art": "Máy quay chạy thấp sau lưng một robot mực trên đường đua uốn quanh hồ trăng; thông và đèn đá lướt qua bên phải, lan can tre ngăn làn của người. Kéo trăng qua các mùa đua: năm 2025 robot loạng choạng rồi ngã, một robot khác nằm trên đường; tháng 3/2026 một bóng người trắng sương lập kỷ lục ở làn bên; tháng 4/2026 robot sải đều, vượt bóng người, dải lụa đỏ đứt ngang ngực, hai vạch đích nằm lại trên đường ở hai độ sâu. Hôm nay máy quay cẩu lên, thung lũng sau hồ lấm tấm đèn nhà máy.",
       "prompt": "Kéo trăng qua hai mùa đua",
       "moonAria": "Kéo vầng trăng, hoặc dùng phím ← → để đi qua các mốc",
+      "humanTime": "57:20",
       "tide": {
         "milestones": [
           {
@@ -88,10 +89,12 @@
     },
     "strings": {
       "label": "Tự đi hay được giật dây",
-      "art": "Hai bóng robot cùng chạy dưới trăng. Một bóng có những sợi tơ bạc mảnh nối lên tay người ngồi trên cành thông; bóng kia chạy một mình, không dây. Gạt công tắc, dây tơ hiện ra hoặc tan vào sương.",
+      "art": "Đứng thấp ở vạch đích: hai robot mực giống hệt nhau chạy về phía ta, trăng sau lưng chúng. Trên cành thông, một người đội nón lá cầm thanh điều khiển và một ngọn đèn nhỏ. Robot bên phải tự soi đường bằng mắt đèn; robot bên trái mắt tối. Giật thanh điều khiển: những sợi tơ căng từ thanh xuống đầu, tay, gối robot trái và bắt ánh trăng. Kéo ngang để đi vòng: nhìn chính diện dây gần như biến mất, nhìn nghiêng dây sáng lên.",
       "prompt": "Bật tắt dây điều khiển",
       "toggle": "Dây điều khiển",
       "toggleAria": "Bật hoặc tắt dây điều khiển từ xa",
+      "turnAria": "Xoay quanh vạch đích: kéo ngang hoặc dùng phím ← →",
+      "turnValue": "lệch {n} độ",
       "remoteLabel": "Có người điều khiển từ xa",
       "autoLabel": "Robot tự định hướng",
       "remoteTime": "48:19",
@@ -124,7 +127,7 @@
     },
     "teacup": {
       "label": "Bộ não cho tay chân",
-      "art": "Bàn trà đá dưới đèn lồng. Một bàn tay robot vẽ bằng nét mực run run vươn tới chén trà sứ. Sau lưng là thư viện chữ cao ngất như núi; cạnh bàn chỉ có một giỏ tre nhỏ đựng “dữ liệu bàn tay”.",
+      "art": "Bàn trà đá dưới đèn lồng giấy: chén men ngọc, ấm đất, một giỏ tre nhỏ đựng vài cuộn giấy “dữ liệu bàn tay”. Cánh tay robot nhiều khớp vươn vào từ bên phải, đầu robot là một chiếc đèn lồng. Phía sau, mờ trong sương, một núi gáy sách dâng vào mây. Rút một thẻ tre: đầu sáng lên ngay, còn bàn tay run, trượt, thử lại.",
       "prompt": "Ra lệnh cho bàn tay",
       "commands": [
         {
@@ -144,6 +147,8 @@
       "hand": "Tay: run, trượt, thử lại",
       "scaleTitle": "Hai giỏ dữ liệu",
       "scaleAria": "So lượng dữ liệu chữ với dữ liệu thao tác của robot",
+      "pullPrompt": "Kéo xuống để lùi xa",
+      "pullValue": "lùi xa {n}%",
       "textLabel": "chữ",
       "robotLabel": "thao tác robot",
       "insight": {
@@ -173,7 +178,7 @@
     },
     "circle": {
       "label": "Có cần hình người?",
-      "art": "Bốn hòn đá quanh mặt hồ trăng, mỗi hòn in bóng một kiểu robot: dáng người, cánh tay nhà máy, đường biểu đồ việc làm, và một chiếc ghế trống trong nhà. Chạm hòn nào, bóng ấy sáng lên dưới nước.",
+      "art": "Đứng sát mép nước nhìn ra hồ trăng: bốn tảng đá bằng nhau đứng trong chỗ nước nông, mỗi tảng có một đường hàn vàng. Chạm từng tảng: đá nứt theo đường hàn, hai nửa mở ra như vỏ hạt, ngọn đèn nhỏ bên trong soi một hình khắc: dáng người, cánh tay nhà máy, bậc thang gãy đi xuống, chiếc ghế trống trong khung cửa.",
       "prompt": "Chạm từng hòn đá",
       "stoneAria": "Nghe góc nhìn của {who}",
       "perspectives": {

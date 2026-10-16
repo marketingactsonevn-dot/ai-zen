@@ -18,8 +18,10 @@
   "scenes": {
     "desk": {
       "label": "Bàn làm việc của AI",
-      "art": "Một chiếc bàn gỗ thấp dưới đèn lồng giữa vườn đêm. Người thư lại — con chip — ngồi giữa; bàn càng rộng, càng nhiều cuộn giấy được trải ra cùng lúc, tay bút chạy càng nhanh. Sát mép bàn là một chồng đĩa sứ mỏng xếp cao: bộ nhớ HBM.",
-      "prompt": "Kéo mặt bàn rộng ra",
+      "art": "Một chiếc bàn sơn mài đen thấp trên nền rêu, dưới đèn lồng giấy treo ở ngọn cần tre. Con chip là phiến nghiên đá đen giữa bàn, người thư lại quỳ sau nghiên; sát mép nghiên là tháp mười đĩa sứ men ngọc: bộ nhớ HBM. Phía sau, lối đá bước dẫn vào sương tới một kho vách trắng. Bàn càng rộng, càng nhiều cuộn giấy mở cùng lúc, tay bút chạy càng nhanh.",
+      "prompt": "Kéo tấm ván để nới mặt bàn",
+      "towerAria": "Tháp đĩa sứ HBM sát mép nghiên: mở tung từng lớp",
+      "closePrompt": "Chạm lần nữa để xếp đĩa lại",
       "slider": "Độ rộng mặt bàn (bộ nhớ)",
       "valueText": "Mặt bàn {n} GB",
       "small": "Bàn chật: phải cất giấy vào kho rồi lấy ra, chậm hẳn",
@@ -46,7 +48,7 @@
     },
     "wells": {
       "label": "Hồ lớn hút giếng nhỏ",
-      "art": "Một hồ trăng rộng giữa vườn — trung tâm dữ liệu AI — được các mạch nước ngầm từ mọi phía đổ về. Ở rìa vườn, ba cái giếng nhỏ khắc chữ điện thoại, laptop, card đồ hoạ; mực nước tụt dần, gàu múc chạm đáy rêu.",
+      "art": "Từ đỉnh đồi nhìn xuống: ba giếng đá nhỏ khắc chữ Điện thoại, Laptop, Card đồ hoạ; từ mỗi giếng một ống tre chạy xuống dốc, gặp nhau ở tấm cống đá rồi đổ về hồ trăng lớn dưới thung lũng — trung tâm dữ liệu AI, bờ hồ là những dãy nhà đèn sáng. Mỗi lần mở cống, hồ dâng thêm, thêm một dãy đèn, nước trong ba giếng tụt sâu vào lòng đá.",
       "prompt": "Mở cửa mạch nước",
       "lake": "Trung tâm dữ liệu AI",
       "gate": "Mở cửa mạch",
@@ -78,7 +80,7 @@
     },
     "bill": {
       "label": "Hoá đơn đến tay ai",
-      "art": "Dải cát dài như một cuộn sổ sách trải dưới trăng. Kéo trăng sang phải, từng tờ hoá đơn giấy dó bay từ hồ lớn ra tận sạp điện thoại ở cổng vườn; mỗi mốc, tờ hoá đơn lại dài thêm một khúc.",
+      "art": "Một cuốn sổ gấp xếp chạy thẳng từ hồ lớn dưới trăng (trung tâm dữ liệu) về phía người xem, trên nền cát cào hội tụ về cùng một điểm, tới sạp điện thoại ở cổng vườn. Kéo đĩa đá chặn giấy mang bóng trăng dọc cuốn sổ: qua mốc nào, nếp giấy ấy dựng lên; hai nếp giá DRAM nằm trên đất, nếp sau dài gấp năm nếp trước.",
       "prompt": "Kéo trăng theo dòng tin",
       "sliderAria": "Kéo vầng trăng qua các mốc của cơn khát bộ nhớ",
       "tide": {
@@ -149,8 +151,9 @@
     },
     "refill": {
       "label": "Giếng bao giờ đầy lại?",
-      "art": "Ba hòn đá đứng quanh một giếng cạn dưới trăng khuyết, mỗi hòn khắc một lời đoán về mùa mưa. Đáy giếng in bóng một vầng trăng méo, chưa rõ hình.",
+      "art": "Nhìn ngang thành một giếng cạn, bầu trời lớn phía trên là sân khấu. Ba hòn đá trên thành giếng, mỗi hòn mang một kiểu trời: hơi nóng gợn trên trời quang và thành giếng nứt; thợ đá dựng nhà máy trên đồi xa dưới một đám mây vừa thành hình; mây mưa kéo tới, bóng trăng hiện trong lòng giếng nhưng còn rung, chưa tròn.",
       "prompt": "Chạm từng hòn đá",
+      "stoneNames": ["J.P. Morgan", "SK hynix", "IDC"],
       "perspectives": {
         "stones": [
           {

@@ -1,113 +1,595 @@
 /* Trạm 27 — Con người gắn bó với AI: faces in stone, cloud and lantern · two hand mirrors on a lacquer tray */
 
-/* 1 · faces: a moss rock, a cloud across the moon, a stone lantern */
-.t27f .t27f-face { transition: opacity 1s; opacity: 0.14; }
-.t27f .found .t27f-face { opacity: 0.9; }
-.t27f .t27f-eye { fill: var(--wash); opacity: 0.55; }
-:root[data-theme='dark'] .t27f .t27f-eye { fill: var(--umbra); opacity: 0.8; }
-.t27f .t27f-eyelit { fill: var(--lantern); }
-.t27f .found .t27f-eyelit { fill: var(--moon); }
-.t27f .t27f-sh { fill: var(--umbra); opacity: 0.22; }
-.t27f .t27f-cun { opacity: 0.25; }
-.t27f .t27f-edge { opacity: 0.45; }
-.t27f .t27f-crown { fill: #fff; opacity: 0.7; }
-:root[data-theme='dark'] .t27f .t27f-crown { fill: var(--moon); opacity: 0.35; }
-.t27f .t27f-moss { fill: var(--moss-2); opacity: 0.75; }
-:root[data-theme='dark'] .t27f .t27f-moss { fill: var(--moss-a); opacity: 1; }
-.t27f .t27f-dots { fill: var(--moss); opacity: 0.6; }
-:root[data-theme='dark'] .t27f .t27f-dots { fill: var(--moss-c); opacity: 0.5; }
-.t27f .t27f-cloud { fill: var(--card); opacity: 0.9; }
-:root[data-theme='dark'] .t27f .t27f-cloud { fill: var(--rock-lo); opacity: 0.95; }
-.t27f .t27f-cloud-ink { opacity: 0.35; }
-:root[data-theme='dark'] .t27f .t27f-cloud-ink { fill: var(--moon); opacity: 0.4; }
-.t27f .t27f-groundwash { opacity: 0.22; }
-:root[data-theme='dark'] .t27f .t27f-groundwash { opacity: 0.6; }
-.t27f .t27f-ground { opacity: 0.35; }
-.t27f .t27f-screen { fill: color-mix(in srgb, var(--umbra) 85%, var(--moss)); }
-.t27f .t27f-stele { opacity: 0; transition: opacity 1.2s; }
-.t27f.all .t27f-stele { opacity: 1; }
-.t27f-lab { text-align: center; font-size: 0.86rem; color: var(--ink-3); opacity: 0; transition: opacity 0.8s; text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper); }
-.t27f-lab.found { opacity: 1; }
-.t27f-found { color: var(--moss); }
-.t27f-eliza {
+/* shared painting (ink27.ts): stone in washes lit by the moon from the upper right, warm lantern light, ink edges */
+/* three tones (p2-rock): mid body, lit cap, shadow side + core; the terminators are brushed, not gradients */
+.t27-rock-mid { fill: var(--rock-mid); }
+.t27-rock-lit { opacity: 0.95; }
+.t27-rock-lo { fill: var(--rock-lo); opacity: 0.9; }
+.t27-rock-core { fill: var(--umbra); opacity: 0.12; }
+:root[data-theme='dark'] .t27-rock-core { opacity: 0.26; }
+.t27-rock-bounce { fill: var(--rock-mid); opacity: 0.35; }
+.t27-rock-term { fill: var(--umbra); opacity: 0.18; }
+:root[data-theme='dark'] .t27-rock-term { opacity: 0.4; }
+.t27-rock-warm { opacity: calc(var(--w) * 0.14); }
+:root[data-theme='dark'] .t27-rock-warm { opacity: calc(var(--w) * 0.24); }
+.t27-rock-cun { fill: var(--wash); opacity: 0.32; }
+:root[data-theme='dark'] .t27-rock-cun { fill: var(--umbra); opacity: 0.55; }
+.t27-moss { fill: var(--moss-b); opacity: 0.85; }
+:root[data-theme='dark'] .t27-moss { fill: var(--moss-a); opacity: 0.95; }
+.t27-moss-hi { fill: var(--moss-c); opacity: 0.8; }
+:root[data-theme='dark'] .t27-moss-hi { fill: var(--moss); opacity: 0.45; }
+.t27-rim { fill: var(--card); opacity: 0.9; }
+:root[data-theme='dark'] .t27-rim { fill: var(--moon); opacity: 0.55; }
+.t27-edge { fill: var(--wash); opacity: 0.55; }
+:root[data-theme='dark'] .t27-edge { fill: var(--umbra); opacity: 0.8; }
+.t27-contact { fill: var(--umbra); opacity: 0.4; }
+:root[data-theme='dark'] .t27-contact { opacity: 0.7; }
+.t27-cast { opacity: 0.75; }
+.t27-rings { fill: var(--rake); }
+.t27-pool { opacity: 0.75; }
+:root[data-theme='dark'] .t27-pool { opacity: 1; }
+.t27-pool-wide { opacity: 0.4; }
+:root[data-theme='dark'] .t27-pool-wide { opacity: 0.55; }
+.t27-halo { opacity: 0.75; }
+.t27-l-side { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--umbra)); }
+:root[data-theme='dark'] .t27-l-side { fill: color-mix(in srgb, var(--rock-lo) 55%, var(--umbra)); }
+.t27-l-top { fill: color-mix(in srgb, var(--rock-hi) 70%, var(--lantern)); opacity: 0.9; }
+.t27-l-recess { fill: var(--umbra); opacity: 0.35; }
+.t27-rock-seam { fill: var(--wash); opacity: 0.18; }
+:root[data-theme='dark'] .t27-rock-seam { fill: var(--umbra); opacity: 0.35; }
+.t27-moss-lo { fill: var(--umbra); opacity: 0.25; }
+.t27-l-win { stroke: var(--wash); stroke-width: 1; stroke-opacity: 0.4; }
+.t27-l-sidewin { fill: color-mix(in srgb, var(--lantern) 75%, var(--umbra)); }
+.t27-l-under { fill: color-mix(in srgb, var(--rock-lo) 60%, var(--umbra)); }
+.t27-l-glow { opacity: 0.85; }
+.t27-l-roofsh { fill: var(--umbra); opacity: 0.35; }
+:root[data-theme='dark'] .t27-l-roofsh { opacity: 0.55; }
+
+/* 1 · faces ★: seven layers of a night garden, each a translate (the sand a shear) about the eye */
+.t27f {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  --t27-sand: color-mix(in srgb, var(--paper-2) 70%, var(--paper));
+  --t27-sand-near: color-mix(in srgb, var(--paper-2) 80%, var(--wash) 8%);
+  --t27-phos: #5fd68f;
+  --t27-phos-hi: #c9f7d8;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(to bottom, #000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(to bottom, #000 90%, transparent);
+  mask-composite: intersect;
+}
+:root[data-theme='dark'] .t27f {
+  --t27-sand: color-mix(in srgb, var(--paper-2) 88%, var(--moon) 5%);
+  --t27-sand-near: color-mix(in srgb, var(--paper) 80%, var(--umbra));
+  --t27-phos: #7fe0a4;
+  --t27-phos-hi: #d4fbe2;
+}
+.t27f-world, .t27f-L { position: absolute; inset: 0; }
+.t27f-L { will-change: transform; pointer-events: none; }
+.t27f.is-low .t27f-L { will-change: auto; }
+.t27f-svg, .t27f-fx { position: absolute; left: 0; top: 0; overflow: visible; }
+.t27f-fx { width: 100%; height: 100%; pointer-events: none; opacity: 0; will-change: transform, opacity; }
+.t27f-fx.kept { opacity: 0.34; }
+.t27f-fx.kept .t27f-fx-jaw { opacity: 0; transition: opacity 0.6s; }
+.t27f.is-low .t27f-fx.kept { opacity: 0.7; transition: opacity 0.2s; }
+.t27f-fx-v { fill: var(--vermilion); }
+.t27f-fx-jaw { fill: var(--vermilion); opacity: 0.35; }
+.t27f.is-low .t27f-fx.kept .t27f-fx-jaw { opacity: 0; }
+.t27f-hits { position: absolute; inset: 0; pointer-events: none; }
+.t27f.is-low .t27f-fx.kept .t27f-fx-v { fill: var(--wash); }
+:root[data-theme='dark'] .t27f.is-low .t27f-fx.kept .t27f-fx-v { fill: var(--ink); }
+
+.t27f-skyglow { opacity: 0.55; }
+:root[data-theme='dark'] .t27f-skyglow { opacity: 1; }
+.t27f-maria { fill: var(--umbra); opacity: 0.1; }
+.t27f-eyes { opacity: 0.2; }
+:root[data-theme='dark'] .t27f-maria { fill: var(--rock-lo); opacity: 0.32; }
+:root[data-theme='dark'] .t27f-eyes { opacity: 0.55; }
+.t27f-moonrim { fill: none; stroke: var(--moon-rim); stroke-width: 1.2; filter: url(#ink-rough); }
+
+.t27f-cloud { fill: var(--card); opacity: 0.92; }
+:root[data-theme='dark'] .t27f-cloud { fill: color-mix(in srgb, var(--paper-2) 70%, var(--rock-lo)); opacity: 0.96; }
+.t27f-cloud-belly { fill: var(--wash); opacity: 0.1; }
+:root[data-theme='dark'] .t27f-cloud-belly { fill: var(--umbra); opacity: 0.45; }
+.t27f-cloud-top { fill: #fff; opacity: 0.9; }
+:root[data-theme='dark'] .t27f-cloud-top { fill: var(--moon); opacity: 0.5; }
+.t27f-cloud-ink { fill: var(--wash); opacity: 0.22; }
+:root[data-theme='dark'] .t27f-cloud-ink { fill: var(--umbra); opacity: 0.55; }
+.t27f-wisp { fill: var(--wash); opacity: 0.42; }
+:root[data-theme='dark'] .t27f-wisp { fill: color-mix(in srgb, var(--paper-2) 50%, var(--rock-lo)); opacity: 0.95; }
+
+.t27f-rake { fill: var(--rake); }
+.t27f-rake-hi { fill: var(--rake-hi); }
+:root[data-theme='dark'] .t27f-rake-hi { fill: var(--moon); opacity: 0.09; }
+.t27f-moss-floor { opacity: 0.45; }
+.t27f-peb { fill: var(--wash); opacity: 0.18; }
+:root[data-theme='dark'] .t27f-peb { fill: var(--umbra); opacity: 0.5; }
+.t27f-ring { fill: var(--rake); }
+.t27f-ring-hi { fill: var(--rake-hi); }
+:root[data-theme='dark'] .t27f-ring-hi { fill: var(--moon); opacity: 0.12; }
+.t27f-fmoss { fill: var(--moss-b); opacity: 0.42; }
+:root[data-theme='dark'] .t27f-fmoss { fill: var(--moss-a); opacity: 0.75; }
+.t27f-fmoss-hi { fill: var(--moss-c); opacity: 0.55; }
+:root[data-theme='dark'] .t27f-fmoss-hi { opacity: 0.35; }
+.t27f-tuft { fill: var(--moss-b); opacity: 0.55; }
+:root[data-theme='dark'] .t27f-tuft { fill: var(--moss-c); opacity: 0.4; }
+
+.t27f-pine { opacity: 0.85; }
+:root[data-theme='dark'] .t27f-pine { opacity: 0.7; }
+/* the stele sits in the pine's shade: dark slate in both themes, so the phosphor in its letters can glow */
+.t27f-slab-shade { fill: var(--umbra); opacity: 0.26; }
+:root[data-theme='dark'] .t27f-slab-shade { opacity: 0.45; }
+.t27f-groove { fill: var(--umbra); opacity: 0.55; transition: opacity 1.4s; }
+.t27f-groove-lip { fill: var(--rock-hi); opacity: 0.35; transition: opacity 1.4s; }
+:root[data-theme='dark'] .t27f-groove-lip { opacity: 0.25; }
+.t27f.eliza :is(.t27f-groove, .t27f-groove-lip) { opacity: 0.12; }
+.t27f-lichen { fill: var(--moss-c); opacity: 0.5; }
+.t27f-phos-pool, .t27f-phos-face, .t27f-phos-lip { opacity: 0; transition: opacity 1.6s; }
+.t27f-phos-lip { fill: var(--t27-phos); }
+.t27f.eliza .t27f-phos-pool { opacity: 1; }
+.t27f.eliza .t27f-phos-face { opacity: 0.55; }
+.t27f.eliza .t27f-phos-lip { opacity: 0.6; }
+
+.t27f-crack { fill: var(--umbra); opacity: 0.85; }
+.t27f-crack-lip { fill: var(--rake-hi); }
+:root[data-theme='dark'] .t27f-crack-lip { fill: var(--moon); opacity: 0.4; }
+
+.t27f-blade, .t27f-bough, .t27f-pad, .t27f-needle { fill: var(--wash); }
+.t27f-blade { opacity: 0.72; }
+.t27f-pad { opacity: 0.4; }
+.t27f-needle { opacity: 0.8; }
+.t27f-bough { opacity: 0.9; }
+.t27f-head { fill: var(--wash); opacity: 0.92; }
+:root[data-theme='dark'] :is(.t27f-blade, .t27f-bough, .t27f-pad, .t27f-needle, .t27f-head) { fill: color-mix(in srgb, var(--umbra) 55%, var(--paper)); }
+.t27f-nearrim, .t27f-needlelit { fill: var(--moon); opacity: 0; }
+:root[data-theme='dark'] .t27f-needlelit { opacity: 0.35; }
+:root[data-theme='dark'] .t27f-nearrim { opacity: 0.4; }
+
+/* hit areas over the things; a small seal pressed beside each once its face is found */
+.t27f-hit {
   position: absolute;
   margin: 0;
-  padding: 0 4px;
+  padding: 0;
   border: 0;
-  border-radius: 4px;
-  background: radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--moss-c) 22%, transparent), transparent 75%);
-  color: var(--moss-c);
-  font: 500 0.78rem/1.2 ui-monospace, Menlo, monospace;
-  letter-spacing: 0.04em;
-  text-shadow: 0 0 6px color-mix(in srgb, var(--moss-c) 70%, transparent);
+  border-radius: 40%;
+  background: transparent;
   cursor: pointer;
-  animation: p2-fade 1.2s ease-out both;
+  pointer-events: auto;
 }
-:root[data-theme='dark'] .t27f-eliza { color: var(--moss); }
-.t27f-eliza:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
-.t27f-talk { z-index: 2; }
-.t27f-user, .t27f-bot { margin: 0 0 0.3em; font: 500 0.86rem/1.4 ui-monospace, Menlo, monospace; }
-.t27f-user::before { content: '> '; color: var(--ink-3); }
-.t27f-bot { color: var(--moss); }
+.t27f-hit:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 4px; }
+.t27f-seal { position: absolute; display: block; opacity: 0; transform: scale(1.7) rotate(-14deg); transition: opacity 0.35s, transform 0.45s cubic-bezier(0.3, 1.4, 0.5, 1); }
+.t27f-seal svg { display: block; width: 100%; height: 100%; }
+.t27f-seal-ink { fill: var(--vermilion); filter: url(#ink-rough); }
+.t27f-seal-cut { fill: var(--paper); }
+.t27f-seal.on { opacity: 0.88; transform: rotate(-5deg); }
+:root[data-reduced] .t27f-seal { transition: opacity 0.2s; }
 
-/* 2 · lamp: a paper lantern on a pine branch over the pond, warmer while someone speaks */
-.t27l-lamp { transform: rotate(-6deg); transition: transform 1.4s cubic-bezier(0.3, 0, 0.2, 1); }
-.t27l-lamp .p2p-lamp-halo { opacity: 0.6; transition: opacity 0.8s; }
-.t27l-smear { opacity: 0.4; transition: opacity 0.8s; }
-.p2c:has(.p2c-stone[aria-pressed='true']) .t27l-lamp { transform: rotate(-11deg); }
-.p2c:has(.p2c-stone[aria-pressed='true']) .t27l-lamp .p2p-lamp-halo { opacity: 1; }
-.p2c:has(.p2c-stone[aria-pressed='true']) .t27l-smear { opacity: 0.75; }
-
-/* 3 · flatter: two hand mirrors on a lacquer tray under the moon */
-.t27g .t27g-boards { opacity: 0.08; }
-:root[data-theme='dark'] .t27g .t27g-boards { fill: var(--umbra); opacity: 0.5; }
-.t27g .t27g-shadow { fill: var(--umbra); opacity: 0.25; }
-.t27g .t27g-tray { fill: color-mix(in srgb, var(--umbra) 88%, var(--vermilion)); }
-:root[data-theme='dark'] .t27g .t27g-tray { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--vermilion)); }
-.t27g .t27g-floor { fill: color-mix(in srgb, var(--vermilion) 52%, var(--umbra)); }
-:root[data-theme='dark'] .t27g .t27g-floor { fill: color-mix(in srgb, var(--vermilion) 38%, var(--rock-lo)); }
-.t27g .t27g-makie { fill: var(--lantern); opacity: 0.75; }
-.t27g .t27g-sheen { fill: var(--moon); opacity: 0.12; }
-.t27g .t27g-rimhi { fill: var(--moon); opacity: 0.5; }
-.t27g .t27g-light { fill: #fff; opacity: 0.2; }
-:root[data-theme='dark'] .t27g .t27g-light { fill: var(--moon); opacity: 0.07; }
-.t27g .t27g-lattice { fill: none; stroke: var(--umbra); stroke-width: 3; opacity: 0.05; }
-:root[data-theme='dark'] .t27g .t27g-lattice { opacity: 0.25; }
-.t27g .t27g-window { pointer-events: none; }
-.t27g .t27g-msh { fill: var(--umbra); opacity: 0.35; }
-.t27g .t27g-gold { fill: color-mix(in srgb, var(--lantern) 82%, var(--moon)); }
-.t27g .t27g-bronze { fill: color-mix(in srgb, var(--stone) 62%, var(--lantern)); }
-:root[data-theme='dark'] .t27g .t27g-bronze { fill: color-mix(in srgb, var(--rock-mid) 60%, var(--lantern)); }
-.t27g .t27g-cord { fill: var(--vermilion); opacity: 0.9; }
-.t27g .t27g-cord2 { fill: var(--wash); opacity: 0.75; }
-.t27g .t27g-petal { fill: color-mix(in srgb, var(--vermilion) 45%, var(--lantern)); opacity: 0.85; }
-.t27g .t27g-m1 .t27g-petal { fill: var(--moss-2); opacity: 0.6; }
-.t27g .t27g-edge { opacity: 0.45; }
-.t27g .t27g-face { stroke: var(--umbra); stroke-opacity: 0.35; }
-.t27g .t27g-glint { fill: var(--moon); opacity: 0.25; transition: opacity 0.8s; }
-.t27g .t27g-m { transition: transform 0.9s cubic-bezier(0.3, 0, 0.2, 1); transform-box: view-box; }
-.t27g .t27g-m.tilt { transform: rotate(-9deg) translateY(-6px); }
-.t27g .t27g-m1.tilt { transform: rotate(9deg) translateY(-6px); }
-.t27g .t27g-m.tilt .t27g-glint { opacity: 0.95; }
-.t27g-q {
+/* ELIZA's words cut into the stele: the phosphor glows in the letters (faint scanlines over them), no screen */
+.t27f-screen {
   position: absolute;
-  padding: 0.6em 0.8em;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .05' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .5 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    var(--card);
-  border-radius: 2px;
-  box-shadow: var(--shadow-1);
-  transform: rotate(-1.5deg);
-  z-index: 1;
+  margin: 0;
+  padding: 0.35em 0.45em;
+  border: 0;
+  background: none;
+  text-align: left;
+  opacity: 0;
+  transition: opacity 1.2s;
+  pointer-events: auto;
+  cursor: pointer;
+  overflow: hidden;
+}
+.t27f-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--umbra) 45%, transparent) 0 1px, transparent 1px 3px);
+  -webkit-mask-image: radial-gradient(closest-side, #000 40%, transparent);
+  mask-image: radial-gradient(closest-side, #000 40%, transparent);
+  opacity: 0.35;
   pointer-events: none;
 }
-.t27g-q p { margin: 0; font: italic 400 0.98rem/1.45 var(--serif); color: var(--ink); text-align: center; text-wrap: balance; }
-.t27g-ans { z-index: 2; }
-.t27g-ans.flip { animation: p2-fade 0.6s ease-out both; }
-.t27g-ans-text { margin: 0.2em 0 0.4em; font: 400 1rem/1.5 var(--serif); }
-.t27g[data-m='0'] .t27g-ans .p2-eyebrow { color: var(--vermilion); }
-.t27g-foot { position: absolute; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px; }
-.t27g-see { margin: 0; }
+.t27f-screen:disabled { cursor: default; }
+.t27f.eliza .t27f-screen { opacity: 1; }
+.t27f-screen:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; }
+.t27f-user, .t27f-bot {
+  margin: 0 0 0.2em;
+  font: 500 0.86rem/1.24 var(--serif);
+  letter-spacing: 0.01em;
+  color: var(--t27-phos-hi);
+  /* cut into the stone (dark upper edge), lit from inside (green bloom) */
+  text-shadow: 0 -1px 0 color-mix(in srgb, var(--umbra) 80%, transparent), 0 0 4px var(--t27-phos), 0 0 12px color-mix(in srgb, var(--t27-phos) 80%, transparent), 0 0 22px color-mix(in srgb, var(--t27-phos) 45%, transparent);
+  min-height: 1.3em;
+}
+.t27f-bot { color: color-mix(in srgb, var(--t27-phos-hi) 80%, var(--moon)); }
+@media (max-width: 600px) {
+  .t27f-user, .t27f-bot { font-size: 0.76rem; line-height: 1.18; }
+  .t27f-note { text-align: left; font-size: 0.72rem; }
+}
+.t27f-carve, .t27f-note { position: absolute; margin: 0; text-align: center; opacity: 0; visibility: hidden; transition: opacity 1.2s 0.6s, visibility 0s 0.6s; }
+.t27f-carve { font: 500 0.82rem/1 var(--serif); letter-spacing: 0.04em; color: color-mix(in srgb, var(--rock-hi) 85%, var(--t27-phos)); text-shadow: 0 -1px 0 color-mix(in srgb, var(--umbra) 70%, transparent), 0 0 8px color-mix(in srgb, var(--t27-phos) 40%, transparent); }
+:root[data-theme='dark'] .t27f-carve { color: color-mix(in srgb, var(--ink-2) 85%, var(--t27-phos)); }
+.t27f-note { font: 400 0.76rem/1.35 var(--sans); color: var(--ink-3); text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper); }
+.t27f-note .fact { margin: 0; }
+.t27f.eliza :is(.t27f-carve, .t27f-note) { opacity: 1; visibility: visible; }
+.t27f-note :is(button, a) { pointer-events: auto; }
+
+/* the ground mist breathes while someone is here (quality=high), and rests after 10 s */
+.t27f-drift { position: absolute; background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) calc(var(--mist-a) * 100%), transparent), transparent); opacity: 0.85; }
+:root[data-theme='dark'] .t27f-drift { opacity: 0.6; }
+:root[data-quality='high'] .t27f:not(.is-low) .t27f-drift { animation: t27f-drift 14s ease-in-out infinite alternate; animation-play-state: paused; }
+:root[data-quality='high'] .t27f.live .t27f-drift { animation-play-state: running; }
+@keyframes t27f-drift { to { transform: translateX(42px); } }
+
+/* 2 · lamp: an old pine at night (canvas), a paper lantern that leans after you, four stones lit on the side it is */
+.t27l { touch-action: none; }
+.t27l .p2c-own { overflow: visible; }
+.t27l-cv {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 88%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 88%, transparent);
+  mask-composite: intersect;
+  /* dusk in both themes (the warm pool must carry the scene), heavier at the edges; the moon's cold glow top right */
+  --t27l-moon: color-mix(in srgb, var(--moon) 32%, transparent);
+  background:
+    radial-gradient(circle at 86% 13%, var(--t27l-moon), transparent 34%),
+    radial-gradient(ellipse 75% 75% at 56% 45%, transparent 30%, color-mix(in srgb, var(--wash) var(--t27l-vig, 40%), transparent)),
+    linear-gradient(to bottom, color-mix(in srgb, var(--wash) var(--t27l-d0, 60%), transparent), color-mix(in srgb, var(--wash) var(--t27l-d1, 50%), transparent) 50%, color-mix(in srgb, var(--wash) var(--t27l-d2, 62%), transparent));
+}
+:root[data-theme='dark'] .t27l-cv { --t27l-vig: 70%; --t27l-d0: 30%; --t27l-d1: 25%; --t27l-d2: 45%; --t27l-moon: color-mix(in srgb, var(--moon) 30%, transparent); }
+.t27l-pool {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 62%, transparent), color-mix(in srgb, var(--lantern) 20%, transparent) 55%, transparent);
+  pointer-events: none;
+  will-change: transform, opacity;
+  transform-origin: 50% 50%;
+}
+:root[data-theme='light'] .t27l-pool { background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 48%, transparent), color-mix(in srgb, var(--lantern) 14%, transparent) 55%, transparent); }
+.t27l.is-calm .t27l-pool, .t27l.is-calm .t27l-lamp { transition: transform 0.6s var(--ease), opacity 0.6s; }
+:root[data-reduced] .t27l .t27l-pool { transition: none; }
+.t27l-lamp {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 0;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 1;
+}
+.t27l-cord { position: absolute; left: 50%; top: 0; width: 1.2px; height: var(--rope); background: var(--wash); opacity: 0.7; }
+:root[data-theme='dark'] .t27l-cord { background: var(--ink-3); }
+.t27l-paper { position: absolute; left: 0; top: var(--rope); width: var(--lw); height: var(--lh); display: grid; place-items: center; }
+.t27l-body { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.t27l-halo { opacity: calc(0.35 + var(--glow, 0.7) * 0.65); }
+.t27l-halo-in { opacity: calc(0.4 + var(--glow, 0.7) * 0.6); }
+.t27l-core { opacity: calc(0.45 + var(--glow, 0.7) * 0.55); }
+.t27l-frame { fill: var(--umbra); opacity: 0.16; }
+.t27l-band { fill: color-mix(in srgb, var(--lantern) 45%, var(--umbra)); opacity: 0.22; }
+.t27l-seam { fill: color-mix(in srgb, var(--lantern) 50%, var(--umbra)); opacity: 0.16; }
+.t27l-rib { fill: color-mix(in srgb, var(--lantern) 35%, var(--umbra)); opacity: 0.55; }
+.t27l-limb { fill: var(--umbra); opacity: 0.1; }
+.t27l-cap { fill: var(--wash); opacity: 0.92; }
+.t27l-caphi { fill: var(--moon); opacity: 0.45; }
+.t27l-rimline { fill: var(--moon); opacity: 0.6; }
+.t27l-q {
+  position: relative;
+  margin: 0;
+  width: 76%;
+  font: 400 clamp(0.74rem, 1vw, 0.9rem)/1.2 var(--serif);
+  color: color-mix(in srgb, var(--wash) 85%, var(--lantern));
+  text-align: center;
+  text-wrap: balance;
+  opacity: 0.86;
+}
+/* the stones: dark by night; four washes of lamplight (left, right, top, the face toward you) mixed by where the pool is */
+.t27l .p2c-halo, .t27l .p2c-ring, .t27l .p2c-num { display: none; }
+.t27l .p2c-stone { animation-duration: 0.8s; }
+.t27l .p2c-stone-art { overflow: visible; }
+.t27l-st-base { fill: color-mix(in srgb, var(--rock-lo) 85%, var(--wash)); }
+:root[data-theme='light'] .t27l-st-base { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash)); }
+.t27l-st-l { opacity: var(--l, 0); }
+.t27l-st-r { opacity: var(--r, 0); }
+.t27l-st-t { opacity: var(--t, 0); }
+.t27l-st-f { opacity: var(--f, 0); }
+.t27l-st-sh {
+  fill: var(--umbra);
+  opacity: calc(0.25 + var(--sl, 0) * 0.3);
+  filter: url(#ink-wash);
+  transform: translate(calc(var(--sx, 0) * 1px), calc(var(--sy, 0) * 1px)) scale(calc(1 + var(--sl, 0) * 0.5), calc(1 + var(--sl, 0) * 0.3));
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.t27l-st-contact { fill: var(--umbra); opacity: 0.6; }
+.t27l-st-cun { fill: var(--umbra); opacity: 0.35; }
+.t27l-st-moss { fill: var(--moss-a); opacity: 0.85; }
+.t27l-st-rim { fill: var(--moon); opacity: 0.5; }
+:root[data-theme='light'] .t27l-st-rim { opacity: 0.75; }
+.t27l-st-ink { fill: var(--wash); opacity: 0.6; }
+/* the words lie on the moss under the pool, no card: light ink with a dark breath round it (the ground is dark in both themes) */
+.t27l .p2c-card {
+  --ink: var(--t27l-ink);
+  --ink-2: color-mix(in srgb, var(--t27l-ink) 82%, var(--wash));
+  --ink-3: color-mix(in srgb, var(--t27l-ink) 70%, var(--wash));
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  text-align: center;
+  overflow: visible;
+  transform-origin: 50% 0;
+  text-shadow: 0 0 10px var(--wash), 0 0 3px var(--wash);
+}
+.t27l { --t27l-ink: var(--ink); }
+:root[data-theme='light'] .t27l { --t27l-ink: var(--card); }
+.t27l .p2c-who { justify-items: center; font-size: 0.86rem; margin-bottom: 0.3em; }
+.t27l .p2c-who-label { font-size: 0.66rem; }
+.t27l .p2c-view { margin-bottom: 0.35em; font-size: clamp(0.84rem, 1.05vw, 0.95rem); line-height: 1.42; font-weight: 400; text-wrap: balance; }
+.t27l .p2c-count { justify-content: center; font-size: 0.7rem; }
+
+/* 3 · flatter: a lacquer tray on tatami at 55°, built in CSS 3D; two mirrors with real thickness, lifted and turned over.
+   The tray lies on the far half of the plane: a held mirror stands at the plane's pivot depth (z = 0), at its own size. */
+.t27g {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  --thick: max(6px, calc(var(--D) * 0.05));
+  --t27-lac: color-mix(in srgb, var(--vermilion) 20%, #0d0506);
+  --t27-lac-hi: color-mix(in srgb, var(--vermilion) 34%, #170809);
+  --t27-lac-lo: #0b0405;
+  --t27-gold: color-mix(in srgb, var(--lantern) 78%, #7a5418);
+  --t27-gold-hi: color-mix(in srgb, var(--lantern) 45%, #fff3c8);
+  --t27-gold-lo: #4a300c;
+  --t27-bronze: color-mix(in srgb, #8a6a48 70%, var(--rock-mid));
+  --t27-bronze-hi: color-mix(in srgb, #cdb48e 80%, var(--moon));
+  --t27-bronze-lo: #2c2016;
+  --t27-gglass: #3a2709;
+  --t27-gglass-hi: #8a6424;
+  --t27-gglass-lo: #160d03;
+  --t27-glass: #2b3330;
+  --t27-glass-hi: #6f7a74;
+  --t27-glass-lo: #0b0f0e;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 92%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 92%, transparent);
+  mask-composite: intersect;
+}
+.t27g-view { position: absolute; inset: 0; transition: transform 1.6s cubic-bezier(0.45, 0, 0.2, 1) 0.4s; }
+/* both seen: the camera tilts up a little, the insight takes the foot of the frame */
+.t27g.done .t27g-view { transform: translateY(var(--pan, 0px)); }
+.t27g.is-calm .t27g-view { transition: none; }
+.t27g-plane { position: absolute; transform-style: preserve-3d; transform-origin: 50% 50%; transform: rotateX(55deg); }
+.t27g-tatami, .t27g-beam { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.t27g-beam { transform: translateZ(calc(var(--th) + 1.4px)); }
+/* tatami: woven igusa (a pattern), mats a shade warmer or cooler, dark cloth borders with a fine light thread */
+.t27g-mat { fill: color-mix(in srgb, var(--paper-2) 62%, var(--moss-c) 30%); }
+:root[data-theme='dark'] .t27g-mat { fill: color-mix(in srgb, var(--paper-2) 78%, var(--moss-b) 22%); }
+.t27g-mat-warm { fill: var(--lantern); opacity: 0.06; }
+.t27g-mat-cool { fill: var(--wash); opacity: 0.05; }
+.t27g-igusa-a { fill: var(--wash); opacity: 0.12; }
+.t27g-igusa-b { fill: var(--card); opacity: 0.28; }
+:root[data-theme='dark'] .t27g-igusa-a { fill: #000; opacity: 0.4; }
+:root[data-theme='dark'] .t27g-igusa-b { fill: var(--moon); opacity: 0.05; }
+.t27g-heri { fill: color-mix(in srgb, var(--wash) 80%, var(--moss-b)); opacity: 0.32; }
+:root[data-theme='dark'] .t27g-heri { fill: #000; opacity: 0.45; }
+.t27g-heri-line { fill: none; stroke: var(--moon); stroke-width: 0.8; stroke-dasharray: 3 3; opacity: 0.22; }
+.t27g-beamlight { opacity: 0.5; }
+.t27g-beamcore { opacity: 0.25; }
+:root[data-theme='dark'] .t27g-beamlight { opacity: 0.26; }
+:root[data-theme='dark'] .t27g-beamcore { opacity: 0.16; }
+.t27g-lattice { fill: none; stroke: var(--umbra); opacity: 0.32; }
+:root[data-theme='dark'] .t27g-lattice { opacity: 0.7; }
+
+.t27g-tray {
+  position: absolute;
+  left: calc(50% - var(--tw) / 2);
+  top: calc(50% - var(--td) / 2 + var(--ty, 0px));
+  width: var(--tw);
+  height: var(--td);
+  transform-style: preserve-3d;
+  transition: transform 1.8s cubic-bezier(0.3, 0, 0.2, 1);
+}
+.t27g-tray::before {
+  /* its shadow on the mats */
+  content: '';
+  position: absolute;
+  inset: -4% -6% -10% -2%;
+  border-radius: 6%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 55%, transparent), transparent);
+  transform: translate(-3%, 4%);
+}
+/* both seen and both down: the tray turns its gilded mirror toward your hand (not on a phone, not while one is held) */
+@media (min-aspect-ratio: 1/1) { .t27g.done:not(.is-calm):not([data-up='bronze']):not([data-up='gilded']) .t27g-tray { transform: rotateZ(-13deg) translate(4%, 2%); } }
+.t27g-topwrap { position: absolute; inset: 0; transform: translateZ(var(--th)); }
+.t27g-top { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.t27g-wall { position: absolute; background: linear-gradient(to bottom, #050203, color-mix(in srgb, var(--vermilion) 18%, #080304)); }
+.t27g-wall-front { left: 0; top: 100%; width: 100%; height: var(--th); transform-origin: 50% 0; transform: rotateX(90deg); }
+.t27g-wall-left, .t27g-wall-right { top: 0; width: var(--th); height: 100%; transform-origin: 0 50%; transform: rotateY(-90deg); }
+.t27g-wall-left { left: 0; }
+.t27g-wall-right { left: 100%; }
+.t27g-rim { fill: #070304; }
+.t27g-inner { fill: none; stroke: #000; stroke-opacity: 0.6; stroke-width: 3; }
+.t27g-makie { fill: var(--t27-gold); opacity: 0.85; }
+.t27g-rimhi { fill: var(--moon); opacity: 0.45; }
+:root[data-theme='light'] .t27g-rimhi { fill: #fff; opacity: 0.6; }
+
+.t27g-msh {
+  position: absolute;
+  top: calc(var(--td) * 0.12);
+  width: var(--Dt);
+  height: calc(var(--Dt) * 1.3);
+  border-radius: 46%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.3) 60%, transparent);
+  transition: transform 0.95s cubic-bezier(0.3, 0, 0.2, 1), opacity 0.95s;
+}
+.t27g-msh0 { left: calc(var(--tw) * var(--mx0, 0.27) - var(--Dt) / 2 + 6px); }
+.t27g-msh1 { left: calc(var(--tw) * var(--mx1, 0.73) - var(--Dt) / 2 + 6px); }
+
+/* a mirror: handle, five rings of rim (its thickness), the decorated back up, the glass face down. Its box is the size
+   it is held at (--D); lying on the tray it is scaled down about the handle's end, which stays where it lay. */
+.t27g-m {
+  position: absolute;
+  top: calc(var(--td) * 0.1 + (var(--Dt) - var(--D)) * 1.42);
+  width: var(--D);
+  height: calc(var(--D) * 1.42);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-style: preserve-3d;
+  transform-origin: 50% 100%;
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.95s cubic-bezier(0.3, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+.t27g-m0 { left: calc(var(--tw) * var(--mx0, 0.27) - var(--D) / 2); }
+.t27g-m1 { left: calc(var(--tw) * var(--mx1, 0.73) - var(--D) / 2); }
+@media (max-aspect-ratio: 1/1) { .t27g { --mx0: 0.26; --mx1: 0.74; } }
+.t27g.drag .t27g-m, .t27g.drag .t27g-msh { transition: none; }
+.t27g-m:focus-visible { outline: none; }
+.t27g-m:focus-visible .t27g-disc { outline: 2px solid var(--vermilion); outline-offset: 4px; border-radius: 50%; }
+.t27g-ring, .t27g-disc, .t27g-front { position: absolute; left: 0; top: 0; width: var(--D); height: var(--D); border-radius: 50%; }
+.t27g-ring { transform: translateZ(calc(var(--thick) * var(--k) / 4)); background: radial-gradient(closest-side, transparent 88%, #2a1c0e 90%, #120a04); }
+.t27g-m0 .t27g-ring { background: radial-gradient(closest-side, transparent 86%, #7a5418 89%, #3a2408); }
+.t27g-disc { transform: translateZ(var(--thick)); backface-visibility: hidden; }
+.t27g-back { width: 100%; height: 100%; overflow: visible; }
+.t27g-front { transform: rotateY(180deg); backface-visibility: hidden; overflow: hidden; display: grid; place-items: center; text-align: center; }
+.t27g-facesvg { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* the handle: a wooden core wrapped in cord (two close tones, a cylinder's light across it), a metal collar, an end cap */
+.t27g-handle {
+  position: absolute;
+  left: calc(50% - var(--D) * 0.068);
+  top: calc(var(--D) * 0.93);
+  width: calc(var(--D) * 0.136);
+  height: calc(var(--D) * 0.49);
+  border-radius: calc(var(--D) * 0.03) calc(var(--D) * 0.03) calc(var(--D) * 0.05) calc(var(--D) * 0.05);
+  transform: translateZ(calc(var(--thick) * 0.5));
+  background: var(--t27-cord-b);
+  overflow: hidden;
+  --t27-cord-a: #4a2a1e;
+  --t27-cord-b: #33190f;
+}
+.t27g-m1 .t27g-handle { --t27-cord-a: #2f3433; --t27-cord-b: #1e2221; }
+.t27g-cord {
+  position: absolute;
+  inset: 14% 0 9%;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(255, 240, 220, 0.16) 34%, rgba(255, 240, 220, 0.05) 52%, rgba(0, 0, 0, 0.6)),
+    repeating-linear-gradient(166deg, var(--t27-cord-a) 0 2.2px, var(--t27-cord-b) 2.2px 3px);
+}
+.t27g-handle::before, .t27g-handle::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: linear-gradient(90deg, var(--t27-cord-lo, #2a1a08), var(--t27-cord-hi, #c49a4a) 38%, var(--t27-cord-lo, #2a1a08));
+}
+.t27g-handle::before { top: 0; height: 14%; }
+.t27g-handle::after { bottom: 0; height: 9%; border-radius: 0 0 40% 40%; }
+.t27g-m1 .t27g-handle { --t27-cord-hi: #a08a6a; --t27-cord-lo: #1e1810; }
+.t27g-gold { fill: var(--t27-gold); }
+.t27g-gold-in { fill: color-mix(in srgb, var(--t27-gold) 70%, #3a2408); }
+.t27g-gold-hi { fill: color-mix(in srgb, var(--lantern) 60%, #fff3c8); opacity: 0.9; }
+.t27g-bronze { fill: var(--t27-bronze); }
+.t27g-bronze-in { fill: color-mix(in srgb, var(--t27-bronze) 75%, #1a120a); }
+.t27g-patina { fill: #5f8f7d; opacity: 0.55; }
+.t27g-knob { fill: #e8d9b8; opacity: 0.55; }
+.t27g-shine { fill: #fff; opacity: 0.5; }
+.t27g-bevel-in { stroke: #000; stroke-opacity: 0.45; stroke-width: 1.2; }
+.t27g-bevel-out { stroke: #000; stroke-opacity: 0.55; stroke-width: 1.4; }
+.t27g-streak { opacity: 0.9; }
+.t27g-streak2 { opacity: 0.6; }
+/* the glass: the slip of paper reflected (mirror-written, softened and framed by the glass's own dark), the answer */
+.t27g-front::after { content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
+.t27g-m0 .t27g-front::after { background: radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--lantern) 34%, transparent), transparent 66%); }
+.t27g-refl {
+  position: absolute;
+  left: 50%;
+  top: 11%;
+  width: 46%;
+  padding: 0.35em 0.45em;
+  background: color-mix(in srgb, #efe6d2 50%, transparent);
+  transform: translateX(-50%) scaleX(-1) perspective(300px) rotateX(-14deg);
+  filter: blur(0.7px);
+  opacity: 0.55;
+  -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent);
+  mask-image: radial-gradient(closest-side, #000 55%, transparent);
+}
+.t27g-refl p { margin: 0; font: 400 0.5rem/1.3 var(--serif); color: #2b2418; }
+.t27g-m0 .t27g-refl { width: 64%; top: 6%; filter: blur(1.4px); background: color-mix(in srgb, #ffe2a0 60%, transparent); opacity: 0.7; }
+.t27g-m0 .t27g-refl p { font-size: 0.66rem; }
+.t27g-ans { position: relative; margin: 26% 14% 0; font: 400 clamp(0.92rem, 1.15vw, 1.04rem)/1.34 var(--serif); text-wrap: balance; }
+.t27g-m0 .t27g-ans { color: #ffd98a; text-shadow: 0 0 10px rgba(255, 196, 90, 0.75); font-size: clamp(1rem, 1.35vw, 1.18rem); }
+.t27g-m1 .t27g-ans { color: #f1ece0; margin-top: 24%; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
+@media (max-aspect-ratio: 1/1) {
+  .t27g-ans { margin: 25% 13% 0; font-size: 0.8rem; line-height: 1.28; }
+  .t27g-m0 .t27g-ans { font-size: 0.92rem; margin-top: 32%; }
+  .t27g-m1 .t27g-ans { margin-top: 23%; }
+  .t27g-refl { top: 8%; width: 42%; }
+  .t27g-refl p { font-size: 0.42rem; }
+}
+.t27g-sweep { position: absolute; left: -10%; top: -20%; width: 40%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255, 250, 230, 0.55), transparent); opacity: 0; pointer-events: none; }
+
+/* the question on a folded slip standing between them, the take-away folded under the bronze one */
+.t27g-slip {
+  position: absolute;
+  left: calc(50% - var(--sw) / 2);
+  top: calc(var(--td) * 0.16);
+  width: var(--sw);
+  --sw: min(calc(var(--tw) * 0.26), 220px);
+  padding: 0.7em 0.8em;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .05' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .5 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    #efe8d8;
+  box-shadow: 0 6px 10px -6px rgba(0, 0, 0, 0.6);
+  transform-origin: 50% 100%;
+  transform: translateZ(calc(var(--th) + 1px)) rotateX(-48deg);
+  pointer-events: none;
+}
+@media (max-aspect-ratio: 1/1) { .t27g-slip { --sw: calc(var(--tw) * 0.36); top: calc(var(--td) * 0.12); } }
+.t27g-slip p { margin: 0; font: 400 clamp(0.8rem, 1.15vw, 0.95rem)/1.4 var(--serif); color: #1a2240; text-align: center; text-wrap: balance; }
+/* the take-away: where the bronze mirror lay, it stands up facing you (wide); on a phone it stands on the mat in front, right */
+.t27g-fold {
+  position: absolute;
+  left: calc(var(--tw) * 0.77 - var(--fw) / 2);
+  bottom: calc(var(--td) * 0.9 - var(--Dt) * 0.95);
+  width: var(--fw);
+  --fw: min(calc(var(--Dt) * 0.9), calc(var(--tw) * 0.26));
+  padding: 0.7em 0.6em 0.6em;
+  background: #efe8d8;
+  box-shadow: 0 6px 10px -6px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  transform-origin: 50% 100%;
+  transform: translateZ(calc(var(--th) + 1px)) rotateX(0deg);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 1s cubic-bezier(0.3, 0, 0.2, 1) 0.3s, opacity 0.6s 0.3s, visibility 0s 0.3s;
+}
+.t27g.done[data-up='bronze'] .t27g-fold { opacity: 1; visibility: visible; transform: translateZ(calc(var(--th) + 1px)) rotateX(-55deg); pointer-events: auto; }
+@media (max-aspect-ratio: 1/1) {
+  .t27g-fold { left: calc(var(--tw) * 0.55); bottom: calc(var(--td) * -0.5); --fw: calc(var(--tw) * 0.4); }
+  .t27g.done[data-up='bronze'] .t27g-fold { transform: translateZ(1px) rotateX(-55deg); }
+}
+.t27g-take { margin: 0; padding: 0.35em 0.6em; border: 1px solid #1a224055; border-radius: 3px; background: none; font: 500 0.92rem/1.3 var(--serif); color: #1a2240; cursor: pointer; }
+.t27g-take:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t27g-see { margin: 0.4em 0 0; font: 400 0.78rem/1.3 var(--sans); color: #555e7a; }
+@media (max-aspect-ratio: 1/1) { .t27g-take { font-size: 0.8rem; } .t27g-see { font-size: 0.68rem; } }
+.t27g-note { position: absolute; left: 0; right: 0; bottom: 2px; text-align: center; opacity: 0; visibility: hidden; transition: opacity 0.8s 0.6s, visibility 0s 0.6s; pointer-events: none; }
+.t27g-note .fact { margin: 0; }
+.t27g-notep { font: 400 0.78rem/1.4 var(--sans); color: var(--ink-3); }
+.t27g-note :is(button, a) { pointer-events: auto; }
+.t27g-note.on { opacity: 1; visibility: visible; }
 .t27g-sheet {
   position: absolute;
   inset: 0;
@@ -122,32 +604,163 @@
   animation: p2-fade 0.4s ease-out both;
 }
 .t27g-sheet[hidden] { display: none; }
-.t27g-close { align-self: flex-end; }
-.t27g-col { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.t27g-col .t27g-ans { position: relative; width: 100%; }
-.t27g-see { margin: 0.4em 0 0; }
-@media (max-width: 600px) { .t27g-ans-text { font-size: 0.94rem; } }
+.t27g-close { align-self: flex-end; min-height: 40px; padding: 0.45em 1.1em; border: 1px solid var(--line-2); border-radius: 999px; background: var(--card); color: var(--ink); font: 500 0.86rem/1.2 var(--sans); cursor: pointer; }
+.t27g.is-calm .t27g-m, .t27g.is-calm .t27g-msh { transition: none; }
 
-/* 4 · path: from a hut lit by a screen to a house with warm paper doors */
-.p2s { --t27-screen: var(--water); }
-:root[data-theme='dark'] .p2s { --t27-screen: var(--mist); }
-.t27p-blue { opacity: 0.9; }
-.t27p-warm { opacity: 0.8; }
-.t27p-wall { fill: color-mix(in srgb, var(--rock-mid) 60%, var(--card)); }
+/* 4 · path: frame in frame — from inside a screen-lit hut, down the moonlit steps to a house where people sit together */
+.t27p { --t27-screen: #7fb2e8; --p: 0; }
+:root[data-theme='light'] .t27p { --t27-screen: #5f8fc8; }
+.t27p-L { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+/* the painted layers melt at the frame's foot and sides instead of ending in a cut edge */
+.t27p-L, .t27p .p2s-scape {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent), linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 36px), transparent), linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+  mask-composite: intersect;
+}
+.t27p {
+  --t27-hill: color-mix(in srgb, var(--moss-b) 40%, var(--paper-2));
+  --t27-hill-near: color-mix(in srgb, var(--moss-b) 62%, var(--paper-2));
+  --t27-wood: color-mix(in srgb, #6a5644 72%, var(--rock-mid));
+  --t27-wood-hi: color-mix(in srgb, #8f7c68 55%, var(--rock-hi));
+  --t27-wood-lo: color-mix(in srgb, #4a3a2e 80%, var(--wash));
+  --t27-figure: color-mix(in srgb, var(--wash) 88%, #000);
+}
+:root[data-theme='dark'] .t27p { --t27-hill: color-mix(in srgb, var(--moss-b) 55%, var(--paper)); --t27-hill-near: color-mix(in srgb, var(--moss-b) 50%, #05070d); --t27-wood: #241c16; --t27-wood-hi: #3a2f25; --t27-wood-lo: #120e0b; --t27-figure: #070910; }
+.t27p-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; }
+.t27p-house { transform: scale(calc(1 + var(--p) * 0.45)); transition: transform 1.4s cubic-bezier(0.3, 0, 0.2, 1); }
+.t27p-hut { transform: translateX(calc(var(--p) * -100%)); opacity: calc(1 - var(--p)); transition: transform 1.4s cubic-bezier(0.3, 0, 0.2, 1), opacity 1.4s; }
+.t27p-far { transform: scale(calc(1 + var(--p) * 0.05)); transform-origin: 70% 30%; transition: transform 1.4s cubic-bezier(0.3, 0, 0.2, 1); }
+.t27p-door { transition: transform 1.6s cubic-bezier(0.3, 0, 0.2, 1) 0.6s; }
+.t27p.lit .t27p-door { transform: translateX(var(--open)); }
+.t27p.is-calm .t27p-house, .t27p.is-calm .t27p-hut { transform: none; opacity: 1; transition: opacity 0.2s; }
+.t27p.is-calm.lit .t27p-hut { opacity: 0; }
+.t27p.is-calm.lit .t27p-house { transform: scale(1.45); }
+.t27p-glow { opacity: 0.8; }
+.t27p-moon { fill: var(--moon); stroke: var(--moon-rim); stroke-width: 1; }
+.t27p-warm { opacity: calc(0.55 + var(--p) * 0.45); transition: opacity 1.4s; }
+.t27p-wall { fill: color-mix(in srgb, var(--rock-mid) 55%, var(--card)); }
 :root[data-theme='dark'] .t27p-wall { fill: var(--rock-lo); }
-.t27p-roof { fill: var(--wash); opacity: 0.55; }
-:root[data-theme='dark'] .t27p-roof { fill: var(--umbra); opacity: 0.85; }
-.t27p-roof-tile { opacity: 0.78; }
-.t27p-thatch { opacity: 0.4; }
-:root[data-theme='dark'] .t27p-thatch { fill: var(--rock-mid); opacity: 0.5; }
-.t27p-tiles { opacity: 0.3; }
-:root[data-theme='dark'] .t27p-tiles { fill: var(--rock-mid); opacity: 0.5; }
-.t27p-ink { opacity: 0.6; }
-.t27p-screen { fill: color-mix(in srgb, var(--mist) 45%, var(--water)); }
-:root[data-theme='dark'] .t27p-screen { fill: var(--mist); }
-.t27p-figure { fill: var(--wash); opacity: 0.7; }
-.t27p-shoji { fill: color-mix(in srgb, var(--lantern) 55%, var(--card)); }
+.t27p-shoji { fill: color-mix(in srgb, var(--lantern) 60%, var(--card)); }
+.t27p-open { fill: color-mix(in srgb, var(--lantern) 70%, var(--moon)); }
+.t27p-inside { fill: color-mix(in srgb, #3a2414 80%, var(--lantern)); }
+.t27p-shoji-door { stroke: color-mix(in srgb, var(--lantern) 30%, var(--umbra)); stroke-width: 1; }
 :root[data-theme='dark'] .t27p-shoji { fill: var(--lantern); }
-.t27p-people { fill: color-mix(in srgb, var(--lantern) 30%, var(--umbra)); opacity: 0.45; }
-.t27p-lattice { fill: none; stroke: var(--wash); stroke-width: 1; opacity: 0.4; }
-:root[data-theme='dark'] .t27p-lattice { stroke: color-mix(in srgb, var(--lantern) 40%, var(--umbra)); opacity: 0.8; }
+.t27p-people { fill: color-mix(in srgb, var(--lantern) 30%, var(--umbra)); opacity: 0.5; }
+.t27p-lattice { fill: none; stroke: color-mix(in srgb, var(--lantern) 35%, var(--umbra)); stroke-width: 1; opacity: 0.55; }
+.t27p-roof { fill: var(--wash); opacity: 0.8; }
+:root[data-theme='dark'] .t27p-roof { fill: var(--umbra); opacity: 0.92; }
+.t27p-tiles { fill: var(--rock-mid); opacity: 0.35; }
+.t27p-ink { fill: var(--wash); opacity: 0.6; }
+:root[data-theme='dark'] .t27p-ink { fill: var(--umbra); }
+.t27p-tuft { fill: var(--moss-a); opacity: 0.45; }
+:root[data-theme='dark'] .t27p-tuft { fill: var(--moss-c); opacity: 0.3; }
+.t27p-bed { fill: var(--t27-gravel); opacity: 0.38; }
+.t27p-grit { fill: var(--wash); opacity: 0.22; }
+:root[data-theme='dark'] .t27p-grit { fill: #000; opacity: 0.4; }
+.t27p-hollow { fill: color-mix(in srgb, var(--moss-b) 55%, var(--umbra)); opacity: 0.3; }
+:root[data-theme='dark'] .t27p-hollow { fill: color-mix(in srgb, var(--moss-b) 40%, #000); opacity: 0.5; }
+.t27p-hollow-moss { fill: var(--moss-a); opacity: 0.4; }
+:root[data-theme='dark'] .t27p-hollow-moss { fill: var(--moss-c); opacity: 0.22; }
+.t27p-hollow-back { fill: var(--umbra); opacity: 0.3; }
+:root[data-theme='dark'] .t27p-hollow-back { fill: #000; opacity: 0.5; }
+.t27p-hollow-lip { fill: var(--rake-hi); }
+:root[data-theme='dark'] .t27p-hollow-lip { fill: var(--moon); opacity: 0.3; }
+.t27p { --t27-gravel: color-mix(in srgb, var(--rock-mid) 70%, var(--moss-c)); }
+:root[data-theme='dark'] .t27p { --t27-gravel: color-mix(in srgb, var(--paper-2) 75%, var(--rock-mid) 25%); }
+.t27p-lamp .p2p-lamp-halo, .t27p-lamphalo, .t27p-lamppool { opacity: 0; transition: opacity 1.2s 0.3s; }
+.t27p-lamp.on :is(.t27p-lamphalo, .t27p-lamppool) { opacity: 0.9; }
+.t27p-lamp .p2p-toro-fire { transition: fill 0.8s 0.3s, opacity 0.8s 0.3s; }
+.t27p-lamp.on .p2p-toro-fire { fill: var(--lantern); opacity: 1; }
+/* the hut */
+.t27p-dark { fill: color-mix(in srgb, var(--umbra) 82%, var(--paper)); }
+:root[data-theme='light'] .t27p-dark { fill: color-mix(in srgb, var(--wash) 80%, var(--paper)); }
+.t27p-shoji-in { fill: color-mix(in srgb, var(--card) 18%, transparent); }
+.t27p-slat { fill: none; stroke: var(--umbra); stroke-width: 3; opacity: 0.6; }
+.t27p-screenglow { transition: opacity 1.4s; opacity: calc(1 - var(--p)); }
+.t27p-screen { opacity: 0.97; }
+.t27p-scrtext { fill: none; stroke: color-mix(in srgb, var(--t27-screen) 50%, #fff); stroke-width: 2.4; stroke-linecap: round; opacity: 0.45; filter: blur(0.8px); }
+.t27p-bezel { fill: #0a0d14; }
+.t27p-desk { fill: color-mix(in srgb, var(--t27-figure) 80%, var(--t27-screen)); opacity: 0.9; }
+.t27p-blade { fill: #000; opacity: 0.35; }
+.t27p-person-lit { transition: opacity 1.4s; opacity: calc(1 - var(--p)); }
+.t27p-fold { fill: #000; opacity: 0.45; }
+.t27p-hair { fill: #000; opacity: 0.55; }
+.t27p-rimblue { fill: var(--t27-screen); opacity: calc(0.95 - var(--p) * 0.6); }
+.t27p-boards { fill: none; stroke: #000; stroke-width: 1.4; opacity: 0.3; }
+.t27p-joints { fill: none; stroke: #000; stroke-width: 1; opacity: 0.22; }
+.t27p-plank { fill: #000; opacity: 0.06; }
+.t27p-sheen { opacity: 0.4; }
+:root[data-theme='dark'] .t27p-sheen { opacity: 0.16; }
+.t27p-wood { fill: color-mix(in srgb, #2a1f17 80%, var(--umbra)); }
+.t27p-woodhi { fill: var(--moon); opacity: 0.45; }
+.t27p-grain { fill: #000; opacity: 0.25; }
+/* the slots are painted hollows (the component's boxes only number them); a slab shrinks with its step's distance */
+/* the slots are moss dips painted on the slope: no box, no numeral; the slabs carry no numeral either (keys still work) */
+.t27p .p2s-slot { border: 0; background: none; }
+.t27p .p2s-slot span, .t27p .p2s-key { display: none; }
+.t27p .p2s-stone { font-size: calc(16px * var(--k, 1)); transition: transform 0.6s var(--ease), font-size 0.6s var(--ease); }
+.t27p .p2s-art { transform: scale(var(--k, 1)); transition: transform 0.6s var(--ease), rotate 0.6s var(--ease); }
+.t27p .p2s-stone:nth-of-type(1) .p2s-art { rotate: -4deg; }
+.t27p .p2s-stone:nth-of-type(2) .p2s-art { rotate: 3deg; }
+.t27p .p2s-stone:nth-of-type(3) .p2s-art { rotate: 2deg; }
+.t27p .p2s-stone:nth-of-type(4) .p2s-art { rotate: -3deg; }
+.t27p .p2s-stone:is(.placed, .drag) .p2s-art { rotate: 0deg; }
+.t27p .p2s-stone { justify-content: center; }
+/* the words are cut into the slab: dark letters with a light lower lip (light theme), pale letters sunk in shade (dark) */
+.t27p .p2s-stone { padding: 6px 16px; }
+.t27p .p2s-label { font: 600 0.92em/1.18 var(--serif); color: color-mix(in srgb, var(--stone-text) 92%, var(--umbra)); text-align: center; text-shadow: 0 1px 0 color-mix(in srgb, #fff 55%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent); }
+:root[data-theme='dark'] .t27p .p2s-label { color: color-mix(in srgb, var(--ink) 92%, var(--moon)); text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75), 0 1px 0 color-mix(in srgb, var(--moon) 14%, transparent), 0 0 6px rgba(0, 0, 0, 0.45); }
+.t27p-slab-mid { fill: var(--rock-mid); }
+.t27p-slab-lit { fill: var(--rock-hi); }
+.t27p-slab-lo { fill: var(--rock-lo); }
+.t27p-slab-cun { fill: var(--umbra); opacity: 0.2; }
+.t27p-slab-edge { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--umbra)); }
+.t27p-slab-sh { fill: var(--umbra); opacity: 0.45; }
+.t27p-slab-moss { fill: var(--moss-a); opacity: 0.7; }
+.t27p-slab-rim { fill: var(--card); opacity: 0.85; }
+:root[data-theme='dark'] .t27p-slab-rim { fill: var(--moon); opacity: 0.45; }
+.t27p .p2s-note { color: var(--ink); text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper); }
+.t27p .p2s-ink { opacity: 0.18; }
+/* the take-away: a paper card under the veranda lamp, its own scroll; the lamp hangs on a cord above it, glowing */
+.t27p .p2s-sheet {
+  overflow: visible;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+}
+.t27p .p2s-sheet::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -46px;
+  width: 22px;
+  height: 28px;
+  margin-left: -11px;
+  border-radius: 48%;
+  background: radial-gradient(circle at 50% 60%, var(--moon), var(--lantern) 55%, color-mix(in srgb, var(--lantern) 60%, var(--umbra)));
+  box-shadow: 0 0 18px 6px color-mix(in srgb, var(--lantern) 55%, transparent), 0 0 70px 30px color-mix(in srgb, var(--lantern) 22%, transparent);
+}
+.t27p .p2s-sheet::after { content: ''; position: absolute; left: 50%; top: -80px; width: 1px; height: 36px; background: var(--ink-3); opacity: 0.6; }
+.t27p .p2s-sheet > * { position: relative; }
+.t27p .p2s-done {
+  margin: 0;
+  padding: 10px 40px 6px;
+  background: color-mix(in srgb, var(--card) 96%, var(--lantern));
+  border-radius: 6px 6px 0 0;
+  color: var(--ink-2);
+  box-shadow: 0 -10px 40px -10px color-mix(in srgb, var(--lantern) 45%, transparent);
+}
+.t27p .p2s-close { z-index: 1; top: 2px; right: 2px; }
+.t27p .p2s-sheet .p2k-body { max-height: none; overflow: visible; font-size: 0.84rem; line-height: 1.5; }
+.t27p .p2s-sheet .p2k {
+  min-height: 0;
+  overflow-y: auto;
+  border-radius: 0 0 14px 14px;
+  border-top: 0;
+  background: radial-gradient(120% 50% at 50% 0%, color-mix(in srgb, var(--lantern) 18%, transparent), transparent 70%), var(--card);
+  box-shadow: 0 18px 40px -16px var(--umbra), 0 0 60px -20px color-mix(in srgb, var(--lantern) 50%, transparent);
+}

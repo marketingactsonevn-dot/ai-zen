@@ -16,10 +16,17 @@
   "scenes": {
     "defs": {
       "label": "Mỗi người một định nghĩa",
-      "art": "Bốn hòn đá khắc chữ dựng quanh một miệng giếng đầy sương. Mỗi hòn soi xuống giếng một bóng trăng khác: đồng xu, bậc thang, bánh xe mười nan, con dấu hội đồng. Chạm đá nào, sương trong giếng tan bớt một lớp.",
+      "art": "Bốn vật đựng nước xếp dọc mép hiên gỗ lúc trăng sắp lặn: chén trà men ngọc, máng tre, chậu đồng, chậu đá tsukubai; trong mỗi vật, mặt nước giữ một bóng trăng tròn, trước mỗi vật một phiến đá khắc tên người định nghĩa. Chạm vật nào, nước được rót thêm, mặt nước gợn rồi lặng, và bóng trăng hiện thành hình của định nghĩa: đồng xu lỗ vuông, bậc thang, bánh xe mười nan, con dấu hội đồng; một dải giấy treo dưới vật ghi ai nói và nói gì, một lớp sương trong vườn tan đi. Đủ bốn, bốn sợi ánh trăng nối cùng một vầng trăng với bốn mặt nước.",
       "prompt": "Chạm đá đọc định nghĩa",
       "group": "Bốn định nghĩa AGI",
       "stoneAria": "Định nghĩa của {who}",
+      "names": [
+        "OpenAI",
+        "Google\nDeepMind",
+        "Hendrycks\n& cộng sự",
+        "Microsoft\n& OpenAI"
+      ],
+      "strip": "Dải giấy định nghĩa",
       "perspectives": {
         "stones": [
           {
@@ -74,7 +81,7 @@
     },
     "tide": {
       "label": "Sợi dây đo công việc",
-      "art": "Cuộn tranh dài trải trên bãi cát bạc. Kéo trăng từ trái sang phải, những sợi dây tre đo độ dài công việc AI tự làm được dài dần như bóng cây lúc trăng lặn. Mốc cuối chìm vào sương bình minh, đầu dây mờ hẳn.",
+      "art": "Cuộn tranh cát dài lúc trăng lặn. Kéo trăng theo cung trời từ trên cao xuống chân trời phía tây: cây sào tre bên phải đổ bóng dài dần sang trái, dọc sợi dây thước có khấc cách đều mỗi lần gấp đôi, từ ≈ 1 giờ tới ≥ 16 giờ. Bóng chạm khấc nào thì để lại một cọc nhỏ; mốc không đo bằng độ dài thì một hòn đá nổi lên cạnh sào. Trăng càng thấp bóng càng vọt, tới hôm nay bóng chạy mãi vào sương rạng đông.",
       "prompt": "Kéo trăng qua các mốc",
       "slider": "Mốc thời gian",
       "valueText": "{date}: {label}",
@@ -165,13 +172,28 @@
     },
     "fork": {
       "label": "Ba ngả sương",
-      "art": "Ngã ba lối đá chìm trong sương lúc trăng lặn. Ba cần tre như cần kéo nước đặt bên lối. Kéo cần nào, khu vườn cuối lối đổi hình: rừng hoang um tùm, ruộng bậc thang chia đều, vườn chung rộng cửa, hay vườn tường cao chỉ vài người được vào.",
+      "art": "Ngã ba lối đá lúc trăng lặn; cuối lối là một sa bàn đá trên bệ, trong khay là cả một khu vườn có đồi, ruộng, rừng và tường. Ba cần kéo nước bằng tre đứng ở ba miệng lối: tốc độ, chia sẻ, kiểm soát. Kéo cần nào, khu vườn trong khay đổi hình ngay: ruộng bậc thang giữ mảnh trời, rừng thông hoang, vòng tường đá cao dần, cổng mở rộng, bốn mươi chấm đèn dồn vào trong tường hoặc rải khắp khay; để cả ba lưng chừng thì sương phủ kín. Ba dải sương vắt ngang ba nhánh lối, chạm vào thì sương rẽ ra một mẩu giấy.",
       "prompt": "Kéo ba cần tre",
       "sliderAria": "{label}: {value}",
       "sliders": [
-        { "id": "speed", "label": "Tốc độ tiến bộ", "low": "Chậm", "high": "Rất nhanh" },
-        { "id": "share", "label": "Chia sẻ lợi ích", "low": "Dồn về ít người", "high": "Chia rộng" },
-        { "id": "control", "label": "Mức kiểm soát", "low": "Lỏng", "high": "Chặt" }
+        {
+          "id": "speed",
+          "label": "Tốc độ tiến bộ",
+          "low": "Chậm",
+          "high": "Rất nhanh"
+        },
+        {
+          "id": "share",
+          "label": "Chia sẻ lợi ích",
+          "low": "Dồn về ít người",
+          "high": "Chia rộng"
+        },
+        {
+          "id": "control",
+          "label": "Mức kiểm soát",
+          "low": "Lỏng",
+          "high": "Chặt"
+        }
       ],
       "note": {
         "text": "Đây là mô phỏng để suy nghĩ do AI Zen dựng, không phải dự báo.",
@@ -182,25 +204,37 @@
       "scenarios": [
         {
           "id": "wild",
-          "when": { "speed": "high", "control": "low" },
+          "when": {
+            "speed": "high",
+            "control": "low"
+          },
           "name": "Rừng hoang",
           "text": "Tiến nhanh mà rào lỏng: nhiều phát minh, nhưng tai nạn và lạm dụng cũng mọc nhanh như cỏ dại."
         },
         {
           "id": "commons",
-          "when": { "speed": "high", "share": "high", "control": "high" },
+          "when": {
+            "speed": "high",
+            "share": "high",
+            "control": "high"
+          },
           "name": "Vườn chung",
           "text": "Nhanh, chia rộng, có rào chắc: điều nhiều người mong, nhưng đòi các nước và các công ty phối hợp hiếm thấy."
         },
         {
           "id": "walled",
-          "when": { "share": "low", "control": "high" },
+          "when": {
+            "share": "low",
+            "control": "high"
+          },
           "name": "Vườn tường cao",
           "text": "Kiểm soát chặt nhưng lợi ích dồn về vài nơi: an toàn hơn, còn khoảng cách giàu nghèo rộng ra."
         },
         {
           "id": "terraces",
-          "when": { "speed": "low" },
+          "when": {
+            "speed": "low"
+          },
           "name": "Ruộng bậc thang",
           "text": "Tiến chậm, xã hội kịp thích nghi từng bậc; gần với góc nhìn “AI là công nghệ bình thường”."
         },
@@ -249,63 +283,80 @@
     },
     "trays": {
       "label": "Ba khay đá công việc",
-      "art": "Ba khay đá trên hiên gỗ lúc trăng lặn: khay sỏi trắng đã khô và sáng, khay ngâm nửa nước, khay còn phủ sương dày. Những viên sỏi khắc tên công việc nằm trong giỏ mây, chờ bạn đặt vào khay.",
+      "art": "Sát sàn hiên gỗ lúc trăng lặn, ván chạy về phía vườn. Dưới trái là giỏ mây chứa tám viên sỏi khắc tên việc. Ba khay đá lùi dần theo đường chéo: khay sỏi khô gần nhất, khay ngập nửa nước sát mép hồ, khay xa nhất chìm trong sương dưới trăng. Nhặt một viên rồi ném vào khay. Đủ tám, kéo dây rèm tre: nắng sớm tràn qua ba khay, hiện vết lõm nơi chuyên gia đặt từng viên, viên lệch lăn theo đường chấm về chỗ của nó.",
       "prompt": "Xếp việc vào khay",
       "keys": "Chọn một viên sỏi, rồi bấm phím 1, 2, 3 để đặt vào khay",
       "pickAria": "Đặt “{task}” vào khay {tray}",
       "compare": "So với góc nhìn chuyên gia",
       "match": "Bạn và góc nhìn chuyên gia cùng xếp {n}/{total} viên",
       "trays": [
-        { "id": "good", "name": "AI đang làm tốt" },
-        { "id": "learning", "name": "AI đang học" },
-        { "id": "far", "name": "Còn xa" }
+        {
+          "id": "good",
+          "name": "AI đang làm tốt"
+        },
+        {
+          "id": "learning",
+          "name": "AI đang học"
+        },
+        {
+          "id": "far",
+          "name": "Còn xa"
+        }
       ],
       "tasks": [
         {
           "id": "headlines",
           "label": "Viết 20 phương án tiêu đề",
+          "short": "20 tiêu đề",
           "expert": "good",
           "why": "Nháp nhiều phương án là việc AI làm nhanh; bạn vẫn là người chọn."
         },
         {
           "id": "summary",
           "label": "Tóm tắt 200 bình luận khách hàng",
+          "short": "Tóm tắt bình luận",
           "expert": "good",
           "why": "Đọc nhiều rồi gom ý là thế mạnh; nhớ kiểm vài trích dẫn gốc."
         },
         {
           "id": "translate",
           "label": "Dịch nháp bài đăng sang tiếng Anh",
+          "short": "Dịch nháp",
           "expert": "good",
           "why": "Bản nháp tốt; giọng thương hiệu và chữ chơi vẫn cần người sửa."
         },
         {
           "id": "moodboard",
           "label": "Ảnh moodboard, ảnh nháp ý tưởng",
+          "short": "Ảnh nháp ý tưởng",
           "expert": "good",
           "why": "Ảnh nháp nhanh và rẻ; ảnh dùng thật cần kiểm quyền và soát chi tiết."
         },
         {
           "id": "video",
           "label": "Video quảng cáo hoàn chỉnh, đúng thương hiệu",
+          "short": "Video quảng cáo",
           "expert": "learning",
           "why": "Từng cảnh đã đẹp; giữ nhân vật, sản phẩm và nhịp kể nhất quán vẫn khó."
         },
         {
           "id": "campaign",
           "label": "Tự chạy chiến dịch nhiều tuần",
+          "short": "Chiến dịch nhiều tuần",
           "expert": "learning",
           "why": "Agent làm được chuỗi việc dài hơn mỗi năm, nhưng các bước khó rút lại vẫn cần người duyệt."
         },
         {
           "id": "taste",
           "label": "Chọn ý tưởng hợp gu thương hiệu",
+          "short": "Chọn theo gu",
           "expert": "far",
           "why": "Gu là lựa chọn có trách nhiệm, gắn với hiểu biết về khách hàng và văn hoá."
         },
         {
           "id": "trust",
           "label": "Giữ quan hệ, chịu trách nhiệm khi sai",
+          "short": "Giữ quan hệ",
           "expert": "far",
           "why": "Khách hàng và đối tác cần một con người đứng ra cam kết."
         }

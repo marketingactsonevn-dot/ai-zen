@@ -1,0 +1,198 @@
+/* 4 · circle: walking round a pond (circle.ts) on top of perspectiveCircle. --down: 0 (20° above the water) … 1 (from
+   straight above, once every stone has spoken). The component's card becomes a line in the sky and a slab at our feet. */
+.t25o .p2c-stage {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 96%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 96%, transparent);
+  mask-composite: intersect;
+  touch-action: pan-y;
+  cursor: ew-resize;
+}
+.t25o .p2c-own { overflow: hidden; }
+.t25o-back,
+.t25o-view,
+.t25o-shore {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t25o-back { opacity: calc(1 - var(--down, 0) * 0.85); }
+.t25o-shore { opacity: calc(1 - var(--down, 0) * 2.5); }
+.t25o-grass { fill: var(--wash); opacity: 0.6; }
+.t25o-grass.far { opacity: 0.25; }
+:root[data-theme='dark'] .t25o-grass { fill: color-mix(in srgb, var(--moss-b) 70%, var(--umbra)); opacity: 0.95; }
+:root[data-theme='dark'] .t25o-grass.far { fill: var(--moss-b); opacity: 0.5; }
+.t25o-ground,
+.t25o-water {
+  position: absolute;
+  max-width: none;
+  overflow: visible;
+}
+.t25o-water { pointer-events: none; }
+
+/* the far shore */
+.t25o-crown { fill: var(--moss-c); opacity: 0.22; }
+.t25o-strand { fill: var(--wash); opacity: 0.32; }
+.t25o-wood { fill: var(--wash); opacity: 0.7; }
+:root[data-theme='dark'] .t25o-crown { fill: var(--moss-b); opacity: 0.5; }
+:root[data-theme='dark'] :is(.t25o-strand, .t25o-wood) { fill: color-mix(in srgb, var(--ink-3) 45%, var(--paper)); }
+
+/* the ground: raked sand round the pond */
+.t25o-sand0 { stop-color: var(--paper-2); stop-opacity: 0.9; }
+.t25o-sand1 { stop-color: var(--paper); stop-opacity: 0; }
+:root[data-theme='dark'] .t25o-sand0 { stop-color: color-mix(in srgb, var(--paper-2) 80%, var(--moon) 6%); }
+.t25o-rake { fill: var(--rake); }
+:root[data-theme='dark'] .t25o-rake { fill: var(--rake-hi); opacity: 0.9; }
+.t25o-moss { fill: var(--moss-a); opacity: calc(0.22 * (1 - var(--down, 0) * 0.8)); }
+:root[data-theme='dark'] .t25o-moss { fill: var(--moss-b); opacity: calc(0.42 * (1 - var(--down, 0) * 0.8)); }
+.t25o-bank { fill: none; stroke: var(--wash); stroke-opacity: 0.25; stroke-width: 6; }
+:root[data-theme='dark'] .t25o-bank { stroke: var(--umbra); stroke-opacity: 0.6; }
+.t25o-flat { fill: var(--rock-mid); opacity: calc(1 - var(--down, 0) * 0.7); }
+:root[data-theme='dark'] .t25o-flat { fill: var(--rock-lo); }
+.t25o-enso { fill: var(--wash); opacity: calc(var(--down, 0) * 0.78); }
+:root[data-theme='dark'] .t25o-enso { fill: var(--ink); opacity: calc(var(--down, 0) * 0.6); }
+.t25o-dots { fill: var(--moss-b); opacity: calc(var(--down, 0) * 0.95); }
+.t25o-dots-lt { fill: var(--moss-a); opacity: calc(var(--down, 0) * 0.95); }
+:root[data-theme='dark'] .t25o-dots-lt { fill: var(--moss-c); }
+
+/* the water: darkest under the far bank (it holds the hills and the willow there), the sky nearer us */
+.t25o-d0 { stop-color: color-mix(in srgb, var(--water) 72%, var(--wash)); }
+.t25o-d1 { stop-color: var(--water); }
+.t25o-d2 { stop-color: color-mix(in srgb, var(--water) 55%, var(--mist)); }
+:root[data-theme='dark'] .t25o-d0 { stop-color: #000; }
+:root[data-theme='dark'] .t25o-d1 { stop-color: color-mix(in srgb, var(--water) 80%, var(--mist)); }
+:root[data-theme='dark'] .t25o-d2 { stop-color: color-mix(in srgb, var(--water) 62%, var(--mist)); }
+.t25o-refl { fill: var(--wash); opacity: 0.32; }
+.t25o-refl.far { opacity: 0.16; }
+.t25o-refl.tree { opacity: 0.4; }
+:root[data-theme='dark'] .t25o-refl { fill: #000; opacity: 0.55; }
+:root[data-theme='dark'] .t25o-refl.far { opacity: 0.35; }
+.t25o-skin { fill: var(--mist); opacity: 0.5; }
+:root[data-theme='dark'] .t25o-skin { opacity: 0.18; }
+.t25o-reflwrap { opacity: calc(1 - var(--down, 0)); }
+.t25o-calm { fill: color-mix(in srgb, var(--water) 80%, var(--mist)); opacity: var(--down, 0); }
+:root[data-theme='dark'] .t25o-calm { fill: color-mix(in srgb, var(--water) 85%, var(--mist)); }
+.t25o-road { fill: #fff; opacity: 0.95; }
+:root[data-theme='dark'] .t25o-road { fill: var(--moon); opacity: 0.9; }
+.t25o-stillring { fill: #fff; opacity: 0.45; }
+:root[data-theme='dark'] .t25o-stillring { fill: var(--moon); opacity: 0.25; }
+.t25o-moonsea { fill: var(--moon-rim); }
+.t25o-roadg { opacity: calc(1 - var(--down, 0)); }
+.t25o-still { opacity: var(--down, 0); }
+.t25o-h0 { stop-color: #fff; stop-opacity: 0.8; }
+.t25o-h1 { stop-color: #fff; stop-opacity: 0; }
+:root[data-theme='dark'] .t25o-h0 { stop-color: var(--moon); stop-opacity: 0.45; }
+:root[data-theme='dark'] .t25o-h1 { stop-color: var(--moon); }
+.t25o-moonw { fill: #fff; }
+:root[data-theme='dark'] .t25o-moonw { fill: var(--moon); }
+.t25o-rim { fill: none; stroke: var(--wash); stroke-width: 3; opacity: 0.45; }
+:root[data-theme='dark'] .t25o-rim { stroke: var(--moon); opacity: 0.3; }
+
+/* the stones: placed and sized by circle.ts (no numerals: the keys 1–4 stay); from above they become dots of moss */
+.t25o .p2c-stone {
+  left: 0;
+  --near: 0;
+  --refl: 0;
+  transform-origin: 50% 77.78%;
+  animation: p2-fade 0.9s ease-out both;
+  transition: none;
+}
+.t25o .p2c-num { display: none; }
+.t25o .p2c-halo { display: none; }
+.t25o-face { fill: var(--rock-mid); }
+.t25o-lit { fill: var(--rock-hi); opacity: 0.9; }
+:root[data-theme='dark'] .t25o-lit { opacity: 0.55; }
+.t25o-grain { fill: var(--wash); opacity: 0.22; }
+:root[data-theme='dark'] .t25o-grain { fill: var(--umbra); opacity: 0.5; }
+.t25o-ink { fill: var(--wash); opacity: 0.55; }
+:root[data-theme='dark'] .t25o-ink { fill: var(--umbra); opacity: 0.85; }
+.t25o-rimlit { fill: #fff; opacity: 0.95; }
+:root[data-theme='dark'] .t25o-rimlit { fill: var(--moon); opacity: 0.7; }
+.p2c-stone[aria-pressed='true'] .t25o-rimlit { opacity: 1; }
+.t25o-contact { fill: var(--umbra); opacity: 0.35; }
+:root[data-theme='dark'] .t25o-contact { opacity: 0.7; }
+.t25o-srefl { fill: var(--wash); opacity: calc(var(--refl) * 0.3); }
+:root[data-theme='dark'] .t25o-srefl { fill: #000; opacity: calc(var(--refl) * 0.6); }
+/* the stone we stand behind: a dark mass at the corner */
+.t25o-veil { fill: var(--umbra); opacity: calc(var(--near) * 0.62); }
+.t25o .p2c-ring { display: none; }
+.t25o-stone { transition: opacity 1s; }
+.t25o.is-all .t25o-stone { opacity: calc(1 - var(--down, 0)); }
+.t25o-mossdot { fill: var(--moss-a); opacity: 0; transition: opacity 1s; }
+.t25o.is-all .t25o-mossdot { opacity: calc(var(--down, 0) * 0.9); }
+.t25o.is-all .p2c-num { opacity: calc(0.8 - var(--down, 0) * 0.8); }
+.t25o-stonemoss { fill: var(--moss-a); opacity: 0.75; }
+:root[data-theme='dark'] .t25o-stonemoss { fill: var(--moss-b); opacity: 0.9; }
+
+/* the card, unboxed: the question is a line across the sky, the words sit on a flat slab at our feet */
+.t25o .p2c-card {
+  inset: 0 !important;
+  width: auto !important;
+  max-height: none !important;
+  transform: none !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.2% 8% 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+  pointer-events: none;
+  animation: none;
+}
+.t25o .p2c-card .p2-question {
+  margin: 0;
+  font-style: normal;
+  font-size: clamp(15px, 1.5vw, 18px);
+  text-align: center;
+  color: var(--ink-2);
+  text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper);
+}
+.t25o .p2c-count {
+  margin-top: 4px;
+  white-space: nowrap;
+  text-shadow: 0 0 6px var(--paper);
+}
+.t25o .p2c-body-text:not(:empty) {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5%;
+  width: min(400px, 62%);
+  padding: 0.7em 1.15em 0.75em;
+  transform: translateX(-50%) perspective(600px) rotateX(24deg);
+  transform-origin: 50% 100%;
+  border-radius: 44% 56% 38% 50% / 30% 34% 24% 28%;
+  /* the lit top plane, the stone's thickness below its edge, its shadow on the sand */
+  background:
+    radial-gradient(90% 70% at 72% 18%, var(--rock-hi), var(--rock-mid) 78%);
+  box-shadow:
+    inset 0 2px 0 color-mix(in srgb, #fff 55%, transparent),
+    inset 0 -3px 6px -3px color-mix(in srgb, var(--umbra) 40%, transparent),
+    0 7px 0 var(--rock-lo),
+    0 8px 0 color-mix(in srgb, var(--umbra) 50%, var(--rock-lo)),
+    -10px 18px 18px -8px color-mix(in srgb, var(--umbra) 55%, transparent);
+  pointer-events: auto;
+  z-index: 200;
+}
+:root[data-theme='dark'] .t25o .p2c-body-text:not(:empty) {
+  background: radial-gradient(90% 70% at 72% 18%, var(--rock-hi), var(--rock-mid) 80%);
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--moon) 30%, transparent), 0 7px 0 var(--rock-lo), 0 8px 0 #000, -10px 18px 18px -8px #000;
+}
+/* engraved serif: cut into the stone, catching light on the lower lip of each stroke */
+.t25o .p2c-who { margin: 0 0 0.25em; font-size: 0.86rem; color: var(--stone-text, var(--ink)); }
+.t25o .p2c-who-label { color: color-mix(in srgb, var(--stone-text, var(--ink)) 70%, transparent); font-size: 0.64rem; }
+.t25o .p2c-view { margin: 0; font-size: clamp(0.84rem, 1.05vw, 0.95rem); line-height: 1.45; color: var(--stone-text, var(--ink)); }
+.t25o :is(.p2c-who, .p2c-view) { text-shadow: 0 1px 0 color-mix(in srgb, #fff 60%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 22%, transparent); }
+:root[data-theme='dark'] .t25o :is(.p2c-who, .p2c-view) { color: var(--stone-text); text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 70%, transparent), 0 -1px 0 color-mix(in srgb, #000 40%, transparent); }
+:root[data-theme='dark'] .t25o .p2c-who-label { color: color-mix(in srgb, var(--stone-text) 70%, transparent); }
+.t25o:not(.wide) .p2c-body-text:not(:empty) { width: 80%; bottom: 2%; }
+/* all heard: the slab clears away under the ensō */
+.t25o.is-all .p2c-body-text:not(:empty) { opacity: calc(1 - var(--down, 0) * 1.6); pointer-events: none; }

@@ -17,7 +17,7 @@
   "scenes": {
     "gate": {
       "label": "Vườn có tường, vườn mở",
-      "art": "Hai khu vườn dưới cùng một vầng trăng: một vườn sau bức tường vôi trắng, chỉ chừa ô cửa nhỏ để xin từng cành hoa; một vườn cổng tre mở toang, ai cũng bứng được cây về trồng trong sân nhà mình. Đèn lồng treo ở cả hai cổng.",
+      "art": "Một mâm sơn mài đen đứng giữa mặt nước dưới vầng trăng; trên mâm là đảo rêu tròn chia đôi. Nửa này là vườn sau bức tường vôi, chỉ có ô cửa sổ sáng đưa ra từng cành hoa; nửa kia là vườn cổng tre mở toang, cây non trong chậu, đá bước băng qua nước tới những ngôi nhà ở bờ xa. Bốn đèn đá đứng quanh vành mâm.",
       "prompt": "Mở và đóng cổng vườn",
       "closed": "Vườn có tường · mô hình đóng",
       "open": "Vườn mở · mở trọng số",
@@ -64,10 +64,12 @@
     },
     "fence": {
       "label": "Model có rào",
-      "art": "Giữa vườn có một khu vườn nhỏ quây hàng rào tre buộc dây gai; chỉ những người gác thành cầm đèn lồng khắc dấu mới được bước vào. Bên trong, một ngọn đèn rất sáng soi rõ từng vết nứt trên tường thành bên ngoài.",
+      "art": "Đêm, nhìn thấp ngang mặt đất: một ngọn đèn trắng lạnh giữa khu rào cọc tre buộc dây gai, mỗi cọc đổ một bóng dài toả về phía người xem. Phía sau, bức tường thành dài lùi vào sương; chỗ chùm sáng chạm tường lộ những vết nứt viền son. Hai người gác cầm đèn lồng đóng ấn đứng ở cổng.",
       "prompt": "Thử mở cổng rào",
       "gate": "Mở cổng",
       "gateAria": "Thử mở cổng rào: xem ai được vào và vì sao",
+      "lampAria": "Xoay ngọn đèn trong khu rào (mũi tên trái, phải)",
+      "lampHint": "Kéo quanh ngọn đèn để xoay",
       "denied": "Cổng chỉ mở cho người gác thành đã được thẩm định.",
       "group": "Hai khu rào năm 2026",
       "cases": [
@@ -113,7 +115,7 @@
     },
     "laws": {
       "label": "Thuỷ triều luật lệ",
-      "art": "Dải cát dài như một cuộn luật cổ trải dưới trăng; mỗi khi trăng đi qua, một cột đá khắc chữ dựng lên từ cát. Ở cuối dải, cột đá mang tên Việt Nam còn ướt nước triều, nét khắc chưa khô.",
+      "art": "Nhìn từ biển đêm vào bãi: tám cột đá khắc chữ đứng dọc bãi cát cong khuất vào sương, lúc đầu ngập trong sóng. Trăng đi qua cung trời thì nước rút về phía người xem, từng cột trồi lên. Cột cuối mang tên Việt Nam còn ướt; xa hơn, một cột thứ chín nửa chìm dưới nước nông.",
       "prompt": "Kéo trăng qua các mốc luật",
       "sliderAria": "Kéo vầng trăng qua các mốc luật AI",
       "tide": {
@@ -213,8 +215,9 @@
     },
     "copyright": {
       "label": "Bản quyền & dữ liệu huấn luyện",
-      "art": "Năm hòn đá quanh một hồ trăng; mặt hồ in bóng hàng nghìn trang sách, bức tranh, bản nhạc. Một gàu nước được múc từ hồ lên — dữ liệu huấn luyện — và mỗi hòn đá nhìn chiếc gàu ấy theo một cách.",
+      "art": "Ngang mép một hồ trăng: chiếc cần múc nước vắt chéo khung, gàu treo ở đầu sào trên mặt hồ. Hồ không in bầu trời mà in cả một thư viện: trang sách, tranh cuộn, bản nhạc trôi dưới nước như cá. Năm hòn đá lớn đứng trên bờ gần, mỗi hòn nhìn chiếc gàu dữ liệu theo một cách.",
       "prompt": "Chạm từng hòn đá",
+      "sweepAria": "Kéo cần múc nước: nhúng gàu xuống hồ rồi nhấc lên",
       "perspectives": {
         "stones": [
           {

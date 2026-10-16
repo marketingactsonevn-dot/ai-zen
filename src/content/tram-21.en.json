@@ -19,9 +19,10 @@
   "scenes": {
     "race": {
       "label": "The finish line draws nearer",
-      "art": "A running track winds round a lake under the moon; the finish line is a red silk ribbon strung between two stone lantern posts. Drag the moon through each racing season: the ink robot's shadow goes from wobbling and stumbling to an even stride; the finish line seems to drift closer.",
+      "art": "A low camera runs behind an ink robot on a track that curves round a moonlit lake; pines and stone lanterns slide past on the right, a bamboo rail keeps the human lane apart. Drag the moon through the racing seasons: in 2025 the robot staggers and falls, another lies on the track; in March 2026 a mist-white runner sets the record in the next lane; in April 2026 the robot strides past it and the red ribbon breaks across its chest, leaving two finish lines on the track at two depths. Today the camera cranes up and the valley behind the lake is dotted with factory lamps.",
       "prompt": "Drag the moon through two races",
       "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
+      "humanTime": "57:20",
       "tide": {
         "milestones": [
           {
@@ -88,10 +89,12 @@
     },
     "strings": {
       "label": "Walking alone or on strings",
-      "art": "Two robot shadows run side by side under the moon. One has fine silver threads running up to the hands of a person sitting on a pine branch; the other runs alone, with no strings. Flip the switch and the threads appear, or melt into the mist.",
+      "art": "Low at the finish line: two identical ink robots run toward us with the moon behind them. On a pine bough a person in a conical hat holds a control bar and a small lamp. The robot on the right lights its own way with its lamp eyes; the one on the left has dark eyes. Pull the bar: threads tighten from it to the left robot's head, hands and knee and catch the moonlight. Drag sideways to walk round: head-on the threads almost vanish, from the side they shine.",
       "prompt": "Switch the strings on and off",
       "toggle": "Remote-control strings",
       "toggleAria": "Show or hide the remote-control strings",
+      "turnAria": "Walk round the finish line: drag sideways or use ← →",
+      "turnValue": "{n} degrees off",
       "remoteLabel": "Steered remotely by a person",
       "autoLabel": "Self-navigating robot",
       "remoteTime": "48:19",
@@ -124,7 +127,7 @@
     },
     "teacup": {
       "label": "A brain for hands and feet",
-      "art": "A stone tea table under a lantern. A robot hand, drawn in shaky ink strokes, reaches for a porcelain teacup. Behind it a library of text towers like a mountain; beside the table sits just one small bamboo basket of “hand data”.",
+      "art": "A stone tea table under a paper lantern: a celadon cup, a clay teapot and a tiny bamboo basket with a few paper rolls of “hand data”. A many-jointed robot arm reaches in from the right; the robot's head is a lantern. Behind, blurred in mist, a mountain of book spines climbs into the clouds. Pull a bamboo slip: the head lights up at once, while the hand trembles, slips and tries again.",
       "prompt": "Give the hand a command",
       "commands": [
         {
@@ -144,6 +147,8 @@
       "hand": "Hand: trembles, slips, tries again",
       "scaleTitle": "Two baskets of data",
       "scaleAria": "Compare the amount of text data with robot movement data",
+      "pullPrompt": "Drag down to step back",
+      "pullValue": "{n}% further back",
       "textLabel": "text",
       "robotLabel": "robot actions",
       "insight": {
@@ -173,7 +178,7 @@
     },
     "circle": {
       "label": "Does it need a human shape?",
-      "art": "Four stones round the moonlit lake, each reflecting a kind of robot: a human figure, a factory arm, a jobs chart, and an empty chair at home. Touch a stone and its reflection lights up in the water.",
+      "art": "At the water's edge looking out over the moon lake: four equal boulders stand in the shallows, each crossed by a gold seam. Touch each one: it cracks along the seam, its halves open like a seed, and a small lamp inside lights a carving: a human shape, a factory arm, a broken stair going down, an empty chair in a doorway.",
       "prompt": "Touch each stone",
       "stoneAria": "Hear the view of {who}",
       "perspectives": {

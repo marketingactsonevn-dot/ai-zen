@@ -17,7 +17,7 @@
   "scenes": {
     "wells": {
       "label": "Hai cái giếng",
-      "art": "Đêm trăng ở đầu làng: hai miệng giếng đá phủ rêu, mỗi giếng treo một chiếc gàu tre. Nước giếng trái lấp lánh những dòng chữ mã như vảy cá; giếng phải chứa những bình gốm nhỏ dán nhãn. Một đèn lồng giấy treo trên cột gỗ giữa hai giếng.",
+      "art": "Đêm trăng ở đầu làng: hai miệng giếng đá phủ rêu đứng cạnh nhau trên sân đá, chung một xà ròng rọc bằng tre có đèn lồng treo ở hai đầu. Nước giếng trái lấp lánh những dòng chữ mã; giếng phải chứa những hũ sành dán nhãn. Chiếc gàu tre treo ở giữa phía trước, buộc thẻ giấy ghi món cần thả.",
       "prompt": "Thả gàu đúng giếng",
       "aria": "Hai cái giếng: GitHub và Hugging Face. Đưa từng món về đúng giếng",
       "wells": [
@@ -35,12 +35,12 @@
         }
       ],
       "items": [
-        { "id": "app", "label": "Mã nguồn một app", "well": "github", "aria": "Mã nguồn một app" },
-        { "id": "weights", "label": "File model đã huấn luyện", "well": "hf", "aria": "File model đã huấn luyện (trọng số)" },
-        { "id": "dataset", "label": "Bộ dữ liệu", "well": "hf", "aria": "Một bộ dữ liệu để huấn luyện hoặc kiểm thử" },
-        { "id": "space", "label": "Demo chạy thử trên web", "well": "hf", "aria": "Một bản demo chạy thử model ngay trên trình duyệt" },
-        { "id": "cli", "label": "Công cụ dòng lệnh", "well": "github", "aria": "Mã nguồn một công cụ dòng lệnh" },
-        { "id": "site", "label": "Trang web như AI Zen", "well": "github", "aria": "Mã nguồn một trang web như AI Zen" }
+        { "id": "app", "label": "Mã nguồn một app", "tag": "app", "well": "github", "aria": "Mã nguồn một app" },
+        { "id": "weights", "label": "File model đã huấn luyện", "tag": "file model", "well": "hf", "aria": "File model đã huấn luyện (trọng số)" },
+        { "id": "dataset", "label": "Bộ dữ liệu", "tag": "dữ liệu", "well": "hf", "aria": "Một bộ dữ liệu để huấn luyện hoặc kiểm thử" },
+        { "id": "space", "label": "Demo chạy thử trên web", "tag": "demo", "well": "hf", "aria": "Một bản demo chạy thử model ngay trên trình duyệt" },
+        { "id": "cli", "label": "Công cụ dòng lệnh", "tag": "dòng lệnh", "well": "github", "aria": "Mã nguồn một công cụ dòng lệnh" },
+        { "id": "site", "label": "Trang web như AI Zen", "tag": "trang web", "well": "github", "aria": "Mã nguồn một trang web như AI Zen" }
       ],
       "itemAria": "Thả “{item}” vào giếng {well}",
       "right": "Đúng giếng.",
@@ -60,9 +60,9 @@
     },
     "depth": {
       "label": "Giếng sâu dần",
-      "art": "Mặt cắt một giếng cổ trải ngang như cuộn tranh: các vòng đá xếp theo năm tháng, mực nước dâng từng nấc. Vầng trăng trượt dọc miệng giếng; mỗi nấc nước có một viên đá nhỏ khắc ngày. Cuối cuộn tranh, sương trắng phủ miệng giếng.",
+      "art": "Một giếng cổ bổ dọc từ miệng xuống đáy, treo như một bức tranh cuộn: miệng giếng tròn mở ra trời trăng, một nón ánh trăng rơi xuống lòng giếng, các hàng đá cong theo vách, ngoài vết cắt là các lớp đất. Cột nước trong giếng dâng theo năm tháng; mỗi mốc là một viên đá nhô khỏi vách, ngày khắc bên cạnh. Trên mặt nước hôm nay là sương.",
       "prompt": "Kéo trăng qua các năm",
-      "aria": "Thuỷ triều tiến triển: kho model công khai trên Hugging Face qua các năm. Kéo trăng hoặc dùng phím mũi tên",
+      "aria": "Giếng sâu dần: số model công khai trên Hugging Face qua các năm. Kéo bóng trăng trên mặt nước lên, hoặc dùng phím mũi tên lên xuống",
       "tide": {
         "milestones": [
           {
@@ -118,12 +118,12 @@
     },
     "card": {
       "label": "Đọc bia giếng",
-      "art": "Bên giếng dựng một tấm bia đá thấp, sáu dòng chữ khắc mờ dưới lớp rêu. Người xem cầm một đèn lồng giấy; soi tới đâu, dòng chữ hiện rõ tới đó và in bóng xuống vũng nước có trăng.",
-      "prompt": "Soi từng dòng trên bia",
+      "art": "Bên giếng dựng một tấm bia đá thấp phủ rêu, nhìn chéo ba phần tư. Một tờ giấy dó ẩm buộc dây áp lên mặt bia, che kín sáu dòng chữ khắc. Chấm bông mực lên giấy: mực chỉ bám chỗ đá nổi, nên từng dòng khắc hiện trắng trên nền mực. Dưới chân bia là nghiên mực và một vũng nước soi bóng bia cùng vầng trăng.",
+      "prompt": "Chấm mực lên tờ giấy",
       "aria": "Model card giả lập: sáu dòng cần đọc trước khi tải một model",
       "mock": "Model giả lập để học, không có thật",
       "model": "lang-mau / vuon-trang-8B-instruct-GGUF",
-      "lineAria": "Soi dòng {n}: {label}",
+      "lineAria": "Rập mực dòng {n}: {label}",
       "lines": [
         {
           "id": "name",
@@ -176,9 +176,11 @@
     },
     "repo": {
       "label": "Hai mái nhà",
-      "art": "Hai căn nhà gỗ bên lối đá dưới trăng, dáng giống hệt nhau. Nhà trái đèn sáng, hiên quét sạch, tấm bảng gỗ ghi lịch sửa sang; nhà phải cửa khép, mạng nhện giăng, tên trên cổng khắc lệch một nét.",
+      "art": "Một đảo sỏi cào tròn giữa nước đen dưới trăng, hai ngôi nhà gỗ mái cong nhìn từ trước giống hệt nhau. Nhà trái ánh đèn tràn qua giấy dó xuống sỏi, đổ một khối bóng sâu, có lối đá băng qua nước tới những xóm nhà trên đồi xa. Nhà phải chỉ là một mặt tiền mỏng chống bằng hai sào tre: đi vòng ra sau thì thấy rỗng không, mạng nhện và một bọc vải không nhãn.",
       "prompt": "Đoán nhà nào đáng tin",
       "aria": "So sánh hai repo GitHub qua sáu tín hiệu, rồi chọn repo đáng tin",
+      "hint": "Kéo để đi vòng đảo, hoặc dùng phím mũi tên khi khung đang được chọn; bánh xe hoặc chụm hai ngón để lại gần. Chạm một vật để đọc tín hiệu ở cả hai nhà; thắp đèn cổng để chọn nhà.",
+      "signalAria": "Tín hiệu {label}: xem ở cả hai nhà",
       "signals": [
         { "id": "readme", "label": "README", "what": "Trang giới thiệu: làm gì, cài thế nào, ví dụ dùng." },
         { "id": "stars", "label": "Stars", "what": "Số người đánh dấu quan tâm: độ phổ biến, không phải bảo chứng an toàn." },
@@ -234,7 +236,7 @@
     },
     "clean": {
       "label": "Lọc nước",
-      "art": "Một ống tre lọc nước đặt dưới vòi giếng: nước chảy qua từng lớp sỏi, cát, than, mỗi lớp là một viên đá đánh số. Dưới cùng, chiếc bát gốm hứng nước trong vắt, in trọn vầng trăng.",
+      "art": "Nhìn thấp từ bên một chiếc bát men tối: ống tre cao phía sau, nửa chìm trong sương, rót nước đục xuống sáu chậu đá bậc thang đi chéo về phía người xem, chậu càng gần càng to. Mỗi chậu chờ một viên đá lọc đánh số. Đặt đúng thứ tự thì nước trong dần; đủ sáu, bát đầy nước trong và in trọn vầng trăng.",
       "prompt": "Xếp các lớp lọc",
       "aria": "Lối đá từng bước: thứ tự an toàn khi tải một model hoặc một đoạn code. Chạm lần lượt hoặc dùng phím số",
       "stepAria": "Đặt bước {n}: {label}",

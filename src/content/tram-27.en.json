@@ -20,7 +20,8 @@
   "scenes": {
     "faces": {
       "label": "A stone with a face",
-      "art": "A corner of the night garden: a moss-covered rock, a cloud across the moon, a stone lantern. Look closely and each one has “two eyes and a mouth” made of cracks and shadows. Finally, a small stele shows green text like an old computer screen: ELIZA, 1966.",
+      "art": "A corner of the night garden at eye level, in seven layers: dark grass and a pine bough right at your eye, a big moss rock with a crack, a lit stone lantern with a warm pool on the sand, a small stele sunk in shadow under a pine, a long cloud across the moon, mountains in mist, sky and moon. Each thing hides a face torn across several layers: two near seed heads and the crack in the rock, the lantern's two windows and a drooping pine twig, two dark seas on the moon and a strand of cloud. Stand in the right place and the pieces line up into a face. Find all three and the stele lights a green screen like an old computer: ELIZA, 1966.",
+      "view": "Move the mouse, drag or tilt the phone to change where you stand; each face only comes whole from one spot. Tab to each thing, Enter to step to the right spot.",
       "prompt": "Find the hidden faces",
       "things": [
         {
@@ -74,7 +75,7 @@
     },
     "lamp": {
       "label": "The lantern that always agrees",
-      "art": "A paper lantern hangs from a pine branch, always leaning towards whoever comes near and glowing warmer when they speak. Around the foot of the tree are four stones, each holding a research finding or a piece of advice.",
+      "art": "A night almost fully dark under an old pine: the trunk leans in from the lower left, one long branch reaches across the top. From its tip hangs a round paper lantern with the question written on it; like a pendulum it always leans toward whoever comes near. Below lies dark moss with surface roots and four equal stones on an even arc. Bring the lantern to a stone and the side facing it glows, and its words appear on the ground.",
       "prompt": "Touch the stones: benefits and harms",
       "question": "AI companions: something to lean on, or somewhere to hide?",
       "insight": {
@@ -129,7 +130,7 @@
     },
     "flatter": {
       "label": "The flattering mirror",
-      "art": "Two hand mirrors lie on a lacquer tray under the moon: one with a carved gilded frame, one of plain bronze. Between them is a slip of paper with a question. Tilt a mirror and its answer appears in it.",
+      "art": "A close look down at 55° onto a black-and-red lacquer tray with gold autumn grasses and a crescent, on tatami; moonlight through a lattice falls across it. Two hand mirrors with real thickness lie face down: a gilded back carved with a chrysanthemum, and plain bronze with green patina. A folded slip in the middle holds the question. Lift one and turn it over: its answer appears in the glass.",
       "prompt": "Tilt each mirror",
       "question": "“I’m thinking of quitting my job to open a coffee shop. Is this a good idea?”",
       "gilded": {
@@ -164,7 +165,7 @@
     },
     "path": {
       "label": "Healthy habits",
-      "art": "A path of stepping stones leads from a small hut lit by a pale blue screen, across the moonlit garden, to a house with paper doors glowing yellow and the shadows of a few people sitting around a meal. Four stones lie scattered beside the path, waiting to be set in place.",
+      "art": "A frame within a frame: from inside a hillside hut, behind someone hunched at a cold blue screen, you look through an open sliding door down a steep stone stair across the moon garden to a house in the valley, its paper doors glowing yellow with a few people sitting round a meal. Four slabs lie scattered at the threshold; beside each step stands a small unlit stone lantern.",
       "prompt": "Set the stones in order",
       "keys": "Keys 1–4 set the stones in order",
       "stoneAria": "Place the stone “{label}”",

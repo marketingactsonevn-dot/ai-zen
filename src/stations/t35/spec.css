@@ -1,0 +1,761 @@
+/* t35 scene 4 — the workbench in CSS 3D, the blueprint that inks itself and stands up as a paper pop-up. Tokens only. */
+.t35p {
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(125% 118% at 50% 42%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(125% 118% at 50% 42%, #000 62%, transparent 100%);
+}
+.t35p-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t35p-room {
+  fill: color-mix(in srgb, var(--wash) 34%, var(--paper));
+}
+:root[data-theme='dark'] .t35p-room {
+  fill: color-mix(in srgb, #000 55%, var(--paper));
+}
+.t35p-night {
+  fill: color-mix(in srgb, var(--mist) 70%, var(--paper));
+}
+:root[data-theme='dark'] .t35p-night {
+  fill: color-mix(in srgb, var(--mist) 20%, var(--paper));
+}
+.t35p-bough {
+  opacity: 0.7;
+}
+.t35p-spill {
+  opacity: 0.45;
+}
+.t35p-jamb {
+  fill: color-mix(in srgb, var(--wash) 80%, var(--lantern));
+}
+:root[data-theme='dark'] .t35p-jamb {
+  fill: #000;
+}
+.t35p-cord {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+.t35p-lamp .p2p-lamp-halo {
+  opacity: 0.95;
+}
+
+/* ── the bench: a thick top of planks in perspective, its front edge facing us */
+.t35p-view {
+  position: absolute;
+  inset: 0;
+}
+.t35p-bench {
+  position: absolute;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--a, 54deg));
+  transition: transform 0.9s var(--ease);
+}
+.t35p.tilting .t35p-bench {
+  transition: transform 0.12s linear;
+}
+.t35p-top-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t35p-lip {
+  /* the bench's thickness: its near edge turned down to face us */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  transform-origin: 50% 0;
+  transform: rotateX(-90deg);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 34px, rgba(0, 0, 0, 0.12) 34px 36px, transparent 36px 71px),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 34%, var(--rock-lo)), color-mix(in srgb, var(--lantern) 14%, var(--wash)));
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--lantern) 40%, var(--card));
+}
+:root[data-theme='dark'] .t35p-lip {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 34px, rgba(0, 0, 0, 0.3) 34px 36px, transparent 36px 71px),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 18%, var(--rock-lo)), #000);
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--lantern) 30%, var(--rock-mid));
+}
+.t35p-plank.p0 {
+  fill: color-mix(in srgb, var(--lantern) 34%, var(--rock-mid));
+}
+.t35p-plank.p1 {
+  fill: color-mix(in srgb, var(--lantern) 28%, color-mix(in srgb, var(--rock-mid) 80%, var(--rock-lo)));
+}
+:root[data-theme='dark'] .t35p-plank.p0 {
+  fill: color-mix(in srgb, var(--lantern) 16%, var(--rock-lo));
+}
+:root[data-theme='dark'] .t35p-plank.p1 {
+  fill: color-mix(in srgb, var(--lantern) 12%, color-mix(in srgb, var(--rock-lo) 80%, #000));
+}
+.t35p-grain {
+  fill: color-mix(in srgb, var(--wash) 80%, var(--lantern));
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t35p-grain {
+  fill: #000;
+  opacity: 0.4;
+}
+.t35p-knot {
+  fill: var(--wash);
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t35p-knot {
+  fill: #000;
+  opacity: 0.5;
+}
+.t35p-gap {
+  fill: var(--umbra);
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t35p-gap {
+  fill: #000;
+  opacity: 0.8;
+}
+/* the pool: warm under the lamp, falling off hard to dark edges */
+.t35p-pool0 {
+  stop-color: var(--lantern);
+  stop-opacity: 0.42;
+}
+.t35p-pool1 {
+  stop-color: var(--lantern);
+  stop-opacity: 0.1;
+}
+.t35p-pool2 {
+  stop-color: var(--umbra);
+  stop-opacity: 0.45;
+}
+:root[data-theme='dark'] .t35p-pool0 {
+  stop-opacity: 0.36;
+}
+:root[data-theme='dark'] .t35p-pool2 {
+  stop-color: #000;
+  stop-opacity: 0.72;
+}
+.t35p-sheet-sh {
+  fill: var(--umbra);
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t35p-sheet-sh {
+  fill: #000;
+  opacity: 0.7;
+}
+.t35p-inkstone {
+  fill: color-mix(in srgb, var(--wash) 85%, var(--rock-lo));
+}
+.t35p-inkpool {
+  fill: #000;
+  opacity: 0.7;
+}
+.t35p-brush {
+  fill: color-mix(in srgb, var(--lantern) 30%, var(--wash));
+}
+.t35p-rule {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--rock-hi));
+}
+:root[data-theme='dark'] .t35p-rule {
+  fill: color-mix(in srgb, var(--lantern) 26%, var(--rock-mid));
+}
+.t35p-rulesh {
+  fill: #000;
+  opacity: 0.25;
+}
+
+/* ── the sheet: washi, a faint grid, pencil rings; it stays paper at night (ivory dimmed under the lamp) */
+.t35p-sheet {
+  position: absolute;
+  transform-style: preserve-3d;
+  transform-origin: 50% 0;
+  transition: transform 1.4s var(--ease);
+}
+.t35p-paper-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: 50% 0;
+  transition: transform 1.4s 1s var(--ease), opacity 0.6s 2.2s;
+}
+.t35p-paper {
+  fill: color-mix(in srgb, var(--lantern) 6%, #fbfaf6);
+}
+.t35p-paper-glow {
+  fill: var(--lantern);
+  opacity: 0.08;
+}
+:root[data-theme='dark'] .t35p-paper {
+  fill: color-mix(in srgb, var(--moon) 80%, #4a4f63);
+}
+.t35p-grid {
+  fill: none;
+  stroke: var(--moss-2);
+  stroke-width: 0.6;
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t35p-grid {
+  stroke: #2a3048;
+  opacity: 0.25;
+}
+.t35p-ring-line {
+  fill: #5a6070;
+  opacity: 0.7;
+}
+.t35p-ring-n {
+  fill: #5a6070;
+  font-family: var(--serif);
+  opacity: 0.85;
+}
+.t35p-ring-stone {
+  opacity: 0;
+  transition: opacity 0.5s 0.3s;
+}
+.t35p.s1 .r1 .t35p-ring-stone,
+.t35p.s2 .r2 .t35p-ring-stone,
+.t35p.s3 .r3 .t35p-ring-stone,
+.t35p.s4 .r4 .t35p-ring-stone,
+.t35p.s5 .r5 .t35p-ring-stone,
+.t35p.s6 .r6 .t35p-ring-stone,
+.t35p.s7 .r7 .t35p-ring-stone,
+.t35p.s8 .r8 .t35p-ring-stone {
+  opacity: 1;
+}
+.t35p-ink {
+  fill: #1a2240;
+  opacity: 0.85;
+}
+.t35p-ink2 {
+  fill: #1a2240;
+  opacity: 0.55;
+}
+.t35p-wash {
+  fill: var(--water);
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .t35p-wash {
+  fill: #74849f;
+}
+.t35p-q {
+  fill: #5a6070;
+  font-family: var(--serif);
+  font-weight: 300;
+}
+.t35p-cut {
+  fill: none;
+  stroke: #1a2240;
+  stroke-width: 1.2;
+  stroke-dasharray: 4 5;
+  opacity: 0.55;
+}
+.t35p-cast {
+  fill: #1c2236;
+  opacity: 0.2;
+}
+.t35p-pond {
+  fill: color-mix(in srgb, #74849f 80%, var(--moss-2));
+  opacity: 0.85;
+}
+.t35p-pond-rim {
+  fill: #1a2240;
+  opacity: 0.4;
+}
+.t35p-tick {
+  fill: var(--vermilion);
+}
+.t35p-weight path {
+  opacity: 0.95;
+}
+
+/* ── the pop-up: pieces lie flat until they are cut (step 4), then fold up on their feet */
+.t35p-piece,
+.t35p-face {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+.t35p-piece {
+  visibility: hidden;
+  transform-origin: 50% 100%;
+  transition: transform 1.2s var(--ease), visibility 0s 0.2s;
+}
+.t35p.s4 .t35p-piece {
+  visibility: visible;
+}
+.t35p.s5 .t35p-piece {
+  transform: rotateX(-88deg);
+}
+/* the house stands turned a little on the paper, so its side wall shows */
+.t35p.s5 .t35p-piece.house {
+  transform: rotateZ(-18deg) rotateX(-88deg);
+}
+.t35p.s5 .t35p-piece.tree {
+  transition-delay: 0.25s;
+  transform: rotateX(-66deg) rotateY(-12deg);
+}
+.t35p.s7 .t35p-piece.tree {
+  transform: rotateX(-88deg);
+}
+.t35p.s5 .t35p-piece.fence {
+  transition-delay: 0.45s;
+}
+.t35p-face-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t35p-face {
+  transition: transform 1.2s 0.4s var(--ease);
+}
+/* the house: its side wall swings back from the front, its roof leans back over both */
+.t35p-face.side {
+  transform-origin: 0 50%;
+}
+.t35p.s5 .t35p-face.side {
+  transform: rotateY(-88deg);
+}
+.t35p-face.roof {
+  transform-origin: 50% 100%;
+}
+.t35p.s5 .t35p-face.roof {
+  transform: rotateX(62deg);
+}
+.t35p-face.stand {
+  transform-origin: 0 50%;
+}
+.t35p.s5 .t35p-face.stand {
+  transform: rotateY(-80deg);
+}
+/* the fence folds like a screen */
+.t35p-face.f0 {
+  transform-origin: 100% 50%;
+}
+.t35p-face.f2 {
+  transform-origin: 0 50%;
+}
+.t35p.s5 .t35p-face.f0 {
+  transform: rotateY(-38deg);
+}
+.t35p.s5 .t35p-face.f2 {
+  transform: rotateY(38deg);
+}
+.t35p-card {
+  fill: #fbfaf6;
+}
+.t35p-card.shade {
+  fill: #e6e3da;
+}
+:root[data-theme='dark'] .t35p-card {
+  fill: color-mix(in srgb, var(--moon) 80%, #4a4f63);
+}
+:root[data-theme='dark'] .t35p-card.shade {
+  fill: color-mix(in srgb, var(--moon) 55%, #3a3f53);
+}
+.t35p-fold {
+  fill: #1c2236;
+  opacity: 0.12;
+}
+.t35p-edge {
+  fill: #8a8678;
+}
+.t35p-roofink {
+  fill: #1a2240;
+  opacity: 0.85;
+}
+.t35p-door,
+.t35p-window {
+  fill: var(--lantern);
+  opacity: 0.85;
+}
+/* the lamp hangs behind the house: its light comes through the paper */
+.t35p-glowthru {
+  fill: var(--lantern);
+  opacity: 0.16;
+}
+.t35p-tree .p2p-pad,
+.t35p-tree .p2p-needle,
+.t35p-tree .p2p-trunk {
+  fill: #1a2240;
+}
+.t35p-tree .p2p-pad {
+  opacity: 0.5;
+}
+/* the steps reveal the drawing layer by layer */
+.t35p-l {
+  opacity: 0;
+  transition: opacity 1s var(--ease-soft);
+}
+.t35p.s1 .t35p-l1,
+.t35p.s2 .t35p-l2,
+.t35p.s3 .t35p-l3,
+.t35p.s4 .t35p-l4,
+.t35p.s5 .t35p-l5,
+.t35p.s7 .t35p-l7 {
+  opacity: 1;
+}
+.t35p.s5 .t35p-l4 {
+  opacity: 0.2;
+}
+/* 8 · the skill: every piece folds flat, the sheet rolls up toward the far edge and is gone to the hook */
+.t35p.s8 .t35p-piece,
+.t35p.s8 .t35p-piece.house {
+  transform: none;
+  transition-delay: 0s;
+}
+.t35p.s8 .t35p-face {
+  transform: none;
+  transition-delay: 0s;
+}
+.t35p.s8 .t35p-paper-art,
+.t35p.s8 .t35p-piece {
+  transform: scaleY(0.04);
+  opacity: 0;
+}
+.t35p.s8 .t35p-piece {
+  transition: transform 0.8s var(--ease), opacity 0.4s 0.8s;
+}
+.t35p.reading .t35p-sheet {
+  opacity: 0;
+}
+.t35p-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 50% at 50% 35%, color-mix(in srgb, var(--moon) 75%, transparent), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+.t35p-flash.go {
+  animation: t35p-flash 0.9s ease-out;
+}
+@keyframes t35p-flash {
+  12% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* the room's floor under the bench: the bench's shadow on it */
+.t35p-floor-sh {
+  fill: var(--umbra);
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t35p-floor-sh {
+  fill: #000;
+  opacity: 0.5;
+}
+/* the strip along the bottom of a phone: the step's note, then the pencil fact */
+.t35p-strip {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  bottom: 1.5%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.t35p-strip:empty {
+  display: none;
+}
+.t35p-strip .p2s-note {
+  position: static;
+  width: auto !important;
+  padding: 0;
+}
+.t35p-strip .t35p-pencil {
+  position: static;
+  pointer-events: auto;
+}
+.t35p-art:not(.port) .t35p-strip {
+  display: contents;
+}
+/* the pencil note: graphite on the dark room or along the bottom on a phone */
+.t35p-pencil {
+  position: absolute;
+  margin: 0;
+  font: 400 14px/1.5 var(--serif);
+  color: var(--ink-2);
+  text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper);
+}
+.t35p-pencil p {
+  margin: 0;
+}
+.t35p.still *,
+.t35p.still {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* ── stepPath on top: its places are the pencil rings (drawn on the sheet), its stones river pebbles along the near edge */
+.t35p-art .p2s-band,
+.t35p-art .p2s-line,
+.t35p-art .p2s-scape {
+  display: none;
+}
+.t35p-art .p2s-slot {
+  border: 0;
+  background: none;
+  color: transparent;
+}
+.t35p-art .p2s-slot span {
+  display: none;
+}
+/* a placed pebble: the one in the pencil ring (on the sheet, in 3D) takes over */
+.t35p-art .p2s-stone.placed {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s 0.5s, transform 0.6s var(--ease);
+}
+.t35p-art .p2s-stone .p2s-art {
+  /* near and large: a touch out of focus */
+  filter: blur(0.5px);
+}
+.t35p-art .p2s-stone {
+  padding: 6px 14px 8px 16px;
+}
+.t35p-art:not(.port) .p2s-stone {
+  width: 158px !important;
+  height: 68px !important;
+}
+.t35p-art.port .p2s-stone {
+  height: 52px !important;
+}
+.t35p-art .p2s-label {
+  font: 500 14px/1.25 var(--serif);
+  color: var(--stone-text);
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 85%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 35%, transparent);
+  -webkit-line-clamp: 3;
+}
+:root[data-theme='dark'] .t35p-art .p2s-label {
+  color: color-mix(in srgb, var(--ink) 92%, var(--lantern));
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.8);
+}
+.t35p-art .p2s-key {
+  width: auto;
+  height: auto;
+  border: 0;
+  font: 400 12px/1 var(--serif);
+  color: var(--stone-text);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t35p-art .p2s-key {
+  color: color-mix(in srgb, var(--ink) 80%, transparent);
+}
+.t35p-art .p2s-note {
+  top: auto !important;
+  bottom: var(--t35p-note, 150px);
+  left: 0;
+  width: 100% !important;
+  box-sizing: border-box;
+  padding: 0 6%;
+  font: 400 14px/1.45 var(--serif);
+  color: var(--ink-2);
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 2px var(--paper);
+}
+.t35p-art .p2s-note b {
+  color: var(--ink);
+  font-weight: 500;
+}
+/* the take-away never opens as a sheet over the scene: it hangs on the hook (see .t35p-hook) */
+.t35p-art .p2s-sheet {
+  display: none !important;
+}
+.t35p-hook {
+  position: absolute;
+  right: 3%;
+  top: 12%;
+  width: 62px;
+  height: 156px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transform-origin: 50% 0;
+  animation: t35p-hang 1.6s 1.4s var(--ease) both;
+}
+.t35p-hook[hidden] {
+  display: none;
+}
+.t35p-hook svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(6px 10px 6px color-mix(in srgb, var(--umbra) 45%, transparent));
+}
+.t35p-hook:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+@keyframes t35p-hang {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) rotate(-14deg);
+  }
+  40% {
+    opacity: 1;
+    transform: rotate(7deg);
+  }
+  70% {
+    transform: rotate(-3deg);
+  }
+}
+.t35p-hook-iron {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4;
+  opacity: 0.7;
+}
+.t35p-cordline {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+.t35p-roll-silk {
+  fill: color-mix(in srgb, var(--lantern) 30%, var(--wash));
+}
+.t35p-roll-paper {
+  fill: color-mix(in srgb, var(--lantern) 10%, #fbfaf6);
+}
+.t35p-roll-rod {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t35p-roll-rod {
+  fill: #000;
+}
+/* the skill opened: a sheet of washi lying on the bench where the blueprint was (never a box over the middle) */
+.t35p-out {
+  position: absolute;
+  left: 50%;
+  top: 7%;
+  bottom: 15%;
+  width: min(560px, 86%);
+  margin-left: max(-280px, -43%);
+  overflow-y: auto;
+  pointer-events: auto;
+  transform: rotate(-1deg);
+  transform-origin: 50% 0;
+  animation: t35p-unroll 0.9s var(--ease) both;
+  scrollbar-width: thin;
+}
+.t35p-out[hidden] {
+  display: none;
+}
+/* washi stays paper at night: ivory dimmed under the lamp, dark ink */
+:root[data-theme='dark'] .t35p-out {
+  --card: color-mix(in srgb, var(--moon) 74%, #39405a);
+  --paper-2: color-mix(in srgb, var(--moon) 60%, #39405a);
+  --ink: #141a30;
+  --ink-2: #2b3350;
+  --ink-3: #4d5573;
+  --line: rgba(20, 26, 48, 0.18);
+  --line-2: rgba(20, 26, 48, 0.3);
+  --vermilion: #b8432c;
+}
+@keyframes t35p-unroll {
+  from {
+    opacity: 0;
+    transform: rotate(-1deg) scaleY(0.06);
+  }
+}
+.t35p-out .p2k {
+  min-height: 100%;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 2px;
+  padding: 22px 24px 18px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .45 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 8%, var(--card)), var(--card));
+  box-shadow: 0 2px 2px color-mix(in srgb, var(--umbra) 20%, transparent), 0 26px 30px -18px var(--umbra);
+}
+.t35p-out .p2k-body {
+  border: 0;
+  border-left: 2px solid color-mix(in srgb, var(--vermilion) 45%, transparent);
+  border-radius: 0;
+  background: none;
+  padding: 2px 0 2px 14px;
+  font: 400 0.92rem/1.6 var(--serif);
+  max-height: none;
+}
+.t35p-art.port .t35p-out {
+  bottom: 24%;
+}
+.t35p-art.port.reading .t35p-strip {
+  opacity: 0;
+}
+/* the copy button is a small seal stamped at the foot of the sheet */
+.t35p-out .p2k-copy {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--vermilion);
+  font: 400 12px/1.2 var(--serif);
+}
+.t35p-out .p2k-copy .p2k-ico {
+  display: none;
+}
+.t35p-out .p2k-copy::before {
+  content: '';
+  width: 30px;
+  height: 30px;
+  border-radius: 3px;
+  background:
+    linear-gradient(var(--vermilion), var(--vermilion)) 50% 30% / 14px 2.5px no-repeat,
+    linear-gradient(var(--vermilion), var(--vermilion)) 50% 70% / 16px 2.5px no-repeat,
+    linear-gradient(var(--vermilion), var(--vermilion)) 50% 50% / 2.5px 10px no-repeat,
+    color-mix(in srgb, var(--vermilion) 10%, var(--card));
+  box-shadow: inset 0 0 0 2.5px var(--vermilion);
+  transform: rotate(-4deg);
+}
+.t35p-out .p2k-copy.done::before {
+  background: radial-gradient(circle at 40% 35%, var(--lantern), var(--vermilion) 62%);
+}
+.t35p-out .p2k-copy:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.t35p-out-close {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  margin: 4px 4px -40px 0;
+  border: 0;
+  background: none;
+  color: var(--ink-3);
+  font: 300 1.5rem/1 var(--sans);
+  cursor: pointer;
+}
+.t35p-out-close:hover {
+  color: var(--vermilion);
+}
+@media (prefers-reduced-motion: reduce) {
+  .t35p-out,
+  .t35p-hook {
+    animation: none;
+  }
+}

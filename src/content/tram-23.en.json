@@ -16,7 +16,7 @@
   "scenes": {
     "bridge": {
       "label": "The concept stone",
-      "art": "Looking down through a clear pond under the moon: on the bottom lies a stone carved with a suspension bridge. Turn up the lantern’s wick and its light falls on the stone; the fish begin to swim along the curve of the span, and the water reflects two vermilion towers.",
+      "art": "Looking almost straight down into a round pond held by a thick ring of mossy stones, like a koi painting. Under the clear water a slab on the bottom is carved with a suspension bridge. A paper lantern hangs from a bamboo pole right above it; pull the lantern down toward the water and its pool of light closes in on the slab, the carving glows vermilion, the koi leave their free swim to hold the cable and then parade along it, and two vermilion towers appear in the reflection though nothing stands above the pond.",
       "prompt": "Turn up the concept lantern",
       "slider": "Strength of the “Golden Gate Bridge” concept",
       "sliderAria": "Drag to turn up the “Golden Gate Bridge” concept inside the model (← → keys)",
@@ -46,7 +46,7 @@
     },
     "lotus": {
       "label": "One stem, many petals",
-      "art": "A white lotus on the night pond, one stem with petals stacked tightly into a single bud. Gently stir the water and the petals part, drifting into five small flowers, each marked with one meaning: DNA, Hebrew letters, legal text, a web address, a nutrition label.",
+      "art": "The camera sits right on the night water; the moon is out of frame, only its road runs toward us. In the middle of that road stands a large white lotus bud: five petals closed into one bud on one stem, which dives into the water, where it is written “one neuron”. Flick the water and ripples spread, the petals sway and close again; with enough energy the bud bursts, and the five petals drift away as five small flowers at different distances, each carrying an ink mark and its meaning: DNA, Hebrew letters, legal text, a web request, a nutrition label. Under the water, silver threads still tie all five to one stem.",
       "prompt": "Gently stir the water",
       "shakeAria": "Stir the water to separate the stacked meanings (or press Space)",
       "neuron": "one neuron",
@@ -76,7 +76,7 @@
     },
     "stream": {
       "label": "Following the water",
-      "art": "A small stream under the moon runs over three stone terraces. Water pours in from two springs, “Dallas” and “capital”, gathers in a middle pool carved “Texas”, and only then falls into the last pool, “Austin”. A thin branch of water runs straight down as a shortcut, fainter.",
+      "art": "Standing at the top of a terraced cascade under the moon, looking down into the valley. Nearest are two springs breaking from rocks carved “Dallas” and “capital”; on the middle step lies the pool “Texas” with a carved weir stone; far below in the valley, the small pool “Austin” holds the moon. Lift the sluice stones one by one and the water runs: Dallas pours into Texas, Texas spills down into Austin, the “capital” spring runs straight down to Austin in a bamboo flume, and a thin stream takes a fainter shortcut. Swap the Texas stone for the California stone and the last pool reads “Sacramento”, while the mist thickens over three other falls.",
       "prompt": "Follow the water",
       "question": "“The capital of the state that contains Dallas is…”",
       "nodes": [
@@ -115,7 +115,7 @@
     },
     "circle": {
       "label": "Stone circle by the pond",
-      "art": "Four stones around a round pond holding the moon, each a different shape: tall and upright, lying flat, covered in moss, carved with a seal. Touch one and the moon’s reflection tilts slightly toward it, then settles.",
+      "art": "A round black lacquer tray on low legs stands on a wooden table under the moon. On its turning top are four stones of four shapes: tall and upright, lying long, covered in moss, carved with a vermilion seal; in the middle, water holds the moon in fine rings; the question is carved round the tray's side. Drag to turn the tray: the stone that stops in front speaks, its words unrolling on a paper strip in front of the tray, and the moon's reflection leans toward it; once all four are heard the rings still and the reflection becomes one quiet circle.",
       "prompt": "Listen to each stone",
       "question": "Can looking inside keep up with how fast AI is growing?",
       "perspectives": {

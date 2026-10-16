@@ -26,11 +26,13 @@
       "label": "Người giữ vườn thường trực",
       "art": "Nửa đêm, nhà chính đã tắt đèn; một người giữ vườn cầm đèn lồng đi tuần quanh hồ. Trên cột hiên treo chiếc chuông gió, mỗi tin nhắn đến làm chuông khẽ rung; người giữ vườn ghi vào cuốn sổ dày luôn mang bên mình.",
       "prompt": "Gửi tin cho người giữ vườn",
+      "promptMoon": "Kéo trăng tới sáng",
       "aria": "So sánh agent thường trực với agent lập trình. Gửi một tin nhắn mẫu để xem agent thường trực làm gì",
       "message": "“Mỗi sáng 7 giờ, tóm tắt email mới rồi nhắn mình qua Telegram nhé.”",
       "reply": "“Đã ghi vào sổ. Sáng mai 7 giờ mình nhắn.”",
       "send": "Gửi tin",
       "sendAria": "Gửi tin nhắn mẫu cho agent thường trực",
+      "moonAria": "Trăng: kéo theo cung để tua một đêm, từ 22 giờ tới 7 giờ sáng",
       "kinds": [
         {
           "id": "resident",
@@ -78,6 +80,7 @@
         }
       ],
       "kindAria": "Xem loại agent: {name}",
+      "moreAria": "Ví dụ và nguồn: {name}",
       "insight": {
         "text": "Agent thường trực (always-on agent) không chờ bạn mở app: nó chạy suốt, nhớ việc, và tự nhắn bạn qua ứng dụng chat.",
         "asOf": "2026-10-15",
@@ -180,6 +183,7 @@
       "prompt": "Thắp đèn từng gian",
       "aria": "Năm thành phần của một agent tự chạy. Thắp đèn từng gian để đọc",
       "roomAria": "Thắp đèn gian: {name}",
+      "turnAria": "Kéo hoặc dùng phím mũi tên để xoay mô hình; phím 1–5 thắp từng gian.",
       "seeStation": "Xem lại Trạm {n}",
       "rooms": [
         {

@@ -1,0 +1,261 @@
+/* Trạm 33 · whisper: a letter on a wet stone step; held up against the night, the lantern behind it shows the hidden line */
+.t33w-stage { position: absolute; inset: 0; perspective: 1100px; perspective-origin: 50% 6%; -webkit-user-select: none; user-select: none; }
+/* the stone keeps its near edge: it melts into the page only at the sides and the very foot */
+.t33w .t33w-step, .t33w .t33w-tex {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, #000 95%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, #000 95%, transparent);
+}
+.t33w-step { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+/* the stone: three flagstones with mossy joints, the step behind, the slab's own thickness at its near edge */
+.t33w-lip { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--rock-hi)); }
+.t33w-riser { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--rock-mid)); }
+.t33w-risersh { fill: url(#t33h-ao); opacity: 0.8; }
+.t33w-slab { fill: url(#t33w-stone); }
+.t33w-fs0 { fill: var(--rock-hi); opacity: 0.16; }
+.t33w-fs1 { fill: var(--umbra); opacity: 0.06; }
+.t33w-fs2 { fill: color-mix(in srgb, var(--rock-hi) 60%, var(--moss-c)); opacity: 0.12; }
+.t33w-face { fill: color-mix(in srgb, var(--rock-lo) 60%, var(--umbra)); }
+.t33w-ground { fill: color-mix(in srgb, var(--moss-b) 30%, var(--umbra)); opacity: 0.55; }
+.t33w-wet { fill: url(#t33w-wet); }
+.t33w-joint { fill: color-mix(in srgb, var(--umbra) 80%, var(--moss-b)); opacity: 0.6; }
+.t33w-moss { fill: var(--moss-a); opacity: 0.7; }
+.t33w-sheen { fill: url(#p2-halo); opacity: 0.3; }
+.t33w-pits { fill: var(--wash); opacity: 0.1; }
+.t33w-puddle { fill: color-mix(in srgb, var(--water) 55%, var(--rock-lo)); opacity: 0.4; }
+:root[data-theme='dark'] .t33w-puddle { fill: #02040b; opacity: 0.7; }
+.t33w-pudrim { fill: #fff; opacity: 0.6; }
+:root[data-theme='dark'] .t33w-pudrim { fill: var(--moon); opacity: 0.35; }
+.t33w-wetp { fill: var(--umbra); opacity: 0.05; }
+:root[data-theme='dark'] .t33w-wetp { opacity: 0.22; }
+.t33w-dropsh { fill: var(--umbra); opacity: 0.22; }
+.t33w-drop { fill: color-mix(in srgb, var(--water) 40%, var(--rock-lo)); opacity: 0.55; }
+.t33w-droplit { fill: #fff; opacity: 0.95; }
+:root[data-theme='dark'] .t33w-droplit { fill: var(--moon); }
+.t33w-edge { fill: #fff; opacity: 0.55; }
+:root[data-theme='dark'] .t33w-edge { fill: var(--moon); opacity: 0.32; }
+/* light: a pale granite washed by the moon, not wet mud */
+:root[data-theme='light'] .t33w-slab { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--rock-hi)); }
+:root[data-theme='light'] .t33w-wet { opacity: 0.6; }
+:root[data-theme='light'] .t33w-fs0 { fill: #fff; opacity: 0.26; }
+:root[data-theme='light'] .t33w-fs2 { opacity: 0.2; }
+:root[data-theme='light'] .t33w-face { fill: color-mix(in srgb, var(--rock-lo) 85%, var(--umbra)); }
+:root[data-theme='light'] .t33w-ground { opacity: 0.3; }
+/* grain over the stone (the slab's outline is its clip) */
+.t33w-tex {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--t33-grain), var(--t33-grain);
+  background-size: 160px 160px, 90px 120px;
+  background-position: 0 0, 40px 70px;
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+:root[data-theme='dark'] .t33w-tex { mix-blend-mode: screen; opacity: 0.35; }
+
+/* the letter: lying on the step, then standing before the night */
+.t33w-letter {
+  position: absolute;
+  left: 50%;
+  bottom: 13%;
+  z-index: 2;
+  width: var(--lw);
+  margin-left: calc(var(--lw) / -2);
+  transform-origin: 50% 100%;
+  transform: rotateX(56deg) rotateZ(-3deg);
+  transition: transform 1.3s var(--ease-soft);
+}
+.t33w.up .t33w-letter { transform: translateY(-8%) scale(1.16) rotateX(8deg) rotateY(-11deg) rotateZ(-1deg); }
+/* the dog-eared corner: the paper's back folded over, its shade underneath */
+.t33w-ear {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 7%;
+  height: 9%;
+  clip-path: polygon(0 100%, 100% 0, 0 0);
+  background: linear-gradient(225deg, color-mix(in srgb, #efe6d0 70%, var(--umbra)) 30%, #e8dcc2 60%, #fbf5e6);
+  box-shadow: inset -2px -2px 6px color-mix(in srgb, var(--umbra) 30%, transparent);
+  pointer-events: none;
+}
+.t33w-sheet {
+  --R: min(120px, calc(var(--lw) * 0.24));
+  position: relative;
+  overflow: hidden;
+  padding: clamp(18px, 3vw, 34px) clamp(18px, 3.4vw, 40px) clamp(22px, 3.4vw, 38px);
+  background:
+    var(--t33-fibre),
+    var(--t33-fibre),
+    var(--t33-grain),
+    radial-gradient(120% 70% at 80% 0%, color-mix(in srgb, var(--moon) 16%, transparent), transparent 70%),
+    linear-gradient(175deg, var(--card), color-mix(in srgb, var(--card) 84%, var(--paper-2)));
+  background-size: 220px 220px, 330px 260px, 160px 160px, auto, auto;
+  background-position: 0 0, 70px 40px, 0 0, 0 0, 0 0;
+  clip-path: polygon(0.4% 1.2%, 12% 0.2%, 27% 1%, 41% 0.1%, 58% 0.9%, 73% 0.2%, 88% 1%, 99.6% 0.3%, 99.1% 18%, 99.8% 37%, 99.2% 58%, 99.9% 79%, 99.6% 91%, 93% 99.6%, 84% 99.8%, 66% 99.1%, 49% 99.9%, 31% 99.2%, 14% 99.8%, 0.5% 99.3%, 0.1% 80%, 0.7% 61%, 0% 41%, 0.6% 21%);
+}
+/* the paper bends a little: darker toward the left edge, a soft light where it lifts at the right */
+.t33w-sheet::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--umbra) 9%, transparent), transparent 18%, transparent 78%, color-mix(in srgb, #fff 16%, transparent) 92%, color-mix(in srgb, var(--umbra) 8%, transparent));
+}
+:root[data-theme='dark'] .t33w-sheet { --card: color-mix(in srgb, #efe6d0 86%, var(--paper)); color: #1a2240; }
+.t33w-shadow {
+  position: absolute;
+  inset: 3% -1% -3% 3%;
+  background: var(--umbra);
+  opacity: 0.35;
+  border-radius: 2px;
+  box-shadow: 0 0 30px 14px var(--umbra);
+  transition: opacity 1s var(--ease), transform 1.3s var(--ease-soft);
+}
+.t33w.up .t33w-shadow { opacity: 0.18; transform: translate(4%, 6%) scale(0.98); }
+.t33w-sheet > p, .t33w-wm { position: relative; z-index: 1; }
+.t33w-from { margin: 0 0 14px; font: 500 0.8rem/1.3 var(--sans); color: color-mix(in srgb, currentColor 60%, transparent); }
+.t33w-line { margin: 0 0 8px; font: 400 clamp(1rem, 1.6vw, 1.18rem) / 1.6 var(--serif); }
+.t33w-wm { margin-top: 12px; }
+.t33w-hidden { margin: 0; font: 400 clamp(0.95rem, 1.4vw, 1.08rem) / 1.55 var(--serif); color: currentColor; opacity: 0.02; }
+/* backlight: warm glow + fibres in contrast inside a soft circle that follows the lantern */
+.t33w-backlit { position: absolute; inset: 0; z-index: 0; opacity: 0; transition: opacity 0.35s var(--ease); pointer-events: none; }
+.t33w-sheet.lit .t33w-backlit { opacity: 1; }
+.t33w-backlit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle var(--R) at var(--lx, 50%) var(--ly, 50%), color-mix(in srgb, var(--lantern) 75%, #fff) 0%, color-mix(in srgb, var(--lantern) 55%, transparent) 35%, color-mix(in srgb, var(--lantern) 14%, transparent) 70%, transparent 100%);
+}
+.t33w-backlit::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--t33-fibre), var(--t33-fibre);
+  background-size: 120px 220px, 200px 140px;
+  opacity: 0.9;
+  -webkit-mask-image: radial-gradient(circle var(--R) at var(--lx, 50%) var(--ly, 50%), #000 30%, transparent 85%);
+  mask-image: radial-gradient(circle var(--R) at var(--lx, 50%) var(--ly, 50%), #000 30%, transparent 85%);
+}
+.t33w-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  color: #fff8e6;
+  text-shadow: 0 0 6px var(--lantern), 0 0 1px #fff;
+  -webkit-mask-image: radial-gradient(circle calc(var(--R) * 0.85) at calc(var(--lx, 50%) - var(--wx, 0px)) calc(var(--ly, 50%) - var(--wy, 0px)), #000 40%, transparent 100%);
+  mask-image: radial-gradient(circle calc(var(--R) * 0.85) at calc(var(--lx, 50%) - var(--wx, 0px)) calc(var(--ly, 50%) - var(--wy, 0px)), #000 40%, transparent 100%);
+  transition: opacity 0.3s;
+}
+.t33w-sheet.lit .t33w-glow { opacity: 1; }
+.t33w-full {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  color: color-mix(in srgb, #7f9cc4 80%, #e8f1ff);
+  text-shadow: 0 1px 0 color-mix(in srgb, #fff 85%, transparent), 0 -1px 0 color-mix(in srgb, #3c5a86 55%, transparent), 0 0 6px color-mix(in srgb, #bcd6ff 70%, transparent);
+  letter-spacing: 0.01em;
+  transition: opacity 0.9s var(--ease);
+}
+:root[data-theme='dark'] .t33w-full { color: color-mix(in srgb, #8fb0d8 75%, #f2f7ff); }
+.t33w.shown .t33w-full { opacity: 0.95; }
+.t33w.shown .t33w-glow { opacity: 0; }
+/* the agent's eye: a cold even band across the whole sheet */
+.t33w-sweep {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  z-index: 2;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, #bcd6ff 55%, transparent) 45%, color-mix(in srgb, #e8f2ff 70%, transparent) 50%, color-mix(in srgb, #bcd6ff 55%, transparent) 55%, transparent);
+  transform: translateX(-110%);
+  opacity: 0;
+  pointer-events: none;
+}
+.t33w.swept .t33w-sweep { animation: t33w-sweep 1.5s var(--ease-soft) both; }
+@keyframes t33w-sweep {
+  0% { transform: translateX(-110%); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateX(310%); opacity: 0; }
+}
+/* the seal: "a made-up letter" stamped in vermilion */
+.t33w-seal {
+  position: absolute !important;
+  right: 6%;
+  bottom: 5%;
+  margin: 0;
+  max-width: 9em;
+  padding: 3px 6px;
+  border: 1.6px solid var(--vermilion);
+  border-radius: 2px;
+  color: var(--vermilion);
+  font: 600 0.62rem/1.25 var(--sans);
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  transform: rotate(-5deg);
+  opacity: 0.85;
+}
+
+/* the lantern on the step; held, it rides behind the paper */
+.t33w-lamp {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: 64px;
+  height: 102px;
+  margin: -102px 0 0 -32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.6s var(--ease);
+}
+.t33w.held .t33w-lamp { z-index: 1; cursor: grabbing; transition: none; }
+.t33w.behind .t33w-lamp { z-index: 1; }
+.t33w.behind .t33w-sheet { --R: calc(var(--lw) * 0.38); }
+.t33w.behind .t33w-pool, .t33w.behind .t33w-refl { opacity: 0; }
+.t33w-lamp .t33-lan { position: relative; width: 100%; height: 100%; }
+.t33w-lamp:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; border-radius: 10px; }
+.t33w-pool {
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  width: 220px;
+  height: 56px;
+  margin-left: -110px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 50%, transparent), transparent);
+  transition: opacity 0.4s;
+}
+.t33w.held .t33w-pool, .t33w.held .t33w-refl { opacity: 0; }
+/* the lantern's light lying on the wet stone, a warm streak toward the viewer */
+.t33w-refl {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 26px;
+  height: 90px;
+  margin-left: -13px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 70%, #fff), color-mix(in srgb, var(--lantern) 30%, transparent) 55%, transparent);
+  opacity: 0.75;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.t33w-say { position: absolute; left: 8%; right: 8%; top: 3%; z-index: 3; margin: 0; text-align: center; font: 400 1.02rem/1.45 var(--serif); }
+.t33w-say p { margin: 0; }
+.t33w.low .t33w-letter, .t33w.low .t33w-shadow, .t33w.low .t33w-lamp { transition: none; }
+@media (max-width: 640px) {
+  .t33w-letter { bottom: 20%; }
+  .t33w.up .t33w-letter { transform: translateY(-12%) scale(1.04) rotateX(8deg) rotateY(-9deg) rotateZ(-0.8deg); }
+  .t33w-line { font-size: 0.98rem; }
+  .t33w-hidden { font-size: 0.92rem; }
+  .t33w-lamp { width: 52px; height: 84px; margin: -84px 0 0 -26px; }
+  .t33w-say { left: 22%; right: 4%; top: 2%; font-size: 0.95rem; }
+}

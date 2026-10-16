@@ -17,7 +17,7 @@
   "scenes": {
     "market": {
       "label": "Chợ đêm dưới trăng",
-      "art": "Tranh mực: phiên chợ đêm bên bờ hồ, hai dãy sạp gỗ dưới đèn lồng giấy. Một sạp lớn treo chùm đèn nhiều sắc mực (nhiều model một chỗ); mấy sạp nhỏ chỉ treo một ngọn, bày đúng một món. Trăng tròn soi lối đá giữa hai dãy; người xem cầm những tờ giấy ghi việc, thả vào sạp.",
+      "art": "Tranh mực nhìn từ một con thuyền nhỏ giữa hồ đêm: mũi thuyền có ngọn đèn, ngoài mặt nước ba sạp chợ đứng trên cột ở ba độ xa. Sạp gom gần nhất treo cụm bảy đèn giấy nhiều sắc mực, bóng nước thành một dải bảy màu; hai sạp chuyên mỗi sạp một đèn lớn, bóng nước một vệt hổ phách. Tên và việc của mỗi sạp viết trên rèm vải. Bốn đèn hoa đăng trôi cạnh thuyền, mỗi đèn mang một việc cần làm.",
       "prompt": "Thả việc vào đúng sạp",
       "group": "Các sạp trong chợ",
       "taskGroup": "Việc cần làm",
@@ -48,29 +48,35 @@
         {
           "id": "photo4k",
           "text": "Ảnh sản phẩm 4K",
+          "short": "Ảnh 4K",
           "fits": ["image", "hub"],
           "why": "Phóng nét (upscale) là việc chính của sạp ảnh; sạp gom cũng có công cụ ảnh."
         },
         {
           "id": "review",
           "text": "Video review có người mẫu ảo",
+          "short": "Video review",
           "fits": ["sales", "hub"],
           "why": "Cả hai đều có người dẫn ảo đứng cạnh sản phẩm. Nhớ gắn nhãn AI."
         },
         {
           "id": "film",
           "text": "Phim ngắn có góc máy",
+          "short": "Phim ngắn",
           "fits": ["hub"],
           "why": "Cần chỉnh chuyển động máy quay từng cảnh và thử nhiều model video."
         },
         {
           "id": "link",
           "text": "Dán link shop thành quảng cáo",
+          "short": "Link shop",
           "fits": ["sales", "hub"],
           "why": "Cả hai sạp đều tự giới thiệu tính năng đi từ link sản phẩm tới video."
         }
       ],
       "dropAria": "Thả “{task}” vào {stall}",
+      "lanternAria": "Đèn hoa đăng: {task}",
+      "keys": "Chọn một đèn hoa đăng, dùng mũi tên trái phải để chọn sạp, Enter để thả. Hoặc kéo đèn qua mặt nước.",
       "right": "Hợp sạp này.",
       "also": "Cũng hợp: {stalls}",
       "wrong": "Sạp này không chuyên việc đó — thử sạp khác.",
@@ -115,7 +121,7 @@
     },
     "path": {
       "label": "Đường đi của một asset",
-      "art": "Tranh mực: lối đá cuội vắt qua khu vườn đêm, từ cổng xưởng tới bờ hồ nơi đèn đá tōrō sáng. Tám viên đá nằm lẫn trong cát cào; người xem nhặt từng viên đặt lên lối, đặt đúng thì viên đá ánh lên như được trăng chiếu.",
+      "art": "Tranh mực nhìn từ trên cao sau cổng xưởng: vườn cát cào uốn quanh hai tảng đá rêu, tám hốc nông nối thành lối chữ S chạy xa dần về bờ hồ, nơi một ngọn đèn đá chờ thắp. Tám viên đá bước nằm rải trên cát gần; đặt đúng thứ tự thì lối sáng dần, cuối cùng đèn thắp và bóng đèn hiện trên mặt hồ.",
       "prompt": "Xếp đá theo thứ tự",
       "pathAria": "Lối đá tám bước làm một asset AI",
       "stoneAria": "Viên đá: {label}",
@@ -178,9 +184,10 @@
     },
     "credit": {
       "label": "Credit là nước trong bình",
-      "art": "Tranh mực: một bình gốm men rạn đặt trên bàn thợ, ánh trăng rót qua cửa sổ vào miệng bình. Mỗi lần bấm tạo, một gáo nước múc ra; gáo to nhỏ tuỳ model, độ phân giải, độ dài. Mực nước hạ dần, vạch khắc trên thân bình hiện rõ.",
+      "art": "Tranh tĩnh vật trong xưởng đêm: một bình nguyệt men rạn trên ghế ván, một phần tư thân bình cắt mở như hiện vật bảo tàng để thấy cột nước bên trong và các vạch khắc. Tia trăng từ ô cửa giấy rót vào miệng bình. Trước bình là giá tre với gáo nhỏ và muôi lớn, hai vòng cổ hẹp và rộng, hai đồng hồ cát, một chén trà; thẻ gỗ treo dưới ghế để chọn. Mỗi lần tạo, gáo múc nước ra rót vào chén; mực nước hạ dần.",
       "prompt": "Múc thử một gáo",
       "jarAria": "Bình credit, còn {n} phần trên 100",
+      "look": "Nhìn xuống cổ bình",
       "modelLabel": "Model",
       "models": ["Model nhẹ", "Model nặng"],
       "resLabel": "Độ phân giải",
@@ -190,6 +197,7 @@
       "generate": "Tạo",
       "refill": "Đổ đầy lại",
       "cost": "Lượt này tốn {n} phần",
+      "costShort": "{n} phần",
       "empty": "Bình cạn. Hết credit thì phải chờ kỳ sau hoặc mua thêm.",
       "scale": {
         "text": "Số phần nước chỉ để minh hoạ tỉ lệ, không phải giá thật của nền tảng nào.",
@@ -229,10 +237,11 @@
     },
     "real": {
       "label": "Thật và giả",
-      "art": "Tranh mực: mặt hồ đêm phẳng như gương, in bóng một người mẫu đứng trên cầu gỗ — nhưng bóng dưới nước là một avatar vẽ bằng nét mực khác. Bốn hòn đá quanh hồ, mỗi hòn một ngọn đèn nhỏ chờ được thắp.",
+      "art": "Tranh mực nhìn chéo từ bờ hồ đêm: cây cầu cong vắt qua mặt nước, cầu và bóng của nó khép thành một vòng tròn. Trên đỉnh cầu một người mẫu quàng khăn son, trăng sau lưng trong sương. Bóng cô dưới nước là một avatar đa giác vẽ bằng nét mảnh thẳng. Bốn hòn đá bờ, mỗi hòn một ngọn đèn nhỏ chờ thắp.",
       "prompt": "Chạm từng hòn đá",
       "group": "Bốn góc nhìn về người mẫu ảo",
       "stoneAria": "Góc nhìn: {who}",
+      "waterAria": "Mặt hồ: vuốt ngón tay hoặc nhấn phím cách để gợn sóng",
       "perspectives": {
         "stones": [
           {

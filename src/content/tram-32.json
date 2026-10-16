@@ -21,7 +21,7 @@
   "scenes": {
     "scale": {
       "label": "Cán cân",
-      "art": "Một chiếc cân đòn treo trên cành thông già. Đĩa trái là ngọn đèn dầu trong căn nhà nhỏ của bạn; đĩa phải là đám mây bạc che nửa vầng trăng. Người xem đặt từng quả cân đá lên đĩa nào, cán cân nghiêng về phía ấy.",
+      "art": "Nhìn từ sát mặt nước lên: một cành thông già vắt ngang vầng trăng lớn, treo một chiếc cân đòn có đòn cân cắt ngang đĩa trăng. Đĩa trái là căn nhà nhỏ có ngọn đèn dầu sáng; đĩa phải là đám mây bạc che nửa vầng trăng nhỏ. Sáu quả cân đá khắc chữ nằm nửa chìm dưới nước nông; nhấc từng quả đặt lên một đĩa, đòn cân nghiêng rồi chao, một thẻ giấy ghi lý do treo dưới đĩa, mặt nước soi ngược cả chiếc cân.",
       "prompt": "Đặt quả cân lên đĩa",
       "aria": "Cán cân: chạy AI trên máy mình hay trên mây. Đặt từng quả cân về phía nó nghiêng",
       "sides": [
@@ -75,6 +75,7 @@
         }
       ],
       "weightAria": "Đặt quả cân “{label}” lên đĩa {side}",
+      "stonesLabel": "Sáu quả cân đá dưới nước: kéo một quả lên đĩa cân, hoặc chọn rồi dùng ← → và Enter",
       "right": "Đúng phía.",
       "wrong": "Quả cân này nghiêng về phía bên kia.",
       "insight": {
@@ -90,7 +91,7 @@
     },
     "table": {
       "label": "Model vừa cái bàn",
-      "art": "Một chiếc bàn trà thấp kê dưới khung cửa tròn đón trăng; mặt bàn là RAM của máy bạn. Người xem đặt lên bàn những bó cuộn giấy to nhỏ — mỗi bó một model; bó quá to tràn khỏi mép bàn, cuộn giấy lăn xuống chiếu.",
+      "art": "Một căn phòng trải chiếu tatami trong đêm. Sau chiếc bàn trà dài, thấp là ô cửa tròn có cành thông và trăng; ánh trăng rọi một elip sáng lên mặt bàn — chỗ còn trống. Chiều dài bàn là RAM của máy bạn; một phần tư bên phải luôn dành cho bộ ấm chén (hệ điều hành, app, ngữ cảnh). Trên kệ tường là năm bó cuộn giấy buộc dây, mỗi bó một model. Đặt một bó lên bàn: vừa thì quanh nó vẫn còn ánh trăng, chật thì che hết ánh trăng và đẩy bộ ấm chén, quá to thì cuộn giấy lăn khỏi mép bàn ra chiếu. Kéo tấm ván cuối bàn để đổi RAM; vặn chiếc máy ép gỗ để nén model xuống bản 4-bit.",
       "prompt": "Đặt model lên bàn",
       "aria": "Mô phỏng: đặt model lên mặt bàn RAM để xem vừa hay tràn",
       "ramLabel": "RAM máy bạn",
@@ -102,6 +103,7 @@
       ],
       "ramText": "{n} GB",
       "bitsLabel": "Bản model",
+      "pressAria": "Máy ép: nén model xuống bản 4-bit (Q4)",
       "bits": [
         {
           "id": "b16",
@@ -160,6 +162,7 @@
       },
       "sizeText": "≈ {gb} GB",
       "modelAria": "Đặt model {label} ({gb} GB) lên bàn {ram} GB",
+      "modelsLabel": "Kệ cuộn giấy: mỗi bó là một model, kéo hoặc chạm để đặt lên bàn",
       "rule": {
         "text": "Quy tắc ngón tay cái của AI Zen: file model nên chiếm dưới khoảng một nửa RAM; phần còn lại cho hệ điều hành, app và ngữ cảnh.",
         "asOf": "2026-10-15",
@@ -182,10 +185,12 @@
     },
     "lamps": {
       "label": "Ba ngọn đèn",
-      "art": "Ba ngọn đèn trên kệ gỗ trong căn phòng tối: một đèn lồng giấy có nắp mở sẵn, một đèn dầu phải tự tay khêu bấc, và một ngọn lửa trần trong chụp kính — chính ngọn lửa cháy bên trong nhiều chiếc đèn khác.",
+      "art": "Một căn phòng tối, một kệ gỗ dài chạy từ gần ra xa. Gần nhất là chiếc đèn lồng giấy có nan (LM Studio), qua lớp giấy mờ thấy cây nến và sợi bấc; giữa kệ là đèn dầu có núm đồng khêu bấc (Ollama); cuối kệ là ngọn lửa trần trong ống kính (llama.cpp) — lúc đầu là nguồn sáng duy nhất — đứng cạnh hũ dầu gốm niêm ấn GGUF. Mang lửa từ ngọn xa tới các đèn gần: ánh sáng và bóng đổ trên vách nan tre đi theo tay. Đủ ba đèn, những sợi dầu vàng nối hũ GGUF với cả ba ngọn.",
       "prompt": "Chạm từng ngọn đèn",
       "aria": "Ba công cụ chạy AI trên máy: LM Studio, Ollama, llama.cpp",
       "lampAria": "Thắp đèn {name}",
+      "wickAria": "Núm đồng khêu bấc đèn dầu Ollama",
+      "wickHint": "Bấc còn thấp nên lửa không bắt — vặn núm đồng khêu bấc lên rồi mang lửa tới lần nữa.",
       "docLabel": "Tài liệu chính thức",
       "changeNote": "Giá & tính năng thay đổi thường xuyên — kiểm tra trang chính thức.",
       "lamps": [
@@ -262,6 +267,7 @@
       },
       "stepsLabel": "Thắp đèn đầu tiên",
       "stepsPrompt": "Xếp bốn bước thắp đèn",
+      "stepsArt": "Một nền đá trống giữa thảm rêu dưới trăng; xa xa trong sương là căn nhà nhỏ của bạn, cửa sổ còn tối. Bốn bộ phận của một ngọn đèn đá nằm quanh đó — đế, thân, lồng đèn, mái — mỗi bộ phận khắc một bước. Đặt đúng thứ tự, ngọn đèn dựng dần lên; đặt mái xong thì lồng đèn thắp sáng và cửa sổ nhà xa cũng sáng.",
       "stepAria": "Đặt bước {n}: {label}",
       "wrongHint": "Chưa tới bước này — ngọn đèn cần thứ tự.",
       "done": "Đèn đã thắp.",
@@ -274,9 +280,11 @@
     },
     "scroll": {
       "label": "Cuộn lệnh",
-      "art": "Một cuộn thư pháp treo trên vách tre, mở dần từ trên xuống dưới ánh đèn dầu. Mỗi dòng mực là một câu lệnh; bên lề có nét chú thích nhỏ như lời thầy đồ dặn học trò.",
+      "art": "Cận cảnh hốc tokonoma: một cuộn thư pháp treo, trục dưới nặng có tua. Ngọn đèn dầu nhỏ dưới sàn rọi ngược lên, bóng cuộn in mờ lên vách phía trên nó; bên cạnh là bình gốm cắm một cành hoa. Kéo trục xuống, giấy mở dần từng đoạn, mỗi đoạn một câu lệnh kèm lời dặn nhỏ bên lề như lời thầy dặn học trò.",
       "prompt": "Mở cuộn lệnh",
       "aria": "Cuộn mã: bốn lệnh Ollama cơ bản, có chú thích bên cạnh",
+      "rodAria": "Trục dưới của cuộn: kéo xuống (hoặc ↓, Enter) để mở từng đoạn",
+      "rodValue": "Đã mở {n}/{total} đoạn",
       "code": {
         "lang": "bash",
         "code": "ollama pull gemma4:e2b\nollama run gemma4:e2b\nollama list\ncurl http://localhost:11434/api/chat -d '{\"model\": \"gemma4:e2b\", \"messages\": [{\"role\": \"user\", \"content\": \"Chào bạn\"}], \"stream\": false}'",
@@ -314,7 +322,7 @@
     },
     "circle": {
       "label": "Bốn hòn đá bên hồ",
-      "art": "Bốn hòn đá ngồi quanh mặt hồ tròn in trăng như bốn người bạn bàn chuyện khuya. Mỗi hòn đá giữ một chiếc đèn nhỏ; chạm vào, đèn sáng và bóng đá in dài trên mặt nước.",
+      "art": "Máy quay lướt sát mặt hồ tròn dưới trăng: hồ thành một elip mảnh, bóng trăng thành con đường dài vỡ ánh chạy về phía bạn. Bốn hòn đá ngồi quanh hồ — hai hòn nhỏ ở bờ xa, hai hòn lớn ở bờ gần — mỗi hòn giữ một ngọn đèn giấy nhỏ. Chạm vào một hòn, đèn thắp và vệt sáng ấm của nó kéo dài trên nước về phía bạn; nghe đủ bốn hòn, các vệt sáng và đường trăng cùng hội về giữa hồ.",
       "prompt": "Nghe từng hòn đá",
       "aria": "Vòng đá góc nhìn: người làm sáng tạo, marketing nên chạy AI trên máy hay trên mây?",
       "perspectives": {

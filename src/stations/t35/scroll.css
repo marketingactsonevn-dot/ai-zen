@@ -1,0 +1,725 @@
+/* t35 scene 2 — the rack of skills on the alcove wall, the hand lantern, the makimono / kakemono. Tokens only. */
+.t35s {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-mask-image: radial-gradient(130% 120% at 50% 45%, #000 64%, transparent 100%);
+  mask-image: radial-gradient(130% 120% at 50% 45%, #000 64%, transparent 100%);
+}
+.t35s-wall,
+.t35s-rail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* ── the boards: warm grey wood at dawn, near black at night; grain, seams, knots */
+.t35s-board.b0 {
+  fill: color-mix(in srgb, var(--wash) 40%, color-mix(in srgb, var(--lantern) 16%, var(--paper)));
+}
+.t35s-board.b1 {
+  fill: color-mix(in srgb, var(--wash) 46%, color-mix(in srgb, var(--lantern) 14%, var(--paper)));
+}
+:root[data-theme='dark'] .t35s-board.b0 {
+  fill: color-mix(in srgb, var(--rock-lo) 62%, color-mix(in srgb, var(--lantern) 6%, #000));
+}
+:root[data-theme='dark'] .t35s-board.b1 {
+  fill: color-mix(in srgb, var(--rock-lo) 52%, color-mix(in srgb, var(--lantern) 5%, #000));
+}
+.t35s-grain {
+  fill: var(--wash);
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t35s-grain {
+  fill: #000;
+  opacity: 0.5;
+}
+.t35s-seam {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 1.4;
+  opacity: 0.45;
+}
+.t35s-knot {
+  fill: var(--wash);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t35s-knot {
+  fill: #000;
+  opacity: 0.55;
+}
+.t35s-ledge-sh {
+  fill: var(--umbra);
+  opacity: 0.25;
+}
+.t35s-sill .t35k-wood-face {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--lantern));
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t35s-sill .t35k-wood-face {
+  fill: color-mix(in srgb, #000 80%, var(--lantern));
+}
+.t35s-sill-top {
+  fill: color-mix(in srgb, var(--lantern) 45%, var(--card));
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t35s-sill-top {
+  fill: var(--lantern);
+  opacity: 0.22;
+}
+
+/* ── the moon window: a thin bamboo frame, the night beyond, a soft dusty shaft across the boards */
+.t35s-sky {
+  fill: color-mix(in srgb, var(--mist) 70%, var(--paper));
+}
+:root[data-theme='dark'] .t35s-sky {
+  fill: color-mix(in srgb, var(--paper) 78%, var(--mist));
+}
+.t35s-bough {
+  opacity: 0.65;
+}
+.t35s-bars {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--lantern));
+  opacity: 0.7;
+}
+.t35s-frame {
+  fill: color-mix(in srgb, var(--wash) 75%, var(--lantern));
+  opacity: 0.85;
+}
+:root[data-theme='dark'] :is(.t35s-frame, .t35s-bars) {
+  fill: color-mix(in srgb, var(--rock-lo) 50%, var(--lantern));
+  opacity: 0.8;
+}
+.t35s-moonrim {
+  fill: var(--moon);
+  opacity: 0.6;
+}
+.t35s-beam {
+  opacity: 0.32;
+  pointer-events: none;
+}
+:root[data-theme='light'] .t35s-beam {
+  opacity: 0.55;
+}
+.t35s-dust {
+  fill: var(--moon);
+  opacity: 0.55;
+}
+:root[data-theme='light'] .t35s-dust {
+  fill: var(--card);
+}
+
+/* ── the lantern's light is the key: dark all round it, a warm pool under it */
+.t35s-dark,
+.t35s-pool {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.t35s-dark {
+  background: radial-gradient(closest-side, transparent 0, transparent 9%, color-mix(in srgb, var(--wash) 24%, transparent) 22%, color-mix(in srgb, var(--wash) 46%, transparent) 40%);
+}
+:root[data-theme='dark'] .t35s-dark {
+  background: radial-gradient(closest-side, transparent 0, transparent 8%, rgba(0, 0, 6, 0.5) 20%, rgba(0, 0, 6, 0.74) 38%);
+}
+.t35s-pool {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 55%, transparent), color-mix(in srgb, var(--lantern) 20%, transparent) 38%, transparent 72%);
+}
+:root[data-theme='dark'] .t35s-pool {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 42%, transparent), color-mix(in srgb, var(--lantern) 12%, transparent) 40%, transparent 70%);
+}
+
+/* ── the rack */
+.t35s-depth {
+  position: absolute;
+  inset: 0;
+}
+.t35s-depth.d1 {
+  opacity: 0.9;
+}
+.t35s-depth.d2 {
+  opacity: 0.74;
+}
+.t35s-shades {
+  position: absolute;
+  inset: 0;
+}
+.t35s-shade {
+  position: absolute;
+  border-radius: 45%;
+  transform-origin: 50% 0;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 55%, transparent), transparent);
+}
+.t35s-shade.d0 {
+  opacity: 0.45;
+  scale: 1.3 1.05;
+}
+.t35s-shade.d1 {
+  opacity: 0.6;
+  scale: 1.15 1;
+}
+.t35s-shade.d2 {
+  opacity: 0.78;
+}
+:root[data-theme='dark'] .t35s-shade {
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.85), transparent);
+}
+.t35s-bamboo .t35k-wood-face {
+  fill: var(--moss-a);
+  opacity: 0.9;
+}
+.t35s-peg {
+  fill: var(--wash);
+  opacity: 0.85;
+}
+.t35s-roll {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-origin: 50% 0;
+  font: inherit;
+  color: inherit;
+}
+.t35s-roll.read {
+  cursor: pointer;
+  z-index: 2;
+}
+.t35s-roll.read:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+.t35s-roll-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t35s-cord {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.55;
+}
+/* each scroll its own silk */
+.t35s-silk {
+  fill: color-mix(in srgb, var(--wash) 72%, var(--moon));
+}
+.silk1 .t35s-silk {
+  fill: color-mix(in srgb, var(--moss-b) 80%, var(--wash));
+}
+.silk2 .t35s-silk {
+  fill: color-mix(in srgb, var(--lantern) 45%, var(--rock-lo));
+}
+.silk3 .t35s-silk {
+  fill: color-mix(in srgb, var(--vermilion) 32%, var(--wash));
+}
+:root[data-theme='dark'] .t35s-silk {
+  fill: color-mix(in srgb, var(--rock-mid) 70%, var(--moon));
+}
+:root[data-theme='dark'] .silk1 .t35s-silk {
+  fill: color-mix(in srgb, var(--moss-c) 70%, var(--rock-lo));
+}
+:root[data-theme='dark'] .silk2 .t35s-silk {
+  fill: color-mix(in srgb, var(--lantern) 34%, var(--rock-lo));
+}
+:root[data-theme='dark'] .silk3 .t35s-silk {
+  fill: color-mix(in srgb, var(--vermilion) 30%, var(--rock-lo));
+}
+.t35s-paper {
+  fill: color-mix(in srgb, var(--lantern) 10%, var(--card));
+}
+:root[data-theme='dark'] .t35s-paper {
+  fill: color-mix(in srgb, var(--moon) 55%, var(--rock-mid));
+}
+.t35s-rod {
+  fill: var(--wash);
+  opacity: 0.8;
+}
+.t35s-knob {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--lantern));
+}
+.knob1 .t35s-knob {
+  fill: color-mix(in srgb, var(--moon) 70%, var(--card));
+}
+.knob2 .t35s-knob {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t35s-knob {
+  fill: color-mix(in srgb, var(--rock-mid) 60%, var(--lantern));
+}
+:root[data-theme='dark'] .knob1 .t35s-knob {
+  fill: color-mix(in srgb, var(--moon) 75%, var(--rock-mid));
+}
+:root[data-theme='dark'] .knob2 .t35s-knob {
+  fill: #000;
+}
+.t35s-cordred {
+  fill: var(--vermilion);
+}
+.t35s-tag {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  display: block;
+  margin-top: -2px;
+  transform-origin: 50% 0;
+  transform: translateX(-30%) rotate(3deg);
+  transition: opacity 0.3s;
+}
+.t35s-scrib {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t35s-tagpaper {
+  fill: color-mix(in srgb, var(--lantern) 12%, var(--card));
+}
+:root[data-theme='dark'] .t35s-tagpaper {
+  fill: color-mix(in srgb, var(--moon) 45%, var(--rock-mid));
+}
+.t35s-scribble {
+  fill: var(--wash);
+  opacity: 0.6;
+}
+/* the readable tag: a paper strip on a string, the file name on one line, the description in serif */
+.t35s-tag.read {
+  margin-top: 14px;
+  padding: 0.6em 0.8em 0.7em;
+  text-align: left;
+  transform: rotate(1.5deg);
+}
+.t35s-tag.read::before {
+  content: '';
+  position: absolute;
+  left: var(--string, 30%);
+  bottom: 100%;
+  height: 16px;
+  border-left: 1px solid color-mix(in srgb, var(--ink) 45%, transparent);
+}
+.t35s-roll.lit .t35s-tag.read {
+  animation: t35s-sway 2.8s var(--ease-soft);
+}
+@keyframes t35s-sway {
+  30% {
+    transform: rotate(4deg);
+  }
+  60% {
+    transform: rotate(-0.5deg);
+  }
+}
+.t35s-file {
+  display: block;
+  margin-bottom: 0.3em;
+  font: 600 13px/1.35 ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  color: var(--ink);
+}
+.t35s-file span {
+  white-space: nowrap;
+}
+.t35s-desc {
+  display: block;
+  font: 400 14px/1.45 var(--serif);
+  color: var(--ink-2);
+}
+
+/* ── the hand lantern */
+.t35s-lamp {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  cursor: grab;
+  touch-action: none;
+  transition: opacity 0.9s var(--ease-soft);
+}
+.t35s-lamp:focus-visible {
+  outline: none;
+}
+.t35s-lamp:focus-visible .t35s-lamp-art {
+  filter: drop-shadow(0 0 6px var(--vermilion));
+}
+.t35s-lamp-art {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ── slips on the ledge */
+.t35s-ledge {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  pointer-events: none;
+}
+.t35s-slip {
+  padding: 0.6em 0.8em 0.65em;
+  font: 400 14px/1.45 var(--serif);
+  pointer-events: auto;
+  animation: p2-fade 1s var(--ease-soft) both;
+}
+.t35s-slip:nth-child(odd) {
+  transform: rotate(-1.2deg);
+}
+.t35s-slip:nth-child(even) {
+  transform: rotate(0.8deg) translateX(10px);
+}
+.t35s-slip p {
+  margin: 0;
+}
+.t35s.is-open .t35s-slip {
+  animation-delay: 1.3s;
+}
+
+/* ── open: the rack steps back into the dark, the makimono unrolls along the lower wall */
+.t35s-depth,
+.t35s-rail,
+.t35s-shades {
+  transition: opacity 0.9s var(--ease-soft);
+}
+.t35s.is-open :is(.t35s-depth, .t35s-rail, .t35s-shades) {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.t35s.port.is-open :is(.t35s-depth, .t35s-rail, .t35s-shades, .t35s-lamp, .t35s-pool) {
+  opacity: 0;
+  pointer-events: none;
+}
+.t35s-maki {
+  position: absolute;
+}
+/* washi stays paper at night: ivory dimmed under the lamp, ink stays dark */
+:root[data-theme='dark'] .t35s-maki {
+  --card: color-mix(in srgb, var(--moon) 74%, #39405a);
+  --ink: #141a30;
+  --ink-2: #2b3350;
+  --ink-3: #4d5573;
+  --line: rgba(20, 26, 48, 0.18);
+  --line-2: rgba(20, 26, 48, 0.3);
+  --vermilion: #b8432c;
+  --moss: #3d5f55;
+}
+.t35s-maki[hidden] {
+  display: none;
+}
+.t35s-mid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 20px;
+  overflow: hidden;
+  filter: drop-shadow(0 16px 18px color-mix(in srgb, var(--umbra) 50%, transparent));
+}
+.t35s-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+.t35s-inner .p2x {
+  flex: 1;
+  max-height: 100%;
+}
+.t35s-inner .p2x-rod,
+.t35s-inner .p2-eyebrow {
+  display: none;
+}
+.t35s-inner .p2x-paper {
+  flex: 1;
+  margin: 0;
+  border: 0;
+  /* washi, and the silk mounting along the top and bottom of a makimono */
+  border-top: 11px solid color-mix(in srgb, var(--lantern) 26%, var(--wash));
+  border-bottom: 11px solid color-mix(in srgb, var(--lantern) 26%, var(--wash));
+  padding: 12px clamp(14px, 3%, 28px) 10px 104px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .45 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 7%, var(--card)), var(--card));
+}
+:root[data-theme='dark'] .t35s-inner .p2x-paper {
+  border-color: color-mix(in srgb, var(--lantern) 22%, var(--rock-lo));
+}
+.t35s-inner .p2x-head {
+  padding-bottom: 6px;
+}
+.t35s-inner .p2x-file {
+  font: 500 15px/1.3 var(--serif);
+  color: var(--ink);
+}
+.t35s-inner .p2x-blocks {
+  scrollbar-width: thin;
+}
+.t35s-inner .p2x-code {
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+/* the notes are written in vermilion in the margin, not boxed */
+.t35s-inner .p2x-note {
+  padding-left: 0;
+  font: 400 14px/1.45 var(--serif);
+  color: var(--vermilion);
+}
+.t35s-inner .p2x-note::before {
+  display: none;
+}
+.t35s-inner .p2x-at {
+  font: 400 12px/1.3 var(--serif);
+  letter-spacing: 0;
+  color: var(--vermilion);
+  opacity: 0.75;
+}
+/* the turn of the paper toward the rolled bulk, and the bulk itself riding the end of the sweep */
+.t35s-curl {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 46px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--umbra) 42%, transparent), color-mix(in srgb, var(--umbra) 10%, transparent) 50%, transparent);
+  pointer-events: none;
+}
+.t35s-bulk,
+.t35s-axis {
+  position: absolute;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--umbra), color-mix(in srgb, var(--lantern) 30%, var(--rock-mid)) 42%, color-mix(in srgb, var(--moon) 30%, var(--rock-mid)) 52%, var(--umbra));
+  box-shadow: 0 10px 14px -8px var(--umbra);
+}
+.t35s-bulk {
+  left: 0;
+  top: -4px;
+  bottom: -4px;
+  width: 26px;
+  /* the rolled bulk: paper wound on its rod */
+  background: linear-gradient(90deg, color-mix(in srgb, var(--umbra) 70%, var(--card)), var(--card) 40%, color-mix(in srgb, var(--card) 70%, var(--lantern)) 55%, color-mix(in srgb, var(--umbra) 60%, var(--card)));
+}
+:root[data-theme='dark'] .t35s-bulk {
+  background: linear-gradient(90deg, #000, color-mix(in srgb, var(--card) 70%, var(--moon)) 40%, var(--card) 60%, #000);
+}
+.t35s-axis {
+  right: 4px;
+  top: -14px;
+  bottom: -14px;
+  width: 18px;
+}
+.t35s-knob {
+  position: absolute;
+  left: 50%;
+  width: 22px;
+  height: 12px;
+  margin-left: -11px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--wash) 80%, var(--lantern));
+}
+.t35s-knob.a {
+  top: -8px;
+}
+.t35s-knob.b {
+  bottom: -8px;
+}
+:root[data-theme='dark'] .t35s-knob {
+  background: color-mix(in srgb, #000 70%, var(--lantern));
+}
+/* the copy seal at the tail */
+.t35s-seal {
+  position: absolute;
+  left: 38px;
+  bottom: 26px;
+}
+.t35s-seal .p2x-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--vermilion);
+  font: 400 12px/1.2 var(--serif);
+  cursor: pointer;
+}
+.t35s-seal .p2x-copy svg {
+  display: none;
+}
+.t35s-seal .p2x-copy::before {
+  content: '';
+  width: 30px;
+  height: 30px;
+  border-radius: 3px;
+  background:
+    linear-gradient(var(--vermilion), var(--vermilion)) 50% 30% / 14px 2.5px no-repeat,
+    linear-gradient(var(--vermilion), var(--vermilion)) 50% 70% / 16px 2.5px no-repeat,
+    linear-gradient(var(--vermilion), var(--vermilion)) 50% 50% / 2.5px 10px no-repeat,
+    radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--vermilion) 18%, var(--card)), color-mix(in srgb, var(--vermilion) 8%, var(--card)));
+  box-shadow: inset 0 0 0 2.5px var(--vermilion);
+  opacity: 0.9;
+  transform: rotate(-4deg);
+}
+.t35s-seal .p2x-copy.done::before {
+  background: radial-gradient(circle at 40% 35%, var(--lantern), var(--vermilion) 62%);
+  box-shadow: inset 0 0 0 2.5px color-mix(in srgb, var(--card) 80%, transparent);
+}
+.t35s-seal .p2x-copy:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+/* the cloth pouch of attached files hangs from the axis */
+.t35s-pouch {
+  position: absolute;
+  right: -6px;
+  top: calc(100% + 8px);
+  width: 38px;
+  height: 50px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform-origin: 50% 0;
+  animation: t35s-pouch 3s 1.6s var(--ease-soft) both;
+}
+.t35s-pouch svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t35s-pouch-cord {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  opacity: 0.6;
+}
+.t35s-pouch-body {
+  fill: color-mix(in srgb, var(--moss-b) 75%, var(--wash));
+}
+:root[data-theme='dark'] .t35s-pouch-body {
+  fill: color-mix(in srgb, var(--moss-c) 85%, var(--moon));
+}
+.t35s-pouch:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+@keyframes t35s-pouch {
+  0% {
+    opacity: 0;
+    transform: rotate(14deg);
+  }
+  40% {
+    opacity: 1;
+    transform: rotate(-6deg);
+  }
+  70% {
+    transform: rotate(2deg);
+  }
+}
+.t35s-pouch-slip {
+  position: absolute;
+  z-index: 3;
+  padding: 0.45em 0.8em;
+  font: 400 13px/1.4 ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  transform: rotate(-1deg);
+  animation: t35s-drop 0.7s var(--ease) both;
+}
+.t35s-pouch-slip[hidden] {
+  display: none;
+}
+@keyframes t35s-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) rotate(6deg);
+  }
+}
+
+/* ── a phone: the scroll hangs and unrolls downward as a kakemono */
+.t35s-maki.v .t35s-mid {
+  top: 18px;
+  right: 0;
+}
+.t35s-maki.v .t35s-inner .p2x-paper {
+  border: 0;
+  border-left: 9px solid color-mix(in srgb, var(--lantern) 26%, var(--wash));
+  border-right: 9px solid color-mix(in srgb, var(--lantern) 26%, var(--wash));
+  padding: 12px 12px 54px 14px;
+}
+:root[data-theme='dark'] .t35s-maki.v .t35s-inner .p2x-paper {
+  border-color: color-mix(in srgb, var(--lantern) 22%, var(--rock-lo));
+}
+.t35s-maki.v .t35s-curl {
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: 40px;
+  background: linear-gradient(0deg, color-mix(in srgb, var(--umbra) 42%, transparent), color-mix(in srgb, var(--umbra) 10%, transparent) 50%, transparent);
+}
+.t35s-maki.v .t35s-bulk {
+  left: -8px;
+  right: -8px;
+  top: auto;
+  bottom: -6px;
+  width: auto;
+  height: 22px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--umbra) 70%, var(--card)), var(--card) 40%, color-mix(in srgb, var(--card) 70%, var(--lantern)) 55%, color-mix(in srgb, var(--umbra) 60%, var(--card)));
+}
+:root[data-theme='dark'] .t35s-maki.v .t35s-bulk {
+  background: linear-gradient(180deg, #000, color-mix(in srgb, var(--card) 70%, var(--moon)) 40%, var(--card) 60%, #000);
+}
+.t35s-maki.v .t35s-axis {
+  left: -12px;
+  right: -12px;
+  top: 2px;
+  bottom: auto;
+  width: auto;
+  height: 16px;
+  background: linear-gradient(180deg, var(--umbra), color-mix(in srgb, var(--lantern) 30%, var(--rock-mid)) 42%, color-mix(in srgb, var(--moon) 30%, var(--rock-mid)) 52%, var(--umbra));
+}
+.t35s-maki.v .t35s-knob {
+  top: 50%;
+  left: auto;
+  width: 12px;
+  height: 20px;
+  margin: -10px 0 0;
+}
+.t35s-maki.v .t35s-knob.a {
+  left: -8px;
+}
+.t35s-maki.v .t35s-knob.b {
+  right: -8px;
+  bottom: auto;
+}
+.t35s-ledge .t35s-pouch-slip {
+  position: relative;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.t35s-maki.v .t35s-seal {
+  left: auto;
+  right: 14px;
+  bottom: 22px;
+  flex-direction: row;
+}
+.t35s-maki.v .t35s-pouch {
+  top: 14px;
+  right: -26px;
+}
+.t35s.still .t35s-pouch,
+.t35s.still .t35s-slip,
+.t35s.still .t35s-tag,
+.t35s.still .t35s-pouch-slip {
+  animation: none;
+}

@@ -1,14 +1,300 @@
 /* Trạm 19 — Đỉnh núi 2026: fenced summit · stele under the eaves (+ news steles, perspective circle, tide from ui/part2) */
-.t19-order {
-  margin-right: auto;
+
+/* ── ★ peaks (3D): DOM riding over the inkStage ───────────────────── */
+.t19p {
+  position: absolute;
+  inset: 0;
 }
-.t19-others {
-  max-width: 40rem;
-  margin: 0 auto;
-  font: 400 italic 0.86rem/1.45 var(--serif);
-  color: var(--ink-3);
+/* the ridge in front is cut by the frame: only a short fade at the bottom and the left (the pine's trunk), the usual one right */
+.t19p .p2s3 .stage-canvas {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 92%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 3%, #000 92%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+}
+.t19p-head {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: clamp(8px, 3vh, 28px);
+  translate: -50% 0;
+  width: min(30rem, 44%);
   text-align: center;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+.t19p-head .p2-eyebrow {
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
+}
+.t19p.reading .t19p-head {
+  opacity: 0;
+}
+.t19p-others {
+  margin: 6px 0 0;
+  font: 400 0.84rem/1.45 var(--serif);
+  color: var(--ink-2);
   text-wrap: pretty;
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 3px var(--paper);
+}
+.t19p.tall .t19p-head {
+  width: calc(100% - 32px);
+  bottom: 6px;
+}
+.t19p-rub .t19p-others {
+  margin-top: 12px;
+  color: inherit;
+  opacity: 0.8;
+  text-shadow: none;
+  font-size: 0.8rem;
+}
+/* a stele's name and date, hung just under its slab; the full title only on hover / focus */
+.t19p-tag.p2s3-label {
+  translate: 0 100%;
+  white-space: normal;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  transition: opacity 0.6s ease;
+}
+.t19p-tag-name {
+  font: 500 0.95rem/1.25 var(--serif);
+  color: var(--ink);
+}
+.t19p-tag-date {
+  font: 500 0.75rem/1.3 var(--sans);
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+.t19p-tag-title {
+  max-width: 13em;
+  margin-top: 3px;
+  font: 400 0.875rem/1.3 var(--serif);
+  color: var(--ink);
+  text-wrap: balance;
+  opacity: 0;
+  translate: 0 -4px;
+  transition: opacity 0.3s ease, translate 0.3s ease;
+}
+.t19p-tag.hot .t19p-tag-title {
+  opacity: 1;
+  translate: none;
+}
+.t19p.tall .t19p-tag-date {
+  font: 500 0.875rem/1.2 var(--sans);
+  color: var(--ink);
+}
+.t19p-tag.sunk {
+  visibility: hidden !important;
+}
+.t19p.reading .t19p-tag {
+  opacity: 0.2 !important;
+}
+.t19p-order {
+  font: 400 0.875rem/1.3 var(--serif);
+  color: var(--ink-2);
+  transition: opacity 0.5s ease;
+}
+.t19p.reading .t19p-order,
+.t19p.only .t19p-order {
+  opacity: 0 !important;
+}
+/* "verified only": written on the rock beside the lantern's foot, no box; lit = the lantern brightens, a warm pool on the stone */
+.t19p-lamp.p2s3-label {
+  translate: -50% 60%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 9em;
+  white-space: normal;
+  text-align: right;
+  font: 400 0.9rem/1.25 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper), 0 0 2px var(--paper);
+}
+.t19p-lamp.p2s3-label::after {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lantern);
+  opacity: 0.35;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--wash) 40%, transparent);
+  transition: opacity 0.4s ease, box-shadow 0.4s ease;
+}
+.t19p-lamp.on::after {
+  opacity: 1;
+  box-shadow: 0 0 10px 3px color-mix(in srgb, var(--lantern) 70%, transparent);
+}
+.t19p.tall .t19p-lamp.p2s3-label {
+  font-size: 0.875rem;
+  max-width: 10em;
+}
+.t19p-none {
+  font: 400 1.05rem/1.35 var(--serif);
+  color: var(--ink);
+  white-space: normal;
+  max-width: 18em;
+  text-align: center;
+  text-wrap: balance;
+}
+.t19p-none:not(.on) {
+  visibility: hidden !important;
+}
+/* the rubbing of the stele's back: pale xuan paper, pale ink, torn edges, a red seal; hung beside its stele */
+.t19p-rub,
+.t19p-rub.p2s3-label {
+  width: min(340px, 36vw);
+  white-space: normal;
+  text-shadow: none;
+  font: inherit;
+  color: var(--ink-2);
+  pointer-events: auto;
+  cursor: auto;
+  filter: drop-shadow(0 12px 16px color-mix(in srgb, var(--umbra) 22%, transparent));
+}
+.t19p-rub.p2s3-label {
+  translate: calc(50% + 34px) calc(100% - 130px);
+}
+.t19p-rub.p2s3-label.side-l {
+  translate: calc(-50% - 34px) calc(100% - 130px);
+}
+.t19p-rub-sheet {
+  position: relative;
+  max-height: min(62vh, 470px);
+  overflow: auto;
+  padding: 20px 22px 26px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .7' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .48 0 0 0 0 .58 0 0 0 .32 -.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(130% 80% at 20% 10%, transparent 55%, color-mix(in srgb, var(--wash) 7%, transparent)),
+    color-mix(in srgb, var(--card) 85%, var(--mist));
+  scrollbar-width: thin;
+}
+:root[data-theme='dark'] .t19p-rub-sheet {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .7' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .8 0 0 0 0 .82 0 0 0 0 .9 0 0 0 .22 -.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    color-mix(in srgb, var(--card) 78%, var(--mist));
+}
+.t19p-rub.in {
+  animation: t19-unroll 0.7s cubic-bezier(0.3, 0.7, 0.2, 1) 0.45s both;
+}
+@keyframes t19-unroll {
+  from {
+    opacity: 0;
+    scale: 1 0.92;
+  }
+}
+.t19p-rub .p2-eyebrow {
+  margin-top: 10px;
+  color: var(--ink-3);
+}
+.t19p-rub-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font: 500 0.78rem/1.3 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+.t19p-rub-mark {
+  width: 11px;
+  height: 11px;
+}
+.t19p-rub-title {
+  margin: 4px 26px 2px 0;
+  font: 600 1.08rem/1.3 var(--serif);
+  color: var(--ink);
+  text-wrap: balance;
+}
+.t19p-rub-what,
+.t19p-rub-why {
+  margin: 3px 0 0;
+  font: 400 0.93rem/1.5 var(--serif);
+}
+.t19p-rub-meta,
+.t19p-rub-old {
+  margin: 12px 0 0;
+  font: 400 0.78rem/1.4 var(--sans);
+  color: var(--ink-3);
+}
+.t19p-rub-old {
+  margin-top: 4px;
+}
+/* the seal pressed in a corner */
+.t19p-rub-seal {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--vermilion);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--vermilion) 55%, var(--card)), inset 0 0 0 4px var(--vermilion), inset 0 0 0 5px color-mix(in srgb, var(--vermilion) 55%, var(--card));
+  rotate: -6deg;
+  opacity: 0.85;
+}
+/* closing is Esc or a tap on the sky; this is only a small mark in the corner */
+.t19p-rub-back {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+.t19p-rub-back::before,
+.t19p-rub-back::after {
+  content: '';
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  top: 12px;
+  height: 1.6px;
+  border-radius: 1px;
+  background: currentColor;
+  rotate: 45deg;
+}
+.t19p-rub-back::after {
+  rotate: -45deg;
+}
+.t19p-rub-back:hover {
+  color: var(--ink);
+}
+.t19p-rub-back:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 1px;
+}
+/* tall: the rubbing slides up from the foot band, under half the frame, the stele still in sight above it */
+.t19p.tall .t19p-rub {
+  position: absolute;
+  z-index: 3;
+  left: 10px;
+  right: 10px;
+  bottom: 4px;
+  width: auto;
+  max-height: 45%;
+  display: flex;
+  flex-direction: column;
+}
+.t19p.tall .t19p-rub-sheet {
+  min-height: 0;
+  max-height: none;
+  padding: 16px 18px 22px;
+}
+.t19p.tall .t19p-rub.in {
+  animation: t19-rise 0.6s cubic-bezier(0.3, 0.7, 0.2, 1) 0.3s both;
+}
+@keyframes t19-rise {
+  from {
+    opacity: 0;
+    translate: 0 40%;
+  }
 }
 .t19 {
   position: absolute;
@@ -23,108 +309,310 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ── the fenced summit ───────────────────────────── */
-.t19g-stage {
-  flex: 1 1 auto;
-  min-height: 0;
+/* ── gate (2.5D): five painted flats at depth, a plank-and-lattice gate on CSS 3D hinges ───────────────────── */
+.t19g {
+  --t19g-lit: color-mix(in srgb, var(--rock-hi) 70%, var(--moss-c));
+  --t19g-far: var(--mist);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  /* the picture floats in the paper like Part 1's scenes: no hard edge */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 88%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 88%, transparent);
+  mask-composite: intersect;
+}
+:root[data-theme='dark'] .t19g {
+  --t19g-lit: color-mix(in srgb, var(--moon) 45%, var(--moss-a));
+  --t19g-far: color-mix(in srgb, var(--paper) 72%, var(--mist));
+}
+.t19g-scene {
+  position: absolute;
+  inset: 0;
+}
+.t19g-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-origin: 50% 66%;
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.t19g-sky { z-index: 1; }
+.t19g-peak { z-index: 2; }
+.t19g-in { z-index: 3; }
+.t19g-fence { z-index: 4; }
+.t19g-fg { z-index: 5; }
+.t19g-svg {
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+/* inside the fence: a wall of dressed stone, code cut into it */
+.t19g-moonglow { opacity: 0.55; }
+.t19g-band { fill: none; stroke: var(--lantern); stroke-width: 2; stroke-linecap: round; opacity: 0.32; }
+.t19g-ground-in { fill: var(--paper-2); }
+.t19g-rake { fill: var(--rake); }
+.t19g-joint-bed { fill: color-mix(in srgb, var(--wash) 70%, var(--rock-lo)); opacity: 0.9; }
+.t19g-stone-top { fill: var(--rock-hi); opacity: 0.42; }
+.t19g-face-c { opacity: 0.82; }
+.t19g-wall-moss { fill: var(--moss-b); opacity: 0.55; }
+:root[data-theme='dark'] .t19g-stone-top { fill: color-mix(in srgb, var(--moon) 30%, var(--rock-hi)); opacity: 0.35; }
+.t19g-stone-shade { fill: var(--wash); opacity: 0.32; }
+.t19g-code { fill: none; stroke: var(--wash); stroke-width: 1.4; stroke-linecap: round; opacity: 0.62; }
+.t19g-code-lip { fill: none; stroke: var(--rock-hi); stroke-width: 1; stroke-linecap: round; opacity: 0.55; }
+:root[data-theme='dark'] .t19g-code { stroke: #000; opacity: 0.75; }
+:root[data-theme='dark'] .t19g-code-lip { opacity: 0.3; }
+.t19g-coping { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash)); }
+.t19g-coping-top { fill: var(--rock-hi); opacity: 0.85; }
+:root[data-theme='dark'] .t19g-coping-top { fill: color-mix(in srgb, var(--moon) 35%, var(--rock-hi)); opacity: 0.6; }
+.t19g-wall-foot { fill: var(--wash); opacity: 0.45; }
+.t19g-wall-ink { fill: var(--wash); opacity: 0.6; }
+.t19g-contact { fill: var(--umbra); opacity: 0.38; }
+.t19g-cord { fill: none; stroke: var(--wash); stroke-width: 1; opacity: 0.5; }
+/* the crack: a hairline of vermilion; the fresh mortar that fills it is pale, brighter than the stone */
+.t19g-crack { fill: var(--vermilion); }
+.t19g-mortar {
+  fill: none;
+  stroke: color-mix(in srgb, var(--rock-hi) 80%, var(--card));
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.95;
+  transition: stroke-dashoffset 1.8s ease 2.4s;
+}
+:root[data-theme='dark'] .t19g-mortar { stroke: color-mix(in srgb, var(--moon) 40%, var(--rock-hi)); }
+.t19g.open .t19g-mortar { stroke-dashoffset: 0; }
+.t19g-worker { fill: var(--wash); opacity: 0.94; }
+:root[data-theme='dark'] .t19g-worker { fill: #03050c; }
+.t19g-worker-rim { fill: var(--rock-hi); opacity: 0.4; }
+:root[data-theme='dark'] .t19g-worker-rim { fill: var(--moon); opacity: 0.35; }
+.t19g-trowel { fill: var(--step-hi); }
+.t19g-lamps { fill: var(--lantern); }
+:root[data-quality='high'] .t19g-lamps { filter: drop-shadow(0 0 3px var(--lantern)); }
+/* the fence: culms pulled toward the moss and the ink, never a vector green */
+.t19g-node { fill: var(--wash); opacity: 0.5; }
+.t19g-culm-rim { fill: var(--t19g-lit); opacity: 0.55; }
+.t19g-rail { fill: color-mix(in srgb, var(--moss-b) 30%, var(--wash)); opacity: 0.85; }
+.t19g-knot { fill: color-mix(in srgb, var(--step-lo) 50%, var(--wash)); opacity: 0.85; }
+.t19g-roof { fill: var(--wash); opacity: 0.85; }
+.t19g-tiles { fill: var(--moon); opacity: 0.22; }
+:root[data-theme='light'] .t19g-tiles { fill: var(--rock-hi); opacity: 0.35; }
+.t19g-roof-ink { fill: var(--wash); }
+.t19g-post-grain { fill: var(--wash); opacity: 0.45; }
+.t19g-moss { fill: var(--moss-b); }
+.t19g-step .p2-stone-rim { opacity: 0.6; }
+/* ★ the moon throws the gate across the forecourt; warm light leaks through the seam */
+.t19g-moonsh { transition: opacity 1.2s ease 0.3s; }
+.t19g-moonsh-solid,
+.t19g-moonsh-lat { fill: var(--wash); opacity: 0.2; }
+:root[data-theme='dark'] :is(.t19g-moonsh-solid, .t19g-moonsh-lat) { fill: #000; opacity: 0.5; }
+.t19g.open .t19g-moonsh { opacity: 0.25; }
+.t19g-leak {
+  transform-origin: 50% 0;
+  transform-box: fill-box;
+  transition: transform 1.4s cubic-bezier(0.45, 0.05, 0.25, 1), opacity 1.4s ease;
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t19g-leak { opacity: 1; }
+.t19g.open .t19g-leak { transform: scaleX(3.2); opacity: 1; }
+/* the gate and its doors */
+.t19g-gate {
+  position: absolute;
+  perspective: 900px;
+  pointer-events: none;
+}
+/* the seam between the closed doors glows with the court's lamps */
+.t19g-gate::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 1.5px);
+  top: 6%;
+  bottom: 4%;
+  width: 3px;
+  background: var(--lantern);
+  opacity: 0.7;
+  filter: blur(1.5px);
+}
+.t19g-door {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  transition: transform 1.3s cubic-bezier(0.45, 0.05, 0.25, 1);
+}
+.t19g-door-l { left: 0; transform-origin: 0 50%; }
+.t19g-door-r { right: 0; transform-origin: 100% 50%; }
+.t19g.open .t19g-door-l { transform: rotateY(80deg); }
+.t19g.open .t19g-door-r { transform: rotateY(-80deg); }
+.t19g-door-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.t19g-plank-grain { fill: var(--wash); opacity: 0.32; }
+.t19g-plank-knot { fill: var(--wash); opacity: 0.4; }
+.t19g-plank-seam { fill: var(--wash); opacity: 0.7; }
+.t19g-lattice-sh { fill: var(--wash); opacity: 0.5; }
+.t19g-lattice-knot { fill: color-mix(in srgb, var(--step-lo) 45%, var(--wash)); opacity: 0.9; }
+.t19g-frame-grain { fill: var(--wash); opacity: 0.3; }
+.t19g-frame-inner { fill: var(--wash); opacity: 0.55; }
+.t19g-frame-ink { fill: var(--wash); opacity: 0.7; }
+.t19g-strap { fill: color-mix(in srgb, var(--wash) 85%, var(--rock-lo)); opacity: 0.85; }
+.t19g-bracket { fill: color-mix(in srgb, var(--wash) 85%, var(--rock-lo)); }
+.t19g-moonlit { transition: opacity 1.3s ease; }
+.t19g.open .t19g-moonlit { opacity: 0; }
+.t19g-dim { fill: var(--umbra); opacity: 0; transition: opacity 1.3s ease; }
+.t19g.open .t19g-dim { opacity: 0.5; }
+/* the bolt: the one thing to take hold of, a rough beam */
+.t19g-bolt {
+  position: absolute;
   padding: 0;
   border: 0;
   background: none;
-  cursor: pointer;
-  border-radius: 12px;
+  cursor: grab;
+  touch-action: none;
+  pointer-events: auto;
+  transition: transform 0.5s cubic-bezier(0.3, 0.7, 0.2, 1), opacity 0.4s ease 0.45s;
 }
-.t19g.open .t19g-stage {
-  cursor: default;
+.t19g-bolt::before {
+  content: '';
+  position: absolute;
+  inset: -16px -6px;
 }
-.t19g-svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  overflow: visible;
+.t19g-bolt.held { cursor: grabbing; transition: none; }
+.t19g-bolt:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 4px; }
+.t19g.deep:not(.open) .t19g-bolt:not(.held) { animation: t19g-nudge 1.6s ease 1.4s 2; }
+@keyframes t19g-nudge {
+  0%, 60%, 100% { translate: 0 0; }
+  20% { translate: -7px 0; }
+  40% { translate: 2px 0; }
 }
-.t19g-post { fill: color-mix(in srgb, var(--moss-b) 60%, var(--wash)); opacity: 0.85; }
-.t19g-node { fill: var(--wash); opacity: 0.6; }
-.t19g-rail { fill: var(--wash); opacity: 0.8; }
-.t19g-plank { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--moss-b)); opacity: 0.9; }
-.t19g-lattice { fill: var(--wash); opacity: 0.55; }
-.t19g-door-ink { fill: var(--wash); opacity: 0.8; }
-.t19g-latch { fill: var(--vermilion); opacity: 0.85; transition: opacity 0.4s; }
-.t19g.open .t19g-latch { opacity: 0; }
-.t19g-door {
-  transform-box: fill-box;
-  transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.2, 1);
-}
-.t19g-door-l { transform-origin: left center; }
-.t19g-door-r { transform-origin: right center; }
-.t19g.open .t19g-door { transform: scaleX(0.18); }
-.t19g-inside {
-  opacity: 0.2;
-  transition: opacity 1.2s ease 0.3s;
-}
-.t19g.open .t19g-inside { opacity: 1; }
-.t19g-code { fill: var(--ink-2); opacity: 0.7; }
-.t19g-crack { fill: var(--vermilion); }
-.t19g-patch { fill: var(--lantern); opacity: 0.95; }
-.t19g-worker { fill: var(--wash); opacity: 0.85; }
-:root[data-theme='dark'] .t19g-worker { fill: var(--ink-2); }
-.t19g-pool { fill: var(--water); opacity: 0.75; }
-.t19g-pool-rim { fill: var(--wash); opacity: 0.45; }
-.t19g-stage:focus-visible {
-  outline: 2px solid var(--vermilion);
-  outline-offset: -4px;
-}
-.t19g-card {
-  flex: 0 0 auto;
-  width: min(40rem, 100%);
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: var(--card);
-  box-shadow: var(--shadow-1);
+.t19g.open .t19g-bolt { opacity: 0; pointer-events: none; }
+.t19g-bolt-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.t19g-bolt-body { stroke: var(--wash); stroke-opacity: 0.5; stroke-width: 0.8; }
+.t19g-bolt-sh { fill: var(--umbra); opacity: 0.32; }
+:root[data-quality='high'] .t19g-bolt-sh { filter: blur(1.5px); }
+.t19g-bolt-grain { fill: var(--wash); opacity: 0.35; }
+.t19g-bolt-end { fill: var(--wash); opacity: 0.35; }
+.t19g-bolt-ink { fill: var(--wash); opacity: 0.6; }
+/* out of focus in front */
+.t19g-fg { fill: var(--wash); opacity: 0.92; }
+:root[data-theme='light'] .t19g-fg { opacity: 0.62; }
+.t19g-fg-node { fill: var(--wash); }
+.t19g-fg-rim { fill: var(--moon); opacity: 0.32; }
+:root[data-theme='light'] .t19g-fg-rim { fill: var(--rake-hi); opacity: 0.5; }
+/* walking through the open gate */
+.t19g.through .t19g-layer { transition: transform 1.6s cubic-bezier(0.5, 0, 0.25, 1), opacity 1.1s ease 0.25s; }
+.t19g.through .t19g-fence { transform: scale(2.7); opacity: 0; transform-origin: 50% 60%; }
+.t19g.through .t19g-fg { transform: scale(1.9); opacity: 0; }
+.t19g.through .t19g-in { transform: scale(1.18); }
+.t19g.through .t19g-peak { transform: scale(1.1); }
+.t19g.through .t19g-sky { transform: scale(1.03); }
+/* the reason, cut into the back of the open right-hand door: boards, two battens and a brace, letters sunk in the wood */
+.t19g-board {
+  position: absolute;
+  z-index: 6;
+  right: 0;
+  top: 15%;
+  height: 70%;
+  width: min(23rem, 30%);
+  display: flex;
+  align-items: center;
   opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s;
-  visibility: hidden;
+  transform: perspective(1100px) rotateY(-58deg);
+  transform-origin: 100% 50%;
+  transition: opacity 0.9s ease 1.6s, transform 1.6s cubic-bezier(0.3, 0.7, 0.2, 1) 1.4s;
 }
-.t19g.open .t19g-card {
+.t19g.through .t19g-board { transition-delay: 2.2s, 2s; }
+.t19g.open .t19g-board {
   opacity: 1;
-  transform: none;
-  visibility: visible;
+  transform: perspective(1100px) rotateY(-18deg);
+}
+.t19g-board-wood {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px 0 0 2px;
+  background:
+    linear-gradient(170deg, transparent 0 34%, color-mix(in srgb, var(--wash) 22%, transparent) 34% calc(34% + 3px), color-mix(in srgb, var(--step-mid) 85%, var(--step-hi)) calc(34% + 3px) calc(34% + 26px), color-mix(in srgb, var(--wash) 18%, transparent) calc(34% + 26px) calc(34% + 29px), transparent calc(34% + 29px)) no-repeat,
+    linear-gradient(180deg, transparent 0 9%, color-mix(in srgb, var(--wash) 25%, transparent) 9% calc(9% + 2px), color-mix(in srgb, var(--step-mid) 80%, var(--step-hi)) calc(9% + 2px) calc(9% + 30px), color-mix(in srgb, var(--wash) 30%, transparent) calc(9% + 30px) calc(9% + 34px), transparent calc(9% + 34px) 87%, color-mix(in srgb, var(--wash) 25%, transparent) 87% calc(87% + 2px), color-mix(in srgb, var(--step-mid) 80%, var(--step-hi)) calc(87% + 2px) calc(87% + 30px), color-mix(in srgb, var(--wash) 30%, transparent) calc(87% + 30px) calc(87% + 34px), transparent calc(87% + 34px)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .012' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .14 0 0 0 0 .22 0 0 0 .55 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(90deg, transparent 0 calc(25% - 2px), color-mix(in srgb, var(--wash) 45%, transparent) calc(25% - 2px) 25%),
+    linear-gradient(90deg, color-mix(in srgb, var(--step-mid) 70%, var(--step-lo)), color-mix(in srgb, var(--step-hi) 60%, var(--step-mid)) 55%, color-mix(in srgb, var(--step-lo) 80%, var(--wash)));
+  box-shadow: inset 6px 0 10px -6px color-mix(in srgb, var(--umbra) 50%, transparent), -16px 20px 30px -22px var(--umbra);
+}
+:root[data-theme='dark'] .t19g-board-wood {
+  background:
+    linear-gradient(170deg, transparent 0 34%, rgba(0, 0, 0, 0.35) 34% calc(34% + 3px), color-mix(in srgb, var(--step-lo) 80%, var(--step-mid)) calc(34% + 3px) calc(34% + 26px), rgba(0, 0, 0, 0.3) calc(34% + 26px) calc(34% + 29px), transparent calc(34% + 29px)) no-repeat,
+    linear-gradient(180deg, transparent 0 9%, rgba(0, 0, 0, 0.35) 9% calc(9% + 2px), color-mix(in srgb, var(--step-lo) 80%, var(--step-mid)) calc(9% + 2px) calc(9% + 30px), rgba(0, 0, 0, 0.4) calc(9% + 30px) calc(9% + 34px), transparent calc(9% + 34px) 87%, rgba(0, 0, 0, 0.35) 87% calc(87% + 2px), color-mix(in srgb, var(--step-lo) 80%, var(--step-mid)) calc(87% + 2px) calc(87% + 30px), rgba(0, 0, 0, 0.4) calc(87% + 30px) calc(87% + 34px), transparent calc(87% + 34px)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .012' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .6 -.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(90deg, transparent 0 calc(25% - 2px), rgba(0, 0, 0, 0.5) calc(25% - 2px) 25%),
+    linear-gradient(90deg, color-mix(in srgb, var(--step-lo) 85%, var(--wash)), color-mix(in srgb, var(--step-lo) 70%, var(--step-mid)) 55%, color-mix(in srgb, var(--step-lo) 70%, var(--wash)));
+}
+.t19g-board-text {
+  position: relative;
+  margin: 0 8% 0 10%;
+}
+.t19g-board-title {
+  margin: 0 0 8px;
+  font: 600 0.8rem/1.3 var(--sans);
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--ink) 80%, var(--step-lo));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--step-hi) 70%, transparent);
 }
 .t19g-reason {
-  margin: 4px 0 0;
-  font: 400 1rem/1.5 var(--serif);
-  color: var(--ink);
+  margin: 0;
+  font: 500 1.02rem/1.55 var(--serif);
+  color: color-mix(in srgb, var(--ink) 92%, var(--step-lo));
+  /* cut into the wood: the lower lip of each groove lit, its upper wall in shadow */
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--step-hi) 85%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 35%, transparent);
 }
-@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
-  .t19g {
-    flex-direction: row;
-    gap: 24px;
-  }
-  .t19g-stage { height: 100%; }
-  .t19g-card { width: 22rem; }
+:root[data-theme='dark'] .t19g-board-title { color: var(--ink-2); text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7); }
+:root[data-theme='dark'] .t19g-reason {
+  color: color-mix(in srgb, var(--ink) 90%, var(--step-hi));
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 -1px 0 rgba(0, 0, 0, 0.75);
 }
+/* tall: a plank hung in the sky over the wall, every line in clear air */
+.t19g.tall .t19g-board {
+  left: 14px;
+  right: 14px;
+  top: 6%;
+  height: auto;
+  width: auto;
+  padding: 16px 0;
+  transform-origin: 50% 0;
+  transform: perspective(900px) rotateX(-40deg);
+}
+.t19g.tall.open .t19g-board { transform: perspective(900px) rotateX(-8deg); }
+.t19g.tall .t19g-board-wood { border-radius: 2px; }
+.t19g.tall .t19g-board-text { margin: 0 16px; }
+.t19g.tall .t19g-reason { font-size: 0.95rem; }
 
-/* ── the stele under the eaves ───────────────────── */
-.t19s {
-  overflow-y: auto;
-  justify-content: safe center;
-  gap: 14px;
+/* ── court (2.5D): the fenced summit's plan at 55° on a sea of cloud, four tam quan gates, lantern bearers ───────────────────── */
+.t19c {
+  --t19c-cloud-hi: var(--card);
+  --t19c-cloud: color-mix(in srgb, var(--mist) 70%, var(--paper-2));
+  --t19c-cloud-lo: color-mix(in srgb, var(--paper-2) 55%, var(--water));
 }
-.t19s-hall {
-  position: relative;
-  flex: 0 1 auto;
-  width: min(34rem, calc(100% - 48px));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+:root[data-theme='dark'] .t19c {
+  --t19c-cloud-hi: color-mix(in srgb, var(--mist) 42%, var(--paper));
+  --t19c-cloud: color-mix(in srgb, var(--mist) 24%, var(--paper));
+  --t19c-cloud-lo: color-mix(in srgb, var(--paper) 80%, var(--water));
 }
-.t19s-roof {
-  height: clamp(44px, 7vh, 64px);
-  flex: none;
+/* gates are known by their signs, not by numbers (the digit keys and the aria stay) */
+.t19c .p2c-halo,
+.t19c .p2c-ring,
+.t19c .p2c-num {
+  display: none;
 }
-.t19s-pav {
+.t19c .p2c-stone:hover .p2c-stone-art { transform: translateY(-3px); }
+.t19c .p2c-stone[aria-pressed='true'] .t19c-sign { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--lantern) 60%, transparent)); }
+.t19c .p2c-stage {
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.t19c-sea, .t19c-cliff, .t19c-fence {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -132,149 +620,552 @@
   overflow: visible;
   pointer-events: none;
 }
-.t19s-eave { fill: var(--wash); opacity: 0.55; }
-.t19s-tiles { fill: var(--wash); opacity: 0.5; }
-.t19s-eave-ink { fill: var(--wash); opacity: 0.85; }
-.t19s-post { fill: color-mix(in srgb, var(--wash) 80%, var(--vermilion)); opacity: 0.8; }
-.t19s-plinth { fill: var(--rock-lo); opacity: 0.55; }
-.t19s-stele {
-  position: relative;
+/* the sea of cloud: banks of billows, lit heads, shaded bellies */
+.t19c-bank { transition: opacity 2s ease; }
+.t19c-bank-far { opacity: 0.55; }
+.t19c-bank-back { opacity: 0.8; }
+.t19c-bank-mid { opacity: 0.92; }
+.t19c-bank-front { opacity: 0.97; }
+:root[data-quality='high'] .t19c-bank { filter: var(--t19c-soft); }
+/* all four heard: the cloud round the summit stills into a mirror */
+.t19c.is-all .t19c-bank-mid { opacity: 0.3; }
+.t19c.is-all .t19c-bank-front { opacity: 0.4; }
+.t19c-mirror { opacity: 0; transition: opacity 2.2s ease 0.4s; }
+.t19c.is-all .t19c-mirror { opacity: 1; }
+.t19c-mirror-img { opacity: 0.4; }
+.t19c-mirror-rim { fill: color-mix(in srgb, var(--rock-mid) 60%, var(--t19c-cloud)); }
+.t19c-mirror-fence { fill: color-mix(in srgb, var(--step-lo) 50%, var(--t19c-cloud)); }
+/* the cliff: three tones, a wandering terminator, clefts, a lit lip */
+.t19c-cliff-lo { fill: color-mix(in srgb, var(--rock-lo) 80%, var(--wash)); }
+.t19c-cliff-mid { fill: color-mix(in srgb, var(--rock-mid) 75%, var(--rock-lo)); }
+.t19c-cliff-hi { fill: var(--rock-hi); opacity: 0.35; }
+:root[data-theme='dark'] .t19c-cliff-lo { fill: color-mix(in srgb, var(--rock-lo) 70%, #000); }
+:root[data-theme='dark'] .t19c-cliff-mid { fill: color-mix(in srgb, var(--rock-mid) 55%, var(--rock-lo)); }
+:root[data-theme='dark'] .t19c-cliff-hi { fill: color-mix(in srgb, var(--rock-hi) 70%, var(--moon)); opacity: 0.2; }
+.t19c-cleft { fill: var(--wash); opacity: 0.42; }
+:root[data-theme='dark'] .t19c-cleft { fill: #000; opacity: 0.55; }
+.t19c-ledge { fill: var(--rock-hi); opacity: 0.6; }
+:root[data-theme='dark'] .t19c-ledge { fill: var(--moon); opacity: 0.25; }
+.t19c-rimlit { fill: var(--rock-hi); }
+:root[data-theme='dark'] .t19c-rimlit { fill: var(--moon); opacity: 0.55; }
+.t19c-tilt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t19c-plan {
+  position: absolute;
+  transform: rotateX(55deg);
+}
+.t19c-plan-svg {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  padding: 18px 18px 14px;
-  border-radius: 6px 6px 3px 3px;
+  height: 100%;
+  overflow: visible;
+}
+.t19c-top { fill: var(--rock-mid); }
+:root[data-theme='dark'] .t19c-top { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--rock-lo)); }
+.t19c-moss { fill: var(--moss-b); }
+.t19c-gravel { fill: var(--paper-2); stroke: var(--wash); stroke-opacity: 0.25; stroke-width: 2; }
+:root[data-theme='dark'] .t19c-gravel { fill: color-mix(in srgb, var(--rock-mid) 55%, var(--paper)); }
+.t19c-rake { fill: var(--rake); }
+:root[data-theme='dark'] .t19c-rake { fill: var(--rake-hi); }
+.t19c-heart { fill: var(--rock-mid); stroke: var(--wash); stroke-opacity: 0.5; }
+/* left, right, left: older prints fainter */
+.t19c-prints { fill: var(--wash); }
+.t19c-prints-0 { opacity: 0.2; }
+.t19c-prints-1 { opacity: 0.36; }
+.t19c-prints-2 { opacity: 0.55; }
+:root[data-theme='dark'] .t19c-prints { fill: #000; }
+.t19c-reveal {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 40;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 2.2s linear;
+}
+.t19c.is-heard-0 .t19c-reveal-0,
+.t19c.is-heard-1 .t19c-reveal-1,
+.t19c.is-heard-2 .t19c-reveal-2,
+.t19c.is-heard-3 .t19c-reveal-3 {
+  stroke-dashoffset: 0;
+}
+/* the raked cross that joins the four paths */
+.t19c-cross {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.45;
+  transition: stroke-dashoffset 2.4s ease 0.6s;
+}
+:root[data-theme='dark'] .t19c-cross { stroke: var(--moon); opacity: 0.4; }
+.t19c.is-all .t19c-cross { stroke-dashoffset: 0; }
+/* who it is, written on the gravel in the quarter by its gate (lies on the court, foreshortened with it) */
+.t19c-word {
+  position: absolute;
+  translate: -50% -50%;
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  text-shadow: 0 0 6px var(--paper-2), 0 0 6px var(--paper-2), 0 0 2px var(--paper-2);
+  opacity: 0;
+  transition: opacity 1.2s ease 1.6s;
+}
+:root[data-theme='dark'] .t19c-word { text-shadow: 0 0 6px var(--paper), 0 0 6px var(--paper), 0 0 2px var(--paper); }
+.t19c-word:not(:empty) { opacity: 1; }
+/* the fence: low bamboo in the step and moss tones */
+.t19c-culm { fill: color-mix(in srgb, var(--step-lo) 55%, var(--moss-b)); }
+.t19c-culm-far { opacity: 0.85; }
+:root[data-theme='dark'] .t19c-culm { fill: color-mix(in srgb, var(--step-lo) 60%, var(--moss-b)); }
+.t19c-culm-rim { fill: var(--step-hi); opacity: 0.6; }
+:root[data-theme='dark'] .t19c-culm-rim { fill: var(--moon); opacity: 0.35; }
+.t19c-node { fill: var(--wash); opacity: 0.45; }
+.t19c-rail { fill: color-mix(in srgb, var(--step-lo) 45%, var(--wash)); }
+.t19c-men {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t19c-bearer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transition: transform 2.2s cubic-bezier(0.45, 0.05, 0.35, 1);
+}
+.t19c-bearer-svg {
+  position: absolute;
+  left: calc(var(--s, 60px) * -0.39);
+  bottom: calc(var(--s, 60px) * -0.21);
+  width: var(--s, 60px);
+  max-width: none;
+  height: calc(var(--s, 60px) * 0.78);
+  overflow: visible;
+}
+.t19c-man { fill: var(--wash); }
+:root[data-theme='dark'] .t19c-man { fill: #05070f; }
+.t19c-man-rim { fill: var(--rock-hi); opacity: 0.45; }
+:root[data-theme='dark'] .t19c-man-rim { fill: var(--moon); opacity: 0.4; }
+.t19c-glow { fill: var(--lantern); opacity: 0.32; }
+.t19c-lamp { fill: var(--lantern); }
+/* the lantern's warm pool on the gravel round the bearer */
+.t19c-pool { fill: url(#p2-lamp); opacity: 0.75; }
+:root[data-theme='dark'] .t19c-pool { opacity: 1; }
+.t19c-sh { fill: var(--umbra); opacity: 0.25; }
+/* the tam quan */
+.t19c-post { fill: color-mix(in srgb, var(--step-lo) 55%, var(--wash)); }
+.t19c-roof { fill: var(--wash); opacity: 0.9; }
+.t19c-tiles { fill: var(--rock-hi); opacity: 0.4; }
+:root[data-theme='dark'] .t19c-tiles { fill: var(--moon); opacity: 0.25; }
+.t19c-side { fill: color-mix(in srgb, var(--wash) 75%, var(--rock-lo)); opacity: 0.8; }
+.t19c-leaf { fill: var(--step-mid); stroke: var(--wash); stroke-opacity: 0.6; stroke-width: 0.8; }
+:root[data-theme='dark'] .t19c-leaf { fill: var(--step-lo); }
+.t19c-leaf-ink { fill: var(--wash); opacity: 0.45; }
+.t19c-door { transform-box: fill-box; transition: transform 1s cubic-bezier(0.4, 0.1, 0.25, 1); }
+.t19c-door-l { transform-origin: 0 50%; }
+.t19c-door-r { transform-origin: 100% 50%; }
+.p2c-stone[data-heard] .t19c-door { transform: scaleX(0.16); }
+/* the signs: carved stones, large enough to know the gate by */
+.t19c-emblem { fill: url(#p2-rock); stroke: var(--wash); stroke-opacity: 0.55; stroke-width: 0.9; }
+.t19c-emblem-shade { fill: url(#p2-shade); }
+.t19c-cut { fill: var(--wash); opacity: 0.75; }
+.t19c-seam { fill: var(--card); opacity: 0.95; }
+:root[data-theme='dark'] .t19c-seam { fill: var(--moon); opacity: 0.85; }
+.t19c-mini { fill: color-mix(in srgb, var(--step-lo) 55%, var(--moss-b)); }
+.t19c-mini-floor { fill: var(--paper-2); stroke: var(--wash); stroke-opacity: 0.4; }
+/* what they say: a strip of paper hung from the gate on a cord, not a card */
+.t19c .p2c-card {
+  border: 0;
+  border-radius: 1px;
+  padding: 22px 20px 24px;
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .9 0 0 0 -.34'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(80% 50% at 20% 0%, color-mix(in srgb, var(--moon) 28%, transparent), transparent 70%),
-    linear-gradient(100deg, transparent 60%, color-mix(in srgb, var(--umbra) 20%, transparent)),
-    linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 70%, var(--rock-lo));
-  box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--rock-hi) 40%, transparent), inset 0 0 0 7px color-mix(in srgb, var(--umbra) 22%, transparent), 0 16px 22px -14px var(--umbra);
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .52 0 0 0 0 .6 0 0 0 .35 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    var(--card);
+  box-shadow: 0 1px 0 var(--line), 0 18px 26px -20px var(--umbra);
+  clip-path: polygon(0 0, 100% 0, 100% 97%, 94% 100%, 88% 97.5%, 79% 100%, 70% 98%, 61% 100%, 50% 97.6%, 41% 100%, 32% 98%, 22% 100%, 12% 97.8%, 5% 100%, 0 97%);
+  rotate: 0.8deg;
+  transform-origin: 50% 0;
+}
+:root[data-theme='dark'] .t19c .p2c-card {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .8 0 0 0 0 .82 0 0 0 0 .9 0 0 0 .2 -.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    color-mix(in srgb, var(--card) 85%, var(--mist));
+}
+/* the rod it hangs from, and the cord up to the gate */
+.t19c.wide .p2c-card {
+  width: min(330px, 30vw) !important;
+  max-height: 70% !important;
+  top: 16% !important;
+  transform: none !important;
+}
+.t19c .p2c-card::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: 0;
+  height: 7px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--step-hi) 60%, var(--moss-c)), color-mix(in srgb, var(--step-lo) 70%, var(--moss-b)));
+  box-shadow: 0 2px 2px -1px color-mix(in srgb, var(--umbra) 40%, transparent);
+}
+.t19c .p2c-who { font-size: 1rem; }
+.t19c .p2c-view { font-size: clamp(0.98rem, 1.35vw, 1.08rem); font-weight: 400; }
+/* tall: a narrower strip, the court above takes nine-tenths of the width */
+.t19c:not(.wide) .p2c-card {
+  left: 12px !important;
+  width: calc(100% - 24px) !important;
+  padding: 18px 16px 24px;
+  overflow-y: auto;
+}
+.t19c:not(.wide) .p2c-view { font-size: 0.9rem; line-height: 1.45; margin-bottom: 0.5em; }
+.t19c:not(.wide) .p2c-who { font-size: 0.9rem; margin-bottom: 0.3em; }
+
+/* ── stele (canvas): a polished black stele under tiled eaves, read by a lantern's raking light ───────────────────── */
+.t19s {
+  --t19s-stone: color-mix(in srgb, var(--umbra) 58%, var(--rock-lo));
+  --t19s-stone-lo: color-mix(in srgb, var(--umbra) 85%, var(--rock-lo));
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+:root[data-theme='dark'] .t19s {
+  --t19s-stone: color-mix(in srgb, var(--rock-lo) 80%, var(--rock-mid));
+  --t19s-stone-lo: color-mix(in srgb, var(--rock-lo) 70%, #000);
+}
+.t19s:not(.tall) {
+  -webkit-mask-image: linear-gradient(to bottom, #000 92%, transparent);
+  mask-image: linear-gradient(to bottom, #000 92%, transparent);
+}
+.t19s-hall {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t19s-floor { fill: var(--paper-2); }
+.t19s-floor-ink { fill: var(--wash); opacity: 0.35; }
+.t19s-pool { fill: var(--lantern); opacity: 0; transition: opacity 0.6s ease; }
+.t19s.lit .t19s-pool { opacity: 0.12; }
+.t19s-contact { fill: var(--umbra); opacity: 0.32; }
+.t19s-riser { opacity: 1; }
+.t19s-tread { fill: var(--rock-hi); opacity: 0.75; }
+:root[data-theme='dark'] .t19s-tread { fill: color-mix(in srgb, var(--rock-hi) 70%, var(--moon)); opacity: 0.45; }
+.t19s-plinth-ink { fill: var(--wash); opacity: 0.6; }
+.t19s-slab-sh { fill: var(--umbra); opacity: 0.45; }
+/* the stele's thickness and its chamfered head; the moon's rim down the right edge */
+.t19s-flank { opacity: 1; }
+.t19s-head { fill: color-mix(in srgb, var(--t19s-stone) 70%, var(--rock-mid)); }
+.t19s-rim { fill: var(--rock-hi); opacity: 0.7; }
+:root[data-theme='dark'] .t19s-rim { fill: var(--moon); opacity: 0.75; }
+/* round columns: a dark flank and a lit one; stone bases; brackets under the beam */
+.t19s-col { opacity: 1; }
+.t19s-col-lit { fill: var(--rock-hi); opacity: 0.22; }
+:root[data-theme='dark'] .t19s-col-lit { fill: var(--moon); opacity: 0.16; }
+.t19s-col-base { fill: var(--rock-mid); stroke: var(--wash); stroke-opacity: 0.5; stroke-width: 1; }
+:root[data-theme='dark'] .t19s-col-base { fill: var(--rock-lo); }
+.t19s-bracket { fill: var(--wash); }
+/* the beam has thickness: a lit top edge, a dark face, a shadow under it */
+.t19s-beam { fill: color-mix(in srgb, var(--wash) 88%, var(--step-lo)); }
+.t19s-beam-lit { fill: var(--step-mid); opacity: 0.55; }
+.t19s-beam-sh { fill: var(--umbra); opacity: 0.22; }
+/* the roof: yin-yang tiles (lit convex caps over dark channels), round tile ends along the upturned eave */
+.t19s-roof { fill: var(--wash); opacity: 0.94; }
+.t19s-channel { fill: #000; opacity: 0.35; }
+.t19s-cap { fill: color-mix(in srgb, var(--wash) 65%, var(--rock-mid)); }
+.t19s-cap-lit { fill: var(--rock-hi); opacity: 0.45; }
+:root[data-theme='dark'] .t19s-cap { fill: color-mix(in srgb, var(--wash) 50%, var(--rock-lo)); }
+:root[data-theme='dark'] .t19s-cap-lit { fill: var(--moon); opacity: 0.25; }
+.t19s-fascia { fill: color-mix(in srgb, var(--wash) 80%, var(--step-lo)); }
+.t19s-tile-end { fill: color-mix(in srgb, var(--wash) 60%, var(--rock-mid)); stroke: var(--wash); stroke-width: 0.8; }
+:root[data-theme='dark'] .t19s-tile-end { fill: color-mix(in srgb, var(--rock-lo) 80%, var(--moon)); }
+.t19s-eave { fill: var(--wash); }
+.t19s-face {
+  position: absolute;
+  background: var(--t19s-stone);
   overflow: hidden;
   cursor: none;
+  touch-action: none;
 }
+.t19s-cv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.t19s.baked .t19s-cv { opacity: 1; }
 .t19s-glow {
   position: absolute;
-  left: -90px;
-  top: -90px;
-  width: 180px;
-  height: 180px;
+  left: calc(var(--r, 120px) * -1.1);
+  top: calc(var(--r, 120px) * -1.1);
+  width: calc(var(--r, 120px) * 2.2);
+  height: calc(var(--r, 120px) * 2.2);
   border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--lantern) 55%, transparent), transparent 68%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--lantern) 10%, transparent), transparent 65%);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
 }
-.t19s-glow.on { opacity: 1; }
-.t19s-title {
-  position: relative;
-  margin: 0 0 10px;
-  font: 600 0.82rem/1.3 var(--sans);
-  letter-spacing: 0.06em;
-  color: var(--stone-text);
-  text-align: center;
+.t19s.lit .t19s-glow { opacity: 1; }
+.t19s-lamp {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
-.t19s-lines {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.t19s.lit .t19s-lamp { opacity: 1; }
+.t19s-lamp-svg {
+  position: absolute;
+  left: -20px;
+  top: -40px;
+  width: 40px;
+  height: 50px;
+  max-width: none;
+  overflow: visible;
 }
 .t19s-line {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 2px 10px;
-  width: 100%;
-  padding: 6px 8px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
   border: 0;
-  border-radius: 6px;
   background: none;
-  text-align: left;
-  font: 600 clamp(0.92rem, 1.5vw, 1.06rem)/1.35 var(--serif);
-  color: var(--stone-text);
   cursor: inherit;
 }
-.t19s-line:focus-visible {
-  outline: 2px solid var(--vermilion);
+.t19s-line:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -2px; border-radius: 2px; }
+.t19s-seals { position: absolute; inset: 0; pointer-events: none; }
+.t19s-seal {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--vermilion);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--vermilion) 60%, #fff);
+  animation: t19s-stamp 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
 }
-.t19s-sign {
-  font: 500 0.74rem/1.2 var(--sans);
-  color: var(--vermilion);
-  border: 1px solid currentColor;
-  border-radius: 3px;
-  padding: 2px 6px;
-  opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+@keyframes t19s-stamp {
+  from { opacity: 0; transform: scale(1.8); }
 }
-.t19s-line.found .t19s-sign {
-  opacity: 1;
-  transform: none;
-}
+/* the tally cut into the plinth: 正, a stroke per sign, each groove filled with vermilion as it is found */
+.t19s-tally { position: absolute; overflow: visible; pointer-events: none; }
+.t19s-tally-lip { fill: var(--rock-hi); opacity: 0.55; }
+:root[data-theme='dark'] .t19s-tally-lip { fill: var(--moon); opacity: 0.2; }
+.t19s-tally-cut { fill: color-mix(in srgb, var(--wash) 70%, var(--rock-lo)); opacity: 0.55; transition: fill 0.5s ease, opacity 0.5s ease; }
+:root[data-theme='dark'] .t19s-tally-cut { fill: #000; opacity: 0.7; }
+.t19s-tally-cut.on { fill: var(--vermilion); opacity: 0.95; }
+/* the questions: tanzaku strips of paper, each hung on a string from the beam (or from the strip above it) */
 .t19s-side {
-  flex: 0 0 auto;
-  width: min(36rem, 100%);
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+.t19s-read {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 14px;
+  pointer-events: auto;
 }
 .t19s-read:empty { display: none; }
-.t19s-read {
-  padding: 10px 14px;
-  border-left: 2px solid var(--vermilion);
-  background: var(--card);
-  border-radius: 0 10px 10px 0;
+.t19s-strip {
+  position: relative;
+  margin-top: 14px;
+  max-width: 100%;
+  padding: 12px 16px 16px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .52 0 0 0 0 .6 0 0 0 .35 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    var(--card);
+  box-shadow: 0 10px 14px -12px var(--umbra);
+  rotate: var(--rot, 0deg);
+  transform-origin: 50% -14px;
+  animation: t19s-hang 0.9s cubic-bezier(0.3, 0.7, 0.2, 1) both;
 }
-.t19s-sign-big {
+:root[data-theme='dark'] .t19s-strip {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .8 0 0 0 0 .82 0 0 0 0 .9 0 0 0 .2 -.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    color-mix(in srgb, var(--card) 85%, var(--mist));
+}
+/* the string */
+.t19s-strip::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: 28px;
+  background: var(--ink-3);
+}
+/* a small seal pressed on its corner */
+.t19s-strip::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 9px;
+  height: 9px;
+  border-radius: 1px;
+  background: var(--vermilion);
+  opacity: 0.85;
+}
+.t19s-strip + .t19s-strip { opacity: 0.8; }
+.t19s-strip + .t19s-strip .t19s-q { display: none; }
+.t19s-strip + .t19s-strip::before { height: 30px; }
+@keyframes t19s-hang {
+  0% { opacity: 0; rotate: calc(var(--rot, 0deg) * -4); translate: 0 -10px; }
+  60% { opacity: 1; rotate: calc(var(--rot, 0deg) * 2); }
+}
+.t19s-sign-big { margin: 0; font: 600 1rem/1.3 var(--serif); color: var(--vermilion); }
+.t19s-q { margin: 3px 0 0; font: 400 0.95rem/1.45 var(--serif); color: var(--ink); }
+.t19s-foot { position: absolute; }
+.t19s-count { margin: 0; text-shadow: 0 0 6px var(--paper), 0 0 6px var(--paper); }
+.t19s-note { margin: 4px 0 0; font: 400 0.78rem/1.4 var(--sans); color: var(--ink-3); }
+/* five found: the rubbing slides out of the slot in the plinth */
+.t19s-slot {
+  position: absolute;
+  z-index: 4;
+  height: 0;
+}
+.t19s-card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: var(--room, 72vh);
+  overflow: auto;
+  animation: t19s-rub 1.2s cubic-bezier(0.3, 0.7, 0.2, 1) both;
+  transform-origin: 50% 100%;
+}
+@keyframes t19s-rub {
+  from { opacity: 0; transform: translateY(30%) scaleY(0.6); }
+}
+/* tall: the newest question hangs over the stele from the beam; older strips stay out of the way */
+.t19s.tall .t19s-read { align-items: stretch; }
+.t19s.tall .t19s-strip { padding: 10px 14px 12px; }
+.t19s.tall .t19s-strip + .t19s-strip { display: none; }
+.t19s.tall .t19s-q { font-size: 0.9rem; }
+@media (hover: none) {
+  .t19s-face { cursor: default; }
+}
+
+/* ── tide (canvas): a tidal flat running diagonally into depth, the moon on its arc as the slider ───────────────────── */
+.t19t {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  -webkit-tap-highlight-color: transparent;
+  /* the painting runs to the frame; the edges go soft into the paper (mist is painted at the sides too) */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 2.5%, #000 97.5%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 94%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 2.5%, #000 97.5%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 94%, transparent);
+  mask-composite: intersect;
+}
+.t19t-cv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 72% 42%;
+  transition: transform 0.4s ease-out;
+}
+.t19t-moon {
+  --m: clamp(46px, 6vw, 72px);
+  position: absolute;
+  left: calc(var(--m) / -2);
+  top: calc(var(--m) / -2);
+  width: var(--m);
+  height: var(--m);
+  border-radius: 50%;
+  cursor: grab;
+  outline: none;
+}
+.t19t-moon.snap { transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.2, 1); }
+.t19t-moon:focus-visible { box-shadow: 0 0 0 2px var(--vermilion); }
+.t19t-disc { width: 100%; height: 100%; overflow: visible; display: block; }
+.t19t-words {
+  position: absolute;
+  left: clamp(16px, 4vw, 56px);
+  top: clamp(8px, 3vh, 28px);
+  width: min(26rem, 34%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.t19t-q {
   margin: 0;
-  font: 600 0.95rem/1.3 var(--serif);
-  color: var(--vermilion);
+  font: 400 0.92rem/1.5 var(--serif);
+  color: var(--ink-2);
+  text-wrap: pretty;
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
+  pointer-events: none;
 }
-.t19s-q {
-  margin: 2px 0 0;
-  font: 400 0.95rem/1.45 var(--serif);
+.t19t-card {
+  cursor: auto;
+  text-shadow: 0 0 10px var(--paper), 0 0 10px var(--paper);
+}
+.t19t-card .p2-eyebrow { color: var(--ink-2); }
+.t19t-fact {
+  margin: 4px 0 0;
+  font: 400 1.04rem/1.5 var(--serif);
   color: var(--ink);
 }
-.t19s-done {
-  align-self: flex-start;
-  padding: 8px 14px;
-  border: 1px solid var(--vermilion);
-  border-radius: 999px;
-  background: var(--vermilion);
-  color: var(--on-ink);
-  font: 500 0.88rem/1.2 var(--sans);
-  cursor: pointer;
+.t19t-cmp, .t19t-fore {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  white-space: nowrap;
+  font: 500 0.875rem/1.3 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
 }
-.t19s-note {
-  margin: 2px 0 0;
-  font: 400 0.78rem/1.4 var(--sans);
-  color: var(--ink-3);
+.t19t-cmp-b { translate: -100% 0; }
+.t19t.cmp .t19t-cmp { opacity: 1; }
+.t19t-fore {
+  translate: -50% -100%;
+  white-space: normal;
+  width: min(18rem, 60vw);
+  text-align: center;
+  font-weight: 400;
+  color: var(--ink-2);
 }
-.t19s.carded .t19s-hall,
-.t19s.carded .t19s-side { display: none; }
-.t19s-card {
-  width: min(36rem, 100%);
-  margin: auto 0;
+.t19t.today .t19t-fore { opacity: 1; }
+/* tall: date · label · fact in the sky band at the top, the foot of the frame left to the sand and the near stone */
+.t19t.tall .t19t-words {
+  top: 6px;
+  left: 16px;
+  right: 16px;
+  width: auto;
+  gap: 6px;
 }
-@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
-  .t19s {
-    flex-direction: row;
-    align-items: center;
-    gap: 32px;
-  }
-  .t19s-side { width: 20rem; }
-}
-@media (hover: none) {
-  .t19s-stele { cursor: default; }
-}
-@media (max-width: 600px) {
-  .t19s { gap: 8px; }
-  .t19s-roof { height: 34px; }
-  .t19s-stele { padding: 12px 10px 8px; }
-  .t19s-title { margin-bottom: 4px; font-size: 0.74rem; }
-  .t19s-lines { gap: 0; }
-  .t19s-line { padding: 4px 6px; font-size: 0.9rem; }
-  .t19s-read { padding: 6px 10px; }
-  .t19s-q, .t19s-sign-big { font-size: 0.88rem; }
-  .t19s-note { display: none; }
+.t19t.tall .t19t-q { font-size: 0.8rem; }
+.t19t.tall .t19t-fact { font-size: 0.95rem; }
+:root[data-quality='low'] :is(.t19c-bearer, .t19c-reveal, .t19c-word) {
+  transition: none;
 }

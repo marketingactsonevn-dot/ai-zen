@@ -20,8 +20,9 @@
   "scenes": {
     "gardeners": {
       "label": "A thousand gardeners",
-      "art": "Ink painting under a full moon: on the left, an old gardener carries a watering can from bed to bed, his shadow long on the stone path. On the right, a thousand little bamboo spouts drip on the whole garden at once; the moonlit water ripples in time.",
+      "art": "A terraced hill like a bonsai tray under a low full moon: 25 curved rows of 40 moss beds each, a bamboo gutter along every lip with a little spout over every bed. Front left, a paper gardener stands on a stepping stone by a stone lantern, his watering can on a rock beside him; on the crest, the bamboo valve at the head of the gutters meets the spring.",
       "prompt": "Choose how to water",
+      "hint": "Drag to turn the tray. Touch the watering can, or the bamboo valve on the crest.",
       "group": "Two ways to water the same garden",
       "one": "1 watering can · CPU",
       "oneAria": "Water with one can: a few strong cores doing one job after another",
@@ -39,8 +40,9 @@
     },
     "scaling": {
       "label": "Growing takes more shovels",
-      "art": "Three stone jars in the moonlight: Data, Size, Compute. A bamboo spout lets fall a hundred silver drops; the sapling in the middle only grows tall when all three jars fill evenly, and leans when one falls behind.",
+      "art": "A three-cornered stone basin on a mossy boulder, seen from a little above; each corner spills into a jar: Data front left, Size at the back, Compute front right. A bamboo spout resting on a single post lets a thread of silver drops fall into the middle, where a sapling stands on a small stone against the moon. Behind the mist, an old tree with a great trunk waits.",
       "prompt": "Share out 100 drops",
+      "basinAria": "The three-cornered stone basin: drag it, or use the arrow keys, to tilt it toward a corner",
       "jars": [
         {
           "id": "data",
@@ -79,7 +81,7 @@
     },
     "moat": {
       "label": "The moat round the castle",
-      "art": "A stone castle on an island, ringed by a black moat holding the moon. Countless little bamboo bridges cross it — the code the whole village is used to walking on. From the far bank, three boats with their own lanterns are rowing in.",
+      "art": "Seen from high above, a round disc floating in the night: in the middle, a three-roofed stone castle on its island; round it, a black moat crossed by six hundred little bamboo bridges from a village of low roofs. On the far lake, three boats with paper lanterns (round, tall, square) wait by three canals.",
       "prompt": "Touch each boat",
       "castle": "NVIDIA",
       "moatLabel": "CUDA · the software everyone knows",
@@ -129,7 +131,7 @@
     },
     "goldrush": {
       "label": "Gold-rush season",
-      "art": "A long strip of sand unrolled like a scroll under the moon. Drag the moon from left to right; each milestone rises like a stone, and the pile of shovels by the seller's hut grows into a hill.",
+      "art": "A long black ridge cut from paper runs across the lower part, a giant moon behind it that you drag through the seasons. Each milestone is a lamp post on the ridge; diggers with lanterns climb in ever greater numbers toward the shovel seller's tent on the summit, where two heaps of gold stand in true proportion.",
       "prompt": "Drag the moon through the seasons",
       "sliderAria": "Drag the moon through NVIDIA's milestones",
       "tide": {
@@ -210,9 +212,10 @@
     },
     "loop": {
       "label": "The money loop",
-      "art": "Four stone islands on the moon lake: NVIDIA, AI companies, data centres, investors. A silver stream flows from island to island and back to where it began; round the shore, four stones stand watching, each with its own remark.",
+      "art": "Looking up from below the axle at a great wooden waterwheel beside NVIDIA's stone mill, against the moon. A stone flume carries water from the wheel's tail round the lake past the AI company's island (a pavilion with a lamp) and the data centre's (a row of stone lanterns), then over the mill roof back onto the wheel; the mill wall bears two notches, 22 and 51.",
       "prompt": "Follow the money",
       "flowLabel": "Money flowing in a loop",
+      "wheelAria": "The waterwheel: drag it round its axle, or press the right arrow or Enter, to turn it a quarter",
       "islands": [
         "NVIDIA",
         "AI company",

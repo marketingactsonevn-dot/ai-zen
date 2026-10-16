@@ -20,11 +20,13 @@
       "label": "The resident gardener",
       "art": "Midnight; the main house is dark. A gardener carries a lantern round the pond. A wind chime hangs from the porch post, and every incoming message makes it ring softly; the gardener writes each one in the thick notebook always at hand.",
       "prompt": "Send the gardener a message",
+      "promptMoon": "Drag the moon to morning",
       "aria": "Compare an always-on agent with a coding agent. Send a sample message to see what the always-on agent does",
       "message": "“Every morning at 7, summarise my new email and message me on Telegram.”",
       "reply": "“Noted in my book. I'll message you at 7 tomorrow.”",
       "send": "Send",
       "sendAria": "Send a sample message to the always-on agent",
+      "moonAria": "The moon: drag it along its arc to run one night, from 10 pm to 7 am",
       "kinds": [
         {
           "id": "resident",
@@ -72,6 +74,7 @@
         }
       ],
       "kindAria": "See this kind of agent: {name}",
+      "moreAria": "Examples and sources: {name}",
       "insight": {
         "text": "An always-on agent doesn't wait for you to open an app: it runs all the time, remembers tasks, and messages you in your chat apps.",
         "asOf": "2026-10-15",
@@ -149,6 +152,7 @@
       "prompt": "Light each bay",
       "aria": "The five parts of a self-running agent. Light each bay to read about it",
       "roomAria": "Light the bay: {name}",
+      "turnAria": "Drag or use the arrow keys to turn the model; keys 1–5 light each bay.",
       "seeStation": "Revisit Station {n}",
       "rooms": [
         { "id": "model", "name": "Hearth: the model", "what": "The brain. Runs on your machine (via Ollama, LM Studio) or is called through a provider's API.", "station": 14 },

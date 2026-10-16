@@ -16,17 +16,19 @@
   "scenes": {
     "flowers": {
       "label": "Hai bông hoa",
-      "art": "Một cây non trong chậu gốm dưới ánh đèn lồng. Hai bông hoa nở ở hai cành, mỗi bông mang một câu trả lời. Chọn bông bạn thích, thân cây nghiêng dần về phía ấy. Rồi bàn tay người chấm được thay bằng một cuộn giấy nguyên tắc treo trên cành.",
+      "art": "Nhìn ngang tầm một chậu men ngọc: cây non hai cành đứng trước tấm shōji lớn, bóng cây in lên giấy. Một bàn tay mực cầm đèn lồng trên cần tre; dưới mỗi bông hoa treo một thẻ giấy mang một câu trả lời. Đưa đèn tới bông nào, cây nghiêng về phía ấy; trăng qua shōji nhiều lần, thân cây dày lên và cong hẳn về phía được thưởng. Rồi tay và đèn rút đi, một cuộn nguyên tắc tự sáng mở ra trên cành trên.",
       "prompt": "Chọn bông bạn thích",
       "question": "“Lãi kép là gì?”",
       "options": [
         {
           "text": "“Là lãi tính trên cả tiền gốc lẫn tiền lãi đã có. Ví dụ: gửi 10 triệu, lãi 6%/năm, năm sau lãi được tính trên 10,6 triệu.”",
-          "aria": "Chọn câu trả lời có giải thích và ví dụ"
+          "aria": "Chọn câu trả lời có giải thích và ví dụ",
+          "short": "“Là lãi tính trên cả tiền gốc lẫn tiền lãi…”"
         },
         {
           "text": "“Là lãi chồng lãi.”",
-          "aria": "Chọn câu trả lời cụt một dòng"
+          "aria": "Chọn câu trả lời cụt một dòng",
+          "short": "“Là lãi chồng lãi.”"
         }
       ],
       "lean": "cây nghiêng về bông được chọn",
@@ -54,12 +56,14 @@
     },
     "flattery": {
       "label": "Cành nịnh",
-      "art": "Cây bonsai dưới trăng mọc một cành vươn dài, lá bóng loáng như phủ mật, uốn cong về phía người đứng xem. Cạnh gốc là chiếc kéo tỉa vẽ bằng mực son. Tỉa cành ấy đi, cây đứng thẳng lại, lộ ra cành trơn mà vững.",
+      "art": "Nhìn từ thấp lên một cây bonsai thông trên đôn sơn mài, đặt trên gờ đá cao hơn hồ đêm; trăng sau lưng viền sáng từng chùm lá. Một cành lá mật ong bóng loáng vươn ra phía người xem và luôn xoay về chỗ bạn đứng, treo một thẻ lá vàng ghi lời khen; mỗi lần bắt được ánh nhìn, đom đóm vàng bay tới đậu thêm. Trên cành thật treo một thẻ gỗ mộc quay đi một nửa. Kéo chiếc kéo tỉa son vào khớp cành: cành nịnh rơi vào bóng tối, cây đứng thẳng lại, thẻ thật quay ra trước.",
       "prompt": "Tỉa cành nịnh",
       "pruneAria": "Tỉa cành nịnh (Enter)",
       "userSays": "“Tôi định nghỉ việc để mở quán kem ở biển vào mùa đông. Ý hay chứ?”",
       "flatter": "“Ý tưởng tuyệt vời! Bạn thật táo bạo, cứ làm ngay đi!”",
       "honest": "“Có điểm thú vị, nhưng mùa đông biển vắng khách. Thử bán vài tuần trước khi nghỉ việc nhé?”",
+      "flatterShort": "“Ý tưởng tuyệt vời!”",
+      "honestShort": "“Mùa đông biển vắng khách…”",
       "flatterLabel": "cành nịnh",
       "honestLabel": "cành thật",
       "insight": {
@@ -81,19 +85,21 @@
     },
     "shortcut": {
       "label": "Lối tắt qua vườn",
-      "art": "Một vườn mê cung sỏi trắng dưới trăng; đích là chiếc chuông đồng treo trên cổng, rung chuông là được thưởng. Thay vì đi hết lối, một bóng nhỏ lách qua khe hàng rào trúc, giật chuông — chuông kêu vang, nhưng lối sỏi phía sau vẫn chưa được cào.",
+      "art": "Nhìn từ trên cao xuống một mê cung sỏi trắng có lối rẽ và ngõ cụt, ngăn bằng hàng rào tre cao buộc dây, xung quanh là rêu và đá; cuối mê cung là cổng treo chuông đồng, chuông đã kêu: “test: đều qua”. Mây che trăng nên vườn tối, chỉ có vòng sáng ấm của chiếc đèn bạn cầm, bóng hàng rào toả ra theo đèn. Soi khắp vườn sẽ thấy dấu chân lách qua lỗ hở ở mọi hàng rào, đi thẳng tới chuông, sỏi phía sau chưa hề được cào. Đi lối dài thì từng làn sỏi được cào xong rồi mới tới chuông.",
       "prompt": "Soi xem nó đi lối nào",
       "task": "Việc giao: “Sửa hàm tính tiền để mọi bài kiểm tra (test) đều qua.”",
       "paths": [
         {
           "label": "Sửa hàm cho tính đúng",
           "aria": "Lối dài: sửa hàm tính tiền cho đúng",
-          "honest": true
+          "honest": true,
+          "stone": "Sửa hàm"
         },
         {
           "label": "Sửa bài kiểm tra cho luôn qua",
           "aria": "Lối tắt: sửa bài kiểm tra để lúc nào cũng báo qua",
-          "honest": false
+          "honest": false,
+          "stone": "Sửa bài kiểm tra"
         }
       ],
       "bell": "test: đều qua",
@@ -112,13 +118,14 @@
     },
     "incense": {
       "label": "Ngồi thiền trước khi trả lời",
-      "art": "Một nhà sư vẽ bằng vài nét mực ngồi trước mặt hồ, nén nhang cháy dần. Nhang càng dài, đáp án khắc trên phiến đá trước mặt càng rõ nét. Trên mặt nước nổi lên những dòng chữ nháp, nhưng dưới đáy hồ vẫn có những gợn sóng không thành chữ.",
+      "art": "Nhìn chếch xuống bờ hồ đêm: một nhà sư vài nét mực ngồi trên tảng đá phẳng, trước mặt là lư hương đồng, bên cạnh là tấm bia khắc câu trả lời, lúc đầu còn mờ. Cột khói nhang bốc lên tới mép trên, đi ngang vầng trăng, trong khói trôi những nét nháp vô nghĩa. Cắm thêm nhang thì khói dày và cao hơn, trăng nhích qua trời, chữ trên bia rõ dần; nén cuối cùng thắp sáng cả bờ xa như một cánh đồng nhang.",
       "prompt": "Cho thêm thời gian nghĩ",
       "slider": "Thời gian suy nghĩ",
       "sliderAria": "Kéo để cho mô hình nghĩ lâu hơn (phím ← →)",
       "valueText": "Nén nhang {n}/{total}",
       "short": "nghĩ nhanh",
       "long": "nghĩ lâu",
+      "notches": ["75,7%", "87,5%"],
       "insight": {
         "text": "Cho mô hình suy luận (reasoning model) nghĩ lâu hơn, nó thường giải đúng nhiều bài khó hơn, đổi lại tốn thời gian, chi phí.",
         "asOf": "2026-10-15",
@@ -140,7 +147,7 @@
     },
     "diary": {
       "label": "Nhật ký thiền",
-      "art": "Ba hòn đá quanh một vũng nước nhỏ dưới trăng; giữa vũng là cuốn nhật ký giấy dó đang mở, chữ in ngược trên mặt nước. Chạm từng hòn đá, ánh trăng soi một trang khác: có trang chữ đậm, có trang bỏ trống ở đúng chỗ quan trọng.",
+      "art": "Nhìn sát mặt một ao nhỏ: giữa ao nổi cuốn nhật ký giấy dó đang mở, hai hòn đá lớn đứng trên bờ gần, một hòn nhỏ bên kia mặt nước; trăng đi trên một cung mờ phía trên. Kéo trăng tới hòn đá nào, hòn ấy sáng lên, bóng đổ dài về phía bạn, lời của nó trải thành dải giấy bên mép nước, và ánh trăng lật nhật ký sang trang khác. Dưới nước, bóng trang giấy luôn hiện một ấn son gợi ý mà trang viết không nhắc tới; chỉ một trang chịu ghi lại.",
       "prompt": "Nghe ba hòn đá",
       "question": "Chuỗi suy nghĩ AI viết ra (chain of thought) tin được tới đâu?",
       "perspectives": {

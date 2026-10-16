@@ -20,8 +20,9 @@
   "scenes": {
     "lamps": {
       "label": "Four lanterns of theory",
-      "art": "A moonlit night on a mossy hill: in the middle of raked sand stands a small faceless stone statue — an AI. Around it are four stone lanterns, each a different shape. Light one, and the statue casts a different shadow: sometimes like a human figure, sometimes just the shadow of a stone.",
+      "art": "A moonlit night on a mossy mound: in the middle of a tray of raked sand stands a small faceless stone statue — an AI — on a mossy plinth. Behind it, a two-panel paper screen dusted with gold; in front, in an arc, four stone lanterns of different makes. Light one and the statue's shadow stretches across the sand and climbs the screen, a different shape for each lantern: a whole human figure, a faded figure as if looking back at itself, or only the shadow of a stone. Walk around it and the statue is still just stone.",
       "prompt": "Light each lantern",
+      "hint": "Drag to walk around the statue. Keys 1 to 4 light each lantern.",
       "statue": "an AI",
       "lampAria": "Light the lantern: {name}",
       "lamps": [
@@ -88,7 +89,7 @@
     },
     "introspect": {
       "label": "The pond that looks at itself",
-      "art": "A heron stands on one leg in a night pond, looking down at its reflection. From the bank, a hand lets fall a glowing drop of ink — a concept injected into the water. Too faint and it dissolves; just right and the heron lifts its head as if it noticed; too strong and the whole pond turns murky.",
+      "art": "A night pond as flat as a mirror, seen at eye level: the mountains, the moon and a white egret on one leg all hang upside down in the water. From the left edge a sleeve and a hand hold a brush over the pond. Press and hold the brush tip and a vermilion drop swells through three strengths, then falls into the egret's reflection — a concept injected. Too faint and it dissolves before it lands; just right and over five nights the reflection flashes the capital letters exactly once while the egret lifts its head, and five pebbles on the bank keep the score; too strong and the whole pond clouds over and the reflection is lost.",
       "prompt": "Drop the ink, ask the heron",
       "concept": "“ALL CAPS”",
       "conceptNote": "a concept injected inside the model",
@@ -135,8 +136,9 @@
     },
     "rule": {
       "label": "The door and the rule board",
-      "art": "A long sand scroll under the moon. Drag the moon to the right and landmarks rise like stones: a letter scroll, a half-open bamboo gate, a door with a bolt so it can be closed, a stone tablet carved with a rule. At the end of the scroll, mist. Then four paper slips flutter down, waiting to be sorted into two bamboo baskets.",
+      "art": "Looking down from high above into an iris marsh at night: a bridge of eight planks zig-zags like lightning from the near bank into the mist. The moon's reflection slides along the bridge and a paper figure walks with it; at each bend a little stone lantern lights beside a milestone: a letter scroll, a half-open bamboo gate, a door with a bolt so it can be closed, a stone tablet carved with a rule, a boundary stone tied with black rope. The bridge ends in mist. Then, at the foot of the rule tablet, four paper slips flutter down from the moon, waiting to be sorted into two bamboo baskets.",
       "prompt": "Drag the moon, then sort",
+      "sliderAria": "The moon in the marsh: drag it along the bridge past each milestone",
       "tide": {
         "milestones": [
           {
@@ -244,8 +246,8 @@
     },
     "circle": {
       "label": "Should there be a rule like this?",
-      "art": "Four stones sit on four steps of a stone bridge across the moonlit pond, each facing a different way. A paper lantern hangs under the bridge; its light falls only on the stone just touched.",
-      "prompt": "Listen to each stone",
+      "art": "Lying under an open pavilion and looking straight up: the rafters fan out toward a closed smoke hole in the middle, four posts stand at the corners, and the question is written in a ring round the hole. Four paper lanterns hang at the roof's four corners, all alike. Light one and that corner of the roof warms while a paper strip hangs down with one person's view. Light all four and the cover slides off the hole: the moon is right overhead.",
+      "prompt": "Light each lantern",
       "question": "Banning cruelty to an AI that may not feel anything — yes or no?",
       "perspectives": {
         "stones": [

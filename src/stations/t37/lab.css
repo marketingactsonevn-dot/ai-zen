@@ -1,0 +1,602 @@
+/* t37 scene 2 · lab: a tea-house corner in CSS 3D. One unit --u (px) sizes everything; --yaw (deg) walks round it. */
+.t37l {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  overflow: hidden;
+  --u: 90px;
+  --yaw: 0;
+  --gravel: color-mix(in srgb, var(--paper-2) 72%, var(--stone-2));
+}
+:root[data-theme='dark'] .t37l {
+  --gravel: color-mix(in srgb, var(--paper-2) 78%, var(--stone-3));
+}
+/* the picture (not the words under it) fades at the sides and the foot */
+.t37l-view,
+.t37l-skyw {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, #000 86%, transparent 99%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, #000 86%, transparent 99%);
+  mask-composite: intersect;
+}
+.t37l-skyw {
+  position: absolute;
+  left: -40px;
+  right: -140px;
+  top: 0;
+  height: 62%;
+  pointer-events: none;
+}
+.t37l-sky {
+  width: 100%;
+  height: 100%;
+}
+.t37l-view {
+  position: absolute;
+  inset: 0;
+  perspective: 1100px;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+.t37l.still .t37l-view {
+  cursor: default;
+}
+.t37l.grabbing .t37l-view {
+  cursor: grabbing;
+}
+.t37l-view:focus-visible {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--vermilion) 45%, transparent);
+  border-radius: 14px;
+}
+.t37l-world {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform-origin: 0 0;
+  /* you walk round a point just past the corner, in the side garden, so the house and the fork both stay in frame */
+  transform: rotateX(-17deg) rotateY(calc(var(--yaw) * -1deg)) translate3d(calc(-0.7 * var(--u)), 0, calc(0.5 * var(--u)));
+}
+.t37l-plane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--w) * var(--u));
+  height: calc(var(--h) * var(--u));
+  transform-origin: 0 0;
+}
+.t37l-plane > svg,
+.t37l-cut > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+/* placements (world: x right, y down, z toward you; the house corner on the ground is 0 0 0) */
+.t37l-ground {
+  transform: translate3d(calc(-9 * var(--u)), 0, calc(-6 * var(--u))) rotateX(90deg);
+  /* gravel: dark grains and moonlit grains over the ground's colour, scaled with the house */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='1' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.6 0 0 0 -1.42'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='1' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2.4 0 0 0 -1.36'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    var(--gravel);
+  background-size: calc(var(--u) * 1.1), calc(var(--u) * 1.4), auto;
+  /* every edge melts into the mist, whichever way you look at it */
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 58% 55%, #000 52%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 58% 55%, #000 52%, transparent 100%);
+}
+.t37l-front {
+  transform: translate3d(calc(-4 * var(--u)), calc(-2.6 * var(--u)), 0);
+  backface-visibility: hidden;
+}
+.t37l-side {
+  transform: translate3d(0, calc(-2.6 * var(--u)), 0) rotateY(90deg);
+  backface-visibility: hidden;
+}
+.t37l-deck {
+  transform: translate3d(calc(-4.2 * var(--u)), calc(-0.35 * var(--u)), 0) rotateX(90deg);
+}
+.t37l-riser {
+  transform: translate3d(calc(-4.2 * var(--u)), calc(-0.35 * var(--u)), calc(0.9 * var(--u)));
+}
+.t37l-roof-f {
+  transform-origin: 0 100%;
+  transform: translate3d(calc(-4.9 * var(--u)), calc(-5.53 * var(--u)), calc(0.9 * var(--u))) rotateX(55deg);
+}
+.t37l-roof-s {
+  transform-origin: 0 100%;
+  transform: translate3d(calc(0.9 * var(--u)), calc(-5.53 * var(--u)), calc(0.9 * var(--u))) rotateY(90deg) rotateX(55deg);
+}
+.t37l-fence {
+  transform: translate3d(calc(0.12 * var(--u)), calc(-2.4 * var(--u)), calc(0.2 * var(--u)));
+}
+.t37l-fence-end {
+  transform: translate3d(calc(2.92 * var(--u)), calc(-2.4 * var(--u)), calc(0.2 * var(--u))) rotateY(90deg);
+}
+.t37l-fascia-f {
+  transform: translate3d(calc(-4.9 * var(--u)), calc(-2.6 * var(--u)), calc(0.9 * var(--u)));
+}
+.t37l-fascia-s {
+  transform: translate3d(calc(0.9 * var(--u)), calc(-2.6 * var(--u)), calc(0.9 * var(--u))) rotateY(90deg);
+}
+.t37l-soffit-f {
+  transform: translate3d(calc(-4.9 * var(--u)), calc(-2.44 * var(--u)), 0) rotateX(90deg);
+}
+.t37l-soffit-s {
+  transform: translate3d(0, calc(-2.44 * var(--u)), calc(-3.9 * var(--u))) rotateX(90deg);
+}
+.t37l-gate {
+  transform: translate3d(calc(3.06 * var(--u)), calc(-2.2 * var(--u)), calc(-3.88 * var(--u))) rotateY(-47deg);
+}
+.t37l-box-f {
+  transform: translate3d(calc(-1.4 * var(--u)), calc(-0.75 * var(--u)), calc(0.62 * var(--u)));
+}
+.t37l-box-t {
+  transform: translate3d(calc(-1.4 * var(--u)), calc(-0.75 * var(--u)), calc(0.17 * var(--u))) rotateX(90deg);
+}
+.t37l-box-s {
+  transform: translate3d(calc(-0.8 * var(--u)), calc(-0.75 * var(--u)), calc(0.62 * var(--u))) rotateY(90deg);
+}
+/* paper cut-outs that turn to face you (billboards): the bottom centre stands on the spot */
+.t37l-cut {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--w) * var(--u));
+  height: calc(var(--h) * var(--u));
+  transform-origin: 50% 100%;
+}
+.t37l-red {
+  transform: translate3d(calc(-3.3 * var(--u) - 50%), calc(-0.35 * var(--u) - 100%), calc(0.42 * var(--u))) rotateY(calc(var(--yaw) * 1deg));
+}
+.t37l-keeper {
+  transform: translate3d(calc(2.7 * var(--u) - 50%), -100%, calc(-3.0 * var(--u))) rotateY(calc(var(--yaw) * 1deg));
+}
+.t37l-chochin {
+  transform-style: preserve-3d;
+  transform-origin: 50% 0;
+  transform: translate3d(calc(0.5 * var(--u) - 50%), calc(-2.42 * var(--u)), calc(0.72 * var(--u))) rotateY(calc(var(--yaw) * 1deg));
+}
+
+/* ── materials */
+.t37l-lane {
+  fill: var(--rake-hi);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t37l-lane {
+  fill: color-mix(in srgb, var(--moon) 30%, var(--stone-3));
+  opacity: 0.55;
+}
+.t37l .g13-moss-a {
+  opacity: 0.4;
+}
+.t37l .g13-moss-b {
+  opacity: 0.45;
+}
+.t37l .g13-moss-dot {
+  opacity: 0.7;
+}
+.t37l-stone-sh {
+  fill: var(--umbra);
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t37l-stone-sh {
+  opacity: 0.8;
+}
+.t37l-stone-side {
+  fill: var(--rock-lo);
+}
+.t37l-stone-rim {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t37l-stone-rim {
+  fill: var(--moon);
+  opacity: 0.55;
+}
+.t37l-stone-moss {
+  fill: var(--moss-a);
+  opacity: 0.85;
+}
+.t37l-cast {
+  fill: var(--umbra);
+}
+.t37l-fencefoot {
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t37l-fencefoot {
+  opacity: 0.7;
+}
+.t37l-spill {
+  fill: url(#p2-lamp);
+  opacity: 0.9;
+}
+.t37l-paper {
+  fill: color-mix(in srgb, var(--card) 80%, var(--lantern));
+}
+:root[data-theme='dark'] .t37l-paper {
+  fill: color-mix(in srgb, var(--lantern) 55%, #4a3a22);
+}
+.t37l-glow {
+  fill: url(#p2-lamp-body);
+  opacity: 0.6;
+}
+.t37l-lattice {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 1.6;
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t37l-lattice {
+  stroke: #1a130a;
+}
+.t37l-tear {
+  fill: var(--wash);
+  opacity: 0.6;
+}
+.t37l-eaveshade {
+  fill: var(--wash);
+  opacity: 0.42;
+}
+.t37l-frame,
+.t37l-wood-dk,
+.t37l-riser rect {
+  fill: color-mix(in srgb, var(--wash) 70%, #5a3f22);
+}
+.t37l-wood {
+  fill: color-mix(in srgb, var(--lantern) 25%, color-mix(in srgb, var(--rock-mid) 70%, #6b4a2a));
+}
+.t37l-wood-hi {
+  fill: color-mix(in srgb, var(--lantern) 30%, color-mix(in srgb, var(--rock-hi) 60%, #8a6a44));
+}
+.t37l-deck-glow {
+  fill: var(--lantern);
+  opacity: 0.14;
+}
+.t37l-boards {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 1.2;
+  opacity: 0.4;
+}
+.t37l-shadow {
+  fill: color-mix(in srgb, var(--wash) 85%, #3a2410);
+  opacity: 0.7;
+}
+.t37l-shadow2 {
+  fill: var(--wash);
+  opacity: 0.55;
+  filter: blur(1px);
+}
+:root[data-theme='dark'] .t37l-shadow2 {
+  fill: var(--umbra);
+  opacity: 0.92;
+}
+.t37l-plaster {
+  fill: color-mix(in srgb, var(--card) 70%, var(--rock-mid));
+}
+:root[data-theme='dark'] .t37l-plaster {
+  fill: var(--rock-mid);
+}
+.t37l-plaster-sh {
+  fill: var(--wash);
+  opacity: 0.25;
+}
+.t37l-win {
+  fill: var(--wash);
+  opacity: 0.55;
+}
+.t37l-rimlight,
+.t37l-ridge-rim,
+.t37l-fence-rim,
+.t37l-fascia-hi,
+.t37l-moonrim {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] :is(.t37l-rimlight, .t37l-ridge-rim, .t37l-fence-rim, .t37l-fascia-hi, .t37l-moonrim) {
+  fill: var(--moon);
+  opacity: 0.62;
+}
+:root[data-theme='dark'] .t37l-ridge-rim {
+  opacity: 0.85;
+}
+/* kawara: slate-dark tiles, columns of round crests catching a little moon, troughs and courses in shade */
+.t37l-tiles-bg {
+  fill: color-mix(in srgb, var(--rock-lo) 70%, #4a4a58);
+}
+:root[data-theme='dark'] .t37l-tiles-bg {
+  fill: color-mix(in srgb, var(--rock-lo) 85%, #3d3a44);
+}
+.t37l-trough {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 7;
+  opacity: 0.4;
+}
+.t37l-crest {
+  fill: none;
+  stroke: var(--rock-hi);
+  stroke-width: 4;
+  opacity: 0.32;
+}
+:root[data-theme='dark'] .t37l-crest {
+  stroke: color-mix(in srgb, var(--moon) 40%, var(--rock-hi));
+  opacity: 0.22;
+}
+.t37l-course {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 2.4;
+  opacity: 0.38;
+}
+/* the moon is behind: the front slope catches only a breath of it, the side slope lies in shade */
+.t37l-roof-lit {
+  fill: var(--moon);
+  opacity: 0.06;
+}
+.t37l-roof-sh {
+  fill: var(--wash);
+  opacity: 0.3;
+}
+.t37l-fascia {
+  fill: color-mix(in srgb, var(--wash) 65%, #5a3f22);
+}
+.t37l-soffit {
+  fill: var(--wash);
+  opacity: 0.92;
+}
+.t37l-rafters {
+  fill: none;
+  stroke: var(--rock-lo);
+  stroke-width: 5;
+  opacity: 0.5;
+}
+.t37l-cane,
+.t37l-rail {
+  opacity: 0.95;
+}
+:root[data-theme='dark'] .t37l-cane,
+:root[data-theme='dark'] .t37l-rail {
+  opacity: 0.85;
+}
+.t37l-ties {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 2.2;
+  opacity: 0.85;
+}
+.t37l-post {
+  fill: color-mix(in srgb, var(--wash) 72%, #5a3f22);
+}
+.t37l-cap,
+.t37l-fence-edge {
+  fill: color-mix(in srgb, var(--moss-b) 55%, var(--wash));
+}
+.t37l-seal {
+  fill: var(--vermilion);
+}
+.t37l-contact {
+  fill: var(--umbra);
+  opacity: 0.32;
+  filter: blur(2px);
+}
+:root[data-theme='dark'] .t37l-contact {
+  opacity: 0.75;
+}
+.t37l-robe {
+  fill: var(--vermilion);
+  opacity: 0.95;
+}
+.t37l-robe-dk {
+  fill: var(--wash);
+  opacity: 0.28;
+}
+.t37l-sleeve {
+  fill: color-mix(in srgb, var(--vermilion) 82%, var(--wash));
+}
+.t37l-skin {
+  fill: color-mix(in srgb, var(--lantern) 45%, #e9c9a3);
+}
+.t37l-blade {
+  fill: var(--rock-hi);
+}
+.t37l-head {
+  fill: var(--wash);
+  opacity: 0.88;
+}
+.t37l-warmrim {
+  fill: var(--lantern);
+  opacity: 0.9;
+}
+.t37l-person {
+  fill: var(--wash);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t37l-person {
+  fill: color-mix(in srgb, var(--stone) 70%, var(--wash));
+  opacity: 1;
+}
+.t37l-hatk {
+  fill: color-mix(in srgb, #b89c6a 70%, var(--rock-mid));
+}
+.t37l-pole {
+  fill: color-mix(in srgb, #6b4a2a 60%, var(--wash));
+}
+.t37l-lamp-body,
+.t37l-paperl {
+  fill: var(--lantern);
+}
+.t37l-ribs,
+.t37l-cord {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 1.4;
+  opacity: 0.6;
+}
+.t37l-caps {
+  fill: var(--wash);
+}
+.t37l-halo,
+.t37l-lamp-glow {
+  opacity: 0.9;
+}
+.t37l-moonglow {
+  fill: url(#p2-halo);
+  opacity: 0.55;
+}
+/* the lamp's state, on a paper slip tied to its cord beside it */
+.t37l-state {
+  position: absolute;
+  left: 64%;
+  top: 6%;
+  padding: 10px 8px 6px 9px;
+  font: 500 0.875rem/1.2 var(--serif);
+  color: var(--ink);
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--card) 90%, var(--lantern));
+  border-top: 3px solid var(--vermilion);
+  box-shadow: 1px 4px 10px color-mix(in srgb, var(--umbra) 22%, transparent);
+  /* it hangs well toward you (scaled back to its size), so turning never swings it behind the fence or the eave */
+  transform: translateZ(calc(var(--u) * 2.4)) translateY(calc(var(--u) * -0.62)) scale(var(--slipk, 0.82)) rotate(6deg);
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+/* the thread from the cord to the slip */
+.t37l-state::before {
+  content: '';
+  position: absolute;
+  left: -22%;
+  top: -2px;
+  width: 26%;
+  height: 1.4px;
+  background: var(--ink-2);
+  transform: rotate(-14deg);
+  transform-origin: 100% 0;
+}
+.t37l.tall .t37l-state {
+  left: 74%;
+  top: -2%;
+  padding: 8px 6px 4px 7px;
+}
+
+/* ── lantern out: the paper lamp goes grey, the shadow outside turns down the other path; the one on the paper stays */
+.t37l-paperl,
+.t37l-halo {
+  transition: fill 0.5s, opacity 0.5s;
+}
+.t37l.dark .t37l-paperl {
+  fill: var(--rock-mid);
+}
+.t37l.dark .t37l-halo {
+  opacity: 0;
+}
+.t37l-second {
+  transition: transform 1.4s cubic-bezier(0.45, 0, 0.3, 1);
+}
+.t37l.dark .t37l-second {
+  transform: rotate(var(--turn));
+}
+.t37l.still .t37l-second {
+  transition: none;
+}
+/* the chart in the lattice (detail open): 12 cells inked while lit, 3 in the dark */
+.t37l-cell {
+  fill: var(--wash);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.t37l.chart .t37l-cell {
+  opacity: 0.62;
+}
+.t37l.chart.dark .t37l-cell:nth-child(n + 4) {
+  opacity: 0;
+}
+
+/* ── touchable things: invisible buttons on the planes, a warm ring on focus */
+.t37l-hit {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+}
+.t37l-hit.papers {
+  left: 50%;
+  top: 62%;
+  width: 28%;
+  height: 34%;
+}
+.t37l-hit.red,
+.t37l-hit.keeper,
+.t37l-hit.sw {
+  inset: 0;
+}
+.t37l-hit.box {
+  inset: -30% -20%;
+}
+.t37l-hit:hover,
+.t37l-hit:focus-visible,
+.t37l-hit[aria-pressed='true'] {
+  outline: 2px solid color-mix(in srgb, var(--lantern) 75%, transparent);
+  outline-offset: 2px;
+}
+.t37l-hit:focus-visible {
+  outline-color: var(--vermilion);
+}
+
+/* what you touched, on a paper slip; the room's state, under the picture */
+.t37l-note {
+  position: absolute;
+  left: 3%;
+  top: 6%;
+  width: min(330px, 34%);
+  padding: 10px 14px 12px;
+  background: color-mix(in srgb, var(--card) 94%, var(--lantern));
+  border-left: 2px solid var(--vermilion);
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--wash) 16%, transparent);
+  font-family: var(--serif);
+  animation: p2-rise 0.5s ease-out both;
+}
+.t37l-name {
+  margin: 0 0 4px;
+  font: 500 1rem/1.3 var(--serif);
+  color: var(--ink);
+}
+.t37l-what {
+  margin: 0;
+  font: 400 0.9rem/1.45 var(--serif);
+  color: var(--ink-2);
+}
+.t37l-status {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5%;
+  width: min(40rem, 90%);
+  margin: 0;
+  transform: translateX(-50%);
+  text-align: center;
+  font: 400 clamp(1rem, 1.5vw, 1.15rem) / 1.45 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 14px var(--paper);
+}
+.t37l.dark .t37l-status::before {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.45em;
+  border-radius: 50%;
+  background: var(--vermilion);
+  vertical-align: 0.12em;
+}
+.t37l.tall .t37l-note {
+  left: 3%;
+  right: 3%;
+  width: auto;
+  top: 3%;
+}

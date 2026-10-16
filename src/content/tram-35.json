@@ -17,10 +17,11 @@
   "scenes": {
     "ladder": {
       "label": "Bậc thang tự động hoá",
-      "art": "Tranh mực: năm bậc đá phủ rêu dẫn lên cửa xưởng, mỗi bậc một ngọn đèn đá. Cùng một cuộn giấy “báo cáo tuần” được mang lên từng bậc; trên bậc cao nhất, một ống tre đong nước (shishi-odoshi) tự gõ theo nhịp — việc tự chạy đúng giờ.",
+      "art": "Tranh mực: năm thềm tường đá khan so le trái phải leo sườn đồi phủ rêu, giữa các thềm là dốc đất và dải sương, sau là rừng thông và trăng trên mái xưởng. Mỗi thềm có một đèn đá và một phiến đá khắc tên bậc; khi tới nơi, đèn thắp, vũng sáng ấm trên rêu và tiểu cảnh của bậc hiện ra: lời dặn tan thành hơi sương, cuộn giấy treo trong hốc đá, người giấy tự nhảy qua đá, máng tre qua ba cổng chờ ấn son, ống tre shishi-odoshi tự gõ.",
       "prompt": "Leo từng bậc",
       "task": "Việc mẫu: báo cáo tuần",
       "rungAria": "Bậc {n}: {name}",
+      "sealAria": "Ấn son: bạn duyệt để quy trình chạy tiếp",
       "rungs": [
         {
           "id": "prompt",
@@ -83,9 +84,14 @@
     },
     "scroll": {
       "label": "Mở một cuộn skill",
-      "art": "Tranh mực: cuộn giấy treo trên móc gỗ dưới đèn lồng, mở dần từ trên xuống. Phần đầu cuộn viết đậm như tấm biển hiệu (tên, “khi nào dùng”); thân cuộn là các bước; cuối cuộn buộc một túi vải nhỏ đựng giấy tờ kèm, chỉ mở khi cần.",
+      "art": "Tranh mực: vách ván gỗ tối trong hốc tường, cửa sổ tròn có trăng rọi một cột sáng có bụi. Chín cuộn skill treo trên thanh tre, mỗi cuộn một độ dài, màu lụa và núm khác nhau. Đèn tay giấy là nguồn sáng chính: chỉ trong vũng sáng mới đọc được thẻ tên. Mở cuộn đọc được, giấy lăn ngang dọc tường như makimono (trên điện thoại buông dọc như kakemono), ghi chú son ở lề, con dấu sao chép ở đuôi cuộn, túi vải đựng file kèm treo ở trục.",
       "prompt": "Mở cuộn skill",
       "codeAria": "Một skill mẫu: viết caption sản phẩm theo giọng thương hiệu",
+      "lampAria": "Đèn tay: kéo dọc tường để soi thẻ tên các cuộn",
+      "lampValue": "Đang soi cuộn {n} trên {total}",
+      "pouch": "references/",
+      "pouchFile": "giong-thuong-hieu.md",
+      "pouchAria": "Túi vải đựng file kèm (references/)",
       "copy": "Sao chép",
       "copied": "Đã sao chép",
       "fileName": "caption-san-pham/SKILL.md",
@@ -125,7 +131,7 @@
     },
     "moons": {
       "label": "Từ thói quen thành chuẩn",
-      "art": "Tranh mực: dải cát cào dài như cuộn tranh ngang; người xem kéo vầng trăng từ trái sang phải. Mỗi mốc là một chiếc đèn đá nhỏ nhô lên khỏi cát khi trăng đi qua; cuối dải, sương mù phủ một ngọn đèn chưa thắp.",
+      "art": "Tranh mực: đồng rêu nhấp nhô dưới trăng nhìn chéo từ trên, một lối mòn vào từ góc dưới trái, uốn chữ S qua sáu cột đá khắc hình rồi tan vào sương giữa chân trời. Kéo trăng theo cung mực trên trời: trăng tròn dần, bóng cột dài theo trăng, mỗi mốc trăng đi qua thì cột sáng lên, lối tự lát đá từng đoạn và chữ hiện trên rêu; tới hôm nay, nhiều người cầm đèn cùng đi.",
       "prompt": "Kéo trăng qua các mốc",
       "sliderAria": "Dòng thời gian, đang ở mốc {n} trên {total}: {label}",
       "today": "Hôm nay",
@@ -209,7 +215,7 @@
     },
     "spec": {
       "label": "Spec trước, code sau",
-      "art": "Tranh mực: bàn thợ dưới ngọn đèn treo, tờ bản vẽ trải phẳng, chặn bốn góc bằng đá cuội. Tám viên đá xếp thành lối từ cửa xưởng tới bàn; mỗi viên đặt đúng chỗ thì một nét trên bản vẽ được tô đậm.",
+      "art": "Tranh mực: bàn thợ ván dày dưới ngọn đèn giấy, nhìn chúc từ trên; tờ bản vẽ giấy dó nằm trong vũng sáng ấm, bốn góc chặn đá, tám vòng bút chì quanh lề. Tám viên sỏi khắc tên bước nằm dọc mép bàn gần; mỗi viên đặt đúng vòng thì bản vẽ đổi: phác cảm giác, dấu hỏi, khối spec, đường cắt, rồi các mảnh gấp dựng thành xưởng giấy, cây thông và hàng rào bên ao, có bóng thật; cuối cùng gấp phẳng, cuộn thành skill treo lên móc.",
       "prompt": "Đặt đá theo thứ tự",
       "pathAria": "Lối đá tám bước: từ mô tả tới skill",
       "stoneAria": "Viên đá: {label}",
@@ -217,6 +223,7 @@
       "keys": "Chạm lần lượt hoặc dùng phím số 1 đến 8.",
       "wrongHint": "Chưa đúng chỗ — {why}",
       "done": "Lối đã sáng. Mở thẻ mang về.",
+      "hookAria": "Cuộn skill vừa lưu, treo trên móc: mở ra đọc trên bàn",
       "steps": {
         "steps": [
           {
@@ -280,7 +287,7 @@
     },
     "line": {
       "label": "Dây chuyền trong xưởng",
-      "art": "Tranh mực: một sợi dây mực vắt ngang xưởng đêm, treo tám chiếc đèn lồng giấy — mỗi đèn một trạm việc. Người xem nối đèn bằng nét cọ; ở chỗ cần người duyệt, đặt một viên đá đỏ son như con dấu dưới chân đèn.",
+      "art": "Tranh mực: hành lang xưởng ván gỗ ban đêm hội tụ về cánh cửa cuối mở ra vườn trăng sáng. Tám đèn lồng giấy treo trên sợi dây mực, gần thì to và ấm, xa thì nhỏ và lạnh, mỗi đèn rọi một vũng sáng xuống sàn và vách giấy; tên trạm viết trên đèn. Tiền cảnh là bàn thấp có bát đá son, bút gác nghiên. Người xem nối đèn bằng nét cọ và đặt đá son dưới chân đèn ở chỗ cần người duyệt.",
       "prompt": "Nối đèn, đặt đá đỏ",
       "task": "Ví dụ: một sản phẩm mới lên kệ",
       "lineAria": "Dây chuyền tám trạm việc marketing",

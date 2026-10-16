@@ -16,10 +16,17 @@
   "scenes": {
     "defs": {
       "label": "Everyone has a definition",
-      "art": "Four engraved stones stand around a well full of mist. Each casts a different moon into it: a coin, a staircase, a ten-spoked wheel, a panel's seal. Touch a stone and one layer of mist clears.",
+      "art": "Four water vessels along the edge of a wooden veranda as the moon sets: a celadon tea bowl, a split-bamboo trough, a bronze basin and a stone tsukubai; each holds a round moon in its water, and before each lies a small stone carved with the name of who defines it. Touch a vessel and more water is poured in; the surface ripples, stills, and the moon in it takes the shape of that definition: a coin with a square hole, a ladder, a ten-spoke wheel, a council's seal. A paper strip hung below the vessel says who says what, and one veil of mist lifts from the garden. With all four, four threads of moonlight join the same moon to the four waters.",
       "prompt": "Touch a stone to read",
       "group": "Four definitions of AGI",
       "stoneAria": "Definition by {who}",
+      "names": [
+        "OpenAI",
+        "Google\nDeepMind",
+        "Hendrycks\n& colleagues",
+        "Microsoft\n& OpenAI"
+      ],
+      "strip": "Definition strip",
       "perspectives": {
         "stones": [
           {
@@ -74,7 +81,7 @@
     },
     "tide": {
       "label": "The rope that measures work",
-      "art": "A long scroll laid on silver sand. Drag the moon from left to right and the bamboo ropes measuring how long a task AI can do alone grow like tree shadows at moonset. The last mark sinks into the dawn mist and the rope's end fades away.",
+      "art": "A long scroll of sand at moonset. Drag the moon along its arc from high in the sky down to the western horizon: the bamboo pole on the right throws a shadow that grows to the left along a knotted cord, one notch per doubling, from ≈ 1 hour to ≥ 16 hours. Where the shadow reaches a notch it leaves a small stake; a milestone with no length raises a stone beside the pole instead. The lower the moon, the faster the shadow leaps; by today it runs on into the dawn mist.",
       "prompt": "Drag the moon along",
       "slider": "Timeline",
       "valueText": "{date}: {label}",
@@ -165,7 +172,7 @@
     },
     "fork": {
       "label": "Three paths into the mist",
-      "art": "A fork in the stone path, sunk in mist at moonset. Three bamboo well-sweeps stand beside it. Pull one and the garden at the end of the path changes: a tangled wilderness, evenly shared terraces, an open common garden, or a high-walled garden only a few may enter.",
+      "art": "A fork in the stone path at moonset; at its end a stone sand table on a pedestal holds a whole garden of hills, fields, woods and walls. Three bamboo well-sweeps stand at the three mouths: speed, sharing, control. Pull one and the garden in the tray reshapes at once: terraced paddies holding slivers of sky, a wild pine wood, a ring wall rising, a gate opening wide, forty lantern dots crowding inside the wall or spreading over the whole tray; leave all three midway and mist fills it. Three bands of mist lie across the branches; touch one and it parts on a slip of paper.",
       "prompt": "Pull the three levers",
       "sliderAria": "{label}: {value}",
       "sliders": [
@@ -276,7 +283,7 @@
     },
     "trays": {
       "label": "Three trays of work",
-      "art": "Three stone trays on a wooden veranda at moonset: one of white pebbles, dry and bright; one half under water; one still under thick mist. Pebbles engraved with tasks wait in a rattan basket for you to place them.",
+      "art": "Low over a wooden veranda at moonset, boards running toward the garden. Bottom left, a rattan basket holds eight pebbles engraved with tasks. Three stone trays recede on a diagonal: dry gravel nearest, one half under water at the pond's edge, the farthest sunk in mist under the moon. Pick up a pebble and throw it into a tray. With all eight placed, pull the blind's cord: early sun spills across the trays, the hollows where the experts would lay each pebble appear, and stray pebbles roll along dotted paths to their places.",
       "prompt": "Sort tasks into trays",
       "keys": "Pick a pebble, then press 1, 2 or 3 to place it in a tray",
       "pickAria": "Place “{task}” in the tray {tray}",
@@ -300,48 +307,56 @@
         {
           "id": "headlines",
           "label": "Write 20 headline options",
+          "short": "20 headlines",
           "expert": "good",
           "why": "Drafting many options is quick for AI; you still do the choosing."
         },
         {
           "id": "summary",
           "label": "Summarise 200 customer comments",
+          "short": "Summarise comments",
           "expert": "good",
           "why": "Reading a lot and grouping ideas is a strength; spot-check a few original quotes."
         },
         {
           "id": "translate",
           "label": "Draft-translate a post into English",
+          "short": "Draft translation",
           "expert": "good",
           "why": "Good drafts; brand voice and wordplay still need a human edit."
         },
         {
           "id": "moodboard",
           "label": "Moodboard and concept images",
+          "short": "Concept images",
           "expert": "good",
           "why": "Drafts are fast and cheap; images for real use need rights checks and a close look at details."
         },
         {
           "id": "video",
           "label": "A finished, on-brand video ad",
+          "short": "Video ad",
           "expert": "learning",
           "why": "Single shots look great; keeping characters, product and pacing consistent is still hard."
         },
         {
           "id": "campaign",
           "label": "Run a multi-week campaign alone",
+          "short": "Multi-week campaign",
           "expert": "learning",
           "why": "Agents handle longer chains of work every year, but hard-to-undo steps still need human sign-off."
         },
         {
           "id": "taste",
           "label": "Choose ideas that fit the brand's taste",
+          "short": "Pick by taste",
           "expert": "far",
           "why": "Taste is an accountable choice, rooted in knowing customers and culture."
         },
         {
           "id": "trust",
           "label": "Keep relationships, own mistakes",
+          "short": "Keep relationships",
           "expert": "far",
           "why": "Clients and partners need a person who stands behind the commitment."
         }

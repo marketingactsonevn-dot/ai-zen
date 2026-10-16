@@ -20,7 +20,7 @@
   "scenes": {
     "market": {
       "label": "Night market under the moon",
-      "art": "Ink painting: a night market by the lake, two rows of wooden stalls under paper lanterns. One big stall hangs a cluster of lanterns in many ink tones (many models in one place); a few small stalls hang a single lantern and sell exactly one thing. The full moon lights the stone path between the rows; the visitor holds paper slips with tasks and drops them into stalls.",
+      "art": "Ink painting seen from a small boat in the middle of a night lake: a lamp on the bow, and out on the water three market stalls on stilts at three distances. The nearest, the all-in-one stall, hangs a cluster of seven paper lanterns in many ink tones, its reflection a seven-coloured band; the two specialist stalls each hang one large lantern, reflected as a single amber streak. Each stall's name and trade is written on its cloth curtain. Four floating lanterns drift beside the boat, each carrying a task.",
       "prompt": "Drop each task at a stall",
       "group": "The market stalls",
       "taskGroup": "Tasks to do",
@@ -51,6 +51,7 @@
         {
           "id": "photo4k",
           "text": "4K product photo",
+          "short": "4K photo",
           "fits": [
             "image",
             "hub"
@@ -60,6 +61,7 @@
         {
           "id": "review",
           "text": "Review video with a virtual model",
+          "short": "Review video",
           "fits": [
             "sales",
             "hub"
@@ -69,6 +71,7 @@
         {
           "id": "film",
           "text": "Short film with camera moves",
+          "short": "Short film",
           "fits": [
             "hub"
           ],
@@ -77,6 +80,7 @@
         {
           "id": "link",
           "text": "Shop link into an ad",
+          "short": "Shop link",
           "fits": [
             "sales",
             "hub"
@@ -85,6 +89,8 @@
         }
       ],
       "dropAria": "Drop “{task}” at {stall}",
+      "lanternAria": "Floating lantern: {task}",
+      "keys": "Pick a floating lantern, choose a stall with the left and right arrows, press Enter to float it there. Or drag the lantern across the water.",
       "right": "Fits this stall.",
       "also": "Also fits: {stalls}",
       "wrong": "This stall doesn't specialise in that — try another.",
@@ -129,7 +135,7 @@
     },
     "path": {
       "label": "The path of one asset",
-      "art": "Ink painting: a cobblestone path across the night garden, from the workshop gate to a stone lantern (tōrō) glowing by the lake. Eight stones lie in the raked sand; the visitor sets them on the path one by one, and each right stone glows as if moonlit.",
+      "art": "Ink painting from high behind the workshop gate: raked sand winding round two mossy rocks, eight shallow hollows making an S-shaped path that recedes toward the lake, where a stone lantern waits to be lit. Eight stepping stones lie on the near sand; set in the right order, the path lights up, and at the end the lantern is lit and its reflection appears on the lake.",
       "prompt": "Set the stones in order",
       "pathAria": "An eight-step stone path for making an AI asset",
       "stoneAria": "Stone: {label}",
@@ -192,9 +198,10 @@
     },
     "credit": {
       "label": "Credits are water in a jar",
-      "art": "Ink painting: a crackle-glazed jar on the workbench, moonlight pouring through the window into its mouth. Each time you press generate, a ladle of water comes out; the ladle's size depends on model, resolution and length. The water level drops and the marks on the jar show clearly.",
+      "art": "A still life in the night workshop: a crackle-glazed moon jar on a plank bench, a quarter of its body cut away like a museum piece to show the water column and the carved marks inside. A moonbeam from the paper window pours into the jar's mouth. In front: a bamboo rack with a small dipper and a big ladle, a narrow and a wide neck collar, two hourglasses, a tea bowl; wooden tags hang under the bench for choosing. Each time you generate, the ladle takes water out and pours it into the bowl; the level drops.",
       "prompt": "Take one ladle",
       "jarAria": "Credit jar, {n} of 100 parts left",
+      "look": "Look down the jar's neck",
       "modelLabel": "Model",
       "models": [
         "Light model",
@@ -213,6 +220,7 @@
       "generate": "Generate",
       "refill": "Refill",
       "cost": "This one cost {n} parts",
+      "costShort": "{n} parts",
       "empty": "The jar is dry. Out of credits, you wait for the next cycle or buy more.",
       "scale": {
         "text": "The water parts only illustrate proportions; they are not any platform's real prices.",
@@ -252,10 +260,11 @@
     },
     "real": {
       "label": "Real and fake",
-      "art": "Ink painting: a night lake as flat as a mirror, reflecting a model standing on a wooden bridge — but the reflection is an avatar drawn in a different ink. Four stones around the lake, each with a small lamp waiting to be lit.",
+      "art": "Ink painting from the bank of a night lake, looking across: an arched bridge spans the water, and bridge and reflection close into one circle. On top of the bridge stands a model in a vermilion scarf, the moon behind her in the mist. Her reflection in the water is a polygon avatar drawn in thin straight lines. Four stones on the bank, each with a small lamp waiting to be lit.",
       "prompt": "Touch each stone",
       "group": "Four views on virtual models",
       "stoneAria": "View: {who}",
+      "waterAria": "The pond: swipe a finger or press Space to ripple it",
       "perspectives": {
         "stones": [
           {

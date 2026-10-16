@@ -108,8 +108,8 @@ function houseArt(trust: boolean, seed: number): SVGSVGElement {
   return g
 }
 
-/** Scene 4 — two look-alike houses (repos): read six signals side by side, then choose the one to trust. */
-export function repoScene(ctx: SceneCtx) {
+/** Scene 4 without WebGL (repo3d's fallback) — two look-alike houses: read six signals side by side, then choose the one to trust. */
+export function repoFlat(ctx: SceneCtx, host: HTMLElement) {
   const say = live('g11-say t31r-say')
   const panel = live('t31r-panel')
   let picked = false
@@ -128,7 +128,7 @@ export function repoScene(ctx: SceneCtx) {
     h('div', { class: 't31r-row' }, ...houses.map((x) => x.el)),
     h('div', { class: 't31r-chips' }, ...chips),
     panel, say)
-  ctx.art.append(root)
+  host.append(root)
   const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
 
   function show(id: string) {
@@ -150,4 +150,5 @@ export function repoScene(ctx: SceneCtx) {
     sheet.show()
   }
   ctx.prompt(K.prompt)
+  return () => root.remove()
 }

@@ -16,8 +16,9 @@
   "scenes": {
     "lantern": {
       "label": "Đèn lồng trên câu",
-      "art": "Đêm trăng trên một dòng sông mực. Mỗi chữ của câu là một chiếc đèn lồng giấy trôi thành hàng. Chạm chữ “nó”: một sợi sáng mảnh vắt qua mặt nước tới chiếc đèn nó cần nhất, vài sợi mờ hơn toả tới những đèn còn lại. Đổi chữ cuối câu, sợi sáng đổi hướng.",
+      "art": "Đứng trên một cây cầu gỗ nhìn xuống: dưới trăng nhỏ trên cao, một dòng sông mực uốn hình chữ S từ chân cầu tới chân trời. Mỗi chữ của câu là một chiếc đèn lồng giấy trôi theo dòng, gần thì to, xa thì nhỏ; hai chữ cuối chưa thắp, chờ trong một xoáy nước. Chạm chữ “nó”: đèn bùng sáng, nhấc khỏi mặt nước và vắt những sợi chỉ trăng tới từng chữ, chữ nó cần nhất nhận sợi sáng nhất. Kéo chiếc đèn trong xoáy vào cuối câu, sợi sáng nhất đổi hướng.",
       "prompt": "Chạm chữ “nó”",
+      "swapPrompt": "Kéo đèn trong xoáy vào cuối câu",
       "words": ["Con", "mèo", "không", "bắt", "được", "con", "chuột", "vì", "nó", "quá"],
       "pivot": 8,
       "pivotAria": "Chạm chữ “nó” để xem nó chú ý tới chữ nào (hoặc nhấn Enter)",
@@ -57,8 +58,11 @@
     },
     "heads": {
       "label": "Nhiều đầu, nhiều ánh nhìn",
-      "art": "Bốn chiếc đèn đá đứng trên một cây cầu cong, mỗi đèn một sắc mực: đen đậm, xám nhạt, lam khói, son đỏ. Cùng một câu viết trên mặt hồ bên dưới; mỗi đèn rọi xuống một chùm sáng riêng, nối các chữ thành một hình khác nhau như những chòm sao.",
+      "art": "Một hồ trăng giữa vườn đá đêm. Bốn chiếc đèn đá đứng ở bốn góc hồ, mỗi đèn một sắc mực: đen đậm, xám nhạt, lam khói, son đỏ. Trên mặt nước, chín bè giấy dó mang chín chữ của câu. Thắp một đèn: một nón sáng rơi qua sương xuống hồ, các chữ mà đèn ấy nối vồng lên thành dải sáng, mỗi đèn ở một độ cao riêng. Nhìn từ trên, các dải rối vào nhau; hạ tầm mắt xuống ngang mặt nước thì chúng tách thành bốn tầng.",
+      "aria": "Hồ trăng ba chiều với bốn đèn đá và chín bè chữ",
+      "hint": "Kéo để xoay vườn, cuộn hoặc chụm để lại gần, chạm đúp hoặc phím Home để về góc đầu. Phím mũi tên cũng xoay được; phím 1 đến 4 thắp đèn.",
       "prompt": "Thắp từng ngọn đèn",
+      "orbit": "Kéo để hạ tầm mắt xuống mặt nước",
       "words": ["Cô giáo", "khen", "bài văn", "của", "Lan", "vì", "nó", "rất", "hay"],
       "heads": [
         {
@@ -111,7 +115,7 @@
     },
     "layers": {
       "label": "Tầng tầng lớp lớp",
-      "art": "Mặt cắt một hồ sâu dưới trăng: nước chia thành nhiều tầng như những dải lụa, mực đậm dần về phía đáy. Một viên sỏi khắc chữ “nó” chìm xuống; qua mỗi tầng, nét chữ được tô thêm một lớp mực, tới đáy thì hiện rõ hình bài văn.",
+      "art": "Một khối hồ sâu bị cắt ra như một vật, lơ lửng trong đêm: trên mặt là nước, lá súng và bóng trăng; mặt cắt trong như kính, nước xếp tầng như những dải lụa, mực đậm dần về phía đáy; vách đá có rễ cây; dọc mép cắt là 96 vạch mảnh chia thành ba dải. Một viên sỏi khắc chữ “nó” chìm xuống; qua mỗi dải, nét chữ được tô thêm một lớp mực, tới đáy thì nằm cạnh cuộn giấy là bài văn.",
       "prompt": "Thả viên sỏi xuống đáy",
       "word": "nó",
       "slider": "Độ sâu",
@@ -141,7 +145,7 @@
     },
     "window": {
       "label": "Khung cửa đọc được bao xa",
-      "art": "Một khung cửa giấy mở ra dải cát dài như cuộn tranh dưới trăng. Kéo vầng trăng sang phải, khung cửa rộng dần: từ vài trang thư, tới trọn một cuốn tiểu thuyết, tới cả một kệ sách; mỗi mốc là một hòn đá nhô lên khỏi cát.",
+      "art": "Trong một phòng trà, nhìn ra một vách cửa giấy dài; vầng trăng là quầng sáng sau lớp giấy. Kéo trăng qua các năm, từng ô cửa trượt mở ra một khu vườn sâu: mỗi mốc là một tấm bia nhô lên mang thứ đọc được trong một lần, từ một chữ, vài trang, một cuốn tiểu thuyết, một chồng sách, cả một tủ sách, tới hôm nay là một thư viện bia sách chạy tới chân trời.",
       "prompt": "Kéo trăng qua các năm",
       "tide": {
         "milestones": [

@@ -1,0 +1,593 @@
+/* Scene 2 ★ pens: the easel in the night workshop. Part 2 tokens only. */
+/* the pot's bamboo (its gradient lives in the page's shared defs, so the tones sit on :root) */
+:root {
+  --t36-pot-a: color-mix(in srgb, var(--moss-b) 45%, var(--lantern));
+  --t36-pot-b: color-mix(in srgb, var(--moss-c) 45%, var(--lantern));
+  --t36-pot-hi: color-mix(in srgb, var(--moss-c) 35%, var(--rock-hi));
+  --t36-pot-lo: color-mix(in srgb, var(--moss-b) 55%, var(--umbra));
+}
+:root[data-theme='dark'] {
+  --t36-pot-a: color-mix(in srgb, var(--moss-b) 55%, var(--lantern));
+  --t36-pot-b: color-mix(in srgb, var(--moss-c) 55%, var(--lantern));
+  --t36-pot-hi: color-mix(in srgb, var(--moss-c) 50%, var(--moon));
+}
+.t36p {
+  position: absolute;
+  inset: 0 0 auto 0;
+  overflow: hidden;
+  --wood: color-mix(in srgb, var(--lantern) 42%, var(--rock-mid));
+  --wood-lo: color-mix(in srgb, var(--lantern) 30%, var(--rock-lo));
+}
+:root[data-theme='dark'] .t36p {
+  --wood: color-mix(in srgb, var(--lantern) 32%, var(--rock-mid));
+  --wood-lo: color-mix(in srgb, var(--lantern) 18%, var(--rock-lo));
+}
+.t36p-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* the room floats in the paper like Part 1's scenes: no hard edge */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 72%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 72%, transparent);
+  mask-composite: intersect;
+}
+.t36p-wall {
+  fill: color-mix(in srgb, var(--wash) 12%, var(--paper));
+}
+.t36p-board-a {
+  fill: color-mix(in srgb, var(--lantern) 10%, var(--rock-mid));
+  opacity: 0.32;
+}
+.t36p-board-b {
+  fill: color-mix(in srgb, var(--lantern) 8%, var(--rock-lo));
+  opacity: 0.3;
+}
+.t36p-seam {
+  stroke: var(--wash);
+  stroke-width: 1.4;
+  opacity: 0.22;
+}
+.t36p-grain-w {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 0.8;
+  opacity: 0.1;
+}
+:root[data-theme='dark'] .t36p-wall {
+  fill: color-mix(in srgb, var(--wash) 35%, var(--paper));
+}
+:root[data-theme='dark'] .t36p-board-a {
+  fill: var(--rock-lo);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t36p-board-b {
+  fill: var(--wash);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t36p-seam {
+  stroke: var(--umbra);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t36p-grain-w {
+  stroke: var(--ink-3);
+  opacity: 0.06;
+}
+:root[data-theme='light'] .t36p-glow {
+  opacity: 0.8;
+}
+.t36p-cool {
+  opacity: 0.45;
+}
+:root[data-theme='light'] .t36p-cool {
+  opacity: 0;
+}
+.t36p-wallshadow {
+  fill: var(--umbra);
+  opacity: 0.16;
+}
+:root[data-theme='dark'] .t36p-wallshadow {
+  opacity: 0.55;
+}
+.t36p-easel {
+  fill: var(--wood-lo);
+}
+:root[data-theme='dark'] .t36p-easel {
+  fill: color-mix(in srgb, var(--wash) 40%, var(--wood-lo));
+}
+.t36p-easel-hi {
+  fill: none;
+  stroke: var(--lantern);
+  stroke-width: 1.4;
+  opacity: 0.35;
+}
+.t36p-table {
+  fill: color-mix(in srgb, var(--lantern) 18%, var(--rock-mid));
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t36p-table {
+  fill: color-mix(in srgb, var(--lantern) 10%, var(--rock-lo));
+  opacity: 1;
+}
+.t36p-tseam {
+  stroke: var(--wash);
+  stroke-width: 1.2;
+  opacity: 0.18;
+}
+:root[data-theme='dark'] .t36p-tseam {
+  stroke: var(--umbra);
+  opacity: 0.6;
+}
+.t36p-tedge {
+  stroke: color-mix(in srgb, var(--lantern) 40%, var(--moon));
+  stroke-width: 2;
+  opacity: 0.7;
+}
+.t36p-fshadow,
+.t36p-contact {
+  fill: var(--umbra);
+  opacity: 0.3;
+}
+.t36p .p2p-lamp-halo {
+  opacity: 0.9;
+}
+.t36p-glow2 {
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .t36p-glow,
+:root[data-theme='dark'] .t36p-potlight {
+  mix-blend-mode: screen;
+}
+.t36p-potlight {
+  opacity: 0.85;
+}
+/* the near layer: the table's front edge, an ink stone and a brush on its rest — a touch out of focus */
+.t36p-near,
+.t36p-threads {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+}
+.t36p-near {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+  mask-composite: intersect;
+}
+.t36p-nearobj {
+  filter: blur(1.2px);
+}
+.t36p-tfront {
+  fill: color-mix(in srgb, var(--wood-lo) 70%, var(--wash));
+}
+.t36p-inkstone {
+  fill: color-mix(in srgb, var(--wash) 60%, var(--rock-lo));
+  stroke: color-mix(in srgb, var(--rock-hi) 35%, transparent);
+  stroke-width: 1;
+}
+.t36p-inkface {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--rock-mid));
+}
+.t36p-inkwell {
+  fill: var(--wash);
+  stroke: color-mix(in srgb, var(--rock-hi) 40%, transparent);
+  stroke-width: 1;
+}
+.t36p-inksheen {
+  stroke: var(--lantern);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.t36p-rest {
+  fill: color-mix(in srgb, var(--moss-c) 50%, var(--card));
+  stroke: color-mix(in srgb, var(--wash) 40%, transparent);
+  stroke-width: 1;
+}
+.t36p-nbrush {
+  fill: var(--wood);
+}
+.t36p-ntip {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t36p-ntip {
+  fill: var(--umbra);
+}
+/* the thread that ties the slip to its pen */
+.t36p-thread {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.3;
+  opacity: 0.85;
+}
+
+/* ── the frame on its easel; inside it the WebGL garden and the sheet of paper ── */
+.t36p-frame {
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--umbra) 30%, transparent), transparent 5%, transparent 95%, color-mix(in srgb, var(--umbra) 40%, transparent)),
+    linear-gradient(180deg, color-mix(in srgb, var(--moon) 22%, transparent), transparent 6%, transparent 92%, color-mix(in srgb, var(--umbra) 40%, transparent)),
+    repeating-linear-gradient(91deg, transparent 0 9px, color-mix(in srgb, var(--umbra) 10%, transparent) 9px 10px, transparent 10px 23px, color-mix(in srgb, var(--moon) 7%, transparent) 23px 24px),
+    linear-gradient(150deg, var(--wood), var(--wood-lo));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--umbra) 55%, transparent),
+    inset 1px 1px 0 2px color-mix(in srgb, var(--moon) 16%, transparent),
+    26px 34px 46px -14px color-mix(in srgb, var(--umbra) 62%, transparent),
+    6px 8px 10px -4px color-mix(in srgb, var(--umbra) 40%, transparent);
+  transition: border-radius 0.9s var(--ease), background 0.9s;
+}
+.t36p-view {
+  position: absolute;
+  inset: var(--fb, 12px);
+  overflow: hidden;
+  border-radius: 1px;
+  background:
+    radial-gradient(120% 90% at 30% 20%, color-mix(in srgb, var(--wash) 40%, var(--paper-2)), color-mix(in srgb, var(--wash) 70%, var(--paper-2)));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--umbra) 60%, transparent), inset 3px 4px 10px color-mix(in srgb, var(--umbra) 50%, transparent);
+}
+.t36p .p2s3 .stage-canvas {
+  -webkit-mask-image: none;
+  mask-image: none;
+  transition: opacity 0.5s;
+}
+.t36p-frame.is-flat .p2s3 .stage-canvas {
+  opacity: 0;
+}
+.t36p-frame.is-flat .p2s3 {
+  cursor: default;
+}
+/* the easel's ledge the frame rests on */
+.t36p-ledge {
+  position: absolute;
+  left: -3%;
+  right: -3%;
+  bottom: -9px;
+  height: 12px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--wood), var(--wood-lo) 60%, color-mix(in srgb, var(--umbra) 70%, var(--wood-lo)));
+  box-shadow: 0 6px 10px -4px color-mix(in srgb, var(--umbra) 70%, transparent);
+  transition: opacity 0.6s;
+}
+
+/* the sheet a flat pen paints: it only slides, and springs back */
+.t36p-sheet {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: grab;
+  box-shadow: 0 2px 3px color-mix(in srgb, var(--umbra) 35%, transparent), 0 14px 26px -10px color-mix(in srgb, var(--umbra) 70%, transparent);
+  transition: opacity 0.22s;
+}
+.t36p-sheet.held {
+  cursor: grabbing;
+}
+.t36p-sheet.settle {
+  transition: transform 0.75s cubic-bezier(0.2, 1.35, 0.35, 1), opacity 0.22s;
+}
+.t36p-sheet.fade {
+  opacity: 0;
+}
+.t36p-frame.is-3d .t36p-sheet {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s, visibility 0s 0.3s;
+}
+.t36p-cv {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.t36p-svgslot,
+.t36p-svgslot > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.t36p-svgslot:empty {
+  display: none;
+}
+.t36p-svg-bg {
+  fill: var(--card);
+}
+.t36p-svg-line {
+  fill: var(--ink-3);
+  opacity: 0.5;
+}
+.t36p-svg-water {
+  fill: var(--water);
+  opacity: 0.6;
+}
+.t36p-svg-rim {
+  fill: var(--rock-lo);
+}
+.t36p-svg-pad {
+  fill: var(--moss);
+  opacity: 0.6;
+}
+.t36p-svg-shadow {
+  fill: var(--umbra);
+  opacity: 0.25;
+}
+
+/* the brush that sweeps the frame between pens */
+.t36p-sweep {
+  position: absolute;
+  top: -6%;
+  left: -20%;
+  width: 140%;
+  height: 112%;
+  fill: var(--wash);
+  pointer-events: none;
+  transform: translateX(-110%);
+  z-index: 3;
+}
+:root[data-theme='dark'] .t36p-sweep {
+  fill: var(--ink-3);
+}
+.t36p-sweep.go {
+  animation: t36p-sweep 0.66s cubic-bezier(0.5, 0, 0.5, 1);
+}
+@keyframes t36p-sweep {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(110%);
+  }
+}
+
+/* Godot / Unity: the frame becomes a screen's bezel, the easel's ledge a stand */
+.t36p-frame.is-device {
+  border-radius: calc(var(--fb, 12px) * 1.8);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--wash) 70%, var(--rock-lo)), color-mix(in srgb, var(--umbra) 85%, var(--wash)));
+}
+.t36p-frame.is-device .t36p-view {
+  border-radius: calc(var(--fb, 12px) * 0.7);
+}
+.t36p-frame::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: calc(var(--fb, 12px) * 0.5);
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--rock-lo);
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.t36p-frame.is-device::after {
+  opacity: 1;
+}
+.t36p-frame.is-device .t36p-ledge {
+  left: 38%;
+  right: 38%;
+  bottom: -24px;
+  height: 24px;
+  border-radius: 0 0 6px 6px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--umbra) 80%, var(--wash)), color-mix(in srgb, var(--wash) 60%, var(--rock-lo)), color-mix(in srgb, var(--umbra) 80%, var(--wash)));
+}
+
+/* ── the pot and its five pens ── */
+.t36p-pot {
+  position: absolute;
+}
+.t36p-potart {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}
+.t36p-fibre {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 0.7;
+  opacity: 0.16;
+}
+.t36p-node {
+  fill: var(--umbra);
+  opacity: 0.22;
+}
+.t36p-cut {
+  stroke: var(--umbra);
+  stroke-width: 1.2;
+  opacity: 0.3;
+}
+.t36p-node-hi,
+.t36p-pot-hi {
+  stroke: var(--moon);
+  stroke-width: 2;
+  opacity: 0.35;
+}
+.t36p-pot-hi {
+  stroke-width: 5;
+  opacity: 0.16;
+}
+.t36p-mouth-rim {
+  fill: var(--t36-pot-hi);
+}
+:root[data-theme='light'] .t36p-mouth-rim {
+  fill: color-mix(in srgb, var(--lantern) 22%, var(--card));
+}
+.t36p-mouth {
+  fill: var(--umbra);
+  opacity: 0.88;
+}
+.t36p-pen {
+  --k: 1;
+  position: absolute;
+  left: calc(50% + (var(--i) - 2) * 18%);
+  bottom: 52%;
+  --pw: max(16px, calc(var(--penh, 240px) * 0.125));
+  width: max(32px, var(--pw));
+  height: calc(var(--penh, 240px) * var(--k));
+  margin: 0 0 0 calc(max(32px, var(--pw)) / -2);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  transform: rotate(calc((var(--i) - 2) * 7deg));
+  transition: transform 0.55s var(--ease), filter 0.4s;
+  z-index: 1;
+}
+.t36p-canvas { --k: 0.74; }
+.t36p-p5 { --k: 0.92; }
+.t36p-phaser { --k: 0.84; }
+.t36p-three { --k: 0.96; }
+.t36p-engine { --k: 1.04; }
+.t36p-penart {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: var(--pw);
+  height: 100%;
+  margin-left: calc(var(--pw) / -2);
+  overflow: visible;
+  filter: drop-shadow(5px 4px 3px color-mix(in srgb, var(--umbra) 40%, transparent));
+}
+.t36p-pen[aria-pressed='true'] {
+  transform: rotate(calc((var(--i) - 2) * 7deg)) translateY(-16%);
+}
+.t36p-pen:hover:not([aria-pressed='true']) {
+  transform: rotate(calc((var(--i) - 2) * 7deg)) translateY(-4%);
+}
+.t36p-pen:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.t36p-wet {
+  filter: drop-shadow(0 0 0 transparent);
+}
+.t36p-glint {
+  stroke: var(--card);
+  stroke-width: 0.8;
+  opacity: 0.6;
+}
+/* the pen's name, written along its shaft */
+.t36p-name {
+  position: absolute;
+  left: 50%;
+  bottom: 42%;
+  writing-mode: vertical-rl;
+  transform: translateX(-50%) rotate(180deg);
+  font: 500 14px/1 var(--serif);
+  white-space: nowrap;
+  color: var(--ink);
+  text-shadow: 0 0 5px var(--paper), 0 0 5px var(--paper), 0 0 2px var(--paper);
+  pointer-events: none;
+}
+.t36p-pen[aria-pressed='true'] .t36p-name {
+  color: var(--vermilion);
+}
+
+/* ── the paper slip the chosen pen carries ── */
+.t36p-tag {
+  position: absolute;
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 22px 18px 24px;
+  font-family: var(--serif);
+  color: var(--ink);
+  border-radius: 2px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--wash) 55%, var(--lantern)) 0 7px, color-mix(in srgb, var(--umbra) 30%, transparent) 7px 9px, transparent 9px) top / 100% 100% no-repeat,
+    linear-gradient(0deg, color-mix(in srgb, var(--umbra) 26%, var(--card)) 0, color-mix(in srgb, var(--card) 90%, var(--moon)) 7px, color-mix(in srgb, var(--umbra) 18%, var(--card)) 13px, transparent 16px) bottom / 100% 100% no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .5 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, color-mix(in srgb, var(--umbra) 10%, var(--card)), var(--card) 18%, var(--card) 82%, color-mix(in srgb, var(--umbra) 12%, var(--card)));
+  filter: drop-shadow(4px 8px 8px color-mix(in srgb, var(--umbra) 45%, transparent));
+  transform-origin: 30px 0;
+}
+:root[data-theme='dark'] .t36p-tag {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--rock-lo) 60%, var(--lantern)) 0 7px, color-mix(in srgb, var(--umbra) 50%, transparent) 7px 9px, transparent 9px) top / 100% 100% no-repeat,
+    linear-gradient(0deg, color-mix(in srgb, var(--umbra) 40%, var(--card)) 0, color-mix(in srgb, var(--card) 80%, var(--moon)) 7px, color-mix(in srgb, var(--umbra) 30%, var(--card)) 13px, transparent 16px) bottom / 100% 100% no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .3 0 0 0 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, color-mix(in srgb, var(--umbra) 25%, var(--card)), color-mix(in srgb, var(--card) 85%, var(--lantern)) 20%, color-mix(in srgb, var(--card) 88%, var(--lantern)) 80%, color-mix(in srgb, var(--umbra) 25%, var(--card)));
+}
+.t36p-tag[hidden] {
+  display: none;
+}
+.t36p-tag.in {
+  animation: t36p-swing 1.1s var(--ease);
+}
+@keyframes t36p-swing {
+  0% {
+    opacity: 0;
+    transform: translateY(-14px) rotate(-3deg);
+  }
+  45% {
+    opacity: 1;
+    transform: translateY(0) rotate(1.4deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+.t36p-tag p {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.t36p-tag .t36p-tname {
+  margin-bottom: 12px;
+  font: 500 1.25rem/1.25 var(--serif);
+}
+.t36p-eye {
+  display: block;
+  margin-bottom: 2px;
+  font: 500 12px/1.4 var(--sans);
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+.t36p-ask q {
+  quotes: '“' '”';
+}
+.t36p-tag .t36p-fact {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.t36p-docs {
+  font: 500 13px/1.4 var(--sans);
+  color: var(--ink-2);
+  text-underline-offset: 3px;
+}
+.t36p-docs:hover {
+  color: var(--vermilion);
+}
+.t36p:not(.wide) .t36p-tag {
+  padding: 12px 12px 8px;
+}
+.t36p:not(.wide) .t36p-tag p {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.t36p:not(.wide) .t36p-tag .t36p-tname {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t36p-tag.in,
+  .t36p-sweep.go {
+    animation: none;
+  }
+  .t36p-sheet.settle,
+  .t36p-pen {
+    transition: none;
+  }
+}

@@ -1,0 +1,225 @@
+/* 1 · layers: SPLIT at the waterline (layers.ts). Each world layer slides at its own rate when the camera dives. */
+/* the water runs full-bleed to the window's edges (the art box is centred) and fades only into the mist below */
+.t25l {
+  left: calc(50% - 50vw);
+  right: calc(50% - 50vw);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 3%, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 3%, #000 86%, transparent);
+}
+.t25l-world {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t25l-world > svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+.t25l-weed {
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 78%);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent 78%);
+}
+
+/* the water column's value ramp, light: silver under the skin → darkest at the ribbon → mist, no floor */
+.t25l-st-u0 { stop-color: color-mix(in srgb, var(--mist) 78%, var(--water)); }
+.t25l-st-u1 { stop-color: color-mix(in srgb, var(--water) 52%, var(--mist)); }
+.t25l-st-u2 { stop-color: color-mix(in srgb, var(--water) 90%, var(--wash)); }
+.t25l-st-u3 { stop-color: color-mix(in srgb, var(--water) 55%, var(--mist)); }
+.t25l-st-f0 { stop-color: var(--mist); }
+.t25l-st-s0 { stop-color: #fff; }
+.t25l-st-dim { stop-color: var(--wash); }
+.t25l-w0 { stop-color: #fff; }
+.t25l-w1 { stop-color: #fff; stop-opacity: 0; }
+/* dark: near-black water, the window and the shafts the brightest things in it */
+:root[data-theme='dark'] .t25l-st-u0 { stop-color: color-mix(in srgb, var(--water) 66%, var(--mist)); }
+:root[data-theme='dark'] .t25l-st-u1 { stop-color: color-mix(in srgb, var(--water) 86%, var(--mist)); }
+:root[data-theme='dark'] .t25l-st-u2 { stop-color: var(--water); }
+:root[data-theme='dark'] .t25l-st-u3 { stop-color: color-mix(in srgb, var(--water) 80%, var(--mist)); }
+:root[data-theme='dark'] .t25l-st-f0 { stop-color: color-mix(in srgb, var(--mist) 34%, var(--water)); }
+:root[data-theme='dark'] .t25l-st-s0 { stop-color: var(--mist); }
+:root[data-theme='dark'] .t25l-st-dim { stop-color: var(--umbra); }
+:root[data-theme='dark'] .t25l-w0 { stop-color: var(--moon); }
+:root[data-theme='dark'] .t25l-w1 { stop-color: var(--moon); }
+.t25l-wrim { fill: #fff; opacity: 0.9; }
+:root[data-theme='dark'] .t25l-wrim { fill: var(--moon); opacity: 0.55; }
+.t25l-wmoon { fill: #fff; }
+:root[data-theme='dark'] .t25l-wmoon { fill: var(--moon); opacity: 0.9; }
+
+.t25l-skin { fill: #fff; opacity: 0.55; }
+:root[data-theme='dark'] .t25l-skin { fill: var(--mist); opacity: 0.35; }
+.t25l-line { fill: #fff; opacity: 0.95; }
+:root[data-theme='dark'] .t25l-line { fill: var(--moon); opacity: 0.8; }
+.t25l-glint { fill: #fff; }
+:root[data-theme='dark'] .t25l-glint { fill: var(--moon); }
+.t25l-script { fill: var(--wash); opacity: 0.6; }
+:root[data-theme='dark'] .t25l-script { fill: var(--moon); opacity: 0.9; }
+:root[data-theme='dark'][data-quality='high'] .t25l-script,
+:root[data-theme='dark'][data-quality='high'] .t25l-written { filter: drop-shadow(0 0 3px var(--moon)); }
+.t25l-rays { mix-blend-mode: screen; }
+:root[data-theme='light'] .t25l-rays { mix-blend-mode: normal; opacity: 0.75; }
+.t25l-band { fill: var(--wash); opacity: 0.3; }
+:root[data-theme='dark'] .t25l-band { fill: var(--mist); opacity: 0.08; }
+.t25l-bandrim { fill: #fff; opacity: 0.9; }
+:root[data-theme='dark'] .t25l-bandrim { fill: var(--moon); opacity: 0.4; }
+.t25l-fold { fill: #fff; opacity: 0.16; }
+:root[data-theme='dark'] .t25l-fold { fill: var(--mist); opacity: 0.14; }
+.t25l-roots { fill: var(--wash); opacity: 0.35; }
+:root[data-theme='dark'] .t25l-roots { fill: color-mix(in srgb, var(--mist) 26%, var(--water)); opacity: 1; }
+.t25l-thread { fill: var(--wash); opacity: 0.42; }
+:root[data-theme='dark'] .t25l-thread { fill: var(--mist); opacity: 0.4; }
+.t25l-dust { fill: var(--wash); opacity: 0.25; }
+:root[data-theme='dark'] .t25l-dust { fill: var(--mist); opacity: 0.35; }
+.t25l-leaf { fill: var(--moss-2); opacity: 0.9; }
+.t25l-leaf.red { fill: var(--vermilion); opacity: 0.8; }
+.t25l-rib { fill: var(--wash); opacity: 0.45; }
+.t25l-weedp { fill: var(--wash); opacity: 0.32; }
+.t25l-weedp.far { opacity: 0.15; }
+:root[data-theme='dark'] .t25l-weedp { fill: color-mix(in srgb, var(--mist) 30%, var(--water)); opacity: 0.95; }
+:root[data-theme='dark'] .t25l-weedp.far { opacity: 0.55; }
+.t25l-motes { fill: #fff; opacity: 0.5; }
+:root[data-theme='dark'] .t25l-motes { fill: var(--mist); opacity: 0.45; }
+/* the slab: three tones, moss, ink edge, moonlit back edge, a wet line and contact shadow, its ripple reflection */
+.t25l-slab-under { fill: var(--umbra); opacity: 0.3; }
+:root[data-theme='dark'] .t25l-slab-under { opacity: 0.55; }
+.t25l-slab-contact { fill: var(--umbra); opacity: 0.32; }
+:root[data-theme='dark'] .t25l-slab-contact { opacity: 0.7; }
+.t25l-slab-grain { fill: var(--wash); opacity: 0.28; }
+:root[data-theme='dark'] .t25l-slab-grain { fill: var(--umbra); opacity: 0.5; }
+.t25l-slab-wet { fill: var(--umbra); opacity: 0.3; }
+:root[data-theme='dark'] .t25l-slab-wet { opacity: 0.55; }
+.t25l-slab-moss { fill: var(--moss-a); opacity: 0.92; }
+.t25l-slab-moss2 { fill: var(--moss-b); opacity: 0.7; }
+.t25l-slab-ink { fill: var(--wash); opacity: 0.55; }
+:root[data-theme='dark'] .t25l-slab-ink { fill: var(--umbra); opacity: 0.8; }
+.t25l-slab-rim { fill: #fff; opacity: 0.95; }
+:root[data-theme='dark'] .t25l-slab-rim { fill: var(--moon); opacity: 0.6; }
+/* where a pebble sat: a damp ghost of it, once it is in the water */
+.t25l-ghost { opacity: 0; transition: opacity 1.2s ease-out 0.4s; }
+.t25l.is-sunk-0 .t25l-ghost-0,
+.t25l.is-sunk-1 .t25l-ghost-1,
+.t25l.is-sunk-2 .t25l-ghost-2 { opacity: 1; }
+.t25l-ghost-wet { fill: var(--umbra); opacity: 0.22; }
+:root[data-theme='dark'] .t25l-ghost-wet { opacity: 0.5; }
+.t25l-ghost-ink { fill: var(--wash); opacity: 0.35; }
+:root[data-theme='dark'] .t25l-ghost-ink { fill: var(--moon); opacity: 0.3; }
+
+/* rings on the skin, and the script a skipping stone leaves */
+.t25l-splash ellipse {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.4;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: t25l-ring 1.8s ease-out calc(var(--i) * 0.16s) both;
+}
+:root[data-theme='dark'] .t25l-splash ellipse { stroke: var(--moon); }
+@keyframes t25l-ring {
+  from { opacity: 0.9; transform: scale(0.2); }
+  to { opacity: 0.25; transform: scale(1); }
+}
+.t25l-written {
+  fill: var(--wash);
+  opacity: 0.6;
+  animation: p2-fade 1.2s ease-out 0.3s both;
+}
+:root[data-theme='dark'] .t25l-written { fill: var(--moon); opacity: 0.85; }
+
+/* the pebbles: things you pick up */
+.t25l-pebble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 45%;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+  z-index: 2;
+}
+.t25l-pebble svg { width: 100%; height: 100%; overflow: visible; }
+.t25l-pebble.held { cursor: grabbing; }
+.t25l-pebble.held svg { transform: scale(1.08); }
+.t25l-pebble:hover:not(.in) svg { transform: translateY(-2px); }
+.t25l-pebble:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t25l-pebble.in { cursor: pointer; }
+.t25l-pebble.in .t25l-pb-sh { opacity: 0; }
+.t25l-pb-sh { fill: var(--umbra); opacity: 0.3; }
+.t25l-pb { stroke: var(--ink); stroke-opacity: 0.3; stroke-width: 0.8; }
+.t25l-pb-hi { fill: #fff; opacity: 0.9; }
+:root[data-theme='dark'] .t25l-pb-hi { fill: var(--moon); opacity: 0.75; }
+.t25l-pb-ink { fill: var(--wash); opacity: 0.4; }
+
+/* the layer names, etched into the water's glass wall: no box, an engraved highlight, a leader into their layer */
+.t25l-lab {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+.t25l-lab p {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0;
+  font: 400 16px/1.2 var(--serif);
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-shadow: 0 1px 0 color-mix(in srgb, #fff 55%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 25%, transparent);
+  white-space: nowrap;
+}
+.t25l-lab p::after {
+  content: '';
+  flex: none;
+  width: 3.6em;
+  height: 5px;
+  background:
+    radial-gradient(circle 2.2px at calc(100% - 2.5px) 50%, var(--ink-2) 98%, transparent),
+    linear-gradient(var(--ink-2), var(--ink-2)) 0 50% / calc(100% - 4px) 1px no-repeat;
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 40%);
+  mask-image: linear-gradient(90deg, transparent, #000 40%);
+}
+.t25l-lab small {
+  display: block;
+  margin-top: 2px;
+  font: 400 12.5px/1.35 var(--sans);
+  color: var(--ink-2);
+  text-shadow: 0 1px 0 color-mix(in srgb, #fff 45%, transparent);
+}
+:root[data-theme='dark'] .t25l-lab p,
+:root[data-theme='dark'] .t25l-lab small { text-shadow: 0 1px 0 color-mix(in srgb, #000 70%, transparent), 0 -1px 0 color-mix(in srgb, var(--mist) 18%, transparent); }
+/* sunk: a small vermilion seal pressed beside the name */
+.t25l-seal {
+  order: 2;
+  flex: none;
+  width: 15px;
+  height: 15px;
+  transform: rotate(-6deg) scale(0.4);
+  opacity: 0;
+  transition: opacity 0.5s, transform 0.5s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.t25l-lab p::after { order: 3; }
+.t25l-lab.is-sunk .t25l-seal { opacity: 0.9; transform: rotate(-6deg); }
+.t25l-seal-b { fill: var(--vermilion); }
+.t25l-seal-g { fill: var(--card); }
+.t25l:not(.land) .t25l-lab p { font-size: 15px; }
+.t25l:not(.land) .t25l-lab small { font-size: 12px; }
+.t25l-lab small { white-space: nowrap; }
+.t25l:not(.land) .t25l-lab p::after { width: 2.4em; }
+
+/* all three: the common insight written in the mist */
+.t25l-sum {
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  font: 400 13.5px/1.45 var(--serif);
+  letter-spacing: 0.015em;
+  color: var(--ink-2);
+  text-wrap: balance;
+  text-shadow: 0 1px 0 color-mix(in srgb, #fff 50%, transparent);
+  animation: p2-fade 1s ease-out both;
+}
+:root[data-theme='dark'] .t25l-sum { text-shadow: 0 1px 0 color-mix(in srgb, #000 70%, transparent); }
+.t25l-sum p { margin: 0; }

@@ -1,0 +1,427 @@
+/* Trạm 34 · scene 3 — the moon jar still life (credit.ts). Part 2 tokens only. */
+.t34c {
+  --tag-a: color-mix(in srgb, var(--step-hi) 70%, var(--lantern));
+  --tag-b: color-mix(in srgb, var(--step-mid) 70%, var(--lantern));
+  --tag-ink: var(--ink);
+  --tag-edge: color-mix(in srgb, var(--step-lo) 70%, var(--ink));
+  --bamboo-a: color-mix(in srgb, var(--moss-c) 55%, var(--lantern));
+  --bamboo-b: color-mix(in srgb, var(--moss-a) 70%, var(--step-mid));
+}
+:root[data-theme='dark'] .t34c {
+  --tag-a: color-mix(in srgb, var(--step-mid) 60%, var(--lantern));
+  --tag-b: color-mix(in srgb, var(--step-mid) 55%, var(--step-lo));
+  --tag-ink: var(--paper);
+  --tag-edge: color-mix(in srgb, var(--step-lo) 50%, var(--umbra));
+  --bamboo-a: color-mix(in srgb, var(--moss-c) 50%, var(--lantern));
+  --bamboo-b: color-mix(in srgb, var(--moss-c) 60%, var(--step-mid));
+}
+.t34.t34c {
+  bottom: auto;
+}
+/* the painting bleeds to the screen edges and under the foot, melting into the paper there */
+.t34c-view {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(-1 * var(--gutter));
+  right: calc(-1 * var(--gutter));
+  touch-action: manipulation;
+}
+.t34c-back-wrap,
+.t34c-mid-wrap {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.9s var(--ease);
+}
+.t34c-cv {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 4%, #000 80%, transparent 99%);
+  mask-image: linear-gradient(to bottom, transparent, #000 4%, #000 80%, transparent 99%);
+}
+.t34c-jar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+/* invisible hit areas over the tools; the jar's mouth is a real button */
+.t34c-hit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 46%;
+  background: none;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.t34c-hit:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+/* the tools answer the pointer with a breath of lamp light */
+@media (hover: hover) {
+  .t34c-hit:not(.t34c-mouth):hover {
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 26%, transparent), transparent);
+  }
+}
+.t34c-mouth:hover,
+.t34c-mouth:focus-visible {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--moon) 30%, transparent), transparent);
+}
+
+/* ── the keyboard twin of the tools: a thin cord of small wooden tags under the bench ── */
+.t34c-cord {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  translate: -50% 0;
+  padding-top: 6px;
+  white-space: nowrap;
+  transition: opacity 0.5s var(--ease);
+}
+.t34c-cord::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  right: -14px;
+  top: 3px;
+  height: 1px;
+  background: color-mix(in srgb, var(--ink-3) 60%, transparent);
+}
+.t34c-grp {
+  display: flex;
+  gap: 5px;
+}
+.t34c-tag {
+  position: relative;
+  margin-top: 7px;
+  padding: 2px 7px 3px;
+  font: 500 13px/1.2 var(--serif);
+  color: var(--tag-ink);
+  background:
+    repeating-linear-gradient(94deg, transparent 0 7px, color-mix(in srgb, var(--tag-edge) 14%, transparent) 7px 8px, transparent 8px 15px),
+    linear-gradient(170deg, var(--tag-a), var(--tag-b));
+  border: 0;
+  border-radius: 2px 2px 5px 5px;
+  box-shadow: 0 4px 6px -4px rgb(0 0 0 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.2);
+  opacity: 0.42;
+  transform-origin: 50% -7px;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.5s var(--ease);
+}
+/* its string up to the cord */
+.t34c-tag::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -7px;
+  width: 1px;
+  height: 7px;
+  background: color-mix(in srgb, var(--ink-3) 70%, transparent);
+}
+.t34c-tag[aria-pressed='true'] {
+  opacity: 0.85;
+  box-shadow: 0 4px 6px -4px rgb(0 0 0 / 0.55), 0 0 0 1px color-mix(in srgb, var(--lantern) 60%, transparent), 0 0 14px -2px color-mix(in srgb, var(--lantern) 60%, transparent);
+}
+.t34c-tag:hover,
+.t34c-tag:focus-visible {
+  opacity: 1;
+}
+.t34c-tag:focus-visible,
+.t34c-refill:focus-visible,
+.t34c-tips-bar:focus-visible,
+.t34c-card:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+.t34c-go {
+  opacity: 0.7;
+  color: color-mix(in srgb, var(--vermilion) 85%, var(--ink));
+  font-weight: 600;
+}
+:root[data-theme='dark'] .t34c-go {
+  color: color-mix(in srgb, var(--vermilion) 70%, var(--paper));
+}
+.t34c-go[aria-disabled='true'] {
+  opacity: 0.4;
+}
+.t34c-tag.swing {
+  animation: t34c-swing 0.9s var(--ease);
+}
+@keyframes t34c-swing {
+  30% { transform: rotate(5deg); }
+  65% { transform: rotate(-3deg); }
+}
+/* on a phone the tools are touched; the cord shows only while it holds the keyboard focus */
+.t34c:not(.wide) .t34c-cord:not(:focus-within) {
+  clip-path: inset(50%);
+  opacity: 0;
+}
+.t34c:not(.wide) .t34c-cord {
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 92vw;
+  white-space: normal;
+  padding: 8px 6px;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  border-radius: 6px;
+}
+.t34c.looking :is(.t34c-cord, .t34c-refill, .t34c-cost, .t34c-tips, .t34c-card, .t34c-empty) {
+  opacity: 0.15;
+}
+
+/* ── refill: a wooden tag hanging from the window sill on a string ── */
+.t34c-refill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% 12px;
+  padding: 5px 11px 6px;
+  font: 500 14px/1.2 var(--serif);
+  color: var(--tag-ink);
+  background:
+    repeating-linear-gradient(94deg, transparent 0 7px, color-mix(in srgb, var(--tag-edge) 14%, transparent) 7px 8px, transparent 8px 15px),
+    linear-gradient(170deg, var(--tag-a), var(--tag-b));
+  border: 0;
+  border-radius: 2px 2px 6px 6px;
+  box-shadow: 0 6px 9px -5px rgb(0 0 0 / 0.55);
+  cursor: pointer;
+  transition: opacity 0.5s var(--ease);
+}
+.t34c-refill::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -12px;
+  width: 1px;
+  height: 12px;
+  background: color-mix(in srgb, var(--ink-3) 80%, transparent);
+}
+.t34c-refill[hidden] {
+  display: none;
+}
+
+/* ── the cost, written in ink on the tea cup's front ── */
+.t34c-cost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--cw, 80px);
+  margin: 0;
+  translate: -50% -50%;
+  font: 600 14px/1.1 var(--serif);
+  color: color-mix(in srgb, var(--wash) 88%, var(--moss-b));
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  transform-origin: 50% 50%;
+  transition: opacity 0.9s var(--ease);
+  pointer-events: none;
+}
+:root[data-theme='dark'] .t34c-cost {
+  color: color-mix(in srgb, var(--paper) 90%, var(--moss-b));
+}
+.t34c-cost.on {
+  opacity: 1;
+}
+/* the jar is dry: said in ink on the bench's front face */
+.t34c-empty {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: min(520px, 80vw);
+  margin: 0;
+  translate: -50% -50%;
+  font: 400 15px/1.3 var(--serif);
+  color: var(--ink);
+  text-align: center;
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
+  opacity: 0;
+  transition: opacity 0.8s var(--ease);
+  pointer-events: none;
+}
+.t34c-empty.on {
+  opacity: 1;
+}
+
+/* ── the tips: four bamboo slats tied one under another beside the window, a paper tag naming them on top ── */
+.t34c-tips {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: min(300px, 24vw);
+  display: grid;
+  justify-items: start;
+  gap: 0;
+  transition: opacity 0.5s var(--ease);
+}
+.t34c-tips[hidden] {
+  display: none;
+}
+/* the two cords the slats hang on */
+.t34c-tips::before {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 22px;
+  bottom: 10px;
+  border-left: 1px solid color-mix(in srgb, var(--ink-3) 70%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--ink-3) 70%, transparent);
+  pointer-events: none;
+}
+.t34c-tips-bar {
+  position: relative;
+  z-index: 1;
+  padding: 5px 12px 6px;
+  font: 600 14px/1.2 var(--serif);
+  color: var(--ink);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 3px, color-mix(in srgb, var(--ink) 4%, transparent) 3px 4px),
+    linear-gradient(175deg, var(--card), color-mix(in srgb, var(--card) 85%, var(--lantern)));
+  border: 0;
+  border-radius: 1px;
+  box-shadow: 0 5px 9px -5px rgb(0 0 0 / 0.5);
+  rotate: -1.5deg;
+  cursor: pointer;
+}
+:root[data-theme='dark'] .t34c-tips-bar {
+  color: var(--paper);
+  background: linear-gradient(175deg, var(--moon), color-mix(in srgb, var(--moon) 80%, var(--lantern)));
+}
+.t34c-tips-body {
+  display: none;
+  width: 100%;
+}
+.t34c-tips.open .t34c-tips-body {
+  display: block;
+  animation: t34c-unroll 0.9s var(--ease) both;
+}
+@keyframes t34c-unroll {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.t34c-tips ul {
+  display: grid;
+  gap: 7px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.t34c-tips li {
+  position: relative;
+  padding: 6px 12px 7px;
+  font: 400 14px/1.32 var(--serif);
+  color: var(--ink);
+  /* a split bamboo slat: a node, green-gold skin lit from the left, darker on its lower edge */
+  background:
+    linear-gradient(90deg, transparent 63%, color-mix(in srgb, var(--moss-b) 45%, transparent) 63.4%, transparent 64.5%),
+    linear-gradient(180deg, color-mix(in srgb, var(--card) 20%, transparent), transparent 40%, color-mix(in srgb, var(--umbra) 18%, transparent)),
+    linear-gradient(90deg, var(--bamboo-a), var(--bamboo-b));
+  border-radius: 6px 3px 3px 6px / 50%;
+  box-shadow: 0 4px 6px -4px rgb(0 0 0 / 0.5);
+}
+.t34c-tips li:nth-child(2n) {
+  rotate: 0.6deg;
+}
+.t34c-tips li:nth-child(2n + 1) {
+  rotate: -0.4deg;
+}
+:root[data-theme='dark'] .t34c-tips li {
+  color: var(--paper);
+}
+/* the source of the tips: a paper slip tied under the slats */
+.t34c-facts {
+  margin: 8px 6% 0;
+  padding: 7px 10px 8px;
+  font: 400 12.5px/1.4 var(--sans);
+  color: var(--ink-2);
+  background: color-mix(in srgb, var(--card) 92%, var(--lantern));
+  box-shadow: 0 5px 8px -6px rgb(0 0 0 / 0.5);
+  rotate: 0.8deg;
+}
+.t34c-facts p {
+  margin: 0;
+}
+:root[data-theme='dark'] .t34c-facts {
+  color: var(--paper);
+  background: color-mix(in srgb, var(--moon) 90%, var(--lantern));
+}
+.t34c-facts:empty {
+  display: none;
+}
+/* the take-away: a paper tag tied to the ladle rack's crossbar */
+.t34c-card.g12-pill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 6px 10px 7px 16px;
+  font: 500 13px/1.2 var(--serif);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 8px 50%, var(--umbra) 2px, transparent 2.6px),
+    linear-gradient(175deg, var(--card), color-mix(in srgb, var(--card) 82%, var(--lantern)));
+  border: 0;
+  border-radius: 2px 6px 6px 2px;
+  clip-path: polygon(6px 0, 100% 0, 100% 100%, 6px 100%, 0 50%);
+  box-shadow: none;
+  filter: drop-shadow(0 4px 4px rgb(0 0 0 / 0.4));
+  rotate: 4deg;
+  transform-origin: 0 50%;
+}
+:root[data-theme='dark'] .t34c-card.g12-pill {
+  color: var(--paper);
+  background:
+    radial-gradient(circle at 8px 50%, var(--umbra) 2px, transparent 2.6px),
+    linear-gradient(175deg, var(--moon), color-mix(in srgb, var(--moon) 80%, var(--lantern)));
+}
+.t34c-card.g12-pill[hidden] {
+  display: none;
+}
+/* the illustration note: in the foot band, small */
+.t34c-scale {
+  position: absolute;
+  right: 0;
+  bottom: -64px;
+  max-width: min(360px, 40%);
+  margin: 0;
+  font: 400 12.5px/1.4 var(--sans);
+  color: var(--ink-3);
+  text-align: right;
+  text-shadow: 0 0 6px var(--paper);
+}
+.t34c:not(.wide) .t34c-tips {
+  width: min(250px, 66vw);
+}
+/* phone: on the floor band at the foot of the painting, clear of the insight under it */
+.t34c:not(.wide) .t34c-scale {
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  max-width: none;
+  text-align: center;
+}
+/* phone: the tips unroll over the scene when their tag is tapped */
+.t34c:not(.wide) .t34c-tips {
+  z-index: 6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t34c-tips.open .t34c-tips-body,
+  .t34c-tag.swing {
+    animation: none;
+  }
+}
+.t34c:not(.wide) .t34c-tag {
+  font-size: 14px;
+  padding: 6px 9px 7px;
+  opacity: 0.9;
+}

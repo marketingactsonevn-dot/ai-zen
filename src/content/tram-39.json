@@ -17,7 +17,7 @@
   "scenes": {
     "ask": {
       "label": "Bốn câu hỏi bên hồ",
-      "art": "Bốn viên đá bước qua hồ lúc trăng vừa lặn, trời lam xám. Mỗi viên khắc một câu hỏi. Chọn một câu trả lời, gợn sóng lan ra từ viên đá và một chiếc đèn lồng nhỏ bên bờ bên kia sáng lên.",
+      "art": "Nhìn gần như thẳng xuống một hồ nước lúc rạng đông: bốn viên đá bước chạy chéo qua hồ tới ngọn đèn đá bên bờ xa, dưới đáy có sỏi và bóng hai con cá koi. Mỗi viên đá khắc một câu hỏi, các câu trả lời nổi quanh đá như lá sen. Chọn một lá, lá trôi vào đá, gợn sóng lan ra và viên đá kế trồi lên khỏi mặt nước. Đủ bốn câu, khung hình lùi xa thấy cả lối và ngọn đèn bờ xa sáng lên.",
       "prompt": "Trả lời bốn câu hỏi",
       "progress": "Câu {n}/4",
       "optionAria": "{q} — {label}",
@@ -73,7 +73,7 @@
     },
     "kit": {
       "label": "Bộ đồ nghề gợi ý",
-      "art": "Chiếc giỏ mây trên bàn gỗ ngoài hiên, sương sớm đọng trên nan. Theo từng câu trả lời, đồ nghề hiện dần trong giỏ: cây bút lông, ống bút vẽ, ngọn đèn dầu nhỏ, cái bào gỗ, cuộn giấy treo. Món nào không hợp thì mờ đi như bóng trăng.",
+      "art": "Cận cảnh chiếc giỏ mây có nắp trên bàn gỗ ngoài hiên, tia nắng đầu chiếu ngang từ bên phải, giỏ đổ bóng dài sang trái. Nhấc nắp lên, đồ nghề hợp với câu trả lời bên hồ nổi lên trong giỏ: cây bút lông, hộp màu có thỏi mực và bánh màu son, ngọn đèn dầu nhỏ, cái bào gỗ, cuộn giấy buộc dây. Món không hợp nằm ngoài trên bàn, mờ như bóng trăng. Chạm một món, nó bay về phía bạn và thẻ giấy của nó mở ra.",
       "prompt": "Mở giỏ đồ nghề",
       "open": "Mở giỏ",
       "empty": "Trả lời bốn câu hỏi bên hồ để giỏ tự xếp đồ.",
@@ -178,7 +178,7 @@
     },
     "path": {
       "label": "Lộ trình 30 ngày",
-      "art": "Lối bốn viên đá dẫn từ hiên nhà ra cổng vườn lúc rạng đông, trăng mỏng còn vương ở góc trời. Mỗi viên là một tuần. Đặt đúng thứ tự, tia nắng đầu tiên chạy dọc lối và đánh thức từng viên.",
+      "art": "Đứng ở bậc hiên nhìn lên một dốc rêu ngược sáng: lối sỏi dẫn tới cổng vườn trên đường chân trời, mặt trời sắp mọc sau cổng, trăng mỏng còn ở góc trời. Dọc lối có bốn hốc trống, càng xa càng nhỏ; bốn viên đá tuần nằm trên sàn hiên. Đặt đúng thứ tự, mặt trời lên khỏi cổng và một tia nắng chạy dọc lối đánh thức từng viên.",
       "prompt": "Đặt bốn viên đá",
       "keys": "Bấm phím 1 đến 4 để đặt đá theo thứ tự",
       "stoneAria": "Tuần {n}: {label}",
@@ -219,7 +219,7 @@
     },
     "advice": {
       "label": "Học cho bền",
-      "art": "Ba đèn đá quanh một vũng nước nhỏ trong vườn rêu, mỗi đèn soi một góc mặt nước. Ở giữa, một chiếc lá trôi chậm; chạm đèn nào, chiếc lá xoay về phía ánh sáng ấy.",
+      "art": "Máy quay nằm sát mặt rêu: một vũng nước mưa soi trời rạng đông, ba ngọn đèn đá đứng quanh, đèn gần bên trái rất to, đèn bên phải, đèn xa bên kia vũng. Mỗi đèn soi một nêm sáng trên mặt nước. Một chiếc lá phong đỏ nổi giữa vũng với ba bóng mềm toả về ba phía. Kéo lá tới gần đèn nào, đèn ấy sáng hơn, bóng ngắn lại và lời của đèn hiện ra.",
       "prompt": "Chạm từng ngọn đèn",
       "group": "Ba góc nhìn về cách học cùng AI",
       "stoneAria": "Góc nhìn: {who}",
@@ -267,7 +267,7 @@
     },
     "enso": {
       "label": "Ensō của bạn",
-      "art": "Vòng ensō vẽ bằng một nét lúc mặt trời lên. Trong vòng, những hòn đá bạn đã ghé xếp thành khu vườn riêng; vầng trăng nhạt dần ở góc trời, con dấu đỏ đóng phía dưới.",
+      "art": "Bình minh trên một khu vườn cát cào, nhìn từ sát mặt cát. Vẽ một vòng ensō bằng một nét, nắng bừng lên và máy quay cẩu lên trên khu vườn: mỗi trạm Vườn Trăng bạn đã ghé trồi lên thành một hòn đá trong vòng, trạm chưa ghé là một hốc cát cào đang chờ. Ở miệng vòng là con dấu son trên tờ giấy và một bọc vải furoshiki.",
       "prompt": "Vẽ vòng ensō",
       "draw": "Vẽ ensō",
       "drawAria": "Vẽ vòng ensō tổng kết hành trình",

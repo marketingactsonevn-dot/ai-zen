@@ -1,0 +1,694 @@
+/* Scene 2 · kit — a rattan basket built in CSS 3D on a veranda table at sunrise. Tokens only (rattan and wood are
+   token mixes warmed by --lantern). */
+.t39k {
+  /* honey-coloured cane, warmed by the low sun */
+  --rattan: color-mix(in srgb, var(--lantern) 52%, color-mix(in srgb, var(--step-hi) 60%, var(--step-mid)));
+  --rattan-hi: color-mix(in srgb, var(--lantern) 40%, #fff);
+  --wood: color-mix(in srgb, var(--lantern) 22%, var(--step-mid));
+  position: absolute;
+  left: calc(-1 * var(--gutter));
+  right: calc(-1 * var(--gutter));
+  top: calc(-1 * var(--top));
+  height: calc(100% + var(--top) + 24px);
+  overflow: hidden;
+  overflow: clip;
+  background: var(--paper);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 84px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 84px), transparent);
+}
+:root[data-theme='dark'] .t39k {
+  --rattan: color-mix(in srgb, var(--lantern) 38%, var(--step-mid));
+  --rattan-hi: color-mix(in srgb, var(--lantern) 40%, var(--step-hi));
+  --wood: color-mix(in srgb, var(--lantern) 14%, var(--step-lo));
+}
+.t39k svg {
+  max-width: none;
+}
+.t39k-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  filter: blur(2.2px);
+}
+:root[data-quality='low'] .t39k-bg {
+  filter: none;
+}
+.t39k-stage {
+  position: absolute;
+  inset: 0;
+}
+.t39k-world {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+.t39k-world > * {
+  position: absolute;
+}
+/* only the lid and the tools take the hand; the bowl, rim and shadows let it through */
+.t39k-world > i,
+.t39k-world > div {
+  pointer-events: none;
+}
+
+/* the table */
+.t39k-table {
+  transform: rotateX(90deg);
+  transform-style: preserve-3d;
+}
+.t39k-boards {
+  position: absolute;
+  inset: 0;
+  background:
+    /* the low sun from the right rakes across the boards: warm on the right, cooler in the basket's lee */
+    linear-gradient(to left, color-mix(in srgb, var(--lantern) 34%, transparent), color-mix(in srgb, var(--lantern) 12%, transparent) 38%, transparent 62%),
+    radial-gradient(40% 50% at 66% 46%, color-mix(in srgb, var(--lantern) 22%, transparent), transparent),
+    repeating-linear-gradient(90deg, transparent 0 116px, color-mix(in srgb, var(--umbra) 34%, transparent) 116px 118px, color-mix(in srgb, #fff 18%, transparent) 118px 119px, transparent 119px 120px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .08 0 0 0 0 .05 0 0 0 -.9 .62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(to bottom, color-mix(in srgb, var(--umbra) 18%, var(--wood)), var(--wood) 55%, color-mix(in srgb, var(--umbra) 10%, var(--wood)));
+  -webkit-mask-image: linear-gradient(to bottom, transparent 4%, #000 34%);
+  mask-image: linear-gradient(to bottom, transparent 4%, #000 34%);
+}
+/* the basket's long shadow thrown left by the low sun: dark at its foot, fading toward its far, softer end */
+.t39k-bshadow {
+  position: absolute;
+  transform: translateZ(1px);
+  border-radius: 38% 50% 50% 38% / 50%;
+  background: linear-gradient(to left, transparent 0, color-mix(in srgb, var(--umbra) 46%, transparent) 9%, color-mix(in srgb, var(--umbra) 30%, transparent) 45%, transparent 100%);
+  -webkit-mask-image: radial-gradient(52% 50% at 56% 50%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(52% 50% at 56% 50%, #000 62%, transparent 100%);
+}
+:root[data-theme='dark'] .t39k-bshadow {
+  background: linear-gradient(to left, transparent 0, color-mix(in srgb, var(--umbra) 62%, transparent) 9%, color-mix(in srgb, var(--umbra) 40%, transparent) 45%, transparent 100%);
+}
+.t39k-lidground {
+  position: absolute;
+  transform: translateZ(1px);
+  border-radius: 50%;
+  background: radial-gradient(closest-side at 46% 22%, color-mix(in srgb, var(--umbra) 40%, transparent), color-mix(in srgb, var(--umbra) 16%, transparent) 60%, transparent);
+  opacity: 0;
+  transition: opacity 1.2s 0.6s;
+}
+.t39k.is-open .t39k-lidground {
+  opacity: 1;
+}
+.t39k-contact {
+  position: absolute;
+  transform: translateZ(1.5px);
+  border-radius: 50%;
+  background: radial-gradient(closest-side at 46% 50%, color-mix(in srgb, var(--umbra) 70%, transparent), color-mix(in srgb, var(--umbra) 30%, transparent) 70%, transparent);
+}
+
+/* the basket */
+.t39k-floor {
+  transform: translateY(-4px) rotateX(90deg);
+  border-radius: 50%;
+  /* the floor of the bowl: woven cane, the right wall's shade falling across it to the left (sun on the right) */
+  background:
+    linear-gradient(to left, color-mix(in srgb, var(--umbra) 55%, transparent) 0, color-mix(in srgb, var(--umbra) 30%, transparent) 40%, color-mix(in srgb, var(--lantern) 14%, transparent) 75%, transparent),
+    repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--umbra) 30%, transparent) 0 2deg, transparent 2deg 15deg),
+    repeating-radial-gradient(closest-side, color-mix(in srgb, #fff 12%, transparent) 0 3px, color-mix(in srgb, var(--umbra) 18%, transparent) 3px 6px),
+    var(--rattan);
+}
+.t39k-lidsh {
+  transform: translateY(-5px) rotateX(90deg);
+  border-radius: 50%;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--umbra) 70%, transparent), transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.3s;
+}
+.t39k-slat {
+  transform-origin: 50% 100%;
+  backface-visibility: visible;
+  /* woven cane: weavers over and under the stakes, the low sun's light by facing (--sh), dew on the lit ones */
+  background:
+    radial-gradient(circle at var(--d1), color-mix(in srgb, #fff calc(var(--dew) * 95%), transparent) 0 1.3px, transparent 2.4px),
+    radial-gradient(circle at var(--d2), color-mix(in srgb, #fff calc(var(--dew) * 90%), transparent) 0 1px, transparent 2px),
+    radial-gradient(circle at var(--d3), color-mix(in srgb, #fff calc(var(--dew) * 85%), transparent) 0 1.2px, transparent 2.2px),
+    linear-gradient(color-mix(in srgb, var(--umbra) calc(var(--sh) * 78%), transparent) 0 0),
+    linear-gradient(color-mix(in srgb, var(--lantern) calc(max(0, 0.6 - var(--sh)) * 55%), transparent) 0 0),
+    linear-gradient(to top, color-mix(in srgb, var(--umbra) 30%, transparent), transparent 30%),
+    var(--weave) 0 0 / 20px 13px,
+    var(--rattan);
+}
+.t39k-slat.back {
+  background:
+    linear-gradient(color-mix(in srgb, var(--umbra) calc(10% + var(--sh) * 70%), transparent) 0 0),
+    var(--weave) 0 0 / 20px 13px,
+    var(--rattan);
+}
+/* the coiled rim: a round cord of cane bound with a slanting wrap; lit on the right, its outer side in shade below */
+.t39k-rim {
+  --rw: var(--rimw, 10px);
+  border-radius: 50%;
+  background:
+    linear-gradient(to left, color-mix(in srgb, #fff 30%, transparent), transparent 40%, color-mix(in srgb, var(--umbra) 34%, transparent)),
+    radial-gradient(closest-side, transparent calc(100% - var(--rw)), color-mix(in srgb, var(--umbra) 35%, transparent) calc(100% - var(--rw)), color-mix(in srgb, #fff 20%, transparent) calc(100% - var(--rw) * 0.55), color-mix(in srgb, var(--umbra) 40%, transparent) 100%),
+    repeating-conic-gradient(from 3deg, color-mix(in srgb, var(--umbra) 45%, var(--rattan)) 0 0.9deg, var(--rattan-hi) 1.6deg 3.4deg, color-mix(in srgb, var(--umbra) 20%, var(--rattan)) 4deg 4.5deg);
+  -webkit-mask-image: radial-gradient(closest-side, transparent calc(100% - var(--rw)), #000 calc(100% - var(--rw) + 0.5px), #000 calc(100% - 1px), transparent 100%);
+  mask-image: radial-gradient(closest-side, transparent calc(100% - var(--rw)), #000 calc(100% - var(--rw) + 0.5px), #000 calc(100% - 1px), transparent 100%);
+}
+.t39k-rim-side {
+  background:
+    linear-gradient(to left, color-mix(in srgb, var(--lantern) 20%, transparent), transparent 45%, color-mix(in srgb, var(--umbra) 45%, transparent)),
+    repeating-conic-gradient(from 3deg, color-mix(in srgb, var(--umbra) 60%, var(--rattan)) 0 1deg, color-mix(in srgb, var(--umbra) 25%, var(--rattan)) 1.6deg 4.5deg);
+}
+/* ear handles: a D of cane at each side of the rim */
+.t39k-handle {
+  box-sizing: border-box;
+  border: calc(var(--rimw, 10px) * 0.8) solid var(--rattan);
+  border-left: 0;
+  border-radius: 0 50% 50% 0 / 0 50% 50% 0;
+  background: none;
+  box-shadow: inset -2px 0 0 color-mix(in srgb, var(--umbra) 30%, transparent), 3px 0 0 -1px color-mix(in srgb, var(--rattan-hi) 70%, transparent);
+}
+.t39k-handle[data-side='-1'] {
+  border-left: calc(var(--rimw, 10px) * 0.8) solid color-mix(in srgb, var(--umbra) 22%, var(--rattan));
+  border-right: 0;
+  border-radius: 50% 0 0 50% / 50% 0 0 50%;
+}
+/* the hinge: cane lashed round the lid's edge and the rim */
+.t39k-bind {
+  border-radius: 40%;
+  background:
+    repeating-linear-gradient(70deg, color-mix(in srgb, var(--umbra) 45%, var(--rattan)) 0 1.5px, var(--rattan-hi) 1.5px 4px),
+    var(--rattan);
+  box-shadow: 0 2px 3px -1px color-mix(in srgb, var(--umbra) 60%, transparent);
+}
+.t39k-lid {
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  transform-origin: 50% 0;
+  backface-visibility: visible;
+  cursor: grab;
+  touch-action: none;
+  transition: transform 1.3s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.t39k.is-dragging .t39k-lid {
+  transition: none;
+  cursor: grabbing;
+}
+.t39k.is-open .t39k-lid {
+  cursor: default;
+}
+.t39k-lid-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t39k-lid-base {
+  fill: var(--rattan);
+}
+.t39k-lid-coil {
+  fill: var(--rattan-hi);
+  opacity: 0.9;
+}
+.t39k-lid-spoke {
+  fill: var(--umbra);
+  opacity: 0.32;
+}
+.t39k-lid-shade {
+  fill: url(#g39-lidshade);
+}
+.t39k-lid-rim {
+  stroke: color-mix(in srgb, var(--umbra) 40%, var(--rattan));
+  stroke-width: 6;
+}
+.t39k-lid-knot {
+  fill: color-mix(in srgb, var(--umbra) 25%, var(--rattan));
+}
+.t39k-dew {
+  fill: #fff;
+  opacity: 0.85;
+}
+.t39k-lidtag {
+  left: 0;
+  top: 0;
+  translate: -50% -100%;
+  padding: 3px 10px 4px;
+  white-space: nowrap;
+  font: 500 15px/1.3 var(--serif);
+  background: var(--card);
+  border-radius: 2px 3px 2px 4px;
+  box-shadow: 0 1px 0 var(--line), 3px 6px 10px -6px var(--umbra);
+  text-shadow: none;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.t39k.is-open .t39k-lidtag {
+  opacity: 0;
+}
+.t39k-lid:focus-visible,
+.t39k-tool:focus-visible {
+  outline: 2px solid var(--ink-2);
+  outline-offset: 3px;
+}
+
+/* the tools */
+.t39k-tool {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transform: var(--hide);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s), opacity 0.9s var(--d, 0s), visibility 0s var(--d, 0s);
+}
+.t39k.is-open .t39k-tool {
+  transform: var(--at);
+  opacity: 1;
+  visibility: visible;
+  transition: transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s), opacity 0.9s var(--d, 0s), visibility 0s;
+}
+.t39k.is-open .t39k-tool.out {
+  opacity: 0.4;
+}
+.t39k .t39k-tool.up {
+  transform: var(--up);
+  opacity: 1;
+  transition-delay: 0s;
+}
+.t39k-tool-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t39k-tool:hover .t39k-tool-art {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--lantern) 55%, transparent));
+}
+.t39k.is-lifted .t39k-tool:not(.up) {
+  opacity: 0.88;
+}
+.t39k.is-lifted .t39k-tool.out:not(.up) {
+  opacity: 0.32;
+}
+.t39k-liftsh {
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 28%, transparent), transparent);
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.t39k.is-lifted .t39k-liftsh {
+  opacity: 1;
+}
+.t39k-bamboo {
+  fill: color-mix(in srgb, var(--lantern) 18%, var(--moss-c));
+}
+/* every tool: shade on its left, the low sun warm on its right */
+.t39k-shade {
+  fill: var(--umbra);
+  opacity: 0.28;
+}
+.t39k-node {
+  fill: var(--moss-b);
+}
+.t39k-hi,
+.t39k-tip-hi,
+.t39k-rimlight {
+  fill: color-mix(in srgb, var(--lantern) 65%, #fff);
+  opacity: 0.95;
+}
+.t39k-brass {
+  fill: color-mix(in srgb, var(--lantern) 75%, var(--rock-mid));
+}
+.t39k-tip {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t39k-tip {
+  fill: #000;
+}
+/* the colour box: red-brown lacquer, the lid lined in gold, a grey inkstone, a black stick, a vermilion cake */
+.t39k-lacquer {
+  fill: color-mix(in srgb, var(--vermilion) 62%, var(--umbra));
+}
+.t39k-lacquer-dk {
+  fill: color-mix(in srgb, var(--vermilion) 40%, var(--umbra));
+}
+.t39k-gold {
+  fill: color-mix(in srgb, var(--lantern) 80%, #fff);
+  opacity: 0.85;
+}
+.t39k-inkstone {
+  fill: color-mix(in srgb, var(--rock-lo) 55%, var(--umbra));
+}
+.t39k-well {
+  fill: #000;
+  opacity: 0.75;
+}
+.t39k-inkstick {
+  fill: #0c0c10;
+}
+.t39k-cake {
+  fill: var(--vermilion);
+}
+.t39k-cake-hi {
+  fill: #fff;
+  opacity: 0.45;
+}
+/* the oil lamp: warm clay, a live flame */
+.t39k-glow {
+  opacity: 1;
+}
+.t39k-clay {
+  fill: color-mix(in srgb, var(--vermilion) 30%, color-mix(in srgb, var(--lantern) 40%, var(--rock-mid)));
+}
+.t39k-oil {
+  fill: var(--wash);
+  opacity: 0.6;
+}
+.t39k-wick {
+  fill: var(--umbra);
+}
+.t39k-flame {
+  fill: var(--lantern);
+}
+.t39k-flame-core {
+  fill: #fff;
+  opacity: 0.9;
+}
+.t39k-flame-g {
+  transform-box: view-box;
+}
+:root[data-quality='high'] .t39k:not(.is-idle):not(.is-still) .t39k-flame-g {
+  animation: t39k-flicker 1.7s ease-in-out infinite alternate;
+}
+@keyframes t39k-flicker {
+  0% {
+    transform: scale(1, 1) skewX(0deg);
+  }
+  35% {
+    transform: scale(0.94, 1.08) skewX(-3deg);
+  }
+  70% {
+    transform: scale(1.04, 0.95) skewX(2deg);
+  }
+  100% {
+    transform: scale(0.97, 1.05) skewX(-1deg);
+  }
+}
+/* the plane: pale wood, steel iron, a curl of shaving catching the light */
+.t39k-woodblk {
+  fill: color-mix(in srgb, var(--lantern) 34%, var(--step-hi));
+}
+.t39k-woodtop {
+  fill: color-mix(in srgb, #fff 30%, color-mix(in srgb, var(--lantern) 34%, var(--step-hi)));
+}
+.t39k-knob {
+  fill: color-mix(in srgb, var(--vermilion) 25%, color-mix(in srgb, var(--lantern) 30%, var(--step-mid)));
+}
+.t39k-iron {
+  fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash));
+}
+.t39k-grain {
+  fill: color-mix(in srgb, var(--vermilion) 30%, var(--umbra));
+  opacity: 0.3;
+}
+.t39k-shaving {
+  fill: color-mix(in srgb, var(--lantern) 40%, #fff);
+}
+.t39k-shaving-hi {
+  fill: #fff;
+  opacity: 0.8;
+}
+/* the scroll: cream paper on a dark rod, a red cord */
+.t39k-paperroll {
+  fill: color-mix(in srgb, var(--lantern) 12%, #fbf6ea);
+}
+.t39k-rod,
+.t39k-knobend {
+  fill: color-mix(in srgb, var(--vermilion) 20%, var(--wash));
+}
+.t39k-cord {
+  fill: var(--vermilion);
+}
+:root[data-theme='dark'] .t39k-paperroll {
+  fill: color-mix(in srgb, var(--lantern) 10%, var(--step-hi));
+}
+
+/* the first ray of sun, low across the table */
+.t39k-ray {
+  position: absolute;
+  height: 34%;
+  transform-origin: 0 50%;
+  transform: translateY(-50%) rotate(162deg);
+  background: linear-gradient(to right, color-mix(in srgb, var(--lantern) 20%, transparent), transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%, #000 60%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 40%, #000 60%, transparent);
+  pointer-events: none;
+}
+
+/* the paper tag tied to the right handle (notes) and the slip of a lifted tool: manila and washi, no boxes */
+.t39k-tag,
+.t39k-card {
+  position: absolute;
+  box-sizing: border-box;
+  color: var(--ink);
+  font: 400 14px/1.45 var(--serif);
+}
+.t39k-tag {
+  width: 232px;
+  padding: 26px 16px 12px;
+  isolation: isolate;
+  filter: drop-shadow(-10px 12px 10px color-mix(in srgb, var(--umbra) 30%, transparent));
+  transform: rotate(4deg);
+  transform-origin: 50% 0;
+}
+/* a shipping tag: the top corners cut, a reinforced eyelet; the string runs up to the handle */
+.t39k-tag::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: polygon(16% 0, 84% 0, 100% 8%, 100% 100%, 0 100%, 0 8%);
+  background:
+    radial-gradient(circle at 50% 13px, transparent 0 4px, color-mix(in srgb, var(--lantern) 30%, var(--step-mid)) 4.5px 9px, transparent 9.5px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8 .55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .22 0 0 0 0 .1 .4 0 0 0 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(170deg, color-mix(in srgb, var(--lantern) 26%, var(--card)), color-mix(in srgb, var(--lantern) 16%, var(--card)));
+}
+:root[data-quality='low'] .t39k-tag {
+  filter: none;
+}
+.t39k-string {
+  position: absolute;
+  left: calc(50% - 1px);
+  top: -40px;
+  width: 2px;
+  height: 52px;
+  background: color-mix(in srgb, var(--vermilion) 45%, var(--wash));
+  transform: rotate(-24deg);
+  transform-origin: 50% 100%;
+}
+.t39k-tag p {
+  margin: 0 0 6px;
+}
+.t39k-price {
+  color: var(--ink-2);
+}
+.t39k-rev span {
+  color: var(--ink-3);
+}
+/* station links: river pebbles */
+.t39k-st {
+  display: inline-block;
+  margin: 3px 6px 0 0;
+  padding: 1px 10px 2px;
+  border-radius: 46% 54% 50% 50% / 60% 55% 45% 40%;
+  background: radial-gradient(80% 70% at 35% 25%, var(--rock-hi), var(--rock-mid) 70%, var(--rock-lo));
+  color: var(--stone-text);
+  font: 500 14px/1.5 var(--serif);
+  text-decoration: none;
+  box-shadow: inset -2px -3px 4px -2px color-mix(in srgb, var(--umbra) 35%, transparent), -3px 3px 4px -2px color-mix(in srgb, var(--umbra) 55%, transparent);
+}
+.t39k-st:hover {
+  filter: brightness(1.06);
+}
+/* the slip: a long strip of washi rising out of the basket, deckled at the top, a red seal at its foot */
+.t39k-card {
+  width: min(330px, 26vw);
+  padding: 22px 20px 16px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .5' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .3 0 0 0 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(to left, color-mix(in srgb, var(--lantern) 16%, transparent), transparent 50%),
+    color-mix(in srgb, var(--lantern) 6%, var(--card));
+  clip-path: polygon(0 3%, 6% 1%, 13% 2.5%, 21% 0.5%, 30% 2%, 39% 0, 48% 1.8%, 57% 0.4%, 66% 2.2%, 75% 0.6%, 84% 2%, 92% 0.3%, 100% 1.6%, 100% 100%, 0 100%);
+  filter: drop-shadow(-12px 10px 12px color-mix(in srgb, var(--umbra) 34%, transparent));
+}
+:root[data-quality='low'] .t39k-card {
+  filter: none;
+}
+/* at night the washi keeps its warmth, dimmed (not a dark panel) */
+:root[data-theme='dark'] .t39k-card {
+  background:
+    linear-gradient(to left, color-mix(in srgb, var(--lantern) 18%, transparent), transparent 55%),
+    color-mix(in srgb, color-mix(in srgb, var(--lantern) 14%, var(--step-lo)) 70%, var(--card));
+}
+:root[data-theme='dark'] .t39k-tag::before {
+  background:
+    radial-gradient(circle at 50% 13px, transparent 0 4px, color-mix(in srgb, var(--lantern) 30%, var(--step-lo)) 4.5px 9px, transparent 9.5px),
+    color-mix(in srgb, color-mix(in srgb, var(--lantern) 20%, var(--step-lo)) 75%, var(--card));
+}
+.t39k-card.rise {
+  animation: t39k-rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes t39k-rise {
+  from {
+    opacity: 0;
+    transform: translateY(46px) scaleY(0.6);
+    transform-origin: 50% 100%;
+  }
+}
+.t39k-card::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  width: 14px;
+  height: 17px;
+  border-radius: 2px;
+  background: var(--vermilion);
+  opacity: 0.8;
+  transform: rotate(-5deg);
+}
+.t39k-card h3 {
+  margin: 0 0 4px;
+  font: 500 21px/1.25 var(--serif);
+}
+.t39k-what {
+  margin: 0 0 10px;
+  font-size: 15.5px;
+  color: var(--ink-2);
+}
+.t39k-eyebrow {
+  margin: 0 0 2px;
+  font: 500 12px/1.3 var(--sans);
+  color: var(--ink-3);
+}
+/* the examples: wooden tags hung from one cord */
+.t39k-ex {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0 0 10px;
+  padding: 12px 0 0;
+  list-style: none;
+}
+.t39k-ex::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: 6px;
+  height: 10px;
+  border-top: 1.6px solid color-mix(in srgb, var(--vermilion) 40%, var(--wash));
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  transform: scaleY(-1);
+}
+.t39k-ex li {
+  position: relative;
+  padding-top: 8px;
+  transform: rotate(calc((var(--k) - 1) * 2.5deg));
+  transform-origin: 50% 0;
+}
+.t39k-ex li::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1.4px;
+  height: 12px;
+  background: color-mix(in srgb, var(--vermilion) 40%, var(--wash));
+}
+.t39k-ex a {
+  display: grid;
+  padding: 7px 12px 7px;
+  border-radius: 3px 3px 4px 4px;
+  background:
+    radial-gradient(circle at 50% 5px, color-mix(in srgb, var(--umbra) 60%, transparent) 0 2px, transparent 2.5px),
+    repeating-linear-gradient(178deg, transparent 0 5px, color-mix(in srgb, var(--umbra) 8%, transparent) 5px 6px),
+    linear-gradient(to left, color-mix(in srgb, var(--lantern) 30%, var(--step-hi)), color-mix(in srgb, var(--lantern) 20%, var(--step-mid)));
+  color: var(--stone-text);
+  text-decoration: none;
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--umbra) 22%, transparent), -3px 4px 6px -4px var(--umbra);
+}
+.t39k-ex b {
+  margin-top: 4px;
+  font: 500 15px/1.25 var(--serif);
+}
+.t39k-ex span {
+  font: 400 12px/1.3 var(--sans);
+  opacity: 0.85;
+}
+.t39k-ex a:hover {
+  filter: brightness(1.05);
+}
+.t39k-stations {
+  margin: 0;
+  padding-right: 24px;
+}
+@media (max-aspect-ratio: 1/1) {
+  .t39k.is-lifted .t39k-tag {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .t39k-tag {
+    transition: opacity 0.4s;
+    transform: rotate(1deg);
+    padding-top: 24px;
+  }
+  .t39k-string {
+    top: -26px;
+    height: 34px;
+    transform: rotate(8deg);
+  }
+  .t39k-card {
+    padding: 18px 16px 12px;
+  }
+  .t39k-card h3 {
+    font-size: 19px;
+  }
+  .t39k-what {
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.38;
+  }
+  .t39k-ex {
+    flex-wrap: nowrap;
+    gap: 4px 6px;
+    margin-bottom: 6px;
+  }
+  .t39k-ex a {
+    padding: 5px 8px 6px;
+  }
+  .t39k-ex b {
+    font-size: 14px;
+  }
+  .t39k-ex span {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  .t39k-card {
+    overflow-y: auto;
+  }
+}
+/* wide: the slip takes the tag's place beside the basket */
+@media (min-aspect-ratio: 1/1) {
+  .t39k.is-lifted .t39k-tag {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .t39k-tag {
+    transition: opacity 0.4s;
+  }
+}

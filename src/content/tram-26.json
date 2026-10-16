@@ -20,8 +20,9 @@
   "scenes": {
     "lamps": {
       "label": "Bốn ngọn đèn lý thuyết",
-      "art": "Đêm trăng trên đồi rêu: giữa bãi cát cào là một pho tượng đá nhỏ không mặt — một AI. Quanh đó bốn chiếc đèn đá, mỗi chiếc một dáng. Thắp đèn nào, bóng pho tượng đổ ra một hình khác: lúc như dáng người, lúc chỉ là bóng một hòn đá.",
+      "art": "Đêm trăng trên một gò rêu: giữa mâm cát cào là pho tượng đá nhỏ không mặt — một AI — đứng trên bệ rêu. Sau tượng là bình phong giấy hai cánh rắc nhũ vàng; phía trước, xếp theo vòng cung, bốn chiếc đèn đá khác dáng. Thắp đèn nào, bóng pho tượng đổ dài trên cát rồi trèo lên bình phong, mỗi đèn một hình: lúc là dáng người trọn vẹn, lúc là dáng người mờ như đang ngoái nhìn mình, lúc chỉ là bóng một hòn đá. Xoay quanh thì thấy tượng vẫn chỉ là đá.",
       "prompt": "Thắp từng ngọn đèn",
+      "hint": "Kéo để đi quanh pho tượng. Phím 1 đến 4 thắp từng đèn.",
       "statue": "một AI",
       "lampAria": "Thắp đèn: {name}",
       "lamps": [
@@ -88,7 +89,7 @@
     },
     "introspect": {
       "label": "Hồ tự nhìn mình",
-      "art": "Một con cò đứng một chân giữa hồ đêm, cúi nhìn bóng mình. Từ bờ, một bàn tay thả giọt mực phát sáng xuống nước — một khái niệm được cấy vào. Giọt quá nhạt thì tan mất; vừa phải thì cò ngẩng đầu như vừa nhận ra; quá đậm thì cả mặt hồ đục ngầu.",
+      "art": "Hồ đêm phẳng như gương, nhìn ngang tầm mắt: núi, trăng và một con cò trắng đứng một chân đều in ngược xuống nước. Từ mép trái, một ống tay áo và bàn tay cầm bút lông chìa ra trên mặt hồ. Nhấn giữ đầu bút, giọt mực son phình qua ba nấc rồi rơi vào bóng con cò — một khái niệm được cấy vào. Giọt quá nhạt tan trước khi chạm nước; vừa phải thì qua năm đêm, đúng một lần bóng cò lóe lên dòng chữ in hoa và cò ngẩng đầu, năm viên sỏi trên bờ ghi lại; quá đậm thì cả mặt hồ đục, mất bóng.",
       "prompt": "Thả giọt mực, hỏi cò",
       "concept": "“CHỮ IN HOA”",
       "conceptNote": "khái niệm được cấy vào bên trong mô hình",
@@ -135,8 +136,9 @@
     },
     "rule": {
       "label": "Cánh cửa và tấm bảng luật",
-      "art": "Cuộn tranh cát dài dưới trăng. Kéo vầng trăng sang phải, các mốc nổi lên như đá: một cuộn thư, một cánh cổng tre hé mở, một cánh cửa có then để khép lại, một tấm bia đá khắc luật. Cuối cuộn là sương. Sau đó bốn mảnh giấy tình huống bay xuống, chờ xếp vào hai giỏ tre.",
+      "art": "Nhìn từ trên cao xuống một đầm diên vĩ đêm: cây cầu ván tám khúc chạy zíc zắc như tia chớp từ bờ gần vào sương. Bóng trăng trên mặt đầm trượt dọc cầu, một hình người giấy đi theo; tới mỗi khúc quanh, đèn đá nhỏ bên mốc thắp lên: một cuộn thư, một cổng tre hé mở, một cánh cửa có then để khép, một tấm bia khắc luật, một hòn đá ranh giới buộc dây đen. Cuối cầu là sương. Sau đó, dưới chân bia luật, bốn mảnh giấy tình huống rơi từ trăng xuống, chờ xếp vào hai giỏ tre.",
       "prompt": "Kéo trăng, rồi xếp tình huống",
+      "sliderAria": "Bóng trăng trên đầm: kéo dọc cây cầu qua các mốc",
       "tide": {
         "milestones": [
           {
@@ -244,8 +246,8 @@
     },
     "circle": {
       "label": "Có nên có luật như vậy?",
-      "art": "Bốn hòn đá đặt trên bốn bậc của cây cầu đá bắc ngang hồ trăng, mỗi hòn nhìn về một hướng. Đèn lồng giấy treo dưới gầm cầu, ánh sáng chỉ hắt lên hòn đá vừa được chạm.",
-      "prompt": "Nghe từng hòn đá",
+      "art": "Nằm dưới mái một ngôi đình mở mà ngước lên: rui mái toả tia về lỗ khói ở tâm đang đóng, bốn cột đứng ở bốn góc, câu hỏi viết thành vòng quanh lỗ khói. Bốn đèn lồng giấy treo ở bốn góc mái, giống hệt nhau. Thắp đèn nào, góc mái ấy ửng ấm và một dải giấy rủ xuống mang lời một người. Thắp đủ bốn, nắp lỗ khói trượt mở: trăng ở ngay trên đầu.",
+      "prompt": "Thắp từng đèn lồng",
       "question": "Cấm bạo hành một AI chưa chắc có cảm giác — nên hay không?",
       "perspectives": {
         "stones": [

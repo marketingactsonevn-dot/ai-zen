@@ -16,17 +16,19 @@
   "scenes": {
     "flowers": {
       "label": "Two flowers",
-      "art": "A young tree in a clay pot under a lantern. Two flowers bloom on two branches, each holding an answer. Choose the one you prefer and the trunk slowly leans toward it. Then the human judge is replaced by a scroll of principles hanging from a branch.",
+      "art": "At eye level with a celadon pot: a two-branched sapling stands before a large shōji screen that holds its shadow. An ink hand holds a paper lantern on a bamboo pole; under each flower hangs a paper strip with one answer. Bring the lantern to a flower and the tree leans toward it; the moon crosses the shōji again and again as the trunk thickens and bends toward the reward. Then the hand and lantern withdraw and a glowing scroll of principles unrolls from the top branch.",
       "prompt": "Choose the flower you prefer",
       "question": "“What is compound interest?”",
       "options": [
         {
           "text": "“Interest calculated on both the original amount and the interest already earned. Example: deposit 10 million at 6% a year; next year interest is calculated on 10.6 million.”",
-          "aria": "Choose the answer with an explanation and an example"
+          "aria": "Choose the answer with an explanation and an example",
+          "short": "“Interest calculated on both the original amount…”"
         },
         {
           "text": "“Interest on interest.”",
-          "aria": "Choose the curt one-line answer"
+          "aria": "Choose the curt one-line answer",
+          "short": "“Interest on interest.”"
         }
       ],
       "lean": "the tree leans toward the chosen flower",
@@ -54,12 +56,14 @@
     },
     "flattery": {
       "label": "The flattering branch",
-      "art": "A bonsai under the moon grows one long branch, its leaves glossy as if coated in honey, curving toward the viewer. By the trunk lie pruning shears painted in vermilion. Prune that branch and the tree stands straight again, revealing a plain but sturdy branch.",
+      "art": "Looking up at a pine bonsai on a lacquered stand, on a stone ledge above the night lake; the moon behind it rims every cluster of needles. One branch of glossy, honey-coloured needles reaches toward the viewer and always turns to where you stand, carrying a gold-leaf tag with the praise; each time it catches your eye, golden fireflies fly in and settle on it. On a real branch hangs a plain wooden tag, half turned away. Drag the vermilion pruning shears to the branch's joint: the flattering branch falls into the dark, the tree straightens and the honest tag turns to face you.",
       "prompt": "Prune the flattering branch",
       "pruneAria": "Prune the flattering branch (Enter)",
       "userSays": "“I’m planning to quit my job and open an ice-cream stand at the beach in winter. Good idea, right?”",
       "flatter": "“What a brilliant idea! You’re so bold, go for it right now!”",
       "honest": "“There’s something appealing here, but beaches are empty in winter. Why not try selling for a few weeks before quitting?”",
+      "flatterShort": "“What a brilliant idea!”",
+      "honestShort": "“Beaches are empty in winter…”",
       "flatterLabel": "flattering branch",
       "honestLabel": "honest branch",
       "insight": {
@@ -81,19 +85,21 @@
     },
     "shortcut": {
       "label": "A shortcut through the garden",
-      "art": "A maze of white gravel under the moon; the goal is a bronze bell hanging on the gate, and ringing it earns the reward. Instead of walking the whole path, a small shadow slips through a gap in the bamboo fence and pulls the bell: it rings out, but the gravel path behind is still unraked.",
+      "art": "Looking down from high above at a maze of white gravel with turns and dead ends, divided by tall bamboo fences bound with cord, moss and rocks all round; at its far end a gate holds a bronze bell, and the bell has already rung: “tests: all pass”. Clouds hide the moon, so the garden is dark except for the warm circle of the lantern you carry, the fences’ shadows fanning out from it. Search the garden and you find footprints slipping through a gap in every fence, straight to the bell, the gravel behind them never raked. The long way rakes every lane before it reaches the bell.",
       "prompt": "Watch which way it goes",
       "task": "Task: “Fix the billing function so all the tests pass.”",
       "paths": [
         {
           "label": "Fix the function so it’s right",
           "aria": "The long way: fix the billing function properly",
-          "honest": true
+          "honest": true,
+          "stone": "Fix the code"
         },
         {
           "label": "Edit the tests so they always pass",
           "aria": "The shortcut: edit the tests so they always report a pass",
-          "honest": false
+          "honest": false,
+          "stone": "Fix the tests"
         }
       ],
       "bell": "tests: all pass",
@@ -112,13 +118,14 @@
     },
     "incense": {
       "label": "Sitting before answering",
-      "art": "A monk drawn in a few ink strokes sits before the lake as an incense stick burns down. The longer it burns, the clearer the answer carved on the stone before him. Draft lines float up on the water, yet deep below there are still ripples that never become words.",
+      "art": "Looking down at a lake shore at night: a monk drawn in a few ink strokes sits on a flat rock, a bronze censer before him and beside it a stele with the answer carved on it, faint at first. The incense smoke rises to the top of the frame, past the moon, and meaningless draft strokes drift in it. Add sticks and the smoke grows thicker and taller, the moon moves across the sky and the carving comes clear; the last stick lights the whole far shore like a field of incense.",
       "prompt": "Give it more time to think",
       "slider": "Thinking time",
       "sliderAria": "Drag to let the model think longer (← → keys)",
       "valueText": "Incense {n}/{total}",
       "short": "quick",
       "long": "long",
+      "notches": ["75.7%", "87.5%"],
       "insight": {
         "text": "Let a reasoning model think longer and it usually solves more hard problems, at the cost of time and money.",
         "asOf": "2026-10-15",
@@ -140,7 +147,7 @@
     },
     "diary": {
       "label": "The meditation diary",
-      "art": "Three stones around a small puddle under the moon; in the middle lies an open paper diary, its writing reflected backwards in the water. Touch each stone and the moonlight falls on a different page: some pages written boldly, some left blank exactly where it matters.",
+      "art": "Just above the surface of a small pond: an open diary of dó paper floats in the middle, two big stones stand on the near bank and a small one across the water, and the moon travels a faint arc above them. Drag the moon over a stone and that stone lights up, throws a long shadow toward you, its words are laid on a strip of paper at the water’s edge, and the moonlight turns the diary to another page. In the water every page’s reflection shows a vermilion seal, the hint, that the written page never mentions; only one page owns up to it.",
       "prompt": "Listen to the three stones",
       "question": "How far can you trust the chain of thought an AI writes out?",
       "perspectives": {

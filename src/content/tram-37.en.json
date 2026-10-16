@@ -19,7 +19,7 @@
   "scenes": {
     "goal": {
       "label": "A goal off by a hair",
-      "art": "An ink painting under the moon: the gardener dozes by a stone lantern while a folded-paper gardener waits with shears for orders. Maple leaves cover the stone path. If the order only says “no leaves on the path”, the shears fell the maple itself; a bare stump on silver sand, the last leaf drifting on the moonlit pond.",
+      "art": "A night garden seen as a stage, at the paper gardener’s eye level: a red maple bough reaches into the top corner with three wooden ema plaques hanging from it, each one way of giving the order. Below, the folded-paper gardener waits with shears on a stone path covered in maple leaves; the real gardener dozes by a stone lantern, a folding screen behind him; further off, a hut and a pond holding the moon. Drop a plaque into the paper gardener’s hands, the night passes, and next morning the garden shows what the words did: if the order only says “no leaves on the path”, the maple is felled, a bare stump on silver sand, the last leaf drifting into the moon’s reflection.",
       "prompt": "Choose how to give the order",
       "group": "Three ways to brief the paper gardener",
       "optionAria": "Order: {say}",
@@ -95,6 +95,8 @@
         "claimBy": "Anthropic & Redwood Research"
       },
       "exampleLabel": "It really happened",
+      "aria": "The corner of a tea house in the night garden, in depth: a lit paper wall, a garden gate, and a stone path that forks behind a wing fence.",
+      "hint": "Drag sideways to walk round the corner, left and right arrow keys to step. Touch the stack of papers, the red-robed figure, the one with the lantern or the sealed box to read; touch the lantern under the eave to switch it.",
       "example": {
         "text": "Sep 2026: OpenAI held back GPT-6.1 Astra after internal testing, because the model often went beyond its assigned scope and did not accurately report what it had done.",
         "asOf": "2026-10-15",
@@ -112,6 +114,9 @@
       "leak": "Still getting through: {n}",
       "reset": "Take them all down, start again",
       "seeStation": "More at station {n}",
+      "aria": "3D garden: a sapling on a moss mound in raked sand, where up to six square-lattice bamboo fences will rise round it; six bundles of bamboo wait on the near sand, a rake lies at the edge.",
+      "hint": "Drag to walk round the garden, arrow keys to turn. Tap the glowing bundle to build the next fence; tap the rake to take them all down.",
+      "aligned": "Lined up: from where you stand, one line runs through every fence to the sapling.",
       "layers": [
         {
           "id": "values",
@@ -182,10 +187,12 @@
     },
     "views": {
       "label": "How dangerous is AI?",
-      "art": "Four stones around a pond holding the setting moon. Each faces its own horizon: storm clouds far away, village smoke close by, a blazing dawn, and the worn path in between. Touch a stone and the water ripples its way.",
+      "art": "You stand on a stone in the middle of a pond, at the level of the water, and turn round. Each way is a horizon: to the north a huge storm cloud but very far, to the east a village’s smoke on the near bank, to the south a dawn about to blaze, to the west a worn path along the shore into ordinary fields. Before each horizon a speaking stone stands in the water. Hear all four and the view curls into a little planet: four horizons round one pond.",
       "prompt": "Touch each stone",
       "group": "Four views on AI risk",
       "stoneAria": "View: {who}",
+      "hint": "Drag sideways to turn round, left and right arrow keys to turn. Touch a stone or press 1–4 to face it.",
+      "carve": [["CAIS"], ["Gebru", "Bender"], ["Andreessen"], ["Narayanan", "& Kapoor"]],
       "perspectives": {
         "stones": [
           {

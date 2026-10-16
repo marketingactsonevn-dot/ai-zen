@@ -17,8 +17,9 @@
   "scenes": {
     "gardeners": {
       "label": "Một nghìn người làm vườn",
-      "art": "Tranh mực dưới trăng rằm: bên trái, một lão làm vườn xách bình tưới đi từng luống, bóng đổ dài trên lối đá. Bên phải, một nghìn ống tre nhỏ cùng nhỏ giọt xuống cả khu vườn một lúc; mặt nước phản chiếu trăng gợn lên cùng nhịp.",
+      "art": "Một quả đồi bậc thang như khay bonsai dưới trăng rằm thấp: 25 bậc cong, mỗi bậc 40 luống rêu, máng tre chạy dọc mép mọi bậc với một vòi nhỏ trên mỗi luống. Tiền cảnh trái, lão làm vườn bằng giấy đứng trên đá bước cạnh đèn đá, bình tưới đặt trên hòn đá bên ông; trên đỉnh đồi, nút tre đầu máng nối với mạch nước.",
       "prompt": "Chọn cách tưới vườn",
+      "hint": "Kéo để xoay khay vườn. Chạm bình tưới, hoặc nút tre trên đỉnh đồi.",
       "group": "Hai cách tưới cùng một khu vườn",
       "one": "1 bình tưới · CPU",
       "oneAria": "Tưới bằng một bình: vài lõi mạnh làm lần lượt từng việc",
@@ -36,8 +37,9 @@
     },
     "scaling": {
       "label": "Lớn lên cần thêm xẻng",
-      "art": "Ba chiếc chum đá dưới ánh trăng: chum Dữ liệu, chum Kích thước, chum Tính toán. Một ống tre nhỏ xuống trăm giọt nước bạc; cây non giữa vườn chỉ vươn cao khi cả ba chum cùng đầy cân nhau, lệch một chum thì cây nghiêng.",
+      "art": "Một chậu đá ba góc đặt trên tảng đá phủ rêu, nhìn chếch từ trên xuống; mỗi góc chảy vào một chiếc chum: Dữ liệu ở trước bên trái, Kích thước phía sau, Tính toán ở trước bên phải. Ống tre gác trên một cọc tre thả một sợi giọt bạc vào giữa chậu, nơi cây non đứng trên hòn đá nhỏ, ngược sáng vầng trăng. Sau màn sương, một cây cổ thụ thân to chờ sẵn.",
       "prompt": "Chia 100 giọt nước",
+      "basinAria": "Chậu đá ba góc: kéo chậu, hoặc dùng phím mũi tên, để nghiêng nó về một góc",
       "jars": [
         { "id": "data", "name": "Dữ liệu", "aria": "Chum dữ liệu: số chữ model được đọc" },
         { "id": "size", "name": "Kích thước", "aria": "Chum kích thước: số tham số của model" },
@@ -64,7 +66,7 @@
     },
     "moat": {
       "label": "Hào nước quanh lâu đài",
-      "art": "Lâu đài đá trên một hòn đảo, quanh là hào nước đen in bóng trăng. Bắc qua hào là vô số cây cầu tre nhỏ — những dòng mã cả làng đã quen đi. Ở bờ xa, ba con thuyền treo đèn lồng riêng đang chèo tới.",
+      "art": "Nhìn từ trên cao xuống một tấm đĩa tròn trôi trong đêm: giữa là lâu đài đá ba tầng mái trên đảo, quanh là hào nước đen với sáu trăm cây cầu tre nhỏ nối sang bờ làng mái thấp. Ngoài cùng là hồ xa, ba con thuyền treo đèn giấy (tròn, cao, vuông) đang đợi bên ba con kênh.",
       "prompt": "Chạm từng con thuyền",
       "castle": "NVIDIA",
       "moatLabel": "CUDA · phần mềm cả ngành đã quen",
@@ -114,7 +116,7 @@
     },
     "goldrush": {
       "label": "Mùa đào vàng",
-      "art": "Một dải cát dài như cuộn tranh trải dưới trăng. Người xem kéo vầng trăng từ trái sang phải; mỗi mốc nổi lên như một tảng đá, còn đống xẻng bên lều người bán cứ cao dần thành ngọn đồi.",
+      "art": "Một sống núi dài đen như cắt giấy chạy ngang phía dưới, sau nó là vầng trăng khổng lồ người xem kéo qua các mùa. Mỗi mốc là một cột đèn trên sống núi; người đào vàng cầm đèn leo lên mỗi lúc một đông, về phía lều người bán xẻng trên đỉnh, bên lều là hai đống vàng cao đúng tỉ lệ.",
       "prompt": "Kéo trăng qua các mùa",
       "sliderAria": "Kéo vầng trăng qua các mốc thời gian của NVIDIA",
       "tide": {
@@ -195,9 +197,10 @@
     },
     "loop": {
       "label": "Vòng tiền tuần hoàn",
-      "art": "Bốn hòn đảo đá trên hồ trăng: NVIDIA, các công ty AI, trung tâm dữ liệu, nhà đầu tư. Một dòng nước bạc chảy vòng từ đảo này sang đảo kia rồi quay về chỗ cũ; quanh bờ, bốn hòn đá lặng lẽ đứng nhìn, mỗi hòn một lời bình.",
+      "art": "Nhìn từ dưới trục lên một guồng nước gỗ lớn cạnh cối đá NVIDIA, in trên nền trăng. Một máng đá dẫn nước từ đuôi guồng vòng quanh hồ qua đảo Công ty AI (đình có đèn) và đảo Trung tâm dữ liệu (hàng đèn đá), rồi theo máng trên mái cối đổ lại lên chính guồng; tường cối khắc hai vạch mực nước 22 và 51.",
       "prompt": "Lần theo dòng tiền",
       "flowLabel": "Dòng tiền chảy vòng",
+      "wheelAria": "Guồng nước: kéo vòng quanh trục, hoặc nhấn mũi tên phải hay Enter, để quay một phần tư vòng",
       "islands": ["NVIDIA", "Công ty AI", "Trung tâm dữ liệu"],
       "circleLabel": "Bốn lời bình bên hồ",
       "flow": [

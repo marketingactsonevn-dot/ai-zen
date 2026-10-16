@@ -1,167 +1,485 @@
-/* Trạm 23 — Interpretability: a lantern over a clear pond · a lotus of stacked meanings · water over terraces */
+/* Trạm 23 — Interpretability. Garden 8 (trăng lên cao): painted light on canvas, flat layers at real depths (lit.ts rig). */
 
-/* scene 1: the bridge stone under clear water */
-.g8b .g8b-bank { fill: var(--wash); opacity: 0.2; }
-.g8b .g8b-floor { fill: color-mix(in srgb, var(--rock-mid) 60%, var(--water)); }
-:root[data-theme='dark'] .g8b .g8b-floor { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--water)); }
-.g8b .g8b-peb { fill: var(--rock-hi); opacity: 0.35; }
-.g8b .g8b-stone { fill: var(--rock-hi); opacity: 0.75; }
-:root[data-theme='dark'] .g8b .g8b-stone { fill: var(--rock-mid); }
-.g8b .g8b-stone-hi { fill: var(--moon); opacity: 0.3; }
-.g8b .g8b-cut { fill: var(--wash); }
-.g8b .g8b-tower { fill: var(--vermilion); }
-.g8b .g8b-water { opacity: 0.55; }
-:root[data-theme='dark'] .g8b .g8b-water { opacity: 0.6; }
-.g8b .g8b-moonglint { fill: var(--moon); opacity: 0.6; }
-:root[data-theme='light'] .g8b .g8b-moonglint { fill: #fff; opacity: 0.8; }
-.g8b .g8b-rim { fill: var(--wash); opacity: 0.55; }
-:root[data-theme='dark'] .g8b .g8b-rim { fill: var(--rock-mid); opacity: 0.7; }
-.g8b .g8b-pole { fill: color-mix(in srgb, var(--moss-b) 55%, var(--wash)); opacity: 0.9; }
-:root[data-theme='dark'] .g8b .g8b-pole { fill: color-mix(in srgb, var(--moss-a) 70%, var(--rock-mid)); }
-.g8b .g8b-node { fill: var(--wash); opacity: 0.6; }
-.g8b .g8b-body { fill: var(--card); }
-:root[data-theme='dark'] .g8b .g8b-body { fill: var(--ink-2); }
-.g8b .g8b-fin { fill: var(--wash); opacity: 0.45; }
-:root[data-theme='dark'] .g8b .g8b-fin { fill: var(--ink-3); opacity: 0.7; }
-.g8b .g8b-spot { fill: var(--vermilion); opacity: 0.85; }
-/* the wick: dim → bright; the light reaches the stone, the carving and the red reflection come up */
-.g8b .g8b-lamp .p2p-lamp-halo, .g8b .g8b-lamp .p2p-lamp-body, .g8b .g8b-beam, .g8b .g8b-pool, .g8b .g8b-carve, .g8b .g8b-refl { transition: opacity 0.9s; }
-.g8b .g8b-lamp .p2p-lamp-halo { opacity: 0.2; }
-.g8b .g8b-lamp .p2p-lamp-body { opacity: 0.55; }
-.g8b .g8b-beam { fill: var(--lantern); opacity: 0; }
-.g8b .g8b-pool { fill: url(#p2-lamp); opacity: 0; }
-.g8b .g8b-carve { opacity: 0.35; }
-.g8b .g8b-refl { fill: var(--vermilion); opacity: 0; }
-.g8b[data-lvl='1'] .g8b-lamp .p2p-lamp-halo { opacity: 0.6; }
-.g8b[data-lvl='1'] .g8b-lamp .p2p-lamp-body { opacity: 0.85; }
-.g8b[data-lvl='1'] .g8b-beam { opacity: 0.08; }
-.g8b[data-lvl='1'] .g8b-pool { opacity: 0.4; }
-.g8b[data-lvl='1'] .g8b-carve { opacity: 0.7; }
-.g8b[data-lvl='2'] .g8b-lamp .p2p-lamp-halo { opacity: 1; }
-.g8b[data-lvl='2'] .g8b-lamp .p2p-lamp-body { opacity: 1; }
-.g8b[data-lvl='2'] .g8b-beam { opacity: 0.16; }
-.g8b[data-lvl='2'] .g8b-pool { opacity: 0.75; }
-.g8b[data-lvl='2'] .g8b-carve { opacity: 1; }
-.g8b[data-lvl='2'] .g8b-refl { opacity: 0.5; }
-.g8b-f { transition: transform 1.6s cubic-bezier(0.45, 0, 0.2, 1); }
-.g8b-card {
+/* ── the rig: a view that melts into the paper, layers moved by transform only */
+.t23 {
   position: absolute;
-  display: grid;
-  gap: 10px;
-  padding: 16px 18px;
+  inset: 0 0 auto 0;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
-.g8b-card.wide { transform: translateY(-50%); }
-.g8b-card .g8-q { text-align: left; }
-.g8b-answer {
+.t23-view {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+/* a painting that runs past the gutters to the window's edges: only its top and its foot melt into the paper */
+.t23.bleed {
+  left: calc(-1 * var(--gutter));
+  right: calc(-1 * var(--gutter));
+}
+.t23-edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(var(--paper), color-mix(in srgb, var(--paper) 0%, transparent) 7%, color-mix(in srgb, var(--paper) 0%, transparent) 84%, var(--paper));
+}
+.t23-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.t23 canvas,
+.t23c canvas {
+  position: absolute;
+  display: block;
+  max-width: none;
+}
+.t23-over {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.t23-note {
   margin: 0;
-  min-height: 3.2em;
-  font: italic 400 clamp(1rem, 1.7vw, 1.2rem) / 1.45 var(--serif);
+  font: 400 12px/1.45 var(--sans);
+  color: var(--ink-3);
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper);
+}
+/* dó paper floating or lying in the scene: fibres, the moon on one shoulder, a soft shadow under it */
+.t23-paper {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .35' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .7 0 0 0 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 80% at 15% 0%, color-mix(in srgb, var(--moon) 30%, transparent), transparent 65%),
+    color-mix(in srgb, var(--card) 94%, var(--moon));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent), 6px 10px 18px -8px color-mix(in srgb, var(--umbra) 70%, transparent);
   color: var(--ink);
 }
-.g8b[data-lvl='2'] .g8b-answer { color: var(--vermilion); }
+:root[data-theme='dark'] .t23-paper {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .35' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .55 0 0 0 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 80% at 15% 0%, color-mix(in srgb, var(--moon) 45%, transparent), transparent 70%),
+    color-mix(in srgb, var(--moon) 78%, var(--rock-mid));
+  color: #1a2032;
+}
+/* words carved into stone: cut in, lit from above (a pale lip below, a dark one above) */
+.t23-carve {
+  font-family: var(--serif);
+  color: color-mix(in srgb, var(--umbra) 72%, var(--rock-lo));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 80%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 45%, transparent);
+}
+:root[data-theme='dark'] .t23-carve {
+  color: color-mix(in srgb, var(--moon) 82%, var(--rock-hi));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--umbra) 90%, transparent), 0 0 8px color-mix(in srgb, var(--umbra) 70%, transparent);
+}
 
-/* scene 2: lotus */
-.g8o .g8o-p0 { stop-color: var(--card); }
-.g8o .g8o-p1 { stop-color: color-mix(in srgb, var(--card) 88%, var(--vermilion)); }
-.g8o .g8o-p2 { stop-color: color-mix(in srgb, var(--card) 62%, var(--vermilion)); }
-:root[data-theme='dark'] .g8o .g8o-p0 { stop-color: var(--moon); }
-:root[data-theme='dark'] .g8o .g8o-p1 { stop-color: color-mix(in srgb, var(--moon) 88%, var(--vermilion)); }
-:root[data-theme='dark'] .g8o .g8o-p2 { stop-color: color-mix(in srgb, var(--moon) 66%, var(--vermilion)); }
-.g8o .g8o-vein { fill: var(--vermilion); opacity: 0.3; }
-.g8o .g8o-edge { fill: var(--wash); opacity: 0.55; }
-:root[data-theme='dark'] .g8o .g8o-edge { fill: var(--umbra); opacity: 0.6; }
-.g8o .g8o-stem { fill: var(--wash); opacity: 0.35; }
-.g8o .g8o-pad { fill: var(--moss-b); opacity: 0.8; }
-:root[data-theme='dark'] .g8o .g8o-pad { fill: var(--moss-a); }
-.g8o .g8o-padv { fill: var(--moss-c); opacity: 0.55; }
-.g8o .g8o-padrim { fill: var(--wash); opacity: 0.45; }
-.g8o .g8o-padc { transition: opacity 1s; }
-.g8o.open .g8o-padc { opacity: 0.55; }
-.g8o .g8o-bloom { opacity: 0; transition: opacity 0.9s; transition-delay: calc(0.9s + var(--k) * 90ms); }
-.g8o.open .g8o-bloom { opacity: 1; }
-.g8o .g8o-glyph { fill: var(--wash); font-family: var(--serif); }
-:root[data-theme='dark'] .g8o .g8o-glyph { fill: var(--ink); }
-.g8o .g8o-mono { font-family: var(--sans); letter-spacing: 0.04em; }
-.g8o-petal { transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: calc(var(--k) * 70ms); }
-.g8o .g8o-ring { fill: var(--moon); opacity: 0; transform-box: fill-box; transform-origin: center; }
-:root[data-theme='light'] .g8o .g8o-ring { fill: #fff; }
-.g8o.rip .g8o-ring { animation: g8o-rip 1.8s ease-out both; }
-@keyframes g8o-rip { from { transform: scale(0.6); opacity: 0.8; } to { transform: scale(2.4); opacity: 0; } }
-.g8o-pond {
+/* ── scene 1 ★ bridge: a pond seen from above */
+.t23b .t23b-floor { opacity: 1; }
+.t23b-fa, .t23b-ma, .t23b-sa, .t23b-ra, .t23b-pa, .t23b-ba { position: absolute; left: 0; top: 0; }
+.t23b-pool, .t23b-caus, .t23b-dim, .t23b-lrefl { position: absolute; border-radius: 50%; will-change: transform, opacity; }
+.t23b-pool {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 85%, var(--moon)) 0%, color-mix(in srgb, var(--lantern) 55%, transparent) 40%, transparent 100%);
+  mix-blend-mode: screen;
+}
+:root[data-theme='light'] .t23b-pool { mix-blend-mode: soft-light; opacity: 0.9; }
+.t23b-caus {
+  overflow: hidden;
+  mix-blend-mode: screen;
+  -webkit-mask-image: radial-gradient(closest-side, #000 30%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 30%, transparent 100%);
+}
+.t23b-caus i {
   position: absolute;
-  border: 0;
-  border-radius: 40%;
-  background: transparent;
-  cursor: pointer;
+  inset: -128px;
+  background-size: 128px 128px;
+  opacity: 0.8;
 }
-.g8o-pond:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -8px; }
-.g8o-neuron {
-  font: italic 400 0.92rem/1.2 var(--serif);
-  color: var(--ink-2);
-  transition: opacity 0.8s;
+.t23b-caus .c2 { background-size: 176px 176px; opacity: 0.6; }
+.t23.is-live .t23b-caus .c1 { animation: t23-drift 26s linear infinite; }
+.t23.is-live .t23b-caus .c2 { animation: t23-drift2 34s linear infinite; }
+@keyframes t23-drift { to { transform: translate(128px, 64px); } }
+@keyframes t23-drift2 { to { transform: translate(-176px, 88px); } }
+.t23b-glow { position: absolute; inset: 0; opacity: 0; mix-blend-mode: screen; }
+:root[data-theme='light'] .t23b-glow { mix-blend-mode: multiply; }
+.t23b-dim { background: radial-gradient(closest-side, transparent 28%, color-mix(in srgb, var(--umbra) 70%, transparent) 75%); opacity: 0; }
+:root[data-theme='light'] .t23b-dim { background: radial-gradient(closest-side, transparent 28%, color-mix(in srgb, var(--wash) 30%, transparent) 75%); }
+.t23b-shadows i, .t23b-koi { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.t23b-fsh canvas { left: 0; top: 0; width: 100% !important; height: 100% !important; }
+.t23b-koi canvas { left: 0; top: 0; }
+.t23b-tail { position: absolute; transform-origin: 100% 50%; }
+.t23b-tail canvas { left: 0; top: 0; }
+.t23b-towers { position: absolute; inset: 0; opacity: 0; mix-blend-mode: screen; }
+:root[data-theme='light'] .t23b-towers { mix-blend-mode: multiply; }
+.t23b-lrefl { background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 60%, transparent), transparent); mix-blend-mode: screen; opacity: 0.3; }
+:root[data-theme='light'] .t23b-lrefl { mix-blend-mode: normal; }
+.t23b-ring { position: absolute; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--moon) 70%, transparent); opacity: 0; pointer-events: none; }
+:root[data-theme='light'] .t23b-ring { border-color: color-mix(in srgb, var(--paper) 90%, transparent); }
+.t23b-ring.go { animation: t23-ring 1.8s cubic-bezier(.2,.6,.3,1) both; }
+@keyframes t23-ring { from { transform: scale(0.15); opacity: 0.9; } to { transform: scale(1.6); opacity: 0; } }
+.t23b-ans {
+  position: absolute;
+  margin: 0;
+  font: 400 19px/1.45 var(--serif);
+  color: var(--ink);
+  text-wrap: balance;
+  /* ink just laid on water: a faint bleed of itself, a breath of the shallow water's light behind it */
+  text-shadow: 0 0 1px color-mix(in srgb, var(--ink) 45%, transparent), 0 0 12px color-mix(in srgb, var(--card) 75%, transparent), 0 0 22px color-mix(in srgb, var(--card) 45%, transparent);
 }
-.g8o-mean {
+:root[data-theme='dark'] .t23b-ans {
+  color: color-mix(in srgb, var(--moon) 88%, var(--ink));
+  text-shadow: 0 0 1px color-mix(in srgb, var(--moon) 40%, transparent), 0 0 10px var(--paper), 0 0 22px var(--paper);
+}
+/* a small washi slip afloat near the bank, turned a little by the water */
+.t23b-q {
+  position: absolute;
+  padding: 7px 11px 8px;
+  border-radius: 2px 3px 2px 1px;
+  transform-origin: 0 0;
+}
+.t23b-q p { margin: 0; font: 500 1em/1.35 var(--serif); }
+.t23b-q::after {
+  /* where the slip touches the water: a thin wet line and its shadow on the surface */
+  content: '';
+  position: absolute;
+  inset: auto 4px -5px 8px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 35%, transparent), transparent);
+  z-index: -1;
+}
+.t23b-wisp {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) 55%, transparent), transparent);
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t23b-wisp { opacity: 0.2; }
+.t23.is-live .t23b-wisp.w1 { animation: t23-wisp 14s ease-in-out infinite alternate; }
+.t23.is-live .t23b-wisp.w2 { animation: t23-wisp 18s ease-in-out infinite alternate-reverse; }
+@keyframes t23-wisp { to { transform: translate(40px, -10px); } }
+/* the hanging tag: a small board on a string under the pole, the words written level */
+.t23b-tag {
+  position: absolute;
+  translate: calc(-50% + var(--off, 0px)) 0;
+  padding-top: 1.4em;
+  pointer-events: none;
+}
+.t23b-tag::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - var(--off, 0px));
+  top: 0;
+  width: 1px;
+  height: 1.5em;
+  background: var(--ink-2);
+  opacity: 0.7;
+}
+.t23b-tag span {
+  display: block;
+  padding: 0.35em 0.6em 0.4em;
+  border-radius: 2px;
+  font: 500 1em/1.3 var(--serif);
   text-align: center;
-  font: 400 0.95rem/1.3 var(--serif);
   color: var(--ink);
-  opacity: 0;
-  transition: opacity 0.8s 0.9s;
-  text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper), 0 0 1px var(--paper);
+  background: color-mix(in srgb, var(--step-hi) 82%, var(--lantern));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 18%, transparent), 0.3em 0.5em 0.8em -0.4em color-mix(in srgb, var(--umbra) 80%, transparent);
+  transform: rotate(-2deg);
 }
-.g8o.open .g8o-mean { opacity: 1; }
-.g8o-note { text-align: center; }
-
-/* scene 3: a stream over stone terraces */
-.g8s .g8s-fl0 { stop-color: var(--rock-hi); stop-opacity: 0; }
-.g8s .g8s-fl1 { stop-color: var(--rock-hi); stop-opacity: 0.55; }
-:root[data-theme='dark'] .g8s .g8s-fl0 { stop-color: var(--rock-mid); stop-opacity: 0; }
-:root[data-theme='dark'] .g8s .g8s-fl1 { stop-color: color-mix(in srgb, var(--moon) 20%, var(--rock-mid)); stop-opacity: 0.45; }
-.g8s .g8s-wall { opacity: 0.5; }
-.g8s .g8s-wall.dark { opacity: 0.85; }
-:root[data-theme='dark'] .g8s .g8s-wall { opacity: 0.5; }
-:root[data-theme='dark'] .g8s .g8s-wall.dark { opacity: 0.3; }
-.g8s .g8s-wall-ink { fill: var(--wash); opacity: 0.6; }
-:root[data-theme='dark'] .g8s .g8s-wall-ink { fill: var(--umbra); opacity: 0.7; }
-.g8s .g8s-lip { fill: var(--wash); opacity: 0.55; }
-:root[data-theme='dark'] .g8s .g8s-lip { fill: var(--rock-hi); opacity: 0.35; }
-.g8s .g8s-rock { opacity: 0.95; }
-.g8s .g8s-cleft { fill: var(--umbra); opacity: 0.6; }
-.g8s .g8s-bed { fill: var(--wash); opacity: 0.16; }
-.g8s .g8s-bed.cut { opacity: 0.1; }
-.g8s .g8s-pool-water { opacity: 0.85; }
-.g8s .g8s-pool-rim { fill: var(--wash); opacity: 0.6; }
-:root[data-theme='dark'] .g8s .g8s-pool-rim { fill: var(--rock-hi); opacity: 0.45; }
-.g8s .g8s-water { fill: none; stroke: var(--moon); stroke-width: 4.5; stroke-linecap: round; opacity: 0.85; }
-:root[data-theme='light'] .g8s .g8s-water { stroke: #fff; opacity: 0.9; }
-.g8s .g8s-water.cut { stroke-width: 1.6; opacity: 0.45; stroke-dasharray: 4 5; }
-.g8s .g8s-foam { fill: var(--moon); opacity: 0.8; }
-:root[data-theme='light'] .g8s .g8s-foam { fill: #fff; }
-.g8s .g8s-shine { fill: var(--moon); opacity: 0.35; }
-:root[data-theme='light'] .g8s .g8s-shine { fill: #fff; opacity: 0.55; }
-.g8s-node {
+:root[data-theme='dark'] .t23b-tag span { color: #1a2032; background: color-mix(in srgb, var(--moon) 70%, var(--rock-hi)); }
+.t23b-cord { position: absolute; left: 0; top: 0; width: 1px; height: 1.5px; transform-origin: 0 50%; background: var(--ink-2); opacity: 0.8; }
+.t23b-lamp {
   position: absolute;
-  min-height: 48px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  font: 400 clamp(1rem, 1.8vw, 1.3rem) / 1.2 var(--serif);
-  color: var(--ink-2);
-  cursor: default;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  transform-origin: 50% 50%;
 }
-.g8s-node span { white-space: nowrap; padding: 2px 10px; border-radius: 999px; text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper); }
-.g8s-node.full { color: var(--ink); }
-.g8s-node.next { color: var(--ink); cursor: pointer; }
-.g8s-node.next span { box-shadow: 0 0 0 1.5px var(--vermilion); }
-:root[data-quality='high'] .g8s-node.next span { animation: g8s-call 2.4s ease-in-out infinite; }
-@keyframes g8s-call { 50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--vermilion) 25%, transparent); } }
-.g8s-node:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
-.g8s.swapped .g8s-node.t1 span, .g8s.swapped .g8s-node.t2 span { color: var(--vermilion); }
-.g8s-cut { text-align: right; font: italic 400 0.8rem/1.2 var(--serif); color: var(--ink-3); }
-.g8s-limit { text-align: center; }
+.t23b-lamp.drag { cursor: grabbing; }
+.t23b-lamp:focus-visible { outline: none; box-shadow: 0 0 0 2px color-mix(in srgb, var(--moon) 75%, transparent), 0 0 22px 8px color-mix(in srgb, var(--moon) 45%, transparent); }
+.t23b-lart, .t23b-lart canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.t23b-halo {
+  position: absolute;
+  inset: -150%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 70%, transparent) 18%, color-mix(in srgb, var(--lantern) 22%, transparent) 45%, transparent);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+:root[data-theme='light'] .t23b-halo { mix-blend-mode: normal; opacity: 0.6; }
+.t23b-note { position: absolute; z-index: 3; }
+.t23b-note .t23-note { text-align: left; }
+.t23b-branch { opacity: 0.9; }
+/* ── scene 2 lotus: grazing the night water */
+.t23-abs { position: absolute; left: 0; top: 0; }
+.t23o-bud { position: absolute; width: 0; height: 0; }
+.t23o-petal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -100%;
+  transform-origin: 50% 100%;
+}
+.t23o-petal canvas, .t23o-flower canvas { position: relative; }
+.t23o-flower { position: absolute; opacity: 0; transform-origin: 50% 70%; }
+.t23o.open .t23o-flower { opacity: 1; }
+/* each meaning inked on a small paper slip afloat beside its lotus; the far ones a little paler in the mist */
+.t23o-mean {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.28em 0.65em 0.32em 0.45em;
+  border-radius: 2px 3px 2px 1px;
+  white-space: nowrap;
+  font: 400 15px/1.2 var(--serif);
+  opacity: 0;
+  transform-origin: 0 50%;
+}
+.t23o.open .t23o-mean { opacity: calc(1 - var(--haze, 0) * 0.22); }
+.t23o-glyph { width: 1.45em; height: 1.45em; flex: none; overflow: visible; fill: none; stroke: var(--vermilion); stroke-linecap: round; }
+.t23o-glyph text { fill: var(--vermilion); stroke: none; font-family: var(--serif); }
+.t23o-pod canvas { position: relative; }
+.t23o-neuron {
+  position: absolute;
+  font: 400 15px/1 var(--serif);
+  color: var(--ink-2);
+  opacity: 0.8;
+  white-space: nowrap;
+  text-shadow: 0 0 8px var(--paper);
+}
+:root[data-theme='dark'] .t23o-neuron { color: var(--ink-2); text-shadow: 0 0 8px var(--water); }
+.t23o-brefl { position: absolute; inset: 0; transition: opacity 1.2s; }
+.t23o.open .t23o-brefl { opacity: 0; }
+.t23o-threads, .t23o-rings { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.t23o-threads path { fill: none; stroke-dasharray: 1; stroke-dashoffset: 1; stroke-linecap: round; }
+/* a silver thread under the water: a dark line under a bright one, so it reads on the pale water too */
+.t23o-threads .under { stroke: color-mix(in srgb, var(--umbra) 55%, transparent); stroke-width: 2.6; }
+.t23o-threads .over { stroke: color-mix(in srgb, var(--moon) 85%, transparent); stroke-width: 1.1; }
+:root[data-theme='light'] .t23o-threads .under { stroke: color-mix(in srgb, var(--wash) 40%, transparent); stroke-width: 2.4; }
+:root[data-theme='light'] .t23o-threads .over { stroke: var(--card); stroke-width: 1.2; }
+.t23o.open .t23o-threads path { stroke-dashoffset: 0; }
+.t23o-rings ellipse { fill: none; stroke: color-mix(in srgb, var(--moon) 80%, transparent); stroke-width: 1.4; transform-box: fill-box; transform-origin: center; }
+:root[data-theme='light'] .t23o-rings ellipse { stroke: color-mix(in srgb, var(--card) 90%, transparent); }
+.t23o-pond {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: none;
+}
+.t23o-pond:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -6px; border-radius: 12px; }
+.t23o-note { position: absolute; left: 8%; right: 8%; top: 4px; text-align: center; transition: opacity 0.8s; }
 
-/* scene 4: the four stones of the circle */
-.p2c .g8c-moss { fill: var(--moss-b); opacity: 0.85; }
-:root[data-theme='dark'] .p2c .g8c-moss { fill: var(--moss-a); }
-.p2c .g8c-tuft { fill: var(--moss); opacity: 0.6; }
-.p2c .g8c-seal { fill: var(--vermilion); opacity: 0.9; }
-.p2c .g8c-seal-cut { fill: var(--rock-hi); opacity: 0.9; }
+.t23o-note[data-off] { opacity: 0; visibility: hidden; }
+
+/* ── scene 3 stream: down a terraced cascade from its source */
+.t23s .t23-edge { background: linear-gradient(var(--paper), color-mix(in srgb, var(--paper) 0%, transparent) 6%, color-mix(in srgb, var(--paper) 0%, transparent) 94%, var(--paper)); }
+.t23s-fog {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) 85%, transparent), transparent);
+  opacity: 0.3;
+  transition: opacity 2.4s ease;
+}
+:root[data-theme='dark'] .t23s-fog { opacity: 0.12; }
+.t23s.swapped .t23s-fog { opacity: 0.95; }
+:root[data-theme='dark'] .t23s.swapped .t23s-fog { opacity: 0.42; }
+/* a pond fills: the water rises from the bottom of the bowl and spreads to its rim */
+.t23s-pool { position: absolute; opacity: 0; transform: translateY(22%) scale(0.55, 0.42); transform-origin: 50% 70%; transition: opacity 1.2s 0.8s ease, transform 2.4s 0.8s cubic-bezier(.3,.1,.2,1); }
+.t23s-pool canvas { left: 0; top: 0; }
+.t23s.tex-full .t23s-pool.tex, .t23s.aus-full .t23s-pool.aus { opacity: 1; transform: none; }
+.t23s-slab {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  display: grid;
+  place-items: center;
+}
+.t23s-slab span { position: relative; font-size: 1em; font-weight: 500; white-space: nowrap; }
+button.t23s-slab { cursor: pointer; pointer-events: auto; }
+button.t23s-slab:disabled { cursor: default; }
+button.t23s-slab.ready::after {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--moon) 40%, transparent), transparent);
+  z-index: -1;
+  animation: t23-breathe 2.6s ease-in-out 3 alternate;
+}
+button.t23s-slab:focus-visible { outline: none; box-shadow: 0 0 0 2px color-mix(in srgb, var(--moon) 70%, transparent), 0 0 18px 4px color-mix(in srgb, var(--moon) 45%, transparent); border-radius: 6px; }
+@keyframes t23-breathe { from { opacity: 0.25; } to { opacity: 1; } }
+.t23s-name { position: absolute; margin: 0; text-align: center; font-weight: 500; line-height: 1.1; }
+.t23s-cut {
+  position: absolute;
+  font: 400 14px/1.2 var(--serif);
+  color: var(--ink-2);
+  opacity: 0;
+  text-shadow: 0 0 6px var(--paper), 0 0 12px var(--paper);
+  transition: opacity 1.2s 1.2s;
+}
+.t23s.aus-full .t23s-cut { opacity: 0.9; }
+.t23s-q { position: absolute; margin: 0; font-weight: 500; line-height: 1.4; }
+.t23s-flows { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; }
+.t23s-flows path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+/* the water inside a bamboo pipe: a bright thread in its bore */
+.t23s-flows .core { stroke: color-mix(in srgb, var(--moon) 90%, var(--water)); stroke-width: 2.6px; }
+:root[data-theme='light'] .t23s-flows .core { stroke: var(--card); stroke-width: 2.4px; }
+.t23s-flows .core.cut { stroke-width: 1.3px; opacity: 0.6; }
+.t23s-flows .spring ellipse { fill: color-mix(in srgb, var(--moon) 60%, transparent); }
+:root[data-theme='light'] .t23s-flows .spring ellipse { fill: color-mix(in srgb, var(--card) 85%, transparent); }
+.t23s-flows .spring .gush { stroke: var(--moon); stroke-width: 1.4px; }
+:root[data-theme='light'] .t23s-flows .spring .gush { stroke: var(--card); }
+.t23s-flows .fs0 { stop-color: var(--moon); stop-opacity: 0.5; }
+.t23s-flows .fs1 { stop-color: var(--moon); stop-opacity: 0.25; }
+:root[data-theme='light'] .t23s-flows .fs0 { stop-color: #fff; stop-opacity: 0.65; }
+:root[data-theme='light'] .t23s-flows .fs1 { stop-color: #fff; stop-opacity: 0.35; }
+/* the curtain is mostly its streaks: white threads of falling water */
+.t23s-flows .streak { stroke: var(--moon); stroke-width: 1.3px; opacity: 0.9; }
+:root[data-theme='light'] .t23s-flows .streak { stroke: #fff; stroke-width: 1.5px; }
+.t23s-flows .bend { fill: var(--moon); opacity: 0.8; }
+:root[data-theme='light'] .t23s-flows .bend { fill: #fff; }
+.t23s-flows .foam { fill: color-mix(in srgb, var(--moon) 75%, transparent); }
+:root[data-theme='light'] .t23s-flows .foam { fill: #fff; }
+.t23s-flows .sp0 { stop-color: var(--moon); stop-opacity: 0.38; }
+.t23s-flows .sp1 { stop-color: var(--moon); stop-opacity: 0; }
+:root[data-theme='light'] .t23s-flows .sp0 { stop-color: #fff; stop-opacity: 0.7; }
+:root[data-theme='light'] .t23s-flows .sp1 { stop-color: #fff; stop-opacity: 0; }
+.t23s-sluice {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: none;
+}
+.t23s-sluice[aria-disabled='true'] { cursor: default; }
+.t23s-st, .t23s-sh { position: absolute; left: 50%; top: 50%; width: var(--sz); height: calc(var(--sz) * 0.7); translate: -50% -50%; transition: transform 0.9s cubic-bezier(.3,.1,.2,1); }
+.t23s-st canvas { position: absolute; }
+.t23s-sh { border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 55%, transparent), transparent); transform: translateY(18%) scale(1.1, 0.5); }
+.t23s-sluice.next::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--moon) 45%, transparent), transparent 75%);
+  animation: t23-breathe 2.2s ease-in-out 4 alternate;
+}
+:root[data-quality='low'] .t23s-sluice.next::before, .t23s-sluice.next.still::before { animation: none; }
+.t23s-sluice.up .t23s-st { transform: translate(55%, -60%) rotate(-12deg); }
+.t23s-sluice.up .t23s-sh { transform: translate(40%, 10%) scale(1.4, 0.6); opacity: 0.6; }
+.t23s-sluice:focus-visible { outline: none; }
+.t23s-sluice:focus-visible::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--moon) 55%, transparent), transparent); }
+.t23s-limit { position: absolute; transition: opacity 1s; }
+.t23s-limit .t23-note { text-align: left; }
+.t23s-limit[data-off] { opacity: 0; visibility: hidden; }
+
+/* ── scene 4 circle: a lacquer tray turning on a table */
+.t23c .p2c-stage { left: 0 !important; width: 100% !important; height: 100% !important; overflow: visible; }
+.t23c-art {
+  width: 100%;
+  height: 100%;
+}
+.t23c-art canvas { left: 0; top: 0; }
+.t23c-water { position: absolute; border-radius: 50%; overflow: hidden; }
+.t23c-moonr {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26%;
+  height: 52%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--moon), color-mix(in srgb, var(--moon) 80%, transparent) 62%, color-mix(in srgb, var(--moon) 25%, transparent) 80%, transparent);
+  transition: transform 1.2s cubic-bezier(.3,.1,.2,1), border-radius 1.2s;
+  transform: translate(28%, -18%) scale(1.25, 0.6);
+}
+:root[data-theme='light'] .t23c-moonr { background: radial-gradient(closest-side, #fff, color-mix(in srgb, var(--card) 85%, transparent) 62%, color-mix(in srgb, var(--card) 30%, transparent) 80%, transparent); }
+/* the stone at six o'clock speaks: the moon in the water leans toward it (and the strip of its words) */
+.t23c[style*='--lean'] .t23c-moonr { transform: translate(0, 32%) scale(1.15, 0.72) rotate(4deg); }
+.t23c.is-all .t23c-moonr { transform: translate(0, 0) scale(1, 1); }
+.t23c-rings { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.t23c-rings ellipse { fill: none; stroke: color-mix(in srgb, var(--moon) 70%, transparent); stroke-width: 1; transform-box: fill-box; transform-origin: center; opacity: 0; }
+:root[data-theme='light'] .t23c-rings ellipse { stroke: color-mix(in srgb, var(--card) 90%, transparent); }
+:root[data-quality='high'] .t23c.p2-astir.rip .t23c-rings ellipse { animation: t23c-ring 6.4s linear 2; }
+:root[data-quality='low'] .t23c.p2-astir .t23c-rings ellipse { opacity: 0.35; transform: scale(calc(0.3 + var(--i, 0) * 0.2)); }
+@media (prefers-reduced-motion: reduce) { .t23c-rings ellipse { animation: none !important; opacity: 0.3 !important; } }
+@keyframes t23c-ring { from { transform: scale(0.12); opacity: 0.8; } to { transform: scale(1); opacity: 0; } }
+.t23c.is-all .t23c-rings ellipse { animation: none; opacity: 0; }
+.t23c-carve { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.t23c-carve text { font-family: var(--serif); font-weight: 500; fill: color-mix(in srgb, var(--moon) 75%, var(--rock-hi)); paint-order: stroke; stroke: color-mix(in srgb, var(--umbra) 70%, transparent); stroke-width: 2px; }
+:root[data-theme='light'] .t23c-carve text { fill: var(--ink); stroke: color-mix(in srgb, var(--card) 70%, transparent); }
+:root[data-theme='light'] .t23c-carve text:not(.flat) { fill: var(--card); stroke: color-mix(in srgb, var(--umbra) 55%, transparent); }
+.t23c-dot { position: absolute; left: -2.5px; top: -1.5px; width: 5px; height: 3px; border-radius: 50%; background: color-mix(in srgb, var(--moon) 60%, var(--rock-mid)); opacity: 0.7; }
+.t23c-stone { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+.t23c-stone canvas { position: absolute; }
+.t23c-lit { position: absolute; left: 0; top: 0; }
+.t23c-sh { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 75%, transparent), transparent); }
+.t23c .p2c-stone { animation: none; }
+.t23c .p2c-stone .p2c-halo, .t23c .p2c-stone .p2c-ring, .t23c .p2c-stone .p2-stone, .t23c .p2c-num { display: none; }
+.t23c .p2c-stone-art { transition: none; }
+/* keyboard focus only: a soft moon glow on the stone, no ring */
+.t23c .p2c-stone:focus-visible { outline: none; }
+.t23c .p2c-stone:focus-visible::before {
+  content: '';
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--moon) 55%, transparent), transparent);
+}
+/* the speaker's words on a strip of washi unrolled across the table in front of the tray, its ends rolled */
+.t23c .p2c-card {
+  left: var(--sx, 0) !important;
+  top: var(--sy, 60%) !important;
+  width: var(--sw, 100%) !important;
+  max-height: var(--sh, none) !important;
+  /* lying on the table: tipped away from us a little */
+  transform: perspective(900px) rotateX(16deg) rotate(-0.7deg) !important;
+  transform-origin: 50% 100%;
+  padding: 10px 30px 9px;
+  border: 0;
+  border-radius: 2px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .35' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .6 0 0 0 -.27'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, color-mix(in srgb, var(--umbra) 18%, transparent), transparent 4%, transparent 96%, color-mix(in srgb, var(--umbra) 18%, transparent)),
+    radial-gradient(120% 90% at 85% 0%, color-mix(in srgb, var(--moon) 30%, transparent), transparent 60%),
+    color-mix(in srgb, var(--card) 95%, var(--moon));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 7%, transparent), -10px 14px 22px -14px color-mix(in srgb, var(--umbra) 90%, transparent);
+  color: var(--ink);
+}
+:root[data-theme='dark'] .t23c .p2c-card {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .35' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .5 0 0 0 -.22'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, color-mix(in srgb, #000 22%, transparent), transparent 4%, transparent 96%, color-mix(in srgb, #000 22%, transparent)),
+    color-mix(in srgb, var(--moon) 80%, var(--rock-mid));
+  --ink: #1a2032;
+  --ink-2: #2c3350;
+  --ink-3: #454c66;
+}
+.t23c .p2c-card .p2c-who { display: block; margin: 0 0 0.2em; font: 500 0.86rem/1.32 var(--serif); color: var(--ink-2); }
+/* the strip's two rolled ends: thin rods of black lacquer with the moon on them */
+.t23c .p2c-card::before, .t23c .p2c-card::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 9px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--umbra) 90%, var(--rock-lo)), color-mix(in srgb, var(--moon) 55%, var(--rock-lo)) 45%, color-mix(in srgb, var(--umbra) 90%, var(--rock-lo)));
+}
+.t23c .p2c-card::before { left: 4px; }
+.t23c .p2c-card::after { right: 4px; }
+.t23c .p2c-card .p2c-who-label { display: inline; margin-right: 0.6em; font: 500 0.7rem/1 var(--sans); letter-spacing: 0.06em; color: var(--vermilion); }
+:root[data-theme='dark'] .t23c .p2c-card .p2c-who-label { color: #a2321f; }
+.t23c .p2c-card .p2c-view { margin: 0 0 0.2em; font: 400 clamp(0.95rem, 1.3vw, 1.06rem) / 1.42 var(--serif); }
+.t23c .p2c-card .p2c-count { justify-content: flex-end; font-size: 0.72rem; }
+.t23c .p2c-card .p2c-dots { display: none; }

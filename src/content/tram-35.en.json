@@ -21,10 +21,11 @@
   "scenes": {
     "ladder": {
       "label": "The automation stairs",
-      "art": "Ink painting: five mossy stone steps lead up to the workshop door, a stone lantern on each. The same “weekly report” scroll is carried up step by step; on the top step a bamboo water tube (shishi-odoshi) tips on its own rhythm — work that runs on time by itself.",
+      "art": "Ink painting: five dry-stone terraces zig-zag left and right up a mossy hillside, earth banks and bands of mist between them, a pine wood behind and the moon over the workshop roof. Each terrace has a stone lantern and a dressed stone carved with its name; when you arrive the lantern lights, a warm pool spreads on the moss and its little scene plays: a request said once thins into mist, a scroll hangs in a stone niche, a paper figure hops across stones by itself, a bamboo trough runs through three gates and waits for a seal, a shishi-odoshi tips and knocks on its own.",
       "prompt": "Climb each step",
       "task": "Sample task: the weekly report",
       "rungAria": "Step {n}: {name}",
+      "sealAria": "Vermilion seal: approve so the workflow runs on",
       "rungs": [
         {
           "id": "prompt",
@@ -87,9 +88,14 @@
     },
     "scroll": {
       "label": "Unrolling a skill",
-      "art": "Ink painting: a scroll hung on a wooden peg under a lantern, unrolling from top to bottom. The head is written boldly like a shop sign (name, “when to use”); the body holds the steps; at the bottom hangs a small cloth pouch of attachments, opened only when needed.",
+      "art": "Ink painting: a dark wall of boards in an alcove, a round window letting in a dusty shaft of moonlight. Nine skill scrolls hang from a bamboo rail, each its own length, silk and knob. A hand-held paper lantern is the key light: only inside its pool can the name tags be read. Open the readable one and the paper unrolls sideways along the wall as a makimono (on a phone it hangs down as a kakemono), notes in vermilion in the margin, a copy seal at its tail, a cloth pouch of attached files hanging at its axis.",
       "prompt": "Unroll the skill",
       "codeAria": "A sample skill: writing product captions in the brand voice",
+      "lampAria": "Hand lantern: move it along the wall to light the scrolls’ name tags",
+      "lampValue": "Lighting scroll {n} of {total}",
+      "pouch": "references/",
+      "pouchFile": "brand-voice.md",
+      "pouchAria": "Cloth pouch with the attached files (references/)",
       "copy": "Copy",
       "copied": "Copied",
       "fileName": "product-caption/SKILL.md",
@@ -147,7 +153,7 @@
     },
     "moons": {
       "label": "From habit to standard",
-      "art": "Ink painting: a long strip of raked sand like a horizontal scroll; the visitor drags the moon from left to right. Each milestone is a small stone lantern rising from the sand as the moon passes; at the end, mist covers a lantern not yet lit.",
+      "art": "Ink painting: a rolling moss field under the moon seen from above at a slant; a worn trail enters at the bottom-left corner, swings in an S past six carved stone posts and fades into the mist in the middle of the horizon. Drag the moon along its ink arc: it waxes, the posts’ long shadows swing with it, and at each milestone a post lights up, the trail paves itself stone by stone and the words appear on the moss; today, many walk it with lanterns.",
       "prompt": "Drag the moon past the milestones",
       "sliderAria": "Timeline, at milestone {n} of {total}: {label}",
       "today": "Today",
@@ -231,7 +237,7 @@
     },
     "spec": {
       "label": "Spec first, code later",
-      "art": "Ink painting: a workbench under a hanging lamp, a blueprint spread flat, its four corners held by pebbles. Eight stones form a path from the workshop door to the bench; each stone set in its place inks one more line of the blueprint.",
+      "art": "Ink painting: a thick plank workbench under a paper lamp, seen from above; a washi blueprint lies in the warm pool, its corners held by stones, eight pencil rings round its margin. Eight pebbles carved with the steps lie along the near edge; each one set in its ring changes the sheet: a sketch of the feeling, question marks, a block of spec, cut lines, then the pieces fold up into a paper workshop, a pine and a fence by a pond, with real shadows; at last it folds flat and rolls up into a skill hung on a hook.",
       "prompt": "Set the stones in order",
       "pathAria": "An eight-step stone path: from a description to a skill",
       "stoneAria": "Stone: {label}",
@@ -239,6 +245,7 @@
       "keys": "Tap in turn, or use number keys 1 to 8.",
       "wrongHint": "Not quite — {why}",
       "done": "The path is lit. Open your take-away card.",
+      "hookAria": "The skill you just saved, on its hook: open it on the bench",
       "steps": {
         "steps": [
           {
@@ -302,7 +309,7 @@
     },
     "line": {
       "label": "The workshop line",
-      "art": "Ink painting: an ink cord strung across the night workshop, hung with eight paper lanterns — one per work station. The visitor joins the lanterns with a brush stroke; where a person must approve, they set a vermilion stone like a seal beneath the lantern.",
+      "art": "Ink painting: a long plank corridor in the workshop at night, converging on the far door open to a bright moon garden. Eight paper lanterns hang on an ink cord, near ones large and warm, far ones small and cool, each throwing a pool of light on the floor and the paper walls; each station’s name is written on its lantern. In front, a low table with a bowl of vermilion stones and a brush resting on an inkstone. Join the lanterns with a brush stroke and set vermilion stones under the ones that need a person.",
       "prompt": "Light lanterns, set red stones",
       "task": "Example: a new product goes on the shelf",
       "lineAria": "An eight-station marketing line",

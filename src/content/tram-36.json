@@ -21,11 +21,15 @@
   "scenes": {
     "blueprint": {
       "label": "Bản vẽ trước khi đẽo",
-      "art": "Tranh mực: bàn vẽ dưới đèn xưởng, tờ giấy dó trải phẳng. Sáu mảnh giấy cắt hình viên đá nằm bên mép; đặt mảnh nào vào khung, nét mực của hồ koi hiện ra ở góc đó — mặt nước, con cá, mảnh trăng — cho tới khi bản vẽ thành một trang spec.",
+      "art": "Tranh mực: phòng vẽ tối, một đèn andon giấy sáu mặt sáng trên bàn. Mỗi mặt đèn là một mảnh của bản vẽ, dưới mặt trước treo hai dải giấy là hai cách chọn. Chọn một dải: dải dán lên mặt đèn, đèn ném phần đó của trò chơi thành bóng sắc nét lên vách — mặt hồ, con cá, mảnh trăng — và một dòng được viết vào spec.md trên bàn. Đủ sáu mặt, cả trò chơi hiện trên vách trước khi có dòng code nào.",
+      "lampRole": "đèn lồng sáu mặt",
+      "lampAria": "Đèn bản vẽ, mặt {n}: {piece}. Phím mũi tên trái, phải để xoay đèn.",
       "prompt": "Chọn từng mảnh ghép",
       "group": "Sáu mảnh của bản vẽ",
       "pieceAria": "{piece}: {option}",
       "specTitle": "spec.md",
+      "specCount": "{n}/{total} dòng đã điền",
+      "specSlipAria": "Mở spec.md: {n}/{total} dòng đã điền",
       "pieces": [
         {
           "id": "idea",
@@ -95,7 +99,9 @@
     },
     "pens": {
       "label": "Chọn bút",
-      "art": "Tranh mực: ống bút tre trên bàn, năm cây bút khác nhau. Cùng một hồ koi được vẽ năm lần: nét than mảnh, nét màu phóng khoáng, nét có ô lưới như bàn cờ, nét có chiều sâu và bóng đổ, và một bức lớn đóng khung gỗ.",
+      "art": "Tranh mực: xưởng vẽ đêm. Trên giá vẽ, một khung gỗ đựng chậu đá có cá koi nhìn từ trên xuống; dưới đèn là ống bút tre cắm năm cây bút. Ba bút phẳng chỉ vẽ được một tờ giấy, kéo thì tờ giấy trượt đi; bút Three.js mở khung thành cửa sổ 3D, kéo là xoay được cả hồ trong ánh trăng; bút Godot/Unity lùi máy quay ra cả khu vườn, khung hoá thành viền màn hình.",
+      "frameAria": "Khung tranh hồ koi trên giá vẽ",
+      "frameHint": "Bút phẳng: kéo hoặc dùng phím mũi tên để trượt tờ giấy. Bút 3D: kéo hoặc dùng phím mũi tên để xoay hồ, phím + và − để lại gần.",
       "prompt": "Bấm từng cây bút",
       "group": "Năm cây bút",
       "penAria": "Bút: {name}",
@@ -157,7 +163,8 @@
     },
     "carve": {
       "label": "Bảy bước đẽo game",
-      "art": "Tranh mực: xưởng mộc đêm, khúc gỗ trên giá dần thành hình con cá qua bảy nhát đục. Bảy viên đá dẫn từ đống phôi gỗ tới cửa xưởng mở ra hồ trăng; bên cạnh, một cuộn giấy dài chép mã như thư pháp, chú thích viết nhỏ bên lề.",
+      "art": "Tranh mực: xưởng mộc đêm nhìn ngang mặt bàn. Khối gỗ bách trên giá chạm đứng trước khung cửa mở ra hồ trăng, ánh trăng sau lưng viền sáng đường bao của nó. Bảy viên đá nằm thành hàng dọc mép trước bàn là bảy bước; mỗi viên đặt đúng là một nhát vồ, phoi gỗ bay và khối gỗ thành hình con cá thêm một bậc: vạch phấn, đẽo thô, chẻ đuôi, vây, vảy, mắt. Đèn làm việc kéo được để ánh ấm quét mặt gỗ; cuộn mã nằm cuộn tròn trên bàn.",
+      "lampAria": "Đèn làm việc: kéo sang trái, phải hoặc dùng phím mũi tên để soi mặt gỗ",
       "prompt": "Đặt bảy viên đá",
       "pathAria": "Lối đá bảy bước làm một game web",
       "stoneAria": "Viên đá: {label}",
@@ -257,7 +264,7 @@
     },
     "layers": {
       "label": "Game lớn dần từng lớp",
-      "art": "Tranh mực: hồ koi nhìn từ trên xuống, dựng từng lớp như chồng giấy can dưới đèn: mặt nước gợn → cá koi → bàn tay dẫn đường → mảnh trăng rơi → con dấu ghi điểm → tiếng nước → đom đóm và vòng sóng. Lớp cuối đặt xuống, mặt hồ sống dậy và chơi được.",
+      "art": "Tranh mực: một chậu đá tròn rỗng lơ lửng trong bóng tối trên bóng đổ mềm. Phía trên, bảy tờ giấy can treo cách nhau, mỗi tờ một lớp của trò chơi — mặt nước, cá koi, bàn tay dẫn đường, trăng rơi, điểm và tim, tiếng nước, đom đóm — tên lớp ghi trên mép trước. Chạm tờ đang sáng: tờ giấy hạ xuống chậu, gợn một vòng sóng, câu dặn của lớp đó hiện bên chậu và hồ sống thêm một bậc. Đủ bảy lớp, góc nhìn nâng lên trên chậu và trò chơi thật chạy trong lòng nước.",
       "prompt": "Đặt từng lớp giấy",
       "layerAria": "Lớp {n}: {name}",
       "promptLabel": "Câu dặn đã tạo ra lớp này",
@@ -305,7 +312,7 @@
     },
     "vibe": {
       "label": "Viết theo cảm giác có đủ?",
-      "art": "Tranh mực: năm hòn đá quanh mặt hồ trăng, trên mỗi hòn một ngọn nến nhỏ. Chạm hòn nào, ánh nến hắt bóng chữ của người đó xuống mặt nước; thắp đủ năm ngọn, mặt hồ lặng và hiện một vòng ensō.",
+      "art": "Tranh mực: nhìn chúc xuống một hồ nước trong và sâu. Trên mặt nước, trò chơi cá koi đang chạy: con cá lượn vòng, mảnh trăng, bóng trăng vỡ. Dưới đáy, mã nguồn của trò chơi viết mực trên các phiến đá phẳng, vệt sáng khúc xạ trôi qua. Dọc mép gần là năm hòn đá to có nến, mờ như ngoài nét. Chạm hòn nào, nến thắp, tên người nói hiện trên mặt nước và hồ đổi theo: lấy nét ở mặt nước hay xuống tận đáy đọc code, vết nứt son chạy qua nửa số dòng, một đèn giấy có ấn son nổi lên, hàng rào tre mọc quanh chỗ nông. Kéo lên xuống trên mặt nước để tự dời tiêu cự. Đủ năm, nước lặng và một vòng ensō hiện ra.",
       "prompt": "Chạm từng hòn đá",
       "group": "Năm góc nhìn về vibe coding",
       "stoneAria": "Góc nhìn: {who}",

@@ -1,0 +1,230 @@
+/* Trạm 33 · keys: a ring of bronze keys under a stone lantern (macro), the house of five doors out of focus behind, the open hand */
+.t33y-far { position: absolute; inset: 0; pointer-events: none; }
+.t33y-house, .t33y-doors, .t33y-roof { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+/* shallow depth of field: the house is a still, soft layer (no blur at low) */
+.t33y-house { filter: blur(3px); opacity: 0.7; }
+.t33y.low .t33y-house { filter: none; opacity: 0.6; }
+.t33y-moonhalo { fill: url(#p2-halo); opacity: 0.7; }
+.t33y-hroof { fill: color-mix(in srgb, #8c7a52 30%, var(--rock-lo)); }
+:root[data-theme='dark'] .t33y-hroof { fill: color-mix(in srgb, #3a3020 40%, #05070e); }
+.t33y-hthatch { fill: var(--wash); opacity: 0.25; }
+:root[data-theme='dark'] .t33y-hthatch { fill: var(--rock-mid); opacity: 0.3; }
+.t33y-heave { fill: var(--t33-wood-lo); }
+.t33y-hwall { fill: var(--t33-wood); }
+.t33y-hpaper { fill: color-mix(in srgb, var(--card) 70%, var(--lantern) 12%); }
+:root[data-theme='dark'] .t33y-hpaper { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--lantern) 14%); }
+.t33y-hlat { fill: var(--t33-wood-lo); opacity: 0.7; }
+.t33y-hpost { fill: var(--t33-wood-lo); }
+.t33y-hsill { fill: var(--t33-wood-hi); }
+
+/* a door in focus: hidden until its key is given — then the room behind it, painted in its lamp light */
+.t33y-open { opacity: 0; transition: opacity 0.9s var(--ease); }
+.t33y.g-0 .t33y-d0 .t33y-open, .t33y.g-1 .t33y-d1 .t33y-open, .t33y.g-2 .t33y-d2 .t33y-open, .t33y.g-3 .t33y-d3 .t33y-open, .t33y.g-4 .t33y-d4 .t33y-open { opacity: 1; }
+.t33y-rback { fill: url(#t33y-window); }
+.t33y-rside { fill: color-mix(in srgb, var(--lantern) 42%, #4a3220); }
+.t33y-rceil { fill: color-mix(in srgb, var(--lantern) 18%, #241810); }
+.t33y-rfloor { fill: color-mix(in srgb, #c9b07a 55%, var(--lantern)); }
+:root[data-theme='dark'] .t33y-rfloor { fill: color-mix(in srgb, #8a7044 60%, var(--lantern)); }
+.t33y-rmat { fill: #3a2614; opacity: 0.35; }
+.t33y-rlight { fill: url(#t33y-rvig); }
+.t33y-books { fill: color-mix(in srgb, var(--moss-b) 45%, #4a3220); }
+.t33y-books2 { fill: color-mix(in srgb, var(--vermilion) 30%, #5a3e24); }
+.t33y-shelf { fill: #3a2614; }
+.t33y-scroll { fill: color-mix(in srgb, #f6ead0 80%, var(--lantern)); opacity: 0.9; }
+.t33y-cushion { fill: color-mix(in srgb, var(--vermilion) 45%, #4a2a1a); }
+.t33y-desk { fill: #3a2614; }
+.t33y-sheet { fill: #f7eedb; }
+.t33y-inkst { fill: #120c08; }
+.t33y-hearthf { fill: color-mix(in srgb, #8a8278 70%, #3a2614); }
+.t33y-ember { fill: color-mix(in srgb, var(--vermilion) 60%, var(--lantern)); filter: drop-shadow(0 0 4px var(--vermilion)); }
+.t33y.low .t33y-ember { filter: none; }
+.t33y-hook { fill: #2a1a0e; }
+.t33y-kettle { fill: #120d0a; }
+.t33y-steam { fill: #fff6e6; opacity: 0.4; }
+.t33y-outside { fill: color-mix(in srgb, var(--water) 40%, #0a1022); }
+:root[data-theme='light'] .t33y-outside { fill: color-mix(in srgb, var(--water) 75%, var(--paper)); }
+.t33y-outhill { fill: #050812; opacity: 0.55; }
+.t33y-post { fill: #2a1a0e; }
+.t33y-box { fill: color-mix(in srgb, #6a4a2c 80%, var(--lantern)); }
+.t33y-stones { fill: color-mix(in srgb, #8a8478 70%, var(--lantern)); }
+.t33y-chest { fill: color-mix(in srgb, #7a5434 80%, var(--lantern)); }
+.t33y-chesttop { fill: color-mix(in srgb, #9a7048 70%, var(--lantern)); }
+.t33y-iron { fill: #1a120c; }
+.t33y-coin { fill: color-mix(in srgb, var(--lantern) 70%, #fff); }
+.t33y-dpaper { fill: var(--card); }
+:root[data-theme='dark'] .t33y-dpaper { fill: color-mix(in srgb, var(--rock-hi) 60%, var(--paper-2)); }
+.t33y-dlat { fill: var(--t33-wood-lo); opacity: 0.7; }
+.t33y-dframe { fill: var(--t33-wood-lo); }
+.t33y-spill { fill: url(#t33y-spill); }
+/* judged: trails of leaked data (too many), sealed doors (right), barred doors (too few) */
+.t33y-trail { fill: var(--vermilion); opacity: 0; transition: opacity 0.8s var(--ease) 0.2s; }
+.t33y.too-many.x-0 .t33y-d0 .t33y-trail, .t33y.too-many.x-1 .t33y-d1 .t33y-trail, .t33y.too-many.x-2 .t33y-d2 .t33y-trail, .t33y.too-many.x-4 .t33y-d4 .t33y-trail { opacity: 0.85; }
+/* the seals: two paper ofuda pasted in an X, a vermilion stamp where they cross */
+.t33y-ofuda { opacity: 0; transform: translateY(-6px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+.t33y.right .t33y-d1 .t33y-ofuda, .t33y.right .t33y-d2 .t33y-ofuda, .t33y.right .t33y-d4 .t33y-ofuda { opacity: 1; transform: none; }
+.t33y.right .t33y-d2 .t33y-ofuda { transition-delay: 0.15s; }
+.t33y.right .t33y-d4 .t33y-ofuda { transition-delay: 0.3s; }
+.t33y-ofsh { fill: var(--umbra); opacity: 0.35; }
+.t33y-ofudap { fill: color-mix(in srgb, #f8f0dc 88%, var(--lantern)); }
+:root[data-theme='dark'] .t33y-ofudap { fill: color-mix(in srgb, #e6dcc4 80%, var(--rock-mid)); }
+.t33y-ofink { fill: #1a1410; opacity: 0.75; }
+.t33y-stamp { fill: var(--vermilion); opacity: 0.92; }
+.t33y-stampin { fill: #fff3e6; opacity: 0.85; }
+.t33y-locked { opacity: 0; transition: opacity 0.6s var(--ease); }
+.t33y.too-few.m-0 .t33y-d0 .t33y-locked, .t33y.too-few.m-3 .t33y-d3 .t33y-locked { opacity: 1; }
+.t33y-lockp { fill: var(--wash); }
+:root[data-theme='dark'] .t33y-lockp { fill: #000; }
+
+/* the risk written under each door once its key is given */
+.t33y-risks { position: absolute; inset: 0; }
+.t33y-risk { position: absolute; margin: 0; transform: translateX(-50%); font: 400 0.84rem/1.4 var(--serif); text-align: center; color: var(--ink-2); opacity: 0; transition: opacity 0.8s var(--ease) 0.3s; }
+.t33y.g-0 .t33y-risk:nth-child(1), .t33y.g-1 .t33y-risk:nth-child(2), .t33y.g-2 .t33y-risk:nth-child(3), .t33y.g-3 .t33y-risk:nth-child(4), .t33y.g-4 .t33y-risk:nth-child(5) { opacity: 1; }
+
+/* foreground: the stone lantern's roof, its fire, the cord */
+.t33y-firehalo { fill: url(#t33-warm); opacity: 0.9; }
+.t33y-roof .p2p-toro-fire { fill: url(#t33y-window); }
+.t33y-chisel { fill: var(--wash); opacity: 0.25; }
+.t33y-moonedge { fill: var(--moon); opacity: 0.6; }
+:root[data-theme='light'] .t33y-moonedge { fill: #fff; opacity: 0.85; }
+.t33y-cord { fill: none; stroke: var(--wash); stroke-width: 2; opacity: 0.85; }
+:root[data-theme='dark'] .t33y-cord { stroke: var(--rock-hi); opacity: 0.6; }
+.t33y-ring {
+  position: absolute;
+  left: -15px;
+  top: -15px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 4px solid color-mix(in srgb, var(--wash) 70%, var(--t33-bronze));
+  box-shadow: inset 1px 1px 0 color-mix(in srgb, var(--moon) 60%, transparent), 2px 3px 6px -2px var(--umbra);
+  pointer-events: none;
+}
+
+/* the keys */
+.t33y-key {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--kw);
+  height: calc(var(--kw) * 3);
+  margin: 0 0 0 calc(var(--kw) / -2);
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-origin: 50% 0;
+  cursor: grab;
+  touch-action: none;
+  z-index: 3;
+  pointer-events: none;
+}
+/* only the bronze and the tag catch the pointer (the keys' boxes overlap in the bunch) */
+.t33y-bronze, .t33y-tagp { pointer-events: auto; }
+.t33y-key.held { cursor: grabbing; z-index: 5; }
+.t33y-key:focus-visible { outline: none; }
+.t33y-key:focus-visible .t33y-tagp { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t33y-keyart { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.t33y-bronze { fill: url(#t33y-bronze); }
+.t33y-keysh { fill: var(--umbra); opacity: 0.35; }
+.t33y-key[aria-pressed='true'] .t33y-keysh { opacity: 0.55; transform: translate(-3px, 6px); }
+.t33y-keyink { fill: color-mix(in srgb, var(--wash) 80%, #3a2510); opacity: 0.55; }
+.t33y-glintp { fill: var(--moon); opacity: 0.9; }
+:root[data-theme='light'] .t33y-glintp { fill: #fff; }
+/* the tags hang from the bit on strings of two lengths (--row), so neighbours sit at different heights */
+.t33y-tag { --sl: calc(10px + var(--row, 0) * 58px + var(--lift, 0px)); position: absolute; left: 50%; top: calc(var(--kw) * 2.9); width: 0; height: 0; transform-origin: 0 0; }
+.t33y-key[aria-pressed='true'] .t33y-tag { --sl: 6px; }
+.t33y-string { position: absolute; left: -0.5px; top: 0; width: 1px; height: var(--sl); background: color-mix(in srgb, var(--ink) 55%, transparent); }
+.t33y-tagp {
+  position: absolute;
+  top: var(--sl);
+  left: 0;
+  width: max-content;
+  max-width: 8.6em;
+  padding: 5px 9px 6px;
+  border-radius: 2px 3px 3px 2px;
+  transform: translateX(-50%) rotate(calc((var(--row, 0) - 0.5) * 3deg));
+  font: 500 0.86rem/1.25 var(--serif);
+  color: var(--ink);
+  text-align: center;
+  background: var(--t33-fibre), linear-gradient(175deg, var(--card), color-mix(in srgb, var(--card) 84%, var(--paper-2)));
+  box-shadow: 0 8px 14px -10px var(--umbra), inset 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.t33y-tagp::before { content: ''; position: absolute; left: 50%; top: 4px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: color-mix(in srgb, var(--ink) 30%, transparent); }
+.t33y-key[aria-pressed='true'] .t33y-tagp { box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--lantern) 18%, transparent), 0 8px 14px -10px var(--umbra); }
+
+/* the open hand: placed by JS inside the frame; the sleeve melts into the night toward the corner */
+.t33y-handbox {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to right, #000 74%, transparent 97%), linear-gradient(to bottom, #000 84%, transparent 99%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, #000 74%, transparent 97%), linear-gradient(to bottom, #000 84%, transparent 99%);
+  mask-composite: intersect;
+}
+.t33y-hand { display: block; width: 100%; height: 100%; overflow: visible; }
+.t33y-skin { fill: url(#t33y-skin); }
+.t33y-thumb { filter: brightness(0.94); }
+.t33y-hollow { fill: #3a1e10; opacity: 0.14; }
+:root[data-theme='dark'] .t33y-hollow { fill: #000; opacity: 0.26; }
+.t33y-pad { fill: color-mix(in srgb, #ffe6cc 70%, var(--lantern)); opacity: 0.32; }
+:root[data-theme='dark'] .t33y-pad { opacity: 0.2; }
+.t33y-shade { fill: #4a2614; opacity: 0.32; }
+:root[data-theme='dark'] .t33y-shade { fill: #000; opacity: 0.45; }
+.t33y-lit { fill: color-mix(in srgb, var(--lantern) 60%, #fff); opacity: 0.55; }
+.t33y-crease { fill: #5a2e18; opacity: 0.4; }
+:root[data-theme='dark'] .t33y-crease { fill: #000; opacity: 0.5; }
+.t33y-handink { fill: #3a1e10; opacity: 0.55; }
+:root[data-theme='dark'] .t33y-handink { fill: #000; opacity: 0.7; }
+.t33y-handsh { fill: var(--umbra); opacity: 0.22; }
+:root[data-theme='dark'] .t33y-handsh { opacity: 0.5; }
+.t33y-handrim { fill: var(--moon); opacity: 0.5; }
+:root[data-theme='light'] .t33y-handrim { fill: #fff; opacity: 0.75; }
+.t33y-sleeve { fill: color-mix(in srgb, var(--wash) 72%, var(--moss-b)); }
+:root[data-theme='dark'] .t33y-sleeve { fill: color-mix(in srgb, var(--rock-lo) 85%, var(--moss-b)); }
+.t33y-sleeveink { fill: var(--wash); opacity: 0.6; }
+.t33y-sleevefold { fill: var(--wash); opacity: 0.35; }
+:root[data-theme='dark'] .t33y-sleevefold { fill: #000; opacity: 0.5; }
+.t33y-window { fill: url(#t33y-window); }
+.t33y-flame { fill: color-mix(in srgb, var(--moon) 60%, var(--lantern)); }
+.t33y-moss { fill: var(--moss-a); opacity: 0.55; }
+
+/* "Giao việc": a wooden plaque hung on a cord */
+.t33y-plaque {
+  position: absolute;
+  left: 4%;
+  top: 30%;
+  z-index: 4;
+  min-height: 44px;
+  padding: 10px 18px 11px;
+  border: 0;
+  border-radius: 3px 3px 6px 6px;
+  color: #f6eedb;
+  font: 500 1rem/1.1 var(--serif);
+  cursor: pointer;
+  text-shadow: 0 -1px 0 color-mix(in srgb, #000 50%, transparent);
+  background: var(--t33-grain), linear-gradient(170deg, color-mix(in srgb, #8a6440 80%, var(--t33-wood-hi)), color-mix(in srgb, #5a3e24 80%, var(--t33-wood)) 60%, #3a2614);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--moon) 30%, transparent), inset 0 -3px 0 color-mix(in srgb, #000 25%, transparent), 0 10px 18px -10px var(--umbra);
+  transform: rotate(1.5deg);
+}
+.t33y-plaque:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; }
+.t33y-plaque:active { transform: rotate(1.5deg) translateY(1px); }
+
+/* words in the sky */
+.t33y-task { position: absolute; left: 40%; right: 3%; top: 3%; margin: 0; text-align: center; font: 400 clamp(1rem, 1.6vw, 1.2rem) / 1.45 var(--serif); color: var(--ink-2); }
+.t33y-say { position: absolute; left: 34%; right: 36%; bottom: 6%; margin: 0; min-height: 1.5em; text-align: left; font: 400 0.98rem/1.45 var(--serif); }
+.t33y-say .bad { color: var(--vermilion); }
+.t33y.low .t33y-open, .t33y.low .t33y-trail, .t33y.low .t33y-ofuda, .t33y.low .t33y-risk { transition: none; }
+/* the take-away slip sits under the lantern, clear of the hand */
+.t33y .t33-take { left: max(16px, 4%); right: auto; }
+
+@media (max-width: 640px) {
+  .t33y-task { left: 4%; right: 4%; top: 1%; font-size: 0.92rem; }
+  .t33y-say { left: 5%; right: 5%; bottom: auto; text-align: center; font-size: 0.9rem; }
+  .t33y-risks { display: none; }
+  .t33y-tagp { font-size: 0.74rem; max-width: 6.6em; padding: 3px 6px 4px; }
+  .t33y-tag { --sl: calc(6px + var(--row, 0) * 40px + var(--lift, 0px)); }
+  .t33y-key[aria-pressed='true'] .t33y-tag { --sl: calc(4px + var(--row, 0) * 40px); }
+  /* once the job is handed over, the keys left on the ring step back so the sealed doors behind them show */
+  .t33y.right .t33y-key[aria-pressed='false'] .t33y-tag { opacity: 0.22; transition: opacity 0.6s var(--ease); }
+  .t33y .t33-take { left: 50%; right: auto; bottom: auto; translate: -50% 0; }
+}

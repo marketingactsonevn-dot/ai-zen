@@ -1,222 +1,518 @@
-/* Trạm 22 — Attention: lanterns on a sentence · four tōrō on a bridge · a deep pond in layers */
+/* Trạm 22 — Attention: a lantern river seen from a bridge · a 3D moon pond with four lanterns · a pond cut out like a block · a tea room's shōji */
 
-/* scene 1: lanterns on the ink river */
-.g8l .g8l-paper { fill: color-mix(in srgb, var(--lantern) 22%, var(--card)); }
-:root[data-theme='dark'] .g8l .g8l-paper { fill: color-mix(in srgb, var(--lantern) 42%, var(--ink-3)); }
-.g8l .g8l-cap { fill: var(--umbra); opacity: 0.85; }
-.g8l .g8l-shade { fill: var(--umbra); opacity: 0.13; }
-.g8l .g8l-sheen { fill: var(--moon); opacity: 0.35; }
-.g8l .g8l-cap.v { fill: var(--vermilion); opacity: 0.95; }
-.g8l .g8l-hook { fill: var(--umbra); opacity: 0.6; }
-.g8l .g8l-word { fill: var(--umbra); fill-opacity: 0.88; }
-.g8l .g8l-mark { fill: var(--vermilion); opacity: 0.8; }
-.g8l .g8l-refl { fill: var(--lantern); }
-.g8l .g8l-shadow { fill: var(--umbra); opacity: 0.18; }
-.g8l .g8l-raft { fill: var(--wash); opacity: 0.75; }
-:root[data-theme='dark'] .g8l .g8l-raft { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash)); opacity: 1; }
-.g8l .g8l-thread { fill: none; stroke: var(--moon); stroke-linecap: round; }
-:root[data-theme='light'] .g8l .g8l-thread { stroke: color-mix(in srgb, var(--lantern) 45%, var(--vermilion)); }
-.g8l .g8l-thread.glow { opacity: 0.16; }
-.g8l .g8l-knot { fill: var(--moon); }
-:root[data-theme='light'] .g8l .g8l-knot { fill: var(--vermilion); }
-.g8l-pivot {
-  position: absolute;
-  border: 0;
-  border-radius: 40%;
-  background: transparent;
-  cursor: pointer;
+/* ── scene 2 (3D hero): each lantern's tint per theme (read by heads.ts on mount and on a theme change: plain hex only).
+   --g8h-N: its arcs (ink by day, light at night); --g8h-Nl: the light in its window, its cone and its pool */
+:root[data-part='2'][data-theme='light'] {
+  --g8h-0: #1a2240; --g8h-0l: #fff1d2;
+  --g8h-1: #6f7889; --g8h-1l: #eef2f7;
+  --g8h-2: #3f6a9e; --g8h-2l: #bcd6f5;
+  --g8h-3: #b23520; --g8h-3l: #ffb08a;
+  --g8h-paper: #f6f3ea; --g8h-ink: #1a2240; --g8h-meniscus: #ffffff; --g8h-refl: #2a3352; --g8h-write: #1a2240; --g8h-hill: #46557a;
+  --g8h-rock0: #4f586d; --g8h-rock1: #929bad; --g8h-rock2: #dde2ea;
 }
-.g8l-pivot:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
-:root[data-quality='high'] .g8l-pivot::after {
-  content: '';
-  position: absolute;
-  inset: 8%;
-  border-radius: 45%;
-  border: 1.5px solid var(--vermilion);
-  opacity: 0;
-  animation: g8l-call 2.8s ease-out infinite;
+:root[data-part='2'][data-theme='dark'] {
+  --g8h-0: #efe7d2; --g8h-0l: #fbedc6;
+  --g8h-1: #8f97b0; --g8h-1l: #c9d0e4;
+  --g8h-2: #6f9be6; --g8h-2l: #9fc2ff;
+  --g8h-3: #f06440; --g8h-3l: #ff9a6a;
+  --g8h-paper: #cfc8b0; --g8h-ink: #10152a; --g8h-meniscus: #f2e4b8; --g8h-refl: #02040b; --g8h-write: #f2e4b8; --g8h-hill: #242c4e;
+  --g8h-rock0: #191e30; --g8h-rock1: #41485e; --g8h-rock2: #7a829a;
 }
-.g8l.lit .g8l-pivot::after { display: none; }
-@keyframes g8l-call { 0% { transform: scale(0.9); opacity: 0.7; } 100% { transform: scale(1.35); opacity: 0; } }
-.g8l-ui {
-  position: absolute;
-  display: grid;
-  padding: 14px 18px 18px;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 80%, transparent), color-mix(in srgb, var(--paper) 55%, transparent) 60%, transparent);
-  justify-items: center;
-  gap: 10px;
-  text-align: center;
+.g8h3 { position: absolute; inset: 0 0 auto 0; }
+.g8h3 .h0 { --hc: var(--g8h-0); }
+.g8h3 .h1 { --hc: var(--g8h-1); }
+.g8h3 .h2 { --hc: var(--g8h-2); }
+.g8h3 .h3 { --hc: var(--g8h-3); }
+/* a lantern's name and what it joins, above it once lit, on a breath of paper (the inner box takes heads.ts' collision offset) */
+.g8h3 .g8h-tag { transition: opacity 0.7s var(--ease, ease); }
+.g8h3 .g8h-tagi {
+  display: grid; justify-items: center; gap: 1px; padding: 0.55em 1.2em 0.5em; text-align: center;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 80%, transparent), color-mix(in srgb, var(--paper) 45%, transparent) 64%, transparent);
+  text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper);
 }
-.g8l-read {
-  margin: 0;
-  font: 400 clamp(1.2rem, 2.4vw, 1.6rem) / 1.3 var(--serif);
-  color: var(--ink);
-}
-.g8l-note .g8-note { max-width: 46ch; }
-
-/* scene 2: four stone lanterns on a bridge */
-.g8h .h0 { --hc: var(--ink); --tone: var(--wash); --tone-a: 0.62; }
-.g8h .h1 { --hc: var(--ink-3); --tone: var(--rock-hi); --tone-a: 0.42; }
-.g8h .h2 { --hc: color-mix(in srgb, var(--water) 75%, var(--ink-3)); --tone: var(--water); --tone-a: 0.5; }
-.g8h .h3 { --hc: var(--vermilion); --tone: var(--vermilion); --tone-a: 0.55; }
-:root[data-theme='dark'] .g8h .h2 { --hc: var(--mist); --tone: var(--mist); --tone-a: 0.32; }
-:root[data-theme='dark'] .g8h .h1 { --tone-a: 0.3; }
-.g8h .g8h-tone { fill: var(--tone); opacity: var(--tone-a); }
-.g8h .p2p-lamp-halo { transition: opacity 0.8s; }
-.g8h .p2p-toro:not(.lit) .p2p-lamp-halo { opacity: 0; }
-.g8h .p2p-toro.lit .p2p-toro-fire { fill: color-mix(in srgb, var(--lantern) 70%, var(--hc)); }
-.g8h .g8h-word { fill: var(--ink); }
-.g8h .g8h-deck { fill: var(--wash); }
-:root[data-theme='dark'] .g8h .g8h-deck { fill: color-mix(in srgb, var(--rock-lo) 60%, var(--wash)); opacity: 1 !important; }
-.g8h .g8h-edge, .g8h .g8h-legs, .g8h .g8h-rail { fill: var(--wash); opacity: 0.85; }
-:root[data-theme='dark'] .g8h :is(.g8h-edge, .g8h-legs, .g8h-rail) { fill: color-mix(in srgb, var(--rock-mid) 45%, var(--wash)); opacity: 1; }
-.g8h .g8h-plank { fill: var(--moon); opacity: 0.12; }
-:root[data-theme='light'] .g8h .g8h-plank { fill: var(--rake-hi); opacity: 0.5; }
-.g8h .g8h-rim { fill: var(--moon); opacity: 0.45; }
-:root[data-theme='light'] .g8h .g8h-rim { fill: var(--rake-hi); opacity: 1; }
-.g8h .g8h-refl { fill: var(--wash); opacity: 0.12; }
-:root[data-theme='dark'] .g8h .g8h-refl { fill: var(--rock-lo); opacity: 0.35; }
-.g8h .g8h-rip { fill: var(--moon); opacity: 0.2; }
-:root[data-theme='light'] .g8h .g8h-rip { fill: #fff; opacity: 0.45; }
-.g8h .g8h-stop { stop-color: var(--hc); }
-.g8h .g8h-link { fill: none; stroke: var(--hc); stroke-width: 1.6; stroke-linecap: round; opacity: 0.9; }
-.g8h .g8h-star { fill: var(--hc); }
-.g8h-lamp {
-  position: absolute;
-  display: grid;
-  justify-items: center;
-  align-content: end;
-  gap: 2px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--ink-2);
-  cursor: pointer;
-}
-.g8h-num {
-  font: 400 0.72rem/1 var(--sans);
-  color: var(--ink-3);
-}
-.g8h-name {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, 30%);
-  padding: 2px 8px;
-  border-radius: 999px;
-  white-space: nowrap;
-  font: 400 0.82rem/1.3 var(--serif);
-  background: color-mix(in srgb, var(--paper) 70%, transparent);
-}
-.g8h-lamp[aria-pressed='true'] .g8h-name { color: var(--ink); box-shadow: inset 0 -2px 0 var(--hc); }
-.g8h-lamp:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; border-radius: 8px; }
-.g8h-cap {
-  position: absolute;
-  display: grid;
-  gap: 4px;
-  justify-items: center;
-  text-align: center;
-}
-.g8h-rel, .g8h-all {
-  margin: 0;
-  font: 400 1rem/1.4 var(--serif);
-  color: var(--ink);
-}
-.g8h-rel b { font-weight: 500; color: var(--hc); }
-.g8h-cap .g8-note { max-width: 60ch; }
-.g8h-cap {
-  padding: 10px 16px 14px;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 80%, transparent), color-mix(in srgb, var(--paper) 55%, transparent) 60%, transparent);
-}
-.g8h-cap:empty { display: none; }
+.g8h3 .g8h-tagi > * { transform: translateY(6px); transition: transform 0.7s var(--ease, ease); }
+.g8h3 .g8h-tag.on .g8h-tagi > * { transform: none; }
+.g8h3 .g8h-tag b { font: 500 17px/1.25 var(--serif); color: color-mix(in srgb, var(--hc) 55%, var(--ink)); }
+.g8h3 .g8h-tag span { font: 400 13.5px/1.3 var(--serif); color: var(--ink-2); }
+:root[data-theme='dark'] .g8h3 .g8h-tag b { color: color-mix(in srgb, var(--hc) 45%, var(--ink)); }
+/* (k.label writes opacity for the far haze; the tag's own fade rides on its children's parent) */
+.g8h3 .p2s3-label.g8h-tag:not(.on) { opacity: 0 !important; }
 @media (max-width: 600px) {
-  .g8h-name { font-size: 0.74rem; padding: 1px 5px; }
-  .g8h-cap .g8-note { font-size: 0.74rem; }
+  .g8h3 .g8h-tagi { padding: 0.4em 0.8em; }
+  .g8h3 .g8h-tag b { font-size: 15px; }
+  .g8h3 .g8h-tag span { display: none; }
+}
+/* no WebGL: the same view painted once */
+.g8h3 .g8h-fb { position: absolute; inset: 0; width: 100%; height: 100%; }
+.g8h3 .g8h-fb-water { fill: var(--water); opacity: 0.8; }
+.g8h3 .g8h-fb-raft { fill: var(--g8h-paper); stroke: var(--wash); stroke-width: 1; }
+.g8h3 .g8h-fb-arc { fill: none; stroke: var(--hc); stroke-width: 2.4; stroke-linecap: round; opacity: 0.85; }
+.g8h3 .g8h-fbw { position: absolute; transform: translate(-50%, -50%); font: 400 16px/1 var(--serif); color: var(--ink); pointer-events: none; text-shadow: 0 0 6px var(--paper); }
+.g8h3 .g8h-fbb { position: absolute; padding: 0; border: 0; background: transparent; cursor: pointer; border-radius: 30%; }
+.g8h3 .g8h-fbb:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.g8h3 .g8h-fball { position: absolute; transform: translate(-50%, -100%); margin: 0; font: 400 clamp(20px, 2.3vw, 30px)/1.05 var(--serif); color: var(--ink); opacity: 0; transition: opacity 1.2s; }
+.g8h3 .g8h-fball.on { opacity: 1; }
+
+/* ── scene 1 (2.5D): the lantern river seen from the bridge */
+.g8l2 { position: absolute; inset: 0 0 auto 0; overflow: hidden; -webkit-tap-highlight-color: transparent; touch-action: none; }
+.g8l2-layer { position: absolute; inset: 0; pointer-events: none; }
+.g8l2-layer.river { pointer-events: none; }
+/* every plane melts at the frame's sides and top, and fades out at its foot, so the caption never butts against the painting */
+.g8l2-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent), linear-gradient(transparent, #000 4%, #000 86%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent), linear-gradient(transparent, #000 4%, #000 86%, transparent);
+  mask-composite: intersect;
+}
+/* the land: a mossy wash; at night darker than the moonlit water */
+.g8l2 .g8l2-shore { fill: color-mix(in srgb, var(--moss-b) 55%, var(--rock-lo)); opacity: 0.22 !important; filter: url(#ink-wash); }
+:root[data-theme='dark'] .g8l2 .g8l2-shore { fill: color-mix(in srgb, var(--moss-b) 35%, #05070f); opacity: 0.9 !important; }
+.g8l2 .g8l2-rv0 { stop-color: color-mix(in srgb, var(--water) 55%, var(--mist)); }
+.g8l2 .g8l2-rv1 { stop-color: var(--water); }
+.g8l2 .g8l2-rv2 { stop-color: color-mix(in srgb, var(--water) 72%, var(--wash)); }
+:root[data-theme='dark'] .g8l2 .g8l2-rv0 { stop-color: #2b3556; }
+:root[data-theme='dark'] .g8l2 .g8l2-rv1 { stop-color: #1b2340; }
+:root[data-theme='dark'] .g8l2 .g8l2-rv2 { stop-color: #141b33; }
+.g8l2 .g8l2-deep { fill: var(--wash); opacity: 0.2; }
+:root[data-theme='dark'] .g8l2 .g8l2-deep { fill: #03050c; opacity: 0.45; }
+.g8l2 .g8l2-moonsheen { fill: #fff; opacity: 0.12; }
+:root[data-theme='dark'] .g8l2 .g8l2-moonsheen { fill: var(--moon); opacity: 0.07; }
+.g8l2 .g8l2-glint { fill: #fff; opacity: 0.8; }
+:root[data-theme='dark'] .g8l2 .g8l2-glint { fill: var(--moon); opacity: 0.6; }
+.g8l2 .g8l2-edge { fill: var(--wash); opacity: 0.5; }
+:root[data-theme='dark'] .g8l2 .g8l2-edge { fill: #000; opacity: 0.6; }
+.g8l2 .g8l2-moss { fill: var(--moss-b); opacity: 0.55; }
+:root[data-theme='dark'] .g8l2 .g8l2-moss { fill: var(--moss-c); opacity: 0.5; }
+.g8l2 .g8l2-swirl { fill: #fff; opacity: 0.85; }
+:root[data-theme='dark'] .g8l2 .g8l2-swirl { fill: var(--moon); opacity: 0.42; }
+/* the bridge: old wood, out of focus, a moonlit edge */
+.g8l2 .g8l2-w0 { stop-color: #85766a; }
+.g8l2 .g8l2-w1 { stop-color: #5a4c41; }
+.g8l2 .g8l2-w2 { stop-color: #33291f; }
+:root[data-theme='dark'] .g8l2 .g8l2-w0 { stop-color: #3a3029; }
+:root[data-theme='dark'] .g8l2 .g8l2-w1 { stop-color: #221c18; }
+:root[data-theme='dark'] .g8l2 .g8l2-w2 { stop-color: #0e0b0a; }
+.g8l2 .g8l2-grain { fill: #1d140d; opacity: 0.45; }
+.g8l2 .g8l2-grain.hi { fill: #f3e6d4; opacity: 0.22; }
+:root[data-theme='dark'] .g8l2 .g8l2-grain.hi { fill: var(--moon); opacity: 0.12; }
+.g8l2 .g8l2-rail-hi { fill: #fff; opacity: 0.7; }
+:root[data-theme='dark'] .g8l2 .g8l2-rail-hi { fill: var(--moon); opacity: 0.6; }
+/* lanterns: dó paper lit from a warm core (as bright as the lantern's weight), darker ribs; "nó" with vermilion in it;
+   the spare ending in the eddy unlit, cold grey */
+.g8l2 .g8l2-paper { fill: color-mix(in srgb, var(--lantern) 26%, var(--stone-2)); }
+:root[data-theme='dark'] .g8l2 .g8l2-paper { fill: #4a3a2e; }
+.g8l2 .g8l2-c0 { stop-color: #fffaf0; }
+.g8l2 .g8l2-c1 { stop-color: color-mix(in srgb, var(--lantern) 55%, #fff6e2); }
+.g8l2 .g8l2-c2 { stop-color: var(--lantern); }
+.g8l2 .g8l2-c3 { stop-color: color-mix(in srgb, var(--lantern) 70%, #8a3f12); }
+.g8l2 .g8l2-p1 { stop-color: color-mix(in srgb, var(--vermilion) 35%, var(--lantern)); }
+.g8l2 .g8l2-p2 { stop-color: color-mix(in srgb, var(--vermilion) 75%, var(--lantern)); }
+:root[data-theme='dark'] .g8l2 .g8l2-c0 { stop-color: #fffbe8; }
+:root[data-theme='dark'] .g8l2 .g8l2-c3 { stop-color: #b8641f; }
+.g8l2 .eddy .g8l2-paper { fill: color-mix(in srgb, var(--stone-2) 80%, #c9d4e6); }
+:root[data-theme='dark'] .g8l2 .eddy .g8l2-paper { fill: #3c4560; }
+.g8l2 .g8l2-rib { fill: #5b3412; opacity: 0.3; }
+.g8l2 .eddy .g8l2-rib { fill: var(--umbra); opacity: 0.22; }
+.g8l2 .g8l2-shade { fill: #5b3412; opacity: 0.14; }
+.g8l2 .eddy .g8l2-shade { fill: var(--umbra); opacity: 0.18; }
+.g8l2 .g8l2-sheen { fill: var(--moon); opacity: 0.35; }
+.g8l2 .g8l2-cap { fill: var(--umbra); opacity: 0.88; }
+.g8l2 .pivot .g8l2-cap { fill: var(--vermilion); }
+.g8l2 .g8l2-hook { fill: var(--umbra); opacity: 0.6; }
+.g8l2 .g8l2-word { font-family: var(--serif); fill: #2a1a0c; fill-opacity: 0.9; }
+.g8l2 .eddy .g8l2-word { fill: var(--umbra); fill-opacity: 0.62; }
+:root[data-theme='dark'] .g8l2 .eddy .g8l2-word { fill: #d5dbea; fill-opacity: 0.7; }
+.g8l2 .g8l2-h0 { stop-color: var(--lantern); stop-opacity: 0.6; }
+.g8l2 .g8l2-h1 { stop-color: var(--lantern); stop-opacity: 0.18; }
+.g8l2 .g8l2-h2 { stop-color: var(--lantern); stop-opacity: 0; }
+:root[data-theme='dark'] .g8l2 .g8l2-halo { mix-blend-mode: screen; }
+.g8l2 .g8l2-s0 { stop-color: var(--lantern); stop-opacity: 0.75; }
+.g8l2 .g8l2-s1 { stop-color: var(--lantern); stop-opacity: 0; }
+:root[data-theme='dark'] .g8l2 .g8l2-streak { mix-blend-mode: screen; }
+.g8l2 .g8l2-refl { fill: var(--lantern); }
+.g8l2 .g8l2-sit { fill: var(--umbra); opacity: 0.32; }
+.g8l2 .g8l2-men { fill: #fff; opacity: 0.95; }
+:root[data-theme='dark'] .g8l2 .g8l2-men { fill: var(--moon); opacity: 0.85; }
+.g8l2 .g8l2-ring { fill: #fff; opacity: 0.75; }
+:root[data-theme='dark'] .g8l2 .g8l2-ring { fill: var(--moon); opacity: 0.32; }
+/* the lanterns bob on the current while the scene is alive (high only, stops after 10 s idle), each on its own beat */
+.g8l2-lift { transition: transform 1.1s cubic-bezier(0.3, 0.1, 0.2, 1); }
+.g8l2.lit .pivot .g8l2-lift { transform: translateY(var(--lift)); }
+.g8l2 .pivot :is(.g8l2-halo, .g8l2-men) { transition: opacity 0.8s; }
+.g8l2.lit .pivot .g8l2-men { opacity: 0; }
+/* as "nó" rises, its streak on the water shortens and fades, staying right under it */
+.g8l2 .g8l2-rf { transform-box: fill-box; transform-origin: 50% 0; transition: transform 1.1s cubic-bezier(0.3, 0.1, 0.2, 1), opacity 1.1s; }
+.g8l2.lit .g8l2-on.pivot .g8l2-rf { transform: scaleY(0.45); opacity: 0.45; }
+:root[data-quality='high'] .g8l2.moving.live .g8l2-bob { animation: g8l2-bob 7s ease-in-out infinite; }
+@keyframes g8l2-bob { 0%, 100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(2px) rotate(0.8deg); } 70% { transform: translateY(1px) rotate(-0.8deg); } }
+/* threads of moonlight from "nó" */
+.g8l2 .g8l2-thread { fill: none; stroke: var(--moon); stroke-linecap: round; }
+:root[data-theme='light'] .g8l2 .g8l2-thread { stroke: color-mix(in srgb, var(--lantern) 50%, var(--vermilion)); }
+.g8l2 .g8l2-thread.glow { opacity: 0.18; }
+.g8l2 .g8l2-knot { fill: var(--moon); }
+:root[data-theme='light'] .g8l2 .g8l2-knot { fill: var(--vermilion); }
+/* the touch targets over "nó" and the eddy's lantern */
+.g8l2-hit { position: absolute; padding: 0; border: 0; border-radius: 45%; background: transparent; cursor: pointer; pointer-events: auto; touch-action: none; }
+@keyframes g8l2-call { 0% { transform: scale(0.9); opacity: 0.7; } 100% { transform: scale(1.35); opacity: 0; } }
+.g8l2-hit:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.g8l2-hit.eddy { cursor: grab; }
+:root[data-quality='high'] .g8l2:not(.lit) .g8l2-hit:not(.eddy)::after {
+  content: ''; position: absolute; inset: 10%; border-radius: 45%; border: 1.5px solid var(--vermilion); opacity: 0;
+  animation: g8l2-call 2.8s ease-out infinite;
+}
+/* the reading, written on the open water at the clause break; its reflection broken by ripples, faint */
+.g8l2-says { position: absolute; left: 0; top: 0; translate: -50% -32%; pointer-events: none; font-size: 24px; }
+.g8l2-read {
+  margin: 0; display: grid; justify-items: center;
+  font: 400 1em / 1.1 var(--serif); color: var(--ink); white-space: nowrap;
+  text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper);
+  transition: opacity 1.2s var(--ease, ease) 0.9s;
+}
+:root[data-theme='dark'] .g8l2-read { text-shadow: 0 0 10px #0b1022, 0 0 3px #0b1022; }
+.g8l2-read .r {
+  opacity: 0.38; transform: scaleY(-0.8) skewX(-6deg); text-shadow: none;
+  -webkit-mask-image: linear-gradient(to top, #000, transparent 90%), repeating-linear-gradient(#000 0 2px, transparent 2px 4px);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to top, #000, transparent 90%), repeating-linear-gradient(#000 0 2px, transparent 2px 4px);
+  mask-composite: intersect;
+}
+.g8l2-read[data-off], .g8l2-note[data-off] { opacity: 0; }
+/* the illustration mark: up in a corner of the sky, off the river */
+.g8l2-note { position: absolute; left: 5%; top: 5%; width: min(30ch, 42%); text-align: left; transition: opacity 1s 1.4s; }
+.g8l2-note .g8-note { margin: 0; text-shadow: 0 0 6px var(--paper), 0 0 6px var(--paper); }
+@media (max-width: 600px) {
+  .g8l2-note { left: 5%; top: 3%; width: 52%; }
+  .g8l2-note .g8-note { font-size: 11.5px; }
 }
 
-/* scene 3: a deep pond in silk bands */
-.g8y .g8y-band { fill: var(--water); }
-.g8y .g8y-ink { fill: var(--wash); }
-.g8y .g8y-silk { fill: var(--moon); opacity: 0.4; }
-:root[data-theme='light'] .g8y .g8y-silk { fill: #fff; opacity: 0.6; }
-.g8y .g8y-fold { fill: var(--moon); opacity: 0.12; }
-:root[data-theme='light'] .g8y .g8y-fold { fill: #fff; opacity: 0.3; }
-.g8y .g8y-soil { fill: var(--wash); opacity: 0.35; }
-.g8y .g8y-bank, .g8y .g8y-surface { fill: var(--wash); opacity: 0.7; }
-:root[data-theme='dark'] .g8y :is(.g8y-bank, .g8y-surface) { fill: var(--rock-mid); opacity: 0.8; }
-.g8y-pebble { transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1); }
-.g8y .g8y-shadow { fill: var(--umbra); opacity: 0.2; }
-.g8y .g8y-stone { fill: var(--step-mid); }
-.g8y .g8y-flank { fill: var(--umbra); opacity: 0.16; }
-.g8y .g8y-edge { fill: var(--wash); opacity: 0.6; }
-.g8y .g8y-rim { fill: var(--moon); opacity: 0.7; }
-:root[data-theme='light'] .g8y .g8y-rim { fill: var(--rake-hi); opacity: 1; }
-.g8y .g8y-word { fill: var(--stone-text); fill-opacity: 0.35; stroke: var(--stone-text); stroke-width: 0; transition: fill-opacity 0.8s, stroke-width 0.8s; }
-.g8y[data-depth='1'] .g8y-word { fill-opacity: 0.6; }
-.g8y[data-depth='2'] .g8y-word { fill-opacity: 0.85; stroke-width: 0.6; }
-.g8y[data-depth='3'] .g8y-word { fill-opacity: 1; stroke-width: 1.3; }
-.g8y .g8y-shaft { opacity: 0.45; }
-.g8y .g8y-ring { fill: var(--moon); opacity: 0; transition: opacity 1s; }
-:root[data-theme='light'] .g8y .g8y-ring { fill: #fff; }
-.g8y:not([data-depth='0']) .g8y-ring { opacity: 0.5; }
-.g8y .g8y-essay { opacity: 0; transition: opacity 1.4s 0.6s; }
-.g8y[data-depth='3'] .g8y-essay { opacity: 1; }
-.g8y .g8y-page { fill: var(--paper); opacity: 0.2; }
-.g8y .g8y-lines { fill: var(--ink); opacity: 0.45; }
-.g8y-read {
-  position: absolute;
-  display: grid;
-  gap: 2px;
-  padding: 6px 22px 8px 14px;
-  background: radial-gradient(farthest-side at 30% 50%, color-mix(in srgb, var(--paper) 70%, transparent), color-mix(in srgb, var(--paper) 40%, transparent) 60%, transparent);
-  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
-  opacity: 0.55;
+/* ── scene 3 (2.5D, CSS 3D): the pond cut out like a block, floating in the night */
+.g8y2 { position: absolute; inset: 0 0 auto 0; overflow: hidden; touch-action: none; cursor: ns-resize; -webkit-user-select: none; user-select: none; -webkit-mask-image: linear-gradient(transparent, #000 3%, #000 92%, transparent); mask-image: linear-gradient(transparent, #000 3%, #000 92%, transparent); }
+.g8y2-sky { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.g8y2-view { position: absolute; inset: 0; pointer-events: none; }
+.g8y2-world { position: absolute; width: 0; height: 0; transform-style: preserve-3d; }
+.g8y2-world.glide { transition: transform 1.3s cubic-bezier(0.45, 0.05, 0.3, 1); }
+.g8y2-world.glide .g8y2-pebble, .g8y2-world.glide .g8y2-read { transition: transform 1.3s cubic-bezier(0.45, 0.05, 0.3, 1), opacity 1s var(--ease, ease) 0.6s; }
+.g8y2-face { position: absolute; backface-visibility: hidden; }
+.g8y2-face > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+/* the rock walls end clean at the block's edges */
+.g8y2-face > svg.g8y2-wall { overflow: hidden; }
+/* water: translucent silk bands, mist at the top, then water, ink at the bed (the walls show through) */
+.g8y2 .g8y2-w0 { stop-color: var(--mist); stop-opacity: 0.3; }
+.g8y2 .g8y2-w1 { stop-color: var(--water); stop-opacity: 0.4; }
+.g8y2 .g8y2-w2 { stop-color: var(--wash); stop-opacity: 0.36; }
+:root[data-theme='dark'] .g8y2 .g8y2-w0 { stop-color: var(--mist); stop-opacity: 0.12; }
+:root[data-theme='dark'] .g8y2 .g8y2-w1 { stop-color: #1d2a4a; stop-opacity: 0.5; }
+:root[data-theme='dark'] .g8y2 .g8y2-w2 { stop-color: #04060f; stop-opacity: 0.7; }
+.g8y2 .g8y2-bt0 { stop-color: var(--mist); stop-opacity: 0.55; }
+.g8y2 .g8y2-bb0 { stop-color: color-mix(in srgb, var(--mist) 60%, var(--water)); stop-opacity: 0.35; }
+.g8y2 .g8y2-bt1 { stop-color: color-mix(in srgb, var(--water) 70%, var(--mist)); stop-opacity: 0.42; }
+.g8y2 .g8y2-bb1 { stop-color: var(--water); stop-opacity: 0.5; }
+.g8y2 .g8y2-bt2 { stop-color: color-mix(in srgb, var(--water) 60%, var(--wash)); stop-opacity: 0.32; }
+.g8y2 .g8y2-bb2 { stop-color: var(--wash); stop-opacity: 0.46; }
+:root[data-theme='dark'] .g8y2 .g8y2-bt0 { stop-color: #8fa0cf; stop-opacity: 0.2; }
+:root[data-theme='dark'] .g8y2 .g8y2-bb0 { stop-color: #4a5a8a; stop-opacity: 0.16; }
+:root[data-theme='dark'] .g8y2 .g8y2-bt1 { stop-color: #31406c; stop-opacity: 0.32; }
+:root[data-theme='dark'] .g8y2 .g8y2-bb1 { stop-color: #1b2546; stop-opacity: 0.4; }
+:root[data-theme='dark'] .g8y2 .g8y2-bt2 { stop-color: #111831; stop-opacity: 0.5; }
+:root[data-theme='dark'] .g8y2 .g8y2-bb2 { stop-color: #03050c; stop-opacity: 0.7; }
+.g8y2 .g8y2-s0 { stop-color: #fff; stop-opacity: 0.34; }
+.g8y2 .g8y2-s1 { stop-color: #fff; stop-opacity: 0; }
+:root[data-theme='dark'] .g8y2 .g8y2-s0 { stop-color: var(--moon); stop-opacity: 0.2; }
+:root[data-theme='dark'] .g8y2 .g8y2-s1 { stop-color: var(--moon); stop-opacity: 0; }
+.g8y2 .g8y2-sp0 { stop-color: #fff; stop-opacity: 0; }
+.g8y2 .g8y2-sp1 { stop-color: #fff; stop-opacity: 0.16; }
+:root[data-theme='dark'] .g8y2 .g8y2-sp1 { stop-color: var(--moon); stop-opacity: 0.07; }
+.g8y2 .g8y2-fold { fill: #fff; opacity: 0.07; }
+.g8y2 .g8y2-thread { fill: #fff; opacity: 0.3; }
+:root[data-theme='dark'] .g8y2 .g8y2-fold { fill: var(--moon); opacity: 0.035; }
+:root[data-theme='dark'] .g8y2 .g8y2-thread { fill: var(--moon); opacity: 0.14; }
+.g8y2 .g8y2-seamline { fill: #fff; opacity: 0.4; }
+:root[data-theme='dark'] .g8y2 .g8y2-seamline { fill: var(--moon); opacity: 0.16; }
+.g8y2 .g8y2-lit { fill: #fff; opacity: 0; transition: opacity 0.9s; }
+:root[data-theme='dark'] .g8y2 .g8y2-lit { fill: var(--moon); }
+.g8y2[data-at='1'] .b0 .g8y2-lit, .g8y2[data-at='2'] .b1 .g8y2-lit, .g8y2[data-at='3'] .b2 .g8y2-lit { opacity: 0.12; }
+.g8y2 .g8y2-mote { fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; opacity: 0.75; }
+.g8y2 .g8y2-mote.lit { stroke-width: 2.6; opacity: 0.9; }
+:root[data-theme='dark'] .g8y2 .g8y2-mote { stroke: var(--moon); opacity: 0.4; }
+:root[data-theme='dark'] .g8y2 .g8y2-mote.lit { opacity: 0.65; }
+/* the bed: sand over the scroll, its strata and grains */
+.g8y2 .g8y2-earth { fill: color-mix(in srgb, var(--rock-mid) 60%, var(--paper-2)); }
+:root[data-theme='dark'] .g8y2 .g8y2-earth { fill: #1a1f33; }
+.g8y2 .g8y2-strata { fill: var(--wash); opacity: 0.22; }
+:root[data-theme='dark'] .g8y2 .g8y2-strata { fill: #000; opacity: 0.4; }
+.g8y2 .g8y2-grain { fill: none; stroke: var(--wash); stroke-width: 2; stroke-linecap: round; opacity: 0.3; }
+:root[data-theme='dark'] .g8y2 .g8y2-grain { stroke: var(--rock-hi); opacity: 0.3; }
+.g8y2 .g8y2-sheet { fill: var(--card); opacity: 0.95; }
+:root[data-theme='dark'] .g8y2 .g8y2-sheet { fill: color-mix(in srgb, var(--moon) 60%, #2a3150); }
+.g8y2 .g8y2-lines { fill: var(--wash); opacity: 0.6; }
+.g8y2 .g8y2-roll { fill: color-mix(in srgb, var(--lantern) 30%, var(--card)); }
+:root[data-theme='dark'] .g8y2 .g8y2-roll { fill: color-mix(in srgb, var(--moon) 68%, #3a3a4a); }
+.g8y2 .g8y2-roll-hi { fill: #fff; opacity: 0.55; }
+.g8y2 .g8y2-cap { fill: color-mix(in srgb, var(--vermilion) 60%, var(--rock-lo)); }
+/* growth rings on the cut edge, a band lighting up as the pebble passes it */
+.g8y2 .g8y2-ring { fill: var(--wash); opacity: 0.45; transition: opacity 0.8s, fill 0.8s; }
+.g8y2 .g8y2-ring.late { opacity: 0.7; }
+:root[data-theme='dark'] .g8y2 .g8y2-ring { fill: var(--ink-3); }
+.g8y2[data-at='1'] .g8y2-rings.b0 .g8y2-ring, .g8y2[data-at='2'] .g8y2-rings:is(.b0, .b1) .g8y2-ring, .g8y2[data-at='3'] .g8y2-rings .g8y2-ring { fill: var(--vermilion); opacity: 0.85; }
+:root[data-theme='dark'] .g8y2[data-at='1'] .g8y2-rings.b0 .g8y2-ring, :root[data-theme='dark'] .g8y2[data-at='2'] .g8y2-rings:is(.b0, .b1) .g8y2-ring, :root[data-theme='dark'] .g8y2[data-at='3'] .g8y2-rings .g8y2-ring { fill: var(--moon); }
+.g8y2.done .g8y2-rings { animation: g8y2-flash 1.6s ease-out 0.4s 1; }
+@keyframes g8y2-flash { 0%, 100% { opacity: 1; } 30% { opacity: 0.25; } 60% { opacity: 1; } 75% { opacity: 0.5; } }
+.g8y2 .g8y2-ruler { font: 400 13px/1 var(--sans); fill: var(--ink-3); }
+/* the glass: bevels catching the moon, a faint specular sheet, a dark lip on its lower edge */
+.g8y2 .g8y2-bevel { fill: #fff; opacity: 0.95; }
+.g8y2 .g8y2-bevel.in { opacity: 0.55; }
+:root[data-theme='dark'] .g8y2 .g8y2-bevel { fill: var(--moon); opacity: 0.75; }
+:root[data-theme='dark'] .g8y2 .g8y2-bevel.in { opacity: 0.3; }
+.g8y2 .g8y2-lip { fill: var(--wash); opacity: 0.55; }
+:root[data-theme='dark'] .g8y2 .g8y2-lip { fill: #000; opacity: 0.8; }
+/* rock walls: beds of three tones, darker toward the foot, moss along the top, roots */
+.g8y2 .g8y2-layer.t0 { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash)); }
+.g8y2 .g8y2-layer.t1 { fill: color-mix(in srgb, var(--rock-mid) 55%, var(--wash)); }
+.g8y2 .g8y2-layer.t2 { fill: color-mix(in srgb, var(--rock-lo) 80%, var(--moss-b)); }
+.g8y2 .out .g8y2-layer.t0 { fill: color-mix(in srgb, var(--rock-mid) 60%, var(--rock-lo)); }
+.g8y2 .out .g8y2-layer.t1 { fill: color-mix(in srgb, var(--rock-mid) 80%, var(--rock-hi)); }
+.g8y2 .out .g8y2-layer.t2 { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--moss-a)); }
+:root[data-theme='dark'] .g8y2 .out .g8y2-layer.t1 { fill: color-mix(in srgb, var(--rock-mid) 75%, var(--rock-hi)); }
+.g8y2 .g8y2-hatch { fill: var(--wash); opacity: 0.22; }
+:root[data-theme='dark'] .g8y2 .g8y2-hatch { fill: #000; opacity: 0.4; }
+.g8y2 .g8y2-d0 { stop-color: var(--umbra); stop-opacity: 0; }
+.g8y2 .g8y2-d1 { stop-color: var(--umbra); stop-opacity: 0.5; }
+:root[data-theme='dark'] .g8y2 .g8y2-d1 { stop-opacity: 0.7; }
+.g8y2 .g8y2-seam { fill: var(--wash); opacity: 0.5; }
+:root[data-theme='dark'] .g8y2 .g8y2-seam { fill: #000; opacity: 0.55; }
+.g8y2 .g8y2-roots { fill: color-mix(in srgb, var(--wash) 80%, #3a2a1a); opacity: 0.7; }
+:root[data-theme='dark'] .g8y2 .g8y2-roots { fill: color-mix(in srgb, var(--rock-hi) 50%, #2a2018); opacity: 0.6; }
+.g8y2 .g8y2-wallmoss { fill: var(--moss-b); opacity: 0.9; }
+:root[data-theme='dark'] .g8y2 .g8y2-wallmoss { fill: var(--moss-c); opacity: 0.7; }
+.g8y2 .back::after, .g8y2 .inner::after { content: ''; position: absolute; inset: 0; background: linear-gradient(color-mix(in srgb, var(--umbra) 10%, transparent), color-mix(in srgb, var(--umbra) 45%, transparent)); }
+.g8y2 .side::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--umbra) 22%, transparent), transparent 40%), linear-gradient(90deg, transparent 96%, color-mix(in srgb, #fff 40%, transparent)); }
+/* the surface from above */
+.g8y2 .g8y2-rim { fill: color-mix(in srgb, var(--moss-b) 75%, var(--rock-lo)); }
+.g8y2 .g8y2-bankink { fill: var(--wash); opacity: 0.6; }
+.g8y2 .g8y2-edge { fill: #fff; opacity: 0.8; }
+:root[data-theme='dark'] .g8y2 .g8y2-edge { fill: var(--moon); opacity: 0.6; }
+.g8y2 .g8y2-moonhalo { fill: var(--moon); opacity: 0.16; }
+.g8y2 .g8y2-rip { fill: var(--moon); opacity: 0.3; }
+:root[data-theme='light'] .g8y2 .g8y2-rip { fill: #fff; opacity: 0.6; }
+.g8y2 .g8y2-padhi { fill: var(--moss-c); opacity: 0.8; }
+.g8y2 .g8y2-pond { fill: color-mix(in srgb, var(--water) 70%, var(--mist)); }
+:root[data-theme='dark'] .g8y2 .g8y2-pond { fill: #1b2547; }
+.g8y2 .g8y2-moondisc { fill: var(--moon); opacity: 0.9; }
+.g8y2 .g8y2-pad { fill: var(--moss-a); opacity: 0.9; }
+.g8y2 .g8y2-rings ellipse { fill: none; stroke: var(--moon); stroke-width: 1.4; opacity: 0; transition: opacity 1s; }
+:root[data-theme='light'] .g8y2 .g8y2-rings ellipse { stroke: #fff; }
+.g8y2:not([data-at='0']) .g8y2-rings ellipse { opacity: 0.55; }
+.g8y2 .g8y2-silt { fill: color-mix(in srgb, var(--rock-lo) 60%, var(--wash)); }
+/* its shadow on the mist far below: a defined core in a soft penumbra; the mist veiling its foot */
+.g8y2 .shadow { background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 42%, transparent), color-mix(in srgb, var(--umbra) 26%, transparent) 45%, color-mix(in srgb, var(--umbra) 8%, transparent) 75%, transparent); }
+:root[data-theme='dark'] .g8y2 .shadow { background: radial-gradient(closest-side, color-mix(in srgb, #000 80%, transparent), color-mix(in srgb, #000 50%, transparent) 45%, color-mix(in srgb, #000 15%, transparent) 75%, transparent); }
+.g8y2 .fog { pointer-events: none; background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 60%, transparent), color-mix(in srgb, var(--paper) 22%, transparent) 60%, transparent); }
+:root[data-theme='dark'] .g8y2 .fog { background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) 16%, transparent), color-mix(in srgb, var(--mist) 6%, transparent) 60%, transparent); }
+:root[data-quality='low'] .g8y2 .fog { display: none; }
+/* the pebble: the slider; focused from the keyboard, wet ink blooms in the stone */
+.g8y2-pebble { position: absolute; left: -60px; top: -40px; width: 120px; height: 80px; pointer-events: auto; cursor: grab; outline: none; border-radius: 40%; }
+.g8y2-pebble svg { width: 100%; height: 100%; overflow: visible; }
+.g8y2 .g8y2-stone { fill: url(#p2-rock); }
+.g8y2 .g8y2-flank { fill: var(--umbra); opacity: 0.2; }
+.g8y2 .g8y2-prim { fill: var(--moon); opacity: 0.7; }
+:root[data-theme='light'] .g8y2 .g8y2-prim { fill: #fff; opacity: 0.9; }
+.g8y2 .g8y2-pshadow { fill: var(--umbra); opacity: 0.25; }
+.g8y2 .g8y2-bl0 { stop-color: var(--vermilion); stop-opacity: 0.75; }
+.g8y2 .g8y2-bl1 { stop-color: var(--vermilion); stop-opacity: 0.35; }
+.g8y2 .g8y2-bl2 { stop-color: var(--vermilion); stop-opacity: 0; }
+.g8y2 .g8y2-bloom { opacity: 0; transform: scale(0.5); transform-box: fill-box; transform-origin: 50% 50%; transition: opacity 0.6s, transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.g8y2-pebble:focus-visible .g8y2-bloom { opacity: 1; transform: none; }
+.g8y2 .g8y2-coat { font: 400 30px/1 var(--serif); fill: var(--stone-text); opacity: 0; transition: opacity 1.2s 0.5s; }
+.g8y2 .g8y2-coat.c0 { opacity: 0.3; }
+.g8y2:is([data-at='1'], [data-at='2'], [data-at='3']) .g8y2-coat.c1,
+.g8y2:is([data-at='2'], [data-at='3']) .g8y2-coat.c2,
+.g8y2[data-at='3'] .g8y2-coat.c3 { opacity: 0.45; }
+/* readings written on the glass, kept at a readable size as the view draws back (--ks) */
+.g8y2-read {
+  position: absolute; width: 12em; display: grid; gap: 2px; opacity: 0;
+  transform: translateY(-50%) scale(var(--ks, 1)); transform-origin: 0 50%;
+  transition: opacity 1s var(--ease, ease) 0.6s;
 }
-.g8y-read.now { opacity: 1; }
-.g8y-read[data-off] { opacity: 0; transform: translateX(-8px); }
-.g8y-at {
-  font: 500 0.72rem/1.2 var(--sans);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-.g8y-read p {
-  margin: 0;
-  font: 400 clamp(1rem, 1.8vw, 1.25rem) / 1.35 var(--serif);
-  color: var(--ink);
-}
-.g8y-ctrl {
-  position: absolute;
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-}
-.g8y-ctrl .g8-slider { width: min(420px, 100%); }
-.g8h .g8h-pool { fill: var(--hc); opacity: 0.16; }
+.g8y2-read.up { transform: translateY(-100%) scale(var(--ks, 1)); transform-origin: 0 100%; }
+.g8y2[data-at='1'] .g8y2-read:nth-child(2), .g8y2[data-at='2'] .g8y2-read:nth-child(3), .g8y2[data-at='3'] .g8y2-read:nth-child(4) { opacity: 1; }
+.g8y2-at { font: 500 12px/1.2 var(--sans); color: var(--ink-3); }
+.g8y2-read p { margin: 0; font: 500 16px/1.35 var(--serif); color: var(--ink); text-shadow: 0 1px 0 color-mix(in srgb, #fff 55%, transparent); }
+:root[data-theme='dark'] .g8y2-read p { font-weight: 400; text-shadow: 0 1px 2px #000; }
+:root[data-theme='light'] .g8y2-at { color: var(--ink-2); }
+/* (by day the deep band is the darkest glass: its reading is written in light) */
+:root[data-theme='light'] .g8y2-read:nth-child(4) p { color: #fff; text-shadow: 0 1px 2px color-mix(in srgb, var(--wash) 70%, transparent); }
+:root[data-theme='light'] .g8y2-read:nth-child(4) .g8y2-at { color: color-mix(in srgb, #fff 80%, var(--mist)); }
+@media (prefers-reduced-motion: reduce) { .g8y2-world.glide, .g8y2-world.glide :is(.g8y2-pebble, .g8y2-read) { transition: none; } }
+@media (max-width: 600px) { .g8y2-pebble { left: -48px; top: -32px; width: 96px; height: 64px; } .g8y2-read { width: 9.6em; transform: scale(var(--ks, 1)); transform-origin: 0 0; } .g8y2-read p { font-size: 13.5px; } }
 
-/* scene 4: the shōji window on the scroll (tide art) */
-.p2t .g8w-paper { opacity: 0.9; }
-.p2t .g8w-g0 { stop-color: var(--paper-2); }
-.p2t .g8w-g1 { stop-color: color-mix(in srgb, var(--moon) 50%, var(--card)); }
-:root[data-theme='dark'] .p2t .g8w-g0 { stop-color: color-mix(in srgb, var(--moon) 22%, var(--card)); }
-:root[data-theme='dark'] .p2t .g8w-g1 { stop-color: color-mix(in srgb, var(--moon) 38%, var(--card)); }
-:root[data-theme='dark'] .p2t .g8w-paper { opacity: 0.8; }
-.p2t .g8w-shadow { opacity: 0.16; }
-:root[data-theme='dark'] .p2t .g8w-shadow { opacity: 0.4; }
-.p2t .g8w-lattice { fill: var(--wash); opacity: 0.3; }
-.p2t .g8w-ghost { fill: var(--vermilion); opacity: 0.55; }
-.p2t .g8w-mark.claim { opacity: 0.72; }
-.p2t .g8w-wood { fill: var(--wash); opacity: 0.8; }
-.p2t .g8w-post { fill: var(--wash); opacity: 0.5; }
-:root[data-theme='dark'] .p2t :is(.g8w-wood, .g8w-post, .g8w-lattice) { fill: color-mix(in srgb, var(--rock-lo) 50%, var(--wash)); }
-.p2t .g8w-contact { fill: var(--umbra); opacity: 0.2; }
-.p2t .g8w-sheet { fill: var(--card); }
-:root[data-theme='dark'] .p2t .g8w-sheet { fill: color-mix(in srgb, var(--moon) 70%, var(--ink-3)); }
-.p2t .g8w-lines { fill: var(--wash); opacity: 0.55; }
-.p2t .g8w-ink { fill: var(--wash); opacity: 0.8; }
-.p2t .g8w-book.b0 { fill: var(--moss-b); }
-.p2t .g8w-book.b1 { fill: var(--vermilion); opacity: 0.85; }
-.p2t .g8w-book.b2 { fill: var(--water); }
-.p2t .g8w-book.b3 { fill: var(--rock-mid); }
-.p2t .g8w-book.b4 { fill: color-mix(in srgb, var(--lantern) 60%, var(--rock-lo)); }
-:root[data-theme='dark'] .p2t .g8w-book.b2 { fill: color-mix(in srgb, var(--mist) 45%, var(--rock-lo)); }
+/* ── scene 4 (comp + 2.5D): the tea room's shōji wall on the progressTide scroll */
+.p2t.g8w2 :is(.p2t-roller, .p2t-rake, .p2t-track, .p2t-horizon, .p2t-mist, .p2t-ms, .p2t-today) { display: none; }
+.p2t.g8w2 .p2t-paper { fill: none; stroke: none; }
+.p2t.g8w2 .p2t-moon::after { display: none; }
+.p2t.g8w2 .p2t-moon { --m: 46px; }
+/* the thumb is only the moon's handle (the moon itself glows behind the transom); focused from the keyboard, it glows */
+.p2t.g8w2 .g8w2-thumb { fill: transparent; }
+.p2t.g8w2 .p2t-moon:focus-visible { outline: none; box-shadow: 0 0 26px 14px color-mix(in srgb, var(--moon) 40%, transparent); }
+:root[data-theme='light'] .p2t.g8w2 .p2t-moon:focus-visible { box-shadow: 0 0 26px 14px color-mix(in srgb, #fff 85%, transparent), 0 0 46px 20px color-mix(in srgb, var(--lantern) 30%, transparent); }
+.p2t.g8w2 .g8w2-m0 { stop-color: var(--moon); stop-opacity: 0.95; }
+.p2t.g8w2 .g8w2-m1 { stop-color: var(--moon); stop-opacity: 0.45; }
+.p2t.g8w2 .g8w2-m2 { stop-color: var(--moon); stop-opacity: 0; }
+:root[data-theme='light'] .p2t.g8w2 .g8w2-m0 { stop-color: #fff; }
+:root[data-theme='light'] .p2t.g8w2 .g8w2-m1 { stop-color: #fff8e6; stop-opacity: 0.6; }
+:root[data-theme='light'] .p2t.g8w2 .g8w2-m2 { stop-color: #fff8e6; }
+.p2t.g8w2 .g8w2-d0 { stop-color: #fff; stop-opacity: 1; }
+.p2t.g8w2 .g8w2-d1 { stop-color: var(--moon); stop-opacity: 0.9; }
+.p2t.g8w2 .g8w2-d2 { stop-color: var(--moon); stop-opacity: 0; }
+/* the transom: washi, dim away from the moon */
+.p2t.g8w2 .g8w2-ranma { fill: color-mix(in srgb, var(--card) 70%, var(--rock-mid)); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-ranma { fill: color-mix(in srgb, var(--moon) 16%, #1b1f30); }
+/* the garden beyond */
+.p2t.g8w2 .g8w2-s0 { stop-color: color-mix(in srgb, var(--wash) 30%, var(--paper)); }
+.p2t.g8w2 .g8w2-s1 { stop-color: color-mix(in srgb, var(--moon) 30%, var(--paper)); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-s0 { stop-color: var(--paper); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-s1 { stop-color: color-mix(in srgb, var(--mist) 22%, var(--paper)); }
+.p2t.g8w2 .g8w2-sd0 { stop-color: color-mix(in srgb, var(--paper-2) 70%, var(--mist)); }
+.p2t.g8w2 .g8w2-sd1 { stop-color: color-mix(in srgb, var(--paper-2) 85%, var(--moon)); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-sd0 { stop-color: color-mix(in srgb, var(--mist) 18%, var(--paper)); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-sd1 { stop-color: color-mix(in srgb, var(--mist) 26%, var(--paper-2)); }
+.p2t.g8w2 .g8w2-noise { fill: var(--wash); opacity: 0.1; }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-noise { fill: var(--mist); opacity: 0.12; }
+.p2t.g8w2 .g8w2-rake { fill: none; stroke: var(--wash); stroke-width: 0.7; opacity: 0.14; }
+.p2t.g8w2 .g8w2-rake.hi { stroke: #fff; opacity: 0.5; }
+.p2t.g8w2 .g8w2-rake.ring { stroke-width: 0.9; opacity: 0.22; }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-rake { stroke: #000; opacity: 0.3; }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-rake.hi { stroke: var(--mist); opacity: 0.14; }
+.p2t.g8w2 .g8w2-face { filter: none; }
+.p2t.g8w2 .g8w2-flank { fill: var(--umbra); opacity: 0.22; }
+.p2t.g8w2 .g8w2-plinth { fill: var(--rock-lo); }
+.p2t.g8w2 .g8w2-rim { fill: var(--moon); opacity: 0.5; }
+:root[data-theme='light'] .p2t.g8w2 .g8w2-rim { fill: #fff; opacity: 0.8; }
+.p2t.g8w2 .g8w2-contact { fill: var(--umbra); opacity: 0.22; }
+.p2t.g8w2 .g8w2-sheet { fill: var(--card); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-sheet { fill: color-mix(in srgb, var(--moon) 70%, var(--ink-3)); }
+.p2t.g8w2 .g8w2-lines { fill: var(--wash); opacity: 0.55; }
+.p2t.g8w2 .g8w2-ink { fill: var(--wash); opacity: 0.85; }
+.p2t.g8w2 .g8w2-book.b0 { fill: var(--moss-b); }
+.p2t.g8w2 .g8w2-book.b1 { fill: color-mix(in srgb, var(--vermilion) 70%, var(--rock-lo)); }
+.p2t.g8w2 .g8w2-book.b2 { fill: var(--water); }
+.p2t.g8w2 .g8w2-book.b3 { fill: var(--rock-mid); }
+.p2t.g8w2 .g8w2-book.b4 { fill: color-mix(in srgb, var(--lantern) 60%, var(--rock-lo)); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-book.b2 { fill: color-mix(in srgb, var(--mist) 45%, var(--rock-lo)); }
+.p2t.g8w2 .g8w2-claim { opacity: 0.7; }
+.p2t.g8w2 .g8w2-rise { opacity: 0; transform: translateY(14px); transition: opacity 0.9s var(--ease), transform 1.1s var(--ease); }
+.p2t.g8w2 .g8w2-rise.up { opacity: 1; transform: none; }
+.p2t.g8w2 .g8w2-lost { opacity: 0; transition: opacity 2.4s var(--ease) 0.6s; }
+.p2t.g8w2 .g8w2-scene.lost .g8w2-lost { opacity: 1; }
+/* the shōji: paper lit by the moon behind it, thin warm-wood kumiko; a panel slides away behind its post when the moon passes */
+.p2t.g8w2 .g8w2-p0 { stop-color: color-mix(in srgb, var(--moon) 22%, var(--card)); }
+.p2t.g8w2 .g8w2-p1 { stop-color: color-mix(in srgb, var(--rock-mid) 30%, var(--card)); }
+.p2t.g8w2 .g8w2-p2 { stop-color: color-mix(in srgb, var(--rock-mid) 55%, var(--paper-2)); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-p0 { stop-color: color-mix(in srgb, var(--moon) 26%, #20253a); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-p1 { stop-color: color-mix(in srgb, var(--moon) 12%, #191d2e); }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-p2 { stop-color: #12141f; }
+.p2t.g8w2 .g8w2-g0 { stop-color: #fff; stop-opacity: 0.85; }
+.p2t.g8w2 .g8w2-g1 { stop-color: #fff8e8; stop-opacity: 0.4; }
+.p2t.g8w2 .g8w2-g2 { stop-color: #fff8e8; stop-opacity: 0; }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-g0 { stop-color: var(--moon); stop-opacity: 0.55; }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-g1 { stop-color: var(--moon); stop-opacity: 0.2; }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-g2 { stop-color: var(--moon); stop-opacity: 0; }
+.p2t.g8w2 .g8w2-kumiko { fill: none; stroke: #8c6c4f; stroke-width: 1.1; opacity: 0.85; }
+.p2t.g8w2 .g8w2-kumiko.ranma { stroke-width: 1.6; opacity: 0.8; }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-kumiko { stroke: #3a2c20; opacity: 0.95; }
+.p2t.g8w2 .g8w2-panel { transition: transform 1.1s cubic-bezier(0.45, 0.05, 0.3, 1); }
+.p2t.g8w2 .g8w2-panel.open { transform: translateX(104%); }
+.p2t.g8w2 .g8w2-panel { transform-box: fill-box; }
+:root[data-quality='low'] .p2t.g8w2 .g8w2-panel { transition: none; }
+.p2t.g8w2 :is(.g8w2-post, .g8w2-wood) { fill: #7a5c42; }
+:root[data-theme='dark'] .p2t.g8w2 :is(.g8w2-post, .g8w2-wood) { fill: #3b2b1f; }
+.p2t.g8w2 .g8w2-woodlit { fill: #f6e8d2; opacity: 0.5; }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-woodlit { fill: var(--moon); opacity: 0.3; }
+/* the room round the scroll: ceiling, plaster walls, an alcove, tatami with dark borders, an andon, a low table */
+.g8w2-room { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent), linear-gradient(#000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent), linear-gradient(#000 90%, transparent);
+  mask-composite: intersect; }
+.g8w2-room .g8w2-wl0 { stop-color: color-mix(in srgb, var(--paper-2) 75%, #b9a98c); }
+.g8w2-room .g8w2-wl1 { stop-color: color-mix(in srgb, var(--paper-2) 88%, #d8cbb2); }
+:root[data-theme='dark'] .g8w2-room .g8w2-wl0 { stop-color: #15120f; }
+:root[data-theme='dark'] .g8w2-room .g8w2-wl1 { stop-color: #221d18; }
+.g8w2-room .g8w2-ceil { fill: #6a5644; }
+:root[data-theme='dark'] .g8w2-room .g8w2-ceil { fill: #120e0b; }
+.g8w2-room .g8w2-fl0 { stop-color: #cdbf98; }
+.g8w2-room .g8w2-fl1 { stop-color: #bba97c; }
+:root[data-theme='dark'] .g8w2-room .g8w2-fl0 { stop-color: #2a2119; }
+:root[data-theme='dark'] .g8w2-room .g8w2-fl1 { stop-color: #1d1712; }
+.g8w2-room .g8w2-mats { fill: none; stroke: #7d6c4a; stroke-width: 1; opacity: 0.45; }
+:root[data-theme='dark'] .g8w2-room .g8w2-mats { stroke: #000; opacity: 0.55; }
+.g8w2-room .g8w2-heri { fill: #3c4256; opacity: 0.6; }
+:root[data-theme='dark'] .g8w2-room .g8w2-heri { fill: #070608; opacity: 0.9; }
+.g8w2-room .g8w2-woodrm { fill: #7a5c42; }
+:root[data-theme='dark'] .g8w2-room .g8w2-woodrm { fill: #2c2017; }
+.g8w2-room .g8w2-woodhi { fill: #f4e2c6; opacity: 0.45; }
+:root[data-theme='dark'] .g8w2-room .g8w2-woodhi { fill: var(--lantern); opacity: 0.3; }
+.g8w2-room .g8w2-a0 { stop-color: var(--lantern); stop-opacity: 0.38; }
+.g8w2-room .g8w2-a1 { stop-color: var(--lantern); stop-opacity: 0; }
+:root[data-theme='dark'] .g8w2-room .g8w2-a0 { stop-opacity: 0.3; }
+.g8w2-room .g8w2-andon-box { fill: color-mix(in srgb, var(--lantern) 60%, #fff); }
+.g8w2-room .g8w2-andon-frame { fill: none; stroke: #5e4532; stroke-width: 3; }
+.g8w2-room .g8w2-toko-in { fill: #000; opacity: 0.08; }
+:root[data-theme='dark'] .g8w2-room .g8w2-toko-in { opacity: 0.35; }
+.g8w2-room .g8w2-toko-post { fill: #8a6a4c; }
+:root[data-theme='dark'] .g8w2-room .g8w2-toko-post { fill: #3e2e21; }
+.g8w2-room .g8w2-kake-silk { fill: color-mix(in srgb, var(--moss-b) 45%, var(--rock-lo)); opacity: 0.85; }
+.g8w2-room .g8w2-kake-paper { fill: var(--card); }
+.g8w2-room .g8w2-kake-rod { fill: #4a3626; }
+:root[data-theme='dark'] .g8w2-room .g8w2-kake-silk { fill: #3e4a44; opacity: 1; }
+:root[data-theme='dark'] .g8w2-room .g8w2-kake-paper { fill: color-mix(in srgb, var(--lantern) 18%, #4a4a50); }
+:root[data-theme='dark'] .g8w2-room .g8w2-toko .p2p-hill { fill: #15161c; }
+/* moonlight through the open panels: a long pale trapezoid on the mats */
+.g8w2-room .g8w2-b0 { stop-color: #fff; stop-opacity: 0.85; }
+.g8w2-room .g8w2-b1 { stop-color: #fff; stop-opacity: 0.12; }
+:root[data-theme='dark'] .g8w2-room .g8w2-b0 { stop-color: var(--moon); stop-opacity: 0.4; }
+:root[data-theme='dark'] .g8w2-room .g8w2-b1 { stop-color: var(--moon); stop-opacity: 0.02; }
+.g8w2-room .g8w2-beam { opacity: 0; transition: opacity 1.1s var(--ease); }
+.g8w2-room .g8w2-beam.open { opacity: 1; }
+/* the low table and its teacup */
+.g8w2-room .g8w2-ttop { fill: #3a2620; }
+.g8w2-room .g8w2-tside { fill: #1c120f; }
+:root[data-theme='dark'] .g8w2-room .g8w2-ttop { fill: #1f1512; }
+:root[data-theme='dark'] .g8w2-room .g8w2-tside { fill: #0b0706; }
+.g8w2-room .g8w2-tedge { fill: #fff; opacity: 0.5; }
+:root[data-theme='dark'] .g8w2-room .g8w2-tedge { fill: var(--moon); opacity: 0.35; }
+.g8w2-room .g8w2-tshadow { fill: #000; opacity: 0.18; }
+.g8w2-room .g8w2-cup { fill: #d8d2c4; }
+:root[data-theme='dark'] .g8w2-room .g8w2-cup { fill: #8d877b; }
+.g8w2-room .g8w2-cupsh { fill: #000; opacity: 0.3; }
+.g8w2-room .g8w2-tea { fill: #6f7a3a; }
+.g8w2-room .g8w2-steam { fill: #fff; opacity: 0.45; }
+:root[data-theme='dark'] .g8w2-room .g8w2-steam { fill: var(--moon); opacity: 0.22; }
+/* today's two lines along the mat borders */
+:is(.p2t.g8w2, .g8w2-room) .g8w2-cmp { opacity: 0; transition: opacity 1s var(--ease) 0.6s; }
+:is(.p2t.g8w2 .g8w2-scene, .g8w2-room).cmp .g8w2-cmp { opacity: 1; }
+:is(.p2t.g8w2, .g8w2-room) .g8w2-cline { fill: var(--wash); opacity: 0.75; }
+:is(.p2t.g8w2, .g8w2-room) .g8w2-cline.long { fill: var(--vermilion); opacity: 0.9; }
+:root[data-theme='dark'] :is(.p2t.g8w2, .g8w2-room) .g8w2-cline { fill: var(--ink-2); }
+.g8w2-room .g8w2-cnum { font: 500 14px/1 var(--serif); fill: var(--ink); paint-order: stroke; stroke: color-mix(in srgb, var(--paper) 70%, transparent); stroke-width: 3px; }
+.g8w2-room .g8w2-cnum.long { fill: var(--vermilion); }
+.p2t.g8w2 .g8w2-pineuse { opacity: 0.1; }
+:root[data-theme='dark'] .p2t.g8w2 .g8w2-pineuse { opacity: 0.25; }
+.p2t.g8w2 .g8w2-pineshadow :is(.p2p-trunk, .p2p-bark, .p2p-pad, .p2p-needle) { fill: var(--wash); }
+/* the dates sit on the sill, in lamplight; today's date is said once */
+.p2t.g8w2 .p2t-date { color: var(--ink-3); }
+.p2t.g8w2 .p2t-date.on { color: var(--ink); }
+.p2t.g8w2 .p2t-date.today small { display: none; }
+.p2t.g8w2 .p2t-horizon-label { color: color-mix(in srgb, var(--wash) 70%, var(--paper)); font-style: normal; }
+:root[data-theme='dark'] .p2t.g8w2 .p2t-horizon-label { color: var(--ink-2); }
+/* the reading is inked on a washi placard lying on the mats */
+.p2t.g8w2 .p2t-card {
+  width: min(38rem, calc(100% - 20px)); padding: 12px 18px 6px; border-radius: 3px;
+  background: linear-gradient(color-mix(in srgb, var(--card) 94%, var(--lantern)), color-mix(in srgb, var(--card) 86%, var(--rock-mid)));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 60%, transparent), 0 16px 26px -18px rgba(20, 16, 10, 0.55), 0 2px 4px -2px rgba(20, 16, 10, 0.3);
+  transform: translateX(-50%) perspective(900px) rotateX(9deg); transform-origin: 50% 0;
+}
+:root[data-theme='dark'] .p2t.g8w2 .p2t-card {
+  background: linear-gradient(color-mix(in srgb, #2a2520 85%, var(--lantern)), #1f1b17);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--lantern) 25%, transparent), 0 16px 26px -16px #000;
+}

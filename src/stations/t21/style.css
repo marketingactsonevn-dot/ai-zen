@@ -1,240 +1,567 @@
-/* Trạm 21 — Robot chạy marathon: strings from a pine branch · a trembling hand at the tea table (+ tide, perspective circle) */
-.t21 {
+/* Trạm 21 — Robot chạy marathon: a canvas chase round the moon lake · strings at the finish line · a trembling arm at the tea table · four boulders that open like seeds */
+
+/* ── race (race.ts): a canvas chase under an SVG sky that bleeds past the gutters to the window's edges; text sits on
+   the paper inside the gutter, the moon is the slider ── */
+.t21r {
+  position: absolute;
+  left: calc(-1 * var(--gutter));
+  right: calc(-1 * var(--gutter));
+  top: 0;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.t21r.grab { cursor: grabbing; }
+.t21r-sky,
+.t21r-cv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+/* only the foot melts into the paper (the insight sits there); the sides are the window's own edges */
+.t21r-cv {
+  -webkit-mask-image: linear-gradient(to bottom, #000 84%, transparent);
+  mask-image: linear-gradient(to bottom, #000 84%, transparent);
+}
+.t21r-fade { opacity: 0; }
+.t21r-text {
+  position: absolute;
+  top: 1%;
+  left: calc(var(--gutter) + 1%);
+  width: min(30rem, 34%);
+  cursor: auto;
+}
+.t21r.port .t21r-text { left: var(--gutter); right: var(--gutter); width: auto; top: 0; }
+.t21r-read.in { animation: p2-fade 0.7s var(--ease) both; }
+.t21r-text .p2-eyebrow { text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper); }
+.t21r-fact,
+.t21r-hz-text {
+  margin: 0.3em 0 0;
+  font: 300 clamp(1.02rem, 1.45vw, 1.24rem) / 1.5 var(--serif);
+  color: var(--ink);
+  text-wrap: pretty;
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
+}
+.t21r-hz-text { font-size: clamp(0.95rem, 1.25vw, 1.08rem); color: var(--ink-2); }
+/* the forecast drifts in the upper mist, under the fact: a breath of paper-mist behind it, no box */
+.t21r-horizon {
+  margin-top: 0.9em;
+  padding: 8px 10px 10px;
+  margin-left: -10px;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 70%, transparent) 55%, transparent);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+.t21r.today .t21r-horizon { opacity: 0.94; transform: none; pointer-events: auto; transition: opacity 1.4s var(--ease) 2s, transform 1.4s var(--ease) 2s; }
+.t21r.port .t21r-horizon { margin-top: 0.4em; max-width: 60%; }
+.t21r.port .t21r-hz-text { font-size: 0.92rem; line-height: 1.42; }
+.t21r-moon {
+  --m: 66px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--m);
+  height: var(--m);
+  margin: calc(var(--m) / -2) 0 0 calc(var(--m) / -2);
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+  opacity: 0;
+  transition: opacity 0.8s var(--ease);
+}
+.t21r.ready .t21r-moon { opacity: 1; }
+.t21r.port .t21r-moon { --m: 48px; }
+.t21r-moon:focus-visible { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px color-mix(in srgb, var(--vermilion) 60%, transparent); }
+.t21r-disc { width: 100%; height: 100%; overflow: visible; }
+.t21r-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: -2.9em 0 0;
+  display: grid;
+  gap: 1px;
+  opacity: 0;
+  pointer-events: none;
+  font: 400 0.8rem/1.25 var(--sans);
+  color: var(--ink-3);
+  white-space: nowrap;
+  text-shadow: 0 0 6px var(--paper), 0 0 8px var(--paper);
+}
+.t21r-tag b { font: 500 1.3rem/1.1 var(--serif); color: var(--ink); }
+/* portrait: the two finishes side by side at the foot of the picture */
+.t21r.port .t21r-tag { top: auto; bottom: 3%; margin: 0; transform: none !important; }
+.t21r.port .t21r-tag.far { left: calc(var(--gutter) + 2%); }
+.t21r.port .t21r-tag.near { left: auto; right: calc(var(--gutter) + 2%); text-align: right; }
+.t21r-tag.near b { color: var(--vermilion); }
+.t21r-tag.far { width: 128px; text-align: right; }
+
+/* ── strings (strings.ts): eye level at the finish line, the controller's bar is the switch; the painting bleeds past the
+   gutters, the times are written on the lane boards (laid on them in perspective by the script) ── */
+.t21s {
+  position: absolute;
+  left: calc(-1 * var(--gutter));
+  right: calc(-1 * var(--gutter));
+  top: 0;
+  height: 100%;
+  touch-action: pan-y;
+  cursor: ew-resize;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.t21s.still { cursor: auto; }
+.t21s.grab { cursor: grabbing; }
+.t21s-sky,
+.t21s-cv {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  -webkit-tap-highlight-color: transparent;
-}
-.t21 svg { max-width: none; overflow: visible; }
-.t21-ink { fill: var(--ink); opacity: 0.88; }
-/* brushed figures (robot.ts): ink limbs, a washed torso and head, a moonlit visor slit */
-.t21-limb { fill: var(--ink); opacity: 0.9; }
-.t21-torso { fill: color-mix(in srgb, var(--ink) 62%, var(--paper)); }
-.t21-joint { fill: var(--ink); }
-.t21-visor { fill: var(--lantern); }
-:root[data-theme='light'] .t21-visor { fill: var(--moon); }
-.t21-fig.human .t21-limb { opacity: 0.75; }
-.t21-shadow { fill: var(--umbra); opacity: 0.25; }
-/* the race scroll (art.ts) */
-.t21r-track { fill: var(--paper-2); opacity: 0.9; }
-:root[data-theme='dark'] .t21r-track { fill: var(--stone-3); opacity: 0.4; }
-.t21r-lane { fill: var(--rake); }
-.t21r-ribbon { fill: var(--vermilion); opacity: 0.9; }
-
-/* ── strings ─────────────────────────────────────── */
-.t21s-stage,
-.t21t-stage {
-  flex: 1 1 0;
-  min-height: 120px;
-  width: 100%;
-}
-.t21s-svg,
-.t21t-svg {
-  display: block;
   width: 100%;
   height: 100%;
+  overflow: visible;
+  pointer-events: none;
 }
-.t21s-strings {
-  stroke: var(--moon);
-  stroke-width: 0.9;
-  fill: none;
-  opacity: 0;
-  transition: opacity 0.8s ease;
+.t21s-sky { will-change: transform; max-width: none; }
+.t21s-cv {
+  -webkit-mask-image: linear-gradient(to bottom, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, #000 86%, transparent);
 }
-.t21s.wired .t21s-strings { opacity: 0.9; }
-:root[data-theme='light'] .t21s-strings { stroke: var(--ink-2); }
-.t21-runner { animation: t21-bob 0.7s ease-in-out infinite alternate; }
-.t21-b { animation-delay: -0.35s; }
-.t21.still .t21-runner { animation: none; }
-@keyframes t21-bob {
-  to { transform: translateY(-3px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .t21-runner { animation: none; }
-}
+.t21s-fade { opacity: 0; }
+.t21s-stage { position: absolute; inset: 0 var(--gutter); outline: none; border-radius: 14px; }
+.t21s-stage:focus-visible { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--vermilion) 45%, transparent); }
+/* the bar under the bough is the switch: an invisible hit area over the painted bar */
 .t21s-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 14px 6px 6px;
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
-  background: var(--card);
-  color: var(--ink);
-  font: 500 0.9rem/1.2 var(--sans);
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
   cursor: pointer;
 }
 .t21s-toggle:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
-.t21s-switch {
-  position: relative;
-  width: 36px;
-  height: 20px;
-  border-radius: 999px;
-  background: var(--stone-2);
-  transition: background 0.3s ease;
-}
-.t21s-switch::after {
-  content: '';
+/* a lane board's face: words in ink on the plaque the canvas paints; the script lays it on the board (transform) */
+.t21s-board {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--paper);
-  transition: transform 0.3s ease;
-}
-.t21s-toggle[aria-pressed='true'] .t21s-switch { background: var(--vermilion); }
-.t21s-toggle[aria-pressed='true'] .t21s-switch::after { transform: translateX(16px); }
-.t21s-reveal {
-  flex: 0 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  width: min(40rem, 100%);
-  visibility: hidden;
+  left: 0;
+  top: 0;
+  width: 150px;
+  height: 116px;
+  box-sizing: border-box;
+  padding: 10px 11px 0;
+  transform-origin: 0 0;
+  pointer-events: none;
   opacity: 0;
-  transition: opacity 0.6s ease;
-}
-.t21s.shown .t21s-reveal { visibility: visible; opacity: 1; }
-.t21s-tags {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-.t21s-tag { padding: 8px 12px; border-radius: 10px; background: var(--card); }
-.t21s-tag.remote { opacity: 0.6; transition: opacity 0.5s ease; }
-.t21s.wired .t21s-tag.remote { opacity: 1; box-shadow: inset 0 0 0 1px var(--moon-rim); }
-.t21s-tag.auto { box-shadow: inset 2px 0 0 var(--vermilion); }
-.t21s-time {
-  margin: 2px 0 0;
-  font: 400 1.5rem/1.1 var(--serif);
+  transition: opacity 0.8s var(--ease);
   color: var(--ink);
-  font-variant-numeric: tabular-nums;
 }
-.t21s-note { margin: 2px 0 0; font: 400 0.8rem/1.35 var(--sans); color: var(--ink-3); }
+.t21s.ready .t21s-board { opacity: 1; }
+.t21s-board p { margin: 0; }
+.t21s-label { font: 500 12px/1.2 var(--sans); color: var(--ink-2); }
+.t21s-time { margin-top: 3px !important; font: 600 31px/1 var(--serif); letter-spacing: -0.01em; }
+.t21s-note { margin-top: 5px !important; font: 400 12px/1.25 var(--sans); color: var(--ink-2); }
+.t21s.shown .t21s-board.remote .t21s-time { text-decoration: line-through 2px color-mix(in srgb, var(--vermilion) 70%, transparent); }
+/* the winner's seal: a vermilion stamp pressed a little crooked, a pale frame and two strokes inside */
+.t21s-seal {
+  display: inline-block;
+  width: 20px;
+  height: 22px;
+  margin-left: 8px;
+  vertical-align: 0.1em;
+  border-radius: 2px;
+  background:
+    linear-gradient(var(--vermilion), var(--vermilion)) 5px 6px / 10px 2px no-repeat,
+    linear-gradient(var(--vermilion), var(--vermilion)) 9px 5px / 2px 12px no-repeat,
+    linear-gradient(color-mix(in srgb, var(--card) 85%, var(--vermilion)), color-mix(in srgb, var(--card) 85%, var(--vermilion))) 3px 3px / 14px 16px no-repeat,
+    var(--vermilion);
+  transform: rotate(-7deg);
+  opacity: 0.92;
+}
+.t21s.port .t21s-board { width: 112px; height: 100px; padding: 8px 8px 0; }
+.t21s.port .t21s-label,
+.t21s.port .t21s-note { font-size: 11px; }
+.t21s.port .t21s-time { font-size: 25px; }
+.t21s.port .t21s-seal { width: 16px; height: 18px; margin-left: 5px; }
+/* the three facts: in the sky band on wide screens (a breath of paper-mist behind them), in the foot band on phones */
 .t21s-facts {
-  margin: 8px 0 0;
-  padding-left: 1.1em;
-  font: 400 0.9rem/1.45 var(--serif);
+  position: absolute;
+  top: 0;
+  right: calc(var(--gutter) + 0.5%);
+  width: min(27rem, 33%);
+  margin: 0;
+  padding: 14px 20px 18px;
+  list-style: none;
+  opacity: 0;
+  visibility: hidden;
+  font: 300 clamp(0.95rem, 1.2vw, 1.06rem) / 1.45 var(--serif);
   color: var(--ink);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 78%, transparent) 62%, transparent);
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
+  transition: opacity 1s var(--ease) 0.9s, visibility 0s 0.9s;
 }
-.t21s-facts li + li { margin-top: 3px; }
-@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
-  .t21s {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 24rem;
-    grid-template-rows: auto minmax(0, 1fr);
-    column-gap: 32px;
-    row-gap: 12px;
-  }
-  .t21s-stage { grid-row: 1 / 3; height: 100%; }
-  .t21s-toggle { align-self: end; justify-self: start; }
-  .t21s-reveal { width: 100%; max-height: 100%; align-self: start; }
-}
+.t21s-facts li + li { margin-top: 0.55em; }
+.t21s.shown .t21s-facts { opacity: 1; visibility: visible; }
+.t21s.port .t21s-facts { top: auto; bottom: 0; left: var(--gutter); right: var(--gutter); width: auto; padding: 10px 0 4px; font-size: 0.9rem; background: none; }
 
-/* ── the tea table ───────────────────────────────── */
-.t21t-book,
-.t21t-book2 { fill: var(--paper); opacity: 0.32; }
-:root[data-theme='dark'] :is(.t21t-book, .t21t-book2) { fill: var(--moon); opacity: 0.16; }
-.t21t-glow { fill: var(--lantern); opacity: 0.22; }
-.t21t-toro { fill: var(--ink-2); }
-.t21t-flame { fill: var(--lantern); }
-.t21t-porcelain { fill: var(--card); }
-.t21t-tea { fill: var(--moss); }
-.t21t-cup-ink { fill: var(--ink-2); opacity: 0.6; }
-.t21t-weave { fill: color-mix(in srgb, var(--lantern) 60%, var(--rock-mid)); opacity: 0.6; }
-.t21t-weave-ink { fill: var(--wash); opacity: 0.6; }
-:root[data-theme='dark'] .t21t-weave-ink { fill: var(--ink-2); }
-.t21t-joint { fill: var(--paper); stroke: var(--ink); stroke-width: 1.4; }
-.t21t-hand.try { animation: t21-reach 1.3s ease-in-out; }
-.t21.still .t21t-hand.try { animation: none; }
-@media (prefers-reduced-motion: reduce) {
-  .t21t-hand.try { animation: none; }
+/* ── teacup (teacup.ts): macro at the stone tea table; the set is one scaled SVG that bleeds past the gutters, words and
+   slips stay unscaled ── */
+.t21t {
+  --t21-cel-hi: color-mix(in srgb, var(--moss-c) 55%, var(--card));
+  --t21-cel: var(--moss-c);
+  --t21-cel-lo: color-mix(in srgb, var(--moss-b) 80%, var(--umbra));
+  --t21-clay-hi: color-mix(in srgb, var(--lantern) 45%, var(--rock-lo));
+  --t21-clay: color-mix(in srgb, var(--wash) 55%, var(--rock-lo));
+  --t21-tea: color-mix(in srgb, var(--lantern) 48%, var(--moss-b));
+  --t21-bam-hi: color-mix(in srgb, var(--lantern) 35%, var(--moss-c));
+  --t21-bam: color-mix(in srgb, var(--moss-a) 75%, var(--rock-mid));
+  --t21-ink: color-mix(in srgb, var(--wash) 88%, var(--rock-lo));
+  --t21-ink-hi: color-mix(in srgb, var(--wash) 55%, var(--rock-mid));
+  position: absolute;
+  left: calc(-1 * var(--gutter));
+  right: calc(-1 * var(--gutter));
+  top: 0;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pan-x;
+  cursor: ns-resize;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-mask-image: linear-gradient(to bottom, #000 90%, transparent);
+  mask-image: linear-gradient(to bottom, #000 90%, transparent);
 }
-@keyframes t21-reach {
-  0% { transform: none; }
-  35% { transform: translate(-36px, 26px); }
-  42% { transform: translate(-33px, 27px) rotate(1deg); }
-  49% { transform: translate(-37px, 25px) rotate(-1deg); }
-  56% { transform: translate(-34px, 28px); }
-  70% { transform: translate(-26px, 12px) rotate(-3deg); }
-  100% { transform: none; }
+:root[data-theme='dark'] .t21t { --t21-ink: color-mix(in srgb, var(--paper) 55%, var(--umbra)); --t21-ink-hi: color-mix(in srgb, var(--rock-lo) 80%, var(--lantern) 10%); --t21-clay: color-mix(in srgb, var(--rock-lo) 70%, var(--lantern) 12%); }
+.t21t.grab { cursor: grabbing; }
+.t21t-far {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+  will-change: transform, opacity;
 }
-.t21t-status {
-  flex: 0 0 auto;
-  min-height: 1.4em;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px 18px;
+/* depth of field: the far mountain out of focus (a light blur only at quality=high) */
+:root[data-quality='high'] .t21t-far { filter: blur(1.4px); }
+:root[data-quality='high'] .t21t-far.l0 { filter: blur(2.2px); }
+.t21t-ledge { fill: var(--umbra); opacity: 0.16; }
+.t21t-spine { fill: var(--wash); opacity: 0.34; }
+.t21t-spine.b { fill: var(--wash); opacity: 0.2; }
+.t21t-btop { fill: #fff; opacity: 0.7; }
+:root[data-theme='dark'] .t21t-ledge { opacity: 0.45; }
+:root[data-theme='dark'] .t21t-spine { fill: var(--rock-hi); opacity: 0.3; }
+:root[data-theme='dark'] .t21t-spine.b { fill: var(--rock-mid); opacity: 0.38; }
+:root[data-theme='dark'] .t21t-btop { fill: var(--moon); opacity: 0.4; }
+.t21t-setbox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  pointer-events: none;
 }
-.t21t-status p { margin: 0; font: 400 italic 0.95rem/1.4 var(--serif); }
-.t21t-head { color: var(--moss); }
-.t21t-try { color: var(--vermilion); }
-.t21t-cmds {
-  flex: 0 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
+.t21t-set { width: 100%; height: 100%; max-width: none; overflow: visible; }
+.t21t-stone { stroke: none; }
+.t21t-vein { fill: #fff; opacity: 0.4; }
+:root[data-theme='dark'] .t21t-vein { fill: var(--moon); opacity: 0.1; }
+.t21t-grit { fill: var(--wash); opacity: 0.16; }
+:root[data-theme='dark'] .t21t-grit { fill: var(--umbra); opacity: 0.5; }
+.t21t-farline { fill: var(--wash); opacity: 0.25; }
+.t21t-chip { fill: var(--umbra); opacity: 0.3; }
+.t21t-ink { fill: var(--t21-ink); opacity: 0.55; }
+.t21t-rimlight { fill: var(--lantern); opacity: 0.55; }
+:root[data-theme='dark'] .t21t-rimlight { opacity: 0.4; }
+.t21t-sh { opacity: 1; }
+:root[data-theme='dark'] .t21t-sh { opacity: 1; }
+.t21t-contact { fill: var(--umbra); opacity: 0.45; }
+.t21t-cel-shade { opacity: 1; }
+.t21t-spec { fill: #fff; opacity: 0.8; }
+.t21t-spec.dim { opacity: 0.45; }
+.t21t-spec.warm { fill: var(--lantern); opacity: 0.6; }
+:root[data-theme='dark'] .t21t-spec { fill: var(--moon); opacity: 0.6; }
+.t21t-foot { fill: var(--t21-cel-lo); }
+.t21t-rim { fill: var(--t21-cel-hi); }
+.t21t-rimlit { fill: var(--lantern); opacity: 0.75; }
+.t21t-inside { fill: var(--t21-cel-lo); }
+.t21t-tea { fill: var(--t21-tea); }
+.t21t-tea-lamp { fill: var(--lantern); opacity: 0.75; }
+.t21t-tea-lamp.core { fill: var(--moon); opacity: 0.95; }
+.t21t-tea-moon { fill: var(--moon); opacity: 0.85; }
+.t21t-handle { stroke: var(--t21-clay); stroke-width: 7; stroke-linecap: round; }
+.t21t-lid,
+.t21t-knob { fill: var(--t21-clay); }
+.t21t-ghost { opacity: 0; transition: opacity 0.3s; }
+.t21t-ghost-cup { fill: none; stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.t21t-ghost-spill { fill: var(--t21-tea); opacity: 0.45; }
+.t21t-stream { fill: none; stroke: var(--t21-tea); stroke-linecap: round; opacity: 0.9; }
+.t21t-drops { fill: var(--t21-tea); opacity: 0.7; }
+/* the arm: ink wash with a shadowed underside and a paler lit band, joints dark rings round a pale hub */
+.t21t-arm-sh { opacity: 0.8; }
+.t21t-arm-hair { fill: var(--paper); opacity: 0.22; }
+.t21t-arm-hi { fill: var(--lantern); opacity: 0.22; }
+:root[data-theme='dark'] .t21t-arm-hair { fill: var(--rock-mid); opacity: 0.3; }
+.t21t-joint-sh { fill: var(--umbra); opacity: 0.32; }
+.t21t-joint { fill: color-mix(in srgb, var(--t21-ink) 80%, var(--rock-lo)); stroke: var(--umbra); stroke-width: 4; }
+.t21t-hub { fill: var(--rock-mid); opacity: 0.85; }
+.t21t-finger { fill: var(--t21-ink); }
+.t21t-echo { opacity: 0; pointer-events: none; }
+.t21t.still.lit .t21t-echo { opacity: 0.22; transform: translate(3px, 2px); }
+.t21t-body { fill: var(--t21-ink); }
+.t21t-bracket { fill: var(--t21-ink); }
+.t21t-head-halo { opacity: 0; transition: opacity 0.25s; }
+.t21t-head-body { fill: color-mix(in srgb, var(--paper-2) 80%, var(--lantern) 8%); stroke: var(--t21-ink); stroke-width: 1.4; transition: fill 0.25s; }
+:root[data-theme='dark'] .t21t-head-body { fill: var(--stone-3); }
+.t21t-head-glow { opacity: 0; transition: opacity 0.25s; }
+.t21t-head-rib { fill: none; stroke: var(--t21-ink); stroke-width: 0.9; opacity: 0.4; }
+.t21t-head-cap { fill: var(--t21-ink); }
+.t21t-lens { fill: var(--t21-ink); opacity: 0.18; transition: fill 0.25s, opacity 0.25s; }
+.t21t.lit .t21t-head-halo,
+.t21t.lit .t21t-head-glow { opacity: 1; }
+.t21t.lit .t21t-head-body { fill: color-mix(in srgb, var(--lantern) 55%, var(--card)); }
+.t21t.lit .t21t-lens { fill: var(--moon); opacity: 0.75; }
+.t21t-roll { fill: var(--card); stroke: var(--ink-3); stroke-width: 0.8; }
+:root[data-theme='dark'] .t21t-roll { fill: var(--ink-2); stroke: var(--umbra); }
+.t21t-basket { fill: color-mix(in srgb, var(--lantern) 40%, var(--rock-mid)); }
+.t21t-weave { fill: var(--wash); opacity: 0.5; }
+.t21t-bamboo-top { fill: var(--umbra); opacity: 0.6; }
+/* the bamboo slips: fanned in the tube, the command written down each slip's body */
+.t21t-tube {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
 }
-.t21t-cmd {
-  padding: 8px 14px;
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
-  background: var(--card);
-  color: var(--ink);
-  font: 400 0.92rem/1.2 var(--serif);
+.t21t.ready .t21t-tube { opacity: calc(1 - var(--pull, 0) * 1.8); }
+.t21t.back .t21t-tube { pointer-events: none; }
+.t21t-slip {
+  --a: calc(-20deg + var(--i) * 20deg);
+  --off: 13px;
+  --len: calc((168px - var(--i) * 18px) * var(--k, 1));
+  position: absolute;
+  left: calc(-13px + (var(--i) - 1) * var(--off));
+  bottom: -8px;
+  width: 26px;
+  height: var(--len);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-origin: 50% 100%;
+  transform: rotate(var(--a));
+  transition: transform 0.45s var(--ease);
   cursor: pointer;
 }
-.t21t-cmd:hover { border-color: var(--ink-3); }
-.t21t-cmd:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
-.t21t-scale {
-  display: none;
-  flex: 0 0 auto;
-  max-height: 55%;
-  min-height: 0;
-  overflow-y: auto;
-  width: min(40rem, 100%);
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: var(--card);
+.t21t-slip:hover { transform: rotate(var(--a)) translateY(-6px); }
+.t21t-slip.out { transform: rotate(var(--a)) translateY(-26px); }
+.t21t-slip:focus-visible { outline: none; }
+.t21t-slip:focus-visible .t21t-stick { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t21t-stick {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(to right, color-mix(in srgb, var(--moss-c) 45%, var(--lantern) 30%), color-mix(in srgb, var(--moss-c) 60%, var(--card)) 38%, color-mix(in srgb, var(--moss-a) 60%, var(--rock-mid)) 78%, color-mix(in srgb, var(--moss-b) 70%, var(--umbra)));
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent), 1px 2px 4px -2px var(--umbra);
+  transition: box-shadow 0.45s var(--ease);
 }
-.t21t.weighed .t21t-scale { display: block; }
-.t21t-scale-row { display: flex; align-items: center; gap: 14px; }
-.t21t-scale-svg { flex: 0 0 auto; width: 160px; height: 84px; }
-.t21t-beam {
-  transform-origin: 100px 40px;
-  transform: rotate(-11deg);
+/* the drawn slip lifts out of the tube and throws a shadow on the stone behind it */
+.t21t-slip.out .t21t-stick { box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent), 10px 12px 12px -6px color-mix(in srgb, var(--umbra) 55%, transparent); }
+.t21t-word {
+  writing-mode: vertical-rl;
+  font: 600 12.5px/1 var(--serif);
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--wash) 88%, var(--moss-b));
+  white-space: nowrap;
 }
-.t21t-cord { stroke: var(--ink-2); stroke-width: 0.8; fill: none; }
-.t21t-pan { fill: var(--stone-2); stroke: var(--ink-2); stroke-width: 0.8; }
-.t21t-lbl { font: 400 11px var(--sans); fill: var(--ink-2); }
+:root[data-theme='dark'] .t21t-word { color: var(--umbra); }
+.t21t-slip.out .t21t-word { color: var(--vermilion); }
+/* what the robot "says": its head understands at once (one clean line), its hand trembles */
+.t21t-status {
+  position: absolute;
+  width: min(22rem, 34%);
+  text-align: right;
+  pointer-events: none;
+}
+.t21t.port .t21t-status { width: auto; text-align: left; }
+.t21t.port .t21t-slip { --a: calc(-13deg + var(--i) * 16deg); --off: 15px; }
+.t21t-status p { margin: 0; opacity: 0; text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper); }
+.t21t-said { font: 500 clamp(1.05rem, 1.6vw, 1.3rem) / 1.3 var(--serif); color: var(--ink); clip-path: inset(0 100% 0 0); }
+.t21t-headline { margin-top: 4px !important; font: 400 0.95rem/1.35 var(--serif); color: var(--moss); }
+.t21t-handline { margin-top: 2px !important; font: 400 0.95rem/1.35 var(--serif); color: var(--vermilion); text-shadow: 1.2px 0.6px 0 color-mix(in srgb, var(--vermilion) 35%, transparent), 0 0 8px var(--paper) !important; }
+.t21t-status.on .t21t-said { opacity: 1; clip-path: inset(0 0 0 0); transition: clip-path 0.6s var(--ease), opacity 0.1s; }
+.t21t-status.on .t21t-headline { opacity: 1; transition: opacity 0.4s 0.35s; }
+.t21t-status.hand .t21t-handline { opacity: 1; transition: opacity 0.4s; }
+.t21t.back .t21t-status { opacity: 0; transition: opacity 0.4s; }
+/* pulled back: the two piles of data, each with its own unit */
 .t21t-data {
-  margin: 0;
-  padding-left: 1.1em;
-  font: 400 0.88rem/1.45 var(--serif);
-  color: var(--ink);
+  position: absolute;
+  width: min(19rem, 28%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s var(--ease), visibility 0s 0.6s;
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
 }
-.t21t-data li + li { margin-top: 3px; }
-@media (max-width: 520px) {
-  .t21t-scale-row { flex-direction: column; align-items: stretch; }
-  .t21t-scale-svg { align-self: center; width: 150px; height: 78px; }
+.t21t-data.left { left: calc(var(--gut, 0px) + 2%); top: 6%; }
+.t21t-data.right { right: calc(var(--gut, 0px) + 2%); bottom: 5%; text-align: right; }
+.t21t.port .t21t-data { width: 64%; }
+.t21t.port .t21t-data.left { top: 2%; }
+.t21t.port .t21t-data.right { bottom: 3%; }
+.t21t.back .t21t-data { opacity: 1; visibility: visible; transition: opacity 0.9s var(--ease) 0.2s; }
+.t21t-datum { margin: 0.3em 0 0; font: 300 clamp(0.98rem, 1.3vw, 1.12rem) / 1.45 var(--serif); color: var(--ink); }
+/* the pull: the key lantern's cord and its wooden bead (the slider); drawn down, the cord lengthens */
+.t21t-pull {
+  position: absolute;
+  left: -22px;
+  top: 0;
+  width: 44px;
+  height: calc(64px + var(--pull, 0) * 70px);
+  outline: none;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
 }
+.t21t.ready .t21t-pull { opacity: 1; }
+.t21t-cord { position: absolute; left: 21.5px; top: 0; bottom: 18px; width: 1px; background: var(--ink-3); }
+.t21t-bead {
+  position: absolute;
+  left: 15px;
+  bottom: 0;
+  width: 14px;
+  height: 20px;
+  border-radius: 45% 45% 40% 40%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--lantern) 60%, var(--card)), color-mix(in srgb, var(--lantern) 35%, var(--rock-lo)) 60%, var(--umbra));
+  box-shadow: 0 3px 5px -2px var(--umbra);
+}
+.t21t-bead::after { content: ''; position: absolute; left: 6px; top: 100%; width: 2px; height: 14px; background: linear-gradient(var(--vermilion), transparent); }
+.t21t-pull:hover .t21t-bead { transform: translateY(2px); }
+.t21t-pull:focus-visible .t21t-bead { outline: 2px solid var(--vermilion); outline-offset: 3px; }
 
-/* the tea table (teacup.ts): painted pieces */
-.t21t-casing { fill: color-mix(in srgb, var(--ink) 45%, var(--paper)); opacity: 0.8; }
-.t21t-table-ink { fill: var(--wash); opacity: 0.5; }
-.t21t-cup-band { fill: #36508a; opacity: 0.75; }
-:root[data-theme='dark'] .t21t-cup-band { fill: #6f8ccc; }
-.t21c-shore { fill: var(--wash); opacity: 0.42; }
-:root[data-theme='dark'] .t21c-shore { opacity: 0.85; }
-.t21c-smoke { fill: var(--mist); opacity: 0.6; }
-:root[data-theme='light'] .t21c-smoke { fill: var(--wash); opacity: 0.12; }
-.t21c-wall { fill: var(--rock-mid); opacity: 0.55; }
+/* ── circle (circle.ts): perspectiveCircle on our own stage; the stage fills the art, the water bleeds past the gutters to
+   the window's edges, the words lie on the water ── */
+.t21c .p2c-stage { left: 0 !important; width: 100% !important; height: 100% !important; }
+.t21c-back,
+.t21c-front {
+  position: absolute;
+  top: 0;
+  left: calc(-1 * var(--gutter));
+  width: calc(100% + 2 * var(--gutter));
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, #000 86%, transparent);
+}
+.t21c-front { z-index: 5000; }
+.t21c-water { fill: url(#p2-water-v); }
+.t21c-moonglow { fill: url(#p2-road); }
+.t21c-ripple { fill: #fff; opacity: 0.45; }
+:root[data-theme='dark'] .t21c-ripple { fill: var(--moon); opacity: 0.14; }
+.t21c-road { fill: var(--moon); opacity: 0.6; }
+:root[data-theme='light'] .t21c-road { fill: #fff; opacity: 0.8; }
+.t21c-warm { fill: var(--lantern); opacity: 0; transition: opacity 1.4s var(--ease) 0.5s; }
+.t21c.is-heard-0 .k0 .t21c-warm,
+.t21c.is-heard-1 .k1 .t21c-warm,
+.t21c.is-heard-2 .k2 .t21c-warm,
+.t21c.is-heard-3 .k3 .t21c-warm { opacity: 0.75; }
+:root[data-theme='light'] .t21c.is-all .t21c-warm { opacity: 0.55; }
+/* all four heard: the lights meet on the water as a ring of rippling strokes, two sets shimmering in turn */
+.t21c-ring path { fill: var(--lantern); }
+.t21c-ring { opacity: 0; transition: opacity 1.6s var(--ease) 0.6s; }
+.t21c.is-all .t21c-ring { opacity: 0.85; }
+.t21c-ring-b { opacity: 0.5; }
+@media (prefers-reduced-motion: no-preference) {
+  .t21c.is-all .t21c-ring-a { animation: t21c-shim 2.6s ease-in-out infinite alternate; }
+  .t21c.is-all .t21c-ring-b { animation: t21c-shim 2.6s ease-in-out -1.3s infinite alternate; }
+  .t21c-glint { animation: t21c-twinkle 3.2s ease-in-out var(--d, 0s) infinite; }
+}
+:root[data-quality='low'] .t21c-ring path,
+:root[data-quality='low'] .t21c-glint { animation: none !important; }
+@keyframes t21c-shim { from { opacity: 0.35; } to { opacity: 1; } }
+@keyframes t21c-twinkle { 0%, 70%, 100% { opacity: 0.25; transform: scale(0.6); } 82% { opacity: 1; transform: scale(1.15); } }
+/* the boulders: two halves on a gold seam; heard = cracked open like a seed */
+.t21c-wet { fill: var(--umbra); opacity: 0.22; }
+.t21c-mirror { fill: var(--rock-lo); opacity: 0.6; }
+:root[data-theme='dark'] .t21c-mirror { fill: var(--rock-mid); opacity: 0.4; }
+.t21c-rock { stroke: none; }
+.t21c-edge { fill: var(--wash); opacity: 0.55; }
+:root[data-theme='dark'] .t21c-edge { fill: var(--umbra); opacity: 0.8; }
+.t21c-rim { fill: #fff; opacity: 0.85; }
+:root[data-theme='dark'] .t21c-rim { fill: var(--moon); opacity: 0.6; }
+/* moss in ink: a faint green wash and a cluster of dark dots, not a leaf */
+.t21c-mosswash { fill: var(--moss-a); opacity: 0.22; }
+.t21c-moss { fill: color-mix(in srgb, var(--moss-b) 55%, var(--wash)); opacity: 0.8; }
+:root[data-theme='dark'] .t21c-moss { fill: color-mix(in srgb, var(--moss-c) 50%, var(--umbra)); }
+.t21c-seam { fill: color-mix(in srgb, var(--lantern) 80%, var(--moon)); opacity: 0.95; }
+.t21c-glint { fill: color-mix(in srgb, var(--moon) 70%, #fff); opacity: 0.6; transform-box: fill-box; transform-origin: 50% 50%; }
+.t21c-cut { fill: color-mix(in srgb, var(--rock-hi) 60%, var(--lantern)); opacity: 0; transition: opacity 0.6s var(--ease) 0.3s; }
+.t21c-half,
+.t21c-mhalf { transform-box: fill-box; transition: transform 0.9s var(--ease) 0.08s; }
+.t21c-half.l { transform-origin: 0% 100%; }
+.t21c-half.r { transform-origin: 100% 100%; }
+.t21c-mhalf.l { transform-origin: 0% 0%; }
+.t21c-mhalf.r { transform-origin: 100% 0%; }
+.p2c-stone[data-heard] .t21c-half.l { transform: translateX(-9px) skewY(5deg) scaleX(0.84); }
+.p2c-stone[data-heard] .t21c-half.r { transform: translateX(9px) skewY(-5deg) scaleX(0.84); }
+.p2c-stone[data-heard] .t21c-mhalf.l { transform: translateX(-9px) skewY(-5deg) scaleX(0.84); }
+.p2c-stone[data-heard] .t21c-mhalf.r { transform: translateX(9px) skewY(5deg) scaleX(0.84); }
+.p2c-stone[data-heard] .t21c-cut { opacity: 0.95; }
+.p2c-stone[data-heard] :is(.t21c-seam, .t21c-glint) { opacity: 0; animation: none; transition: opacity 0.3s; }
+/* the hollow: the stone's cut section round a cavity lit from below by a small lamp; its inner lip catches the light */
+.t21c-hollow { opacity: 0; transition: opacity 0.8s var(--ease) 0.35s; }
+.p2c-stone[data-heard] .t21c-hollow { opacity: 1; }
+.t21c-section { fill: color-mix(in srgb, var(--rock-hi) 70%, var(--lantern)); }
+:root[data-theme='dark'] .t21c-section { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--lantern)); }
+.t21c-lip { fill: var(--lantern); opacity: 0.85; }
+.t21c-carve { fill: color-mix(in srgb, var(--umbra) 70%, var(--lantern)); opacity: 0.9; }
+.t21c-lamp { fill: var(--moon); }
+:root[data-quality='low'] :is(.t21c-half, .t21c-mhalf) { transition: none; }
+/* the digits stay on the keys and in the names, not on the stones */
+.t21c .p2c-num { display: none; }
+.t21c .p2c-ring { stroke: #fff; stroke-width: 1.1; }
+:root[data-theme='dark'] .t21c .p2c-ring { stroke: var(--moon); opacity: 0; }
+:root[data-theme='dark'] .t21c .p2c-stone[data-heard] .p2c-ring { opacity: 0.3; }
+/* the words: written on the water in front of the stones, with their reflection */
+.t21c .p2c-card {
+  left: 50% !important;
+  top: auto !important;
+  transform: translateX(-50%) !important;
+  width: min(34rem, 86%) !important;
+  max-height: none !important;
+  overflow: visible;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  text-align: center;
+  z-index: 6000;
+  -webkit-box-reflect: below 0 linear-gradient(transparent 74%, rgba(0, 0, 0, 0.2));
+}
+.t21c.wide .p2c-card { bottom: 4% !important; width: min(31rem, 40%) !important; }
+.t21c:not(.wide) .p2c-card { bottom: 7% !important; width: 92% !important; }
+.t21c .p2c-who,
+.t21c .p2c-view,
+.t21c .p2c-count { text-shadow: 0 0 6px var(--paper), 0 0 12px var(--paper); }
+:root[data-theme='dark'] .t21c :is(.p2c-who, .p2c-view, .p2c-count) { text-shadow: 0 0 6px var(--water), 0 0 12px var(--water); }
+.t21c .p2c-count { justify-content: center; }
+.t21c .p2c-who { justify-items: center; }

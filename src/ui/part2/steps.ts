@@ -9,6 +9,8 @@ import { findTakeaway, takeaway } from './takeaway'
 
 /** Where the path runs (px in the scene): a station may paint its own start and end (a workshop door, a gate at dawn). */
 export type PathGeo = { w: number; h: number; row: boolean; first: Pt; last: Pt; top: number; pathY: number; seed: number }
+/** What a station needs to lay out its own path (px in the scene): stone size, the question's height on top, the default mode. */
+export type SlotGeo = { w: number; h: number; n: number; size: Pt; top: number; row: boolean; seed: number }
 
 export interface StepOpts {
   label: string
@@ -26,6 +28,14 @@ export interface StepOpts {
   fact?: Fact | string
   /** the station's own painting (sky, start, end); default: hills under the moon, a stone lantern lit at the path's end */
   art?: (g: PathGeo) => SVGElement[]
+  /** the empty places of the path, in order: their centres (a climb, an S of sand, a lamp's parts). Default: a row or a column */
+  slots?: (g: SlotGeo) => Pt[]
+  /** where the loose stones lie before they are placed (centres, pile order = their digit keys). Default: rows under the path */
+  pile?: (g: SlotGeo) => Pt[]
+  /** what step i looks like instead of a river stone, drawn in a size[0] × size[1] box (viewBox 0 0 w h); its label stays on top */
+  piece?: (i: number, g: { w: number; h: number; seed: number }) => SVGElement
+  /** after step k is placed (right) */
+  onPlace?: (k: number) => void
 }
 
 const f1 = (n: number) => n.toFixed(1)
@@ -59,6 +69,7 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
           class: 'p2s-stone', type: 'button', 'aria-describedby': keysId,
           style: `border-radius:${rr()}% ${rr()}% ${rr()}% ${rr()}% / ${rr()}% ${rr()}% ${rr()}% ${rr()}%`,
         }, h('span', { class: 'p2s-key', 'aria-hidden': 'true' }, String(k + 1)), h('span', { class: 'p2s-label' }, steps[step].label))
+        if (o.piece) el.classList.add('has-art')
         const st: Stone = { el, step, key: k + 1, slot: -1 }
         el.addEventListener('click', () => !st.el.dataset.dragged && tap(st))
         el.addEventListener('pointerdown', (e) => grab(st, e))
@@ -111,6 +122,7 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
         if (!note.hasAttribute('aria-live')) note.setAttribute('aria-live', 'polite')
         // hand the keyboard on to the next loose stone
         if (document.activeElement === st.el) stones.find((x) => x.slot < 0)?.el.focus({ preventScroll: true })
+        o.onPlace?.(slot)
         if (placed.every(Boolean)) finish()
         else ctx.chime('soft')
       }
@@ -212,9 +224,26 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
           Object.assign(note.style, { top: `${f1(top + n * (sh + gy) + 2)}px`, left: '0px', width: `${f1(W)}px`, textAlign: 'left' })
           Object.assign(sheet.style, { top: `${f1(qh)}px`, bottom: '0px', left: '0px', right: '0px' })
         }
+        // a station's own path and pile (centres) override the default places
+        const sg: SlotGeo = { w: W, h: H, n, size, top: qh, row, seed }
+        const corner = ([x, y]: Pt): Pt => [x - size[0] / 2, y - size[1] / 2]
+        if (o.slots) {
+          slotXY = o.slots(sg).map(corner)
+          const low = Math.max(...slotXY.map(([, y]) => y)) + size[1] + 10
+          note.style.top = `${f1(low)}px`
+          sheet.style.top = `${f1(low)}px`
+        }
+        if (o.pile) pileXY = o.pile(sg).map(corner)
         root.classList.toggle('cols', !row)
         for (const [i, el] of slots.entries()) Object.assign(el.style, { transform: `translate(${f1(slotXY[i][0])}px, ${f1(slotXY[i][1])}px)`, width: `${f1(size[0])}px`, height: `${f1(size[1])}px` })
-        for (const st of stones) Object.assign(st.el.style, { width: `${f1(size[0])}px`, height: `${f1(size[1])}px` }), put(st)
+        for (const st of stones) {
+          Object.assign(st.el.style, { width: `${f1(size[0])}px`, height: `${f1(size[1])}px` })
+          if (o.piece) {
+            st.el.querySelector('.p2s-art')?.remove()
+            st.el.prepend(s('svg', { class: 'p2s-art', viewBox: `0 0 ${f1(size[0])} ${f1(size[1])}`, 'aria-hidden': 'true' }, o.piece(st.step, { w: size[0], h: size[1], seed: seed + st.step * 13 })))
+          }
+          put(st)
+        }
         drawLine(W, H, row, qh)
       }
 
@@ -225,8 +254,13 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
         const c = slotXY.map(([x, y]) => [x + size[0] / 2, y + size[1] / 2] as Pt)
         const pts: Pt[] = []
         const lead = row ? 26 : 18
-        const first: Pt = row ? [c[0][0] - size[0] / 2 - lead, c[0][1] + 6] : [c[0][0], c[0][1] - size[1] / 2 - lead]
-        const last: Pt = row ? [c[n - 1][0] + size[0] / 2 + lead, c[n - 1][1] - 6] : [c[n - 1][0], c[n - 1][1] + size[1] / 2 + 6]
+        // the path runs on a little past both ends (along the station's own path, when it has one)
+        const past = (a: Pt, b: Pt): Pt => {
+          const dx = a[0] - b[0], dy = a[1] - b[1], l = Math.hypot(dx, dy) || 1, d = Math.min(size[0], size[1]) / 2 + lead
+          return [a[0] + (dx / l) * d, a[1] + (dy / l) * d]
+        }
+        const first: Pt = o.slots && n > 1 ? past(c[0], c[1]) : row ? [c[0][0] - size[0] / 2 - lead, c[0][1] + 6] : [c[0][0], c[0][1] - size[1] / 2 - lead]
+        const last: Pt = o.slots && n > 1 ? past(c[n - 1], c[n - 2]) : row ? [c[n - 1][0] + size[0] / 2 + lead, c[n - 1][1] - 6] : [c[n - 1][0], c[n - 1][1] + size[1] / 2 + 6]
         const all = [first, ...c, last]
         for (let i = 0; i < all.length - 1; i++) {
           const a = all[i], b = all[i + 1]
@@ -262,10 +296,10 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
         const lampH = clamp(row ? size[1] * 1.9 : size[1] * 1.5, 46, 110)
         scape.replaceChildren(
           ...back,
-          s('path', { class: 'p2s-rake', d: rake }),
+          o.slots ? '' : s('path', { class: 'p2s-rake', d: rake }),
           s('path', { class: 'p2s-band', d: band, filter: 'url(#ink-wash)' }),
           wash(blob(last[0], last[1] + 4, lampH * 0.7, lampH * 0.12, seed + 7, 0.2), 0.18),
-          o.art ? '' : s('g', { class: 'p2s-end' }, toro(last[0] + (row ? lampH * 0.25 : 0), last[1] + (row ? 4 : lampH), lampH, true)),
+          o.art ? '' : s('g', { class: 'p2s-end' }, toro(last[0] + (row && !o.slots ? lampH * 0.25 : 0), last[1] + (row || o.slots ? 4 : lampH), lampH, true)),
           o.art ? '' : grass(first[0], first[1] + 6, 26, seed + 9))
       }
 

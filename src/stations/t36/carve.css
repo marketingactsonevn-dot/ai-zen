@@ -1,0 +1,526 @@
+/* Scene 3 carve: the wood shop at bench height, the block in the open door. Part 2 tokens only. */
+.t36c {
+  position: absolute;
+  inset: 0 0 auto 0;
+  overflow: hidden;
+  --lx: 30%;
+  --ly: 80px;
+  --lw: 30px;
+  --ch: 300px;
+  --cw: 400px;
+  --by: 400px;
+  --wy: 150px;
+}
+.t36c-shop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 86%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 86%, transparent);
+  mask-composite: intersect;
+}
+/* the work lamp's light: a glow on the wall behind it, a cone down to the bench, a warm pool on the bench top */
+.t36c-wglow,
+.t36c-cone,
+.t36c-pool {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  transition: transform 0.25s var(--ease);
+}
+.t36c-wglow {
+  width: calc(var(--cw) * 1.5);
+  height: calc(var(--wy) * 2.6);
+  transform: translate(calc(var(--lx) - 50%), calc(var(--wy) - 50%));
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 26%, transparent), color-mix(in srgb, var(--lantern) 8%, transparent) 55%, transparent);
+}
+.t36c-cone {
+  width: var(--cw);
+  height: var(--ch);
+  transform: translate(calc(var(--lx) - 50%), var(--ly));
+  clip-path: polygon(calc(50% - var(--lw) / 2) 0, calc(50% + var(--lw) / 2) 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--lantern) 30%, transparent), color-mix(in srgb, var(--lantern) 6%, transparent) 75%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+}
+.t36c-pool {
+  width: var(--cw);
+  height: calc(var(--cw) * 0.32);
+  transform: translate(calc(var(--lx) - 50%), calc(var(--by) - 50%));
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 38%, transparent), color-mix(in srgb, var(--lantern) 12%, transparent) 55%, transparent);
+}
+:root[data-theme='dark'] :is(.t36c-wglow, .t36c-cone, .t36c-pool) {
+  mix-blend-mode: screen;
+}
+:root[data-theme='light'] .t36c-cone {
+  opacity: 0.55;
+}
+.t36c-block {
+  position: absolute;
+  pointer-events: none;
+}
+.t36c-block canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.t36c-carve {
+  opacity: 0;
+  transition: opacity 0.8s var(--ease);
+}
+.t36c-carve.in {
+  opacity: 1;
+}
+.t36c-warm {
+  transition: opacity 0.3s;
+}
+/* the work lamp on its rail: drag it to rake its light across the wood */
+.t36c-lamp {
+  position: absolute;
+  cursor: ew-resize;
+  touch-action: none;
+  outline: none;
+  z-index: 3;
+}
+.t36c-lamp svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t36c-lamp:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+.t36c-lamp.held {
+  cursor: grabbing;
+}
+.t36c.low .t36c-lamp {
+  cursor: default;
+  pointer-events: none;
+}
+.t36c-cord {
+  stroke: var(--ink-3);
+  stroke-width: 1.2;
+}
+.t36c-hook {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--rock-lo));
+}
+.t36c-shade {
+  fill: color-mix(in srgb, var(--wash) 72%, var(--lantern));
+}
+:root[data-theme='light'] .t36c-shade {
+  fill: color-mix(in srgb, var(--wash) 82%, var(--lantern));
+}
+.t36c-shade-hi {
+  stroke: var(--moon);
+  stroke-width: 1.4;
+  opacity: 0.45;
+}
+.t36c-mouth {
+  fill: color-mix(in srgb, var(--lantern) 70%, var(--moon));
+}
+.t36c-bulb {
+  fill: color-mix(in srgb, var(--moon) 60%, #fff);
+}
+.t36c-glow {
+  fill: var(--lantern);
+  opacity: 0.4;
+}
+
+/* the step path over the shop: only its stones, sheets and our objects take the pointer */
+.t36c-on {
+  pointer-events: none;
+  --sw: 140px;
+  --sh: 58px;
+}
+.t36c-on :is(.p2s-stone, .p2s-sheet, .t36c-scroll, .t36c-sheet) {
+  pointer-events: auto;
+}
+/* the visible stones are ours (smaller than stepPath's default boxes, see vis() in carve.ts) */
+.t36c-on .p2s-stone,
+.t36c-on .p2s-slot {
+  width: var(--sw) !important;
+  height: var(--sh) !important;
+}
+.t36c-on .p2s-scape,
+.t36c-on .p2s-line {
+  display: none;
+}
+/* an empty place: a chalk ring on the bench, its number chalked small */
+.t36c-on .p2s-slot {
+  border: 1.5px dashed color-mix(in srgb, var(--card) 50%, transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 18%, transparent), transparent);
+  color: color-mix(in srgb, var(--card) 75%, transparent);
+  font: italic 400 12px/1 var(--serif);
+}
+:root[data-theme='light'] .t36c-on .p2s-slot {
+  border-color: color-mix(in srgb, var(--card) 85%, transparent);
+  color: var(--card);
+}
+.t36c-on .p2s-stone {
+  color: var(--stone-text, var(--ink));
+  padding: 4px 12px 6px 14px;
+}
+/* the step carved into the stone: a recessed letter, light catching its lower lip */
+.t36c-on .p2s-label {
+  font: 500 14px/1.18 var(--serif);
+  color: color-mix(in srgb, var(--stone-text) 88%, var(--step-mid));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--step-hi) 85%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 28%, transparent);
+}
+/* its number: a small chalk mark, not a badge */
+.t36c-on .p2s-key,
+.t36c-on .p2s-stone.placed .p2s-key {
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font: italic 500 11px/1 var(--serif);
+  color: var(--card);
+  text-shadow: 0 0 2px color-mix(in srgb, var(--umbra) 60%, transparent);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t36c-on :is(.p2s-key, .p2s-stone.placed .p2s-key) {
+  color: var(--ink);
+}
+.t36c-on.lit .p2s-stone.has-art {
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--moon) 55%, transparent));
+}
+.t36c-ssh {
+  fill: var(--umbra);
+  opacity: 0.42;
+}
+.t36c-sside {
+  fill: var(--step-lo);
+}
+.t36c-spk {
+  stroke: var(--step-lo);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+.t36c-srim {
+  stroke: color-mix(in srgb, var(--lantern) 40%, var(--step-hi));
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t36c-srim {
+  stroke: var(--moon);
+  opacity: 0.5;
+}
+/* the caption: the step just placed, on the bench's front edge */
+.t36c-on .p2s-note {
+  font: 400 15px/1.45 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 3px var(--paper);
+}
+/* a wrong stone: its hint is chalked on the slate; the note keeps it for screen readers only */
+.t36c-on .p2s-note.wrong {
+  clip-path: inset(50%);
+}
+
+/* the slate leaning on the bench: a sample prompt in chalk */
+.t36c-slate {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  overflow: hidden;
+  border: 5px solid color-mix(in srgb, var(--lantern) 30%, var(--rock-lo));
+  border-radius: 3px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .9 0 0 0 0 .92 0 0 0 0 1 .3 0 0 0 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 80% at 30% 20%, color-mix(in srgb, var(--wash) 72%, var(--rock-lo)), color-mix(in srgb, var(--wash) 88%, var(--rock-lo)));
+  box-shadow: 8px 10px 16px -6px color-mix(in srgb, var(--umbra) 70%, transparent), inset 0 0 18px color-mix(in srgb, var(--umbra) 50%, transparent);
+  transform: perspective(600px) rotateY(9deg) rotateZ(-1.5deg);
+  transform-origin: 0 100%;
+  color: color-mix(in srgb, var(--card) 92%, var(--moon));
+}
+:root[data-theme='dark'] .t36c-slate {
+  border-color: color-mix(in srgb, var(--lantern) 22%, var(--rock-lo));
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .9 0 0 0 0 .92 0 0 0 0 1 .18 0 0 0 -.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 80% at 30% 20%, color-mix(in srgb, var(--rock-lo) 70%, var(--paper)), var(--paper));
+  color: var(--ink);
+}
+.t36c-slate p {
+  margin: 0;
+  text-shadow: 0 0 1px currentColor;
+}
+.t36c-sl-eye {
+  font: italic 500 12.5px/1.3 var(--serif);
+  opacity: 0.7;
+  margin-bottom: 6px !important;
+}
+.t36c-sl-text {
+  font: italic 400 15px/1.42 var(--serif);
+  letter-spacing: 0.01em;
+}
+.t36c-sl-hint:empty {
+  display: none;
+}
+.t36c-sl-hint {
+  font: italic 400 14px/1.4 var(--serif);
+}
+.t36c-sl-hint::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--vermilion);
+  vertical-align: 1px;
+}
+.t36c-slate.wrong .t36c-sl-text,
+.t36c-slate.wrong .t36c-sl-eye {
+  display: none;
+}
+.t36c-slate.new .t36c-sl-text,
+.t36c-slate.wrong .t36c-sl-hint {
+  animation: t36c-chalk 1.1s var(--ease) both;
+}
+@keyframes t36c-chalk {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* the code: a closed scroll lying on the bench, tied, a paper tag with its file name */
+.t36c-scroll {
+  position: absolute;
+  display: block;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  z-index: 2;
+}
+.t36c-roll {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-3deg);
+}
+.t36c-rsh {
+  fill: var(--umbra);
+  opacity: 0.4;
+}
+.t36c-rpaper {
+  fill: color-mix(in srgb, var(--card) 85%, var(--lantern));
+}
+.t36c-rshade {
+  fill: var(--umbra);
+  opacity: 0.22;
+}
+.t36c-rhi {
+  stroke: var(--card);
+  stroke-width: 2;
+  opacity: 0.7;
+}
+.t36c-rend {
+  fill: color-mix(in srgb, var(--wash) 65%, var(--lantern));
+}
+.t36c-cordw {
+  stroke: var(--vermilion);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.t36c-tag {
+  position: absolute;
+  left: 58%;
+  top: 70%;
+  padding: 3px 8px 4px 12px;
+  font: italic 500 12.5px/1.2 var(--serif);
+  color: var(--ink);
+  white-space: nowrap;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .4 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    var(--card);
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 8px 100%, 0 50%);
+  transform: rotate(4deg);
+  filter: drop-shadow(2px 3px 2px color-mix(in srgb, var(--umbra) 50%, transparent));
+}
+.t36c-scroll:hover .t36c-tag,
+.t36c-scroll:focus-visible .t36c-tag {
+  color: var(--vermilion);
+}
+.t36c-scroll:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* sheets unroll from the scroll: paper spread on the bench / wall, a rod at its left edge */
+.t36c-on .t36c-unroll,
+.t36c-on .p2s-sheet.t36c-unroll {
+  position: absolute;
+  inset: auto !important;
+  left: var(--ux) !important;
+  top: var(--uy) !important;
+  width: var(--uw) !important;
+  height: var(--uh) !important;
+  box-sizing: border-box;
+  z-index: 8;
+  overflow: auto;
+  padding: 16px 16px 14px 34px;
+  display: block;
+  border-radius: 2px;
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--wash) 65%, var(--lantern)) 0 14px, color-mix(in srgb, var(--umbra) 25%, transparent) 14px 17px, transparent 17px 28px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .4 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 40% 20%, var(--card) 45%, color-mix(in srgb, var(--paper-2) 80%, var(--lantern) 6%));
+  box-shadow: 0 2px 3px color-mix(in srgb, var(--umbra) 25%, transparent), 10px 18px 30px -12px color-mix(in srgb, var(--umbra) 70%, transparent);
+  animation: t36c-unroll 0.9s var(--ease) both;
+}
+:root[data-theme='dark'] .t36c-on .t36c-unroll {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--rock-lo) 70%, var(--lantern)) 0 14px, color-mix(in srgb, var(--umbra) 50%, transparent) 14px 17px, transparent 17px 28px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .22 0 0 0 -.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 40% 20%, color-mix(in srgb, var(--card) 85%, var(--lantern)) 30%, var(--card));
+}
+.t36c-on .t36c-unroll[hidden] {
+  display: none;
+}
+@keyframes t36c-unroll {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.t36c-on .t36c-unroll .p2s-close {
+  position: sticky;
+  float: right;
+  top: 0;
+}
+.t36c-on .t36c-sheet .t36n-close {
+  float: right;
+  position: sticky;
+  top: 0;
+  margin: 0 0 8px 8px;
+}
+.t36c-sheet .t36c-body {
+  display: grid;
+  gap: 16px;
+}
+.t36c-prompts ol {
+  margin: 0;
+  padding-left: 1.4em;
+  display: grid;
+  gap: 8px;
+  font: 400 14px/1.45 var(--serif);
+}
+.t36c-step {
+  display: block;
+  font: 500 12px/1.3 var(--sans);
+  color: var(--ink-3);
+}
+
+/* tall screens: smaller letters on the stones, the caption on the strip under the bench */
+.t36c-on:not(.wide) .p2s-label {
+  font-size: 11px;
+  line-height: 1.1;
+}
+.t36c-on:not(.wide) .p2s-stone {
+  padding: 3px 3px 4px 7px;
+}
+.t36c-on:not(.wide) .p2s-key {
+  font-size: 10px;
+  left: 3px;
+}
+.t36c-on:not(.wide) .p2s-note {
+  top: auto !important;
+  bottom: 0;
+  left: 0 !important;
+  width: 100% !important;
+  font-size: 13.5px;
+  line-height: 1.35;
+  text-align: center !important;
+}
+.t36c-on:not(.wide) .t36c-slate {
+  padding: 8px 9px;
+  border-width: 4px;
+}
+.t36c-on:not(.wide) .t36c-sl-eye {
+  font-size: 11px;
+  margin-bottom: 3px !important;
+}
+.t36c-on:not(.wide) .t36c-sl-text,
+.t36c-on:not(.wide) .t36c-sl-hint {
+  font-size: 12.5px;
+  line-height: 1.3;
+}
+.t36c-on:not(.wide) .t36c-scroll {
+  height: 20px;
+}
+.t36c-on:not(.wide) .t36c-tag {
+  font-size: 11px;
+  left: 102%;
+  top: -55%;
+}
+.t36c-on:not(.wide) .t36c-unroll {
+  padding: 12px 10px 12px 30px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t36c-on .t36c-unroll,
+  .t36c-slate.new .t36c-sl-text,
+  .t36c-slate.wrong .t36c-sl-hint {
+    animation: none;
+  }
+  .t36c-wglow,
+  .t36c-cone,
+  .t36c-pool {
+    transition: none;
+  }
+}
+
+/* each stone its own colour: warm, cold, dark, pale */
+.t36c-stint {
+  fill: transparent;
+}
+.t36c-t0 .t36c-stint {
+  fill: var(--lantern);
+  opacity: 0.16;
+}
+.t36c-t1 .t36c-stint {
+  fill: var(--water);
+  opacity: 0.22;
+}
+.t36c-t2 .t36c-stint {
+  fill: var(--wash);
+  opacity: 0.16;
+}
+.t36c-t3 .t36c-stint {
+  fill: var(--moss-c);
+  opacity: 0.18;
+}
+.t36c-vein {
+  stroke: var(--step-hi);
+  stroke-width: 1.6;
+  opacity: 0.6;
+}
+.t36c-moss {
+  fill: var(--moss-b);
+  opacity: 0.55;
+  filter: url(#ink-wash);
+}

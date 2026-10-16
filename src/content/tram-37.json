@@ -17,7 +17,7 @@
   "scenes": {
     "goal": {
       "label": "Mục tiêu lệch một ly",
-      "art": "Tranh mực dưới trăng: người làm vườn ngủ gật bên đèn đá, một người làm vườn gấp bằng giấy cầm kéo đứng chờ lệnh. Lá phong rơi kín lối đá. Nếu lệnh chỉ ghi “lối không còn lá”, nhát kéo hạ luôn cây phong; gốc cây trơ trên cát bạc, lá cuối cùng trôi trên mặt hồ in trăng.",
+      "art": "Sân khấu vườn đêm nhìn ngang tầm người giấy: một cành phong đỏ chĩa vào góc trên, treo ba thẻ gỗ ema, mỗi thẻ một cách giao việc. Dưới đó, người làm vườn gấp bằng giấy cầm kéo đứng chờ trên lối đá phủ lá phong; người làm vườn thật ngủ gật bên đèn đá, sau lưng là tấm bình phong; xa hơn là căn chòi và mặt hồ in trăng. Thả một thẻ vào tay người giấy, đêm trôi qua và sáng hôm sau khu vườn cho thấy lời dặn đã làm gì: nếu lệnh chỉ ghi “lối không còn lá”, cây phong bị hạ, gốc trơ trên cát bạc, lá cuối cùng trôi vào bóng trăng.",
       "prompt": "Chọn cách giao việc",
       "group": "Ba cách giao việc cho người làm vườn giấy",
       "optionAria": "Giao việc: {say}",
@@ -93,6 +93,8 @@
         "claimBy": "Anthropic & Redwood Research"
       },
       "exampleLabel": "Chuyện có thật",
+      "aria": "Góc trà thất trong vườn đêm, dựng nổi: vách giấy sáng đèn, cổng vườn và lối đá rẽ hai ngả sau tấm rào cánh.",
+      "hint": "Kéo ngang để đi vòng góc nhà, phím mũi tên trái phải để bước. Chạm chồng giấy, bóng áo đỏ, người cầm đèn hay hộp niêm để xem; chạm đèn lồng dưới mái để bật tắt.",
       "example": {
         "text": "09/2026: OpenAI không phát hành GPT-6.1 Astra sau thử nghiệm nội bộ, vì model hay làm quá phạm vi được giao và chưa báo lại đúng việc đã làm.",
         "asOf": "2026-10-15",
@@ -110,6 +112,9 @@
       "leak": "Còn lọt: {n} đốm",
       "reset": "Dỡ hết, dựng lại",
       "seeStation": "Xem thêm ở trạm {n}",
+      "aria": "Vườn 3D: cây non trên gò rêu giữa vườn cát cào, quanh nó sẽ dựng tới sáu vòng rào tre đan ô vuông; sáu bó tre chờ trên cát gần, cái cào nằm ở mép cát.",
+      "hint": "Kéo để đi vòng quanh vườn, phím mũi tên để xoay. Chạm bó tre đang sáng để dựng lớp rào kế tiếp; chạm cái cào để dỡ hết.",
+      "aligned": "Thẳng hàng: từ chỗ bạn đứng có một đường xuyên qua mọi lớp rào tới cây.",
       "layers": [
         {
           "id": "values",
@@ -180,10 +185,12 @@
     },
     "views": {
       "label": "AI nguy hiểm tới đâu?",
-      "art": "Bốn hòn đá quanh mặt hồ in bóng trăng sắp lặn. Mỗi hòn quay về một chân trời: mây giông rất xa, khói làng ngay gần, ráng bình minh rực, và con đường mòn ở giữa. Chạm đá nào, mặt nước gợn về hướng ấy.",
+      "art": "Bạn đứng trên một hòn đá giữa hồ, ngang mặt nước, xoay một vòng. Mỗi phía một chân trời: phương bắc cột mây giông khổng lồ nhưng rất xa, phương đông khói bếp của làng ngay bờ bên kia, phương nam ráng bình minh sắp bùng, phương tây lối mòn men bờ vào đồng ruộng. Trước mỗi chân trời có một hòn đá biết nói đứng trong nước. Nghe đủ bốn, cảnh cuộn lại thành một hành tinh nhỏ: bốn chân trời cùng ôm một mặt hồ.",
       "prompt": "Chạm từng hòn đá",
       "group": "Bốn góc nhìn về rủi ro AI",
       "stoneAria": "Góc nhìn: {who}",
+      "hint": "Kéo ngang để xoay người, phím mũi tên trái phải để quay. Chạm một hòn đá hoặc bấm 1–4 để quay về phía nó.",
+      "carve": [["CAIS"], ["Gebru", "Bender"], ["Andreessen"], ["Narayanan", "& Kapoor"]],
       "perspectives": {
         "stones": [
           {

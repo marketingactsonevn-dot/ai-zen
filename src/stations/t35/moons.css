@@ -1,0 +1,328 @@
+/* t35 scene 3 — the moss field, the waxing moon (key light), the trail that paves itself into a road. Tokens only. */
+.t35m {
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+}
+.t35m-sky,
+.t35m-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t35m-track {
+  fill: var(--moon);
+  opacity: 0.2;
+}
+:root[data-theme='light'] .t35m-track {
+  fill: var(--wash);
+  opacity: 0.12;
+}
+
+/* ── the moss: a ground that rises and dips under the moon */
+.t35m-g0 {
+  stop-color: var(--paper);
+  stop-opacity: 0;
+}
+.t35m-g1 {
+  stop-color: color-mix(in srgb, var(--moss-c) 45%, var(--paper));
+}
+.t35m-g2 {
+  stop-color: color-mix(in srgb, var(--moss-a) 68%, var(--paper));
+}
+:root[data-theme='dark'] .t35m-g1 {
+  stop-color: color-mix(in srgb, var(--moss-b) 45%, var(--paper));
+}
+:root[data-theme='dark'] .t35m-g2 {
+  stop-color: color-mix(in srgb, var(--moss-b) 62%, #000);
+}
+.t35m-hollow {
+  fill: var(--moss-b);
+  opacity: 0.2;
+}
+:root[data-theme='dark'] .t35m-hollow {
+  fill: #000;
+  opacity: 0.26;
+}
+.t35m-rise {
+  fill: var(--card);
+  opacity: 0.12;
+}
+:root[data-theme='dark'] .t35m-rise {
+  fill: var(--moon);
+  opacity: 0.06;
+}
+.t35m-tuft {
+  fill: var(--moss-b);
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t35m-tuft {
+  fill: var(--moss-c);
+  opacity: 0.5;
+}
+.t35m-reedg .p2p-reeds {
+  fill: var(--wash);
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t35m-reedg .p2p-reeds {
+  fill: #000;
+  opacity: 0.7;
+}
+.t35m-near {
+  fill: var(--wash);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t35m-near {
+  fill: #000;
+}
+
+/* ── the way: footprints in the moss, then flagstones in three tones with moss in the joints */
+.t35m-trail {
+  fill: var(--wash);
+  opacity: 0.3;
+  transition: opacity 0.8s var(--ease-soft);
+}
+:root[data-theme='dark'] .t35m-trail {
+  fill: #000;
+  opacity: 0.5;
+}
+.t35m-paved {
+  opacity: 0;
+  transition: opacity 1.1s var(--ease-soft);
+}
+.t35m-bed {
+  fill: color-mix(in srgb, var(--moss-b) 70%, var(--wash));
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t35m-bed {
+  fill: #000;
+  opacity: 0.55;
+}
+.t35m-flag.f0 {
+  fill: color-mix(in srgb, var(--step-hi) 80%, var(--step-mid));
+}
+.t35m-flag.f1 {
+  fill: var(--step-mid);
+}
+.t35m-flag.f2 {
+  fill: color-mix(in srgb, var(--step-mid) 60%, var(--step-lo));
+}
+:root[data-theme='dark'] .t35m-flag.f0 {
+  fill: color-mix(in srgb, var(--rock-hi) 70%, var(--rock-mid));
+}
+:root[data-theme='dark'] .t35m-flag.f1 {
+  fill: var(--rock-mid);
+}
+:root[data-theme='dark'] .t35m-flag.f2 {
+  fill: color-mix(in srgb, var(--rock-mid) 55%, var(--rock-lo));
+}
+.t35m.p0 .t35m-seg-0 .t35m-paved,
+.t35m.p1 .t35m-seg-1 .t35m-paved,
+.t35m.p2 .t35m-seg-2 .t35m-paved,
+.t35m.p3 .t35m-seg-3 .t35m-paved,
+.t35m.p4 .t35m-seg-4 .t35m-paved,
+.t35m.p5 :is(.t35m-seg-5, .t35m-seg-6) .t35m-paved {
+  opacity: 1;
+}
+.t35m.p1 .t35m-seg-0 .t35m-trail,
+.t35m.p1 .t35m-seg-1 .t35m-trail,
+.t35m.p2 .t35m-seg-2 .t35m-trail,
+.t35m.p3 .t35m-seg-3 .t35m-trail,
+.t35m.p4 .t35m-seg-4 .t35m-trail,
+.t35m.p5 :is(.t35m-seg-5, .t35m-seg-6) .t35m-trail {
+  opacity: 0;
+}
+/* only the first stretch is paved before the moon reaches the second post */
+.t35m.p0:not(.p1) .t35m-seg-0 .t35m-paved {
+  opacity: 0;
+}
+.t35m-beyond {
+  fill: var(--wash);
+  opacity: 0.16;
+}
+:root[data-theme='dark'] .t35m-beyond {
+  fill: var(--mist);
+  opacity: 0.2;
+}
+
+/* ── the posts: stone, a carved sign, a glow once passed, a long shadow cast from the moon */
+.t35m-shades path {
+  fill: var(--umbra);
+  opacity: 0.2;
+}
+:root[data-theme='dark'] .t35m-shades path {
+  fill: #000;
+  opacity: 0.55;
+}
+.t35m .t35m-stone .p2-stone-face {
+  fill: url(#t35k-rock);
+}
+.t35m-sign {
+  fill: var(--wash);
+  opacity: 0.7;
+  transition: opacity 0.8s;
+}
+:root[data-theme='dark'] .t35m-sign {
+  fill: #000;
+  opacity: 0.8;
+}
+.t35m-sign-lip {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t35m-sign-lip {
+  fill: var(--moon);
+  opacity: 0.22;
+  transition: opacity 0.8s;
+}
+.t35m-halo {
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-soft);
+}
+.t35m.p0 .t35m-post-0 .t35m-halo,
+.t35m.p1 .t35m-post-1 .t35m-halo,
+.t35m.p2 .t35m-post-2 .t35m-halo,
+.t35m.p3 .t35m-post-3 .t35m-halo,
+.t35m.p4 .t35m-post-4 .t35m-halo,
+.t35m.p5 .t35m-post-5 .t35m-halo {
+  opacity: 1;
+}
+:root[data-theme='dark'] :is(.t35m.p0 .t35m-post-0, .t35m.p1 .t35m-post-1, .t35m.p2 .t35m-post-2, .t35m.p3 .t35m-post-3, .t35m.p4 .t35m-post-4, .t35m.p5 .t35m-post-5) .t35m-sign-lip {
+  opacity: 0.6;
+}
+.t35m-walker {
+  opacity: 0;
+  transition: opacity 1.2s var(--d, 0s) var(--ease-soft);
+}
+.t35m.p3 .w3,
+.t35m.p4 .w4,
+.t35m.p5 .w5 {
+  opacity: 1;
+}
+.t35m-robe {
+  fill: var(--wash);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t35m-robe {
+  fill: #000;
+}
+.t35m-cordline {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 0.8;
+}
+.t35m-lamp {
+  fill: var(--lantern);
+}
+.t35m-glow {
+  opacity: 0.9;
+}
+
+/* ── the moon: a disc with a glow, dragged along its ink arc; the vermilion ring only for the keyboard */
+.t35m-moon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 92px;
+  height: 92px;
+  margin: -46px 0 0 -46px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+}
+.t35m.port .t35m-moon {
+  width: 74px;
+  height: 74px;
+  margin: -37px 0 0 -37px;
+}
+.t35m-moon:focus {
+  outline: none;
+}
+.t35m-moon:focus-visible::after {
+  content: '';
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--vermilion);
+}
+.t35m-disc {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t35m-disc .p2p-halo {
+  display: none;
+}
+.t35m-glow-sky {
+  opacity: 0.8;
+}
+.t35m-dark {
+  fill: var(--wash);
+  opacity: 0.16;
+}
+:root[data-theme='light'] .t35m-disc .p2p-moon-rim {
+  stroke: var(--wash);
+  stroke-width: 1.2;
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t35m-dark {
+  fill: #000;
+  opacity: 0.35;
+}
+
+/* ── words on the moss: lying on the ground, ink with a paper halo */
+.t35m-card {
+  position: absolute;
+  font: 400 15px/1.5 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 2px var(--paper);
+  transform: perspective(700px) rotateX(24deg) rotate(-2deg);
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+.t35m-card p {
+  margin: 0;
+}
+.t35m-when {
+  margin-bottom: 0.25em !important;
+  font: 500 17px/1.3 var(--serif);
+  color: var(--ink);
+}
+.t35m-card > * {
+  animation: p2-fade 0.7s var(--ease-soft) both;
+}
+.t35m-horizon {
+  position: absolute;
+  font: 400 14px/1.5 var(--serif);
+  color: var(--ink-2);
+  text-align: center;
+  text-shadow: 0 0 10px var(--paper), 0 0 10px var(--paper), 0 0 3px var(--paper);
+  opacity: 0;
+  transition: opacity 1.4s 0.6s var(--ease-soft);
+  pointer-events: none;
+}
+.t35m-horizon p {
+  margin: 0;
+}
+.t35m.p5 .t35m-horizon {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* a phone: the words go to the strip along the bottom; on the last post the forecast takes the strip after the fact */
+.t35m.port .t35m-card {
+  transform: none;
+  font-size: 14px;
+}
+.t35m.port .t35m-horizon {
+  text-align: left;
+  font-size: 14px;
+}
+.t35m.still * {
+  transition: none !important;
+  animation: none !important;
+}

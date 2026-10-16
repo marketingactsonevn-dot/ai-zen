@@ -18,11 +18,19 @@
   "scenes": {
     "peaks": {
       "label": "The peaks",
-      "art": "The moon rises behind layered ink mountains. On each peak stands a small stone stele carved with a model's name, its maker and its release date. Silver clouds drift across, hiding and revealing each peak in turn — no peak is drawn much taller than the rest.",
+      "art": "You stand on a mossy rock ridge above a valley full of cloud. A big moon has just risen on the right. Five pointed rock peaks rise out of the sea of cloud on an arc, their shadows lying long to the left across it. On each crown sits a low stone slab carved with one model launch, in date order from left to right, joined by a fine broken stroke of ink. From here all five look the same height. A leaning pine stands on the left, a stone lantern on the right.",
       "prompt": "Turn each stele",
+      "hint": "Drag to stand somewhere else: the nearer peak looks taller. Touch a peak to turn its stele, touch the stone lantern to show verified news only, press Esc to come back.",
       "group": "Steles for the new models, in order of release date",
       "stoneAria": "Turn the stele: {title}, dated {date}",
       "order": "In date order, not ranked",
+      "short": {
+        "n-2026-04-glasswing": "Claude Mythos",
+        "n-2026-04-deepseek-v4": "DeepSeek V4",
+        "n-2026-07-gemini-3-6-flash": "Gemini 3.6 Flash",
+        "n-2026-09-gpt-6-astra": "GPT-6 Astra",
+        "n-2026-09-opus-5-5": "Claude Opus 5.5"
+      },
       "verifiedOnly": "Verified news only",
       "verifiedOnlyAria": "Show only steles an independent party has confirmed",
       "othersNote": "Grok (xAI), Qwen (Alibaba), Mistral… are big mountain ranges too. AI Zen has not yet checked their latest releases, so no steles stand for them yet.",
@@ -40,9 +48,9 @@
     },
     "gate": {
       "label": "The fenced summit",
-      "art": "The highest peak is ringed by a bamboo fence, its wooden gate bolted. Inside, a few stone lanterns light workers patching cracks in a wall built from lines of code. Outside the fence, four stones stand round a moonlit pool, waiting for the visitor to open the gate.",
-      "prompt": "Open the gate",
-      "gateAria": "Open the gate to see why this model is restricted (or press Enter)",
+      "art": "Eye level, right against the bamboo fence on the highest summit. A few blurred bamboo stalks at the edges; in the middle a gate of two latticed wooden doors, barred by a wooden bolt. Through the lattice, lamplight inside: a wall laid in lines of code, a red crack, two workers patching it, two stone lanterns, twelve small lamps along the wall and, further off, a faint band of lights. Behind the wall rise the summit, the moon and the mist.",
+      "prompt": "Slide the bolt aside",
+      "gateAria": "Slide the wooden bolt aside to open the gate and see why this model is restricted (or press Enter)",
       "reasonTitle": "Why the fence",
       "reason": {
         "text": "Anthropic says Claude Mythos Preview finds and exploits software flaws so well that it should not be released widely yet, so it goes only to defenders.",
@@ -51,6 +59,8 @@
         "claimBy": "Anthropic"
       },
       "debateTitle": "Who says what",
+      "courtPrompt": "Open each gate",
+      "courtArt": "Looking down on the fenced summit floating in the sea of cloud, like a temple ground plan. A raked gravel court in the middle, four gates at the four quarters. Outside each gate stand a lantern bearer and a carved sign: the gate itself, a stone with fresh mortar, a stone with a single notch, a smaller fenced ring. Open a gate and its bearer walks to the middle of the court, leaving footprints.",
       "perspectives": {
         "stones": [
           {
@@ -170,7 +180,7 @@
     },
     "tide": {
       "label": "The release tide",
-      "art": "A long beach unrolls like a scroll under the moon. Drag the moon from left to right and the water slowly ebbs to reveal stones — each one a major release. At the start of the scroll the stones are sparse; at the end they crowd together like steps up a mountain.",
+      "art": "Lying at the water’s edge at one end of a long tidal flat that runs diagonally into the distance, to a mountain with cloud round its summit: time runs into depth. The tide is in, water covers the flat and the moon’s broken road runs toward you. Drag the moon across the sky and the water draws back toward the mountain while the stones rise in date order: far apart near you, crowding at the mountain’s foot and climbing its flank like steps.",
       "prompt": "Drag the moon through the years",
       "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
       "paceNote": "No reliable source counts releases per quarter, so the scroll uses Epoch AI's count of large-scale models instead.",

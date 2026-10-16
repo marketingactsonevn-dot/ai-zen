@@ -1,0 +1,710 @@
+/* Scene 1 blueprint: the six-sided andon on the table of the drawing room. Part 2 tokens only. */
+.t36b {
+  position: absolute;
+  inset: 0 0 auto 0;
+  overflow: hidden;
+  --fw: 100px;
+  --fh: 155px;
+  --ap: 86px;
+  --tw: 800px;
+  --wh: 300px;
+  --sth: 120px;
+  --slat: color-mix(in srgb, var(--wash) 55%, var(--lantern));
+  --glow-hi: color-mix(in srgb, var(--moon) 75%, var(--lantern));
+  --glow-lo: color-mix(in srgb, var(--lantern) 78%, var(--wash));
+  --frame: color-mix(in srgb, var(--wash) 70%, var(--lantern));
+  --wood-t: color-mix(in srgb, var(--lantern) 22%, var(--rock-mid));
+}
+:root[data-theme='dark'] .t36b {
+  --wood-t: color-mix(in srgb, var(--lantern) 14%, var(--rock-lo));
+}
+.t36b-back,
+.t36b-nearsvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  pointer-events: none;
+}
+.t36b-back {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+}
+.t36b-nearsvg {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 calc(100% - 60px), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 calc(100% - 60px), transparent);
+  mask-composite: intersect;
+}
+/* the room: back wall, a side wall at the left corner with its shoji, the table in perspective */
+.t36b-wall {
+  fill: color-mix(in srgb, var(--wash) 18%, var(--paper-2));
+}
+:root[data-theme='dark'] .t36b-wall {
+  fill: color-mix(in srgb, var(--rock-lo) 55%, var(--paper));
+}
+.t36b-side {
+  fill: color-mix(in srgb, var(--wash) 30%, var(--paper-2));
+}
+:root[data-theme='dark'] .t36b-side {
+  fill: color-mix(in srgb, var(--wash) 50%, var(--paper));
+}
+.t36b-cornerline {
+  stroke: var(--umbra);
+  stroke-width: 2;
+  opacity: 0.25;
+}
+.t36b-shoji {
+  fill: color-mix(in srgb, var(--card) 80%, var(--moon));
+}
+:root[data-theme='dark'] .t36b-shoji {
+  fill: color-mix(in srgb, var(--mist) 60%, var(--moon));
+}
+.t36b-lattice,
+.t36b-sframe {
+  fill: none;
+  stroke: color-mix(in srgb, var(--wash) 75%, var(--lantern));
+  stroke-width: 2;
+}
+.t36b-sframe {
+  stroke-width: 5;
+}
+/* moonlight through the shoji: cold, lattice-crossed */
+.t36b-moonpatch {
+  fill: var(--moon);
+  opacity: 0.2;
+}
+:root[data-theme='dark'] .t36b-moonpatch {
+  fill: var(--mist);
+  opacity: 0.16;
+  mix-blend-mode: screen;
+}
+.t36b-moonlat {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 2.4;
+  opacity: 0.1;
+}
+:root[data-theme='dark'] .t36b-moonlat {
+  opacity: 0.35;
+}
+.t36b-table {
+  fill: var(--wood-t);
+}
+.t36b-seam {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 1.2;
+  opacity: 0.2;
+}
+:root[data-theme='dark'] .t36b-seam {
+  stroke: var(--umbra);
+  opacity: 0.55;
+}
+.t36b-grain {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 0.8;
+  opacity: 0.12;
+}
+:root[data-theme='dark'] .t36b-grain {
+  stroke: var(--umbra);
+  opacity: 0.4;
+}
+.t36b-wallfoot {
+  stroke: var(--umbra);
+  stroke-width: 3;
+  opacity: 0.22;
+}
+.t36b-contact {
+  fill: var(--umbra);
+  opacity: 0.45;
+}
+.t36b-front {
+  fill: color-mix(in srgb, var(--wood-t) 70%, var(--wash));
+}
+.t36b-edge {
+  stroke: color-mix(in srgb, var(--lantern) 55%, var(--moon));
+  stroke-width: 2;
+  opacity: 0.7;
+}
+.t36b-under {
+  fill: var(--umbra);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t36b-under {
+  opacity: 0.7;
+}
+.t36b-near .t36b-stone {
+  fill: var(--wash);
+  opacity: 0.85;
+}
+.t36b-near .t36b-brush {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--rock-mid));
+  opacity: 0.9;
+}
+.t36b-mpwall {
+  opacity: 0.12;
+}
+
+/* the throw: a picture on the wall, keystoned (wider as it climbs away from the lamp), fading round the lamp's axis */
+.t36b-throwbox,
+.t36b-spillbox {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+}
+.t36b-throwbox {
+  transform-origin: 50% 100%;
+  transform: perspective(calc(var(--wh) * 2.6)) rotateX(-16deg);
+  -webkit-mask-image: radial-gradient(ellipse 52% 95% at 50% 100%, #000 38%, transparent 100%);
+  mask-image: radial-gradient(ellipse 52% 95% at 50% 100%, #000 38%, transparent 100%);
+}
+/* ...and its foot run on onto the table, flattened, fading toward the lamp */
+.t36b-spillbox {
+  -webkit-mask-image: radial-gradient(ellipse 48% 130% at 50% 0%, #000 30%, transparent 90%);
+  mask-image: radial-gradient(ellipse 48% 130% at 50% 0%, #000 30%, transparent 90%);
+}
+.t36b-pic {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  overflow: visible;
+  transform-origin: 0 0;
+}
+.t36b-slat {
+  fill: var(--umbra);
+  opacity: 0.18;
+}
+:root[data-theme='dark'] .t36b-slat {
+  opacity: 0.45;
+}
+.t36b-throw > g {
+  transition: opacity 0.9s var(--ease);
+}
+.t36b-blur {
+  opacity: 0.42;
+}
+.t36b-v0,
+.t36b-v1 {
+  opacity: 0;
+}
+.t36b-throw.on .t36b-blur {
+  opacity: 0;
+}
+.t36b-throw.on[data-k='0'] .t36b-v0,
+.t36b-throw.on[data-k='1'] .t36b-v1 {
+  opacity: 1;
+}
+.t36b .t36b-sh,
+.t36b .t36b-throw .t36-koi path {
+  fill: var(--umbra);
+  opacity: 0.42;
+}
+:root[data-theme='dark'] .t36b .t36b-sh,
+:root[data-theme='dark'] .t36b .t36b-throw .t36-koi path {
+  opacity: 0.66;
+}
+.t36b .t36b-throw .t36-koi .t36-koi-red,
+.t36b .t36b-throw .t36-koi .t36-koi-ink {
+  opacity: 0;
+}
+.t36b-lit {
+  fill: var(--firefly);
+}
+.t36b-hole {
+  fill: var(--glow-hi);
+  opacity: 0.8;
+}
+.t36b-tint {
+  opacity: 0.32;
+}
+.t36b.all .t36b-throw > .t36b-v0,
+.t36b.all .t36b-throw > .t36b-v1 {
+  transition-duration: 1.4s;
+}
+
+/* ── the andon ── */
+.t36b-andon {
+  position: absolute;
+  width: calc(var(--fw) * 2.6);
+  height: calc(var(--fh) * 1.7);
+  transform: translate(-50%, -50%);
+  perspective: calc(var(--fh) * 7);
+  cursor: grab;
+  outline: none;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.t36b-andon.grab {
+  cursor: grabbing;
+}
+.t36b-andon:focus-visible {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--vermilion) 50%, transparent);
+  border-radius: 20px;
+}
+.t36b-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--fw) * 5.5);
+  height: calc(var(--fh) * 2.6);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 42%, transparent), color-mix(in srgb, var(--lantern) 12%, transparent) 55%, transparent);
+  pointer-events: none;
+}
+:root[data-theme='light'] .t36b-halo {
+  opacity: 0.7;
+}
+.t36b-rig {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+.t36b-face {
+  position: absolute;
+  left: calc(var(--fw) / -2);
+  top: calc(var(--fh) / -2);
+  width: var(--fw);
+  height: var(--fh);
+  transform: rotateY(var(--a)) translateZ(var(--ap));
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+/* dó paper on a kumiko grid, lit from inside; a wooden frame round it */
+.t36b-paper {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 calc(33.34% - 1.5px), var(--slat) calc(33.34% - 1.5px) 33.34%),
+    repeating-linear-gradient(0deg, transparent 0 calc(25% - 1.5px), var(--slat) calc(25% - 1.5px) 25%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .25' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .4 0 0 0 0 .2 .45 0 0 0 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(90% 75% at 50% 58%, var(--glow-hi), var(--glow-lo) 70%, color-mix(in srgb, var(--glow-lo) 70%, var(--wash)));
+  box-shadow: inset 0 0 0 calc(var(--fw) * 0.045) var(--frame), inset 0 0 calc(var(--fw) * 0.18) color-mix(in srgb, var(--lantern) 40%, var(--wash));
+  opacity: 0.97;
+}
+:root[data-theme='light'] .t36b {
+  --glow-hi: color-mix(in srgb, var(--card) 70%, var(--lantern));
+  --glow-lo: color-mix(in srgb, var(--lantern) 55%, var(--card));
+}
+.t36b-fshade {
+  position: absolute;
+  inset: 0;
+  background: var(--umbra);
+  opacity: calc(var(--d, 0) * 1.4);
+  pointer-events: none;
+}
+.t36b-flabel {
+  position: absolute;
+  top: 9%;
+  left: 7%;
+  right: 7%;
+  margin: 0;
+  text-align: center;
+  font: 500 14px/1.25 var(--serif);
+  color: var(--wash);
+}
+.t36b-fnum {
+  display: block;
+  margin-bottom: 2px;
+  font: 500 12px/1 var(--sans);
+  opacity: 0.6;
+}
+.t36b-fmotif {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 46%;
+  bottom: 12%;
+}
+.t36b-motif {
+  width: 100%;
+  height: 100%;
+}
+.t36b-mink {
+  fill: var(--wash);
+  opacity: 0.82;
+}
+.t36b-face.on .t36b-fmotif {
+  animation: t36b-ink 0.9s var(--ease) backwards;
+}
+@keyframes t36b-ink {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+/* the lid (open, the light coming up) and the base, both hexagons */
+.t36b-lid,
+.t36b-base {
+  position: absolute;
+  left: calc(var(--fw) * -1);
+  top: calc(var(--ap) * -1);
+  width: calc(var(--fw) * 2);
+  height: calc(var(--ap) * 2);
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: var(--frame);
+}
+.t36b-lid {
+  transform: translateY(calc(var(--fh) / -2)) rotateX(90deg);
+}
+.t36b-lid > i {
+  position: absolute;
+  inset: 9%;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: radial-gradient(closest-side, var(--glow-hi), var(--glow-lo));
+}
+.t36b-base {
+  transform: translateY(calc(var(--fh) / 2 + 2px)) rotateX(90deg) scale(1.14);
+  background: color-mix(in srgb, var(--frame) 80%, var(--umbra));
+}
+
+/* ── the two strips under the front face ── */
+.t36b-strips {
+  position: absolute;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  align-items: flex-start;
+  transform: translateX(-50%);
+}
+.t36b-strip::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  height: 18px;
+  border-left: 1px solid color-mix(in srgb, var(--ink-3) 70%, transparent);
+}
+.t36b-strip {
+  position: relative;
+  overflow: visible;
+  flex: 1 1 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 400 14px/1.42 var(--serif);
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+  filter: drop-shadow(3px 6px 5px color-mix(in srgb, var(--umbra) 45%, transparent));
+  transform-origin: 50% 0;
+  transition: transform 0.4s var(--ease);
+}
+.t36b-stext {
+  display: block;
+  min-height: 7.4em;
+  padding: 12px 11px 22px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .45 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 16%, var(--card)), var(--card) 40%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 10px), 0 100%);
+}
+:root[data-theme='dark'] .t36b-stext {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .28 0 0 0 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 26%, var(--card)), var(--card) 45%);
+}
+.t36b-s0 {
+  rotate: -1.2deg;
+}
+.t36b-s1 {
+  rotate: 1.4deg;
+}
+.t36b-strip:hover {
+  transform: translateY(3px);
+}
+.t36b-strip:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 3px;
+}
+/* the chosen one carries a small vermilion seal */
+.t36b-strip[aria-pressed='true']::after {
+  content: '';
+  position: absolute;
+  right: 9px;
+  bottom: 16px;
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  background: var(--vermilion);
+  opacity: 0.9;
+}
+.t36b-strip[aria-pressed='false'] {
+  color: var(--ink-2);
+}
+.t36b-strips.in .t36b-strip {
+  animation: t36b-unfurl 0.7s var(--ease) backwards;
+}
+.t36b-strips.in .t36b-s1 {
+  animation-delay: 0.08s;
+}
+@keyframes t36b-unfurl {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scaleY(0.35);
+  }
+}
+.t36b-strip.stick {
+  animation: t36b-stick 0.7s var(--ease);
+}
+@keyframes t36b-stick {
+  40% {
+    transform: translateY(-26px) scale(0.94);
+    opacity: 0.6;
+  }
+}
+/* (low) six wooden tags hung at the lamp's foot, a number cut in each */
+.t36b-feet {
+  position: absolute;
+  display: flex;
+  gap: 5px;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+.t36b-foot {
+  position: relative;
+  width: 26px;
+  height: 36px;
+  padding: 8px 0 0;
+  border: 0;
+  border-radius: 3px 3px 5px 5px;
+  font: 600 13px/1 var(--serif);
+  color: color-mix(in srgb, var(--wash) 80%, var(--lantern));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--lantern) 40%, transparent);
+  background:
+    repeating-linear-gradient(92deg, transparent 0 4px, color-mix(in srgb, var(--umbra) 10%, transparent) 4px 5px),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 45%, var(--rock-mid)), color-mix(in srgb, var(--lantern) 30%, var(--rock-lo)));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--umbra) 25%, transparent), 2px 4px 5px -2px color-mix(in srgb, var(--umbra) 60%, transparent);
+  cursor: pointer;
+  transform-origin: 50% 0;
+}
+.t36b-foot::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--umbra);
+}
+.t36b-foot::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  height: 11px;
+  border-left: 1px solid color-mix(in srgb, var(--ink-3) 70%, transparent);
+}
+.t36b-foot.front {
+  transform: translateY(3px) rotate(-3deg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--umbra) 25%, transparent), 0 0 10px color-mix(in srgb, var(--lantern) 60%, transparent);
+}
+.t36b-foot.done span {
+  border-bottom: 2px solid var(--vermilion);
+}
+.t36b-foot:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+
+/* ── spec.md: a sheet lying on the table, tipped away from us; its lines written in by hand ── */
+.t36b-spec {
+  position: absolute;
+  perspective: 1000px;
+  z-index: 2;
+}
+.t36b-slip {
+  display: none;
+}
+.t36b-sheet {
+  box-sizing: border-box;
+  padding: 18px 22px 16px;
+  font-family: var(--serif);
+  color: var(--ink);
+  transform: rotateX(36deg) rotateZ(-3.5deg);
+  transform-origin: 50% 100%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .45 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 20% 0%, color-mix(in srgb, var(--lantern) 18%, var(--card)), var(--card) 60%);
+  clip-path: polygon(0 0.6%, 30% 0, 62% 0.8%, 100% 0, 99.4% 50%, 100% 100%, 64% 99.3%, 28% 100%, 0.4% 99.4%, 0 48%);
+  box-shadow: 0 20px 30px -14px color-mix(in srgb, var(--umbra) 70%, transparent);
+}
+:root[data-theme='dark'] .t36b-sheet {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .28 0 0 0 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 20% 0%, color-mix(in srgb, var(--lantern) 30%, var(--card)), var(--card) 65%);
+}
+.t36b-title {
+  margin: 0 0 8px;
+  font: italic 600 15px/1.3 var(--serif);
+  color: var(--ink-2);
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+  padding-bottom: 4px;
+}
+.t36b-lines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.t36b-lines li {
+  font-size: 14.5px;
+  line-height: 1.32;
+}
+.t36b-key {
+  display: block;
+  font: 500 11.5px/1.3 var(--sans);
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+/* the hand that writes: an italic ink line, drawn in from the left */
+.t36b-val {
+  display: block;
+  min-height: 1.3em;
+  font: italic 400 15px/1.32 var(--serif);
+  color: var(--ink);
+}
+.t36b-val:empty {
+  border-bottom: 1px dashed color-mix(in srgb, var(--ink) 22%, transparent);
+  width: 70%;
+}
+.t36b-lines li.on .t36b-val {
+  animation: t36b-write 1.1s var(--ease) both;
+}
+@keyframes t36b-write {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.t36b-tail:not(:empty) {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.t36b-tail .t36b-fact {
+  margin: 0;
+  font: italic 400 13px/1.4 var(--serif);
+  color: var(--ink-2);
+}
+/* the take-away: a card folded in two, standing on the table */
+.t36b-tent {
+  position: absolute;
+  z-index: 2;
+  transform: translateX(-50%);
+  animation: t36b-tent 0.9s var(--ease) both;
+}
+.t36b-tent[hidden] {
+  display: none;
+}
+@keyframes t36b-tent {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -14px);
+  }
+}
+.t36b-tent .t36n-pill {
+  position: relative;
+  padding: 16px 16px 12px;
+  border: 0;
+  border-radius: 1px;
+  font: italic 500 14px/1.2 var(--serif);
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--umbra) 18%, var(--card)) 0 7px, color-mix(in srgb, var(--moon) 30%, var(--card)) 7px 8.5px, transparent 8.5px),
+    linear-gradient(170deg, color-mix(in srgb, var(--lantern) 16%, var(--card)), var(--card) 70%, color-mix(in srgb, var(--card) 80%, var(--rock-mid)));
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--umbra) 20%, transparent), 10px 10px 8px -6px color-mix(in srgb, var(--umbra) 55%, transparent);
+  transform: perspective(300px) rotateX(-10deg) rotateZ(-2deg);
+}
+.t36b-tent .t36n-pill::after {
+  content: '';
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  width: 9px;
+  height: 9px;
+  background: var(--vermilion);
+  border-radius: 1px;
+}
+.t36b-tent .t36n-pill:hover {
+  color: var(--vermilion);
+}
+
+/* tall screens: the strips are shorter; spec.md is a slip under the table that opens when touched */
+.t36b:not(.wide) .t36b-stext {
+  min-height: 0;
+  max-height: var(--sth);
+  overflow: hidden;
+  padding: 9px 9px 18px;
+  font-size: 13px;
+  line-height: 1.36;
+}
+.t36b:not(.wide) .t36b-sheet {
+  display: none;
+}
+.t36b:not(.wide) .t36b-slip {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 12px 8px;
+  border: 0;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .4 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(175deg, color-mix(in srgb, var(--lantern) 14%, var(--card)), var(--card));
+  clip-path: polygon(0 4%, 40% 0, 100% 3%, 99% 96%, 60% 100%, 1% 97%);
+  transform: rotate(-1.5deg);
+  filter: drop-shadow(2px 5px 5px color-mix(in srgb, var(--umbra) 50%, transparent));
+}
+.t36b-sliptitle {
+  font: italic 600 14px/1.2 var(--serif);
+}
+.t36b-count {
+  font: 500 12px/1.3 var(--sans);
+  color: var(--ink-3);
+}
+.t36b-slip:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 3px;
+}
+.t36b:not(.wide) .t36b-spec.open .t36b-sheet {
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  width: calc(100% / 0.58 * 0.94);
+  max-height: 62vh;
+  overflow: auto;
+  transform: none;
+  padding: 14px 16px 12px;
+  animation: p2-fade 0.4s;
+}
+.t36b:not(.wide) .t36b-tent .t36n-pill {
+  padding: 13px 12px 10px;
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t36b-strips.in .t36b-strip,
+  .t36b-strip.stick,
+  .t36b-face.on .t36b-fmotif,
+  .t36b-lines li.on .t36b-val,
+  .t36b-tent {
+    animation: none;
+  }
+}

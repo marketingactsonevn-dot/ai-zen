@@ -6,10 +6,13 @@ import type { Tide } from './types'
 import { clamp, onSize, p2Defs, rng, seedOf, stableHeight, stoneArt, stroke, type Pt } from './ink'
 import { hills, mist, moon as moonArt } from './paint'
 
+/** The scroll's geometry in band px: w × h band, `ground` line, stops xs (xs[n] = today), roller width. */
+export type TideGeo = { w: number; h: number; ground: number; xs: number[]; roll: number; seed: number }
+
 /** A station's own painting for the scroll (each timeline its own composition). Sizes in band px. */
 export interface TideArt {
-  /** what lies behind the milestones: w × h band, `ground` line, stops xs (xs[n] = today), roller width */
-  back?: (g: { w: number; h: number; ground: number; xs: number[]; roll: number; seed: number }) => SVGElement[]
+  /** what lies behind the milestones */
+  back?: (g: TideGeo) => SVGElement[]
   /** what rises for milestone i, standing on (0, 0) and about `size` wide (default: a garden stone) */
   mark?: (i: number, size: number, seed: number) => SVGElement
 }
@@ -27,6 +30,13 @@ export interface TideOpts {
   /** the slider's aria-valuetext as a template: {n} {total} {date} {label}; default "date · label" */
   valueText?: string
   art?: TideArt
+  /** the moon's own path: t 0 (first milestone) … 1 (today) → its centre in band px (an arc, a zig-zag bridge, a rising
+   *  water line, a polyline). Drag follows the path; keys and aria stay the same. Default: a straight run high over the scroll */
+  track?: (g: TideGeo) => (t: number) => Pt
+  /** what is dragged instead of the moon disc, drawn in a 50 × 50 box centred on 0, 0 (a reflection, a paperweight) */
+  thumb?: () => SVGElement
+  /** on every move: the nearest stop i (n = today) and where the moon is, t 0…1 (move the station's own art with it) */
+  onStep?: (i: number, t: number) => void
 }
 
 const f1 = (n: number) => n.toFixed(1)
@@ -52,7 +62,7 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
         : i < n ? fill(L.tideValue, { date: viDate(ms[i].date), label: ms[i].label }) : `${L.today} · ${today}`
 
       const sky = s('svg', { class: 'p2t-svg', 'aria-hidden': 'true' })
-      const disc = s('svg', { class: 'p2t-moon-disc', viewBox: '-25 -25 50 50', 'aria-hidden': 'true' }, moonArt(0, 0, 21, seed, true))
+      const disc = s('svg', { class: 'p2t-moon-disc', viewBox: '-25 -25 50 50', 'aria-hidden': 'true' }, o.thumb ? o.thumb() : moonArt(0, 0, 21, seed, true))
       const dates = [...ms.map((m) => viDate(m.date)), `${L.today}`].map((t, i) =>
         h('span', { class: `p2t-date${i === n ? ' today' : ''}` }, t, i === n ? h('small', null, today) : null))
       const moon = h('div', {
@@ -69,7 +79,9 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
       let xs: number[] = [] // stop positions (px in the band)
       let stones: SVGGElement[] = []
       let at = -1 // the stop the card shows
-      let mx = 0 // the moon's x
+      let tt = 0 // where the moon is: 0 first milestone … 1 today
+      let path: ((t: number) => Pt) | null = null // the station's track, else a straight run
+      let samples: Pt[] = [] // the track every 1/96, to drag along it
       let reached = false
 
       function show(i: number) {
@@ -95,37 +107,53 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
         if (!read.hasAttribute('aria-live')) read.setAttribute('aria-live', 'polite')
       }
 
-      // moon at x (px): every milestone it has passed stands up; the nearest stop fills the card
-      function moveTo(x: number, snap: boolean) {
+      // moon at t: every milestone it has passed stands up; the nearest stop fills the card
+      function moveTo(t: number, snap: boolean) {
         if (!xs.length) return
-        mx = clamp(x, xs[0], xs[n])
-        let near = 0
-        for (let i = 1; i <= n; i++) if (Math.abs(xs[i] - mx) < Math.abs(xs[near] - mx)) near = i
-        if (snap) mx = xs[near]
+        tt = clamp(t, 0, 1)
+        const near = Math.round(tt * n)
+        if (snap) tt = near / n
         moon.classList.toggle('snap', snap)
-        moon.style.transform = `translateX(${f1(mx)}px)`
-        stones.forEach((g, i) => g.classList.toggle('up', xs[i] <= mx + 6))
-        band.classList.toggle('past', mx >= xs[n] - 6)
+        if (path) {
+          const [x, y] = path(tt)
+          moon.style.transform = `translate(${f1(x)}px, ${f1(y)}px)`
+        } else moon.style.transform = `translateX(${f1(xs[0] + (xs[n] - xs[0]) * tt)}px)`
+        const eps = 6 / Math.max(1, xs[n] - xs[0]) // a stone stands once the moon is within 6 px of it
+        stones.forEach((g, i) => g.classList.toggle('up', i / n <= tt + eps))
+        band.classList.toggle('past', tt >= 1 - eps)
         show(near)
+        o.onStep?.(near, tt)
+      }
+      // the pointer (band px) as t: along the scroll, or the nearest point of the station's track
+      function tAt(x: number, y: number) {
+        if (!path) return (x - xs[0]) / Math.max(1, xs[n] - xs[0])
+        let best = 0, bd = Infinity
+        samples.forEach(([sx, sy], k) => {
+          const d = (sx - x) ** 2 + (sy - y) ** 2
+          if (d < bd) (bd = d), (best = k)
+        })
+        return best / (samples.length - 1)
       }
 
       // drag anywhere on the band; the moon follows the pointer and settles on the nearest stop
       let drag = false
-      let bandX = 0
+      let bandX = 0, bandY = 0
       band.addEventListener('pointerdown', (e) => {
         if (e.button) return
         drag = true
-        bandX = band.getBoundingClientRect().left
+        const r = band.getBoundingClientRect()
+        bandX = r.left
+        bandY = r.top
         band.setPointerCapture(e.pointerId)
         moon.focus({ preventScroll: true })
-        moveTo(e.clientX - bandX, false)
+        moveTo(tAt(e.clientX - bandX, e.clientY - bandY), false)
         ctx.chime('soft')
       })
-      band.addEventListener('pointermove', (e) => drag && moveTo(e.clientX - bandX, false))
+      band.addEventListener('pointermove', (e) => drag && moveTo(tAt(e.clientX - bandX, e.clientY - bandY), false))
       const end = () => {
         if (!drag) return
         drag = false
-        moveTo(mx, true)
+        moveTo(tt, true)
       }
       band.addEventListener('pointerup', end)
       band.addEventListener('pointercancel', end)
@@ -134,7 +162,7 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
         const to = k ? clamp(at + k, 0, n) : e.key === 'Home' ? 0 : e.key === 'End' ? n : -1
         if (to < 0) return
         e.preventDefault()
-        moveTo(xs[to], true)
+        moveTo(to / n, true)
       })
 
       function layout() {
@@ -157,9 +185,15 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
         band.classList.toggle('tight', (xt - x0) / n < 62)
         dates.forEach((d, i) => Object.assign(d.style, { left: `${f1(xs[i])}px`, top: `${f1(ground + 8)}px` }))
         Object.assign(horizonLabel.style, { right: `${f1(roll + 8)}px`, width: `${f1(bw - roll - xt + 10)}px`, top: `${f1(ground - bh * 0.34)}px` })
-        moon.style.top = `${f1(bh * 0.2)}px`
+        path = o.track ? o.track({ w: bw, h: bh, ground, xs, roll, seed }) : null
+        if (path) {
+          samples = Array.from({ length: 97 }, (_, k) => path!(k / 96))
+          const [a, b] = [samples[0], samples[96]]
+          moon.setAttribute('aria-orientation', Math.abs(b[1] - a[1]) > Math.abs(b[0] - a[0]) ? 'vertical' : 'horizontal')
+          Object.assign(moon.style, { top: '0px', marginTop: 'calc(var(--m) / -2)' }) // the track gives the moon's centre
+        } else moon.style.top = `${f1(bh * 0.2)}px`
         stones = draw(bw, bh, roll, ground, xt)
-        moveTo(at < 0 ? xs[0] : xs[at], true)
+        moveTo(at < 0 ? 0 : at / n, true)
       }
 
       function draw(w: number, hh: number, roll: number, ground: number, xt: number): SVGGElement[] {
@@ -216,7 +250,7 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
 }
 
 /** The scroll's default painting: a far ink range, nearer peaks crowding toward today, mist along the sand. */
-function defaultBack({ w, h, ground, xs, roll, seed }: { w: number; h: number; ground: number; xs: number[]; roll: number; seed: number }): SVGElement[] {
+function defaultBack({ w, h, ground, xs, roll, seed }: TideGeo): SVGElement[] {
   return [
     mist(w * 0.45, ground - h * 0.35, w * 0.7, h * 0.4),
     hills(roll, w - roll, ground - h * 0.1, h * 0.36, seed, 0.9, 5),

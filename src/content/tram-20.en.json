@@ -22,7 +22,7 @@
   "scenes": {
     "well": {
       "label": "The pebble well",
-      "art": "An old stone well in the night garden, the moon shining straight down into it. Drag the moon and pebbles, each carved with the name of a problem, drop in one by one; ripples spread across the dark water, each pebble falling deeper than the last.",
+      "art": "Looking down into an old stone well with moss and ferns, a bucket hanging from a wooden beam; the moon runs an arc along the top and its beam lights the well's wall. Drag the moon over each pebble on the rim: it flips and drops to a ledge, 2025 high, 2026 deeper; Navier–Stokes hits the water and breaks the moon's reflection, the 722 drafts fall like rain, today the water stills with a carved ring, and mist lies at the bottom.",
       "prompt": "Drag the moon, drop pebbles",
       "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
       "tide": {
@@ -35,7 +35,8 @@
               "asOf": "2026-10-15",
               "source": "willison-openai-imo",
               "claimBy": "OpenAI"
-            }
+            },
+            "short": "IMO · OpenAI"
           },
           {
             "date": "2025-07-21",
@@ -45,7 +46,8 @@
               "asOf": "2026-10-15",
               "source": "deepmind-imo-2025",
               "verifiedBy": "IMO organisers"
-            }
+            },
+            "short": "IMO · DeepMind"
           },
           {
             "date": "2026-07-20",
@@ -55,7 +57,8 @@
               "asOf": "2026-10-15",
               "source": "afp-jacobian",
               "verifiedBy": "Archive of Formal Proofs (checked in Isabelle)"
-            }
+            },
+            "short": "Jacobian"
           },
           {
             "date": "2026-09-08",
@@ -65,7 +68,8 @@
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "claimBy": "OpenAI"
-            }
+            },
+            "short": "Navier–Stokes"
           },
           {
             "date": "2026-10-06",
@@ -75,7 +79,8 @@
               "asOf": "2026-10-15",
               "source": "aa-openai-math",
               "claimBy": "OpenAI"
-            }
+            },
+            "short": "722 manuscripts"
           },
           {
             "date": "2026-10-15",
@@ -84,7 +89,8 @@
               "text": "The Clay Institute only considers a prize once a solution is published in a qualifying outlet, at least two years have passed, and mathematicians broadly accept it.",
               "asOf": "2026-10-15",
               "source": "clay-rules"
-            }
+            },
+            "short": "Today"
           }
         ],
         "horizon": {
@@ -103,7 +109,7 @@
     },
     "vortex": {
       "label": "Water that blows up",
-      "art": "A pond as smooth as a mirror under the moon. The visitor stirs it once round: the water swirls, the eddies tighten towards one blinding point at the centre. Around the bank, tens of thousands of tiny fireflies swarm — each one an agent feeling its way.",
+      "art": "A round pond under the moon seen three-quarter, a ring of mossy stones on raked sand, fireflies circling the bank — each one an agent. Stir in circles: the water sinks into a funnel, the moon's reflection winds into a spiral and the camera sinks toward the water until the far ridges rise; at the top the core flares into one point, a shockwave runs out and the agents line up into a stair of light climbing out of the pond.",
       "prompt": "Stir the pond",
       "stirAria": "Stir the pond: drag in a circle, or hold an arrow key",
       "stages": [
@@ -141,16 +147,23 @@
           "asOf": "2026-10-15",
           "source": "datacamp-ns"
         }
+      ],
+      "contextShort": [
+        "Another team: ~12 hours earlier",
+        "Both built on a 2023 strategy",
+        "No Clay prize awarded yet"
       ]
     },
     "mason": {
       "label": "The mason who tests every stone",
-      "art": "Under a lantern, an old stonemason taps a small hammer on each step of a stone stair leading up the hill; a sound stone rings clear. At the top hangs a sign reading “the problem”, and beside it the original scroll to compare against.",
+      "art": "A stone stair climbs the moonlit hillside, one line of a Lean proof cut into each step; tap a step and the old stonemason climbs to it and strikes it with his hammer. On the landing, under a paper lantern, a wooden sign carries the problem as written for the machine; beside it hangs the scroll with the original problem, to drag up and compare.",
       "prompt": "Tap each step",
       "stepAria": "Tap step {n}",
       "machineOk": "Machine: every step checks out",
       "compare": "Compare the sign with the original",
       "compareAria": "Compare the problem written for the machine with the original problem",
+      "signWord": "Even",
+      "originalWord": "odd",
       "original": "Original: the sum of two odd numbers is even",
       "mismatch": "The sign says “even numbers” — the machine checked correctly, but a different problem!",
       "code": {
@@ -197,8 +210,8 @@
     },
     "circle": {
       "label": "Four stones round the well",
-      "art": "Four stones stand round the moonlit well, each carved with a small line of text. Touch one and it glows, sending ripples to the middle of the well; when all four glow, the water stills and holds the whole moon.",
-      "prompt": "Touch each stone",
+      "art": "A stone well with a thick curb, the moon in its water; above it a square frame of wooden posts, a polished black stone chime hanging from each beam. Strike a chime and it swings, rings and sends a train of ripples across the well; the speaker's words appear on a hanging paper strip. When all four have rung, the ripples meet in the middle and cancel, the water stills and holds the whole moon.",
+      "prompt": "Strike each stone chime",
       "stoneAria": "Hear the view of {who}",
       "perspectives": {
         "stones": [

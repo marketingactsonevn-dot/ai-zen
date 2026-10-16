@@ -17,7 +17,7 @@
   "scenes": {
     "scale": {
       "label": "The scale",
-      "art": "A steelyard hangs from an old pine branch. The left pan holds the oil lamp of your little house; the right pan, a silver cloud covering half the moon. Each stone weight you place on a pan tips the beam that way.",
+      "art": "Seen from low on the water: an old pine bough reaches across a great moon, a steelyard hanging from it with its beam across the moon's face. The left pan holds a little house with a lit oil lamp; the right, a silver cloud over half a small moon. Six carved stone weights lie half-sunk in the shallows; lift each onto a pan and the beam tips and sways, a paper tag with the reason hangs under the pan, and the water mirrors the whole scale upside down.",
       "prompt": "Put each weight on a pan",
       "aria": "The scale: run AI on your own machine or in the cloud. Put each weight on the side it favours",
       "sides": [
@@ -33,6 +33,7 @@
         { "id": "update", "label": "Always the latest", "side": "cloud", "why": "The provider upgrades for you; locally, you download new versions yourself." }
       ],
       "weightAria": "Put the “{label}” weight on the {side} pan",
+      "stonesLabel": "Six stone weights in the water: drag one onto a pan, or pick it and use ← → and Enter",
       "right": "Right side.",
       "wrong": "This weight leans the other way.",
       "insight": {
@@ -48,13 +49,14 @@
     },
     "table": {
       "label": "A model that fits the table",
-      "art": "A low tea table under a round window that lets in the moon; the tabletop is your computer's RAM. You place bundles of paper scrolls on it, big and small — each bundle a model; a bundle too big spills over the edge and its scrolls roll onto the mat.",
+      "art": "A tatami room at night. Behind a long, low tea table, a round window holds a pine bough and the moon; the moonlight throws a bright ellipse on the tabletop — the space still free. The table's length is your computer's RAM; its right quarter always belongs to the tea set (operating system, apps, context). On the wall shelf lie five tied bundles of paper scrolls, each bundle a model. Set one on the table: if it fits, moonlight still lies around it; if it is tight, it covers the moonlight and pushes the tea set; if it is too big, scrolls roll off the edge onto the mat. Slide the table's end board to change the RAM; turn the wooden press to squeeze a model down to the 4-bit version.",
       "prompt": "Put a model on the table",
       "aria": "Simulation: put a model on the RAM table to see whether it fits or spills",
       "ramLabel": "Your RAM",
       "ramOptions": [8, 16, 32, 64],
       "ramText": "{n} GB",
       "bitsLabel": "Version",
+      "pressAria": "The press: squeeze the model down to the 4-bit version (Q4)",
       "bits": [
         { "id": "b16", "label": "Full 16-bit" },
         { "id": "q4", "label": "4-bit compressed (Q4)" }
@@ -74,6 +76,7 @@
       },
       "sizeText": "≈ {gb} GB",
       "modelAria": "Put the {label} model ({gb} GB) on a {ram} GB table",
+      "modelsLabel": "Scroll shelf: each bundle is a model, drag or tap it onto the table",
       "rule": {
         "text": "AI Zen's rule of thumb: the model file should take up less than about half your RAM; the rest is for the system, apps and context.",
         "asOf": "2026-10-15",
@@ -96,10 +99,12 @@
     },
     "lamps": {
       "label": "Three lamps",
-      "art": "Three lamps on a wooden shelf in a dark room: a paper lantern with its lid already open, an oil lamp whose wick you trim by hand, and a bare flame in a glass chimney — the very flame that burns inside many other lamps.",
+      "art": "A dark room, one long wooden shelf running away from you. Nearest, a ribbed paper lantern (LM Studio), its candle and wick showing through the paper; midway, an oil lamp with a brass knob to raise its wick (Ollama); at the far end, a bare flame in a glass chimney (llama.cpp) — at first the only light — beside a ceramic oil jar sealed GGUF. Carry fire from the far flame to the nearer lamps: the light and the shadows on the bamboo wall follow your hand. With all three lit, golden threads of oil run from the GGUF jar to every flame.",
       "prompt": "Touch each lamp",
       "aria": "Three tools for running AI on your machine: LM Studio, Ollama, llama.cpp",
       "lampAria": "Light the {name} lamp",
+      "wickAria": "Brass knob that raises the Ollama lamp's wick",
+      "wickHint": "The wick is too low to catch — turn the brass knob to raise it, then bring the fire again.",
       "docLabel": "Official docs",
       "changeNote": "Prices & features change often — check the official site.",
       "lamps": [
@@ -176,6 +181,7 @@
       },
       "stepsLabel": "Lighting the first lamp",
       "stepsPrompt": "Order the four lighting steps",
+      "stepsArt": "An empty stone footing in a bed of moss under the moon; far off in the mist, your little house, its window still dark. The four parts of a stone lantern lie about — base, shaft, firebox, roof — each carved with one step. Set them in order and the lantern rises; once the roof is on, the firebox lights, and so does the window of the house far away.",
       "stepAria": "Place step {n}: {label}",
       "wrongHint": "Not this step yet — a lamp needs the right order.",
       "done": "The lamp is lit.",
@@ -188,9 +194,11 @@
     },
     "scroll": {
       "label": "The command scroll",
-      "art": "A calligraphy scroll hangs on a bamboo wall, unrolling downward in the oil lamp's light. Each line of ink is a command; in the margin, small notes like a teacher's advice to a student.",
+      "art": "A close view of a tokonoma alcove: a hanging calligraphy scroll, its heavy lower rod with a tassel. A small oil lamp on the floor lights it from below, so the scroll's soft shadow falls on the plaster above it; beside it, a ceramic vase with one flowering branch. Pull the rod down and the paper unrolls section by section, each a command with a small note in the margin, like a teacher's advice to a student.",
       "prompt": "Unroll the command scroll",
       "aria": "Code scroll: four basic Ollama commands, with notes beside them",
+      "rodAria": "The scroll's lower rod: pull it down (or ↓, Enter) to unroll one section at a time",
+      "rodValue": "{n} of {total} sections open",
       "code": {
         "lang": "bash",
         "code": "ollama pull gemma4:e2b\nollama run gemma4:e2b\nollama list\ncurl http://localhost:11434/api/chat -d '{\"model\": \"gemma4:e2b\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}], \"stream\": false}'",
@@ -216,7 +224,7 @@
     },
     "circle": {
       "label": "Four stones by the pond",
-      "art": "Four stones sit around a round pond holding the moon, like four friends talking late at night. Each stone keeps a small lamp; touch one and it lights, its shadow stretching long across the water.",
+      "art": "The camera skims a round pond under the moon: the pond becomes a thin ellipse, the moon's reflection a long broken road running toward you. Four stones sit round it — two small on the far bank, two large on the near one — each keeping a small paper lamp. Touch a stone and its lamp lights, its warm streak stretching across the water toward you; hear all four and the streaks and the moon's road gather at the pond's centre.",
       "prompt": "Listen to each stone",
       "aria": "Circle of views: should creative and marketing people run AI locally or in the cloud?",
       "perspectives": {

@@ -21,6 +21,8 @@ import './stage3d.css'
 export type Tone = 'rock' | 'step' | 'moss' | 'pine' | 'bark' | 'bamboo'
 export type V3 = [number, number, number]
 export type XZ = [number, number]
+/** a colour token ('--vermilion'), any CSS colour ('#c33', 'rgb(…)'), or two mixed: ['--water', '--mist', 0.5] */
+export type Tint = string | [string, string, number?]
 
 export interface InkView {
   /** camera turn around the target in radians (0 looks toward -z), pitch above the ground */
@@ -33,6 +35,10 @@ export interface InkView {
   /** lens shift: share of the height the frame moves up, for more sky (default 0.12) */
   shift?: number
   target?: V3
+  /** let go of a drag and the camera drifts back to the default view (or to where k.fly last took it) */
+  home?: boolean
+  /** how near / far the dolly goes, as a share of the fitted distance (default [0.65, 1.35]) */
+  zoomRange?: [number, number]
 }
 export interface InkOpts {
   /** aria-label of the 3D view (from content JSON) */
@@ -43,10 +49,22 @@ export interface InkOpts {
   fov?: number
   /** tilt the view with the phone (deviceorientation) */
   gyro?: boolean
-  /** gentle idle sway at quality=high (default true) */
+  /** gentle camera sway at quality=high (default true) */
   sway?: boolean
+  /** devicePixelRatio cap [quality=high, low] (default: createStage's 2 / 1.25) */
+  dpr?: [number, number]
+  /** seconds without input after which living motion (sway, drifting mist, water, uTime, k.live) stops; input wakes it (default 10) */
+  idle?: number
   /** drawn instead when there is no WebGL (default: the nightGarden diorama, depth.ts); returns its cleanup */
   fallback?: (host: HTMLElement) => () => void
+}
+/** a warm light slot: window glow, halo and the fill on stone, sand and water. No THREE light, so turning it never recompiles. */
+export interface InkLamp {
+  readonly obj: THREE.Object3D
+  readonly color: THREE.Color
+  readonly k: number
+  /** 0 = out … 1 = lit (renders a frame) */
+  set(k: number): void
 }
 export interface InkKit {
   /** everything in the garden; built detached, added to the stage when the build ends */
@@ -54,29 +72,46 @@ export interface InkKit {
   readonly low: boolean
   /** null until the build has ended */
   readonly stage: Stage | null
-  /** ink-wash material; each call is its own material (the shader program is shared) */
-  ink(tone: Tone, o?: { moss?: number; rim?: number; edge?: number; double?: boolean }): THREE.ShaderMaterial
+  /** shared uniforms for a station's own ShaderMaterial: `uniforms: { ...k.uniforms, … }`, with `inkGlsl` and `defines: { OCT }` */
+  readonly uniforms: Readonly<Record<'uTime' | 'uKey' | 'uMoonDir' | 'uMoonC' | 'uInk' | 'uFogC' | 'uFog' | 'uMist' | 'uLampC', THREE.IUniform>>
+  /** living motion is on now: quality=high, no reduced motion, input within `opts.idle` seconds */
+  readonly live: boolean
+  /** ink-wash material; each call is its own material (the shader program is shared). ao: the geometry's colour.r darkens it (baked occlusion) */
+  ink(tone: Tone, o?: { moss?: number; rim?: number; edge?: number; double?: boolean; ao?: boolean }): THREE.ShaderMaterial
   /** a mesh in root with an inverted-hull brush outline (outline: false to skip); cast: soft ink shadow on the ground */
   mesh(geo: THREE.BufferGeometry, mat: THREE.Material, o?: { outline?: boolean; cast?: boolean; at?: V3; parent?: THREE.Object3D }): THREE.Mesh
   rock(o?: { at?: XZ; w?: number; h?: number; d?: number; seed?: number; moss?: number; tone?: Tone; rotY?: number; ring?: boolean }): THREE.Group
   stones(from: XZ, to: XZ, n: number, o?: { size?: number; seed?: number; bend?: number }): THREE.Group
-  toro(o?: { at?: XZ; h?: number; rotY?: number; lit?: boolean }): THREE.Group
+  /** Kasuga lantern; lit: true / false / 0…1, tint: the paper window's colour (default --lantern). `.lamp` turns it later */
+  toro(o?: { at?: XZ; h?: number; rotY?: number; lit?: boolean | number; tint?: Tint }): THREE.Group & { lamp?: InkLamp }
+  /** a warm light of your own (a shōji, a lamp built with k.mesh): the first 4 in the garden light their surroundings */
+  lamp(at: V3, o?: { tint?: Tint; k?: number; parent?: THREE.Object3D; halo?: number }): InkLamp
   bamboo(o?: { at?: XZ; n?: number; h?: number; seed?: number }): THREE.Group
   pine(o?: { at?: XZ; h?: number; seed?: number; lean?: number }): THREE.Group
   /** raked sand disc that melts into mist at its rim; rings round every rock built with ring: true; receives shadows */
   ground(o?: { r?: number; center?: XZ }): THREE.Mesh
-  /** still water with the moon's broken road and the lantern's warm streak */
+  /** still water: depth, a soft wet shore, the sky and every caster mirrored, the moon's broken road, lamp streaks */
   pond(o?: { at?: XZ; r?: XZ; seed?: number }): THREE.Mesh
-  /** moon + glow, three ink mountain ranges, drifting mist banks */
-  backdrop(o?: { moon?: V3; seed?: number; mist?: number }): THREE.Group
-  /** a soft glow sprite (lantern or moon colour) */
-  glow(at: V3, size: number, color?: 'lantern' | 'moon', k?: number): THREE.Mesh
+  /** moon + glow, three ink mountain ranges, drifting mist banks; moonRise: seconds the moon takes to rise (high only) */
+  backdrop(o?: { moon?: V3; seed?: number; mist?: number; moonRise?: number }): THREE.Group
+  /** a soft glow sprite (lantern, moon or any colour) */
+  glow(at: V3, size: number, color?: 'lantern' | 'moon' | THREE.Color, k?: number): THREE.Mesh
   /** make obj tappable: raycast for pointer, a focusable button (pointer-events: none) over it for keyboard / screen reader */
   tappable(obj: THREE.Object3D, label: string, onTap: () => void): HTMLButtonElement
+  /** a DOM label riding on top of obj (its box's top centre + offset, world units): hidden behind the camera, fading into the far mist. el.remove() drops it */
+  label(obj: THREE.Object3D, el: HTMLElement, offset?: V3): HTMLElement
   /** the tappable object under a client point, or null */
   pick(clientX: number, clientY: number): THREE.Object3D | null
   /** turn the view (radians, clamped to the ranges) */
   turn(yaw: number, pitch?: number): void
+  /** fly the camera to look at target (null = keep) from yaw, pitch in dur s (power2.inOut); reduced motion cuts. Resolves on arrival */
+  fly(target: V3 | null, yaw: number, pitch: number, dur?: number): Promise<void>
+  /** move nearer (< 1) or farther (> 1) than the fitted distance, clamped to view.zoomRange */
+  dolly(zoom: number): void
+  /** a timed animation in the stage's own loop: fn(dt) returns true while it runs. Reduced motion: run to its end at once */
+  animate(fn: (dt: number) => boolean): void
+  /** called on every frame the stage draws, before drawing (no allocation, no layout reads in here) */
+  onFrame(fn: (t: number, dt: number) => void): void
   /** request one frame (after you change something) */
   render(): void
 }
@@ -116,14 +151,29 @@ float hazeK(vec3 w) {
 }
 vec3 haze(vec3 c, vec3 w) { return mix(c, uFogC, hazeK(w)); }
 `
+/** for a station's own ShaderMaterial: value noise n2/n3/fbm2/fbm3 (needs defines: { OCT }) and haze(colour, world) toward the paper
+ *  (needs ...k.uniforms); same look as the kit's materials */
+export const inkGlsl = { noise: NOISE, haze: HAZE }
+/** up to four warm lights (xyz, w = how lit) in their own colours, scaled by uLampK (theme) */
+const LAMPS = /* glsl */ `
+uniform vec4 uLamps[4];
+uniform vec3 uLampCs[4];
+uniform float uLampK;
+`
 const WORLD_VERT = /* glsl */ `
 varying vec3 vW;
 varying vec3 vN;
 varying vec3 vO;
 varying vec2 vUv;
+varying float vAo;
 void main() {
   vO = position;
   vUv = uv;
+  #ifdef USE_COLOR
+  vAo = color.r;
+  #else
+  vAo = 1.0;
+  #endif
   vec4 w = modelMatrix * vec4(position, 1.0);
   vW = w.xyz;
   vN = normalize(mat3(modelMatrix) * normal);
@@ -133,12 +183,14 @@ void main() {
 const INK_FRAG = /* glsl */ `
 ${NOISE}
 ${HAZE}
+${LAMPS}
 uniform vec3 uLo, uMid, uHi, uInk, uMoonC, uLampC, uMossLo, uMossMid, uMossHi;
-uniform vec3 uKey, uMoonDir, uLampP;
-uniform float uLampK, uMossK, uHot, uSeed, uGrain, uRim, uEdge;
+uniform vec3 uKey, uMoonDir;
+uniform float uMossK, uHot, uSeed, uGrain, uRim, uEdge;
 varying vec3 vW;
 varying vec3 vN;
 varying vec3 vO;
+varying float vAo;
 void main() {
   vec3 n = normalize(vN);
   if (!gl_FrontFacing) n = -n;
@@ -158,10 +210,23 @@ void main() {
   // moss gathers on what faces up
   float moss = smoothstep(0.35, 0.72, n.y + (fbm3(vO * 3.6 + uSeed + 7.0) - 0.5) * 1.15) * uMossK;
   col = mix(col, mix(mix(uMossLo, uMossMid, lit), uMossHi, top * 0.5), moss);
-  // warm fill from the lantern
-  vec3 lv = uLampP - vW;
-  float ld = length(lv);
-  col += uLampC * uLampK * max(dot(n, lv / max(ld, 1e-3)), 0.0) / (1.0 + ld * ld * 1.4);
+  #ifdef USE_COLOR
+  // baked occlusion: the undersides and the hollows between clumps sink toward ink
+  col = mix(mix(uLo, uInk, 0.5), col, smoothstep(0.0, 1.0, vAo + (fbm3(vO * 7.0 + uSeed) - 0.5) * 0.3));
+  // needles: dry strokes fanning out from the trunk, dark in the body, catching light on the crowns
+  float r0 = length(vO.xz);
+  vec3 nq = vec3(atan(vO.z, vO.x) * max(r0, 0.3), vO.y, r0) + uSeed;
+  float nd = smoothstep(0.5, 0.85, n3(nq * vec3(26.0, 26.0, 3.5)));
+  float nl2 = smoothstep(0.58, 0.9, n3(nq * vec3(22.0, 22.0, 3.0) + 7.0));
+  col = mix(col, mix(uLo, uInk, 0.4), nd * (0.45 - 0.25 * top) * uEdge);
+  col = mix(col, uHi, nl2 * top * 0.45);
+  #endif
+  // warm fill from the lamps
+  for (int i = 0; i < 4; i++) {
+    vec3 lv = uLamps[i].xyz - vW;
+    float ld = length(lv);
+    col += uLampCs[i] * (uLampK * uLamps[i].w) * max(dot(n, lv / max(ld, 1e-3)), 0.0) / (1.0 + ld * ld * 1.4);
+  }
   // moonlit rim on the side turned to the moon
   float fres = pow(1.0 - max(dot(n, V), 0.0), 2.6);
   col = mix(col, uMoonC, fres * smoothstep(-0.35, 0.55, dot(n, uMoonDir)) * uRim);
@@ -198,8 +263,9 @@ void main() {
 const GROUND_FRAG = /* glsl */ `
 ${NOISE}
 ${HAZE}
-uniform vec3 uSand, uRake, uRakeHi, uShadowC, uLampC, uLampP;
-uniform float uRakeA, uRakeHiA, uShadowK, uLampK, uR, uGrain;
+${LAMPS}
+uniform vec3 uSand, uRake, uRakeHi, uShadowC;
+uniform float uRakeA, uRakeHiA, uShadowK, uR, uGrain;
 uniform vec2 uCenter, uShDir;
 uniform float uShLen;
 uniform vec4 uRings[8];
@@ -239,8 +305,10 @@ void main() {
     sh = max(sh, max(thrown * 0.7, foot));
   }
   col = mix(col, uShadowC, sh * uShadowK);
-  vec3 lq = vec3(p.x, 0.0, p.y) - uLampP;
-  col += uLampC * uLampK * 0.5 / (1.0 + dot(lq, lq) * 3.0);
+  for (int i = 0; i < 4; i++) {
+    vec3 lq = vec3(p.x, 0.0, p.y) - uLamps[i].xyz;
+    col += uLampCs[i] * (uLampK * uLamps[i].w * 0.5) / (1.0 + dot(lq, lq) * 3.0);
+  }
   col += (h21(gl_FragCoord.xy) - 0.5) * uGrain;
   float rim = length(p - uCenter) + (fbm2(p * 0.5) - 0.5) * uR * 0.3;
   float a = 1.0 - smoothstep(uR * 0.5, uR, rim);
@@ -248,36 +316,88 @@ void main() {
   #include <colorspace_fragment>
 }`
 
+/** the pond's quad reaches SHORE past the water line: that ring is wet sand */
+const SHORE = 1.28
 const POND_FRAG = /* glsl */ `
 ${NOISE}
 ${HAZE}
-uniform vec3 uWater, uSky, uMoonC, uLampC, uInk, uMoonDir, uLampP;
-uniform float uLampK, uRoad, uGrain;
+${LAMPS}
+uniform vec3 uWater, uSky, uMoonC, uInk, uMoonDir, uSand;
+uniform float uRoad, uGrain, uDark;
 uniform vec2 uC, uR;
+uniform vec4 uCast[24];
+uniform int uCastN;
 varying vec3 vW;
+// what of the casters (x, z, radius, height) the ray from p along R meets: each stands as a column that thins upward,
+// so a stone, a lantern or a trunk on the bank drops a soft dark reflection toward the eye
+float mirrored(vec3 p, vec3 R) {
+  float o = 0.0;
+  float rr = dot(R.xz, R.xz);
+  for (int i = 0; i < 24; i++) {
+    if (i >= uCastN) break;
+    vec4 c = uCast[i];
+    float s = dot(c.xy - p.xz, R.xz) / rr;
+    if (s <= 0.0) continue;
+    float y = R.y * s / c.w; // 0 at its foot … 1 at its top
+    float d = length(p.xz + R.xz * s - c.xy) / (c.z * (1.0 - 0.5 * y));
+    o = max(o, (1.0 - smoothstep(0.7, 1.0, d)) * (1.0 - smoothstep(0.75, 1.0, y)));
+  }
+  return o;
+}
 void main() {
   vec2 p = vW.xz;
-  float edge = length((p - uC) / uR) + (n2(p * 2.2) - 0.5) * 0.14;
-  float a = 1.0 - smoothstep(1.0 - fwidth(edge) * 1.5, 1.0, edge);
+  float wob = (n2(p * 1.8) - 0.5) * 0.12 + (n2(p * 6.0) - 0.5) * 0.025;
+  vec2 q = (p - uC) / uR;
+  float edge = length(q) + wob; // 1 = the water line
+  float fw = fwidth(edge);
+  float wet = 1.0 - smoothstep(1.0 - fw * 1.5, 1.0 + fw * 0.5, edge);
+  float deep = smoothstep(0.0, 0.55, 1.0 - edge); // 0 at the shore … 1 in the middle
   vec3 V = normalize(vW - cameraPosition);
+  float steep = max(-V.y, 0.0);
+  // the far half mirrors, the near half lets you look in (Fresnel, drawn a little bolder than nature over a small pond)
+  float along = dot(q, normalize(cameraPosition.xz - uC)); // -1 far bank … +1 near bank
+  // ripples: long and low across, stretched toward the eye, so lights break into vertical roads
   vec2 rp = p * vec2(1.4, 4.2);
   float gx = n2(rp + vec2(uTime * 0.22, 0.0)) - 0.5;
   float gz = n2(rp * 1.7 + vec2(3.0, -uTime * 0.18)) - 0.5;
   vec3 N = normalize(vec3(gx * 0.05, 1.0, gz * 0.24));
   vec3 R = reflect(V, N);
-  float fres = 0.2 + 0.8 * pow(1.0 - max(-V.y, 0.0), 3.0);
-  vec3 col = mix(uWater, mix(uSky, uFogC, smoothstep(0.0, 0.5, R.y)), fres * 0.85);
+  float fres = 0.1 + 0.9 * pow(1.0 - steep, 4.0);
+  float mirror = clamp(fres * (0.6 + 0.4 * uDark) + (1.0 - smoothstep(-1.0, 0.7, along)) * 0.55 * (1.0 - 0.6 * smoothstep(0.35, 0.9, steep)), 0.0, 0.94);
+  // looking in: sand through the shallows, ink gathering in the deep
+  vec3 body = mix(mix(uSand, uWater, 0.75 + 0.15 * uDark), mix(uWater, uInk, 0.5 - 0.3 * uDark), deep);
+  body = mix(body, uInk, smoothstep(0.2, 1.0, along) * deep * 0.12);
+  // looking at: the sky, a shade darker than the sky itself, and darker still everything standing on the bank
+  vec3 sky = mix(uSky, uFogC, smoothstep(0.02, 0.5, R.y)) * (1.0 - 0.1 * (1.0 - uDark));
+  vec3 thing = mix(uInk, uFogC, 0.05 + 0.3 * uDark); // (linear light: small shares of the paper already read pale)
+  float occ = mirrored(vW, normalize(vec3(R.x, max(R.y, 0.02), R.z)));
+  vec3 refl = mix(sky, thing, occ * (0.8 - 0.2 * uDark));
+  vec3 col = mix(body, refl, mirror * mix(0.6, 1.0, deep));
+  // dry-brush ripples: light dashes on the dark near water, ink dashes on the bright far water
+  float rip = smoothstep(0.66, 0.95, n2(vec2(p.x * 1.1, p.y * 13.0) + vec2(uTime * 0.05, 0.0)));
+  float rip2 = smoothstep(0.72, 0.97, n2(vec2(p.x * 0.8 + 9.0, p.y * 22.0) - vec2(uTime * 0.04, 0.0)));
+  col = mix(col, uSky, rip * (1.0 - mirror) * 0.4 * deep);
+  col = mix(col, uInk, rip2 * mirror * (0.16 - 0.08 * uDark) * deep);
+  // the moon's broken road and the lamps' streaks: the brightest marks on the water
+  float brk = 0.35 + 0.65 * smoothstep(0.3, 0.7, n2(vec2(p.x * 3.0, p.y * 18.0 - uTime * 0.1)));
   float m = dot(R, uMoonDir);
-  col += uMoonC * (smoothstep(0.9965, 0.9993, m) + smoothstep(0.975, 0.999, m) * 0.18) * uRoad;
-  col += uLampC * pow(max(dot(R, normalize(uLampP - vW)), 0.0), 70.0) * uLampK * 1.6;
-  // dry-brush ripples and a darker wet rim
-  float rip = smoothstep(0.7, 0.95, n2(vec2(p.x * 1.1, p.y * 14.0) + vec2(uTime * 0.05, 0.0)));
-  col = mix(col, uSky, rip * 0.45);
-  // deeper toward the near shore
-  col = mix(col, uWater * 0.82, smoothstep(0.0, 0.9, (p.y - uC.y) / uR.y + 0.4) * 0.35);
-  col = mix(col, uInk, smoothstep(0.8, 0.97, edge) * 0.55);
+  col += uMoonC * (smoothstep(0.9965, 0.9993, m) * brk + smoothstep(0.975, 0.999, m) * 0.12) * uRoad * (0.4 + 0.6 * deep);
+  vec3 Nl = normalize(vec3(gx * 0.03, 1.0, gz * 0.16));
+  vec3 Rl = reflect(V, Nl);
+  for (int i = 0; i < 4; i++) {
+    float l = max(dot(Rl, normalize(uLamps[i].xyz - vW)), 0.0);
+    col += uLampCs[i] * (pow(l, 260.0) * brk * 1.6 + pow(l, 40.0) * 0.05) * uLampK * uLamps[i].w * (0.4 + 0.6 * deep);
+  }
+  // the water line: a soft dark seam, a breath of moonlight along the far bank
+  float line = 1.0 - smoothstep(0.0, fw * 2.0 + 0.025, abs(edge - 0.98));
+  col = mix(col, mix(mix(uWater, uInk, 0.5), uMoonC, uDark * smoothstep(0.2, -0.6, along) * 0.5), line * 0.14);
+  // beyond it: damp sand drying into the raked garden
+  float damp = (1.0 - smoothstep(1.0, ${SHORE.toFixed(2)} - 0.04, edge + (n2(p * 4.0) - 0.5) * 0.08)) * (1.0 - wet);
+  vec3 sand = mix(uSand, mix(uWater, uInk, 0.3), 0.2 + 0.15 * uDark);
+  col = mix(sand, col, wet);
   col += (h21(gl_FragCoord.xy) - 0.5) * uGrain;
-  gl_FragColor = vec4(haze(col, vW), a);
+  // shallow water lets the raked sand show through: the shore has no hard edge
+  gl_FragColor = vec4(haze(col, vW), max(wet * mix(0.6, 1.0, smoothstep(0.0, 0.22, 1.0 - edge)), damp * 0.65));
   #include <colorspace_fragment>
 }`
 
@@ -376,13 +496,24 @@ function noise3(x: number, y: number, z: number) {
 }
 
 /** A garden stone: a lumpy sphere, chiselled by a few cut planes, flat at the foot, sized w × h × d standing on y = 0. */
+/** A welded unit sphere (positions + index), built once per resolution for the whole app: callers clone it. */
+const spheres = new Map<number, THREE.BufferGeometry>()
+function unitSphere(ws: number, hs: number): THREE.BufferGeometry {
+  let g = spheres.get(ws * 1000 + hs)
+  if (!g) {
+    const sp = new THREE.SphereGeometry(1, ws, hs)
+    sp.deleteAttribute('uv')
+    sp.deleteAttribute('normal')
+    g = mergeVertices(sp)
+    sp.dispose()
+    spheres.set(ws * 1000 + hs, g)
+  }
+  return g.clone()
+}
+
 function rockGeo(seed: number, w: number, h: number, d: number, cuts = 4): THREE.BufferGeometry {
   const r = rng(seed)
-  const sp = new THREE.SphereGeometry(1, 26, 16)
-  sp.deleteAttribute('uv')
-  sp.deleteAttribute('normal')
-  const g = mergeVertices(sp)
-  sp.dispose()
+  const g = unitSphere(26, 16)
   const o = [r() * 40, r() * 40, r() * 40]
   const planes = Array.from({ length: cuts }, () => {
     const a = r() * Math.PI * 2
@@ -470,6 +601,54 @@ function leafGeo(len: number): THREE.BufferGeometry {
   return new THREE.ShapeGeometry(sh, 5)
 }
 
+/**
+ * A cloud-pruned pine pad, w × h × d centred on (0, 0, 0): a domed crown and a ring of drooping clumps, each tufted at
+ * its rim like brushed needles, flat and dark underneath. colour.r = baked occlusion (for k.ink(…, { ao: true })).
+ */
+const smoothstep01 = (t: number) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t))
+function padGeo(seed: number, w: number, hh: number, d: number, low: boolean): THREE.BufferGeometry {
+  const r = rng(seed)
+  const n = 5 + Math.floor(r() * 3)
+  const parts: THREE.BufferGeometry[] = []
+  for (let i = 0; i <= n; i++) {
+    const crown = i === n
+    const a = (i / n) * Math.PI * 2 + r() * 0.7
+    const out = crown ? 0 : 0.2 + r() * 0.16
+    const cw = w * (crown ? 0.56 : 0.3 + r() * 0.14), cd = d * (crown ? 0.56 : 0.32 + r() * 0.14)
+    const ch = hh * (crown ? 0.8 : 0.5 + r() * 0.25)
+    const g = unitSphere(low ? 10 : 16, low ? 6 : 8)
+    const p = g.attributes.position.array as Float32Array
+    const ao = new Float32Array(p.length)
+    const o = r() * 50, lobes = 6 + Math.floor(r() * 4)
+    for (let j = 0; j < p.length; j += 3) {
+      let x = p[j], y = p[j + 1], z = p[j + 2]
+      // needle tufts round the rim, a lumpy crown, a flat belly
+      const az = Math.atan2(z, x)
+      const k = 1 + 0.3 * (noise3(x * 2.1 + o, y * 2.1, z * 2.1) - 0.5) + 0.16 * (1 - Math.abs(y)) * Math.sin(az * lobes + o + noise3(x * 4, y * 4 + o, z * 4) * 3)
+      x *= k
+      z *= k
+      y = Math.max(y * k, -0.3 - 0.06 * hash3(x * 5, o, z * 5))
+      // the belly's rim hangs in needle points
+      if (y < -0.27) y -= 0.38 * smoothstep01((Math.hypot(x, z) - 0.55) / 0.45) * Math.abs(Math.sin(az * lobes * 1.5 + o)) ** 5
+      p[j] = (x * cw) / 2
+      p[j + 1] = (y * ch) / 2
+      p[j + 2] = (z * cd) / 2
+      // dark below and toward the trunk, lit on the crown
+      ao[j] = ao[j + 1] = ao[j + 2] = clamp(0.12 + 0.95 * smoothstep01((y + 0.3) / 1.2) - (crown ? 0 : 0.08), 0, 1)
+    }
+    g.setAttribute('color', new THREE.BufferAttribute(ao, 3))
+    // outer clumps sit lower and droop outward, the crown rides on top: layers, not a disc
+    g.rotateZ(crown ? 0 : -Math.cos(a) * 0.18)
+    g.rotateX(crown ? 0 : Math.sin(a) * 0.18)
+    g.translate(Math.cos(a) * out * w, crown ? hh * 0.28 : -hh * (0.06 + r() * 0.16), Math.sin(a) * out * d)
+    parts.push(g)
+  }
+  const g = mergeGeometries(parts)!
+  parts.forEach((x) => x.dispose())
+  g.computeVertexNormals() // once for the pad: the clumps share no vertices
+  return g
+}
+
 // ───────────────────────────── palette ─────────────────────────────
 /** Set a THREE colour from a CSS colour (hex, rgb(), rgba()); returns the alpha. */
 function setCss(c: THREE.Color, css: string): number {
@@ -507,7 +686,8 @@ function makePalette() {
     // colours mix in linear light: night lines stay faint or the sand turns grey
     if (dark) P.rakeHi.copy(P.mist), (P.rakeHiA *= 0.8)
     P.sand.copy(get('--paper-2')).lerp(P.mist, dark ? 0.05 : 0).lerp(P.paper, dark ? 0 : 0.6)
-    P.sky.copy(P.paper).lerp(P.moon, dark ? 0.22 : 0.5)
+    // what still water mirrors near the horizon: the mist band, not the moon (the moon has its own road)
+    P.sky.copy(P.paper).lerp(P.mist, dark ? 0.24 : 0.7)
     const t = P.tones
     const set3 = (k: Tone, a: string, b: string, c: string) => (t[k][0].copy(get(a)), t[k][1].copy(get(b)), t[k][2].copy(get(c)))
     set3('rock', '--rock-lo', '--rock-mid', '--rock-hi')
@@ -539,14 +719,20 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
   const view = opts.view ?? {}
   const yawR = view.yawRange ?? [-0.75, 0.75]
   const pitchR = view.pitchRange ?? [0.08, 0.72]
+  const zoomR = view.zoomRange ?? [0.65, 1.35]
   const fit = view.fit ?? [6.6, 3]
   const T = new THREE.Vector3(...(view.target ?? [0, 1, 0]))
-  const swaying = opts.sway !== false && !low && !ctx.reduced
+  // living motion (sway, drifting mist, water) only at high, and only until `idle` seconds pass without input
+  const lively = !low && !ctx.reduced
+  const swaying = opts.sway !== false && lively
+  const idleMs = (opts.idle ?? 10) * 1000
+  let aliveUntil = 0
 
   const el = h('div', { class: 'p2s3', tabindex: '0', role: 'group', 'aria-label': opts.label })
   if (opts.hint) el.setAttribute('aria-description', opts.hint)
+  const tags = h('div', { class: 'p2s3-labels' })
   const hits = h('div', { class: 'p2s3-hits' })
-  el.append(hits)
+  el.append(tags, hits)
   host.append(el)
 
   const { P, read } = makePalette()
@@ -562,28 +748,38 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     uFogC: { value: P.paper },
     uFog: { value: new THREE.Vector2(12, 46) },
     uMist: { value: new THREE.Vector2(1.2, 0.55) },
-    uLampP: { value: new THREE.Vector3(0, -50, 0) },
     uLampC: { value: P.lantern },
+    uLamps: { value: Array.from({ length: 4 }, () => new THREE.Vector4()) },
+    uLampCs: { value: Array.from({ length: 4 }, () => P.lantern) },
     uLampK: { value: 0 },
     uGrain: { value: 0.03 },
     uMossLo: { value: P.tones.moss[0] },
     uMossMid: { value: P.tones.moss[1] },
     uMossHi: { value: P.tones.moss[2] },
   }
+  // the casters' footprints (x, z, radius, height): shadows on the sand, reflections in the ponds
+  const CAST = { uCast: { value: Array.from({ length: 24 }, () => new THREE.Vector4()) }, uCastN: { value: 0 } }
   const seedR = rng(17)
   const hullMat = new THREE.ShaderMaterial({ vertexShader: HULL_VERT, fragmentShader: HULL_FRAG, defines, side: THREE.BackSide, uniforms: { ...U, uW: { value: low ? 0.002 : 0.0017 } } })
   const casters: THREE.Object3D[] = []
   const rings: THREE.Object3D[] = []
-  const lamps: THREE.Object3D[] = []
+  const lamps: InkLamp[] = []
   let groundMat: THREE.ShaderMaterial | null = null
-  const billboards: THREE.ShaderMaterial[] = []
   const recolor: (() => void)[] = []
 
   const applyPal = () => {
     read()
     U.uGrain.value = P.dark ? 0.022 : 0.03
-    U.uLampK.value = lamps.length ? (P.dark ? 0.9 : 0.35) : 0
+    U.uLampK.value = P.dark ? 0.9 : 0.35
     recolor.forEach((f) => f())
+  }
+  /** a Tint as a colour, read from the theme (on mount and in onPrefs only) */
+  const tintOf = (t: Tint | undefined, out: THREE.Color) => {
+    if (!t) return out.copy(P.lantern)
+    const cs = getComputedStyle(document.documentElement)
+    const one = (x: string, c: THREE.Color) => (setCss(c, x.startsWith('--') ? cs.getPropertyValue(x).trim() : x), c)
+    if (typeof t === 'string') return one(t, out)
+    return one(t[0], out).lerp(one(t[1], new THREE.Color()), t[2] ?? 0.5)
   }
   applyPal()
   // before the first yield, so a theme change while building still lands (README A.10)
@@ -595,7 +791,7 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
   const ink: InkKit['ink'] = (tone, o = {}) => {
     const [lo, mid, hi] = P.tones[tone]
     const m = new THREE.ShaderMaterial({
-      vertexShader: WORLD_VERT, fragmentShader: INK_FRAG, defines, side: o.double ? THREE.DoubleSide : THREE.FrontSide,
+      vertexShader: WORLD_VERT, fragmentShader: INK_FRAG, defines, side: o.double ? THREE.DoubleSide : THREE.FrontSide, vertexColors: !!o.ao,
       uniforms: { ...U, uLo: { value: lo }, uMid: { value: mid }, uHi: { value: hi }, uMossK: { value: o.moss ?? 0 }, uHot: { value: 0 }, uSeed: { value: seedR() * 20 }, uRim: { value: 0 }, uEdge: { value: o.edge ?? 1 } },
     })
     const rimK = o.rim ?? 1
@@ -652,7 +848,7 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     return g
   }
   const glow: InkKit['glow'] = (at, size, color = 'lantern', k = 1) => {
-    const m = new THREE.ShaderMaterial({ vertexShader: BILL_VERT, fragmentShader: GLOW_FRAG, transparent: true, depthWrite: false, uniforms: { uSize: { value: new THREE.Vector2(size, size) }, uC: { value: color === 'moon' ? P.moon : P.lantern }, uK: { value: k } } })
+    const m = new THREE.ShaderMaterial({ vertexShader: BILL_VERT, fragmentShader: GLOW_FRAG, transparent: true, depthWrite: false, uniforms: { uSize: { value: new THREE.Vector2(size, size) }, uC: { value: color === 'moon' ? P.moon : color === 'lantern' ? P.lantern : color }, uK: { value: k } } })
     const base = k
     recolor.push(() => void (m.uniforms.uK.value = base * (P.dark ? 1 : 0.55)))
     m.uniforms.uK.value = base * (P.dark ? 1 : 0.55)
@@ -663,14 +859,53 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     root.add(q)
     return q
   }
+  /** each lamp's world position and how lit it is, into the four shared slots */
+  const syncLamps = () => {
+    for (let i = 0; i < 4; i++) {
+      const L = lamps[i], u = U.uLamps.value[i]
+      if (!L) u.w = 0
+      else L.obj.getWorldPosition(v3), u.set(v3.x, v3.y, v3.z, L.k)
+    }
+  }
+  const lamp = (at: V3, o: Parameters<InkKit['lamp']>[1] = {}): InkLamp & { fx: (() => void)[] } => {
+    const obj = new THREE.Object3D()
+    obj.position.set(...at)
+    ;(o.parent ?? root).add(obj)
+    const color = new THREE.Color()
+    tintOf(o.tint, color)
+    recolor.push(() => void tintOf(o.tint, color))
+    const i = lamps.length
+    if (i < 4) U.uLampCs.value[i] = color
+    const halo = o.halo === 0 ? null : glow(at, o.halo ?? 1.5, color, 0.85)
+    if (halo) (o.parent ?? root).add(halo)
+    const glowK = () => halo && ((halo.material as THREE.ShaderMaterial).uniforms.uK.value = 0.85 * L.k * (P.dark ? 1 : 0.55))
+    recolor.push(glowK)
+    const L = {
+      obj, color, k: o.k ?? 1, fx: [] as (() => void)[],
+      set(k: number) {
+        L.k = clamp(k, 0, 1)
+        glowK()
+        L.fx.forEach((f) => f())
+        if (stage) syncLamps(), stage.render()
+      },
+    }
+    glowK()
+    lamps.push(L)
+    return L
+  }
   const toro: InkKit['toro'] = (o = {}) => {
-    const g = groupAt(o.at, o.rotY ?? 0.35)
+    const g: THREE.Group & { lamp?: InkLamp } = groupAt(o.at, o.rotY ?? 0.35)
     const k = (o.h ?? 1.5) / 1.55
     g.scale.setScalar(k)
     mesh(toroGeo(), ink('rock', { moss: 0.35 }), { parent: g })
     if (o.lit !== false) {
-      const winMat = new THREE.MeshBasicMaterial({ color: P.lantern })
-      recolor.push(() => void winMat.color.copy(P.lantern))
+      const L = lamp([0, 0.98, 0], { tint: o.tint, k: typeof o.lit === 'number' ? o.lit : 1, parent: g })
+      // the paper window: unlit it is grey paper, lit it glows its tint
+      const winMat = new THREE.MeshBasicMaterial()
+      const paint = () => void winMat.color.copy(P.tones.rock[0]).lerp(L.color, 0.15 + 0.85 * L.k)
+      paint()
+      recolor.push(paint)
+      L.fx.push(paint)
       const win = new THREE.PlaneGeometry(0.13, 0.15)
       for (const z of [0.148, -0.148]) {
         const w = new THREE.Mesh(win, winMat)
@@ -678,13 +913,7 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
         if (z < 0) w.rotation.y = Math.PI
         g.add(w)
       }
-      const lamp = new THREE.Object3D()
-      lamp.position.set(0, 0.98, 0)
-      g.add(lamp)
-      lamps.push(lamp)
-      U.uLampK.value = P.dark ? 0.9 : 0.35
-      const halo = glow([0, 0.98, 0], 1.5, 'lantern', 0.85)
-      g.add(halo)
+      g.lamp = L
     }
     casters.push(g)
     rings.push(g)
@@ -762,12 +991,13 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
       ends.push([end, 0.75 + r() * 0.35])
     })
     const pads = ends.map(([e, k], i) => {
-      const pg = rockGeo((o.seed ?? 7) * 13 + i, H * 0.42 * k, H * 0.12 * k, H * 0.32 * k, 3)
-      pg.translate(e.x, e.y - H * 0.03, e.z)
+      const pg = padGeo((o.seed ?? 7) * 13 + i, H * 0.44 * k, H * 0.15 * k, H * 0.34 * k, low)
+      pg.rotateY(r() * Math.PI)
+      pg.translate(e.x, e.y + H * 0.02, e.z)
       return pg
     })
     mesh(mergeGeometries(wood)!, ink('bark', { rim: 1.2 }), { parent: g })
-    mesh(mergeGeometries(pads)!, ink('pine', { rim: 1.3, edge: 0.7 }), { parent: g })
+    mesh(mergeGeometries(pads)!, ink('pine', { rim: 1.4, edge: 1, ao: true }), { parent: g })
     wood.concat(pads).forEach((x) => x.dispose())
     casters.push(g)
     return g
@@ -782,7 +1012,7 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
         uRakeA: { value: 0 }, uRakeHiA: { value: 0 }, uShadowK: { value: 0 }, uR: { value: R }, uCenter: { value: new THREE.Vector2(...c) },
         uShDir: { value: new THREE.Vector2() }, uShLen: { value: 0.9 },
         uRings: { value: Array.from({ length: 8 }, () => new THREE.Vector4()) }, uRingN: { value: 0 },
-        uCast: { value: Array.from({ length: 24 }, () => new THREE.Vector4()) }, uCastN: { value: 0 },
+        ...CAST,
       },
     })
     const tone = () => {
@@ -805,14 +1035,17 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     const at = o.at ?? [1.5, -0.5], rr = o.r ?? [1.6, 1.1]
     const m = new THREE.ShaderMaterial({
       vertexShader: WORLD_VERT, fragmentShader: POND_FRAG, defines, transparent: true,
-      uniforms: { ...U, uWater: { value: P.water }, uSky: { value: P.sky }, uRoad: { value: 1 }, uC: { value: new THREE.Vector2(...at) }, uR: { value: new THREE.Vector2(...rr) } },
+      uniforms: { ...U, ...CAST, uWater: { value: P.water }, uSky: { value: P.sky }, uSand: { value: P.sand }, uRoad: { value: 1 }, uDark: { value: 0 }, uC: { value: new THREE.Vector2(...at) }, uR: { value: new THREE.Vector2(...rr) } },
     })
-    const tone = () => void (m.uniforms.uRoad.value = P.dark ? 1 : 0.55)
+    const tone = () => {
+      m.uniforms.uRoad.value = P.dark ? 1 : 0.8
+      m.uniforms.uDark.value = P.dark ? 1 : 0
+    }
     tone()
     recolor.push(tone)
     const q = new THREE.Mesh(new THREE.CircleGeometry(1, 64), m)
     q.rotation.x = -Math.PI / 2
-    q.scale.set(rr[0], rr[1], 1)
+    q.scale.set(rr[0] * SHORE, rr[1] * SHORE, 1)
     q.position.set(at[0], 0.012, at[1])
     q.renderOrder = -4
     q.raycast = () => {}
@@ -832,11 +1065,26 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     const halo = () => void (mm.uniforms.uHalo.value = P.dark ? 0.55 : 0.75)
     halo()
     recolor.push(halo)
-    billboards.push(mm)
     const moonQ = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mm)
-    moonQ.position.copy(U.uMoonDir.value).multiplyScalar(80).add(T)
+    const sky = U.uMoonDir.value
+    moonQ.position.copy(sky).multiplyScalar(80).add(T)
     moonQ.renderOrder = -10
     g.add(moonQ)
+    if (o.moonRise && lively) {
+      // the moon climbs from behind the ranges to its place; the rim it draws on every stone climbs with it
+      const az = Math.atan2(sky.x, -sky.z), el1 = Math.asin(sky.y), el0 = -0.05
+      let t = 0
+      const at = (e: number) => {
+        sky.set(Math.cos(e) * Math.sin(az), Math.sin(e), -Math.cos(e) * Math.cos(az))
+        moonQ.position.copy(sky).multiplyScalar(80).add(T)
+      }
+      at(el0)
+      animate((dt) => {
+        t = Math.min(1, t + dt / o.moonRise!)
+        at(el0 + (el1 - el0) * (1 - (1 - t) ** 3))
+        return t < 1
+      })
+    }
     // three ranges: near and dark, far and pale
     // [radius, depth, ridge base, ridge height (shares of the 16-unit band from y = -1.2), opacity]
     ;[[24, 0, 0.25, 0.12, 0.55], [32, 0.5, 0.24, 0.18, 0.36], [44, 1, 0.23, 0.25, 0.24]].forEach(([R, depth, base, amp, k], i) => {
@@ -907,14 +1155,36 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     kick()
   }
 
+  // ── labels: DOM that follows a 3D point; positions are written only when the camera or the scene changed
+  interface Tag { obj: THREE.Object3D; el: HTMLElement; off: THREE.Vector3; x: number; y: number; a: number }
+  const labels: Tag[] = []
+  const label: InkKit['label'] = (obj, lel, offset) => {
+    lel.classList.add('p2s3-label')
+    tags.append(lel)
+    // it rides on the top of obj's box (measured now, kept relative to obj so it follows it), plus offset
+    const box = new THREE.Box3().setFromObject(obj)
+    const off = new THREE.Vector3((box.min.x + box.max.x) / 2, box.max.y, (box.min.z + box.max.z) / 2).sub(obj.getWorldPosition(new THREE.Vector3()))
+    if (offset) off.add(new THREE.Vector3(...offset))
+    labels.push({ obj, el: lel, off, x: NaN, y: NaN, a: -1 })
+    dirty = true
+    stage?.render()
+    return lel
+  }
+
   // ── view
   const tgt = { yaw: view.yaw ?? 0, pitch: view.pitch ?? 0.2, zoom: 1 }
   const cur = { ...tgt }
+  const home = { ...tgt } // where view.home drifts back to: the default view, or where k.fly last went
   const vel = { yaw: 0, pitch: 0 }
   const gy = { x: 0, y: 0, x0: NaN, y0: NaN }
+  let homing = false
+  type Flight = { yaw0: number; pitch0: number; yaw1: number; pitch1: number; t0: THREE.Vector3; t1: THREE.Vector3; u: number; dur: number; done: () => void }
+  let flight: Flight | null = null
   let fitDist = 10
   let tall = 0
   let swayT = 0
+  let dirty = true
+  const lastCam = new THREE.Vector3(NaN, 0, 0), lastT = new THREE.Vector3()
   const tanHalf = () => Math.tan(((stage?.camera.fov ?? 38) * Math.PI) / 360)
   const refit = (w: number, hh: number) => {
     const asp = w / hh
@@ -922,6 +1192,7 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     fitDist = Math.max((fit[0] * (asp < 1 ? 0.56 : 1)) / th, fit[1] / tv)
     tall = asp < 1 ? 0.13 : 0 // a tall frame looks down a little more, so the garden fills it
     stage!.camera.setViewOffset(w, hh, 0, -(view.shift ?? 0.12) * hh, w, hh)
+    dirty = true
   }
   const place = () => {
     const cam = stage!.camera
@@ -931,7 +1202,11 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     cam.position.set(T.x + d * Math.cos(pitch) * Math.sin(yaw), T.y + d * Math.sin(pitch), T.z + d * Math.cos(pitch) * Math.cos(yaw))
     cam.lookAt(T)
     cam.updateMatrixWorld()
-    // proxies follow their objects (writes only)
+    if (!dirty && cam.position.equals(lastCam) && T.equals(lastT)) return
+    dirty = false
+    lastCam.copy(cam.position)
+    lastT.copy(T)
+    // proxies and labels follow their objects (writes only)
     const W = stage!.width, H = stage!.height
     const k = H / 2 / tanHalf()
     for (const t of taps) {
@@ -945,6 +1220,23 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
       t.z = z
       t.btn.style.transform = `translate(${x - z / 2}px,${y - z / 2}px)`
     }
+    const fog = U.uFog.value
+    for (const L of labels) {
+      if (!L.el.isConnected) continue
+      v3.setFromMatrixPosition(L.obj.matrixWorld).add(L.off)
+      const dist = v3.distanceTo(cam.position)
+      v3.applyMatrix4(cam.matrixWorldInverse)
+      const behind = v3.z > -cam.near
+      v3.applyMatrix4(cam.projectionMatrix)
+      const x = Math.round(((v3.x + 1) / 2) * W), y = Math.round(((1 - v3.y) / 2) * H)
+      // gone behind the camera; fading as it sinks into the far haze
+      const a = behind ? 0 : Math.round(clamp(1 - ((dist - fog.x) / (fog.y - fog.x)) * 1.5, 0, 1) * 20) / 20
+      if (x === L.x && y === L.y && a === L.a) continue
+      L.x = x
+      L.y = y
+      if (a !== L.a) (L.el.style.opacity = String(a)), (L.el.style.visibility = a ? '' : 'hidden'), (L.a = a)
+      L.el.style.transform = `translate(${x}px,${y}px) translate(-50%,-100%)`
+    }
   }
   const v3 = new THREE.Vector3()
   const settle = () => {
@@ -956,10 +1248,27 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
   const syncHot = () => {
     for (const t of taps) for (const m of t.mats) m.uniforms.uHot.value = t.hot
   }
+  const ease = (u: number) => (u < 0.5 ? 2 * u * u : 1 - (-2 * u + 2) ** 2 / 2) // power2.inOut
+  const endFlight = () => {
+    const f = flight
+    flight = null
+    f?.done()
+  }
+  const anims: ((dt: number) => boolean)[] = []
+  const frames: ((t: number, dt: number) => void)[] = []
   /** one animation step; true while something still moves */
   const step = (dt: number) => {
     let moving = false
-    if (!drag && (Math.abs(vel.yaw) > 0.002 || Math.abs(vel.pitch) > 0.002)) {
+    if (flight) {
+      const f = flight
+      f.u = Math.min(1, f.u + dt / f.dur)
+      const e = ease(f.u)
+      tgt.yaw = cur.yaw = f.yaw0 + (f.yaw1 - f.yaw0) * e
+      tgt.pitch = cur.pitch = f.pitch0 + (f.pitch1 - f.pitch0) * e
+      T.lerpVectors(f.t0, f.t1, e)
+      if (f.u >= 1) endFlight()
+      moving = true
+    } else if (!drag && (Math.abs(vel.yaw) > 0.002 || Math.abs(vel.pitch) > 0.002)) {
       tgt.yaw = clamp(tgt.yaw + vel.yaw * dt, yawR[0], yawR[1])
       tgt.pitch = clamp(tgt.pitch + vel.pitch * dt, pitchR[0], pitchR[1])
       const f = Math.exp(-dt * 4)
@@ -967,17 +1276,31 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
       vel.pitch *= f
       moving = true
     }
+    if (homing && !drag && !flight) {
+      // let go: drift back, slower than a turn, so it reads as the garden settling
+      const f = 1 - Math.exp(-dt * 1.6)
+      tgt.yaw += (home.yaw - tgt.yaw) * f
+      tgt.pitch += (home.pitch - tgt.pitch) * f
+      if (Math.abs(home.yaw - tgt.yaw) + Math.abs(home.pitch - tgt.pitch) > 1e-3) moving = true
+      else if (!moving) homing = false
+    }
     const f = 1 - Math.exp(-dt * 8)
     cur.yaw += (tgt.yaw - cur.yaw) * f
     cur.pitch += (tgt.pitch - cur.pitch) * f
     cur.zoom += (tgt.zoom - cur.zoom) * f
     moving ||= Math.abs(tgt.yaw - cur.yaw) + Math.abs(tgt.pitch - cur.pitch) + Math.abs(tgt.zoom - cur.zoom) > 2e-4
+    for (let i = anims.length - 1; i >= 0; i--) if (!anims[i](dt)) anims.splice(i, 1)
+    moving ||= anims.length > 0
     for (const t of taps) {
       t.hot += (t.want - t.hot) * f
       moving ||= Math.abs(t.want - t.hot) > 0.01
     }
     syncHot()
     return moving
+  }
+  const frame = (dt: number) => {
+    for (const fn of frames) fn(U.uTime.value, dt)
+    place()
   }
 
   let stage: Stage | null = null
@@ -990,12 +1313,65 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
       stage.render()
     } else motion.start()
   }
+  /** input: living motion runs again for `idle` seconds */
+  const wake = () => {
+    if (!lively) return
+    aliveUntil = performance.now() + idleMs
+    motion?.start()
+  }
+  const animate: InkKit['animate'] = (fn) => {
+    if (ctx.reduced) {
+      for (let i = 0; i < 2000 && fn(0.05); i++);
+      return kick()
+    }
+    anims.push(fn)
+    motion?.start()
+  }
+  const fly: InkKit['fly'] = (target, yaw, pitch, dur = 1.2) => {
+    endFlight()
+    const yaw1 = clamp(yaw, yawR[0], yawR[1]), pitch1 = clamp(pitch, pitchR[0], pitchR[1])
+    const t1 = target ? new THREE.Vector3(...target) : T.clone()
+    home.yaw = yaw1
+    home.pitch = pitch1
+    homing = false
+    vel.yaw = vel.pitch = 0
+    if (!stage || !motion || ctx.reduced) {
+      tgt.yaw = cur.yaw = yaw1
+      tgt.pitch = cur.pitch = pitch1
+      T.copy(t1)
+      kick()
+      return Promise.resolve()
+    }
+    const m = motion
+    return new Promise<void>((done) => {
+      flight = { yaw0: cur.yaw, pitch0: cur.pitch, yaw1, pitch1, t0: T.clone(), t1, u: 0, dur: Math.max(0.05, dur), done }
+      m.start()
+    })
+  }
 
   // ── input
   let drag: { id: number; sx: number; sy: number; x: number; y: number; t: number; moved: boolean } | null = null
+  const pts = new Map<number, { x: number; y: number }>()
+  let pinch: { d: number; z: number } | null = null
+  const spread = () => {
+    const it = pts.values()
+    const a = it.next().value!, b = it.next().value!
+    return Math.max(1, Math.hypot(a.x - b.x, a.y - b.y))
+  }
   let askedGyro = false
   const onDown = (e: PointerEvent) => {
     if (e.button !== 0) return
+    wake()
+    endFlight()
+    homing = false
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (pts.size >= 2) {
+      // two fingers: pinch to dolly, no turning
+      if (pts.size === 2) pinch = { d: spread(), z: tgt.zoom }
+      drag = null
+      el.classList.remove('grabbing')
+      return
+    }
     rect = el.getBoundingClientRect()
     drag = { id: e.pointerId, sx: e.clientX, sy: e.clientY, x: e.clientX, y: e.clientY, t: performance.now(), moved: false }
     vel.yaw = vel.pitch = 0
@@ -1003,12 +1379,20 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     if (opts.gyro && !askedGyro && DOE?.requestPermission) (askedGyro = true), DOE.requestPermission().catch(() => {})
   }
   const onMove = (e: PointerEvent) => {
+    const pt = pts.get(e.pointerId)
+    if (pt) (pt.x = e.clientX), (pt.y = e.clientY)
+    if (pinch) {
+      if (pts.size === 2) (tgt.zoom = clamp((pinch.z * pinch.d) / spread(), zoomR[0], zoomR[1])), kick()
+      return
+    }
     if (!drag || e.pointerId !== drag.id) {
       if (e.pointerType !== 'mouse' || drag) return
+      wake()
       const o = pick(e.clientX, e.clientY)
       if (o !== hover) (hover = o), setHot()
       return
     }
+    wake()
     if (!drag.moved) {
       if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 5) return
       drag.moved = true
@@ -1032,6 +1416,11 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     kick()
   }
   const onUp = (e: PointerEvent) => {
+    pts.delete(e.pointerId)
+    if (pinch) {
+      if (pts.size < 2) pinch = null // the finger left behind does nothing until it lifts
+      return
+    }
     if (!drag || e.pointerId !== drag.id) return
     const tap = !drag.moved
     if (performance.now() - drag.t > 90) vel.yaw = vel.pitch = 0 // held still before letting go: no throw
@@ -1040,6 +1429,10 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     if (tap) {
       const o = pick(e.clientX, e.clientY)
       ;(o?.userData.p2tap as (() => void) | undefined)?.()
+    }
+    if (view.home && !flight) {
+      homing = true
+      if (ctx.reduced) (tgt.yaw = home.yaw), (tgt.pitch = home.pitch), (homing = false)
     }
     kick()
   }
@@ -1050,9 +1443,19 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     const k = e.key
     if (k === 'ArrowLeft' || k === 'ArrowRight') tgt.yaw = clamp(tgt.yaw + (k === 'ArrowLeft' ? 0.14 : -0.14), yawR[0], yawR[1])
     else if (k === 'ArrowUp' || k === 'ArrowDown') tgt.pitch = clamp(tgt.pitch + (k === 'ArrowUp' ? 0.06 : -0.06), pitchR[0], pitchR[1])
-    else if (k === '+' || k === '=' || k === '-' || k === '_') tgt.zoom = clamp(tgt.zoom * (k === '-' || k === '_' ? 1.1 : 0.9), 0.65, 1.35)
+    else if (k === '+' || k === '=' || k === '-' || k === '_') tgt.zoom = clamp(tgt.zoom * (k === '-' || k === '_' ? 1.1 : 0.9), zoomR[0], zoomR[1])
     else return
     e.preventDefault()
+    endFlight()
+    wake()
+    kick()
+  }
+  const onWheel = (e: WheelEvent) => {
+    e.preventDefault()
+    wake()
+    // trackpad pinch arrives as ctrl + wheel with small deltas; a mouse wheel in lines (Firefox) is ~16 px a line
+    const dy = e.deltaY * (e.deltaMode === 1 ? 16 : 1)
+    tgt.zoom = clamp(tgt.zoom * Math.exp(dy * (e.ctrlKey ? 0.01 : 0.0012)), zoomR[0], zoomR[1])
     kick()
   }
   const onTilt = (e: DeviceOrientationEvent) => {
@@ -1069,16 +1472,28 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
   let job: { cancel(): void } | null = null
   let undo: (() => void) | null = null
   const kit: InkKit = {
-    root, low, ink, mesh, rock, stones, toro, bamboo, pine, ground, pond, backdrop, glow, tappable, pick,
+    root, low, ink, mesh, rock, stones, toro, lamp, bamboo, pine, ground, pond, backdrop, glow, tappable, label, pick, fly, animate,
+    uniforms: U,
     get stage() {
       return stage
+    },
+    get live() {
+      return lively && performance.now() < aliveUntil
     },
     turn(yaw, pitch) {
       tgt.yaw = clamp(yaw, yawR[0], yawR[1])
       if (pitch != null) tgt.pitch = clamp(pitch, pitchR[0], pitchR[1])
       kick()
     },
-    render: () => stage?.render(),
+    dolly(z) {
+      tgt.zoom = clamp(z, zoomR[0], zoomR[1])
+      kick()
+    },
+    onFrame: (fn) => void frames.push(fn),
+    render() {
+      dirty = true
+      stage?.render()
+    },
   }
   function* run() {
     const user = build(kit)
@@ -1087,20 +1502,20 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     // what the builders registered, now that everything sits where it will stay
     root.updateMatrixWorld(true)
     const box = new THREE.Box3(), size = new THREE.Vector3(), mid = new THREE.Vector3()
-    if (lamps.length) lamps[0].getWorldPosition(U.uLampP.value)
+    syncLamps()
     const key = U.uKey.value
+    const cast = CAST.uCast.value
+    const n = Math.min(cast.length, casters.length)
+    for (let i = 0; i < n; i++) {
+      box.setFromObject(casters[i]).getSize(size)
+      box.getCenter(mid)
+      cast[i].set(mid.x, mid.z, Math.max(0.08, Math.min(size.x, size.z) * 0.5), size.y)
+    }
+    CAST.uCastN.value = n
     if (groundMat) {
       const gu = groundMat.uniforms
       ;(gu.uShDir.value as THREE.Vector2).set(-key.x, -key.z).normalize()
       gu.uShLen.value = Math.min(2.2, Math.sqrt(1 - key.y * key.y) / Math.max(0.2, key.y)) * 0.75
-      const cast = gu.uCast.value as THREE.Vector4[]
-      const n = Math.min(cast.length, casters.length)
-      for (let i = 0; i < n; i++) {
-        box.setFromObject(casters[i]).getSize(size)
-        box.getCenter(mid)
-        cast[i].set(mid.x, mid.z, Math.max(0.08, Math.min(size.x, size.z) * 0.5), size.y)
-      }
-      gu.uCastN.value = n
       const rg = gu.uRings.value as THREE.Vector4[]
       const m = Math.min(rg.length, rings.length)
       for (let i = 0; i < m; i++) {
@@ -1125,13 +1540,14 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     if (!stage) {
       el.removeAttribute('tabindex')
       el.removeAttribute('role')
-      hits.hidden = true // the proxies belong to 3D objects that are not there
+      hits.hidden = tags.hidden = true // the proxies and labels belong to 3D objects that are not there
       undo = opts.fallback ? opts.fallback(el) : inkFallback(ctx, el, opts.label)
       return resolve(null)
     }
     const st = stage
+    if (opts.dpr) st.renderer.setPixelRatio(Math.min(devicePixelRatio, opts.dpr[low ? 1 : 0]))
     st.canvas.setAttribute('aria-hidden', 'true')
-    el.insertBefore(st.canvas, hits)
+    el.insertBefore(st.canvas, tags)
     st.scene.add(root)
     refit(st.width, st.height)
     st.onResize((w, hh) => {
@@ -1139,16 +1555,16 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
       rect = null
       for (const t of taps) t.x = -1
     })
-    st.onFrame(place)
+    st.onFrame((_t, dt) => frame(dt))
     motion = createLoop(el, (t, dt) => {
       swayT = t
       if (dt > 0) U.uTime.value = t
       const moving = step(dt)
-      place()
+      frame(dt)
       // until the stage has drawn once (its async shader compile) let it draw: drawing here would compile synchronously
       if (st.renderer.info.render.frame) st.renderer.render(st.scene, st.camera)
       else st.render()
-      return moving || swaying
+      return moving || (lively && performance.now() < aliveUntil)
     })
     el.addEventListener('pointerdown', onDown)
     el.addEventListener('pointermove', onMove)
@@ -1156,9 +1572,11 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     el.addEventListener('pointercancel', onUp)
     el.addEventListener('pointerleave', onLeave)
     el.addEventListener('keydown', onKey)
+    el.addEventListener('wheel', onWheel, { passive: false })
     if (opts.gyro && !ctx.reduced) addEventListener('deviceorientation', onTilt)
     st.render()
-    if (swaying) motion.start()
+    if (lively) aliveUntil = performance.now() + idleMs
+    if (lively || anims.length || flight) motion.start()
     resolve(kit)
   }
   const raf = requestAnimationFrame(() => void (job = sliced(run(), { sync: ctx.reduced, budget: 6 })))
@@ -1171,6 +1589,7 @@ export function inkStage(ctx: SceneCtx, host: HTMLElement, opts: InkOpts, build:
     job?.cancel()
     offPrefs()
     motion?.dispose()
+    endFlight()
     removeEventListener('deviceorientation', onTilt)
     undo?.()
     if (stage) stage.dispose()

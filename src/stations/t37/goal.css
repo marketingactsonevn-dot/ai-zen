@@ -1,0 +1,821 @@
+/* t37 scene 1 · goal: a four-layer stage; states on the root: .reading → .night → .morning, data-state = the order given */
+.t37g {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  /* the sand runs on under the foot of the frame and fades there; top and sides stay cut (the layers feather themselves) */
+  clip-path: inset(0 0 -22% 0);
+  --night: 2.2s;
+  --wood: color-mix(in srgb, #d2ab78 82%, var(--lantern));
+  --wood-2: color-mix(in srgb, #b2855a 88%, var(--lantern));
+  --wood-dk: color-mix(in srgb, #3a2414 85%, var(--wash));
+}
+:root[data-theme='dark'] .t37g {
+  --wood: color-mix(in srgb, #c9a06a 80%, var(--lantern));
+  --wood-2: color-mix(in srgb, #9c744a 85%, var(--lantern));
+}
+.t37g-stage {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: -16%;
+}
+/* the kit's diorama fades its foot early: here it fades only in the bleed under the frame */
+.t37g .p2d {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 77%, transparent 97%);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 77%, transparent 97%);
+}
+.t37g .p2d-floor-art {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 42%), linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 42%), linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+}
+/* the dawn coming up in the east (right) once the night has passed */
+.t37g-sky {
+  position: absolute;
+  inset: 0 0 20% 0;
+  pointer-events: none;
+  opacity: 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 62%, transparent), linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 62%, transparent), linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  mask-composite: intersect;
+  background:
+    radial-gradient(ellipse 70% 60% at 86% 76%, color-mix(in srgb, var(--lantern) 34%, transparent), transparent 70%),
+    linear-gradient(to top, var(--dawn), transparent 80%);
+  transition: opacity 1.2s ease;
+}
+:root[data-theme='dark'] .t37g-sky {
+  background:
+    radial-gradient(ellipse 70% 60% at 86% 76%, color-mix(in srgb, var(--lantern) 22%, transparent), transparent 70%),
+    linear-gradient(to top, color-mix(in srgb, var(--vermilion) 16%, transparent), transparent 75%);
+}
+.t37g.morning .t37g-sky {
+  opacity: 1;
+}
+/* "next morning", written in the sky; what the words did, under it */
+.t37g-morning {
+  position: absolute;
+  left: 74%;
+  top: 5%;
+  margin: 0;
+  transform: translateX(-50%);
+  font: 400 clamp(1.15rem, 2.2vw, 1.7rem) / 1.2 var(--serif);
+  color: var(--ink-2);
+  text-shadow: 0 0 10px var(--paper), 0 0 10px var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease;
+  white-space: nowrap;
+}
+.t37g.morning .t37g-morning,
+.t37g[data-state] .t37g-morning {
+  opacity: 1;
+}
+.t37g-caption {
+  position: absolute;
+  left: 74%;
+  top: calc(5% + clamp(1.15rem, 2.2vw, 1.7rem) * 1.6);
+  width: min(25rem, 34%);
+  transform: translateX(-50%);
+  text-align: center;
+  animation: p2-rise 0.6s ease-out both;
+}
+.t37g-res {
+  margin: 0;
+  font: 400 clamp(1rem, 1.5vw, 1.12rem) / 1.5 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 14px var(--paper);
+}
+.t37g-caption[data-ok='false'] .t37g-res::before {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.45em;
+  border-radius: 50%;
+  background: var(--vermilion);
+  vertical-align: 0.12em;
+}
+
+/* ── L0: the near stone bleeding off the bottom-left; feathered, never cut */
+.t37g-l0 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: -16%;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+  -webkit-mask-image: linear-gradient(to bottom, #000 68%, transparent 90%), linear-gradient(to right, transparent, #000 10%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, #000 68%, transparent 90%), linear-gradient(to right, transparent, #000 10%);
+  mask-composite: intersect;
+}
+.t37g-fore,
+.t37g-bough,
+.t37g-ema-sh {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t37g-l0-stone {
+  filter: blur(2.4px);
+}
+.t37g-l0-leaf {
+  fill: var(--vermilion);
+  opacity: 0.72;
+  filter: blur(2.4px);
+}
+/* ── the near bough: out of focus, thick at the corner, its leaves smeared into bokeh */
+.t37g-lb {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1), opacity 0.8s ease;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%), linear-gradient(to bottom, transparent, #000 4%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 5%), linear-gradient(to bottom, transparent, #000 4%);
+  mask-composite: intersect;
+}
+.t37g-bough {
+  height: 44%;
+  filter: blur(5px);
+}
+.t37g-bough-wood {
+  fill: var(--wash);
+  opacity: 0.86;
+}
+:root[data-theme='dark'] .t37g-bough-wood {
+  fill: color-mix(in srgb, #2c1c16 60%, var(--wash));
+  opacity: 1;
+}
+.t37g-bough-rim {
+  fill: var(--rake-hi);
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t37g-bough-rim {
+  fill: var(--moon);
+  opacity: 0.3;
+}
+.t37g-bough-leaf {
+  fill: var(--vermilion);
+  opacity: 0.78;
+}
+.t37g-bokeh {
+  fill: var(--vermilion);
+  opacity: 0.32;
+}
+.t37g-bokeh.warm {
+  fill: var(--lantern);
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .t37g-bokeh {
+  opacity: 0.42;
+}
+html[data-quality='low'] :is(.t37g-bough, .t37g-l0-stone, .t37g-l0-leaf) {
+  filter: none;
+}
+html[data-quality='low'] .t37g-bough {
+  opacity: 0.75;
+}
+
+/* ── the ema plaques: wooden boards with grain and thickness, hung on red cords */
+.t37g-emas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.t37g-ema-sh {
+  height: 116%;
+  opacity: 0.2;
+  transition: opacity 0.4s;
+}
+:root[data-theme='dark'] .t37g-ema-sh {
+  opacity: 0.6;
+}
+.t37g-shstop {
+  stop-color: var(--umbra);
+}
+.t37g .t37g-emas.gone .t37g-ema-sh,
+.t37g.reading .t37g-ema-sh {
+  opacity: 0;
+}
+.t37g-ema {
+  --cord: 30px;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  text-align: left;
+  transform-origin: 50% calc(-1 * var(--cord));
+  transition: transform 0.5s cubic-bezier(0.3, 1.4, 0.5, 1), opacity 0.4s ease;
+  animation: t37g-sway 6.5s ease-in-out calc(var(--i) * -2.1s) 2;
+}
+@keyframes t37g-sway {
+  50% {
+    rotate: 1.4deg;
+  }
+}
+.t37g.still .t37g-ema {
+  animation: none;
+}
+.t37g-ema-cord {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1.6px;
+  height: calc(var(--cord) + 2px);
+  margin: 0 0 -10px -0.8px;
+  background: linear-gradient(to top, var(--vermilion) 60%, color-mix(in srgb, var(--vermilion) 0%, transparent));
+}
+.t37g-ema-board {
+  position: relative;
+  display: block;
+  transform: rotate(var(--tilt)) scale(var(--k));
+  transform-origin: 50% 0;
+  filter: drop-shadow(0 7px 9px color-mix(in srgb, var(--umbra) 24%, transparent));
+}
+:root[data-theme='dark'] .t37g-ema-board {
+  filter: drop-shadow(0 7px 10px rgba(0, 0, 0, 0.55));
+}
+html[data-quality='low'] .t37g-ema-board {
+  filter: none;
+}
+.t37g-ema-edge,
+.t37g-ema-face {
+  clip-path: polygon(0 24px, 50% 0, 100% 24px, 100% 100%, 0 100%);
+}
+/* the board's thickness: a darker copy showing under the right and bottom edges */
+.t37g-ema-edge {
+  position: absolute;
+  inset: 0;
+  transform: translate(2.5px, 3px);
+  background: var(--wood-dk);
+}
+.t37g-ema-face {
+  position: relative;
+  display: block;
+  padding: 32px 15px 14px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.26' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.24 0 0 0 0 0.14 0 0 0 0 0.05 1.7 0 0 0 -0.78'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+    linear-gradient(to bottom, color-mix(in srgb, var(--wood-dk) 30%, transparent) 0 26px, transparent 26px),
+    radial-gradient(ellipse 80% 60% at 70% 30%, color-mix(in srgb, var(--lantern) 26%, transparent), transparent 70%),
+    linear-gradient(168deg, var(--wood), var(--wood-2));
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--wood-dk) 35%, transparent), inset 2px 0 0 color-mix(in srgb, #fff 18%, transparent);
+}
+/* the hole at the peak and the cord knotted through it */
+.t37g-ema-knot {
+  position: absolute;
+  left: calc(50% - 4px);
+  top: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--wood-dk);
+  box-shadow: 0 0 0 1.6px var(--vermilion);
+}
+.t37g-ema-knot::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 4px;
+  height: 14px;
+  border-radius: 0 0 2px 2px;
+  background: linear-gradient(to bottom, var(--vermilion), color-mix(in srgb, var(--vermilion) 70%, var(--wash)));
+  transform: rotate(-14deg);
+  transform-origin: 50% 0;
+}
+.t37g-ema-text {
+  display: block;
+  font: 500 0.9rem/1.42 var(--serif);
+  color: #24160a;
+  text-shadow: 0 1px 0 color-mix(in srgb, #fff 25%, transparent);
+}
+.t37g-ema:hover .t37g-ema-board,
+.t37g-ema:focus-visible .t37g-ema-board {
+  transform: rotate(calc(var(--tilt) * 0.3)) scale(calc(var(--k) * 1.04)) translateY(3px);
+}
+.t37g-ema-board {
+  transition: transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.t37g-ema:focus-visible {
+  outline: none;
+}
+.t37g-ema:focus-visible .t37g-ema-edge {
+  background: var(--vermilion);
+  transform: translate(3px, 4px);
+}
+.t37g-ema.drag {
+  z-index: 5;
+  cursor: grabbing;
+  transition: none;
+  animation: none;
+}
+.t37g-ema.given {
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.5, 0, 0.6, 1), opacity 0.4s ease 0.25s;
+}
+.t37g-emas.gone .t37g-ema {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s, visibility 0s 0.4s;
+}
+.t37g.over .t37g-p-man svg {
+  filter: drop-shadow(0 0 8px var(--lantern));
+}
+
+/* ── the paper gardener: folded faces, cool toward the moon (left), warm toward the lamp (right) */
+.t37g-fold-cold {
+  fill: color-mix(in srgb, var(--card) 52%, var(--water));
+}
+.t37g-fold-warm {
+  fill: color-mix(in srgb, var(--card) 52%, var(--lantern));
+}
+:root[data-theme='dark'] .t37g-fold-cold {
+  fill: color-mix(in srgb, var(--step-hi) 62%, var(--mist));
+}
+:root[data-theme='dark'] .t37g-fold-warm {
+  fill: color-mix(in srgb, var(--lantern) 78%, var(--rock-hi));
+}
+.t37g-hat-c {
+  fill: color-mix(in srgb, #a88d5e 55%, var(--water));
+}
+.t37g-hat-w {
+  fill: color-mix(in srgb, #d6b273 70%, var(--lantern));
+}
+.t37g-obi {
+  fill: var(--vermilion);
+  opacity: 0.9;
+}
+.t37g-collar {
+  fill: var(--card);
+}
+:root[data-theme='dark'] .t37g-collar {
+  fill: #f4efe2;
+}
+.t37g-sleeve-in,
+.t37g-sandal {
+  fill: var(--wash);
+  opacity: 0.75;
+}
+.t37g-edge {
+  opacity: 0.6;
+}
+.t37g-rim {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t37g-rim {
+  fill: var(--moon);
+  opacity: 0.85;
+}
+.g13-shears {
+  fill: var(--ink-2);
+}
+.t37g-man,
+.t37g-asker {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.t37g.reading .t37g-man {
+  animation: t37g-bow 0.7s ease-in-out both;
+}
+@keyframes t37g-bow {
+  45% {
+    transform: rotate(-14deg) translateY(1px);
+  }
+}
+
+/* ── the maple and the other pieces */
+.t37g-trunk {
+  opacity: 0.92;
+}
+.t37g-trunk-lit {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t37g-trunk-lit {
+  fill: var(--moon);
+  opacity: 0.55;
+}
+.t37g-trunk-warm {
+  fill: var(--lantern);
+  opacity: 0.3;
+}
+.t37g-leaf-far {
+  fill: var(--vermilion);
+  opacity: 0.3;
+}
+.t37g-leaf-dk {
+  fill: color-mix(in srgb, var(--vermilion) 62%, var(--wash));
+  opacity: 0.85;
+}
+.t37g-cut {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--rock-hi));
+  stroke: var(--wash);
+  stroke-width: 0.6;
+  stroke-opacity: 0.5;
+}
+.t37g-rings {
+  fill: none;
+  stroke: color-mix(in srgb, #6b4a2a 60%, var(--wash));
+  stroke-width: 0.5;
+  opacity: 0.6;
+}
+.t37g-felled-art .t37g-rings {
+  stroke-width: 1;
+}
+.t37g-chips {
+  fill: var(--rock-mid);
+}
+.t37g-log {
+  fill: color-mix(in srgb, #4a3322 55%, var(--wash));
+}
+:root[data-theme='dark'] .t37g-log {
+  fill: color-mix(in srgb, #4a3322 50%, var(--rock-mid));
+}
+.t37g-log-grain {
+  fill: var(--wash);
+  opacity: 0.35;
+}
+.t37g-log-lit {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t37g-log-lit {
+  fill: var(--moon);
+  opacity: 0.4;
+}
+.t37g-felled-sh {
+  fill: var(--umbra);
+  opacity: 0.2;
+}
+:root[data-theme='dark'] .t37g-felled-sh {
+  opacity: 0.6;
+}
+.t37g-robe {
+  fill: var(--stone-2);
+  opacity: 0.92;
+}
+.t37g-robe-warm {
+  fill: var(--lantern);
+  opacity: 0.45;
+}
+.t37g-hat {
+  fill: color-mix(in srgb, var(--lantern) 25%, var(--wash));
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t37g-robe {
+  fill: color-mix(in srgb, var(--step-mid) 70%, var(--lantern));
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .t37g-hat {
+  fill: color-mix(in srgb, var(--lantern) 55%, var(--rock-mid));
+  opacity: 0.85;
+}
+.t37g-hat-rib {
+  fill: var(--paper);
+  opacity: 0.35;
+}
+.t37g-panel {
+  fill: color-mix(in srgb, var(--card) 80%, var(--lantern));
+}
+.t37g-panel.p1 {
+  fill: color-mix(in srgb, var(--card) 62%, var(--rock-mid));
+}
+:root[data-theme='dark'] .t37g-panel {
+  fill: color-mix(in srgb, var(--lantern) 62%, var(--rock-mid));
+}
+:root[data-theme='dark'] .t37g-panel.p1 {
+  fill: color-mix(in srgb, var(--lantern) 30%, var(--rock-mid));
+}
+.t37g-pics {
+  opacity: 0;
+  transition: opacity 1.2s ease 0.6s;
+}
+.t37g.told .t37g-pics {
+  opacity: 1;
+}
+.t37g-red {
+  fill: var(--vermilion);
+}
+.t37g-blue {
+  fill: color-mix(in srgb, var(--water) 60%, #3a6ea5);
+}
+.t37g-flip,
+.t37g-wake,
+.t37g-flag {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 0.8;
+}
+.t37g-boat {
+  fill: var(--ink);
+}
+.t37g-wall {
+  fill: color-mix(in srgb, var(--card) 70%, var(--rock-mid));
+}
+.t37g-wall-sh {
+  fill: var(--rock-lo);
+  opacity: 0.45;
+}
+.t37g-eave-sh {
+  fill: var(--wash);
+  opacity: 0.3;
+}
+.t37g-door {
+  fill: var(--wash);
+  opacity: 0.6;
+}
+.t37g-win {
+  fill: var(--rock-lo);
+  transition: fill 0.8s ease;
+}
+.t37g-thatch {
+  fill: color-mix(in srgb, var(--lantern) 22%, var(--rock-lo));
+}
+.t37g-thatch-under {
+  fill: var(--wash);
+  opacity: 0.5;
+}
+.t37g-straw {
+  fill: var(--wash);
+  opacity: 0.25;
+}
+.t37g-thatch-rim {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t37g-thatch-rim {
+  fill: var(--moon);
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t37g-wall {
+  fill: var(--rock-mid);
+}
+:root[data-theme='dark'] .t37g-thatch {
+  fill: color-mix(in srgb, var(--lantern) 18%, var(--rock-mid));
+}
+.t37g[data-state='best'] .t37g-win {
+  fill: var(--lantern);
+}
+.t37g-weave {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--rock-mid));
+}
+.t37g-moss-roll {
+  fill: var(--moss-a);
+}
+.t37g-dryleaf {
+  fill: color-mix(in srgb, var(--vermilion) 45%, var(--rock-mid));
+}
+
+/* ── light and shadow on the sand */
+.t37g-sheen {
+  fill: url(#p2-halo);
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t37g-sheen {
+  opacity: 0.8;
+  mix-blend-mode: screen;
+}
+.t37g-sh {
+  fill: var(--umbra);
+  opacity: 0.13;
+}
+:root[data-theme='dark'] .t37g-sh {
+  opacity: 0.5;
+}
+.t37g-sh-lamp {
+  fill: color-mix(in srgb, var(--umbra) 70%, #5a3412);
+}
+.t37g-dapple {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t37g-dapple {
+  fill: var(--moon);
+  opacity: 0.12;
+}
+.t37g .t37g-pathsh {
+  opacity: 0.2;
+}
+.t37g-step-warm {
+  fill: var(--lantern);
+  opacity: 0.3;
+}
+.t37g-bank {
+  fill: color-mix(in srgb, var(--paper-2) 60%, var(--rock-lo));
+  opacity: 0.7;
+}
+.t37g-road {
+  fill: var(--moon);
+  opacity: 0.55;
+}
+:root[data-theme='light'] .t37g-road {
+  fill: #fff;
+  opacity: 0.8;
+}
+.t37g-refl {
+  fill: var(--moon);
+  opacity: 0.95;
+  transition: opacity 1.5s ease;
+}
+.t37g-earth {
+  fill: color-mix(in srgb, #7a5a3a 70%, var(--rock-lo));
+  opacity: 0.55;
+}
+.t37g-pool {
+  transition: opacity var(--night) ease;
+}
+.t37g-pool:not(.core) {
+  fill: url(#p2-lamp);
+}
+:root[data-theme='dark'] .t37g-pool {
+  mix-blend-mode: screen;
+}
+.t37g-pool.core {
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .t37g-pool.core {
+  opacity: 1;
+}
+
+/* ── states: everything that only exists in one morning starts hidden */
+.t37g-stump,
+.t37g-felled,
+.t37g-drift,
+.t37g-scraped,
+.t37g-p-basket > svg,
+.t37g-p-man2 > svg,
+.t37g-p-log > svg,
+.t37g-p-dry > svg {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.t37g-p-dry,
+.t37g-p-log {
+  pointer-events: none;
+}
+.t37g-whole,
+.t37g-leaves,
+.t37g-moss,
+.t37g-p-man > svg {
+  transition: opacity 0.5s ease;
+}
+.t37g[data-state] .t37g-leaves,
+.t37g.morning .t37g-leaves {
+  opacity: 0;
+}
+/* loose: the maple lies across the sand, the frame above is empty sky */
+.t37g[data-state='loose'] :is(.t37g-whole, .t37g-mshadow, .t37g-lb) {
+  opacity: 0;
+}
+.t37g[data-state='loose'] :is(.t37g-stump, .t37g-felled, .t37g-drift, .t37g-p-log > svg) {
+  opacity: 1;
+}
+.t37g[data-state='loose'] .t37g-drift {
+  animation: t37g-drift 9s ease-out both;
+}
+@keyframes t37g-drift {
+  from {
+    transform: translate(-3%, 2%) rotate(-30deg);
+  }
+}
+.t37g[data-state='better'] .t37g-moss {
+  opacity: 0;
+}
+.t37g[data-state='better'] :is(.t37g-scraped, .t37g-p-basket > svg) {
+  opacity: 1;
+}
+.t37g[data-state='best'] .t37g-p-man > svg {
+  opacity: 0;
+}
+.t37g[data-state='best'] .t37g-p-man2 > svg {
+  opacity: 1;
+}
+.t37g[data-state] .t37g-p-dry {
+  pointer-events: auto;
+}
+.t37g[data-state] .t37g-p-dry > svg {
+  opacity: 1;
+}
+
+/* ── the night passing: the moon sets in the west (left), the maple's shadow sweeps longer, the lamp burns out */
+.t37g-moon {
+  transition: transform var(--night) cubic-bezier(0.4, 0, 0.7, 1), opacity var(--night) ease;
+}
+.t37g.night .t37g-moon,
+.t37g[data-state] .t37g-moon {
+  transform: translate(-3vw, 18vh);
+  opacity: 0.2;
+}
+.t37g-mshadow {
+  transition: transform var(--night) cubic-bezier(0.4, 0, 0.6, 1), opacity 0.6s;
+}
+.t37g.night .t37g-mshadow,
+.t37g[data-state] .t37g-mshadow {
+  transform: rotate(-9deg) scale(1.45, 1.1);
+}
+.t37g.night .t37g-pool,
+.t37g[data-state] .t37g-pool {
+  opacity: 0.15;
+}
+.t37g-p-toro :is(.p2p-lamp-halo, .p2p-toro-fire) {
+  transition: opacity var(--night) ease;
+}
+.t37g.night .t37g-p-toro :is(.p2p-lamp-halo, .p2p-toro-fire),
+.t37g[data-state] .t37g-p-toro :is(.p2p-lamp-halo, .p2p-toro-fire) {
+  opacity: 0.12;
+}
+.t37g.night :is(.t37g-refl, .t37g-road),
+.t37g[data-state] :is(.t37g-refl, .t37g-road) {
+  opacity: 0.2;
+}
+.t37g.still :is(.t37g-moon, .t37g-mshadow, .t37g-pool, .t37g-p-toro .p2p-lamp-halo, .t37g-p-toro .p2p-toro-fire, .t37g-refl) {
+  transition-duration: 0.2s;
+}
+
+/* the dry branch is the way back */
+.t37g-retry {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+}
+.t37g-retry:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+
+/* the card to keep: in the sky between the maple and the morning on a wide frame, a folded slip low on the left of a tall one */
+.t37g-kept {
+  position: absolute;
+  left: 30%;
+  top: 3%;
+  width: min(320px, 26%);
+  max-height: 60%;
+  overflow: auto;
+  scrollbar-width: thin;
+  animation: p2-rise 0.7s ease-out 0.2s both;
+}
+.t37g-fold > summary {
+  display: none;
+}
+.t37g.tall .t37g-morning {
+  left: 62%;
+  top: 2.5%;
+}
+.t37g.tall .t37g-caption {
+  left: 50%;
+  top: calc(3% + 2.2rem);
+  width: 92%;
+}
+.t37g.tall .t37g-kept {
+  left: 3%;
+  top: auto;
+  bottom: 3%;
+  width: 70%;
+  max-height: 72%;
+}
+/* folded: a paper slip with the card's title, tap to unfold */
+.t37g.tall .t37g-fold > summary {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  padding: 6px 12px 7px;
+  font: 500 0.95rem/1.3 var(--serif);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--card) 92%, var(--lantern));
+  border-left: 2px solid var(--vermilion);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--wash) 16%, transparent);
+  cursor: pointer;
+  list-style: none;
+}
+.t37g.tall .t37g-fold > summary::-webkit-details-marker {
+  display: none;
+}
+.t37g.tall .t37g-fold[open] > summary {
+  margin-bottom: 6px;
+}
+.t37g.tall .t37g-ema-face {
+  padding: 28px 12px 11px;
+}
+.t37g.tall .t37g-ema-text {
+  font-size: 0.875rem;
+  line-height: 1.38;
+}
+/* without blur the bokeh would read as dots: the cheap bough keeps only its wood and leaves */
+html[data-quality='low'] .t37g-bokeh {
+  display: none;
+}

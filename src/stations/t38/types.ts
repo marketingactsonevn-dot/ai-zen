@@ -5,7 +5,7 @@ type Level = 'low' | 'high'
 interface View { who: string; view: Fact }
 export interface T38 extends StationContent {
   scenes: {
-    defs: { label: string; art: string; prompt: string; group: string; stoneAria: string; perspectives: Perspectives; insight: Fact }
+    defs: { label: string; art: string; prompt: string; group: string; stoneAria: string; names: string[]; strip: string; perspectives: Perspectives; insight: Fact }
     tide: { label: string; art: string; prompt: string; slider: string; valueText: string; tide: Tide; insight: Fact; detail: Fact }
     fork: {
       label: string; art: string; prompt: string; sliderAria: string
@@ -17,7 +17,7 @@ export interface T38 extends StationContent {
     trays: {
       label: string; art: string; prompt: string; keys: string; pickAria: string; compare: string; match: string
       trays: { id: string; name: string }[]
-      tasks: { id: string; label: string; expert: string; why: string }[]
+      tasks: { id: string; label: string; short: string; expert: string; why: string }[]
       expertNote: Fact; insight: Fact; detail: Fact; jobs: Fact
     }
   }

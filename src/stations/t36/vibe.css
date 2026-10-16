@@ -1,0 +1,375 @@
+/* Scene 5 vibe: looking down into the clear pond, code on its bed, candle stones along the near edge. Part 2 tokens only. */
+.t36v {
+  --f: 0;
+}
+.t36v .p2c-stage {
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 92%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 92%, transparent);
+  mask-composite: intersect;
+}
+.t36v .p2c-num {
+  display: none;
+}
+.t36v-stage {
+  overflow: hidden;
+  touch-action: none;
+  cursor: ns-resize;
+}
+.t36v-deep,
+.t36v-deep canvas,
+.t36v-surf,
+.t36v-front {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.t36v-surf,
+.t36v-front,
+.t36v-deep {
+  pointer-events: none;
+}
+/* the focus: the bed sharpens as it goes down, the surface thins */
+.t36v-bottom.sharp {
+  opacity: var(--f);
+  transition: opacity 0.9s var(--ease);
+}
+.t36v-surf {
+  opacity: calc(1 - var(--f) * 0.55);
+  transition: opacity 0.9s var(--ease);
+}
+.t36v.byhand :is(.t36v-bottom.sharp, .t36v-surf, .t36v-koirot) {
+  transition: none;
+}
+/* caustics drifting over the bed (high only) */
+.t36v-caustic {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: calc(0.08 + var(--f) * 0.16);
+}
+.t36v-caustic > i {
+  position: absolute;
+  inset: -40%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='b'%3E%3CfeGaussianBlur stdDeviation='1.2'/%3E%3C/filter%3E%3Cpath filter='url(%23b)' d='M0 40C30 20 60 62 90 40S150 18 180 40M0 120C40 98 70 152 110 120S160 100 180 120M40 0C20 40 62 70 40 110S18 162 40 180M130 0C152 40 108 80 130 120S152 160 130 180M0 80C20 70 30 92 60 84M110 70C130 60 150 86 180 78' fill='none' stroke='white' stroke-width='1.6' stroke-opacity='.5'/%3E%3C/svg%3E") 0 0 / 260px 170px;
+  animation: t36v-drift 26s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t36v .p2c-body-text:not(:empty) {
+    animation: none;
+  }
+}
+@keyframes t36v-drift {
+  to {
+    transform: translate(150px, 110px);
+  }
+}
+/* the banks all round and the water's dressing */
+.t36v-bank {
+  fill: color-mix(in srgb, var(--rock-mid) 40%, var(--paper-2));
+}
+:root[data-theme='dark'] .t36v-bank {
+  fill: color-mix(in srgb, var(--rock-lo) 60%, var(--paper));
+}
+.t36v-wet {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 5;
+  opacity: 0.35;
+}
+.t36v-bmoss {
+  fill: var(--moss-b);
+  opacity: 0.6;
+}
+.t36v-bsh {
+  fill: var(--umbra);
+  opacity: 0.35;
+}
+.t36v-brim {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t36v-brim {
+  fill: var(--moon);
+  opacity: 0.4;
+}
+.t36v-stage .p2p-reeds {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--moss-b));
+}
+.t36v-road {
+  fill: var(--moon);
+  opacity: 0.75;
+}
+.t36v-pad {
+  fill: var(--moss-b);
+  opacity: 0.85;
+}
+.t36v-shard {
+  fill: var(--moon);
+}
+.t36v-rings ellipse {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 1;
+  opacity: 0.35;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.t36v:not(.calm) .t36v-rings ellipse {
+  animation: t36v-ring 5s ease-out infinite;
+}
+.t36v-rings ellipse:nth-child(2) {
+  animation-delay: -1.6s;
+}
+.t36v-rings ellipse:nth-child(3) {
+  animation-delay: -3.3s;
+}
+@keyframes t36v-ring {
+  from {
+    transform: scale(0.4);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+/* the koi on its round: a turning rotor, squashed to the 60° view */
+.t36v-koirot {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform: scaleY(0.78);
+  opacity: calc(1 - var(--f) * 0.55);
+  transition: opacity 0.9s var(--ease);
+  pointer-events: none;
+}
+.t36v-koispin {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.t36v:not(.calm) .t36v-koispin {
+  animation: t36v-spin 24s linear infinite;
+}
+@keyframes t36v-spin {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.t36v-koi {
+  position: absolute;
+  max-width: none;
+  overflow: visible;
+  transform: rotate(-90deg);
+}
+:root[data-theme='dark'] .t36v-koi .t36-koi-body {
+  fill: var(--moon);
+}
+/* what each voice brings: red cracks through the code, a lantern rising, a fence round the shallows, then the ensō */
+.t36v-cracks {
+  opacity: 0;
+  transition: opacity 1.2s var(--ease);
+}
+.t36v.v2 .t36v-cracks {
+  opacity: calc(0.3 + var(--f) * 0.7);
+}
+.t36v-crack {
+  fill: var(--vermilion);
+}
+.t36v-lantern {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1.6s var(--ease), transform 2.6s var(--ease);
+}
+.t36v.v3 .t36v-lantern {
+  opacity: 1;
+  transform: none;
+}
+.t36v-lbody {
+  fill: color-mix(in srgb, var(--lantern) 35%, var(--card));
+  stroke: var(--wash);
+  stroke-width: 0.8;
+}
+.t36v-lseal {
+  fill: var(--vermilion);
+}
+.t36v-lcap {
+  stroke: var(--wash);
+  stroke-width: 2.4;
+}
+.t36v-fence {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 1.2s var(--ease), transform 1.4s var(--ease);
+}
+.t36v.v4 .t36v-fence {
+  opacity: 1;
+  transform: none;
+}
+.t36v-stake {
+  fill: color-mix(in srgb, var(--moss-c) 45%, var(--lantern));
+  stroke: color-mix(in srgb, var(--wash) 60%, transparent);
+  stroke-width: 0.6;
+}
+.t36v-rope {
+  fill: color-mix(in srgb, var(--lantern) 35%, var(--wash));
+  opacity: 0.85;
+}
+.t36v-tie {
+  fill: none;
+  stroke: color-mix(in srgb, var(--lantern) 30%, var(--wash));
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.t36v-fshadow {
+  fill: var(--umbra);
+  opacity: 0.3;
+}
+.t36v-ensog {
+  opacity: 0;
+  transition: opacity 2.4s var(--ease) 0.6s;
+}
+.t36v.is-all .t36v-ensog {
+  opacity: 0.85;
+}
+.t36v-enso {
+  fill: var(--ink);
+}
+:root[data-theme='dark'] .t36v-enso {
+  fill: var(--moon);
+}
+/* still water once every voice is heard; living motion rests when idle */
+.t36v.is-all :is(.t36v-koispin, .t36v-caustic > i, .t36v-rings ellipse),
+.t36v.idle :is(.t36v-koispin, .t36v-caustic > i, .t36v-rings ellipse) {
+  animation-play-state: paused;
+}
+
+/* the candle stones: big, cut by the frame, a little out of focus; the flame lights once heard */
+.t36v .p2c-halo,
+.t36v .p2c-ring {
+  display: none;
+}
+.t36v-rock {
+  filter: blur(1px) brightness(0.9);
+}
+/* the outer two, nearest the lens: big and soft, flame and all */
+.t36v-k0,
+.t36v-k4 {
+  filter: blur(3.5px);
+}
+.t36v.calm :is(.t36v-rock, .t36v-k0, .t36v-k4) {
+  filter: none;
+}
+.t36v-moss {
+  fill: var(--moss-b);
+  opacity: 0.7;
+}
+/* a lit candle's flame on the water: a long warm streak running up from its stone */
+.t36v-streak {
+  opacity: 0;
+  transition: opacity 1.2s var(--ease);
+}
+.t36v.is-heard-0 .t36v-sk0,
+.t36v.is-heard-1 .t36v-sk1,
+.t36v.is-heard-2 .t36v-sk2,
+.t36v.is-heard-3 .t36v-sk3,
+.t36v.is-heard-4 .t36v-sk4 {
+  opacity: 0.75;
+}
+.t36v-glint {
+  fill: color-mix(in srgb, var(--lantern) 75%, var(--moon));
+}
+.t36v-contact {
+  fill: var(--umbra);
+  opacity: 0.35;
+}
+.t36v-rim {
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t36v-rim {
+  fill: var(--moon);
+  opacity: 0.4;
+}
+.t36v-dish {
+  fill: var(--wash);
+  opacity: 0.8;
+}
+.t36v-wax {
+  fill: color-mix(in srgb, var(--card) 85%, var(--lantern));
+}
+.t36v-flame,
+.t36v-glow,
+.t36v-pool {
+  opacity: 0;
+  transition: opacity 0.8s var(--ease);
+}
+.t36v-flame {
+  fill: color-mix(in srgb, var(--lantern) 60%, var(--moon));
+}
+.p2c-stone[data-heard] .t36v-flame {
+  opacity: 1;
+}
+.p2c-stone[data-heard] .t36v-glow {
+  opacity: 0.7;
+}
+.p2c-stone[data-heard] .t36v-pool {
+  opacity: 0.6;
+}
+.t36v .p2c-stone[aria-pressed='true'] .t36v-glow {
+  opacity: 1;
+}
+/* the reading: words come up on the water beside the candle just lit — not a card, not a column */
+.t36v .p2c-card {
+  left: var(--cx, 50%) !important;
+  top: auto !important;
+  bottom: var(--cb, 30%) !important;
+  width: var(--cw, 400px) !important;
+  max-height: none !important;
+  transform: translateX(-50%) !important;
+  overflow: visible;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  text-align: center;
+  z-index: 40;
+  pointer-events: none;
+}
+.t36v .p2c-card a,
+.t36v .p2c-card button {
+  pointer-events: auto;
+}
+.t36v .p2c-who {
+  justify-items: center;
+}
+.t36v .p2c-view {
+  font-style: italic;
+  margin-bottom: 0.4em;
+}
+.t36v .p2c-count {
+  justify-content: center;
+}
+.t36v .p2c-view,
+.t36v .p2c-who,
+.t36v .p2c-count {
+  text-shadow: 0 0 10px var(--paper), 0 0 6px var(--paper), 0 0 2px var(--paper);
+}
+.t36v .p2c-body-text:not(:empty) {
+  animation: t36v-rise 1.1s var(--ease) both;
+}
+@keyframes t36v-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(3px);
+  }
+}
+.t36v:not(.wide) .p2c-view {
+  font-size: 15px;
+}

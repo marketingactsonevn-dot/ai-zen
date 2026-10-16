@@ -1,0 +1,75 @@
+/* t31 ★ repo (3D): the stage fills the art; text rides on the scene as serif on the night air */
+.t31r3 { position: absolute; inset: 0; }
+.t31r3-mock {
+  position: absolute;
+  z-index: 3;
+  top: 6px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  pointer-events: none;
+}
+.t31r3 .p2s3-label { text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 3px var(--paper); }
+.t31r3-name { font-size: 15px; letter-spacing: 0.01em; color: var(--ink); }
+.t31r3-tag {
+  /* a small paper tag tied to the gate lantern's cap */
+  translate: 0 -9px;
+  padding: 2px 7px 3px;
+  font: 400 italic 12.5px/1.25 var(--serif) !important;
+  color: var(--ink) !important;
+  text-shadow: none !important;
+  border-radius: 1px 2px 1px 3px;
+  background: color-mix(in srgb, var(--card) 92%, var(--paper-2));
+  box-shadow: 0 3px 6px -3px var(--umbra);
+}
+.t31r3-tag::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 9px; background: color-mix(in srgb, var(--ink) 55%, transparent); }
+:root[data-theme='dark'] .t31r3-tag { background: color-mix(in srgb, var(--stone-2) 55%, var(--paper)); }
+.t31r3-cap {
+  position: absolute;
+  z-index: 3;
+  top: clamp(28px, 5.5%, 46px);
+  left: 50%;
+  width: min(30rem, calc(100% - 32px));
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 0 10px var(--paper), 0 0 10px var(--paper), 0 0 3px var(--paper);
+}
+.t31r3-cap > * { animation: p2-rise 0.6s var(--ease) both; }
+.t31r3-sig-name { margin: 0; font: 500 19px/1.25 var(--serif); }
+.t31r3-sig-what { margin: 2px 0 0; font: 400 15px/1.45 var(--serif); color: var(--ink-2); }
+.t31r3-back :is(.t31r3-tag, .t31r3-name),
+.t31r3-picked .t31r3-tag { opacity: 0 !important; }
+/* the proxy of a signal spans both houses: keep its keyboard ring small, the pair's warm glow shows the focus */
+.t31r3 .p2s3-hit:focus-visible { outline: none; }
+.t31r3 .p2s3-hit:focus-visible::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  outline: 1.5px solid color-mix(in srgb, var(--ink) 70%, transparent);
+  outline-offset: 2px;
+}
+.t31r3-val {
+  white-space: normal !important;
+  width: max-content;
+  max-width: 150px;
+  font-size: 14px;
+  line-height: 1.3;
+  text-align: center;
+}
+.t31r3-verdict { margin: 0; font: 400 16px/1.45 var(--serif); }
+.t31r3-seal { display: inline-block; width: 0.55em; height: 0.55em; margin: 0 0.45em 0.1em 0; border-radius: 1px; background: var(--lantern); vertical-align: middle; }
+.t31r3-verdict.bad .t31r3-seal { background: var(--vermilion); }
+@media (max-width: 640px) {
+  .t31r3-val { max-width: 128px; }
+  .t31r3-sig-name { font-size: 17px; }
+  .t31r3-name { font-size: 14px; white-space: normal !important; width: max-content; max-width: 92px; text-align: center; line-height: 1.2; }
+}
+/* without WebGL the 2D houses (repo.ts) carry their own note */
+.t31r3:has(.t31r) .t31r3-mock { display: none; }

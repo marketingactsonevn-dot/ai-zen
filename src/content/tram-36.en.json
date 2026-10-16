@@ -29,11 +29,15 @@
   "scenes": {
     "blueprint": {
       "label": "A plan before carving",
-      "art": "Ink painting: a drawing table under the workshop lamp, a sheet of dó paper spread flat. Six paper pieces cut like stones lie by the edge; place one in the frame and the ink lines of a koi pond appear in that corner — water, fish, a piece of moon — until the drawing becomes a one-page spec.",
+      "art": "Ink painting: a dark drawing room, a six-sided paper andon lamp glowing on the table. Each face is one piece of the design; under the front face hang two paper strips, the two ways it could go. Choose a strip: it sticks to the face, the lamp throws that part of the game sharp onto the wall — the pond, the fish, a piece of moon — and a line is written into spec.md on the table. With all six faces done, the whole game stands on the wall before a single line of code.",
+      "lampRole": "six-sided lantern",
+      "lampAria": "The spec lantern, face {n}: {piece}. Left and right arrow keys turn it.",
       "prompt": "Choose each piece",
       "group": "The six pieces of the plan",
       "pieceAria": "{piece}: {option}",
       "specTitle": "spec.md",
+      "specCount": "{n}/{total} lines written",
+      "specSlipAria": "Open spec.md: {n}/{total} lines written",
       "pieces": [
         {
           "id": "idea",
@@ -103,7 +107,9 @@
     },
     "pens": {
       "label": "Choosing a pen",
-      "art": "Ink painting: a bamboo pen pot on the desk, five different pens. The same koi pond is drawn five times: thin charcoal lines, free colour strokes, strokes on a grid like a chessboard, strokes with depth and cast shadows, and one large framed piece.",
+      "art": "Ink painting: a night workshop. On an easel, a wooden frame holds a stone basin with a koi, seen from above; under the lamp, a bamboo pot of five pens. The three flat pens can only paint a sheet of paper — drag it and the sheet just slides; the Three.js pen turns the frame into a 3D window — drag and the whole pond turns in the moonlight; the Godot/Unity pen pulls the camera back over the whole garden and the frame becomes a screen's bezel.",
+      "frameAria": "The koi pond picture on the easel",
+      "frameHint": "Flat pens: drag or use the arrow keys to slide the sheet. 3D pens: drag or use the arrow keys to turn the pond, + and − to move closer.",
       "prompt": "Tap each pen",
       "group": "Five pens",
       "penAria": "Pen: {name}",
@@ -165,7 +171,8 @@
     },
     "carve": {
       "label": "Seven steps to carve a game",
-      "art": "Ink painting: a night woodshop, a log on the rack slowly becoming a fish over seven chisel cuts. Seven stones lead from the timber pile to the workshop door opening onto the moon pond; beside it, a long scroll copies code like calligraphy, with small notes in the margin.",
+      "art": "Ink painting: the wood shop at night, seen at table height. A cypress block on its carving stand stands against the open door onto the moonlit lake, the moon behind it rimming its outline in light. Seven stones in a row along the bench's front edge are the seven steps; each one placed right is a stroke of the mallet — chips fly and the block becomes one stage more of a fish: chalk lines, rough cut, split tail, fins, scales, eye. The work lamp can be dragged so its warm light rakes the wood; the code lies rolled up on the bench.",
+      "lampAria": "Work lamp: drag left or right, or use the arrow keys, to light the wood",
       "prompt": "Set the seven stones",
       "pathAria": "A seven-step stone path for making a web game",
       "stoneAria": "Stone: {label}",
@@ -289,7 +296,7 @@
     },
     "layers": {
       "label": "The game grows layer by layer",
-      "art": "Ink painting: a koi pond seen from above, built up layer by layer like sheets of tracing paper under a lamp: rippling water → koi → guiding hand → falling moon → score seal → water sounds → fireflies and ripples. When the last layer is down, the pond comes alive and playable.",
+      "art": "Ink painting: an empty round stone basin floating in the dark over its soft shadow. Above it hang seven sheets of tracing paper, apart, each one layer of the game — water, koi, the leading hand, falling moon, score and hearts, the sound of water, fireflies — its name on the front edge. Touch the lit sheet: it sinks into the basin with a ring of ripples, the prompt for that layer is written beside the basin and the pond comes one step more alive. With all seven, the view rises over the basin and the real game plays in its water.",
       "prompt": "Lay down each layer",
       "layerAria": "Layer {n}: {name}",
       "promptLabel": "The prompt that made this layer",
@@ -365,7 +372,7 @@
     },
     "vibe": {
       "label": "Is coding by feel enough?",
-      "art": "Ink painting: five stones around the moon pond, a small candle on each. Touch a stone and its candlelight casts that person's words onto the water; light all five and the pond goes still and an ensō appears.",
+      "art": "Ink painting: looking down into a deep, clear pond. On the surface the koi game is playing: the fish on its round, a shard of moon, the moon's broken road. On the bed, the game's source code is written in ink on flat stones, caustics drifting over it. Along the near edge stand five big candle stones, out of focus. Touch one: its candle lights, who spoke is written on the water and the pond changes with them: the focus at the surface or down on the code, red cracks through half the lines, a paper lantern with a red seal floating up, a bamboo fence growing round the shallows. Drag up or down on the water to move the focus yourself. With all five, the water stills and an ensō appears.",
       "prompt": "Touch each stone",
       "group": "Five views on vibe coding",
       "stoneAria": "View: {who}",

@@ -1,0 +1,302 @@
+/* Trạm 33 · ★ house: a five-bay farmhouse cut open on a raked-sand plinth, built from real CSS 3D planes */
+.t33h-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+.t33h.low .t33h-stage { cursor: default; touch-action: auto; }
+.t33h-stage.drag { cursor: grabbing; }
+.t33h-cam {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+.t33h-f,
+.t33h-bay,
+.t33h-moth {
+  position: absolute;
+  left: 0;
+  top: 0;
+  backface-visibility: hidden;
+}
+.t33h-wall,
+.t33h-gable,
+.t33h-shoji,
+.t33h-item.t33h-b0,
+.t33h-item.t33h-b4 { backface-visibility: visible; }
+.t33h-art { display: block; overflow: visible; }
+/* moon shading per face (--sh is written once per settle) and a moon rim on the faces turned to it */
+.t33h-f.sq::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--umbra);
+  opacity: var(--sh, 0);
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+.t33h-glow::after,
+.t33h-lampp::after,
+.t33h-keeper::after,
+.t33h-rock::after,
+.t33h-pine::after,
+.t33h-mistbed::after,
+.t33h-threadp::after { display: none; }
+
+/* materials */
+.t33h-sandf { fill: var(--t33-sand); }
+.t33h-rake { fill: none; stroke: var(--rake); stroke-width: 1.2; }
+.t33h-rake-hi { fill: none; stroke: var(--rake-hi); stroke-width: 0.9; }
+.t33h-ring { fill: none; stroke: var(--rake); stroke-width: 1.3; }
+.t33h-ring-hi { fill: none; stroke: var(--rake-hi); stroke-width: 0.9; }
+.t33h-cast { fill: var(--umbra); opacity: 0.2; }
+:root[data-theme='dark'] .t33h-cast { opacity: 0.45; }
+.t33h-contact { fill: var(--umbra); opacity: 0.35; }
+.t33h-contactf { fill: var(--umbra); opacity: 0.3; }
+.t33h-stonetop { fill: url(#p2-rock); }
+.t33h-stoneside { fill: var(--rock-lo); }
+.t33h-moss { fill: var(--moss-a); opacity: 0.5; }
+.t33h-plinth { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--rock-lo)); }
+.t33h-seam { fill: var(--wash); opacity: 0.32; }
+.t33h-grain { fill: var(--wash); opacity: 0.16; }
+:root[data-theme='dark'] .t33h-grain { opacity: 0.4; }
+.t33h-wood, .t33h-postw { fill: var(--t33-wood); }
+.t33h-woodhi { fill: var(--t33-wood-hi); }
+.t33h-woodlo { fill: var(--t33-wood-lo); }
+.t33h-beamw { fill: var(--t33-wood-lo); }
+.t33h-floorwood { fill: color-mix(in srgb, var(--t33-wood) 82%, var(--wash)); }
+.t33h-under { fill: var(--t33-wood-lo); }
+.t33h-beam { fill: var(--t33-wood-lo); }
+.t33h-postp { fill: var(--t33-wood-lo); }
+.t33h-plaster { fill: var(--t33-plaster); }
+.t33h-stain { fill: var(--wash); opacity: 0.05; }
+.t33h-wainscot { fill: var(--t33-wood); }
+.t33h-ao { fill: url(#t33h-ao); }
+.t33h-wallshadow { fill: var(--umbra); opacity: 0.14; }
+.t33h-soot { fill: var(--wash); opacity: 0.32; }
+.t33h-iron { fill: color-mix(in srgb, var(--wash) 80%, var(--rock-lo)); }
+:root[data-theme='dark'] .t33h-iron { fill: #05070d; }
+.t33h-cord { fill: none; stroke: var(--wash); stroke-width: 0.9; opacity: 0.7; }
+.t33h-socket { fill: var(--wash); opacity: 0.8; }
+.t33h-window { fill: var(--moon); opacity: 0.55; }
+:root[data-theme='light'] .t33h-window { fill: #fff; opacity: 0.8; }
+.t33h-winrim { fill: none; stroke: var(--t33-wood-lo); stroke-width: 3; }
+.t33h-lattice { fill: var(--t33-wood-lo); opacity: 0.85; }
+.t33h-out { fill: color-mix(in srgb, var(--paper) 70%, var(--mist)); }
+:root[data-theme='dark'] .t33h-out { fill: color-mix(in srgb, var(--paper-2) 80%, var(--moon) 10%); }
+.t33h-outmoon { fill: url(#p2-halo); }
+.t33h-outhill { fill: var(--wash); opacity: 0.18; }
+.t33h-outstep { fill: var(--rock-mid); opacity: 0.8; }
+.t33h-door { fill: color-mix(in srgb, var(--card) 70%, var(--t33-plaster)); }
+.t33h-doma { fill: color-mix(in srgb, var(--rock-mid) 60%, var(--t33-wood)); }
+.t33h-pits { fill: var(--wash); opacity: 0.2; }
+.t33h-hearthframe { fill: var(--t33-wood-lo); }
+.t33h-ash { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--wash)); }
+.t33h-ember { fill: var(--vermilion); opacity: 0.35; transition: opacity 0.9s var(--ease), fill 0.9s; }
+.t33h-coal { fill: var(--wash); opacity: 0.8; }
+.t33h.on-0 .t33h-ember { opacity: 0.95; fill: color-mix(in srgb, var(--lantern) 60%, var(--vermilion)); }
+.t33h-floorsh { fill: var(--umbra); opacity: 0.2; }
+:root[data-theme='dark'] .t33h-floorsh { opacity: 0.5; }
+.t33h-floorao { fill: url(#t33h-ao); }
+.t33h-gleam { fill: var(--moon); opacity: 0.18; }
+:root[data-theme='light'] .t33h-gleam { fill: #fff; opacity: 0.35; }
+.t33h-paperp { fill: color-mix(in srgb, var(--card) 88%, var(--t33-plaster)); }
+:root[data-theme='dark'] .t33h-paperp { fill: color-mix(in srgb, var(--rock-hi) 45%, var(--paper-2)); }
+.t33h-warm { fill: var(--lantern); opacity: calc(var(--on, 0) * 0.55); transition: opacity 0.9s var(--ease); }
+.t33h-tilef { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash)); }
+:root[data-theme='dark'] .t33h-tilef { fill: color-mix(in srgb, var(--rock-lo) 80%, #000); }
+.t33h-tilerow { fill: var(--wash); opacity: 0.4; }
+.t33h-tilecol { fill: var(--wash); opacity: 0.5; }
+.t33h-tilehi { fill: var(--moon); opacity: 0.3; }
+:root[data-theme='light'] .t33h-tilehi { fill: #fff; opacity: 0.45; }
+.t33h-tileend { fill: color-mix(in srgb, var(--rock-lo) 60%, var(--wash)); }
+.t33h-noshi { fill: var(--t33-plaster); opacity: 0.7; }
+.t33h-batten { fill: color-mix(in srgb, var(--moss-b) 40%, var(--t33-wood-lo)); opacity: 0.8; }
+.t33h-thatchu { fill: color-mix(in srgb, #a08a5c 45%, var(--rock-mid)); }
+:root[data-theme='dark'] .t33h-thatchu { fill: color-mix(in srgb, #5a4a30 45%, var(--rock-lo)); }
+.t33h-thatch { fill: color-mix(in srgb, #8c7a52 40%, var(--rock-lo)); }
+:root[data-theme='dark'] .t33h-thatch { fill: color-mix(in srgb, #4a3d28 50%, var(--rock-lo)); }
+.t33h-straw { fill: var(--wash); opacity: 0.22; }
+.t33h-ridgef { fill: color-mix(in srgb, var(--wash) 75%, var(--moss-b)); }
+:root[data-theme='dark'] .t33h-ridgef { fill: color-mix(in srgb, #000 70%, var(--moss-b)); }
+.t33h-roofwarm { fill: url(#t33h-roofwarm); opacity: 0; transition: opacity 1.2s var(--ease); }
+.t33h[data-cur] .t33h-roofwarm { opacity: 0.6; }
+.t33h-rafter { fill: color-mix(in srgb, var(--t33-wood-lo) 80%, #000); }
+.t33h-roofao { fill: url(#t33h-roofao); }
+.t33h-bamboo { fill: color-mix(in srgb, var(--moss-b) 55%, var(--t33-wood-lo)); }
+.t33h-pot { fill: color-mix(in srgb, var(--wash) 88%, var(--rock-lo)); }
+:root[data-theme='dark'] .t33h-pot { fill: #04060c; }
+.t33h-potrim { fill: var(--moon); opacity: 0.4; }
+.t33h-steam { fill: var(--moon); opacity: 0; transition: opacity 1.2s var(--ease); }
+:root[data-theme='light'] .t33h-steam { fill: #fff; }
+.t33h.on-0 .t33h-steam { opacity: 0.5; }
+.t33h-bronze { fill: var(--t33-bronze); }
+.t33h-strip { fill: var(--card); opacity: 0.9; }
+.t33h-moonlit { fill: var(--moon); opacity: 0.55; }
+:root[data-theme='light'] .t33h-moonlit { fill: #fff; opacity: 0.8; }
+.t33h-books { fill: color-mix(in srgb, var(--moss-b) 40%, var(--t33-wood)); }
+:root[data-theme='dark'] .t33h-books { fill: color-mix(in srgb, var(--moss-a) 55%, var(--rock-mid)); }
+.t33h-bands { fill: var(--t33-plaster); opacity: 0.6; }
+.t33h-drawer { fill: none; stroke: var(--t33-wood-lo); stroke-width: 1.2; }
+.t33h-nb { fill: color-mix(in srgb, var(--card) 70%, var(--t33-wood-hi)); }
+.t33h-pages { fill: var(--wash); opacity: 0.5; }
+.t33h-robe { fill: color-mix(in srgb, var(--wash) 75%, var(--moss-b)); opacity: 0.85; }
+:root[data-theme='dark'] .t33h-robe { fill: color-mix(in srgb, var(--rock-mid) 80%, var(--moss-a)); }
+.t33h-figink { fill: var(--wash); opacity: 0.85; }
+:root[data-theme='dark'] .t33h-figink { fill: #000; }
+.t33h-face { fill: color-mix(in srgb, var(--rock-hi) 60%, var(--lantern)); }
+.t33h-hat { fill: color-mix(in srgb, #b89a62 55%, var(--rock-lo)); }
+.t33h-handlamp { fill: var(--lantern); filter: drop-shadow(0 0 6px var(--lantern)); }
+.t33h-wing { fill: var(--vermilion); }
+
+/* the moon's rim down the lit edge of each post, and a cool fill so the unlit house still reads at night */
+.t33h-post::before { content: ''; position: absolute; inset: 0 auto 0 0; width: max(1.5px, 18%); background: var(--moon); opacity: calc(var(--rim, 0) * 0.55); z-index: 1; pointer-events: none; }
+:root[data-theme='light'] .t33h-post::before { background: #fff; opacity: calc(var(--rim, 0) * 0.6); }
+:root[data-theme='dark'] .t33h-f.sq::after { opacity: calc(var(--sh, 0) * 0.72); }
+:root[data-theme='dark'] .t33h-moonlit { opacity: 0.75; }
+
+/* plinth sides, the mist bed under it */
+.t33h-mistbed { background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) calc(var(--mist-a) * 100%), transparent), transparent); opacity: 0.9; }
+:root[data-theme='dark'] .t33h-mistbed { background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) 30%, transparent), transparent); }
+.t33h-night { z-index: 0; }
+.t33h-fog { z-index: 2; }
+:root[data-theme='light'] .t33h-fog { opacity: 0.55; }
+
+/* the bay's name on a paper tag hanging under its lantern */
+.t33h-tagp { display: grid; place-items: start center; }
+.t33h-tagp::after { display: none; }
+.t33h-tag {
+  margin-top: 2px;
+  padding: max(2px, calc(var(--B) * 0.02)) max(5px, calc(var(--B) * 0.05));
+  border-radius: 1px 2px 2px 1px;
+  font: 500 max(11px, calc(var(--B) * 0.105)) / 1.15 var(--serif);
+  color: #1a2240;
+  max-width: calc(var(--B) * 0.94);
+  text-align: center;
+  background: var(--t33-fibre), linear-gradient(175deg, #fbf6ea, #ece2cc);
+  box-shadow: 0 3px 6px -3px color-mix(in srgb, #000 60%, transparent), inset 0 0 0 1px color-mix(in srgb, #1a2240 10%, transparent);
+  position: relative;
+}
+.t33h-tag::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1px; height: calc(var(--B) * 0.08); background: color-mix(in srgb, var(--ink) 50%, transparent); }
+.t33h-frontcord { background: color-mix(in srgb, var(--wash) 70%, var(--t33-wood-lo)); }
+.t33h-frontcord::after { display: none; }
+/* the roof in section: straw layers, the near thatch's top, the ridge sticks, the eave's shadow on the back wall */
+.t33h-layer { fill: var(--wash); opacity: 0.22; }
+.t33h-cutface { fill: color-mix(in srgb, #c9a96a 62%, var(--rock-mid)); }
+:root[data-theme='dark'] .t33h-cutface { fill: color-mix(in srgb, #8a7246 55%, var(--rock-lo)); }
+.t33h-cutends { fill: color-mix(in srgb, #f2deae 70%, var(--moon)); opacity: 0.55; }
+:root[data-theme='dark'] .t33h-cutends { opacity: 0.3; }
+.t33h-cutcore { fill: var(--umbra); opacity: 0.45; }
+.t33h-thatchsh { fill: url(#t33h-roofao); opacity: 0.35; }
+.t33h-chigi { fill: color-mix(in srgb, var(--wash) 70%, var(--t33-wood-lo)); }
+.t33h-chigiw::after, .t33h-eaveshadow::after { display: none; }
+.t33h-eaveshadow { background: linear-gradient(to bottom, color-mix(in srgb, var(--umbra) 55%, transparent), transparent); pointer-events: none; }
+:root[data-theme='dark'] .t33h-eaveshadow { background: linear-gradient(to bottom, color-mix(in srgb, #000 70%, transparent), transparent); }
+
+/* light: --on = 1 on a bay's planes once it is lit */
+.t33h.on-0 .t33h-b0, .t33h.on-1 .t33h-b1, .t33h.on-2 .t33h-b2, .t33h.on-3 .t33h-b3, .t33h.on-4 .t33h-b4,
+.t33h.on-0 .t33h-p1, .t33h.on-1 .t33h-p1, .t33h.on-1 .t33h-p2, .t33h.on-2 .t33h-p2,
+.t33h.on-2 .t33h-p3, .t33h.on-3 .t33h-p3, .t33h.on-3 .t33h-p4, .t33h.on-4 .t33h-p4 { --on: 1; }
+.t33h-glow { opacity: var(--on, 0); transition: opacity 1.1s var(--ease); pointer-events: none; }
+.t33h-gfloor { background: radial-gradient(70% 60% at 50% 72%, color-mix(in srgb, var(--lantern) 62%, transparent), color-mix(in srgb, var(--lantern) 12%, transparent) 70%, transparent); }
+.t33h-gwall { background: radial-gradient(60% 55% at 50% 20%, color-mix(in srgb, var(--lantern) 50%, transparent), color-mix(in srgb, var(--lantern) 10%, transparent) 75%, transparent); }
+.t33h-spill {
+  background: radial-gradient(60% 70% at 50% 0%, color-mix(in srgb, var(--lantern) 55%, transparent), color-mix(in srgb, var(--lantern) 14%, transparent) 60%, transparent);
+}
+/* light: a warm amber stain on the pale sand (no blend modes inside the 3D model: they flatten it) */
+:root[data-theme='light'] .t33h-spill {
+  background: radial-gradient(60% 70% at 50% 0%, color-mix(in srgb, var(--lantern) 55%, #c0701e 45%), color-mix(in srgb, var(--lantern) 22%, transparent) 55%, transparent);
+  opacity: calc(var(--on, 0) * 0.5);
+}
+:root[data-theme='light'] .t33h-gfloor { background: radial-gradient(70% 60% at 50% 72%, color-mix(in srgb, var(--lantern) 75%, transparent), color-mix(in srgb, var(--lantern) 20%, transparent) 70%, transparent); }
+.t33h-lampp .t33-lan { width: 100%; height: 100%; }
+.t33h-lampp .p2p-lamp-halo { opacity: calc(var(--on, 0) * 0.95); }
+.t33h-lampp .t33-lan-shade { opacity: calc(0.88 - var(--on, 0) * 0.88); }
+
+/* bay buttons: an invisible pane over each open front */
+.t33h-bay {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.t33h-bay:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -3px; background: color-mix(in srgb, var(--lantern) 10%, transparent); }
+.t33h-bay:hover { background: color-mix(in srgb, var(--lantern) 8%, transparent); }
+.t33h-stage.drag .t33h-bay { cursor: grabbing; }
+
+/* the gold thread and the moth's rings */
+.t33h-thread {
+  fill: none;
+  stroke: var(--lantern);
+  stroke-width: max(2px, calc(var(--B) * 0.022));
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 3px var(--lantern));
+  transition: stroke-dashoffset 2.6s var(--ease-soft);
+}
+.t33h.all .t33h-thread { stroke-dashoffset: 0; }
+.t33h-inkring {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: max(1.6px, calc(var(--B) * 0.016));
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.2s var(--ease) 0.9s;
+}
+.t33h.moth1 .t33h-inkring:nth-of-type(1),
+.t33h.moth2 .t33h-inkring { stroke-dashoffset: 0; }
+.t33h-moth { transform: var(--m0); opacity: 0; transition: transform 1.8s var(--ease-soft), opacity 0.6s; pointer-events: none; }
+.t33h.moth1 .t33h-moth { transform: var(--m1); opacity: 1; }
+.t33h.moth2 .t33h-moth { transform: var(--m2); opacity: 1; }
+.t33h-moth .t33h-art { width: 100%; height: 100%; }
+
+/* the reading slip: left of the model on wide screens, under it on phones */
+.t33h-foot {
+  position: absolute;
+  left: max(16px, 4%);
+  top: 34%;
+  z-index: 3;
+  width: min(30%, 22rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+}
+.t33h-foot > * { pointer-events: auto; }
+.t33h-read { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.t33h-slip { text-align: left; animation: p2-rise 0.6s var(--ease) both; }
+.t33h-name { font: 500 clamp(1.05rem, 1.5vw, 1.25rem) / 1.3 var(--serif); }
+.t33h-name span { font-weight: 400; color: var(--ink-2); }
+.t33h-what { margin-top: 4px !important; font: 400 clamp(0.95rem, 1.2vw, 1.05rem) / 1.5 var(--serif); color: var(--ink-2); }
+/* "Revisit station n": a small flat stone with the words carved in */
+.t33h-link {
+  padding: 5px 14px 6px;
+  border-radius: 46% 54% 50% 50% / 60% 55% 45% 40%;
+  background: var(--t33-grain), radial-gradient(80% 70% at 30% 20%, color-mix(in srgb, var(--moon) 25%, transparent), transparent 70%), linear-gradient(170deg, var(--rock-hi), var(--rock-mid));
+  box-shadow: inset -3px -4px 8px -4px var(--umbra), 0 5px 10px -6px var(--umbra);
+  color: var(--stone-text, var(--ink));
+  font: 500 0.82rem/1.3 var(--serif);
+  text-decoration: none;
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 60%, transparent);
+}
+.t33h-link:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t33h-note { margin: 0; max-width: 32rem; text-align: left; font: 400 0.9rem/1.45 var(--serif); color: var(--ink-2); animation: p2-rise 0.8s var(--ease) both; }
+.t33h-note::before { content: ''; display: inline-block; width: 0.55em; height: 0.55em; margin-right: 0.45em; border: 1.6px solid var(--vermilion); border-radius: 50%; vertical-align: 0.05em; }
+
+/* low: still angle, lights and thread appear without a run, moth rings static */
+.t33h.low .t33h-glow, .t33h.low .t33h-thread, .t33h.low .t33h-inkring, .t33h.low .t33h-moth, .t33h.low .t33h-f.sq::after { transition: none; }
+.t33h.low .t33h-thread { filter: none; }
+.t33h.low .t33h-moth { display: none; }
+@media (max-width: 640px) {
+  .t33h-foot { left: 50%; top: auto; bottom: 8px; width: min(92%, 30rem); transform: translateX(-50%); align-items: center; }
+  .t33h-read { align-items: center; }
+  .t33h-slip, .t33h-note { text-align: center; }
+  .t33h-what { font-size: 0.9rem; }
+}

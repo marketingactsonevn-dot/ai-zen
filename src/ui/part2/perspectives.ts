@@ -21,6 +21,22 @@ export interface PerspectiveOpts {
   /** the station's own painting behind the pond (default: far ink hills under the moon); `sky: false` = no moon above */
   art?: (g: PondGeo) => SVGElement[]
   sky?: boolean
+  /** where stone k (clockwise, digit k+1) stands, px in the stage: centre of its foot, scale s (1 = default size), z-index z
+   *  (default y). Default: round the pond */
+  place?: (k: number, n: number, g: PondGeo) => { x: number; y: number; s?: number; z?: number }
+  /** what stands at slot k instead of the stone (a gate, a lamp, a jar), in the stone's box: viewBox -60 -70 120 90, foot
+   *  on y = 0, about 92 wide; i = which view it holds (data.stones[i]). Its halo and rake rings stay (hide them in CSS) */
+  stone?: (k: number, g: PondGeo, i: number) => SVGElement
+  /** on every touch of stone k (i = data.stones[i]); the root also carries .is-heard-{k} and, once all are heard, .is-all */
+  onHear?: (k: number, i: number) => void
+  /** the station's own stage behind the stones (a diorama, a canvas) instead of the painted pond, in a host that fills the
+   *  stage; returns its cleanup. api.pick(k) hears stone k; api.onLayout(fn) gets the pond geometry and the stones' feet */
+  stage?: (host: HTMLElement, api: CircleApi) => (() => void) | void
+}
+
+export interface CircleApi {
+  pick(k: number): void
+  onLayout(fn: (g: PondGeo, feet: { x: number; y: number; s: number }[]) => void): void
 }
 
 const f1 = (n: number) => n.toFixed(1)
@@ -47,12 +63,14 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
           s('ellipse', { class: 'p2c-halo', cx: 0, cy: -18, rx: 60, ry: 46, fill: 'url(#p2-halo)' }),
           s('ellipse', { class: 'p2c-ring', cx: 0, cy: 2, rx: 58, ry: 15 }),
           s('ellipse', { class: 'p2c-ring p2c-ring2', cx: 0, cy: 2, rx: 50, ry: 11 }),
-          stoneArt(92, 58, seed + vi * 31),
+          o.stone ? '' : stoneArt(92, 58, seed + vi * 31),
           s('text', { class: 'p2c-num', x: 0, y: -24, 'text-anchor': 'middle' }, String(k + 1)))
         return h('button', { class: 'p2c-stone', type: 'button', style: `--i:${k}`, 'aria-pressed': 'false', 'aria-label': fill(L.stoneN, { n: k + 1 }), onClick: () => pick(k) }, art)
       })
       const ring = h('div', { class: 'p2c-stones', role: 'group', 'aria-label': L.perspectives }, ...stones)
-      const stage = h('div', { class: 'p2c-stage' }, pond, ring)
+      const own = o.stage ? h('div', { class: 'p2c-own' }) : null
+      const stage = h('div', { class: 'p2c-stage' }, own ?? pond, ring)
+      const arts = stones.map((b) => b.firstChild as SVGSVGElement) // the station's stone() art goes in here, per layout
       const dots = order.map(() => h('i'))
       const count = h('p', { class: 'p2c-count' }, h('span', { class: 'p2c-dots', 'aria-hidden': 'true' }, ...dots), h('span', null, fill(L.heard, { n: 0, total: n })))
       const body = h('div', { class: 'p2c-body-text' })
@@ -80,6 +98,7 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
         stones[k].setAttribute('aria-label', fill(L.stoneHeard, { n: k + 1, who: st.who }))
         stones[k].dataset.heard = ''
         heard.add(k)
+        root.classList.add(`is-heard-${k}`)
         dots[k].className = 'on'
         body.replaceChildren(
           h('p', { class: 'p2c-who' }, h('span', { class: 'p2c-who-label' }, L.whoSays), st.who),
@@ -89,8 +108,10 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
         card.hidden = false
         if (first) card.setAttribute('aria-live', 'polite') // after the first fill: not read out on entering the scene
         lean(k)
+        o.onHear?.(k, order[k])
         if (heard.size === n && !root.classList.contains('p2-still')) {
           root.classList.replace('p2-astir', 'p2-still')
+          root.classList.add('is-all')
           ctx.insight(data.common, o.detail)
           ctx.chime('ok')
         } else ctx.chime('soft')
@@ -140,16 +161,25 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
         const ry = rx * 0.42
         const cx = sw / 2, cy = sh / 2 + bh * 0.12
         const RX = rx + bw * 0.62, RY = ry + bh * 0.56
-        const pts: Pt[] = order.map((_, k) => {
+        const g: PondGeo = { w: sw, h: sh, cx, cy, rx, ry, top: cy - ry * 1.35, seed }
+        const feet = order.map((_, k) => {
+          if (o.place) return { s: 1, ...o.place(k, n, g) }
           const a = ((-90 + 180 / n + (k * 360) / n) * Math.PI) / 180
-          return [cx + RX * Math.cos(a), cy + RY * Math.sin(a)]
+          return { x: cx + RX * Math.cos(a), y: cy + RY * Math.sin(a), s: 1 }
         })
+        const pts: Pt[] = feet.map((p) => [p.x, p.y])
         geo = { cx, cy, rx, ry, pts }
         stones.forEach((b, k) => {
-          const [x, y] = pts[k]
-          Object.assign(b.style, { left: `${f1(x - bw / 2)}px`, top: `${f1(y - bh * (70 / 90))}px`, width: `${f1(bw)}px`, height: `${f1(bh)}px`, zIndex: String(Math.round(y)) })
+          const { x, y, s: sc = 1, z } = feet[k]
+          const w = bw * sc, hh = bh * sc
+          Object.assign(b.style, { left: `${f1(x - w / 2)}px`, top: `${f1(y - hh * (70 / 90))}px`, width: `${f1(w)}px`, height: `${f1(hh)}px`, zIndex: String(Math.round(z ?? y)) })
+          if (o.stone) {
+            arts[k].querySelector('.p2c-own-art')?.remove()
+            arts[k].insertBefore(s('g', { class: 'p2c-own-art' }, o.stone(k, g, order[k])), arts[k].querySelector('.p2c-num'))
+          }
         })
-        drawPond(sw, sh, cx, cy, rx, ry)
+        if (own) layouts.forEach((fn) => fn(g, feet.map(({ x, y, s: sc = 1 }) => ({ x, y, s: sc }))))
+        else drawPond(sw, sh, cx, cy, rx, ry)
         if (sel >= 0) lean(sel)
       }
 
@@ -232,6 +262,11 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
           grass(cx - rx * 0.15, cy + ry * 1.1, Math.max(10, rx * 0.09), seed + 10))
       }
 
+      const layouts: ((g: PondGeo, feet: { x: number; y: number; s: number }[]) => void)[] = []
+      if (own && o.stage) {
+        const off = o.stage(own, { pick, onLayout: (fn) => void layouts.push(fn) })
+        if (off) ctx.onCleanup(off)
+      }
       ctx.onCleanup(onSize(ctx.art, layout))
       ctx.onCleanup(onDigit((d) => pick(d - 1)))
     },
