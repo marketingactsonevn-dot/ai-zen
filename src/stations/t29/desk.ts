@@ -12,16 +12,61 @@ const G = C.scenes.desk
 const GB = [8, 16, 32, 64, 96, 141]
 const SCROLLS = 8
 
-/** A scribe kneeling at (x, y) (his knees on the floor line), `hh` tall: a broad robe, a winged scholar's cap, the head bowed to the desk. */
-function scribe(x: number, y: number, hh: number, seed: number): string {
+/** A scribe kneeling at (x, y) (knees on the floor line), `hh` tall, painted in a few strokes: the robe a pale wash under a
+ *  strong ink contour (heavy down the back, lighter down the chest), a wide sleeve, a sash, folds, the face in paper with a
+ *  thin beard, the winged scholar's cap in solid ink. The writing forearm is drawn by the caller (it moves). */
+function scribe(x: number, y: number, hh: number, seed: number): { parts: SVGElement[]; elbow: Pt } {
   const u = hh / 10
-  const neck: Pt = [x + u * 0.6, y - u * 6.9]
-  const head: Pt = [x + u * 1.2, y - u * 7.9]
-  return `M${P([x - u * 3.6, y])}Q${P([x - u * 3.9, y - u * 3.2])} ${P([x - u * 1.8, y - u * 5.6])}Q${P([x - u * 0.6, y - u * 6.9])} ${P(neck)}Q${P([x + u * 1.8, y - u * 6.3])} ${P([x + u * 2.2, y - u * 4.4])}Q${P([x + u * 2.6, y - u * 1.8])} ${P([x + u * 3.8, y - u * 0.6])}L${P([x + u * 3.6, y])}Z` +
-    blob(head[0], head[1], u * 0.85, u * 0.95, seed, 0.08, 12) +
-    blob(head[0] - u * 0.1, head[1] - u * 0.85, u * 0.95, u * 0.55, seed + 1, 0.05, 10) +
-    stroke([[head[0] - u * 2.1, head[1] - u * 0.75], [head[0] - u * 1.0, head[1] - u * 0.95]], u * 0.45, 0.3, 0.1, 0.4) +
-    stroke([[head[0] + u * 0.8, head[1] - u * 0.95], [head[0] + u * 1.9, head[1] - u * 0.8]], u * 0.45, 0.1, 0.3, 0.4)
+  const X = (k: number) => x + u * k
+  const Y = (k: number) => y - u * k
+  const neck: Pt = [X(0.6), Y(6.9)]
+  const head: Pt = [X(1.25), Y(7.85)]
+  const robe = `M${P([X(-3.6), y])}Q${P([X(-3.9), Y(3.2)])} ${P([X(-1.8), Y(5.6)])}Q${P([X(-0.6), Y(6.9)])} ${P(neck)}Q${P([X(1.8), Y(6.3)])} ${P([X(2.2), Y(4.4)])}Q${P([X(2.6), Y(1.8)])} ${P([X(3.8), Y(0.6)])}L${P([X(3.6), y])}Z`
+  const back = curve([X(-3.5), Y(0.1)], [X(-4.0), Y(3.4)], [X(-1.6), Y(5.75)], 12).concat(curve([X(-1.6), Y(5.75)], [X(-0.6), Y(6.85)], [X(0.4), Y(6.95)], 6).slice(1))
+  const chest = curve([X(0.9), Y(6.8)], [X(1.9), Y(6.1)], [X(2.1), Y(4.5)], 8)
+  // the wide near sleeve, falling from the shoulder to an open cuff near the desk
+  const sleeve = `M${P([X(0.0), Y(6.1)])}Q${P([X(2.2), Y(5.6)])} ${P([X(3.3), Y(3.9)])}Q${P([X(3.9), Y(3.0)])} ${P([X(3.5), Y(2.4)])}Q${P([X(2.7), Y(2.3)])} ${P([X(2.1), Y(2.9)])}Q${P([X(1.2), Y(4.0)])} ${P([X(-0.4), Y(4.6)])}Z`
+  const ink =
+    stroke(back, u * 0.62, 0.05, 0.2, 0.15) +
+    stroke(chest, u * 0.34, 0.15, 0.4, 0.2) +
+    stroke(curve([X(0.0), Y(6.15)], [X(2.2), Y(5.65)], [X(3.4), Y(3.8)], 8), u * 0.42, 0.1, 0.25, 0.25) +
+    stroke(curve([X(3.5), Y(2.45)], [X(2.6), Y(2.3)], [X(2.0), Y(3.0)], 6), u * 0.3, 0.2, 0.3, 0.3) +
+    stroke([[X(-3.6), y], [X(0), Y(-0.08)], [X(3.7), Y(0.05)]], u * 0.4, 0.1, 0.1, 0.3)
+  const folds =
+    stroke(curve([X(-2.2), Y(4.6)], [X(-1.5), Y(2.8)], [X(-1.9), Y(0.6)], 8), u * 0.16, 0.2, 0.4, 0.1) +
+    stroke(curve([X(-0.6), Y(3.8)], [X(0.0), Y(2.2)], [X(0.6), Y(0.5)], 8), u * 0.13, 0.2, 0.4, 0.1) +
+    stroke(curve([X(1.6), Y(4.6)], [X(2.0), Y(4.2)], [X(2.6), Y(3.4)], 6), u * 0.1, 0.2, 0.4, 0.1)
+  const sash = stroke(curve([X(-3.0), Y(3.1)], [X(-0.4), Y(2.6)], [X(2.2), Y(3.0)], 10), u * 0.3, 0.15, 0.15, 0.3) +
+    stroke(curve([X(-0.6), Y(2.75)], [X(-0.9), Y(1.8)], [X(-0.5), Y(1.0)], 6), u * 0.18, 0.1, 0.5, 0.2)
+  const face = blob(head[0], head[1], u * 0.82, u * 0.92, seed, 0.06, 12)
+  const faceInk = stroke(curve([head[0] - u * 0.7, head[1] - u * 0.5], [head[0] - u * 0.95, head[1] + u * 0.4], [head[0] - u * 0.1, head[1] + u * 0.9], 8), u * 0.22, 0.2, 0.4, 0.2) +
+    stroke([[head[0] + u * 0.25, head[1] - u * 0.05], [head[0] + u * 0.6, head[1] + u * 0.02]], u * 0.12, 0.2, 0.2, 0.3) +
+    stroke([[head[0] + u * 0.2, head[1] + u * 0.75], [head[0] + u * 0.35, head[1] + u * 1.7]], u * 0.1, 0.1, 0.8, 0.1) +
+    stroke([[head[0] + u * 0.45, head[1] + u * 0.7], [head[0] + u * 0.75, head[1] + u * 1.5]], u * 0.08, 0.1, 0.8, 0.1)
+  const cap = blob(head[0] - u * 0.05, head[1] - u * 0.78, u * 0.98, u * 0.55, seed + 1, 0.05, 10) +
+    stroke([[head[0] - u * 2.2, head[1] - u * 0.55], [head[0] - u * 1.4, head[1] - u * 0.75], [head[0] - u * 0.8, head[1] - u * 0.85]], u * 0.42, 0.35, 0.05, 0.4) +
+    stroke([[head[0] + u * 0.7, head[1] - u * 0.85], [head[0] + u * 1.3, head[1] - u * 0.78], [head[0] + u * 2.1, head[1] - u * 0.6]], u * 0.42, 0.05, 0.35, 0.4)
+  return {
+    parts: [
+      s('path', { class: 't29d-robe', d: robe, filter: 'url(#ink-wash)' }),
+      s('path', { class: 't29d-robe t29d-sleeve', d: sleeve }),
+      s('path', { class: 't29d-sash', d: sash }),
+      s('path', { class: 't29d-fold', d: folds }),
+      s('path', { class: 't29d-ink', d: ink, filter: 'url(#ink-rough)' }),
+      s('path', { class: 'gb-figure-rim', d: stroke(back.slice(3, 15).map(([a, b]) => [a + u * 0.35, b + u * 0.1] as Pt), u * 0.14, 0.2, 0.4, 0.1) }),
+      s('path', { class: 't29d-face', d: face }),
+      s('path', { class: 't29d-ink', d: faceInk }),
+      s('path', { class: 't29d-cap', d: cap, filter: 'url(#ink-rough)' }),
+    ],
+    elbow: [X(3.0), Y(2.8)],
+  }
+}
+
+/** A rolled end of a handscroll from a to b (the near end at b): the roll in paper, its ink edge, a knob past the near end. */
+function rollEnd(a: Pt, b: Pt, rw: number): string {
+  const L = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1
+  const ux = (b[0] - a[0]) / L, uy = (b[1] - a[1]) / L
+  return stroke([[a[0] - ux * rw * 0.5, a[1] - uy * rw * 0.5], [b[0] + ux * rw * 1.2, b[1] + uy * rw * 1.2]], rw * 0.45, 0.02, 0.02, 0.9)
 }
 
 /** The chip is a scribe at a low desk under a lantern: the wider the desk (memory), the more scrolls lie open at once. */
@@ -70,7 +115,7 @@ export function deskScene(ctx: SceneCtx) {
     const kw = hh * 0.14, kh = hh * 0.2
     svg.replaceChildren(
       ...nightSky(w, floor - hh * 0.04, 2901, [w * 0.12, hh * 0.1, Math.max(10, lr * 1.1)], hh * 0.22),
-      wash(blob(w * 0.5, floor + hh * 0.17, w * 0.5, hh * 0.13, 2902, 0.18, 14), 0.05),
+      wash(blob(w * 0.5, floor + hh * 0.17, w * 0.5, hh * 0.13, 2902, 0.18, 14), 0.03),
       s('circle', { cx: f1(w * 0.5), cy: f1(floor + hh * 0.04), r: f1(Math.min(w, hh) * 0.5), fill: 'url(#p2-lamp)', class: 't29d-pool' }),
       // a bamboo rod planted by the desk, bowed over it, the paper lantern hung from its tip
       bamboo([px, floor + hh * 0.02], [lx, ly], pw, 2903, true, '', Math.hypot(px - lx, floor - ly) * 0.22),
@@ -98,24 +143,43 @@ export function deskScene(ctx: SceneCtx) {
     const open = clamp(Math.round(2 + t * (SCROLLS - 2)), 2, SCROLLS)
     // the scribe kneels behind the desk; his chest carries the chip
     const sh = Math.min(hh * 0.3, dd * 2.4)
-    const sx = cx - Math.min(dw * 0.08, sh * 0.3), sy = back + dd * 0.3
-    const chip = sh * 0.15
-    const chx = sx + sh * 0.02, chy = sy - sh * 0.47
+    const sx = cx - Math.min(dw * 0.12, sh * 0.34), sy = back + dd * 0.3
+    const sc = scribe(sx, sy, sh, 2911)
+    const chip = sh * 0.13
+    const chx = sx + sh * 0.12, chy = sy - sh * 0.5
     let pins = ''
     for (let k = 1; k < 4; k++) {
       const o = (chip * k) / 4
       pins += `M${f1(chx - chip / 2 + o)} ${f1(chy - chip / 2 - chip * 0.2)}v${f1(chip * 0.2)}M${f1(chx - chip / 2 + o)} ${f1(chy + chip / 2)}v${f1(chip * 0.2)}M${f1(chx - chip / 2 - chip * 0.2)} ${f1(chy - chip / 2 + o)}h${f1(chip * 0.2)}M${f1(chx + chip / 2)} ${f1(chy - chip / 2 + o)}h${f1(chip * 0.2)}`
     }
-    const hand: Pt = [sx + sh * 0.42, back + dd * 0.42]
-    // the desk: a top in perspective with grain, a dark front apron, short legs
+    const hand: Pt = [sx + sh * 0.5, back + dd * 0.45]
+    // the desk: a wooden top in perspective (brushed edges, long grain, a knot), a darker apron, four legs with their shadows
     const topD = `M${P([x0 + inset, back])}L${P([x1 - inset, back])}L${P([x1, front])}L${P([x0, front])}Z`
+    const at = (u: number, k: number): Pt => [x0 + inset * (1 - k) + (dw - 2 * inset * (1 - k)) * u, back + dd * k]
     let grain = ''
-    for (let i = 0; i < 9; i++) {
-      const k = (i + 0.5) / 9, y = back + dd * k
-      const a = x0 + inset * (1 - k) + dw * r() * 0.3, b = a + dw * (0.2 + r() * 0.4)
-      grain += stroke([[a, y], [Math.min(b, x1 - inset * (1 - k)), y + (r() - 0.5)]], 0.8 + r() * 0.8, 0.2, 0.3, 0.1)
+    for (let i = 0; i < 11; i++) {
+      const k = (i + 0.5) / 11
+      let u0 = r() * 0.15
+      while (u0 < 0.95) {
+        const u1 = Math.min(0.99, u0 + 0.2 + r() * 0.45)
+        const m = (u0 + u1) / 2
+        const [ax2, ay] = at(u0, k), [mx, my] = at(m, k + (r() - 0.5) * 0.04), [bx2, by] = at(u1, k)
+        grain += stroke([[ax2, ay], [mx, my], [bx2, by]], 0.7 + r() * 0.9, 0.2, 0.3, 0.1)
+        u0 = u1 + 0.03 + r() * 0.1
+      }
     }
-    const legs = [x0 + dw * 0.05, x1 - dw * 0.05].map((x) => stroke([[x, front + apron], [x + (x < cx ? -2 : 2), front + apron + legH]], Math.max(4, dd * 0.12), 0.02, 0.1, 0.6)).join('')
+    const [kx0, ky0] = at(0.3 + r() * 0.3, 0.55)
+    grain += stroke(Array.from({ length: 13 }, (_, i) => [kx0 + Math.cos((i / 12) * 6.3) * dd * 0.12, ky0 + Math.sin((i / 12) * 6.3) * dd * 0.05] as Pt), 0.9, 0.1, 0.1, 0.4) +
+      stroke(Array.from({ length: 13 }, (_, i) => [kx0 + Math.cos((i / 12) * 6.3) * dd * 0.06, ky0 + Math.sin((i / 12) * 6.3) * dd * 0.025] as Pt), 0.8, 0.1, 0.1, 0.4)
+    const edges = stroke([[x0 - 2, front + 0.5], [cx, front + 1.5], [x1 + 2, front]], Math.max(2.4, dd * 0.06), 0.03, 0.03, 0.5) +
+      stroke([[x0 + inset, back], [x0 - 1, front]], Math.max(1.6, dd * 0.035), 0.1, 0.1, 0.4) +
+      stroke([[x1 - inset, back], [x1 + 1, front]], Math.max(1.8, dd * 0.04), 0.1, 0.1, 0.4) +
+      stroke([[x0 + inset, back], [x1 - inset, back - 0.5]], Math.max(1, dd * 0.02), 0.2, 0.2, 0.3) +
+      stroke([[x0, front + apron], [cx, front + apron + 1], [x1, front + apron]], Math.max(2.2, dd * 0.05), 0.05, 0.05, 0.4)
+    const leg = (x: number, top: number, len: number, side: number) => stroke([[x, top], [x + side * len * 0.02, top + len * 0.6], [x + side * len * 0.1, top + len]], Math.max(4, dd * 0.13), 0.02, 0.25, 0.55)
+    const legs = leg(x0 + dw * 0.05, front + apron, legH, -1) + leg(x1 - dw * 0.05, front + apron, legH, 1)
+    const backLegs = leg(x0 + inset + dw * 0.04, front + apron - 2, legH * 0.62, -1) + leg(x1 - inset - dw * 0.04, front + apron - 2, legH * 0.62, 1)
+    const legShade = [x0 + dw * 0.05, x1 - dw * 0.05].map((x) => stroke([[x + dd * 0.035, front + apron + 2], [x + dd * 0.04, front + apron + legH * 0.8]], Math.max(1, dd * 0.03), 0.2, 0.3, 0.2)).join('')
     // the plates of HBM: a tall stack of thin porcelain right at the desk's edge
     const hx = x1 - inset * 0.6 - dd * 0.35, hy = back + dd * 0.5
     const prx = Math.min(dd * 0.42, dw * 0.08), pry = prx * 0.28
@@ -148,7 +212,8 @@ export function deskScene(ctx: SceneCtx) {
         text += stroke([[cxx + skew * 0.8, y - shd * 0.38], [cxx + skew * 0.3, y - shd * 0.38 + len]], Math.max(0.7, swd * 0.03), 0.2, 0.3, 0.2)
       }
       sheets.push(s('path', { class: 't29d-sheet', d: page }), s('path', { class: 't29d-lines', d: text }),
-        s('path', { class: 't29d-roll', d: stroke([[x + skew, y - shd / 2 - 1], [x - 1, y + shd / 2 + 1]], Math.max(2.4, shd * 0.16), 0.05, 0.05, 0.7) + stroke([[x + swd + skew, y - shd / 2 - 1], [x + swd - 1, y + shd / 2 + 1]], Math.max(2.4, shd * 0.16), 0.05, 0.05, 0.7) }))
+        s('path', { class: 't29d-rollend', d: rollEnd([x + skew, y - shd / 2], [x, y + shd / 2], Math.max(5, shd * 0.4)) + rollEnd([x + swd + skew, y - shd / 2], [x + swd, y + shd / 2], Math.max(5, shd * 0.4)) }),
+        s('path', { class: 't29d-roll', d: stroke([[x + skew - 2, y - shd / 2 - 2], [x - 2, y + shd / 2 + 2]], Math.max(1, shd * 0.05), 0.1, 0.1, 0.5) + stroke([[x + swd + skew + 2, y - shd / 2 - 2], [x + swd + 2, y + shd / 2 + 2]], Math.max(1, shd * 0.05), 0.1, 0.1, 0.5) + stroke([[x + 1, y + shd / 2 + 2], [x + 1.4, y + shd / 2 + shd * 0.22]], Math.max(2, shd * 0.12), 0.1, 0.1, 0.6) + stroke([[x + swd + 1, y + shd / 2 + 2], [x + swd + 1.4, y + shd / 2 + shd * 0.22]], Math.max(2, shd * 0.12), 0.1, 0.1, 0.6) }))
     }
     // the rest wait rolled up in the store at the far left
     const kx = Math.max(hh * 0.06, w * 0.06), ky = hh * 0.66 + hh * 0.02
@@ -159,23 +224,27 @@ export function deskScene(ctx: SceneCtx) {
     const busy = open < 5
     const tw = G.stackLabel.length * 6.4 // the caption's width at 13 px, roughly
     desk.replaceChildren(
-      s('ellipse', { class: 'gb-shadow', cx: f1(cx + dw * 0.04), cy: f1(front + apron + legH + 2), rx: f1(dw * 0.58), ry: f1(Math.max(4, dd * 0.18)) }),
+      wash(blob(cx + dw * 0.05, front + apron + legH + 2, dw * 0.6, Math.max(5, dd * 0.22), 2912, 0.15), 0.22),
       // the scribe behind the desk
-      s('path', { class: 'gb-figure', d: scribe(sx, sy, sh, 2911) }),
-      s('path', { class: 't29d-fold', d: stroke(curve([sx - sh * 0.22, sy - sh * 0.5], [sx - sh * 0.1, sy - sh * 0.3], [sx - sh * 0.14, sy - sh * 0.05], 6), Math.max(1, sh * 0.02), 0.2, 0.4, 0.1) + stroke(curve([sx + sh * 0.02, sy - sh * 0.35], [sx + sh * 0.1, sy - sh * 0.18], [sx + sh * 0.2, sy - sh * 0.06], 6), Math.max(1, sh * 0.016), 0.2, 0.4, 0.1) }),
-      s('path', { class: 'gb-figure-rim', d: stroke(curve([sx - sh * 0.2, sy - sh * 0.56], [sx - sh * 0.38, sy - sh * 0.38], [sx - sh * 0.37, sy - sh * 0.08], 8), Math.max(1.2, sh * 0.02), 0.2, 0.4, 0.1) }),
+      ...sc.parts,
       s('rect', { class: 't29d-chip', x: f1(chx - chip / 2), y: f1(chy - chip / 2), width: f1(chip), height: f1(chip), rx: f1(chip * 0.12) }),
       s('path', { class: 't29d-pins', d: pins }),
       s('rect', { class: 't29d-chip-core', x: f1(chx - chip * 0.26), y: f1(chy - chip * 0.26), width: f1(chip * 0.52), height: f1(chip * 0.52), rx: 1 }),
+      s('path', { class: 't29d-leg t29d-leg-back', d: backLegs, filter: 'url(#ink-rough)' }),
       s('path', { class: 't29d-apron', d: `M${P([x0, front])}L${P([x1, front])}L${P([x1, front + apron])}L${P([x0, front + apron])}Z`, filter: 'url(#ink-rough)' }),
       s('path', { class: 't29d-leg', d: legs, filter: 'url(#ink-rough)' }),
+      s('path', { class: 'gb-rim-hi', d: legShade }),
       s('path', { class: 't29d-top', d: topD, filter: 'url(#ink-rough)' }),
-      s('path', { class: 't29d-grain', d: grain, filter: 'url(#ink-dry)' }),
-      s('path', { class: 'gb-rim-hi', d: stroke([[x0 + inset, back + 0.8], [x1 - inset, back + 0.8]], Math.max(1, dd * 0.03), 0.2, 0.2, 0.2) }),
+      s('path', { class: 't29d-grain', d: grain }),
+      s('path', { class: 't29d-edge', d: edges, filter: 'url(#ink-rough)' }),
+      s('path', { class: 'gb-rim-hi', d: stroke([[x0 + inset + 3, back + 1.2], [x1 - inset - 3, back + 0.8]], Math.max(1, dd * 0.03), 0.2, 0.2, 0.2) }),
       ...sheets,
       // the brush hand, writing (it runs faster on a wide desk)
-      s('g', { class: 't29d-arm', style: `transform-origin:${f1(sx + sh * 0.12)}px ${f1(sy - sh * 0.6)}px;--pace:${f1(1.4 - t * 1.0)}s` },
-        s('path', { class: 'gb-figure', d: stroke(curve([sx + sh * 0.12, sy - sh * 0.6], [sx + sh * 0.36, sy - sh * 0.5], hand, 8), Math.max(2, sh * 0.075), 0.1, 0.3, 0.45) + stroke([[hand[0] - sh * 0.01, hand[1] - sh * 0.13], [hand[0] + sh * 0.02, hand[1] + sh * 0.01]], Math.max(1, sh * 0.018), 0.05, 0.4, 0.3) })),
+      s('g', { class: 't29d-arm', style: `transform-origin:${f1(sc.elbow[0])}px ${f1(sc.elbow[1])}px;--pace:${f1(1.4 - t * 1.0)}s` },
+        s('path', { class: 't29d-robe t29d-cuff', d: stroke(curve(sc.elbow, [sc.elbow[0] + sh * 0.1, sc.elbow[1] + sh * 0.02], [hand[0] - sh * 0.06, hand[1] - sh * 0.05], 8), Math.max(3, sh * 0.075), 0.05, 0.4, 0.5) }),
+        s('path', { class: 't29d-face', d: blob(hand[0] - sh * 0.02, hand[1] - sh * 0.035, sh * 0.04, sh * 0.03, 2913, 0.15, 8) }),
+        s('path', { class: 't29d-ink', d: stroke(curve(sc.elbow, [sc.elbow[0] + sh * 0.1, sc.elbow[1] + sh * 0.02], [hand[0] - sh * 0.06, hand[1] - sh * 0.05], 8), Math.max(1, sh * 0.02), 0.1, 0.3, 0.3) +
+          stroke([[hand[0] - sh * 0.04, hand[1] - sh * 0.16], [hand[0], hand[1] - sh * 0.04], [hand[0] + sh * 0.012, hand[1] + sh * 0.02]], Math.max(1.2, sh * 0.02), 0.05, 0.5, 0.15) })),
       ...plates,
       s('text', { class: 'gf-caption t29d-hbm', x: f1(clamp(hx, tw / 2 + 6, w - tw / 2 - 6)), y: f1(hy - 13 * sh * 0.06 - pry - 10), 'text-anchor': 'middle' }, G.stackLabel),
       ...rolled,

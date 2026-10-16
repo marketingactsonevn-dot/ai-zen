@@ -34,12 +34,64 @@
   fill: var(--umbra);
   opacity: 0.9;
 }
+.t29d-robe {
+  fill: color-mix(in srgb, var(--rock-mid) 70%, var(--water));
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t29d-robe {
+  fill: color-mix(in srgb, var(--rock-mid) 80%, var(--moon));
+  opacity: 0.8;
+}
+.t29d-sleeve {
+  opacity: 0.85;
+}
+.t29d-cuff {
+  opacity: 0.95;
+}
+.t29d-ink,
+.t29d-cap {
+  fill: var(--wash);
+  opacity: 0.88;
+}
+:root[data-theme='dark'] .t29d-ink,
+:root[data-theme='dark'] .t29d-cap {
+  fill: var(--umbra);
+  opacity: 1;
+}
+.t29d-face {
+  fill: var(--card);
+}
+:root[data-theme='dark'] .t29d-face {
+  fill: color-mix(in srgb, var(--ink-2) 80%, var(--lantern));
+}
+.t29d-sash {
+  fill: var(--vermilion);
+  opacity: 0.55;
+}
 .t29d-fold {
-  fill: var(--ink-3);
-  opacity: 0.5;
+  fill: var(--wash);
+  opacity: 0.4;
 }
 :root[data-theme='dark'] .t29d-fold {
-  fill: var(--rock-mid);
+  fill: var(--umbra);
+  opacity: 0.6;
+}
+.t29d-edge {
+  fill: var(--wash);
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t29d-edge {
+  fill: var(--umbra);
+  opacity: 0.9;
+}
+.t29d-leg-back {
+  opacity: 0.45;
+}
+.t29d-rollend {
+  fill: color-mix(in srgb, var(--card) 80%, var(--lantern));
+}
+:root[data-theme='dark'] .t29d-rollend {
+  fill: color-mix(in srgb, var(--ink) 75%, var(--lantern));
 }
 .t29d-cab {
   fill: color-mix(in srgb, var(--stone) 70%, var(--lantern));
@@ -52,12 +104,64 @@
 .t29d-top {
   fill: color-mix(in srgb, var(--stone) 78%, var(--lantern));
 }
-:root[data-theme='dark'] .t29d-fold {
-  fill: var(--ink-3);
-  opacity: 0.5;
+:root[data-theme='dark'] .t29d-robe {
+  fill: color-mix(in srgb, var(--rock-mid) 70%, var(--water));
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t29d-robe {
+  fill: color-mix(in srgb, var(--rock-mid) 80%, var(--moon));
+  opacity: 0.8;
+}
+.t29d-sleeve {
+  opacity: 0.85;
+}
+.t29d-cuff {
+  opacity: 0.95;
+}
+.t29d-ink,
+.t29d-cap {
+  fill: var(--wash);
+  opacity: 0.88;
+}
+:root[data-theme='dark'] .t29d-ink,
+:root[data-theme='dark'] .t29d-cap {
+  fill: var(--umbra);
+  opacity: 1;
+}
+.t29d-face {
+  fill: var(--card);
+}
+:root[data-theme='dark'] .t29d-face {
+  fill: color-mix(in srgb, var(--ink-2) 80%, var(--lantern));
+}
+.t29d-sash {
+  fill: var(--vermilion);
+  opacity: 0.55;
+}
+.t29d-fold {
+  fill: var(--wash);
+  opacity: 0.4;
 }
 :root[data-theme='dark'] .t29d-fold {
-  fill: var(--rock-mid);
+  fill: var(--umbra);
+  opacity: 0.6;
+}
+.t29d-edge {
+  fill: var(--wash);
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t29d-edge {
+  fill: var(--umbra);
+  opacity: 0.9;
+}
+.t29d-leg-back {
+  opacity: 0.45;
+}
+.t29d-rollend {
+  fill: color-mix(in srgb, var(--card) 80%, var(--lantern));
+}
+:root[data-theme='dark'] .t29d-rollend {
+  fill: color-mix(in srgb, var(--ink) 75%, var(--lantern));
 }
 .t29d-cab {
   fill: color-mix(in srgb, var(--stone) 70%, var(--lantern));
@@ -78,7 +182,7 @@
 }
 .t29d-grain {
   fill: var(--wash);
-  opacity: 0.3;
+  opacity: 0.32;
 }
 :root[data-theme='dark'] .t29d-grain {
   fill: var(--umbra);
