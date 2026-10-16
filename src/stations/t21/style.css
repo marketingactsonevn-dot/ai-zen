@@ -12,14 +12,20 @@
   -webkit-tap-highlight-color: transparent;
 }
 .t21 svg { max-width: none; overflow: visible; }
-.t21-ink,
-.t21-body { fill: var(--ink); }
-.t21-visor { fill: var(--moon); }
+.t21-ink { fill: var(--ink); opacity: 0.88; }
+/* brushed figures (robot.ts): ink limbs, a washed torso and head, a moonlit visor slit */
+.t21-limb { fill: var(--ink); opacity: 0.9; }
+.t21-torso { fill: color-mix(in srgb, var(--ink) 62%, var(--paper)); }
+.t21-joint { fill: var(--ink); }
+.t21-visor { fill: var(--lantern); }
+:root[data-theme='light'] .t21-visor { fill: var(--moon); }
+.t21-fig.human .t21-limb { opacity: 0.75; }
 .t21-shadow { fill: var(--umbra); opacity: 0.25; }
-.t21-moon { fill: var(--moon); }
-.t21-pine { fill: var(--moss); opacity: 0.85; }
-.t21-mist { fill: var(--paper-2); opacity: 0.8; }
-.t21-track { fill: var(--ink-3); }
+/* the race scroll (art.ts) */
+.t21r-track { fill: var(--paper-2); opacity: 0.9; }
+:root[data-theme='dark'] .t21r-track { fill: var(--stone-3); opacity: 0.4; }
+.t21r-lane { fill: var(--rake); }
+.t21r-ribbon { fill: var(--vermilion); opacity: 0.9; }
 
 /* ── strings ─────────────────────────────────────── */
 .t21s-stage,
@@ -133,17 +139,18 @@
 }
 
 /* ── the tea table ───────────────────────────────── */
-.t21t-book { fill: var(--stone-2); stroke: var(--ink-3); stroke-width: 0.3; }
-.t21t-book2 { fill: var(--stone-3); stroke: var(--ink-3); stroke-width: 0.3; }
+.t21t-book,
+.t21t-book2 { fill: var(--paper); opacity: 0.32; }
+:root[data-theme='dark'] :is(.t21t-book, .t21t-book2) { fill: var(--moon); opacity: 0.16; }
 .t21t-glow { fill: var(--lantern); opacity: 0.22; }
 .t21t-toro { fill: var(--ink-2); }
 .t21t-flame { fill: var(--lantern); }
-.t21t-table { fill: url(#p2-rock); stroke: var(--ink-2); stroke-width: 0.8; }
-.t21t-porcelain { fill: var(--card); stroke: var(--ink); stroke-width: 0.8; }
+.t21t-porcelain { fill: var(--card); }
 .t21t-tea { fill: var(--moss); }
 .t21t-cup-ink { fill: var(--ink-2); opacity: 0.6; }
-.t21t-weave { fill: var(--lantern); opacity: 0.55; stroke: var(--ink-2); stroke-width: 0.6; }
-.t21t-weave-ink { stroke: var(--ink-2); stroke-width: 0.6; fill: none; }
+.t21t-weave { fill: color-mix(in srgb, var(--lantern) 60%, var(--rock-mid)); opacity: 0.6; }
+.t21t-weave-ink { fill: var(--wash); opacity: 0.6; }
+:root[data-theme='dark'] .t21t-weave-ink { fill: var(--ink-2); }
 .t21t-joint { fill: var(--paper); stroke: var(--ink); stroke-width: 1.4; }
 .t21t-hand.try { animation: t21-reach 1.3s ease-in-out; }
 .t21.still .t21t-hand.try { animation: none; }
@@ -220,3 +227,14 @@
   .t21t-scale-row { flex-direction: column; align-items: stretch; }
   .t21t-scale-svg { align-self: center; width: 150px; height: 78px; }
 }
+
+/* the tea table (teacup.ts): painted pieces */
+.t21t-casing { fill: color-mix(in srgb, var(--ink) 45%, var(--paper)); opacity: 0.8; }
+.t21t-table-ink { fill: var(--wash); opacity: 0.5; }
+.t21t-cup-band { fill: #36508a; opacity: 0.75; }
+:root[data-theme='dark'] .t21t-cup-band { fill: #6f8ccc; }
+.t21c-shore { fill: var(--wash); opacity: 0.42; }
+:root[data-theme='dark'] .t21c-shore { opacity: 0.85; }
+.t21c-smoke { fill: var(--mist); opacity: 0.6; }
+:root[data-theme='light'] .t21c-smoke { fill: var(--wash); opacity: 0.12; }
+.t21c-wall { fill: var(--rock-mid); opacity: 0.55; }

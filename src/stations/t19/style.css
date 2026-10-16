@@ -44,16 +44,14 @@
   max-width: none;
   overflow: visible;
 }
-.t19g-moon { fill: var(--moon); }
-.t19g-far { fill: var(--stone-3); opacity: 0.8; }
-.t19g-peak { fill: url(#p2-rock); stroke: var(--rock-lo); stroke-width: 0.6; }
-.t19g-peak-ink { fill: var(--ink); opacity: 0.55; }
-.t19g-ground { fill: var(--paper-2); }
-.t19g-post { fill: color-mix(in srgb, var(--moss-2) 45%, var(--stone-2)); stroke: var(--ink-3); stroke-width: 0.5; }
-.t19g-node { stroke: var(--ink-2); stroke-width: 0.8; opacity: 0.6; }
-.t19g-rail { fill: var(--ink-2); }
-.t19g-plank { fill: var(--moss); stroke: var(--ink); stroke-width: 0.8; }
-.t19g-lattice { stroke: var(--ink); stroke-width: 0.8; fill: none; opacity: 0.6; }
+.t19g-post { fill: color-mix(in srgb, var(--moss-b) 60%, var(--wash)); opacity: 0.85; }
+.t19g-node { fill: var(--wash); opacity: 0.6; }
+.t19g-rail { fill: var(--wash); opacity: 0.8; }
+.t19g-plank { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--moss-b)); opacity: 0.9; }
+.t19g-lattice { fill: var(--wash); opacity: 0.55; }
+.t19g-door-ink { fill: var(--wash); opacity: 0.8; }
+.t19g-latch { fill: var(--vermilion); opacity: 0.85; transition: opacity 0.4s; }
+.t19g.open .t19g-latch { opacity: 0; }
 .t19g-door {
   transform-box: fill-box;
   transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.2, 1);
@@ -62,18 +60,17 @@
 .t19g-door-r { transform-origin: right center; }
 .t19g.open .t19g-door { transform: scaleX(0.18); }
 .t19g-inside {
-  opacity: 0.18;
+  opacity: 0.2;
   transition: opacity 1.2s ease 0.3s;
 }
 .t19g.open .t19g-inside { opacity: 1; }
-.t19g-code { fill: var(--ink-2); opacity: 0.75; }
+.t19g-code { fill: var(--ink-2); opacity: 0.7; }
 .t19g-crack { fill: var(--vermilion); }
-.t19g-patch { stroke: var(--lantern); stroke-width: 1.6; stroke-linecap: round; opacity: 0.9; }
-.t19g-glow { fill: var(--lantern); opacity: 0.22; }
-.t19g-toro { fill: var(--ink-2); }
-.t19g-flame { fill: var(--lantern); }
-.t19g-pool { fill: var(--water); opacity: 0.7; }
-.t19g-reflect { fill: var(--moon); opacity: 0.7; }
+.t19g-patch { fill: var(--lantern); opacity: 0.95; }
+.t19g-worker { fill: var(--wash); opacity: 0.85; }
+:root[data-theme='dark'] .t19g-worker { fill: var(--ink-2); }
+.t19g-pool { fill: var(--water); opacity: 0.75; }
+.t19g-pool-rim { fill: var(--wash); opacity: 0.45; }
 .t19g-stage:focus-visible {
   outline: 2px solid var(--vermilion);
   outline-offset: -4px;
@@ -116,29 +113,41 @@
   gap: 14px;
 }
 .t19s-hall {
+  position: relative;
   flex: 0 1 auto;
-  width: min(36rem, 100%);
+  width: min(34rem, calc(100% - 48px));
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .t19s-roof {
-  display: block;
-  width: 108%;
-  height: 34px;
-  margin-bottom: -6px;
-  position: relative;
-  z-index: 1;
+  height: clamp(44px, 7vh, 64px);
+  flex: none;
 }
-.t19s-eave { fill: var(--stone-2); }
-.t19s-eave-ink { fill: var(--ink); opacity: 0.7; }
+.t19s-pav {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t19s-eave { fill: var(--wash); opacity: 0.55; }
+.t19s-tiles { fill: var(--wash); opacity: 0.5; }
+.t19s-eave-ink { fill: var(--wash); opacity: 0.85; }
+.t19s-post { fill: color-mix(in srgb, var(--wash) 80%, var(--vermilion)); opacity: 0.8; }
+.t19s-plinth { fill: var(--rock-lo); opacity: 0.55; }
 .t19s-stele {
   position: relative;
   width: 100%;
   padding: 18px 18px 14px;
   border-radius: 6px 6px 3px 3px;
-  background: linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 70%, var(--rock-lo));
-  box-shadow: inset 0 0 0 1px var(--line-2), var(--shadow-1);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .9 0 0 0 -.34'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(80% 50% at 20% 0%, color-mix(in srgb, var(--moon) 28%, transparent), transparent 70%),
+    linear-gradient(100deg, transparent 60%, color-mix(in srgb, var(--umbra) 20%, transparent)),
+    linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 70%, var(--rock-lo));
+  box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--rock-hi) 40%, transparent), inset 0 0 0 7px color-mix(in srgb, var(--umbra) 22%, transparent), 0 16px 22px -14px var(--umbra);
   overflow: hidden;
   cursor: none;
 }
@@ -260,7 +269,7 @@
 }
 @media (max-width: 600px) {
   .t19s { gap: 8px; }
-  .t19s-roof { height: 24px; }
+  .t19s-roof { height: 34px; }
   .t19s-stele { padding: 12px 10px 8px; }
   .t19s-title { margin-bottom: 4px; font-size: 0.74rem; }
   .t19s-lines { gap: 0; }

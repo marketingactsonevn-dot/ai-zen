@@ -22,7 +22,7 @@
   outline: none;
 }
 .t20v-stage:active { cursor: grabbing; }
-.t20v-stage:focus-visible .t20v-bank { stroke: var(--vermilion); stroke-width: 2.5; }
+.t20v-stage:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -6px; border-radius: 50%; }
 .t20v-svg {
   display: block;
   width: 100%;
@@ -30,8 +30,12 @@
   max-width: none;
   overflow: visible;
 }
-.t20v-bank { fill: var(--stone-3); }
-.t20v-pond { fill: var(--water); }
+.t20v-pond { fill: url(#p2-water-v); }
+.t20v-rake { fill: var(--rake); }
+.t20v-sky { fill: var(--mist); opacity: 0.2; filter: blur(8px); }
+:root[data-theme='light'] .t20v-sky { fill: #fff; opacity: 0.25; }
+:root[data-quality='low'] .t20v-sky { filter: none; }
+.t20v-moss { fill: var(--moss-b); }
 .t20v-ring { fill: none; stroke: var(--moon); stroke-width: 0.8; opacity: 0.18; }
 .t20v-moon { fill: var(--moon); opacity: 0.85; }
 .t20v-arm { fill: var(--moon); opacity: 0.5; }
@@ -231,3 +235,30 @@
   .t20m { flex-direction: row; align-items: center; }
   .t20m-step { width: 112px; margin-bottom: calc(var(--i) * 34px); }
 }
+
+/* painted pieces shared by the well, the stirred pond and the moon well (art.ts) */
+.t20-rim-hi { fill: var(--moon); opacity: 0.35; }
+:root[data-theme='light'] .t20-rim-hi { fill: var(--rake-hi); opacity: 1; }
+.t20-well-water { fill: var(--water); opacity: 0.92; }
+:root[data-theme='light'] .t20-well-water { opacity: 0.8; }
+.t20-well-wall { fill: var(--umbra); opacity: 0.4; }
+.t20-well-face { opacity: 0.85; }
+.t20-well-glint { fill: var(--moon); opacity: 0.3; }
+:root[data-theme='light'] .t20-well-glint { fill: #fff; opacity: 0.5; }
+.t20-ring { fill: none; stroke: var(--moon); stroke-width: 1.1; opacity: 0.55; }
+:root[data-theme='light'] .t20-ring { stroke: #fff; opacity: 0.8; }
+.t20m-stair { isolation: isolate; }
+.t20m-hill {
+  position: absolute;
+  inset: -12% -6% -4%;
+  width: 112%;
+  height: 116%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: -1;
+}
+.t20m-slope-ink { fill: var(--wash); opacity: 0.45; }
+.t20m-pole { fill: color-mix(in srgb, var(--moss-b) 55%, var(--wash)); opacity: 0.85; }
+.t20m-mason { fill: var(--wash); opacity: 0.9; }
+:root[data-theme='dark'] .t20m-mason { fill: var(--ink-2); opacity: 0.85; }
+.t20m-lantern { width: clamp(44px, 6vw, 66px); }

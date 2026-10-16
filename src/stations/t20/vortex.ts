@@ -2,7 +2,9 @@ import raw from '../../content/tram-20.json'
 import { h, s } from '../../core/dom'
 import type { Fact } from '../../core/content'
 import type { SceneCtx } from '../types'
-import { clamp, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { blob, clamp, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { reeds, wash, water } from '../../ui/part2/paint'
+import { arc, rimStones } from './art'
 
 const V = raw.scenes.vortex
 const TURN = Math.PI * 2
@@ -10,6 +12,7 @@ const FULL = TURN * 3 // three stirs round the pond = the flow "blows up"
 
 /** Scene 2 · Navier–Stokes: stir a still moonlit pond; the eddies tighten into one blinding point. */
 export function vortexScene(ctx: SceneCtx) {
+  p2Defs()
   const stableH = stableHeight(ctx, [V.insight as Fact])
   const r = rng(2020)
   const flies = Array.from({ length: 34 }, (_, i) => {
@@ -21,13 +24,32 @@ export function vortexScene(ctx: SceneCtx) {
   const swirl = s('g', { class: 't20v-swirl' }, arms)
   const core = s('circle', { class: 't20v-core', cx: 200, cy: 200, r: 2 })
   const burst = s('path', { class: 't20v-burst', d: Array.from({ length: 12 }, (_, i) => { const a = (i / 12) * TURN; return `M${200 + Math.cos(a) * 10} ${200 + Math.sin(a) * 10}L${200 + Math.cos(a) * (22 + (i % 2) * 10)} ${200 + Math.sin(a) * (22 + (i % 2) * 10)}` }).join('') })
+  // raked sand round the pond, a ring of mossy stones on its lip, reeds; the moon held in the dark water
+  let rake = ''
+  for (const k of [1.2, 1.32, 1.44]) {
+    for (let a = r() * 30; a < 360; ) {
+      const len = 40 + r() * 70
+      rake += stroke(arc(200, 202, 158 * k, 148 * k, a, Math.min(a + len, 358), 14), 1.2 + r() * 0.6, 0.2, 0.2, 0.1)
+      a += len + 10 + r() * 24
+    }
+  }
+  const water0 = blob(200, 200, 150, 140, 2021, 0.03, 28)
   const art = s('svg', { class: 't20v-svg', viewBox: '0 0 400 400', 'aria-hidden': 'true' },
-    s('ellipse', { class: 't20v-bank', cx: 200, cy: 204, rx: 168, ry: 156 }),
-    s('ellipse', { class: 't20v-pond', cx: 200, cy: 200, rx: 150, ry: 140 }),
-    s('ellipse', { class: 't20v-ring', cx: 200, cy: 200, rx: 118, ry: 110 }),
-    s('ellipse', { class: 't20v-ring', cx: 200, cy: 200, rx: 78, ry: 72 }),
-    s('circle', { cx: 252, cy: 148, r: 46, fill: 'url(#p2-halo)' }),
-    s('circle', { class: 't20v-moon', cx: 252, cy: 148, r: 16 }),
+    s('defs', null, s('clipPath', { id: 't20v-clip' }, s('path', { d: water0 }))),
+    s('path', { class: 't20v-rake', d: rake }),
+    wash(blob(204, 210, 170, 158, 2022, 0.04), 0.22),
+    s('path', { class: 't20v-pond', d: water0 }),
+    s('g', { 'clip-path': 'url(#t20v-clip)' },
+      s('ellipse', { class: 't20v-sky', cx: 200, cy: 110, rx: 170, ry: 80 }),
+      water(50, 70, 350, 340, 2023, 252, false),
+      s('circle', { cx: 252, cy: 148, r: 46, fill: 'url(#p2-halo)' }),
+      s('ellipse', { class: 't20v-moon', cx: 252, cy: 148, rx: 16, ry: 14 }),
+      s('ellipse', { class: 't20v-ring', cx: 200, cy: 200, rx: 118, ry: 110 }),
+      s('ellipse', { class: 't20v-ring', cx: 200, cy: 200, rx: 78, ry: 72 })),
+    rimStones(arc(200, 201, 156, 146, 0, 352, 34), 22, 2024),
+    wash(blob(110, 330, 46, 12, 2025, 0.2), 0.2, 'p2p-wash t20v-moss'),
+    reeds(330, 300, 52, 2026, 8),
+    reeds(78, 120, 40, 2027, 6),
     swirl, burst, core, ...flies)
   const pond = h('div', {
     class: 't20v-stage', role: 'slider', tabindex: '0', 'aria-label': V.stirAria,

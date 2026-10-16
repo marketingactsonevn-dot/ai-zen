@@ -2,50 +2,43 @@ import raw from '../../content/tram-21.json'
 import { h, s } from '../../core/dom'
 import type { Fact } from '../../core/content'
 import type { SceneCtx } from '../types'
-import { blob, onSize, p2Defs, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { curve, onSize, p2Defs, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { hills, mist, moon } from '../../ui/part2/paint'
+import { bough, track } from './art'
+import { figure } from './robot'
 
 const R = raw.scenes.strings
-
-/** A running ink robot standing on y = 0 at x; returns the group and where its head and hands are (for the strings). */
-export function runner(x: number, cls: string) {
-  const at = (p: Pt): Pt => [x + p[0], p[1]]
-  const limb = (pts: Pt[], w: number) => stroke(pts.map(at), w, 0.05, 0.25, 0.45)
-  const d =
-    limb([[0, -70], [1, -54], [3, -38]], 7) +
-    limb([[0, -64], [-11, -53], [-5, -41]], 4) +
-    limb([[0, -64], [12, -57], [21, -64]], 4) +
-    limb([[3, -38], [-9, -21], [-19, -4]], 5) +
-    limb([[3, -38], [13, -22], [9, 0]], 5)
-  const g = s('g', { class: `t21-runner ${cls}` },
-    s('ellipse', { class: 't21-shadow', cx: x, cy: 2, rx: 22, ry: 3 }),
-    s('path', { class: 't21-body', d }),
-    s('rect', { class: 't21-body', x: x - 7, y: -86, width: 14, height: 14, rx: 4 }),
-    s('rect', { class: 't21-visor', x: x - 4, y: -82, width: 9, height: 3.4, rx: 1.4 }))
-  return { g, head: at([0, -86]), hands: [at([-5, -41]), at([21, -64])] as Pt[], knee: at([13, -22]) }
-}
 
 /** Scene 2 · pulled by strings or running alone: flip the switch and silver threads appear between a pine branch and one runner. */
 export function stringsScene(ctx: SceneCtx) {
   p2Defs()
   const stableH = stableHeight(ctx, [R.insight as Fact])
   const base = 226
-  const a = runner(130, 't21-a')
-  const b = runner(290, 't21-b')
-  const hand: Pt = [128, 72]
-  const strings = s('path', { class: 't21s-strings', d: [a.head, ...a.hands, a.knee].map(([x, y]) => `M${hand[0]} ${hand[1]}L${x} ${y + base}`).join('') })
+  // two ink robots in stride; the left one's head, hands and knee are tied to the bar of the person on the pine bough
+  const k = 1.15
+  const A: Pt = [130, base], B: Pt = [290, base]
+  const tie = (p: Pt): Pt => [A[0] + p[0] * k, A[1] + p[1] * k]
+  const ends = ([[3, -96], [26, -58], [-12, -50], [12, -24]] as Pt[]).map(tie)
+  const bar: Pt[] = [[112, 82], [146, 80]]
+  const strings = s('path', { class: 't21s-strings', d: ends.map(([x, y], i) => `M${(bar[0][0] + (i * (bar[1][0] - bar[0][0])) / 3).toFixed(1)} ${(bar[0][1] + i * -0.6).toFixed(1)}L${x.toFixed(1)} ${y.toFixed(1)}`).join('') })
+  const sitter =
+    stroke(curve([108, 31], [120, 22], [132, 31], 8), 3.2, 0.15, 0.15, 0.4) + // conical hat
+    stroke(curve([119, 40], [116, 56], [124, 66], 8), 13, 0.2, 0.15, 0.6) + // robe, sitting on the bough
+    stroke(curve([124, 64], [136, 68], [138, 80], 6), 4.4, 0.1, 0.3, 0.4) + // legs over the edge
+    stroke(curve([118, 46], [111, 62], [113, 80], 6), 3, 0.1, 0.3, 0.3) + stroke(curve([123, 46], [136, 60], [144, 79], 6), 3, 0.1, 0.3, 0.3) + // arms down to the bar
+    stroke(bar, 3, 0.1, 0.1, 0.6)
   const art = s('svg', { class: 't21s-svg', viewBox: '0 0 400 260', preserveAspectRatio: 'xMidYMid meet', 'aria-hidden': 'true' },
-    s('circle', { cx: 334, cy: 52, r: 60, fill: 'url(#p2-halo)' }),
-    s('circle', { class: 't21-moon', cx: 334, cy: 52, r: 20 }),
-    s('path', { class: 't21-mist', d: blob(200, 236, 186, 16, 21, 0.1) }),
-    s('path', { class: 't21-ink', d: stroke([[-10, 34], [50, 46], [100, 54], [150, 50], [176, 58]], 7, 0.02, 0.4) }),
-    ...[[40, 36], [92, 44], [150, 42], [176, 52]].map(([x, y], i) => s('path', { class: 't21-pine', d: blob(x, y, 26 - i * 3, 9, 30 + i, 0.25) })),
-    // the person on the branch, holding the control bar
-    s('circle', { class: 't21-ink', cx: 120, cy: 36, r: 5 }),
-    s('path', { class: 't21-ink', d: stroke([[120, 41], [121, 52]], 6, 0.1, 0.1) + stroke([[121, 46], [126, 58], [128, 70]], 2.6, 0.1, 0.2) + stroke([[121, 52], [112, 60], [116, 70]], 3, 0.1, 0.3) }),
-    s('path', { class: 't21-ink', d: stroke([[118, 72], [138, 72]], 2.2, 0.1, 0.1) }),
-    s('path', { class: 't21-track', d: stroke([[0, base + 2], [200, base], [400, base + 3]], 1.6, 0.05, 0.05) + stroke([[20, base + 16], [380, base + 18]], 1, 0.1, 0.1) }),
+    mist(240, 150, 240, 80),
+    moon(334, 52, 18, 2101, true),
+    hills(-20, 420, base - 14, 70, 2102, 0.85, 6),
+    mist(200, base - 10, 230, 22),
+    ...track(400, base, 2103),
+    bough(176, 56, 2104),
+    s('circle', { class: 't21-ink', cx: 120, cy: 35, r: 5 }),
+    s('path', { class: 't21-ink', d: sitter, filter: 'url(#ink-rough)' }),
     strings,
-    s('g', { transform: `translate(0 ${base})` }, a.g, b.g))
+    s('g', { transform: `translate(${A[0]} ${A[1]}) scale(${k})` }, s('g', { class: 't21-runner' }, figure('run'))),
+    s('g', { transform: `translate(${B[0]} ${B[1]}) scale(${k})` }, s('g', { class: 't21-runner t21-b' }, figure('run'))))
 
   const toggle = h('button', { class: 't21s-toggle', type: 'button', 'aria-pressed': 'false', 'aria-label': R.toggleAria, onClick: flip },
     h('span', { class: 't21s-switch', 'aria-hidden': 'true' }), R.toggle)
