@@ -1,5 +1,5 @@
 import { s } from '../../core/dom'
-import { blob, clamp, rng, shuffledIdx, stroke, type Pt } from '../../ui/part2/ink'
+import { blob, clamp, curve, rng, shuffledIdx, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon } from '../../ui/part2/paint'
 import { C } from './shell'
 import { dawnGlow, f1, fog, lines, mossBed, paintedCircle } from '../t37/sumi'
@@ -73,8 +73,22 @@ export const defsScene = paintedCircle(D.perspectives, { label: D.label, prompt:
     joints += stroke([[x, y + wallH * (i % 2 ? 0.52 : 0.06)], [x, y + wallH * (i % 2 ? 0.96 : 0.48)]], 1, 0.1, 0.1, 0.4)
   }
   joints += stroke(arc(cx, oy + wallH * 0.5, orx, ory, 6, 174, 30), 0.9, 0.05, 0.05, 0.3)
-  const farY = cy - ry * 1.12, top0 = Math.max(farY - ry * 0.85, 12), pr = Math.max(4, rx * 0.04)
-  const frame = [-1, 1].map((sd) => stroke([[cx + sd * rx * 0.5, farY], [cx + sd * rx * 0.5, (farY + top0) / 2], [cx + sd * rx * 0.51, top0 - 6]], Math.max(3, rx * 0.026), 0.02, 0.02, 0.8)).join('')
+  // the well frame on the far curb, in wood: two posts on stone footings, a crossbar and a tie beam, the pulley,
+  // a rope over it (one end into the well, drawn over the water below) and a bucket resting on the curb
+  const farY = cy - ry * 1.12, top0 = Math.max(farY - ry * 0.95, 14), pw = clamp(rx * 0.05, 5, 11), pr = clamp(rx * 0.055, 5, 12)
+  const px = rx * 0.55, wy = top0 + pw * 0.6 + pr * 1.6
+  const bw = clamp(rx * 0.1, 9, 20), bh = bw * 0.85, bx = cx + rx * 0.3
+  let wood = '', woodSh = '', grain = ''
+  for (const sd of [-1, 1]) {
+    const x = cx + sd * px
+    wood += stroke([[x, farY + 2], [x + sd * 0.4, (farY + top0) / 2], [x, top0 + 2]], pw, 0.01, 0.01, 0.9)
+    woodSh += stroke([[x + pw * 0.32, farY + 1], [x + pw * 0.32, top0 + pw]], pw * 0.3, 0.02, 0.02, 0.8)
+    grain += stroke([[x - pw * 0.15, farY - (farY - top0) * 0.1], [x - pw * 0.1, top0 + (farY - top0) * 0.35]], 0.7, 0.3, 0.3, 0.1)
+  }
+  wood += stroke([[cx - px - pw * 1.8, top0 + 1.5], [cx, top0 - 1], [cx + px + pw * 1.8, top0 + 1.5]], pw * 1.15, 0.03, 0.03, 0.8) +
+    stroke([[cx - px - pw * 0.9, top0 + (farY - top0) * 0.3], [cx + px + pw * 0.9, top0 + (farY - top0) * 0.3]], pw * 0.6, 0.03, 0.03, 0.8)
+  woodSh += stroke([[cx - px - pw * 1.6, top0 + pw * 0.45], [cx + px + pw * 1.6, top0 + pw * 0.45]], pw * 0.35, 0.03, 0.03, 0.8)
+  const bucket = `M${f1(bx - bw / 2)} ${f1(farY - bh)}L${f1(bx + bw / 2)} ${f1(farY - bh)}L${f1(bx + bw * 0.4)} ${f1(farY)}L${f1(bx - bw * 0.4)} ${f1(farY)}Z`
   const back: SVGElement[] = [
     dawnGlow(cx + rx * 0.9, hy, rx * 1.3, Math.min(ry * 1.4, hy), 2),
     fog(cx, hy - ry * 0.3, w * 0.6, ry * 1.2),
@@ -95,9 +109,18 @@ export const defsScene = paintedCircle(D.perspectives, { label: D.label, prompt:
     s('path', { class: 't38d-tex', d: tex, filter: 'url(#ink-dry)' }),
     s('path', { class: 'g13-ink t38d-edge', d: stroke(arc(cx, oy + wallH, orx, ory, 4, 176, 30), 2.2, 0.08, 0.08, 0.3) + stroke(arc(cx, oy, orx, ory, 180, 360, 30), 1.4, 0.1, 0.1, 0.3), filter: 'url(#ink-rough)' }),
     s('path', { class: 't38d-lip', d: stroke(arc(cx, cy, rx * 1.08, ry * 1.13, 196, 344, 26), Math.max(1.4, rx * 0.016), 0.2, 0.2, 0.1) }),
-    // the well frame on the far curb: two posts, a beam, the pulley wheel
-    s('path', { class: 't38d-post', d: frame, filter: 'url(#ink-rough)' }),
-    s('path', { class: 'g13-ink', d: stroke([[cx - rx * 0.62, top0 - 2], [cx, top0 - 4], [cx + rx * 0.62, top0 - 2]], 3.2, 0.05, 0.05, 0.6) + stroke(arc(cx, top0 + pr * 1.4, pr, pr, 0, 360, 16), 1.4, 0.05, 0.05, 0.6) + lines([[cx - pr, top0 + pr * 1.4, cx + pr, top0 + pr * 1.4], [cx, top0 + pr * 0.4, cx, top0 + pr * 2.4], [cx, top0 - 3, cx, top0 + pr * 0.4]], 0.9), filter: 'url(#ink-rough)' }),
+    ...[-1, 1].map((sd) => s('path', { class: 't38d-footing', d: blob(cx + sd * px, farY + 1, pw * 1.2, pw * 0.5, seed + 8 + sd, 0.15, 10) })),
+    s('path', { class: 't38d-wood', d: wood, filter: 'url(#ink-rough)' }),
+    s('path', { class: 't38d-wood-sh', d: woodSh }),
+    s('path', { class: 't38d-grain', d: grain }),
+    s('path', { class: 'g13-ink t38d-frame-ink', d: stroke([[cx - px - pw * 1.8, top0 + 1.5 - pw * 0.55], [cx, top0 - 1 - pw * 0.55], [cx + px + pw * 1.8, top0 + 1.5 - pw * 0.55]], 1.2, 0.05, 0.05, 0.4) + stroke([[cx, top0 + pw * 0.4], [cx, wy - pr]], 1.4, 0.05, 0.05, 0.6), filter: 'url(#ink-rough)' }),
+    s('path', { class: 't38d-wheel', d: stroke(arc(cx, wy, pr, pr, 0, 360, 18), Math.max(1.6, pr * 0.32), 0.02, 0.02, 0.9) }),
+    s('path', { class: 'g13-ink', d: lines([[cx - pr * 0.7, wy, cx + pr * 0.7, wy], [cx, wy - pr * 0.7, cx, wy + pr * 0.7]], 0.9) + blob(cx, wy, pr * 0.22, pr * 0.22, seed + 11, 0.1, 8) }),
+    // the rope's other end comes down to the bucket resting on the curb
+    s('path', { class: 't38d-rope', d: stroke([[cx + pr, wy], [bx, farY - bh * 1.55]], 1, 0.05, 0.05, 0.6) }),
+    s('path', { class: 't38d-wood', d: bucket, filter: 'url(#ink-rough)' }),
+    s('ellipse', { class: 't38d-mouth', cx: f1(bx), cy: f1(farY - bh), rx: f1(bw / 2), ry: f1(bw * 0.14) }),
+    s('path', { class: 'g13-ink', d: lines([[bx - bw * 0.48, farY - bh * 0.72, bx + bw * 0.48, farY - bh * 0.72], [bx - bw * 0.43, farY - bh * 0.2, bx + bw * 0.43, farY - bh * 0.2]], 1.3) + stroke(curve([bx - bw * 0.5, farY - bh], [bx, farY - bh * 2], [bx + bw * 0.5, farY - bh], 10), 1, 0.05, 0.05, 0.6), filter: 'url(#ink-rough)' }),
     grass(cx - orx * 0.98, oy + wallH * 0.9, rx * 0.12, seed + 6),
     grass(cx + orx * 1.02, oy + wallH * 0.7, rx * 0.1, seed + 7),
   ]
@@ -106,7 +129,8 @@ export const defsScene = paintedCircle(D.perspectives, { label: D.label, prompt:
   const m = rx * 0.17, sx = cx, sy = cy - ry * 0.08
   const wid = `t38d-w${seed.toString(36)}`
   const front: SVGElement[] = [
-    s('path', { class: 't38d-rope', d: stroke([[cx + pr, top0 + pr * 1.4], [cx + pr * 1.1, cy - ry * 0.55]], 1, 0.05, 0.3, 0.5) }),
+    s('path', { class: 't38d-rope', d: stroke([[cx - pr, wy], [cx - pr * 1.05, cy - ry * 0.42]], 1.1, 0.05, 0.35, 0.5) }),
+    s('ellipse', { class: 't38d-ring', cx: f1(cx - pr * 1.05), cy: f1(cy - ry * 0.42), rx: f1(rx * 0.05), ry: f1(rx * 0.013) }),
     s('clipPath', { id: wid }, s('path', { d: blob(cx, cy, rx, ry, seed, 0.05) })),
     s('g', { 'clip-path': `url(#${wid})` },
       ...order.map((vi, k) => {

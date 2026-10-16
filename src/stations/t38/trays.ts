@@ -4,6 +4,7 @@ import { hills, mist, moon, pine, toro } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
 import { C, shell } from './shell'
 import { dawnGlow, fog, lines } from '../t37/sumi'
+import { basketArt, paintOnSize, trayArt } from './vessels'
 
 const K = C.scenes.trays
 
@@ -57,10 +58,18 @@ export function traysScene(ctx: SceneCtx) {
     style: `border-radius:${rr()}% ${rr()}% ${rr()}% ${rr()}% / ${rr()}% ${rr()}% ${rr()}% ${rr()}%`,
     onClick: () => choose(t.id),
   }, h('span', { class: 't38t-peb-label' }, t.label), h('span', { class: 't38t-peb-exp' }))]))
-  const basket = h('div', { class: 't38t-basket' }, ...order.map((i) => pebs.get(K.tasks[i].id)!))
+  // painted backings (SVG behind the HTML): the rattan basket, three carved stone trays
+  const paint = () => s('svg', { class: 't38t-paint', 'aria-hidden': 'true' })
+  const basketSvg = paint()
+  const basket = h('div', { class: 't38t-basket' }, basketSvg, ...order.map((i) => pebs.get(K.tasks[i].id)!))
   const lists = K.trays.map(() => h('div', { class: 't38t-list' }))
   const trayBtns = K.trays.map((t, i) => h('button', { class: 't38t-drop', type: 'button', onClick: () => put(i) }, h('span', { class: 't38t-key', 'aria-hidden': 'true' }, String(i + 1)), t.name))
-  const trays = K.trays.map((t, i) => h('div', { class: 't38t-tray', 'data-id': t.id }, trayBtns[i], lists[i]))
+  const traySvgs = K.trays.map(() => paint())
+  const trays = K.trays.map((t, i) => h('div', { class: 't38t-tray', 'data-id': t.id }, traySvgs[i], trayBtns[i], lists[i]))
+  paintOnSize(ctx, [
+    { el: basket, draw: (w, hh) => basketArt(basketSvg, w, hh, { top: 34, bottom: 34 }) },
+    ...trays.map((el, i) => ({ el, draw: (w: number, hh: number) => trayArt(traySvgs[i], K.trays[i].id, w, hh, 3890 + i * 11) })),
+  ])
   const match = h('p', { class: 't38t-match' })
   const why = h('p', { class: 't38t-why' })
   const after = h('div', { class: 't38t-after', hidden: true }, match, why, ctx.fact(K.expertNote, 'p', 't38t-note'), ctx.fact(K.jobs, 'p', 't38t-note'))
