@@ -12,6 +12,22 @@
   height: 100%;
   max-width: none;
   pointer-events: none;
+  /* the painting melts into the paper at the sides and the foot (no hard rectangle) */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent), linear-gradient(#000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent), linear-gradient(#000 90%, transparent);
+  mask-composite: intersect;
+}
+/* the near bank of a lake: a pale wash and a broken shoreline */
+.g8 .g8-shoreline { fill: var(--wash); opacity: 0.4; }
+:root[data-theme='dark'] .g8 .g8-shoreline { fill: var(--rock-mid); opacity: 0.45; }
+:root[data-theme='dark'] .g8 .g8-bank { opacity: 0.45 !important; }
+/* pines at night: a breath of moonlight in the bark and needles so the tree is not a black hole on the indigo paper */
+:root[data-theme='dark'] .g8 :is(.p2p-trunk, .p2p-needle) { fill: color-mix(in srgb, var(--rock-mid) 50%, var(--wash)); }
+:root[data-theme='dark'] .g8 .p2p-pad { fill: color-mix(in srgb, var(--moss-b) 60%, var(--wash)); opacity: 0.5; }
+/* text over the painting: a breath of mist behind it instead of a card */
+.g8-mist {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 78%, transparent), color-mix(in srgb, var(--paper) 50%, transparent) 62%, transparent);
 }
 .g8 text {
   font-family: var(--serif);
@@ -29,24 +45,29 @@
 /* wood: ink by day, weathered grey bark by night (ivory ink would read as a white tree) */
 .g8 .wd { fill: var(--ink); }
 :root[data-theme='dark'] .g8 .wd { fill: color-mix(in srgb, var(--stone) 60%, var(--ink-3)); }
-.g8 .g8-moon-disc { fill: var(--moon); }
-:root[data-theme='light'] .g8 .g8-moon-disc { fill: var(--card); stroke: var(--moon-rim); stroke-width: 1; }
-.g8 .g8-shore { fill: var(--ink); fill-opacity: 0.35; }
-.g8 .g8-glint { fill: none; stroke: var(--moon); stroke-width: 1.4; stroke-linecap: round; opacity: 0.4; }
-:root[data-theme='light'] .g8 .g8-glint { stroke: var(--card); opacity: 0.7; }
-:root[data-quality='high'] .g8 .g8-glint { animation: g8-glint 5s ease-in-out infinite alternate; }
-@keyframes g8-glint { from { opacity: 0.18; } to { opacity: 0.55; } }
 
+/* painted surfaces for HTML that must stay HTML (cards, buttons): paper grain, moonlight on one shoulder, a wash on the far side */
+.g8-paper,
+.btn.g8-btn {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .7 0 0 0 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(110% 70% at 18% 0%, color-mix(in srgb, var(--moon) 22%, transparent), transparent 62%),
+    linear-gradient(100deg, transparent 58%, color-mix(in srgb, var(--umbra) 7%, transparent)),
+    color-mix(in srgb, var(--card) 90%, transparent);
+  border: 0;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 11%, transparent), inset -8px -10px 22px -18px var(--umbra), 0 12px 22px -18px var(--umbra);
+}
+.g8-paper {
+  border-radius: 7px 12px 9px 14px / 12px 7px 14px 9px;
+}
 .g8-btn {
   position: relative;
   min-height: 44px;
-  background: color-mix(in srgb, var(--card) 82%, transparent);
   font-family: var(--serif);
   font-weight: 400;
 }
-.g8-btn[aria-pressed='true'] {
-  border-color: var(--ink);
-  background: var(--card);
+.btn.g8-btn[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 1.5px var(--vermilion), inset -8px -10px 22px -18px var(--umbra), 0 12px 22px -18px var(--umbra);
 }
 .g8-q {
   margin: 0;

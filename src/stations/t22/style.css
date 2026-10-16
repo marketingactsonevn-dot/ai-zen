@@ -1,15 +1,24 @@
 /* Trạm 22 — Attention: lanterns on a sentence · four tōrō on a bridge · a deep pond in layers */
 
-/* scene 1: lanterns */
-.g8l .g8l-body { fill: var(--card); stroke: var(--ink); stroke-opacity: 0.55; stroke-width: 1.2; }
-.g8l .g8l-rib { fill: none; stroke: var(--ink-3); stroke-opacity: 0.35; stroke-width: 1; }
-.g8l .g8l-word { fill: var(--ink); }
-.g8l .pivot .g8l-body { stroke: var(--vermilion); stroke-width: 1.8; stroke-opacity: 0.9; }
-.g8l .end .g8l-word { text-decoration: underline dotted; text-decoration-color: var(--vermilion); }
-.g8l .g8l-thread { fill: none; stroke: var(--lantern); stroke-linecap: round; }
-.g8l .g8l-thread.top { stroke: var(--lantern); }
-:root[data-theme='light'] .g8l .g8l-thread { stroke: color-mix(in srgb, var(--lantern) 55%, var(--vermilion)); }
-.g8l .g8l-thread.glow { opacity: 0.18; }
+/* scene 1: lanterns on the ink river */
+.g8l .g8l-paper { fill: color-mix(in srgb, var(--lantern) 22%, var(--card)); }
+:root[data-theme='dark'] .g8l .g8l-paper { fill: color-mix(in srgb, var(--lantern) 42%, var(--ink-3)); }
+.g8l .g8l-cap { fill: var(--umbra); opacity: 0.85; }
+.g8l .g8l-shade { fill: var(--umbra); opacity: 0.13; }
+.g8l .g8l-sheen { fill: var(--moon); opacity: 0.35; }
+.g8l .g8l-cap.v { fill: var(--vermilion); opacity: 0.95; }
+.g8l .g8l-hook { fill: var(--umbra); opacity: 0.6; }
+.g8l .g8l-word { fill: var(--umbra); fill-opacity: 0.88; }
+.g8l .g8l-mark { fill: var(--vermilion); opacity: 0.8; }
+.g8l .g8l-refl { fill: var(--lantern); }
+.g8l .g8l-shadow { fill: var(--umbra); opacity: 0.18; }
+.g8l .g8l-raft { fill: var(--wash); opacity: 0.75; }
+:root[data-theme='dark'] .g8l .g8l-raft { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash)); opacity: 1; }
+.g8l .g8l-thread { fill: none; stroke: var(--moon); stroke-linecap: round; }
+:root[data-theme='light'] .g8l .g8l-thread { stroke: color-mix(in srgb, var(--lantern) 45%, var(--vermilion)); }
+.g8l .g8l-thread.glow { opacity: 0.16; }
+.g8l .g8l-knot { fill: var(--moon); }
+:root[data-theme='light'] .g8l .g8l-knot { fill: var(--vermilion); }
 .g8l-pivot {
   position: absolute;
   border: 0;
@@ -32,9 +41,8 @@
 .g8l-ui {
   position: absolute;
   display: grid;
-  padding: 10px 14px;
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  padding: 14px 18px 18px;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 80%, transparent), color-mix(in srgb, var(--paper) 55%, transparent) 60%, transparent);
   justify-items: center;
   gap: 10px;
   text-align: center;
@@ -46,20 +54,33 @@
 }
 .g8l-note .g8-note { max-width: 46ch; }
 
-/* scene 2: four lamps */
-.g8h .h0 { --hc: var(--ink); }
-.g8h .h1 { --hc: var(--ink-3); }
-.g8h .h2 { --hc: var(--moss); }
-.g8h .h3 { --hc: var(--vermilion); }
+/* scene 2: four stone lanterns on a bridge */
+.g8h .h0 { --hc: var(--ink); --tone: var(--wash); --tone-a: 0.62; }
+.g8h .h1 { --hc: var(--ink-3); --tone: var(--rock-hi); --tone-a: 0.42; }
+.g8h .h2 { --hc: color-mix(in srgb, var(--water) 75%, var(--ink-3)); --tone: var(--water); --tone-a: 0.5; }
+.g8h .h3 { --hc: var(--vermilion); --tone: var(--vermilion); --tone-a: 0.55; }
+:root[data-theme='dark'] .g8h .h2 { --hc: var(--mist); --tone: var(--mist); --tone-a: 0.32; }
+:root[data-theme='dark'] .g8h .h1 { --tone-a: 0.3; }
+.g8h .g8h-tone { fill: var(--tone); opacity: var(--tone-a); }
+.g8h .p2p-lamp-halo { transition: opacity 0.8s; }
+.g8h .p2p-toro:not(.lit) .p2p-lamp-halo { opacity: 0; }
+.g8h .p2p-toro.lit .p2p-toro-fire { fill: color-mix(in srgb, var(--lantern) 70%, var(--hc)); }
 .g8h .g8h-word { fill: var(--ink); }
-.g8h .g8h-refl { fill: var(--moon); opacity: 0.12; }
-.g8h .g8h-win { fill: var(--paper); fill-opacity: 0.5; transition: fill 0.6s; }
-.g8h .g8h-toro.lit .g8h-win { fill: var(--lantern); fill-opacity: 1; }
-.g8h .g8h-halo { fill: var(--hc); opacity: 0; transition: opacity 0.8s; }
-.g8h .g8h-toro.lit .g8h-halo { opacity: 0.22; }
-.g8h .g8h-beam { fill: var(--hc); opacity: 0.07; }
-.g8h .g8h-link { fill: none; stroke: var(--hc); stroke-width: 2.4; stroke-linecap: round; }
-.g8h .g8h-dot { fill: var(--hc); }
+.g8h .g8h-deck { fill: var(--wash); }
+:root[data-theme='dark'] .g8h .g8h-deck { fill: color-mix(in srgb, var(--rock-lo) 60%, var(--wash)); opacity: 1 !important; }
+.g8h .g8h-edge, .g8h .g8h-legs, .g8h .g8h-rail { fill: var(--wash); opacity: 0.85; }
+:root[data-theme='dark'] .g8h :is(.g8h-edge, .g8h-legs, .g8h-rail) { fill: color-mix(in srgb, var(--rock-mid) 45%, var(--wash)); opacity: 1; }
+.g8h .g8h-plank { fill: var(--moon); opacity: 0.12; }
+:root[data-theme='light'] .g8h .g8h-plank { fill: var(--rake-hi); opacity: 0.5; }
+.g8h .g8h-rim { fill: var(--moon); opacity: 0.45; }
+:root[data-theme='light'] .g8h .g8h-rim { fill: var(--rake-hi); opacity: 1; }
+.g8h .g8h-refl { fill: var(--wash); opacity: 0.12; }
+:root[data-theme='dark'] .g8h .g8h-refl { fill: var(--rock-lo); opacity: 0.35; }
+.g8h .g8h-rip { fill: var(--moon); opacity: 0.2; }
+:root[data-theme='light'] .g8h .g8h-rip { fill: #fff; opacity: 0.45; }
+.g8h .g8h-stop { stop-color: var(--hc); }
+.g8h .g8h-link { fill: none; stroke: var(--hc); stroke-width: 1.6; stroke-linecap: round; opacity: 0.9; }
+.g8h .g8h-star { fill: var(--hc); }
 .g8h-lamp {
   position: absolute;
   display: grid;
@@ -104,9 +125,8 @@
 .g8h-rel b { font-weight: 500; color: var(--hc); }
 .g8h-cap .g8-note { max-width: 60ch; }
 .g8h-cap {
-  padding: 8px 12px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  padding: 10px 16px 14px;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 80%, transparent), color-mix(in srgb, var(--paper) 55%, transparent) 60%, transparent);
 }
 .g8h-cap:empty { display: none; }
 @media (max-width: 600px) {
@@ -114,28 +134,41 @@
   .g8h-cap .g8-note { font-size: 0.74rem; }
 }
 
-/* scene 3: layers */
+/* scene 3: a deep pond in silk bands */
 .g8y .g8y-band { fill: var(--water); }
-:root[data-theme='dark'] .g8y .g8y-band { fill: color-mix(in srgb, var(--water) 70%, var(--ink-3)); }
-.g8y .g8y-silk { fill: var(--moon); opacity: 0.22; }
-.g8y .g8y-shaft { fill: var(--moon); opacity: 0.06; }
+.g8y .g8y-ink { fill: var(--wash); }
+.g8y .g8y-silk { fill: var(--moon); opacity: 0.4; }
+:root[data-theme='light'] .g8y .g8y-silk { fill: #fff; opacity: 0.6; }
+.g8y .g8y-fold { fill: var(--moon); opacity: 0.12; }
+:root[data-theme='light'] .g8y .g8y-fold { fill: #fff; opacity: 0.3; }
+.g8y .g8y-soil { fill: var(--wash); opacity: 0.35; }
+.g8y .g8y-bank, .g8y .g8y-surface { fill: var(--wash); opacity: 0.7; }
+:root[data-theme='dark'] .g8y :is(.g8y-bank, .g8y-surface) { fill: var(--rock-mid); opacity: 0.8; }
 .g8y-pebble { transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1); }
-.g8y .g8y-stone { fill: var(--stone-2); stroke: var(--ink); stroke-opacity: 0.6; stroke-width: 1.4; }
-.g8y .g8y-rim { fill: var(--moon); opacity: 0.6; }
-.g8y .g8y-word { fill: var(--ink); fill-opacity: 0.4; stroke: var(--ink); stroke-width: 0; transition: fill-opacity 0.8s, stroke-width 0.8s; }
-:root[data-theme='dark'] .g8y .g8y-word { fill: var(--stone-text); stroke: var(--stone-text); }
-.g8y-pebble[data-depth='1'] .g8y-word { fill-opacity: 0.6; }
-.g8y-pebble[data-depth='2'] .g8y-word { fill-opacity: 0.85; stroke-width: 0.6; }
-.g8y-pebble[data-depth='3'] .g8y-word { fill-opacity: 1; stroke-width: 1.3; }
-.g8y .g8y-ring { fill: none; stroke: var(--ink); stroke-width: 1.2; opacity: 0; transition: opacity 0.8s; }
-.g8y-pebble[data-depth='1'] .r1,
-.g8y-pebble[data-depth='2'] .r1,
-.g8y-pebble[data-depth='2'] .r2,
-.g8y-pebble[data-depth='3'] .g8y-ring { opacity: 0.3; }
+.g8y .g8y-shadow { fill: var(--umbra); opacity: 0.2; }
+.g8y .g8y-stone { fill: var(--step-mid); }
+.g8y .g8y-flank { fill: var(--umbra); opacity: 0.16; }
+.g8y .g8y-edge { fill: var(--wash); opacity: 0.6; }
+.g8y .g8y-rim { fill: var(--moon); opacity: 0.7; }
+:root[data-theme='light'] .g8y .g8y-rim { fill: var(--rake-hi); opacity: 1; }
+.g8y .g8y-word { fill: var(--stone-text); fill-opacity: 0.35; stroke: var(--stone-text); stroke-width: 0; transition: fill-opacity 0.8s, stroke-width 0.8s; }
+.g8y[data-depth='1'] .g8y-word { fill-opacity: 0.6; }
+.g8y[data-depth='2'] .g8y-word { fill-opacity: 0.85; stroke-width: 0.6; }
+.g8y[data-depth='3'] .g8y-word { fill-opacity: 1; stroke-width: 1.3; }
+.g8y .g8y-shaft { opacity: 0.45; }
+.g8y .g8y-ring { fill: var(--moon); opacity: 0; transition: opacity 1s; }
+:root[data-theme='light'] .g8y .g8y-ring { fill: #fff; }
+.g8y:not([data-depth='0']) .g8y-ring { opacity: 0.5; }
+.g8y .g8y-essay { opacity: 0; transition: opacity 1.4s 0.6s; }
+.g8y[data-depth='3'] .g8y-essay { opacity: 1; }
+.g8y .g8y-page { fill: var(--paper); opacity: 0.2; }
+.g8y .g8y-lines { fill: var(--ink); opacity: 0.45; }
 .g8y-read {
   position: absolute;
   display: grid;
   gap: 2px;
+  padding: 6px 22px 8px 14px;
+  background: radial-gradient(farthest-side at 30% 50%, color-mix(in srgb, var(--paper) 70%, transparent), color-mix(in srgb, var(--paper) 40%, transparent) 60%, transparent);
   transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
   opacity: 0.55;
 }
@@ -159,3 +192,31 @@
   gap: 2px;
 }
 .g8y-ctrl .g8-slider { width: min(420px, 100%); }
+.g8h .g8h-pool { fill: var(--hc); opacity: 0.16; }
+
+/* scene 4: the shōji window on the scroll (tide art) */
+.p2t .g8w-paper { opacity: 0.9; }
+.p2t .g8w-g0 { stop-color: var(--paper-2); }
+.p2t .g8w-g1 { stop-color: color-mix(in srgb, var(--moon) 50%, var(--card)); }
+:root[data-theme='dark'] .p2t .g8w-g0 { stop-color: color-mix(in srgb, var(--moon) 22%, var(--card)); }
+:root[data-theme='dark'] .p2t .g8w-g1 { stop-color: color-mix(in srgb, var(--moon) 38%, var(--card)); }
+:root[data-theme='dark'] .p2t .g8w-paper { opacity: 0.8; }
+.p2t .g8w-shadow { opacity: 0.16; }
+:root[data-theme='dark'] .p2t .g8w-shadow { opacity: 0.4; }
+.p2t .g8w-lattice { fill: var(--wash); opacity: 0.3; }
+.p2t .g8w-ghost { fill: var(--vermilion); opacity: 0.55; }
+.p2t .g8w-mark.claim { opacity: 0.72; }
+.p2t .g8w-wood { fill: var(--wash); opacity: 0.8; }
+.p2t .g8w-post { fill: var(--wash); opacity: 0.5; }
+:root[data-theme='dark'] .p2t :is(.g8w-wood, .g8w-post, .g8w-lattice) { fill: color-mix(in srgb, var(--rock-lo) 50%, var(--wash)); }
+.p2t .g8w-contact { fill: var(--umbra); opacity: 0.2; }
+.p2t .g8w-sheet { fill: var(--card); }
+:root[data-theme='dark'] .p2t .g8w-sheet { fill: color-mix(in srgb, var(--moon) 70%, var(--ink-3)); }
+.p2t .g8w-lines { fill: var(--wash); opacity: 0.55; }
+.p2t .g8w-ink { fill: var(--wash); opacity: 0.8; }
+.p2t .g8w-book.b0 { fill: var(--moss-b); }
+.p2t .g8w-book.b1 { fill: var(--vermilion); opacity: 0.85; }
+.p2t .g8w-book.b2 { fill: var(--water); }
+.p2t .g8w-book.b3 { fill: var(--rock-mid); }
+.p2t .g8w-book.b4 { fill: color-mix(in srgb, var(--lantern) 60%, var(--rock-lo)); }
+:root[data-theme='dark'] .p2t .g8w-book.b2 { fill: color-mix(in srgb, var(--mist) 45%, var(--rock-lo)); }

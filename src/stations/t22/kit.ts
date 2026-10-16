@@ -1,10 +1,11 @@
 import './kit.css'
 import { fill, h, nextId, s } from '../../core/dom'
 import type { Fact } from '../../core/content'
-import type { SceneCtx } from '../types'
-import { blob, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import type { SceneCtx, SceneDef } from '../types'
+import { blob, curve, onSize, p2Defs, rng, stableHeight, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
+import { grass, hills as paintHills, mist, moon as paintMoon, paperLantern, pine, reeds, toro, wash, water } from '../../ui/part2/paint'
 
-/** Garden 8 (Trạm 22–24) toolkit: one SVG + HTML overlay per scene, moon/water backdrops, buttons and sliders. */
+/** Garden 8 (Trạm 22–24) toolkit: one SVG + HTML overlay per scene, the painted night shore (paint.ts), buttons and sliders. */
 export const f1 = (n: number) => n.toFixed(1)
 export const px = (n: number) => `${n.toFixed(1)}px`
 
@@ -62,55 +63,55 @@ export function slider(label: string, aria: string, max: number, valueText: stri
   return { el, input, set }
 }
 
-/** The moon with its halo. */
-export function moon(x: number, y: number, r: number) {
-  return s('g', { class: 'g8-moon' },
-    s('circle', { cx: f1(x), cy: f1(y), r: f1(r * 4.2), fill: 'url(#p2-halo)' }),
-    s('circle', { class: 'g8-moon-disc', cx: f1(x), cy: f1(y), r: f1(r) }))
+/** The far shore under the moon, for a scene whose water starts at y = wy: moonlit mist behind a far ink range, a nearer
+ *  ridge on one side (side 1 right, -1 left, 0 none), mist on the waterline, then the lake down to y1 with the
+ *  moon's broken road under mx. The moon itself sits at (mx, my) with radius mr (my < 0: no moon). */
+export function nightShore(W: number, wy: number, y1: number, o: { seed: number; mx: number; my: number; mr: number; hh: number; side?: -1 | 0 | 1; water?: boolean }): SVGElement[] {
+  const side = o.side ?? 1
+  const out: SVGElement[] = [mist(W * 0.5, wy - o.hh * 0.7, W * 0.75, o.hh * 1.6)]
+  if (o.my >= 0) out.push(paintMoon(o.mx, o.my, o.mr, o.seed, true))
+  out.push(paintHills(-W * 0.05, W * 1.05, wy, o.hh, o.seed, 0.88, Math.max(3, Math.round(W / 240))))
+  if (side) out.push(side > 0 ? paintHills(W * 0.6, W * 1.06, wy + 1, o.hh * 1.15, o.seed + 1, 0.4, 3) : paintHills(-W * 0.06, W * 0.4, wy + 1, o.hh * 1.15, o.seed + 1, 0.4, 3))
+  if (o.water !== false) out.push(...lake(W, wy, y1, o.seed + 2, o.mx))
+  out.push(mist(W * 0.5, wy, W * 0.7, Math.max(10, o.hh * 0.32)))
+  return out
 }
 
-/** Far hills in the mist along y (two washes). */
-export function hills(W: number, y: number, hgt: number, seed: number) {
-  const g = s('g', { class: 'g8-hills' })
-  for (const [k, op] of [[0, 0.07], [1, 0.11]] as const) {
-    const r = rng(seed + k)
-    const pts: Pt[] = []
-    for (let i = 0; i <= 12; i++) pts.push([(i / 12) * W * 1.1 - W * 0.05, y - hgt * (k ? 0.55 : 1) * (0.35 + 0.65 * Math.abs(Math.sin(i * 0.8 + r() * 2.4)))])
-    g.append(s('path', { class: 'k', 'fill-opacity': op, d: `M${f1(-W * 0.05)} ${f1(y)}L${pts.map((p) => `${f1(p[0])} ${f1(p[1])}`).join('L')}L${f1(W * 1.05)} ${f1(y)}Z`, filter: 'url(#ink-wash)' }))
-  }
-  return g
-}
-
-/** A band of night water from y0 to y1 with a moon path at mx and a few glints. */
-export function waterBand(W: number, y0: number, y1: number, mx: number, seed: number) {
-  const id = nextId('g8w')
+/**
+ * A lake from the far waterline wy down to a near shore that curves up toward the sides (lowest, y1, in the middle):
+ * the water a wash with a bleeding edge (no rectangle), ripples and the moon's road clipped to it, the near bank a
+ * pale wash with a broken brushed shoreline.
+ */
+function lake(W: number, wy: number, y1: number, seed: number, mx?: number): SVGElement[] {
   const r = rng(seed)
-  let glint = ''
-  for (let i = 0; i < 18; i++) {
-    const y = y0 + 6 + r() * (y1 - y0 - 12)
-    const near = 1 - Math.min(1, Math.abs(r() - 0.5) * 2)
-    const len = 10 + near * 50 * r()
-    const x = mx + (r() - 0.5) * W * (0.12 + (1 - near) * 0.5)
-    glint += `M${f1(x - len / 2)} ${f1(y)}h${f1(len)}`
+  const D = y1 - wy
+  const shore: Pt[] = Array.from({ length: 25 }, (_, i) => {
+    const t = i / 24
+    const dip = Math.sin(Math.PI * Math.pow(t, 0.9))
+    return [W + 24 - (W + 48) * t, wy + D * (0.6 + 0.4 * dip) + Math.sin(t * 11 + seed) * D * 0.012] as Pt
+  })
+  const P = (pts: Pt[]) => pts.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')
+  const body = `M-24 ${f1(wy)}L${f1(W + 24)} ${f1(wy)}L${P(shore)}Z`
+  const id = nextId('g8lake')
+  let line = ''
+  for (let i = 0; i < 4; i++) {
+    const a = Math.floor(r() * 6) + i * 6, b = Math.min(24, a + 3 + Math.floor(r() * 4))
+    line += stroke(shore.slice(a, b + 1).map(([x, y]) => [x, y + 1] as Pt), 1.6 + r() * 1.6, 0.25, 0.3, 0.1)
   }
-  return s('g', { class: 'g8-water' },
-    s('defs', null, s('linearGradient', { id, x1: 0, y1: 0, x2: 0, y2: 1 },
-      s('stop', { offset: 0, style: 'stop-color:var(--water);stop-opacity:.55' }),
-      s('stop', { offset: 1, style: 'stop-color:var(--water);stop-opacity:.95' }))),
-    s('path', { d: `M0 ${f1(y0)}Q${f1(W * 0.3)} ${f1(y0 - 4)} ${f1(W * 0.55)} ${f1(y0 + 2)}T${f1(W)} ${f1(y0)}L${f1(W)} ${f1(y1)}L0 ${f1(y1)}Z`, fill: `url(#${id})` }),
-    s('path', { class: 'g8-shore', d: stroke([[-4, y0 + 1], [W * 0.3, y0 - 3], [W * 0.55, y0 + 2], [W + 4, y0]], 2.2, 0.1, 0.1, 0.3), filter: 'url(#ink-rough)' }),
-    s('path', { class: 'g8-glint', d: glint }))
+  return [
+    s('defs', null, s('clipPath', { id }, s('path', { d: body }))),
+    // (no filter on the body: a displacement filter over this much area bands in Chrome; the bank's wash softens the edge)
+    s('path', { class: 'p2p-water-body', d: body, fill: 'url(#p2-water-v)' }),
+    s('g', { 'clip-path': `url(#${id})` }, water(0, wy, W, y1, seed, mx, false)),
+    wash(`M${P(shore)}L${f1(-24)} ${f1(y1 + D)}L${f1(W + 24)} ${f1(y1 + D)}Z`, 0.12, 'p2p-wash g8-bank'),
+    s('path', { class: 'g8-shoreline', d: line, filter: 'url(#ink-rough)' }),
+  ]
 }
 
-/** A soft lantern-coloured glow (own gradient, so it follows the --lantern token). */
-export function glowDefs(svg: SVGSVGElement) {
-  const id = nextId('g8g')
-  svg.append(s('defs', null, s('radialGradient', { id },
-    s('stop', { offset: 0, style: 'stop-color:var(--lantern);stop-opacity:.75' }),
-    s('stop', { offset: 0.45, style: 'stop-color:var(--lantern);stop-opacity:.22' }),
-    s('stop', { offset: 1, style: 'stop-color:var(--lantern);stop-opacity:0' }))))
-  return `url(#${id})`
-}
+/** Several short brushed lines [x0, y0, x1, y1] as one path. */
+export const brushLines = (ls: number[][], w: number, a = 0.15, b = 0.15) => ls.map(([x0, y0, x1, y1]) => stroke([[x0, y0], [x1, y1]], w, a, b, 0.4)).join('')
+
+export { paintMoon as moon, paintHills as hills, mist, wash, reeds, grass, pine, toro, paperLantern, curve, stoneArt }
 
 /** Draw a path in (WAAPI on stroke-dashoffset, pathLength 1); nothing under reduced motion. */
 export function drawIn(ctx: SceneCtx, el: SVGPathElement, ms = 1200, delay = 0) {
@@ -132,3 +133,19 @@ export function measure(text: string, size: number) {
 }
 
 export { blob, stroke, rng, type Pt }
+
+/**
+ * A perspectiveCircle whose stones each get their own painted shape (tall, lying, mossy…): the shared component draws
+ * stoneArt for all of them, so after it mounts the stone in each button's little SVG (viewBox -60 -70 120 90, standing on
+ * y = 0) is swapped for paint[k]. Numbers, halo and selection styling stay the component's.
+ */
+export function withStones(def: SceneDef, paint: (() => SVGElement)[]): SceneDef {
+  return {
+    label: def.label,
+    mount(ctx) {
+      const off = def.mount(ctx)
+      ctx.art.querySelectorAll('.p2c-stone-art').forEach((svg, k) => svg.querySelector('.p2-stone')?.replaceWith(paint[k % paint.length]()))
+      return off
+    },
+  }
+}

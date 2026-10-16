@@ -6,6 +6,7 @@ import { flowersScene } from './flowers'
 import { flatteryScene } from './flattery'
 import { shortcutScene } from './shortcut'
 import { incenseScene } from './incense'
+import { diaryArt, withDiary } from './diary'
 
 const S = C.scenes
 const station: StationModule = {
@@ -15,7 +16,7 @@ const station: StationModule = {
     { label: S.flattery.label, mount: flatteryScene },
     { label: S.shortcut.label, mount: shortcutScene },
     { label: S.incense.label, mount: incenseScene },
-    perspectiveCircle(S.diary.perspectives, { label: S.diary.label, prompt: S.diary.prompt, question: S.diary.question, detail: [S.diary.insight, S.diary.detail] }),
+    withDiary(perspectiveCircle(S.diary.perspectives, { label: S.diary.label, prompt: S.diary.prompt, question: S.diary.question, detail: [S.diary.insight, S.diary.detail], art: diaryArt })),
   ],
 }
 export default station
