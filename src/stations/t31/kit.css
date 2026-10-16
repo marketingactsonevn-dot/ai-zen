@@ -1,5 +1,8 @@
-/* Garden 11 (stations 31–33): shared night backdrop, lantern, pills and the take-away sheet. */
+/* Garden 11 (stations 31–33): shared night backdrop, room, lantern, painted helpers, pills and the take-away sheet. */
 .g11 {
+  --g11-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .5 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* dó paper: long fibres + fine grain */
+  --g11-fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .5' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .4 0 0 0 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   position: absolute;
   inset: 0;
   overflow: hidden auto; /* safety net: a very short screen scrolls instead of clipping */
@@ -10,20 +13,30 @@
   color: var(--ink);
   -webkit-tap-highlight-color: transparent;
 }
-.g11 > :not(.g11-night, .g11-sheet, .g11-take) {
+:root[data-theme='dark'] .g11 {
+  --g11-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .36 0 0 0 -.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --g11-fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .5' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .26 0 0 0 -.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.g11 > :not(.g11-night, .g11-sheet, .g11-take, .g11-paint, .g11-free) {
   position: relative;
 }
-.g11-night {
+.g11-night,
+.g11-paint {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
 }
-.g11-moon { fill: var(--moon); stroke: var(--moon-rim); stroke-width: 1; }
-.g11-hill { fill: var(--ink); }
-.g11-water { fill: var(--water); opacity: 0.16; }
-.g11-glint { fill: var(--moon); opacity: 0.55; }
+.g11-paint { overflow: visible; }
+
+/* room */
+.g11-slat { fill: var(--wash); opacity: 0.035; }
+:root[data-theme='dark'] .g11-slat { opacity: 0.26; }
+.g11-node { fill: var(--wash); opacity: 0.06; }
+:root[data-theme='dark'] .g11-node { fill: var(--moon); opacity: 0.035; }
+
+/* shared paint pieces */
 .g11-ink { fill: var(--ink); }
 .g11-ink2 { fill: var(--ink-2); }
 .g11-ink3 { fill: var(--ink-3); }
@@ -31,19 +44,66 @@
 .g11-card { fill: var(--card); }
 .g11-moss { fill: var(--moss); }
 .g11-ver { fill: var(--vermilion); }
-.g11-stroke { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+.g11-wash { fill: var(--wash); }
+.g11-moonlit { fill: var(--moon); opacity: 0.5; }
+:root[data-theme='light'] .g11-moonlit { fill: #fff; opacity: 0.8; }
+.g11-mossy { fill: var(--moss-b); opacity: 0.5; }
+:root[data-theme='dark'] .g11-mossy { fill: var(--moss-a); opacity: 0.6; }
+.g11-thread { fill: none; stroke: var(--ink); stroke-width: 0.9; opacity: 0.5; stroke-linecap: round; }
+.g11-bamboo-culm { fill: color-mix(in srgb, var(--moss-b) 62%, var(--wash)); opacity: 0.88; }
+:root[data-theme='dark'] .g11-bamboo-culm { fill: color-mix(in srgb, var(--moss-a) 70%, var(--rock-mid)); }
+.g11-bamboo-node { fill: var(--wash); opacity: 0.6; }
+:root[data-theme='dark'] .g11-bamboo-node { opacity: 0.85; }
+.g11-bamboo-hi { fill: var(--moon); opacity: 0.35; }
+:root[data-theme='light'] .g11-bamboo-hi { fill: #fff; opacity: 0.55; }
+.g11-wood-face { fill: color-mix(in srgb, var(--rock-lo) 55%, #7a5a3c); opacity: 0.9; }
+:root[data-theme='dark'] .g11-wood-face { fill: color-mix(in srgb, var(--rock-mid) 55%, #5b4330); }
+.g11-wood-grain { fill: var(--wash); opacity: 0.32; }
+.g11-wood-ink { fill: var(--wash); opacity: 0.7; }
+.g11-wood-hi { fill: var(--moon); opacity: 0.4; }
+:root[data-theme='light'] .g11-wood-hi { fill: #fff; opacity: 0.5; }
+.g11-clay { fill: color-mix(in srgb, var(--vermilion) 34%, var(--rock-lo)); }
+:root[data-theme='dark'] .g11-clay { fill: color-mix(in srgb, var(--vermilion) 30%, var(--rock-mid)); }
+.g11-label { fill: var(--card); opacity: 0.92; }
+:root[data-theme='dark'] .g11-label { fill: var(--ink-2); opacity: 0.8; }
+.g11-seal { fill: var(--vermilion); opacity: 0.85; }
+.g11-glow { fill: var(--lantern); }
+.g11-halo { fill: url(#p2-lamp); }
 
-/* lantern */
+/* flame: hidden until lit (an ancestor with .on, or .g11-flame.on) */
+.g11-flame-body { fill: url(#p2-lamp-body); }
+.g11-flame-core { fill: var(--moon); opacity: 0.9; }
+.g11-flame-halo { opacity: 0.9; }
+
+/* lantern: pale paper until lit */
 .g11-lan { overflow: visible; }
-.g11-lan-glow { fill: var(--lantern); opacity: 0; transition: opacity 0.6s var(--ease); }
-.g11-lan-body { fill: var(--lantern); fill-opacity: 0.22; stroke: var(--ink); stroke-width: 1.4; transition: fill-opacity 0.6s var(--ease); }
-.g11-lan-rib { fill: none; stroke: var(--ink); stroke-width: 0.8; opacity: 0.45; }
-.on > .g11-lan .g11-lan-body,
-.on .g11-lan .g11-lan-body,
-.g11-lan.on .g11-lan-body { fill-opacity: 0.95; }
-.on > .g11-lan .g11-lan-glow,
-.on .g11-lan .g11-lan-glow,
-.g11-lan.on .g11-lan-glow { opacity: 0.32; }
+.g11-lan .p2p-lamp-halo { opacity: 0; transition: opacity 0.7s var(--ease); }
+.g11-lan-shade { fill: color-mix(in srgb, var(--card) 70%, var(--stone-2)); opacity: 0.86; transition: opacity 0.7s var(--ease); }
+:root[data-theme='dark'] .g11-lan-shade { fill: color-mix(in srgb, var(--stone) 60%, var(--paper-2)); opacity: 0.9; }
+.g11-tassel { fill: var(--vermilion); opacity: 0.75; }
+.on > .g11-lan .p2p-lamp-halo,
+.on .g11-lan .p2p-lamp-halo,
+.g11-lan.on .p2p-lamp-halo { opacity: 0.9; }
+.on > .g11-lan .g11-lan-shade,
+.on .g11-lan .g11-lan-shade,
+.g11-lan.on .g11-lan-shade { opacity: 0; }
+
+/* HTML surfaces painted like paper or stone */
+.g11-dopaper {
+  background:
+    var(--g11-fibre),
+    var(--g11-grain),
+    radial-gradient(120% 70% at 20% 0%, color-mix(in srgb, var(--moon) 14%, transparent), transparent 70%),
+    linear-gradient(175deg, var(--card), color-mix(in srgb, var(--card) 86%, var(--paper-2)));
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--umbra) 10%, transparent), 0 10px 20px -12px color-mix(in srgb, var(--umbra) 55%, transparent);
+}
+.g11-stoneface {
+  background:
+    var(--g11-grain),
+    radial-gradient(80% 60% at 30% 10%, color-mix(in srgb, var(--moon) 24%, transparent), transparent 70%),
+    linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 62%, var(--rock-lo));
+  box-shadow: inset -6px -8px 14px -8px var(--umbra), inset 3px 4px 6px -4px var(--rake-hi), 0 6px 12px -6px var(--umbra);
+}
 
 /* question / caption lines */
 .g11-q {
@@ -127,3 +187,19 @@
   40%, 80% { transform: translateX(5px); }
 }
 .g11-shake { animation: g11-shake 0.4s ease-in-out; }
+
+/* a celadon bowl holding the moon (t31 clean) */
+.g11-bowl-glaze { fill: color-mix(in srgb, var(--moss-c) 55%, var(--rock-hi)); }
+:root[data-theme='dark'] .g11-bowl-glaze { fill: color-mix(in srgb, var(--moss-c) 60%, var(--rock-mid)); }
+.g11-bowl-ink { opacity: 0.7; }
+.g11-bowl-in { fill: color-mix(in srgb, var(--wash) 30%, var(--rock-mid)); }
+.g11-bowl-water { fill: var(--water); }
+:root[data-theme='dark'] .g11-bowl-water { fill: #0b1226; }
+.g11-bowl-moon { fill: var(--moon); }
+
+/* phones: the night moon sits higher in the corner, clear of the text at the top of a scene */
+@media (max-width: 640px) {
+  .g11-night .p2p-moon { transform: translate(22px, -26px) scale(0.82); transform-box: fill-box; transform-origin: center; }
+  /* scenes whose first line of text sits where the phone's moon would be */
+  .g11-nomoon .g11-night .p2p-moon { display: none; }
+}

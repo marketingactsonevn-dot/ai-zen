@@ -2,11 +2,35 @@
 
 /* ── Scene 1: the steelyard ── */
 .t32s { justify-content: safe center; gap: clamp(6px, 1.5vh, 14px); padding: 6px 12px 10px; }
-.t32s-art { width: min(100%, 680px); max-height: 42vh; flex: 0 1 auto; min-height: 0; overflow: visible; }
-.t32s-beam, .t32s-pan { transform-box: view-box; transform-origin: 300px 92px; transition: transform 1.2s cubic-bezier(0.3, 1.6, 0.4, 1); }
-.t32s-lamp { fill: var(--lantern); }
-.t32s-cloud { fill: var(--stone-2); stroke: var(--ink); stroke-width: 1.2; stroke-opacity: 0.6; }
-.t32s-weight { fill: url(#p2-rock); stroke: var(--ink); stroke-width: 1; animation: p2-rise 0.5s var(--ease) both; }
+.t32s-art { width: min(100%, 760px); max-height: 48vh; flex: 0 1 auto; min-height: 0; overflow: visible; }
+.t32s-beam, .t32s-pan { transform-box: view-box; transform-origin: 300px 96px; transition: transform 1.2s cubic-bezier(0.3, 1.6, 0.4, 1); }
+.t32s-bar { fill: color-mix(in srgb, var(--rock-lo) 50%, #6b4f36); }
+:root[data-theme='dark'] .t32s-bar { fill: color-mix(in srgb, var(--rock-mid) 55%, #6b4f36); }
+.t32s-tick { fill: var(--lantern); opacity: 0.7; }
+.t32s-ring, .t32s-pivot { fill: none; stroke: var(--wash); stroke-width: 2; opacity: 0.75; }
+:root[data-theme='dark'] .t32s-ring, :root[data-theme='dark'] .t32s-pivot { stroke: var(--ink-3); }
+.t32s-hook { opacity: 0.75; }
+.t32s-limb { opacity: 0.62; }
+:root[data-theme='dark'] .t32s-limb { opacity: 0.95; }
+:root[data-theme='dark'] .t32s-limb-hi { opacity: 0.32; }
+:root[data-theme='dark'] .t32s-hook { fill: var(--ink-3); }
+.t32s-tray { fill: color-mix(in srgb, var(--rock-lo) 30%, #a68558); opacity: 0.85; }
+:root[data-theme='dark'] .t32s-tray { fill: color-mix(in srgb, var(--rock-mid) 50%, #7a5f3e); }
+.t32s-weave { opacity: 0.35; }
+.t32s-rim { opacity: 0.7; }
+.t32s-wall { fill: color-mix(in srgb, var(--card) 70%, var(--rock-hi)); }
+:root[data-theme='dark'] .t32s-wall { fill: color-mix(in srgb, var(--rock-lo) 80%, var(--paper)); }
+.t32s-win { fill: color-mix(in srgb, var(--lantern) 75%, var(--moon)); }
+.t32s-lat { opacity: 0.5; }
+.t32s-door { fill: color-mix(in srgb, var(--rock-lo) 60%, #5b4330); opacity: 0.8; }
+.t32s-roof { fill: color-mix(in srgb, var(--wash) 85%, var(--moss-b)); opacity: 0.7; }
+:root[data-theme='dark'] .t32s-roof { opacity: 0.95; }
+.t32s-ink { opacity: 0.7; }
+.t32s-puff { fill: color-mix(in srgb, var(--mist) 70%, var(--stone-2)); opacity: 0.95; }
+:root[data-theme='dark'] .t32s-puff { fill: color-mix(in srgb, var(--stone) 70%, var(--mist)); opacity: 0.9; }
+.t32s-curl { opacity: 0.45; }
+:root[data-theme='dark'] .t32s-curl { fill: var(--moon); opacity: 0.4; }
+.t32s-weight { animation: p2-rise 0.5s var(--ease) both; }
 .t32s-sides { display: flex; justify-content: space-between; gap: 10px; width: min(100%, 640px); }
 .t32s-side { flex: 0 1 46%; font-family: var(--serif); font-size: 0.92rem; }
 .t32s-tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 620px; }
@@ -16,8 +40,9 @@
   min-height: 40px;
   border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
   border-radius: 46% 54% 42% 58% / 58% 50% 50% 42%;
-  background: linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 60%, var(--rock-lo));
-  color: var(--ink);
+  background: var(--g11-grain), radial-gradient(80% 60% at 30% 10%, color-mix(in srgb, var(--moon) 24%, transparent), transparent 70%), linear-gradient(170deg, var(--rock-hi), var(--rock-mid) 60%, var(--rock-lo));
+  box-shadow: inset -5px -6px 10px -6px var(--umbra), 0 5px 10px -6px var(--umbra);
+  color: var(--stone-text);
   font: 500 0.86rem/1.2 var(--serif);
   cursor: pointer;
   transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
@@ -28,45 +53,57 @@
 
 /* ── Scene 2: the tea table ── */
 .t32t { justify-content: safe center; gap: clamp(4px, 1.2vh, 12px); padding: 8px 14px 52px; }
-.t32t-window {
-  position: relative;
-  width: clamp(64px, 15vh, 140px);
-  aspect-ratio: 1;
-  flex: none;
-  border-radius: 50%;
-  border: 5px solid var(--ink-2);
-  background: repeating-linear-gradient(90deg, transparent 0 31%, color-mix(in srgb, var(--ink) 30%, transparent) 31% 33%), color-mix(in srgb, var(--water) 30%, var(--paper));
-  box-shadow: inset 0 0 0 2px var(--paper);
-  overflow: hidden;
-}
-.t32t-moon { position: absolute; right: 18%; top: 18%; width: 34%; aspect-ratio: 1; border-radius: 50%; background: var(--moon); box-shadow: 0 0 24px 8px color-mix(in srgb, var(--moon) 40%, transparent); }
-.t32t-stage { position: relative; width: min(74%, 520px); height: 92px; flex: none; margin-top: 4px; }
+.t32t-window { width: clamp(84px, 19vh, 180px); height: auto; aspect-ratio: 1; flex: none; overflow: visible; }
+.t32t-sky { fill: color-mix(in srgb, var(--water) 30%, var(--paper)); }
+:root[data-theme='dark'] .t32t-sky { fill: #0a1022; }
+.t32t-frame { fill: none; stroke: color-mix(in srgb, var(--rock-lo) 50%, #6b4f36); stroke-width: 9; opacity: 0.85; }
+.t32t-ring { opacity: 0.8; }
+.t32t-stage { position: relative; width: min(74%, 560px); height: 96px; flex: none; margin-top: 4px; }
+.t32t-table { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; }
+.t32t-mat { fill: color-mix(in srgb, var(--moss-c) 40%, #c9b98c); opacity: 0.55; }
+:root[data-theme='dark'] .t32t-mat { fill: color-mix(in srgb, var(--moss-a) 60%, #4a4330); opacity: 0.8; }
+.t32t-weave { opacity: 0.16; }
+.t32t-hem { opacity: 0.6; }
+.t32t-leg { fill: color-mix(in srgb, var(--rock-lo) 45%, #4a3626); }
+:root[data-theme='dark'] .t32t-leg { fill: color-mix(in srgb, var(--rock-lo) 60%, #3a2a1e); }
+.t32t-apron { opacity: 0.6; }
 .t32t-top {
   position: absolute;
   left: 0; right: 0; bottom: 34px;
   height: 12px;
-  border-radius: 3px;
-  background: linear-gradient(var(--ink-2), var(--ink));
 }
 .t32t-tick { position: absolute; top: -6px; width: 1px; height: 6px; background: var(--ink-3); }
-.t32t-ram { position: absolute; left: 13%; top: 16px; font: 500 0.72rem/1 var(--sans); color: var(--ink-3); }
-.t32t-leg { position: absolute; bottom: 4px; width: 8px; height: 30px; background: var(--ink); border-radius: 0 0 2px 2px; }
-.t32t-leg.l { left: 8%; }
-.t32t-leg.r { right: 8%; }
-.t32t-mat { position: absolute; left: -12%; right: -12%; bottom: 0; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--moss) 55%, transparent); }
+.t32t-ram { position: absolute; left: 13%; top: 18px; font: 500 0.72rem/1 var(--sans); color: var(--ink-3); }
 .t32t-bundle {
   position: absolute;
   left: 0; bottom: 46px;
   width: 0;
   height: 30px;
-  border-radius: 14px 14px 4px 4px;
-  background: repeating-linear-gradient(90deg, var(--card) 0 14px, color-mix(in srgb, var(--ink) 18%, var(--card)) 14px 16px);
-  border: 1px solid var(--ink-3);
+  border-radius: 6px 6px 3px 3px;
+  /* the scroll ends of a bundle seen from the side: two rows of rolls, a red cord round the middle */
+  background:
+    linear-gradient(90deg, transparent calc(50% - 2px), color-mix(in srgb, var(--vermilion) 80%, transparent) calc(50% - 2px) calc(50% + 2px), transparent calc(50% + 2px)),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ink) 55%, transparent) 0 1.4px, transparent 1.8px) 0 0 / 15px 15px,
+    radial-gradient(circle at 50% 50%, transparent 4.6px, color-mix(in srgb, var(--ink) 40%, transparent) 5.2px 6.2px, transparent 6.8px) 0 0 / 15px 15px,
+    radial-gradient(circle at 40% 40%, var(--card), color-mix(in srgb, var(--card) 70%, var(--stone-2)) 70%) 0 0 / 15px 15px;
+  box-shadow: 0 4px 6px -4px var(--umbra);
   transition: width 0.9s var(--ease), background 0.4s;
 }
-.t32t[data-fit='tight'] .t32t-bundle { border-color: var(--lantern); box-shadow: 0 0 0 2px color-mix(in srgb, var(--lantern) 50%, transparent); }
-.t32t[data-fit='spill'] .t32t-bundle { border-color: var(--vermilion); background: repeating-linear-gradient(90deg, var(--vermilion-soft) 0 14px, var(--vermilion) 14px 16px); transform-origin: left bottom; transform: rotate(1.5deg); }
-.t32t-spill { position: absolute; right: -10%; bottom: 4px; width: 26px; height: 14px; border-radius: 7px; background: var(--vermilion-soft); border: 1px solid var(--vermilion); opacity: 0; transform: translateX(-30px) rotate(-90deg); transition: opacity 0.5s 0.6s, transform 0.9s 0.6s var(--ease); }
+.t32t[data-fit='tight'] .t32t-bundle { box-shadow: 0 0 0 2px color-mix(in srgb, var(--lantern) 60%, transparent), 0 4px 6px -4px var(--umbra); }
+.t32t[data-fit='spill'] .t32t-bundle { box-shadow: 0 0 0 2px color-mix(in srgb, var(--vermilion) 70%, transparent), 0 4px 6px -4px var(--umbra); transform-origin: left bottom; transform: rotate(1.5deg); }
+.t32t-spill {
+  position: absolute;
+  right: -10%;
+  bottom: 4px;
+  width: 30px;
+  height: 14px;
+  border-radius: 7px;
+  background: radial-gradient(circle at 12% 50%, color-mix(in srgb, var(--ink) 50%, transparent) 0 1.5px, transparent 2px), radial-gradient(circle at 12% 50%, transparent 4px, color-mix(in srgb, var(--ink) 40%, transparent) 4.5px 5.5px, transparent 6px), linear-gradient(var(--card), color-mix(in srgb, var(--card) 70%, var(--stone-2)));
+  border: 1px solid color-mix(in srgb, var(--vermilion) 60%, transparent);
+  opacity: 0;
+  transform: translateX(-30px) rotate(-90deg);
+  transition: opacity 0.5s 0.6s, transform 0.9s 0.6s var(--ease);
+}
 .t32t-spill.on { opacity: 1; transform: none; }
 .t32t-state { min-height: 2.8em; max-width: 34rem; text-align: center; font: 400 0.95rem/1.4 var(--serif); color: var(--ink-2); }
 .t32t[data-fit='spill'] .t32t-state strong { color: var(--vermilion); }
@@ -102,7 +139,7 @@
 }
 @media (max-width: 480px) {
   .t32t { gap: 6px; padding: 6px 8px 50px; }
-  .t32t-stage { width: 72%; height: 80px; }
+  .t32t-stage { width: 72%; height: 88px; }
   .t32t-models { flex-wrap: nowrap; gap: 4px; }
   .t32t-model { grid-template-columns: auto; justify-items: center; padding: 4px 8px; min-height: 40px; }
   .t32t-roll { display: none; }
@@ -117,23 +154,27 @@
 /* ── Scene 3: three lamps ── */
 .t32l { justify-content: safe center; gap: clamp(8px, 2vh, 18px); padding: 8px 12px 10px; }
 .t32l-shelf {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-end;
   gap: clamp(8px, 4vw, 48px);
-  width: min(100%, 640px);
-  padding-bottom: 10px;
-  border-bottom: 8px solid var(--ink-2);
-  border-radius: 0 0 4px 4px;
+  width: min(100%, 680px);
+  padding: 0 4% 26px;
 }
+.t32l-plank { position: absolute; left: 0; bottom: 0; width: 100%; height: 40px; overflow: visible; pointer-events: none; transform: translateY(14px); }
+.t32l-wallsh { fill: var(--wash); opacity: 0.08; }
+:root[data-theme='dark'] .t32l-wallsh { opacity: 0.4; }
 .t32l-lamp {
+  position: relative;
+  z-index: 1;
   appearance: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
   flex: 1 1 0;
-  max-width: 170px;
+  max-width: 180px;
   padding: 6px 4px;
   border: 1px solid transparent;
   border-radius: 14px;
@@ -141,17 +182,32 @@
   color: var(--ink);
   cursor: pointer;
 }
-.t32l-lamp:hover { border-color: var(--line-2); }
+.t32l-lamp:hover { border-color: var(--line); }
 .t32l-lamp:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
-.t32l-lamp[aria-pressed='true'] { border-color: var(--lantern); }
-.t32l-svg { width: clamp(52px, 12vh, 96px); height: auto; aspect-ratio: 80 / 110; overflow: visible; }
-.t32l-lamp .g11-lan.t32l-svg { aspect-ratio: 40 / 64; width: clamp(40px, 8vh, 64px); margin: 0 0 8px; }
+.t32l-lamp[aria-pressed='true'] { border-color: color-mix(in srgb, var(--lantern) 60%, transparent); }
+.t32l-svg { order: 3; width: clamp(76px, 19vh, 150px); height: auto; aspect-ratio: 80 / 110; overflow: visible; margin-top: 4px; }
 .t32l-name { font: 500 clamp(0.92rem, 2.4vw, 1.1rem) / 1.2 var(--serif); }
 .t32l-kind { font: 400 0.72rem/1.25 var(--sans); color: var(--ink-3); text-align: center; }
-.t32l-fire { fill: var(--lantern); opacity: 0; transition: opacity 0.6s var(--ease); }
-.t32l-glass { fill: var(--stone-3); fill-opacity: 0.25; }
-.t32l-lamp.on .t32l-fire { opacity: 1; }
-.t32l-lamp.on .g11-lan-glow { opacity: 0.32; }
+.t32l-halo, .t32l-lamp .g11-flame { opacity: 0; transition: opacity 0.8s var(--ease); }
+.t32l-lamp.on .t32l-halo, .t32l-lamp.on .g11-flame { opacity: 1; }
+.t32l-paper { opacity: 0.95; }
+.t32l-shade { fill: color-mix(in srgb, var(--card) 70%, var(--stone-2)); opacity: 0.88; transition: opacity 0.8s var(--ease); }
+:root[data-theme='dark'] .t32l-shade { fill: color-mix(in srgb, var(--stone) 60%, var(--paper-2)); }
+.t32l-lamp.on .t32l-shade { opacity: 0; }
+.t32l-rib { fill: var(--umbra); opacity: 0.28; }
+.t32l-cap { fill: var(--umbra); opacity: 0.82; }
+.t32l-ink { opacity: 0.7; }
+:root[data-theme='dark'] .t32l-ink { fill: var(--ink-3); opacity: 0.55; }
+.t32l-glaze { fill: color-mix(in srgb, var(--rock-lo) 50%, #7d5a3a); }
+:root[data-theme='dark'] .t32l-glaze { fill: color-mix(in srgb, var(--rock-mid) 55%, #6d4e32); }
+.t32l-oil { fill: color-mix(in srgb, var(--lantern) 40%, var(--wash)); opacity: 0.55; }
+.t32l-wick { opacity: 0.85; }
+.t32l-pick { opacity: 0.55; }
+.t32l-glass { fill: color-mix(in srgb, var(--moon) 40%, var(--card)); opacity: 0.12; }
+:root[data-theme='dark'] .t32l-glass { fill: var(--moon); opacity: 0.07; }
+.t32l-glint { fill: #fff; opacity: 0.5; }
+:root[data-theme='dark'] .t32l-glint { fill: var(--moon); opacity: 0.35; }
+.t32l-brass { fill: color-mix(in srgb, var(--lantern) 50%, var(--rock-lo)); }
 .t32l-panel { width: min(100%, 560px); min-height: 9em; padding: 0 4px; flex: 0 1 auto; overflow-y: auto; }
 .t32l-panel > * { margin: 0 0 4px; }
 .t32l-h { font: 500 1.15rem/1.2 var(--serif); }
@@ -167,8 +223,25 @@
 }
 
 /* ── Scene 4: the command scroll ── */
-.t32x { padding: 6px 12px 54px; gap: 0; }
-.t32x-rod { width: min(100%, 760px); height: 10px; flex: none; border-radius: 5px; background: linear-gradient(var(--ink-2), var(--ink)); }
+.t32x { padding: clamp(40px, 9vh, 96px) 12px 54px; gap: 0; }
+.t32x-rod { width: min(100%, 760px); height: 60px; flex: none; overflow: visible; }
+.t32x-band { fill: color-mix(in srgb, var(--moss-b) 55%, var(--card)); opacity: 0.8; }
+.t32x-nail { fill: var(--wash); opacity: 0.7; }
+:root[data-theme='dark'] .t32x-nail { fill: var(--ink-3); }
+.t32x-roll { fill: color-mix(in srgb, var(--card) 85%, var(--stone-2)); }
+.t32x-rollink { opacity: 0.4; }
+.t32x-knob { fill: color-mix(in srgb, var(--vermilion) 45%, var(--wash)); opacity: 0.85; }
+.t32x-desk { position: absolute; left: 50%; bottom: 4px; width: min(96%, 720px); height: auto; transform: translateX(-50%); overflow: visible; pointer-events: none; }
+.t32x-inkstone { fill: color-mix(in srgb, var(--wash) 70%, var(--rock-lo)); }
+:root[data-theme='dark'] .t32x-inkstone { fill: var(--rock-lo); }
+.t32x-ink { fill: #000; opacity: 0.75; }
+.t32x-brush { fill: color-mix(in srgb, #8a6a48 60%, var(--wash)); }
+.t32x-vase { fill: color-mix(in srgb, var(--moss-c) 55%, var(--rock-hi)); }
+:root[data-theme='dark'] .t32x-vase { fill: color-mix(in srgb, var(--moss-c) 60%, var(--rock-mid)); }
+.t32x-glow { opacity: 0.8; }
+.t32x-tassel { width: 22px; height: 44px; overflow: visible; }
+.t32x-knot { fill: var(--vermilion); opacity: 0.85; }
+.t32x-silk { fill: var(--vermilion); opacity: 0.75; }
 .t32x-fold {
   display: grid;
   grid-template-rows: 0fr;
@@ -185,7 +258,7 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  margin-top: 4px;
+  margin-top: -4px;
   padding: 6px 14px 10px;
   border: 0;
   border-radius: 12px;
@@ -194,6 +267,13 @@
   font: 400 italic 0.95rem/1.2 var(--serif);
   cursor: pointer;
 }
-.t32x-cord .g11-lan { width: 34px; height: 54px; }
 .t32x-cord:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
 .t32x-note { margin: 8px 12px 0; max-width: 40rem; text-align: center; font: 400 italic 0.8rem/1.4 var(--serif); color: var(--ink-3); }
+
+/* ── Scene 4: four steps to the first lamp (stepPath art) ── */
+.t32p-win { fill: color-mix(in srgb, var(--stone-2) 70%, var(--wash)); transition: fill 1s var(--ease); }
+:root[data-theme='dark'] .t32p-win { fill: #070b18; }
+.p2s.lit .t32p-win { fill: color-mix(in srgb, var(--lantern) 75%, var(--moon)); }
+.t32p-halo, .t32p-end .p2p-lamp-halo { opacity: 0; transition: opacity 1.2s var(--ease); }
+.p2s.lit .t32p-halo, .p2s.lit .t32p-end .p2p-lamp-halo { opacity: 1; }
+.p2s:not(.lit) .t32p-end .p2p-lamp-body { fill: var(--stone-2); }

@@ -1,11 +1,50 @@
 import raw from '../../content/tram-32.json'
-import { fill, h } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
 import type { Fact } from '../../core/content'
+import { onSize } from '../../ui/part2/ink'
+import { mist, moon } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
-import { cardSheet, live } from '../t31/kit'
+import { bamboo, cardSheet, curve, ground, live, needles, plank, rng, room, stroke, type Pt } from '../t31/kit'
 
 const K = raw.scenes.table
 const num = (n: number) => n.toLocaleString(document.documentElement.lang || 'vi')
+const f1 = (n: number) => (Math.round(n * 10) / 10).toString()
+
+/** The round moon window (viewBox 0 0 200 200): night and the moon inside, a pine twig, a bamboo lattice, a brushed frame. */
+function moonWindow(): SVGSVGElement {
+  const ring: Pt[] = Array.from({ length: 41 }, (_, i) => { const a = (i / 40) * Math.PI * 2 - 2.2; return [100 + Math.cos(a) * 88, 100 + Math.sin(a) * 88] as Pt })
+  return s('svg', { class: 't32t-window', viewBox: '0 0 200 200', 'aria-hidden': 'true' },
+    s('defs', null, s('clipPath', { id: 't32t-win' }, s('circle', { cx: 100, cy: 100, r: 86 }))),
+    s('circle', { class: 't32t-sky', cx: 100, cy: 100, r: 87 }),
+    s('g', { 'clip-path': 'url(#t32t-win)' },
+      mist(100, 150, 120, 50),
+      moon(124, 76, 26, 3250, true),
+      s('path', { class: 'p2p-trunk', d: stroke(curve([-6, 40], [60, 70], [104, 122], 10), 6, 0.02, 0.6, 0.2), filter: 'url(#ink-rough)' }),
+      needles(72, 92, 52, 3251), needles(102, 124, 40, 3252),
+      bamboo([70, -4], [69, 204], 4, 3253, 60), bamboo([132, -4], [133, 204], 4, 3254, 60), bamboo([-4, 142], [204, 141], 3.4, 3255, 70)),
+    s('circle', { class: 't32t-frame', cx: 100, cy: 100, r: 92 }),
+    s('path', { class: 'g11-wash t32t-ring', d: stroke(ring, 6, 0.04, 0.12, 0.3), filter: 'url(#ink-rough)' }),
+    s('path', { class: 'g11-moonlit', d: stroke(ring.slice(22, 34), 2, 0.2, 0.3, 0.2) }))
+}
+
+/** The low tea table on its mat (stage px W × H, the top's upper face at y = H - 46): slab, apron, legs, tatami, shadow. */
+function paintTable(svg: SVGSVGElement, W: number, H: number) {
+  const r = rng(3260)
+  const ty = H - 46
+  let weave = ''
+  for (let x = -W * 0.12; x < W * 1.12; x += 5 + r()) weave += stroke([[x, H - 9], [x + 0.6, H - 1]], 0.7, 0.2, 0.2, 0.4)
+  svg.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
+  svg.replaceChildren(
+    // the tatami: a pale band with weave and a dark cloth edge
+    s('rect', { class: 't32t-mat', x: f1(-W * 0.12), y: f1(H - 10), width: f1(W * 1.24), height: 10 }),
+    s('path', { class: 'g11-wash t32t-weave', d: weave }),
+    s('path', { class: 'g11-wash t32t-hem', d: stroke([[-W * 0.12, H - 10], [W / 2, H - 10.5], [W * 1.12, H - 10]], 2.4, 0.02, 0.02, 0.6), filter: 'url(#ink-rough)' }),
+    ground(W / 2, H - 9, W * 0.48, 5, 3261, 0.3),
+    // legs and apron, then the slab
+    s('path', { class: 't32t-leg', d: stroke([[W * 0.09, ty + 12], [W * 0.088, H - 9]], 8, 0.02, 0.02, 0.8) + stroke([[W * 0.91, ty + 12], [W * 0.912, H - 9]], 8, 0.02, 0.02, 0.8), filter: 'url(#ink-rough)' }),
+    s('path', { class: 'g11-wash t32t-apron', d: stroke([[W * 0.05, ty + 15], [W / 2, ty + 15.5], [W * 0.95, ty + 15]], 4, 0.02, 0.02, 0.7), filter: 'url(#ink-rough)' }),
+    plank(0, ty, W, 12, 3262, 'g11-wood t32t-slab'))
+}
 
 /** Scene 2 — a low tea table under a round moon window: the table top is your RAM, each model a bundle of scrolls. */
 export function tableScene(ctx: SceneCtx) {
@@ -35,10 +74,13 @@ export function tableScene(ctx: SceneCtx) {
     h('span', { class: 't32t-ram' }, fill(K.ramText, { n: ram })))
   const state = live('t32t-state')
   const note = h('p', { class: 't32t-note', hidden: true }, K.note)
+  const tableArt = s('svg', { class: 't32t-table', 'aria-hidden': 'true' })
+  const stage = h('div', { class: 't32t-stage' }, tableArt, bundle, top, spill)
   const root = h('div', { class: 'g11 t32t', role: 'group', 'aria-label': K.aria },
+    room(),
     h('p', { class: 'visually-hidden' }, K.art),
-    h('div', { class: 't32t-window', 'aria-hidden': 'true' }, h('span', { class: 't32t-moon' })),
-    h('div', { class: 't32t-stage' }, bundle, top, h('span', { class: 't32t-leg l' }), h('span', { class: 't32t-leg r' }), spill, h('span', { class: 't32t-mat' })),
+    moonWindow(),
+    stage,
     state,
     h('div', { class: 't32t-models' }, ...models.map((x) => x.b)),
     h('div', { class: 't32t-controls' }, ramSeg, bitSeg),
@@ -46,6 +88,7 @@ export function tableScene(ctx: SceneCtx) {
     note)
   ctx.art.append(root)
   const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
+  ctx.onCleanup(onSize(stage, () => paintTable(tableArt, stage.clientWidth, stage.clientHeight)))
 
   function draw() {
     ;(top.lastChild as HTMLElement).textContent = fill(K.ramText, { n: ram })

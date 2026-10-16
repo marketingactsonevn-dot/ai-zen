@@ -9,6 +9,7 @@ import { scaleScene } from './scale'
 import { tableScene } from './table'
 import { lampsScene } from './lamps'
 import { scrollScene } from './scroll'
+import { firstLampArt } from './path'
 
 const S = raw.scenes
 
@@ -18,7 +19,7 @@ const station: StationModule = {
     { label: S.scale.label, mount: scaleScene },
     { label: S.table.label, mount: tableScene },
     { label: S.lamps.label, mount: lampsScene },
-    stepPath(S.lamps.steps as StepPath, { label: S.lamps.stepsLabel, prompt: S.lamps.stepsPrompt }),
+    stepPath(S.lamps.steps as StepPath, { label: S.lamps.stepsLabel, prompt: S.lamps.stepsPrompt, art: firstLampArt }),
     { label: S.scroll.label, mount: scrollScene },
     perspectiveCircle(S.circle.perspectives as Perspectives, { label: S.circle.label, prompt: S.circle.prompt, detail: S.circle.insight as Fact }),
   ],

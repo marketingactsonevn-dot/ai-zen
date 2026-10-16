@@ -1,24 +1,36 @@
 import raw from '../../content/tram-33.json'
 import { fill, h, s } from '../../core/dom'
 import type { Fact } from '../../core/content'
+import { p2Defs } from '../../ui/part2/ink'
+import { toro } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
-import { cardSheet, live, stroke } from '../t31/kit'
+import { cardSheet, curve, live, night, stroke } from '../t31/kit'
 
 const K = raw.scenes.keys
 
-/** A bronze key (viewBox 0 0 60 24): bow ring, shaft, bit. */
+/** A bronze key (viewBox 0 0 60 24): a ring bow with a cut-out, a shaft, a toothed bit, moonlight along its back. */
 const keyArt = () => s('svg', { class: 't33y-key', viewBox: '0 0 60 24', 'aria-hidden': 'true' },
-  s('circle', { class: 't33y-metal', cx: 11, cy: 12, r: 9 }),
-  s('circle', { class: 't33y-hole', cx: 11, cy: 12, r: 3.6 }),
-  s('path', { class: 't33y-metal', d: 'M19 10h36v4H19zM44 14h4v6h-4zM51 14h4v8h-4z' }))
+  s('path', { class: 't33y-metal', d: 'M11 2.6A9.4 9.4 0 1 1 10.99 2.6ZM11 8.4A3.6 3.6 0 1 0 11.01 8.4Z', 'fill-rule': 'evenodd', filter: 'url(#ink-rough)' }),
+  s('path', { class: 't33y-metal', d: 'M19.5 10.2Q36 9.4 56 10.4L56.6 13.8Q36 14.6 19.5 13.8ZM42 13.6h4.2v5.6H42ZM49.4 13.6h4.4l-.4 7.4h-4Z', filter: 'url(#ink-rough)' }),
+  s('path', { class: 't33y-glint', d: stroke([[4, 9], [8, 4], [14, 3.4]], 1.4, 0.2, 0.3, 0.2) + stroke([[22, 10.6], [54, 10.8]], 0.9, 0.1, 0.3, 0.2) }))
 
-/** A stone lantern (tōrō) with the ring hanging under its roof (viewBox 0 0 120 120). */
-const toroArt = () => s('svg', { class: 't33y-toro', viewBox: '0 0 120 120', 'aria-hidden': 'true' },
-  s('path', { class: 'g11-ink', d: 'M20 34Q60 10 100 34Q60 28 20 34Z' }),
-  s('path', { class: 't33y-stone', d: 'M38 36h44v30H38z' }),
-  s('rect', { class: 't33y-light', x: 50, y: 42, width: 20, height: 18 }),
-  s('path', { class: 't33y-stone', d: 'M30 66h60l-6 8H36zM52 74h16v36H52zM36 110h48v8H36z' }),
-  s('path', { class: 'g11-ink', 'fill-opacity': 0.5, d: stroke([[38, 66], [82, 66]], 1.4, 0.1, 0.1) }))
+/** The stone lantern with the bunch of keys hanging under its roof (viewBox 0 0 120 130). */
+function toroArt(): SVGSVGElement {
+  p2Defs()
+  // an iron ring on a cord from the roof's corner, five small keys hanging from it
+  let keys = ''
+  for (let i = 0; i < 5; i++) {
+    const a = 0.5 + i * 0.5
+    const x = 95 + Math.cos(a) * 7, y = 70 + Math.sin(a) * 7
+    keys += stroke([[x, y], [x + Math.cos(a) * 14, y + Math.sin(a) * 14 + 4]], 1.8, 0.1, 0.2, 0.4)
+  }
+  return s('svg', { class: 't33y-toro', viewBox: '0 0 120 130', 'aria-hidden': 'true' },
+    toro(56, 126, 112, true),
+    s('path', { class: 'g11-thread', d: 'M94 55Q95 60 95 63' }),
+    s('circle', { class: 't33y-ring', cx: 95, cy: 70, r: 7 }),
+    s('path', { class: 't33y-keys', d: keys }),
+    s('path', { class: 't33y-glint', d: stroke(curve([90, 66], [95, 62], [100, 66], 6), 1.2, 0.2, 0.3, 0.2) }))
+}
 
 /** Scene 2 — a ring of keys under a stone lantern: hand the agent only the keys this one job needs. */
 export function keysScene(ctx: SceneCtx) {
@@ -28,12 +40,13 @@ export function keysScene(ctx: SceneCtx) {
   const hand = h('div', { class: 't33y-zone given' })
   const keys = K.keys.map((k) => {
     const st = h('span', { class: 't33y-st' }, K.keep)
-    const b = h('button', { class: 't33y-k', type: 'button', 'aria-pressed': 'false', onClick: () => toggle(k.id) }, keyArt(), h('span', { class: 't33y-l' }, k.label), st)
+    const b = h('button', { class: 't33y-k g11-dopaper', type: 'button', 'aria-pressed': 'false', onClick: () => toggle(k.id) }, keyArt(), h('span', { class: 't33y-l' }, k.label), st)
     ring.append(b)
     return { k, b, st }
   })
   const check = h('button', { class: 'g11-pill t33y-check', type: 'button', onClick: judge }, K.check)
-  const root = h('div', { class: 'g11 t33y', role: 'group', 'aria-label': K.aria },
+  const root = h('div', { class: 'g11 g11-nomoon t33y', role: 'group', 'aria-label': K.aria },
+    night({ low: true }),
     h('p', { class: 'visually-hidden' }, K.art),
     h('p', { class: 'g11-q t33y-task' }, K.task),
     h('div', { class: 't33y-board' },
