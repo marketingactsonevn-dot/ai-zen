@@ -20,8 +20,8 @@ Theo bảng ở `docs/part2-audit/README.md` (ô **P1**). Đi theo vườn, mỗ
   *(30 slide P1 + lỗi chặn v2 §C: 20-4, 21-3, 22-2, 25-2, 27-3, 33-2, 34-3, 35-5, 39-3, 39-4, 39-5. Ảnh sau: `docs/part2-shots/slides/after/tNN-K-{d,p}.jpg`, ảnh trước: `docs/part2-audit/all/`. Khung thêm: prompt dài xuống dòng, hook `stepPath.onWrong`, `perspectiveCircle.name`. Còn để phase 4: vẽ lại, bố cục phone; hook cần thêm: điểm dừng từng mốc + eyebrow riêng cho `progressTide`, `inkStage` đảo chiều kéo dọc, `g.drop` theo vật chạy cùng camera.)*
 
 ## Phase 3 · Câu chữ + logic thông tin (mục A, B)
-- [ ] Thay copy JSON theo câu viết sẵn trong `toan-bo-21-tram.md` (kicker, tóm tắt, thẻ, prompt, insight, quiz, ensō). VI trước, EN dịch theo sau.
-- [ ] Sửa thứ tự thông tin: insight sau bằng chứng, không lộ đáp án sớm, quiz khớp bài.
+- [x] Thay copy JSON theo câu viết sẵn trong `toan-bo-21-tram.md` (kicker, tóm tắt, thẻ, prompt, insight, quiz, ensō). VI trước, EN dịch theo sau. *(21 trạm VI + EN; tên trạm t22, t23, t37 theo audit; quiz: đáp án đúng không còn dài nhất ở trạm nào — `check-content` 0/21)*
+- [x] Sửa thứ tự thông tin: insight sau bằng chứng, không lộ đáp án sớm, quiz khớp bài. *(đổi thứ tự scene trong trạm theo B.5: t19, t23, t25, t28, t30, t33, t34, t35, t39; không cắt/gộp — phase 5)*
 
 ## Phase 4 · Vẽ lại + cân bố cục + 31 slide Làm lại
 Ưu tiên slide thẩm mỹ ≤ 2 (22 slide, mục E) rồi cân bằng ≤ 2 (37 slide, mục F); gộp chung khi cùng slide. Theo vườn, mỗi vườn một commit, kèm ảnh trước/sau:
@@ -37,3 +37,4 @@ Theo bảng ở `docs/part2-audit/README.md` (ô **P1**). Đi theo vườn, mỗ
 - Máy cloud không GPU, CPU chậm hơn máy gốc: perf-walk ở đây cho Phần 1 (t01–06) 23/28 lần chuyển có frame > 50 ms (máy gốc ~1/89, `docs/perf-after.md`). Ngưỡng tuyệt đối README không đo được trên máy này → mỗi phase so **tương đối** với baseline dưới, đo cùng máy.
 - Baseline Part 2 (`docs/perf-data/part2-fix-p0-baseline.json`, `--only c --stations 19-39 --passes 2`, CPU 4×): 234 lần chuyển, 213 có frame > 50 ms, frame max trung vị 167 ms, tệ nhất 1150 ms (t33), 808 long task; vào trạm trung vị 319 ms. Heap lượt 1 → 2: 19,8 → 20,4 MB (về bản đồ 19,4 → 20,2); WebGL max 1, rAF ≤ 1.
 - Sau Phase 1 (`docs/perf-data/part2-fix-p1.json`, cùng máy, cùng lệnh): 193/234 lần chuyển có frame > 50 ms (baseline 213), frame max trung vị 117 ms (167), tệ nhất 1083 ms (1150), 688 long task (808); vào trạm trung vị 212 ms (319). Heap lượt 1 → 2: 20,0 → 20,3 MB; WebGL max 1, rAF ≤ 1. Không hồi quy.
+- Sau Phase 3 (`docs/perf-data/part2-fix-p3.json`, đo lại khi máy rảnh): 224/234 lần chuyển có frame > 50 ms, frame max trung vị 233 ms, 996 long task; heap lượt 1 → 2: 20,7 → 21,8 MB, về bản đồ 20,6 MB; WebGL max 1, rAF ≤ 1. Số toàn tuyến xấu hơn baseline, nhưng nhiễu máy rất lớn (cùng một scene không đổi code lệch tới 10×). Đo A/B xen kẽ trên cùng máy (baseline `0b1211b` vs hiện tại, 2 lượt, tổng long task ms): t21 2964/3099 → 2622/1772 · t27 1657/1937 → 1678/2598 · t35 1312/2654 → 2060/2946 · t36 4288/4761 → 3903/4654 → không thấy hồi quy hệ thống; t35 nặng hơn ~20% (ruộng bậc thang + dây chuyền mới), xem lại ở phase 4. Cần đo ngưỡng tuyệt đối trên máy thật trước khi deploy.
