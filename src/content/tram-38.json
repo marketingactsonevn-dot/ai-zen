@@ -1,23 +1,25 @@
 {
   "id": 38,
   "kicker": "Trong sương có nhiều ngả — chưa ai đi tới cuối.",
-  "summary": "Không ai biết chắc tương lai AI — nhưng ta chọn được mình đứng ở đâu.",
+  "summary": "Hỏi “AGI là gì” trước “bao giờ có”; còn nghề của bạn, hãy giữ gu, kiểm chứng và trách nhiệm.",
   "quiz": {
     "q": "Một người nói “AGI sẽ tới năm 2027”, người kia nói “còn rất xa”. Câu nên hỏi đầu tiên là gì?",
     "options": [
-      "Ai nổi tiếng hơn?",
+      "Ai có dữ liệu mới hơn?",
       "Mỗi người hiểu AGI là gì?",
-      "Công ty nào giàu hơn?",
-      "Ai nói trước?"
+      "Công ty nào đang dẫn đầu cuộc đua?",
+      "Mốc nào gần hơn?"
     ],
     "answer": 1,
-    "explain": "Mỗi bên có thể dùng một cây thước khác: công việc kinh tế, bài test nhận thức, hay chữ ký của một hội đồng. Cùng chữ AGI, khác định nghĩa."
+    "explain": "Mỗi bên có thể dùng một cây thước khác: công việc, bậc thang, bài kiểm tra hay chữ ký hội đồng. Cùng chữ AGI, khác định nghĩa."
   },
   "scenes": {
     "defs": {
       "label": "Mỗi người một định nghĩa",
       "art": "Bốn vật đựng nước xếp dọc mép hiên gỗ lúc trăng sắp lặn: chén trà men ngọc, máng tre, chậu đồng, chậu đá tsukubai; trong mỗi vật, mặt nước giữ một bóng trăng tròn, trước mỗi vật một phiến đá khắc tên người định nghĩa. Chạm vật nào, nước được rót thêm, mặt nước gợn rồi lặng, và bóng trăng hiện thành hình của định nghĩa: đồng xu lỗ vuông, bậc thang, bánh xe mười nan, con dấu hội đồng; một dải giấy treo dưới vật ghi ai nói và nói gì, một lớp sương trong vườn tan đi. Đủ bốn, bốn sợi ánh trăng nối cùng một vầng trăng với bốn mặt nước.",
-      "prompt": "Chạm đá đọc định nghĩa",
+      "legend": "AGI: AI giỏi rộng như con người. Bốn nơi đo nó bằng bốn cây thước.",
+      "prompt": "Chạm từng phiến đá tên để rót nước",
+      "next": "Chạm ba phiến còn lại ({n}/{total})",
       "group": "Bốn định nghĩa AGI",
       "stoneAria": "Định nghĩa của {who}",
       "names": [
@@ -50,7 +52,7 @@
           {
             "who": "Hendrycks, Bengio & cộng sự · 2025",
             "view": {
-              "text": "AGI là AI linh hoạt và thạo việc ngang một người trưởng thành có học, chấm trên 10 mảng nhận thức. Nhóm này chấm GPT-4 27%, GPT-5 57%.",
+              "text": "AGI là AI linh hoạt như một người trưởng thành có học, chấm trên 10 mảng như đọc viết, toán, trí nhớ. Theo thang này, GPT-4 đạt 27%, GPT-5 đạt 57%.",
               "asOf": "2026-10-15",
               "source": "t38-agidef",
               "kind": "opinion"
@@ -66,14 +68,14 @@
           }
         ],
         "common": {
-          "text": "Cả bốn đều nói “giỏi rộng như người”, nhưng đo bằng thước khác nhau: công việc, bậc thang, bài test, hay chữ ký hội đồng.",
+          "text": "Bốn cây thước: OpenAI đo bằng công việc, DeepMind bằng bậc thang, nhóm Hendrycks bằng bài kiểm tra, Microsoft–OpenAI bằng chữ ký của một hội đồng.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "Tranh cãi “bao giờ có AGI” thường là tranh cãi “AGI là gì”. Hỏi định nghĩa trước khi tin một mốc thời gian.",
+        "text": "Cãi nhau “bao giờ có AGI” thường là cãi nhau “AGI là gì”. Hỏi định nghĩa trước khi tin một mốc.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -161,24 +163,24 @@
     "fork": {
       "label": "Ba ngả sương",
       "art": "Ngã ba lối đá lúc trăng lặn; cuối lối là một sa bàn đá trên bệ, trong khay là cả một khu vườn có đồi, ruộng, rừng và tường. Ba cần kéo nước bằng tre đứng ở ba miệng lối: tốc độ, chia sẻ, kiểm soát. Kéo cần nào, khu vườn trong khay đổi hình ngay: ruộng bậc thang giữ mảnh trời, rừng thông hoang, vòng tường đá cao dần, cổng mở rộng, bốn mươi chấm đèn dồn vào trong tường hoặc rải khắp khay; để cả ba lưng chừng thì sương phủ kín. Ba dải sương vắt ngang ba nhánh lối, chạm vào thì sương rẽ ra một mẩu giấy.",
-      "prompt": "Kéo ba cần tre",
+      "prompt": "Kéo đầu gàu của ba cần tre lên xuống",
       "sliderAria": "{label}: {value}",
       "sliders": [
         {
           "id": "speed",
-          "label": "Tốc độ tiến bộ",
+          "label": "Tốc độ AI tiến bộ",
           "low": "Chậm",
           "high": "Rất nhanh"
         },
         {
           "id": "share",
-          "label": "Chia sẻ lợi ích",
-          "low": "Dồn về ít người",
-          "high": "Chia rộng"
+          "label": "Lợi ích về tay ai",
+          "low": "Vài công ty",
+          "high": "Rộng khắp"
         },
         {
           "id": "control",
-          "label": "Mức kiểm soát",
+          "label": "Luật lệ & giám sát",
           "low": "Lỏng",
           "high": "Chặt"
         }
@@ -230,10 +232,11 @@
           "id": "drift",
           "when": {},
           "name": "Lối giữa sương",
-          "text": "Mọi thứ lưng chừng: lợi ích có, rủi ro có, và kết quả tuỳ vào lựa chọn của từng năm."
+          "text": "Mọi thứ lưng chừng. Lợi ích có, rủi ro có; kết quả tuỳ lựa chọn từng năm."
         }
       ],
-      "mistsLabel": "Hai kịch bản người ta hay nhắc",
+      "mistsLabel": "Ba mẩu giấy: người ta đang đoán gì",
+      "mistPrompt": "Chạm dải sương trên lối: người ta đang đoán gì",
       "mists": [
         {
           "who": "AI 2027 · Kokotajlo & cộng sự, 04/2025",
@@ -263,7 +266,13 @@
         }
       ],
       "insight": {
-        "text": "Kịch bản là công cụ để nghĩ, không phải lời tiên tri. Ba cần gạt này do con người chọn, không tự xảy ra.",
+        "text": "Tương lai AI không tự đến: tốc độ, luật lệ và cách chia lợi ích đều do con người chọn.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Chính phủ đặt luật, công ty chọn tốc độ, người dùng chọn dùng gì. Khay này là mô phỏng do AI Zen dựng để suy nghĩ, không phải dự báo.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -271,12 +280,14 @@
     },
     "trays": {
       "label": "Ba khay đá công việc",
-      "art": "Sát sàn hiên gỗ lúc trăng lặn, ván chạy về phía vườn. Dưới trái là giỏ mây chứa tám viên sỏi khắc tên việc. Ba khay đá lùi dần theo đường chéo: khay sỏi khô gần nhất, khay ngập nửa nước sát mép hồ, khay xa nhất chìm trong sương dưới trăng. Nhặt một viên rồi ném vào khay. Đủ tám, kéo dây rèm tre: nắng sớm tràn qua ba khay, hiện vết lõm nơi chuyên gia đặt từng viên, viên lệch lăn theo đường chấm về chỗ của nó.",
-      "prompt": "Xếp việc vào khay",
+      "art": "Sát sàn hiên gỗ lúc trăng lặn, ván chạy về phía vườn. Dưới trái là giỏ mây chứa tám viên sỏi khắc tên việc. Ba khay đá lùi dần theo đường chéo: khay sỏi khô gần nhất, khay ngập nửa nước sát mép hồ, khay xa nhất chìm trong sương dưới trăng. Nhặt một viên rồi ném vào khay. Đủ tám, kéo dây rèm tre: nắng sớm tràn qua ba khay, hiện vết lõm nơi AI Zen đặt từng viên, viên lệch lăn theo đường chấm về chỗ của nó.",
+      "prompt": "Kéo từng viên sỏi, ném vào khay bạn nghĩ đúng ({n}/{total})",
+      "pullPrompt": "Kéo dây rèm lên",
+      "why": "Chạm viên lệch để xem vì sao",
       "keys": "Chọn một viên sỏi, rồi bấm phím 1, 2, 3 để đặt vào khay",
       "pickAria": "Đặt “{task}” vào khay {tray}",
-      "compare": "So với góc nhìn chuyên gia",
-      "match": "Bạn và góc nhìn chuyên gia cùng xếp {n}/{total} viên",
+      "compare": "Kéo rèm: so với cách xếp của AI Zen",
+      "match": "Bạn và AI Zen xếp giống nhau {n}/{total} viên",
       "trays": [
         {
           "id": "good",
@@ -288,7 +299,7 @@
         },
         {
           "id": "far",
-          "name": "Còn xa"
+          "name": "Cần người chịu trách nhiệm"
         }
       ],
       "tasks": [
@@ -337,32 +348,32 @@
         {
           "id": "taste",
           "label": "Chọn ý tưởng hợp gu thương hiệu",
-          "short": "Chọn theo gu",
+          "short": "Chọn ý hợp gu",
           "expert": "far",
           "why": "Gu là lựa chọn có trách nhiệm, gắn với hiểu biết về khách hàng và văn hoá."
         },
         {
           "id": "trust",
-          "label": "Giữ quan hệ, chịu trách nhiệm khi sai",
-          "short": "Giữ quan hệ",
+          "label": "Đứng ra chịu trách nhiệm khi sai, giữ quan hệ",
+          "short": "Đứng ra chịu trách nhiệm",
           "expert": "far",
           "why": "Khách hàng và đối tác cần một con người đứng ra cam kết."
         }
       ],
       "expertNote": {
-        "text": "Cách xếp “chuyên gia” là góc nhìn biên tập của AI Zen tại 10/2026, tham khảo METR và WEF; mỗi tháng có thể khác.",
+        "text": "Đây là cách xếp của AI Zen tại 10/2026, tham khảo METR và WEF; mỗi tháng có thể khác.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
       "insight": {
-        "text": "Kỹ năng đáng đầu tư: gu thẩm mỹ, viết brief rõ, kiểm chứng, điều phối AI, và quan hệ con người.",
+        "text": "Hai việc AI chưa lấy được: chọn theo gu, và đứng ra chịu trách nhiệm. Hãy đầu tư vào đó.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
       "detail": {
-        "text": "Khảo sát hơn 1.000 doanh nghiệp (WEF, 01/2025) dự báo gần 40% kỹ năng cốt lõi sẽ đổi tới 2030; tư duy sáng tạo và kỹ năng công nghệ ngày càng quan trọng.",
+        "text": "Kèm theo: viết brief (bản dặn việc) thật rõ, tự kiểm chứng kết quả, biết phối nhiều công cụ AI. WEF (01/2025) dự báo gần 40% kỹ năng cốt lõi sẽ đổi tới 2030.",
         "asOf": "2026-10-15",
         "source": "t38-wef",
         "kind": "prediction"

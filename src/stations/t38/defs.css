@@ -513,3 +513,24 @@
 :root[data-quality='low'] .t38d-strip {
   transition: none;
 }
+
+/* what AGI means, said once over the scene (audit 38-1) */
+.t38d-legend {
+  position: absolute;
+  z-index: 3;
+  left: 3%;
+  top: 3%;
+  width: min(26rem, 42%);
+  margin: 0;
+  font: 400 italic clamp(0.95rem, 1.3vw, 1.06rem) / 1.42 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 14px var(--paper);
+  pointer-events: none;
+}
+@media (max-width: 720px) {
+  .t38d-legend {
+    width: auto;
+    right: 3%;
+    font-size: 0.9rem;
+  }
+}

@@ -819,3 +819,38 @@ html[data-quality='low'] .t37g-ema-board {
 html[data-quality='low'] .t37g-bokeh {
   display: none;
 }
+
+/* who the paper gardener is: one line low on the left, under the bough (audit 37-1) */
+.t37g-legend {
+  position: absolute;
+  left: 3%;
+  bottom: 3%;
+  width: min(24rem, 40%);
+  margin: 0;
+  font: 400 italic clamp(0.95rem, 1.3vw, 1.05rem) / 1.42 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 14px var(--paper);
+  pointer-events: none;
+}
+.t37g.told .t37g-legend {
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.t37g.tall .t37g-legend {
+  width: auto;
+  right: 3%;
+  bottom: auto;
+  top: 1%;
+}
+/* the dry branch says what it does */
+.t37g-retry-label {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  translate: -50% 2px;
+  white-space: nowrap;
+  font: 500 0.82rem/1.2 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper);
+  pointer-events: none;
+}

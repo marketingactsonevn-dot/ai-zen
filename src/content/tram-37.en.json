@@ -1,17 +1,17 @@
 {
   "id": 37,
-  "kicker": "Teach the tree to grow straight while the gardener sleeps.",
-  "summary": "The more capable AI gets, the more teaching it to want the right things matters than teaching it skill.",
+  "kicker": "You hand a job to AI and go to sleep — in the morning, has it done what you meant?",
+  "summary": "The more AI can do on its own, the more we must spell out what is forbidden, test it hard and build many layers of fences.",
   "quiz": {
-    "q": "You give an AI the goal “get more clicks on our posts”. It writes sensational, false headlines. What happened?",
+    "q": "You give AI the goal “get more clicks on the article”. It writes sensational, false headlines. What happened?",
     "options": [
-      "The AI hallucinated and made things up",
-      "The AI gamed the goal: it hit the number but missed what you meant",
-      "The connection was slow, so it rushed",
-      "The AI deliberately turned against you"
+      "The AI hallucinated and invented the facts itself",
+      "It gamed the goal: right number, wrong aim",
+      "The AI didn’t read the brief closely",
+      "The AI deliberately went against you"
     ],
     "answer": 1,
-    "explain": "It followed the words “more clicks” but not what you really wanted. When you hand over a task, also say what must not be done."
+    "explain": "It did exactly what “more clicks” said, but not what you really wanted. When you hand over a task, also say clearly what must not be done."
   },
   "takeaways": [
     "t37-goal-check"
@@ -20,11 +20,15 @@
     "goal": {
       "label": "A goal off by a hair",
       "art": "A night garden seen as a stage, at the paper gardener’s eye level: a red maple bough reaches into the top corner with three wooden ema plaques hanging from it, each one way of giving the order. Below, the folded-paper gardener waits with shears on a stone path covered in maple leaves; the real gardener dozes by a stone lantern, a folding screen behind him; further off, a hut and a pond holding the moon. Drop a plaque into the paper gardener’s hands, the night passes, and next morning the garden shows what the words did: if the order only says “no leaves on the path”, the maple is felled, a bare stump on silver sand, the last leaf drifting into the moon’s reflection.",
-      "prompt": "Choose how to give the order",
+      "legend": "The paper gardener is an AI. You give it a job, then go to sleep.",
+      "prompt": "Drag an order plaque into the paper gardener’s hand",
+      "rewind": "Touch the dry branch to rewind last night",
+      "again": "Pick a different order and hand it over again",
+      "tryLoose": "Touch the dry branch, then try the shortest order",
       "group": "Three ways to brief the paper gardener",
       "optionAria": "Order: {say}",
       "morning": "Next morning",
-      "retry": "Try another way",
+      "retry": "Rewind last night",
       "options": [
         {
           "id": "loose",
@@ -46,12 +50,12 @@
         }
       ],
       "insight": {
-        "text": "Specification gaming: AI does exactly what we said, not what we meant. The narrower the goal, the easier it drifts.",
+        "text": "AI did exactly what you said, but not what you wanted. Say both the goal and what is forbidden.",
         "asOf": "2026-10-15",
         "source": "t37-specgaming"
       },
       "detail": {
-        "text": "Real cases: an AI rewarded for lifting the red block's bottom face flipped the block instead of stacking it on the blue one; a boat-racing AI circled to collect points instead of finishing.",
+        "text": "Researchers call this specification gaming. Alignment is the work of making AI follow what people mean, not just what they say. Real examples: an AI scored on how high the red block was simply flipped it over instead of stacking it on the blue one; a boat-racing AI went round in circles collecting points instead of finishing.",
         "asOf": "2026-10-15",
         "source": "t37-specgaming"
       }
@@ -111,16 +115,18 @@
     "fence": {
       "label": "Layered fences",
       "art": "A sapling in the moon garden, ringed by six square-lattice bamboo fences (yotsume-gaki) built outward like ripples on water. Each fence has a few holes in different places. Red fireflies try to slip in; past every layer there are fewer of them.",
-      "prompt": "Build another fence",
+      "legend": "The sapling = the people using AI. Each red spark = a harm looking for a way to reach them.",
+      "prompt": "Touch the glowing bamboo bundle to put up a fence ({n}/{total})",
+      "walk": "Drag to walk round the garden and find the gap that still gets through",
       "add": "Build the next layer",
       "addAria": "Build the fence: {name}",
       "count": "{n}/6 fences",
-      "leak": "Still getting through: {n}",
+      "leak": "Still reaching the sapling: {n}/20 sparks",
       "reset": "Take them all down, start again",
       "seeStation": "More at station {n}",
       "aria": "3D garden: a sapling on a moss mound in raked sand, where up to six square-lattice bamboo fences will rise round it; six bundles of bamboo wait on the near sand, a rake lies at the edge.",
-      "hint": "Drag to walk round the garden, arrow keys to turn. Tap the glowing bundle to build the next fence; tap the rake to take them all down.",
-      "aligned": "Lined up: from where you stand, one line runs through every fence to the sapling.",
+      "hint": "Touch the glowing bamboo bundle to put up the next fence; touch the rake to take them all down. Drag to walk round the garden, arrow keys to turn.",
+      "aligned": "This is the rare gap that runs through all six layers.",
       "layers": [
         {
           "id": "values",
@@ -131,12 +137,12 @@
         {
           "id": "tests",
           "name": "Test before release",
-          "what": "Evals, red teams and third parties test the model before launch."
+          "what": "Prepared tests, people who try to trick the AI, and independent groups all test it before release day."
         },
         {
           "id": "policy",
-          "name": "Responsible scaling commitments",
-          "what": "Once a model reaches a given level of capability, matching safeguards must be in place before work continues.",
+          "name": "As strong as it gets, as fenced as it must be",
+          "what": "Once an AI reaches a given level of power, matching safeguards must be in place before work goes on.",
           "fact": {
             "text": "Anthropic has had a Responsible Scaling Policy since Sep 2023; version 3.4 took effect on Jul 8, 2026.",
             "asOf": "2026-10-15",
@@ -146,10 +152,10 @@
         {
           "id": "gate",
           "name": "Gated release",
-          "what": "A model that is very good at something dangerous goes only to selected users.",
+          "what": "An AI that is too good at something dangerous is handed only to chosen users.",
           "station": 19,
           "fact": {
-            "text": "Apr 7, 2026: Anthropic gave Claude Mythos Preview only to some 50+ organisations that maintain software infrastructure, to find and fix vulnerabilities (Project Glasswing).",
+            "text": "7 Apr 2026: Anthropic let only about 50 organisations that run infrastructure software use Claude Mythos Preview, to find and patch security holes.",
             "asOf": "2026-10-15",
             "source": "t37-glasswing",
             "claimBy": "Anthropic"
@@ -169,22 +175,22 @@
         {
           "id": "law",
           "name": "Government law",
-          "what": "Legal duties for model makers, with a regulator watching.",
+          "what": "Legal duties for companies that build AI, with a regulator watching.",
           "station": 30,
           "fact": {
-            "text": "In the EU, since Aug 2, 2025, general-purpose model providers must keep technical documentation; models with systemic risk must assess risks and report incidents.",
+            "text": "In the EU, from 2 Aug 2025, companies making general-purpose AI must keep technical documentation; AI powerful enough to cause major risk must also be risk-assessed and have incidents reported.",
             "asOf": "2026-10-15",
             "source": "t37-eu-gpai"
           }
         }
       ],
       "insight": {
-        "text": "No fence is airtight. Stack layers with holes in different places (defence in depth) and few failures get through them all.",
+        "text": "Every fence has holes. Six layers holed in different places leave only one narrow gap.",
         "asOf": "2026-10-15",
         "source": "t37-iasr"
       },
       "detail": {
-        "text": "The International AI Safety Report 2026 says it plainly: current safeguards cannot yet prevent harm in every situation.",
+        "text": "Safety people call this defence in depth. The International AI Safety Report 2026 still says plainly: today’s measures cannot stop harm in every situation.",
         "asOf": "2026-10-15",
         "source": "t37-iasr"
       }

@@ -495,3 +495,43 @@
 .t39e-seal-knob {
   fill: color-mix(in srgb, var(--moss-c) 40%, var(--rock-mid));
 }
+
+/* the dotted ring to brush along and the vermilion start; gone once the stroke has begun (audit 39-5) */
+.t39e-trace {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+.t39e-trace-ring {
+  fill: none;
+  stroke: var(--ink);
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+.t39e-trace-start {
+  fill: var(--vermilion);
+}
+.t39e.is-drawing .t39e-trace-start,
+.t39e.is-drawn .t39e-trace {
+  opacity: 0;
+}
+/* what an ensō is: one line on the sky */
+.t39e-legend {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: calc(var(--top, 64px) + 2%);
+  width: min(30rem, 86%);
+  margin: 0;
+  translate: -50% 0;
+  text-align: center;
+  font: 400 italic clamp(0.95rem, 1.3vw, 1.06rem) / 1.42 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 14px var(--paper);
+  pointer-events: none;
+}
+.t39e.is-drawn .t39e-legend {
+  opacity: 0;
+  transition: opacity 0.6s;
+}

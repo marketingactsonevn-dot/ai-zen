@@ -3,6 +3,7 @@ import { fill, h, nextId, s } from '../../core/dom'
 import { load, save } from '../../core/store'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, onDigit, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { guide } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './shell'
 import type { Answers } from './types'
@@ -29,6 +30,7 @@ export function askScene(ctx: SceneCtx) {
   const Q = K.questions
   const ans: Answers = loadAnswers()
   const stable = stableHeight(ctx, [K.insight])
+  const gd = guide(ctx)
 
   const bed = s('svg', { class: 't39a-bed', 'aria-hidden': 'true' })
   const shades = h('div', { class: 't39a-shades', 'aria-hidden': 'true' })
@@ -140,6 +142,9 @@ export function askScene(ctx: SceneCtx) {
     shades.replaceChildren(...shadows)
     group.setAttribute('aria-label', it.q)
     group.replaceChildren(...pads)
+    // H5 per question, H1 a dot on every leaf (they no longer look like buttons)
+    ctx.prompt(fill(K.prompt, { n: i + 1 }))
+    pads.forEach((p) => gd.dot(p, { dir: [0, -1] }))
     look(sx, sy)
     if (change) (pads.find((p) => p.getAttribute('aria-pressed') === 'true') ?? pads[0])?.focus({ preventScroll: true })
     paint()
@@ -186,7 +191,9 @@ export function askScene(ctx: SceneCtx) {
     paint()
     if (!told) {
       told = true
-      ctx.insight(K.insight)
+      // the insight says back what was answered: the basket on the next slide is sorted by exactly these four
+      const say = (k: keyof Answers) => Q.find((q) => q.id === k)?.options.find((o) => o.id === ans[k])?.say ?? ''
+      ctx.insight({ ...K.insight, text: fill(K.insight.text, { role: say('role'), goal: say('goal'), device: say('device'), budget: say('budget') }) })
       ctx.chime('ok')
     }
   }
@@ -459,7 +466,7 @@ export function askScene(ctx: SceneCtx) {
   }))
   ctx.onCleanup(() => job?.cancel())
   par.kick()
-  if (first() >= 0) ctx.prompt(K.prompt)
+  if (first() >= 0) ctx.prompt(fill(K.prompt, { n: first() + 1 }))
 }
 
 /** A maple branch reaching in over the water from the left edge, below the header: out of focus, close to the lens,

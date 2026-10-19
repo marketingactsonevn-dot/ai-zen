@@ -1,14 +1,14 @@
 {
   "id": 39,
-  "kicker": "Học xong vườn người, về trồng vườn mình.",
-  "summary": "AI là khu vườn chung — còn cách bạn chăm nó là khu vườn riêng.",
+  "kicker": "Đến lượt bạn: chọn đồ nghề và lộ trình 30 ngày cho riêng mình.",
+  "summary": "Công cụ AI ai cũng dùng được; khác biệt là cách bạn giao việc, kiểm chứng và tập mỗi ngày.",
   "quiz": {
     "q": "Bạn mới bắt đầu, dùng laptop thường, chưa muốn tốn tiền. Bước đầu hợp lý nhất là gì?",
     "options": [
-      "Mua máy thật mạnh để chạy AI trên máy",
-      "Dùng bản miễn phí của một trợ lý chat, tập giao việc rõ và kiểm chứng",
-      "Đăng ký thật nhiều nền tảng cùng lúc",
-      "Chờ AI hoàn hảo rồi mới học"
+      "Trả phí gói cao nhất của một công cụ tạo ảnh, video",
+      "Dùng trợ lý chat miễn phí, tập giao việc rõ",
+      "Cài AI chạy trên máy để giữ dữ liệu riêng tư",
+      "Đăng ký thử ba nền tảng AI cùng một lúc"
     ],
     "answer": 1,
     "explain": "Giao việc rõ và kiểm chứng là kỹ năng nền, dùng được với mọi công cụ. Thêm đồ nghề khi đã biết mình cần gì."
@@ -18,7 +18,7 @@
     "ask": {
       "label": "Bốn câu hỏi bên hồ",
       "art": "Nhìn gần như thẳng xuống một hồ nước lúc rạng đông: bốn viên đá bước chạy chéo qua hồ tới ngọn đèn đá bên bờ xa, dưới đáy có sỏi và bóng hai con cá koi. Mỗi viên đá khắc một câu hỏi, các câu trả lời nổi quanh đá như lá sen. Chọn một lá, lá trôi vào đá, gợn sóng lan ra và viên đá kế trồi lên khỏi mặt nước. Đủ bốn câu, khung hình lùi xa thấy cả lối và ngọn đèn bờ xa sáng lên.",
-      "prompt": "Trả lời bốn câu hỏi",
+      "prompt": "Chạm một lá sen để trả lời — câu {n}/4",
       "progress": "Câu {n}/4",
       "optionAria": "{q} — {label}",
       "change": "Đổi câu trả lời",
@@ -26,46 +26,106 @@
       "questions": [
         {
           "id": "role",
-          "q": "Bạn đang làm gì?",
+          "q": "Công việc chính của bạn là gì?",
           "options": [
-            { "id": "creative", "label": "Sáng tạo: thiết kế, video, viết" },
-            { "id": "marketing", "label": "Marketing" },
-            { "id": "sales", "label": "Bán hàng, chủ shop" },
-            { "id": "student", "label": "Học sinh, sinh viên" },
-            { "id": "dev", "label": "Lập trình" },
-            { "id": "manager", "label": "Quản lý" }
+            {
+              "id": "creative",
+              "label": "Sáng tạo: thiết kế, video, viết",
+              "say": "làm sáng tạo"
+            },
+            {
+              "id": "marketing",
+              "label": "Marketing",
+              "say": "làm marketing"
+            },
+            {
+              "id": "sales",
+              "label": "Bán hàng, chủ shop",
+              "say": "bán hàng"
+            },
+            {
+              "id": "student",
+              "label": "Học sinh, sinh viên",
+              "say": "đang đi học"
+            },
+            {
+              "id": "dev",
+              "label": "Lập trình",
+              "say": "lập trình"
+            },
+            {
+              "id": "manager",
+              "label": "Quản lý",
+              "say": "làm quản lý"
+            }
           ]
         },
         {
           "id": "goal",
           "q": "Bạn muốn AI giúp gì nhất?",
           "options": [
-            { "id": "faster", "label": "Làm nhanh hơn việc đang làm" },
-            { "id": "new", "label": "Làm được thứ mới" },
-            { "id": "understand", "label": "Hiểu để quản lý, ra quyết định" }
+            {
+              "id": "faster",
+              "label": "Làm nhanh hơn việc đang làm",
+              "say": "làm nhanh hơn việc đang làm"
+            },
+            {
+              "id": "new",
+              "label": "Làm được thứ mới",
+              "say": "làm được thứ mới"
+            },
+            {
+              "id": "understand",
+              "label": "Hiểu để quản lý, ra quyết định",
+              "say": "hiểu AI để quản lý, ra quyết định"
+            }
           ]
         },
         {
           "id": "device",
           "q": "Bạn dùng máy nào?",
           "options": [
-            { "id": "phone", "label": "Chủ yếu điện thoại" },
-            { "id": "laptop", "label": "Laptop thường" },
-            { "id": "strong", "label": "Máy mạnh: nhiều RAM, có card đồ hoạ" }
+            {
+              "id": "phone",
+              "label": "Chủ yếu điện thoại",
+              "say": "chủ yếu điện thoại"
+            },
+            {
+              "id": "laptop",
+              "label": "Laptop thường",
+              "say": "laptop thường"
+            },
+            {
+              "id": "strong",
+              "label": "Máy mạnh (máy chơi game, máy dựng phim)",
+              "say": "máy mạnh"
+            }
           ]
         },
         {
           "id": "budget",
           "q": "Ngân sách mỗi tháng?",
           "options": [
-            { "id": "free", "label": "Miễn phí" },
-            { "id": "mid", "label": "Vừa phải" },
-            { "id": "invest", "label": "Sẵn sàng đầu tư" }
+            {
+              "id": "free",
+              "label": "Chưa muốn trả tiền",
+              "say": "chưa muốn trả tiền"
+            },
+            {
+              "id": "mid",
+              "label": "Trả cho một công cụ",
+              "say": "trả cho một công cụ"
+            },
+            {
+              "id": "invest",
+              "label": "Trả cho vài công cụ",
+              "say": "trả cho vài công cụ"
+            }
           ]
         }
       ],
       "insight": {
-        "text": "Bộ đồ nghề tốt bắt đầu từ việc của bạn, không phải từ danh sách công cụ đang nổi.",
+        "text": "Bạn {role}, muốn {goal}, dùng {device}, {budget}. Giỏ đồ nghề sẽ xếp theo đúng bốn điều này.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -410,20 +470,17 @@
     },
     "enso": {
       "label": "Ensō của bạn",
-      "art": "Bình minh trên một khu vườn cát cào, nhìn từ sát mặt cát. Vẽ một vòng ensō bằng một nét, nắng bừng lên và máy quay cẩu lên trên khu vườn: mỗi trạm Vườn Trăng bạn đã ghé trồi lên thành một hòn đá trong vòng, trạm chưa ghé là một hốc cát cào đang chờ. Ở miệng vòng là con dấu son trên tờ giấy và một bọc vải furoshiki.",
-      "prompt": "Vẽ vòng ensō",
+      "art": "Bình minh trên một khu vườn cát cào, nhìn từ sát mặt cát. Vẽ một vòng ensō bằng một nét theo đường chấm, nắng bừng lên và máy quay cẩu lên trên khu vườn: mỗi trạm Vườn Trăng bạn đã ghé trồi lên thành một hòn đá trong vòng, trạm chưa ghé là một hốc cát cào đang chờ. Ở miệng vòng là tờ giấy đếm số trạm đã đi.",
+      "legend": "Ensō: vòng tròn thiền vẽ bằng một nét, cố ý để hở.",
+      "prompt": "Đặt ngón tay ở chấm son, vẽ một vòng theo đường chấm",
       "more": "Vẽ tiếp từ đây",
       "draw": "Vẽ ensō",
       "drawAria": "Vẽ vòng ensō tổng kết hành trình",
       "visited": "{n}/21 trạm Vườn Trăng đã ghé",
       "visitedAll": "{n}/39 trạm của cả hai khu vườn",
       "copied": "{n} thẻ mang về đã sao chép",
-      "exam": "Bài thi Vườn Trăng",
-      "examAria": "Làm bài thi Vườn Trăng",
-      "toolkit": "Mở Túi đồ nghề",
-      "toolkitAria": "Mở Túi đồ nghề: mọi thẻ mang về của Phần 2",
       "insight": {
-        "text": "Hành trình dưới trăng khép lại ở đây. Khu vườn tiếp theo là khu vườn bạn tự trồng, mỗi ngày một ít.",
+        "text": "Mỗi hòn đá là một trạm bạn đã đi. Hốc trống là trạm còn chờ bạn.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"

@@ -8,6 +8,7 @@ import { inkGlsl, inkStage, type InkKit, type InkLamp } from '../../ui/part2/sta
 import type { SceneCtx } from '../types'
 import { C } from './shell'
 import { fenceFlat } from './fence-flat'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { GAP, HOLES, LEAK, RR, YAW0, ang, lineThrough } from './fence-plan'
 
 /**
@@ -201,7 +202,10 @@ export function fenceScene(ctx: SceneCtx) {
   const root = h('div', { class: `t37f${tall ? ' tall' : ''}` }, host, panel, cardEl, status)
   ctx.art.append(root)
   ctx.onCleanup(onSize(ctx.art, () => void (root.style.height = `${Math.max(240, stable(ctx.art.clientHeight))}px`)))
-  ctx.prompt(K.prompt)
+  ctx.prompt(fill(K.prompt, { n: 0, total: K.layers.length }))
+  // H5 per step; after the sixth layer a faint arrow for the hidden gesture (walking round), gone once aligned
+  const g = guide(ctx)
+  let turnMark: Mark | null = null
 
   // ── colours of our own materials, read on mount and on every theme change (registered before the first yield)
   const cs = () => getComputedStyle(document.documentElement)
@@ -441,10 +445,23 @@ export function fenceScene(ctx: SceneCtx) {
       return u < 1
     })
     wave(k)
-    if (built === N && !told) {
-      told = true
-      ctx.insight(K.insight, K.detail)
+    // the insight waits for the "aha": the one gap through all six, found by walking round (audit 37-3)
+    if (built < N) ctx.prompt(fill(K.prompt, { n: built, total: N }))
+    else if (threadWant) found()
+    else if (!told) {
+      ctx.prompt(K.walk)
+      turnMark ??= g.gesture('drag-h', () => [host.clientWidth / 2, host.clientHeight * 0.86], { r: 56 })
     }
+  }
+  /** all six up and the gap seen through them: name it, then the insight */
+  function found() {
+    if (told) return
+    told = true
+    turnMark?.done()
+    turnMark = null
+    ctx.prompt(K.aligned, 'ok')
+    const t = window.setTimeout(() => ctx.insight(K.insight, K.detail), ctx.reduced ? 0 : 1600)
+    ctx.onCleanup(() => clearTimeout(t))
   }
 
   function reset(k: InkKit) {
@@ -763,7 +780,7 @@ export function fenceScene(ctx: SceneCtx) {
     top.position.set(Math.sin(YAW0 - 0.6) * 4.15, 0.02, Math.cos(YAW0 - 0.6) * 4.15)
     top.visible = false
     k.root.add(top)
-    leakTag = label(k, top, h('div', { class: 't37f-under' }, h('p', { class: 't37f-leak' }, h('span', { class: 'n' }, fill(K.leak, { n: LEAK[0] })), ' ', ctx.tag('illustration'))))
+    leakTag = label(k, top, h('div', { class: 't37f-under' }, h('p', { class: 't37f-legend' }, K.legend), h('p', { class: 't37f-leak' }, h('span', { class: 'n' }, fill(K.leak, { n: LEAK[0] })), ' ', ctx.tag('illustration'))))
 
     plan(0, true)
     syncBundles()
@@ -805,7 +822,10 @@ export function fenceScene(ctx: SceneCtx) {
         threadWant = want
         if (want) {
           status.textContent = K.aligned
-          if (built === N) ctx.chime('soft')
+          if (built === N) {
+            ctx.chime('soft')
+            found()
+          }
         }
         if (!threadRun) {
           threadRun = true

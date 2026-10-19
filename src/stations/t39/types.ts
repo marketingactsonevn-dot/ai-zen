@@ -8,7 +8,7 @@ export interface T39 extends StationContent {
   scenes: {
     ask: {
       label: string; art: string; prompt: string; progress: string; optionAria: string; change: string; privacy: string
-      questions: { id: keyof Answers; q: string; options: { id: string; label: string }[] }[]
+      questions: { id: keyof Answers; q: string; options: { id: string; label: string; say: string }[] }[]
       insight: Fact
     }
     kit: {
@@ -20,8 +20,8 @@ export interface T39 extends StationContent {
     path: { label: string; art: string; prompt: string; next: string; keys: string; stoneAria: string; wrong: string; wrongFirst: string; done: string; steps: StepPath; weekCards: string[]; insight: Fact }
     advice: { label: string; art: string; prompt: string; drop: string; legend: string; leafAria: string; group: string; stoneAria: string; perspectives: Perspectives; detail: Fact }
     enso: {
-      label: string; art: string; prompt: string; more: string; draw: string; drawAria: string; visited: string; visitedAll: string; copied: string
-      exam: string; examAria: string; toolkit: string; toolkitAria: string; insight: Fact
+      label: string; art: string; legend: string; prompt: string; more: string; draw: string; drawAria: string; visited: string; visitedAll: string; copied: string
+      insight: Fact
     }
   }
 }

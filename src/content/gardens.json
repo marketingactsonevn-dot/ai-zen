@@ -155,7 +155,7 @@
       "tagline": "Tương lai đi đâu — và bạn bắt đầu từ đâu",
       "motif": "mist",
       "stations": [
-        { "id": 37, "title": "An toàn & căn chỉnh", "teaser": "Dạy AI muốn đúng", "kind": "concept" },
+        { "id": 37, "title": "An toàn AI: để AI làm đúng ý người", "teaser": "Đúng chữ chưa chắc đúng ý", "kind": "concept" },
         { "id": 38, "title": "AGI, tương lai & nghề", "teaser": "Trong sương có nhiều ngả", "kind": "concept" },
         { "id": 39, "title": "Khu vườn của riêng bạn", "teaser": "Bộ đồ nghề và lộ trình 30 ngày", "kind": "practice" }
       ]

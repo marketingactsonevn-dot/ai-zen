@@ -232,6 +232,17 @@
   font: 500 0.95rem/1.2 var(--serif);
   color: var(--ink);
 }
+/* what the sapling and the red sparks stand for, once, where they are (audit 37-3): over the leak stamp */
+.t37f-under > p.t37f-legend {
+  top: auto;
+  bottom: 0.4rem;
+  width: 17rem;
+  white-space: normal;
+  text-align: center;
+  font: 400 italic 0.86rem/1.35 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper);
+}
 /* the leak count: an ink stamp pressed on the near sand */
 .t37f-leak .n {
   display: inline-block;
