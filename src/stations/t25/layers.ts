@@ -4,6 +4,7 @@ import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onDigit, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, moon, pine, reeds } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-25.json'
 import { broken, cursive, glyph, leaf } from './kit'
@@ -131,13 +132,31 @@ export function layersScene(ctx: SceneCtx) {
   // the layer names, etched into the glass; a sunk layer gets a small ink seal (its words stay for screen readers)
   const seal = (i: number) => s('svg', { class: 't25l-seal', viewBox: '0 0 16 16', 'aria-hidden': 'true' },
     s('path', { class: 't25l-seal-b', d: blob(8, 8, 7, 7, 2590 + i, 0.12, 8) }), s('path', { class: 't25l-seal-g', d: glyph(3.2, 3.2, 9.6, 2595 + i, 1.5) }))
-  const labs = K.layers.map((l, i) => h('div', { class: 't25l-lab' }, h('p', null, l.label, seal(i)), h('small', null, l.sub), h('span', { class: 'visually-hidden t25l-sunk', hidden: true }, K.sunk)))
+  // under each name, the line that layer teaches, etched when its pebble reaches it (audit v3 25-1: one big insight only)
+  const lines = K.layers.map((l) => {
+    const el = ctx.fact(F(l.line), 'p', 't25l-line')
+    el.hidden = true
+    return el
+  })
+  const labs = K.layers.map((l, i) => h('div', { class: 't25l-lab' }, h('p', null, l.label, seal(i)), h('small', null, l.sub), lines[i], h('span', { class: 'visually-hidden t25l-sunk', hidden: true }, K.sunk)))
+  // each pebble carries a small carved word, so it is clear which one goes to which layer
   const pebbles = K.layers.map((l, i) => h('button', { class: `t25l-pebble t25l-pebble-${i}`, type: 'button', 'aria-label': l.aria },
-    s('svg', { viewBox: '-30 -26 60 50', 'aria-hidden': 'true' })))
-  const sum = h('div', { class: 't25l-sum', hidden: true }, ctx.fact(F(K.insight), 'p'))
-  const root = frame(ctx, 't25l', K.art, K.layers.map((l) => l.insight), layout)
-  root.append(world, ...labs, ...pebbles, sum)
-  ctx.prompt(K.prompt)
+    s('svg', { viewBox: '-30 -26 60 50', 'aria-hidden': 'true' }), h('span', { class: 't25l-mark', 'aria-hidden': 'true' }, l.mark)))
+  const root = frame(ctx, 't25l', K.art, [K.insight], layout)
+  root.append(world, ...labs, ...pebbles)
+  // guidance: the next pebble's dot, a count of the layers reached, a prompt per pebble (flat → egg → heavy)
+  const gd = guide(ctx)
+  const count = gd.count(K.count, n, () => (G ? (G.land ? [G.W * 0.12, G.H * 0.06] : [G.W * 0.5, G.H * 0.04]) : [0, 0]))
+  let dot: Mark | null = null
+  function next() {
+    dot?.done()
+    dot = null
+    const k = [0, 1, 2].find((j) => !sunk.has(j))
+    if (k === undefined) return
+    dot = gd.dot(pebbles[k], { dir: [0.4, 1] })
+    ctx.prompt(K.prompts[k])
+  }
+  next()
 
   // ── animation: one loop runs the tracks (skips, tumble, the dive); asleep when none is left
   type Track = { t: number; dur: number; step(u: number): void; end(): void }
@@ -171,8 +190,9 @@ export function layersScene(ctx: SceneCtx) {
     if (!G) return
     const g = G
     const el = pebbles[i]
-    if (sunk.has(i)) return reveal(i)
+    if (sunk.has(i)) return
     sunk.add(i)
+    next()
     el.classList.add('in')
     el.setAttribute('aria-disabled', 'true')
     ctx.chime('tap')
@@ -197,6 +217,7 @@ export function layersScene(ctx: SceneCtx) {
         const k = Math.min(3, Math.floor(u * 4)), f = u * 4 - k
         const [ax, ay] = k === 0 ? fall(f) : [lerp(hops[k - 1], hops[k], f), wl - Math.sin(f * Math.PI) * H * (0.05 / k)]
         put(el, ax, ay, -8 + f * 16)
+        if (k >= 1) reveal(i) // its line as soon as it first touches the skin (no long wait on the first pebble)
         if (f > 0.97 || (k > 0 && f < 0.03)) splash(k === 0 ? x0 : hops[k], true, k)
       }, () => tracks.push(track(0.9, (u) => put(el, rest[0], lerp(wl, rest[1], ease(u)), rest[2], lerp(1, rest[3], u)), after))))
     } else if (i === 1) {
@@ -255,15 +276,19 @@ export function layersScene(ctx: SceneCtx) {
     if (script && Math.abs(x - win[0]) < win[1] * 1.1) g.append(s('path', { class: 't25l-written', d: cursive(x, wl + H * 0.012, H * (0.04 - k * 0.006), H * 0.016, 2570 + k, H * 0.0032, 0.6) }))
     fx.append(g)
   }
+  const told = new Set<number>()
   function reveal(i: number) {
+    if (told.has(i)) return
+    told.add(i)
     labs[i].querySelector<HTMLElement>('.t25l-sunk')!.hidden = false
     labs[i].classList.add('is-sunk')
+    lines[i].hidden = false
     root.classList.add(`is-sunk-${i}`) // its ghost stays on the slab
-    const l = K.layers[i]
-    ctx.insight(F(l.insight), F(l.detail))
-    if (sunk.size === n && sum.hidden) {
-      sum.hidden = false
+    count.set(told.size)
+    if (told.size === n) {
+      // all three reached: the one sentence of the slide
       ctx.chime('ok')
+      ctx.insight(F(K.insight), F(K.detail))
     }
   }
 
@@ -272,7 +297,7 @@ export function layersScene(ctx: SceneCtx) {
     let d: { id: number; x: number; y: number; ox: number; oy: number; moved: boolean } | null = null
     let box: DOMRect | null = null
     el.addEventListener('pointerdown', (e) => {
-      if (sunk.has(i)) return reveal(i)
+      if (sunk.has(i)) return
       el.setPointerCapture(e.pointerId)
       box = root.getBoundingClientRect()
       const [ox, oy] = parse(el)
@@ -344,7 +369,6 @@ export function layersScene(ctx: SceneCtx) {
     // etched on the glass at the left edge, in clear water: under the slab's foot, above the ribbon, in the mist
     const labTop = [wl + H * (land ? 0.075 : 0.05), tiers[1] + H * (land ? 0.004 : 0.004), tiers[2] + H * (land ? 0.05 : 0.045)]
     labs.forEach((l, i) => Object.assign(l.style, { left: `${f1(Math.max(16, W * 0.035))}px`, top: `${f1(labTop[i])}px` }))
-    Object.assign(sum.style, { left: `${f1(W * (land ? 0.32 : 0.1))}px`, right: `${f1(W * (land ? 0.32 : 0.1))}px`, top: `${f1(H * (land ? 0.85 : 0.8))}px` })
     job?.cancel()
     job = sliced(paint(W, H, WH, wl, tiers, land, sx0, sx1), { sync: ctx.reduced || !first })
     first = false

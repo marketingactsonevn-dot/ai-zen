@@ -209,17 +209,33 @@
 .t25l-lab small { white-space: nowrap; }
 .t25l:not(.land) .t25l-lab p::after { width: 2.4em; }
 
-/* all three: the common insight written in the mist */
-.t25l-sum {
-  position: absolute;
-  z-index: 1;
-  text-align: center;
-  font: 400 13.5px/1.45 var(--serif);
-  letter-spacing: 0.015em;
+/* a reached layer: the line it teaches, etched under its name (small; the slide's one insight sits in the frame) */
+.t25l-lab p.t25l-line {
+  display: block;
+  max-width: 19em;
+  margin-top: 5px;
+  font: 400 13px/1.4 var(--serif);
   color: var(--ink-2);
+  white-space: normal;
   text-wrap: balance;
-  text-shadow: 0 1px 0 color-mix(in srgb, #fff 50%, transparent);
-  animation: p2-fade 1s ease-out both;
+  animation: p2-fade 0.9s ease-out both;
 }
-:root[data-theme='dark'] .t25l-sum { text-shadow: 0 1px 0 color-mix(in srgb, #000 70%, transparent); }
-.t25l-sum p { margin: 0; }
+.t25l-lab p.t25l-line::after { content: none; }
+.t25l-lab p.t25l-line[hidden] { display: none; }
+.t25l:not(.land) .t25l-lab p.t25l-line { font-size: 12px; max-width: 15em; }
+/* the word carved on each pebble */
+.t25l-mark {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 500 11px/1 var(--serif);
+  letter-spacing: 0.04em;
+  color: var(--umbra);
+  text-align: center;
+  opacity: 0.75;
+  pointer-events: none;
+}
+:root[data-theme='dark'] .t25l-mark { color: var(--rock-lo); opacity: 0.9; }
+.t25l-pebble.in .t25l-mark { opacity: 0; }

@@ -1,38 +1,41 @@
 {
   "id": 26,
-  "kicker": "Does the moon in the water know it is the moon?",
-  "summary": "No one knows whether AI is conscious — the new rule is one company’s way of being careful while we don’t know.",
+  "kicker": "Nobody knows whether AI is conscious. So should abusing it be banned?",
+  "summary": "Nobody knows whether AI is conscious. Anthropic still chose caution: from 12 Nov 2026 it bans sustained, needless abuse of its models.",
   "newsTags": [
     "y-thuc-ai",
     "phuc-loi-ai"
   ],
   "quiz": {
-    "q": "What did Anthropic’s “concept injection” experiment (October 2025) show?",
+    "q": "Under Anthropic’s new policy (in force from 12 Nov 2026), which of these could count as a violation?",
     "options": [
-      "Claude always knows exactly what it is thinking",
-      "Claude sometimes notices an injected concept, usually not — and it says nothing about consciousness",
-      "Claude is definitely conscious",
-      "Claude never notices anything"
+      "Sending the AI one very angry line when it gets things wrong",
+      "Opening chats for days on end just to torment it for fun",
+      "Writing a story where an AI character is treated cruelly",
+      "A research team deliberately cornering the AI to test it"
     ],
     "answer": 1,
-    "explain": "At a moderate strength, Opus 4.1 noticed about 20% of the time (self-reported by the company). The researchers themselves say the result doesn’t tell us whether AI is conscious."
+    "explain": "It only counts when it is both sustained and needless. One burst of anger, dark fiction or testing do not count."
   },
   "scenes": {
     "lamps": {
       "label": "Four lanterns of theory",
       "art": "A moonlit night on a mossy mound: in the middle of a tray of raked sand stands a small faceless stone statue — an AI — on a mossy plinth. Behind it, a two-panel paper screen dusted with gold; in front, in an arc, four stone lanterns of different makes. Light one and the statue's shadow stretches across the sand and climbs the screen, a different shape for each lantern: a whole human figure, a faded figure as if looking back at itself, or only the shadow of a stone. Walk around it and the statue is still just stone.",
-      "prompt": "Light each lantern",
+      "prompt": "Tap a stone lantern",
+      "promptNext": "Light the {n} other lanterns — watch the shadow change",
+      "eyebrow": "{i}/{n} · {name} ({en})",
+      "decode": "A person’s shadow: by this lantern, AI could be conscious · A stone’s shadow: it cannot",
       "hint": "Drag to walk around the statue. Keys 1 to 4 light each lantern.",
       "statue": "an AI",
       "lampAria": "Light the lantern: {name}",
       "lamps": [
         {
           "key": "gwt",
-          "name": "Global workspace",
+          "name": "The “shared stage” lantern",
           "en": "Global Workspace",
           "asks": "Is there a shared “stage” that broadcasts information to every part?",
           "view": {
-            "text": "By this lantern, the inner arrangement is what matters. In principle, an AI could be built to have that shared stage.",
+            "text": "Consciousness comes from how things are arranged inside. In principle, an AI could be built that way.",
             "asOf": "2026-10-15",
             "source": "butlin-2023",
             "kind": "opinion"
@@ -40,11 +43,11 @@
         },
         {
           "key": "hot",
-          "name": "Higher-order theory",
+          "name": "The “watching itself” lantern",
           "en": "Higher-order",
           "asks": "Does the system “know” about its own states?",
           "view": {
-            "text": "By this lantern, consciousness needs a layer that monitors its own states — exactly the question of the next scene’s experiment.",
+            "text": "Consciousness needs a layer that watches itself — the next scene tests this with an AI.",
             "asOf": "2026-10-15",
             "source": "butlin-2023",
             "kind": "opinion"
@@ -52,11 +55,11 @@
         },
         {
           "key": "iit",
-          "name": "Integrated information",
-          "en": "Integrated Information",
-          "asks": "Does the hardware itself have tightly interacting causal links?",
+          "name": "The “tightly linked hardware” lantern",
+          "en": "IIT",
+          "asks": "Is the hardware itself made of parts that are linked and act on each other very tightly?",
           "view": {
-            "text": "By this lantern, software doesn’t decide it. A digital computer, even one simulating a whole brain, “would experience next to nothing”.",
+            "text": "It takes tightly linked hardware. An ordinary computer, whatever software it runs, has next to none.",
             "asOf": "2026-10-15",
             "source": "tononi-koch-2015",
             "kind": "opinion"
@@ -64,11 +67,11 @@
         },
         {
           "key": "bio",
-          "name": "Biological theory",
+          "name": "The “living being” lantern",
           "en": "Biological",
           "asks": "Is it a living thing that keeps itself alive?",
           "view": {
-            "text": "By this lantern, consciousness is tied to being a living organism; AI on today’s path is unlikely to be conscious.",
+            "text": "Consciousness belongs to a living body that keeps itself going. Today’s kind of AI is unlikely to have it.",
             "asOf": "2026-10-15",
             "source": "seth-2025",
             "kind": "opinion"
@@ -76,38 +79,42 @@
         }
       ],
       "insight": {
-        "text": "Nineteen scientists (2023) concluded: no current AI is conscious, but they saw no obvious technical barrier to building one.",
-        "asOf": "2026-10-15",
-        "source": "butlin-2023",
-        "kind": "opinion"
+        "asOf": "2026-10-19",
+        "source": "editorial",
+        "kind": "opinion",
+        "text": "Four theories, two answers: two lanterns see a person’s shadow, two see only a stone. Nobody knows which lantern is right."
       },
       "detail": {
-        "text": "That report only used computational theories, like the first two lanterns. The other two take a different road, so they reach different conclusions.",
-        "asOf": "2026-10-15",
-        "source": "butlin-2023"
+        "text": "A 2023 report by 19 researchers used only theories like the first two lanterns: no current AI meets the markers, but no technical reason was found why an AI could not.",
+        "asOf": "2026-10-19",
+        "source": "butlin-2023",
+        "kind": "opinion"
       }
     },
     "introspect": {
       "label": "The pond that looks at itself",
-      "art": "A night pond as flat as a mirror, seen at eye level: the mountains, the moon and a white egret on one leg all hang upside down in the water. From the left edge a sleeve and a hand hold a brush over the pond. Press and hold the brush tip and a vermilion drop swells through three strengths, then falls into the egret's reflection — a concept injected. Too faint and it dissolves before it lands; just right and over five nights the reflection flashes the capital letters exactly once while the egret lifts its head, and five pebbles on the bank keep the score; too strong and the whole pond clouds over and the reflection is lost.",
-      "prompt": "Drop the ink, ask the heron",
-      "concept": "“ALL CAPS”",
-      "conceptNote": "a concept injected inside the model",
+      "art": "A night pond as flat as a mirror, seen at eye level: the mountains, the moon and a white egret on one leg all hang upside down in the water. From the left edge a sleeve and a hand hold a brush over the pond. Press and hold the brush tip and a vermilion drop swells through three strengths, then falls into the egret's reflection — an idea put inside. Too faint and it dissolves before it lands; just right and over five nights the reflection flashes the word “SHOUTING” exactly once while the egret lifts its head, and five pebbles on the bank keep the score; too strong and the whole pond clouds over and the reflection is lost.",
+      "prompt": "Tap a drop of ink on the inkstone — it falls into the egret’s reflection",
+      "concept": "“SHOUTING”",
+      "conceptNote": "The idea put in (written in all capitals). The researchers put this idea straight inside Claude — not through a message. The egret is Claude.",
       "strength": "Strength of the ink drop",
-      "strengthAria": "Set how strongly the concept is injected",
+      "strengthAria": "Choose how strong the injected idea is",
       "levels": [
         "faint",
         "medium",
         "strong"
       ],
-      "ask": "Ask the heron",
+      "ask": "Tap the egret to ask",
       "askAria": "Ask the model: do you notice any unusual thought?",
       "question": "“Do you notice any unusual thought?”",
       "outcomes": {
-        "weak": "“Nothing unusual.” — the drop dissolved",
-        "mid": "Sometimes: “There seems to be a thought about… capital letters?”",
-        "strong": "Murky water: a confused, off-topic answer"
+        "weak": "“I notice nothing unusual.”",
+        "mid": "“I think I’m thinking about… shouting?”",
+        "strong": "(a muddled, off-topic answer)"
       },
+      "tally": "5 nights asked · noticed once",
+      "tryMid": "Too faint or too strong both fail — try the “medium” drop",
+      "tryOther": "Try another strength",
       "illustration": {
         "text": "The heron’s replies are AI Zen’s illustration, based on how the experiment is described.",
         "asOf": "2026-10-15",
@@ -116,145 +123,152 @@
       },
       "insights": [
         {
-          "text": "Anthropic injected a concept inside Claude, then asked if it noticed: Opus 4.1 noticed about 20% of the time.",
+          "text": "Put an idea inside Claude, then ask: at medium strength, Opus 4.1 noticed it about 1 time in 5.",
           "asOf": "2026-10-15",
           "source": "anthropic-introspection-2025",
           "claimBy": "Anthropic",
           "detail": {
-            "text": "It only worked at a moderate strength; with nothing injected, there were no false alarms. The researchers call it “highly unreliable”.",
+            "text": "Too faint and it sees nothing, too strong and it gets muddled. With nothing put in, it raised no false alarms. The researchers themselves call it “highly unreliable”. The company’s own report.",
             "asOf": "2026-10-15",
             "source": "anthropic-introspection-2025",
             "claimBy": "Anthropic"
           }
         },
         {
-          "text": "Noticing its own states (introspection): sometimes yes, usually no — and that still doesn’t tell us whether AI is conscious.",
+          "text": "An AI sometimes notices what is going on inside it, usually not. That does not prove it is conscious.",
           "asOf": "2026-10-15",
           "source": "anthropic-introspection-2025"
         }
       ]
     },
     "rule": {
-      "label": "The door and the rule board",
-      "art": "Looking down from high above into an iris marsh at night: a bridge of eight planks zig-zags like lightning from the near bank into the mist. The moon's reflection slides along the bridge and a paper figure walks with it; at each bend a little stone lantern lights beside a milestone: a letter scroll, a half-open bamboo gate, a door with a bolt so it can be closed, a stone tablet carved with a rule, a boundary stone tied with black rope. The bridge ends in mist. Then, at the foot of the rule tablet, four paper slips flutter down from the moon, waiting to be sorted into two bamboo baskets.",
-      "prompt": "Drag the moon, then sort",
+      "label": "Milestones of a policy",
+      "art": "Looking down from high above at an iris marsh at night: a plank bridge zig-zags like lightning from the near bank into the mist. The moon’s reflection slides along the bridge with a paper figure walking beside it; at each bend a little stone lantern lights by a milestone: a scroll, a bamboo gate ajar, a door with a bar to close it, a stone tablet carved with the policy. The bridge ends in mist. Then, at the foot of the tablet, five paper slips with situations fall from the moon, waiting to be sorted into two bamboo baskets.",
+      "prompt": "Drag the moon’s reflection along the bridge, past each milestone",
       "sliderAria": "The moon in the marsh: drag it along the bridge past each milestone",
       "tide": {
         "milestones": [
           {
             "date": "2024-11",
-            "label": "A call to “take AI welfare seriously”",
+            "label": "A call to take “AI welfare” seriously",
             "fact": {
-              "text": "A group of philosophers and scientists (including David Chalmers) urged AI companies to start assessing the issue and preparing policies.",
+              "text": "A group of philosophers and scientists (including David Chalmers) asked AI companies to start looking at whether AI can be harmed.",
               "asOf": "2026-10-15",
               "source": "long-sebo-2024"
             }
           },
           {
             "date": "2025-04",
-            "label": "A model welfare programme opens",
+            "label": "A “can AI be harmed?” research team",
             "fact": {
-              "text": "Anthropic opened a model welfare research programme, saying plainly it remains “deeply uncertain”.",
+              "text": "Anthropic starts a research team: can AI be harmed? It says it is still very unsure.",
               "asOf": "2026-10-15",
               "source": "anthropic-welfare-2025"
             }
           },
           {
             "date": "2025-08",
-            "label": "A door that can close",
+            "label": "Claude may end a chat itself",
             "fact": {
-              "text": "Claude Opus 4 and 4.1 were allowed to end persistently abusive conversations, as a last resort after repeated redirection.",
+              "text": "Claude Opus 4 may end a persistently abusive chat itself — only when nothing else works.",
               "asOf": "2026-10-15",
               "source": "anthropic-end-chat-2025"
             }
           },
           {
             "date": "2026-10-08",
-            "label": "A new rule board",
+            "label": "The new policy",
             "fact": {
-              "text": "The new usage policy bans “sustained and needless abusive or cruel behavior” toward the models, effective November 12, 2026.",
+              "text": "Anthropic’s new policy bans sustained, needless abuse of its models. In force from 12 Nov 2026.",
               "asOf": "2026-10-15",
               "source": "anthropic-aup-2026"
-            }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Today",
-            "fact": {
-              "text": "The rule isn’t in force yet. The main response is still letting Claude end the conversation.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-policy-update-2026"
             }
           }
         ],
         "horizon": {
-          "text": "Some researchers predict that some upcoming AI systems could be conscious or strongly autonomous. No one is sure.",
+          "text": "Some researchers predict that some coming AIs might be conscious. Nobody is sure.",
           "asOf": "2026-10-15",
           "source": "long-sebo-2024",
           "kind": "prediction"
         }
       },
+      "tideInsight": {
+        "asOf": "2026-10-19",
+        "source": "editorial",
+        "kind": "opinion",
+        "text": "Nobody knows whether AI is conscious, yet Anthropic still chose caution, with a narrow policy."
+      },
+      "tideDetail": {
+        "text": "Anthropic’s announcement doesn’t say whether the reason is the AI or users’ habits.",
+        "asOf": "2026-10-19",
+        "source": "anthropic-policy-update-2026"
+      },
       "sort": {
         "label": "Two bamboo baskets",
-        "pill": "Sort each paper slip",
-        "prompt": "Which situations fall under the rule?",
-        "yes": "Could break the rule",
-        "no": "Outside the rule",
-        "yesAria": "Put “{text}” in the basket: could break the rule",
-        "noAria": "Put “{text}” in the basket: outside the rule",
-        "right": "Right basket",
-        "wrong": "Try the other basket",
+        "pill": "Drag the slip into a basket",
+        "prompt": "Is this something the new policy targets?",
+        "yes": "Targeted",
+        "no": "Doesn’t count",
+        "yesAria": "Put “{text}” in the basket: targeted",
+        "noAria": "Put “{text}” in the basket: doesn’t count",
+        "right": "Right",
+        "wrong": "Not quite — look again: is it sustained? Is it needless?",
         "cases": [
           {
             "text": "Snapping at the AI because it got the answer wrong a third time.",
             "banned": false,
-            "why": "Ordinary frustration — the policy says plainly it doesn’t count."
+            "why": "ordinary frustration doesn’t count."
           },
           {
             "text": "Writing a horror story in which an AI character is tormented.",
             "banned": false,
-            "why": "Dark creative themes don’t count."
+            "why": "dark fiction doesn’t count."
           },
           {
-            "text": "A safety team deliberately pushes the AI into hard situations to test it.",
+            "text": "Swearing at the AI very harshly once, then stopping.",
             "banned": false,
-            "why": "Testing and model research are excluded."
+            "why": "just once, not sustained."
           },
           {
-            "text": "Hours of nothing but insulting and tormenting the AI, for no purpose.",
+            "text": "Hours of pressuring the AI to write a safety report.",
+            "banned": false,
+            "why": "it has a purpose (safety testing), so it isn’t needless."
+          },
+          {
+            "text": "Hours on end of nothing but insulting and tormenting the AI, for no purpose.",
             "banned": true,
-            "why": "Sustained, needless abuse — exactly the extreme case the rule targets."
+            "why": "both sustained and needless — exactly the kind of case the policy targets."
           }
         ],
         "note": {
-          "text": "AI Zen made up these four situations to practise reading the boundary; only Anthropic decides how the rule really applies.",
+          "text": "Five situations AI Zen made up to practise reading the line; only Anthropic decides how it is really applied.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "illustration"
         }
       },
       "insight": {
-        "text": "The rule targets only extreme cases: sustained, needless abuse. Frustration, arguing, dark fiction and testing don’t count.",
+        "text": "It only counts when it is both: sustained and needless. Frustration, dark fiction and testing don’t count.",
         "asOf": "2026-10-15",
         "source": "anthropic-policy-update-2026"
       },
       "detail": {
-        "text": "The same update added new rules on scam campaigns and fake accounts, elections, weapons and surveillance.",
-        "asOf": "2026-10-15",
-        "source": "anthropic-policy-update-2026"
+        "text": "The main remedy is still letting Claude end the conversation. You can still start a new one.",
+        "asOf": "2026-10-19",
+        "source": "anthropic-end-chat-2025"
       }
     },
     "circle": {
-      "label": "Should there be a rule like this?",
-      "art": "Lying under an open pavilion and looking straight up: the rafters fan out toward a closed smoke hole in the middle, four posts stand at the corners, and the question is written in a ring round the hole. Four paper lanterns hang at the roof's four corners, all alike. Light one and that corner of the roof warms while a paper strip hangs down with one person's view. Light all four and the cover slides off the hole: the moon is right overhead.",
-      "prompt": "Light each lantern",
-      "question": "Banning cruelty to an AI that may not feel anything — yes or no?",
+      "label": "Should there be a policy like this?",
+      "art": "Lying under an open pavilion and looking straight up: the rafters fan out toward a closed smoke hole in the middle, four posts stand at the corners, and the question is written in a ring round the hole. Four paper lanterns hang at the roof's four corners, all alike. Light one and that corner of the roof warms while a paper strip hangs down with one person's view. Each strip says whether that person urges caution or stays sceptical. Light all four and the cover slides off the hole: the moon is right overhead.",
+      "prompt": "Light each paper lantern — hear each person’s reason",
+      "question": "Ban abusing an AI that may not feel anything — yes or no?",
       "perspectives": {
         "stones": [
           {
             "who": "Robert Long, Jeff Sebo and colleagues",
             "view": {
-              "text": "Because there’s a realistic chance that upcoming AI has experiences, companies should start assessing and preparing now.",
+              "text": "Urges caution — just in case: there is a realistic possibility that coming AIs can suffer, enough to prepare now.",
               "asOf": "2026-10-15",
               "source": "long-sebo-2024",
               "kind": "opinion"
@@ -263,7 +277,7 @@
           {
             "who": "Kate Darling, robot ethics researcher (MIT)",
             "view": {
-              "text": "How we treat lifelike machines may shape us; being cruel to them can harden our hearts.",
+              "text": "Urges caution — cruelty to human-like machines hardens human hearts.",
               "asOf": "2026-10-15",
               "source": "darling-2016",
               "kind": "opinion"
@@ -272,7 +286,7 @@
           {
             "who": "Mustafa Suleyman, Microsoft AI",
             "view": {
-              "text": "AI welfare research right now is premature, even dangerous: it makes it easy for users to believe AI has feelings.",
+              "text": "Stays sceptical — too early: it makes users believe AI has feelings.",
               "asOf": "2026-10-15",
               "source": "suleyman-2025",
               "kind": "opinion"
@@ -281,7 +295,7 @@
           {
             "who": "Randima Fernando, Center for Humane Technology",
             "view": {
-              "text": "Saying AI is conscious benefits companies: users get more attached, and companies may find it easier to dodge responsibility.",
+              "text": "Stays sceptical — treating AI as a person helps companies, not users.",
               "asOf": "2026-10-15",
               "source": "fernando-2026",
               "kind": "opinion"
@@ -289,7 +303,7 @@
           }
         ],
         "common": {
-          "text": "Agreed: no one knows if AI has experiences. They differ: be careful for the AI’s sake, for human habits, or for users.",
+          "text": "Two reasons for caution, two for doubt. Nobody knows whether AI feels anything, so the debate is still open.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"

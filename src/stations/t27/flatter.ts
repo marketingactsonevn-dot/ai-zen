@@ -2,6 +2,7 @@ import { h, s } from '../../core/dom'
 import { L } from '../../core/content'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { findTakeaway, takeaway } from '../../ui/part2/takeaway'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-27.json'
 import { F, f1, lin, rad } from './ink27'
@@ -170,7 +171,7 @@ export function flatterScene(ctx: SceneCtx) {
     const handle = h('i', { class: 't27g-handle' }, h('i', { class: 't27g-cord' }))
     const el = h('button', { class: `t27g-m t27g-m${i}`, type: 'button', 'aria-label': m.aria, 'aria-pressed': 'false' },
       handle, ...rims, h('div', { class: 't27g-disc' }, back), front)
-    return { el, back, faceSvg, front }
+    return { el, back, faceSvg, front, handle }
   })
   const beam = s('svg', { class: 't27g-beam', 'aria-hidden': 'true' })
   const tray = h('div', { class: 't27g-tray' }, ...walls, h('div', { class: 't27g-topwrap' }, top), ...shadows, fold, slip, ...mirrors.map((m) => m.el))
@@ -183,6 +184,9 @@ export function flatterScene(ctx: SceneCtx) {
   // the honesty note sits outside the faded edge of the scene, on the mat below the tray
   ctx.art.append(root, note)
   ctx.prompt(K.prompt)
+  // H1: a dot on each handle until that mirror has been heard (it rides along as the mirror is lifted)
+  const gd = guide(ctx)
+  const dots: (Mark | null)[] = mirrors.map((m) => gd.dot(m.handle, { dir: [0, -1] }))
   const stable = stableHeight(ctx, [F(K.insight)])
 
   // ── layout: sizes as CSS variables; the plane is laid at 55° under a near camera ──
@@ -298,6 +302,9 @@ export function flatterScene(ctx: SceneCtx) {
     ctx.chime('soft')
     if (seen[i]) return
     seen[i] = true
+    dots[i]?.done()
+    dots[i] = null
+    if (!seen.every(Boolean)) ctx.prompt(K.promptNext) // the first one is the viewer's own pick; now the other
     if (!done && seen.every(Boolean)) {
       done = true
       root.classList.add('done')

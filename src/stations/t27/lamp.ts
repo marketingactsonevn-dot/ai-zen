@@ -409,7 +409,8 @@ export const lampScene = {
     }
 
     const def = perspectiveCircle(S.perspectives as Perspectives, {
-      label: S.label, prompt: S.prompt, detail: F(S.insight),
+      // the opening number on screen first (audit v3 27-2: it was hidden in the detail), the bright side in the detail
+      label: S.label, prompt: S.prompt, question: S.opener, detail: F(S.insight),
       place: () => ({ x: 0, y: 0 }),
       stone: (k) => stoneArt(k),
       onHear: (k) => {

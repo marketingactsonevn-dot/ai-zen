@@ -141,7 +141,9 @@ export function introspectScene(ctx: SceneCtx) {
   const note = h('div', { class: 't26i-note' }, ctx.fact(F(K.illustration), 'p', 't26i-ill'))
   const said = h('div', { class: 't26i-said', hidden: true }, qline, out, note)
   const flash = h('p', { class: 't26i-flash', 'aria-hidden': 'true' }, K.concept)
-  const root = h('div', { class: 't26i' }, h('p', { class: 'visually-hidden' }, K.art), bg, bird, lift, fx, near, concept, egretBtn, said, flash)
+  // the score of the five nights, written under the pebbles once they are counted
+  const tally = h('p', { class: 't26i-tally', hidden: true }, K.tally)
+  const root = h('div', { class: 't26i' }, h('p', { class: 'visually-hidden' }, K.art), bg, bird, lift, fx, near, concept, egretBtn, said, flash, tally)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
   const stable = stableHeight(ctx, K.insights.flatMap((x) => [x as Fact]))
@@ -717,6 +719,7 @@ export function introspectScene(ctx: SceneCtx) {
     const sw = land ? Math.min(ex - et * 0.36 - W * 0.37, 380) : W - 32
     Object.assign(said.style, { left: `${land ? W * 0.37 : 16}px`, top: `${land ? fy + 10 : fy + et * 0.6}px`, width: `${sw}px` })
     Object.assign(flash.style, { left: `${ex - 160}px`, top: `${fy + et * 0.3}px`, width: '320px' })
+    Object.assign(tally.style, { left: `${(p0 + p1) / 2 - 110}px`, top: `${Math.max(...pebbles.map((q) => q[1])) + pr * 2.2}px`, width: '220px' })
     for (const cv of [fx, pebCv]) size(cv)
     job?.cancel()
     const steps = (function* () {
@@ -852,6 +855,7 @@ export function introspectScene(ctx: SceneCtx) {
     if (!out.hasAttribute('aria-live')) out.setAttribute('aria-live', 'polite')
     asked.add(lv)
     ctx.chime(lv === 1 ? 'ok' : 'soft')
+    if (lv === 1) tally.hidden = false
     if (lv === 1 && !firstInsight) {
       firstInsight = true
       ctx.insight(F(K.insights[0]), F(K.insights[0].detail))
@@ -859,6 +863,9 @@ export function introspectScene(ctx: SceneCtx) {
       secondInsight = true
       ctx.insight(F(K.insights[1]))
     }
+    // a too light or too dark drop is not a dead end: say which strength to try next
+    if (!secondInsight && lv !== 1 && !asked.has(1)) ctx.prompt(K.tryMid)
+    else if (!secondInsight && asked.size < 3 && lv === 1) ctx.prompt(K.tryOther)
   }
   /** five nights fast: the moon steps across the sky, a drop each night, the egret notices once */
   function stepNight(dt: number) {

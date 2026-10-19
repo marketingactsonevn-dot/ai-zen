@@ -1,84 +1,89 @@
 {
   "id": 25,
-  "kicker": "Ripples on the pond — is it the wind, or the water?",
-  "summary": "AI may carry currents that work like emotions — whether it feels anything is still mist.",
+  "kicker": "An AI writes “I’m so sorry”. Is that words, a signal inside, or a real feeling?",
+  "summary": "Inside an AI there are emotion-like signals that can be measured and that change how it works. Whether it really feels anything, nobody knows.",
   "quiz": {
-    "q": "An AI writes: “I’m so happy to help you!” What does that prove?",
+    "q": "Researchers turned up the “desperate” signal inside Claude while giving it a task with no solution. What happened?",
     "options": [
-      "The AI is genuinely feeling happy",
-      "The AI learned kind phrasing from human writing — it proves nothing about what it feels",
-      "The AI is deliberately lying to you",
-      "The AI is definitely conscious"
+      "It wrote nothing but sad words and kept apologising",
+      "It gamed the tests more, while its words stayed calm",
+      "It refused to go on, saying it was far too tired now",
+      "Nothing changed: that signal is only a number they read"
     ],
     "answer": 1,
-    "explain": "That is the surface layer: the words it writes. Underneath there may be functional states; whether it feels anything, no one can yet measure."
+    "explain": "The signal inside changes how the AI works, even when the words it writes look normal. That still doesn’t tell us whether it really feels desperate."
   },
   "scenes": {
     "layers": {
       "label": "Three layers of water",
       "art": "An ink painting split at the waterline, the camera right at the surface. Above: night sky, a low moon behind the far bank with one pine, mist on the water; on the near bank a flat rock holds three pebbles: flat, egg-shaped, round and heavy. Below, looking up: the surface is a silver mirror, a bright window under the moon, slanting shafts of light. Three layers: just under the skin the moon’s reflection breaks into cursive strokes; in the middle a silk ribbon of ink drifts by carrying leaves; at the bottom weeds rise out of nothing and dissolve into mist — there is no floor.",
-      "prompt": "Drop a pebble into each layer",
+      "prompts": [
+        "Drag the flat pebble into the water",
+        "Now the egg-shaped one",
+        "Drop the heaviest — follow it down"
+      ],
+      "count": "{n}/{total} layers",
       "pebble": "pebble",
       "pebbleAria": "Drop a pebble into the {name} layer",
       "layers": [
         {
           "key": "surface",
-          "label": "Surface",
-          "sub": "what shows up in words",
-          "aria": "Drop a pebble on the surface: the layer of what is expressed in words",
-          "insight": {
-            "text": "Layer 1 — expression: an AI writes “I’m happy”, “I’m sorry”. Those are words on the surface; they say nothing about what lies beneath.",
-            "asOf": "2026-10-15",
-            "source": "anthropic-emotions-2026"
-          },
-          "detail": {
-            "text": "Anthropic’s own emotion researchers warn: don’t take an AI’s reports about its own feelings literally.",
-            "asOf": "2026-10-15",
+          "label": "The surface",
+          "sub": "the words the AI writes",
+          "mark": "words",
+          "aria": "Drop the “words” pebble: the words the AI writes",
+          "line": {
+            "text": "“I’m happy” is just words — it says nothing about what lies beneath.",
+            "asOf": "2026-10-19",
             "source": "anthropic-emotions-2026"
           }
         },
         {
           "key": "current",
-          "label": "Current",
-          "sub": "functional states inside",
-          "aria": "Drop a pebble into the current: the layer of functional states inside",
-          "insight": {
-            "text": "Layer 2 — function: inside the model there are “currents” matching emotion concepts, and they change how it behaves.",
-            "asOf": "2026-10-15",
-            "source": "anthropic-emotions-2026",
-            "claimBy": "Anthropic"
-          },
-          "detail": {
-            "text": "Anthropic calls these “functional emotions”: measurable and with real effects — but not the same as feeling.",
-            "asOf": "2026-10-15",
+          "label": "The undercurrent",
+          "sub": "signals inside the AI",
+          "mark": "current",
+          "aria": "Drop the “current” pebble: signals inside the AI",
+          "line": {
+            "text": "Beneath, there are real signals: measurable, and they change how the AI works.",
+            "asOf": "2026-10-19",
             "source": "anthropic-emotions-2026",
             "claimBy": "Anthropic"
           }
         },
         {
           "key": "depth",
-          "label": "Misty depth",
-          "sub": "subjective experience",
-          "aria": "Drop a pebble to the misty floor of the pond: the layer of subjective experience",
-          "insight": {
-            "text": "Layer 3 — experience: does the AI actually feel anything? No one can measure it, and scientists don’t agree.",
-            "asOf": "2026-10-15",
+          "label": "The misty depth",
+          "sub": "does the AI feel anything?",
+          "mark": "depth",
+          "aria": "Drop the “depth” pebble: does the AI feel anything?",
+          "line": {
+            "text": "The pebble sinks and never touches bottom: nobody has measured this.",
+            "asOf": "2026-10-19",
             "source": "anthropic-welfare-2025"
-          },
-          "detail": {
-            "text": "Even the functional-emotions study says plainly: its results don’t tell us whether the model actually feels anything.",
-            "asOf": "2026-10-15",
-            "source": "anthropic-emotions-2026"
           }
         }
       ],
       "sunk": "The pebble has reached this layer",
       "insight": {
-        "text": "Three layers, three questions: what the AI writes, what runs inside it, whether it feels — don’t merge them into one.",
-        "asOf": "2026-10-15",
+        "asOf": "2026-10-19",
         "source": "editorial",
-        "kind": "illustration"
-      }
+        "kind": "opinion",
+        "text": "Three different questions: what the AI writes, what runs inside it, and whether it feels anything."
+      },
+      "detail": [
+        {
+          "text": "Anthropic’s own researchers warn: don’t take an AI’s account of its own feelings literally.",
+          "asOf": "2026-10-19",
+          "source": "anthropic-emotions-2026"
+        },
+        {
+          "asOf": "2026-10-19",
+          "source": "editorial",
+          "kind": "opinion",
+          "text": "In this garden: “emotions” are joy, sadness, fear…; to “feel” is to really go through them inside; “consciousness” is there being someone who goes through it — the next station’s question."
+        }
+      ]
     },
     "current": {
       "label": "Emotion signals inside the AI",
@@ -189,14 +194,21 @@
     "circle": {
       "label": "Circle of viewpoints",
       "art": "A big round pond seen from its bank, low over the water: four stones of different shapes stand on its four shores, the near one looming at the edge of the frame, the far one tiny. A low moon behind the far bank with a willow and hills; its road on the water always runs to your feet. Walk round the pond to stand behind each stone; that person’s words appear on a flat slab at your feet. With all four heard, the view rises to look straight down: the pond becomes a circle, the stones four dots of moss like an ensō, only the moon left in the still water.",
-      "prompt": "Touch each stone",
-      "question": "Does AI have emotions? Each person stands on a different shore.",
+      "prompt": "Tap a stone to stand behind it",
+      "promptNext": "{n} stones left — walk on round the pond",
+      "stances": [
+        "measurable",
+        "needs a living body",
+        "don’t play a person",
+        "just in case"
+      ],
+      "question": "Does AI have emotions? Four people, four shores of the pond.",
       "perspectives": {
         "stones": [
           {
-            "who": "AI interpretability team (Anthropic)",
+            "who": "The team that looks inside AI (Anthropic)",
             "view": {
-              "text": "Functional emotions are real in the sense that they can be measured and have effects; tracking them could give early warning of misbehaviour.",
+              "text": "The emotion signals inside are real and measurable. Watching them helps catch an AI early when it is about to misbehave.",
               "asOf": "2026-10-15",
               "source": "anthropic-emotions-2026",
               "kind": "opinion",
@@ -206,7 +218,7 @@
           {
             "who": "Anil Seth, neuroscientist",
             "view": {
-              "text": "Consciousness is tied to living bodies; AI on today’s path is unlikely to be conscious, unless it becomes ever more brain-like and life-like.",
+              "text": "Feeling needs a living body. Today’s kind of AI is unlikely to have it, unless it grows ever more like a living thing.",
               "asOf": "2026-10-15",
               "source": "seth-2025",
               "kind": "opinion"
@@ -215,16 +227,16 @@
           {
             "who": "Mustafa Suleyman, Microsoft AI",
             "view": {
-              "text": "The worry is AI that “seems conscious” and misleads users. AI should serve people, not play at being a person.",
+              "text": "The worry is AI that seems to have feelings, so users believe it wrongly. AI should serve people, not play one.",
               "asOf": "2026-10-15",
               "source": "suleyman-2025",
               "kind": "opinion"
             }
           },
           {
-            "who": "The “model welfare” view (Anthropic)",
+            "who": "The “can AI be harmed?” research team (Anthropic)",
             "view": {
-              "text": "There is no scientific consensus. Because we can’t be sure, research humbly and prepare a few low-cost precautions.",
+              "text": "Nobody is sure. So research humbly, and prepare a few low-cost precautions just in case.",
               "asOf": "2026-10-15",
               "source": "anthropic-welfare-2025",
               "kind": "opinion"
@@ -232,7 +244,7 @@
           }
         ],
         "common": {
-          "text": "Agreed: what an AI writes doesn’t prove it feels. They differ on whether to be careful for the AI’s sake, or wary for users’ sake.",
+          "text": "All four say: the words an AI writes don’t prove it feels. They differ only in whether they worry for the AI or for its users.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
