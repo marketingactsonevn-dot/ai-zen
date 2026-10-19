@@ -10,6 +10,7 @@
  *  - every station `takeaways` id (and every nested `takeaway`) exists in toolkit.json;
  *  - every station `newsTags` tag meets at least one news item;
  *  - VI and EN files carry the same news ids, card ids and exam question count.
+ * Notes (no failure): Part 2 quizzes whose right answer is also the longest option.
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -124,6 +125,19 @@ pair('news', (d) => d.items.map((x) => `${x.id}:${x.source}:${x.kind}`))
 pair('toolkit', (d) => d.cards.map((x) => `${x.id}:${x.station}:${x.type}`))
 pair('exam-2', (d) => d.questions.map((q) => `${q.station}:${q.answer}:${q.options.length}`))
 pair('glossary', (d) => d.terms.map((t) => `${t.id}:${t.station}`))
+
+// a note, not a failure (audit v2 B.6): the right answer should not give itself away by being the longest. The Part 2
+// quiz shuffles its stones, so position no longer tells; length still does until the copy is rewritten (PLAN phase 3).
+const longest = []
+for (let id = 19; id <= 39; id++) {
+  const f = `tram-${id}.json`
+  if (!has(f)) continue
+  const q = read(f).quiz
+  if (!q) continue
+  const len = q.options.map((o) => o.length)
+  if (len[q.answer] === Math.max(...len)) longest.push(id)
+}
+if (longest.length) console.log(`note: quiz right answer is the longest option in ${longest.length}/21 Part 2 stations (${longest.join(', ')})`)
 
 if (problems.length) {
   console.error(problems.join('\n'))

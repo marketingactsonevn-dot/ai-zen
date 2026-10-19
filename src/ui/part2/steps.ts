@@ -5,7 +5,7 @@ import type { Detail, SceneDef } from '../../stations/types'
 import type { StepPath, Takeaway } from './types'
 import { blob, clamp, curve, onDigit, onSize, rng, seedOf, shuffledIdx, stableHeight, stroke, type Pt } from './ink'
 import { grass, hills, mist, moon, toro, wash } from './paint'
-import { findTakeaway, takeaway } from './takeaway'
+import { findTakeaway, foldedTakeaway } from './takeaway'
 
 /** Where the path runs (px in the scene): a station may paint its own start and end (a workshop door, a gate at dawn). */
 export type PathGeo = { w: number; h: number; row: boolean; first: Pt; last: Pt; top: number; pathY: number; seed: number }
@@ -106,7 +106,7 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
           void st.el.offsetWidth // restart the shake
           st.el.classList.add('shake')
           note.className = 'p2s-note wrong'
-          note.textContent = fill(L.stepWrong, { why: steps[slot].why })
+          note.textContent = slot ? fill(L.stepWrong, { n: slot + 1, prev: steps[slot - 1].label }) : L.stepWrongFirst // where it goes, not what it is
           ctx.chime('low')
           return
         }
@@ -135,12 +135,11 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
         note.replaceChildren()
         ctx.chime('ok')
         if (card || more.length) {
-          sheet.replaceChildren(
-            h('button', { class: 'p2s-close', type: 'button', 'aria-label': L.close, onClick: () => (sheet.hidden = true) }, '×'),
-            h('p', { class: 'p2s-done' }, L.stepDone),
-            ...[card, ...more].filter((c): c is Takeaway => !!c).map((c) => takeaway(c, null, ctx.onCleanup)))
+          // folded at the end of the path: it opens when touched, not over the scene by itself (audit v3 F)
+          const fold = foldedTakeaway([card, ...more].filter((c): c is Takeaway => !!c), ctx.onCleanup)
+          sheet.replaceChildren(h('p', { class: 'p2s-done' }, L.stepDone), fold)
           sheet.hidden = false
-          ;(sheet.querySelector('.p2k-copy') as HTMLElement | null)?.focus({ preventScroll: true })
+          ;(fold.querySelector('.p2k-slip') as HTMLElement).focus({ preventScroll: true })
         }
         if (o.insight) ctx.insight(o.insight, o.detail)
         else ctx.complete()

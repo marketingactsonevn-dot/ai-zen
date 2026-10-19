@@ -75,3 +75,33 @@ export function takeaway(card: Takeaway, extra?: Node | null, onCleanup?: (fn: (
       btn,
       status))
 }
+
+/**
+ * A take-away folded into a small paper slip with a red seal (audit v3 F: no card opening over a third of the scene by
+ * itself). Touching the slip unfolds the card(s) in place; ×, Esc or touching the slip again folds them back. The caller
+ * places the returned element where the scene has room (it grows upward from its bottom edge when open).
+ */
+export function foldedTakeaway(cards: Takeaway[], onCleanup: (fn: () => void) => void): HTMLElement {
+  const title = cards.length > 1 ? `${cards[0].title} +${cards.length - 1}` : (cards[0]?.title ?? '')
+  const panel = h('div', { class: 'p2k-panel', hidden: true },
+    h('button', { class: 'p2k-x', type: 'button', 'aria-label': L.close, onClick: () => toggle(false) }, '×'),
+    ...cards.map((c) => takeaway(c, null, onCleanup)))
+  const slip = h('button', { class: 'p2k-slip', type: 'button', 'aria-expanded': 'false' },
+    s('svg', { class: 'p2k-slip-art', viewBox: '0 0 44 34', 'aria-hidden': 'true' },
+      s('path', { class: 'p2k-slip-paper', d: 'M4 6.5L35.5 3.5L40 27L8 30.5Z' }),
+      s('path', { class: 'p2k-slip-fold', d: 'M6.2 18.4L37.6 15.2' }),
+      s('rect', { class: 'p2k-slip-seal', x: 27, y: 19, width: 7, height: 8.5, rx: 0.8, transform: 'rotate(-6 30.5 23)' })),
+    h('span', { class: 'p2k-slip-text' }, h('span', { class: 'p2-eyebrow' }, L.takeaway), h('span', { class: 'p2k-slip-title' }, title)))
+  const root = h('div', { class: 'p2k-fold' }, panel, slip)
+  const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !panel.hidden && (toggle(false), slip.focus({ preventScroll: true }))
+  addEventListener('keydown', onKey)
+  onCleanup(() => removeEventListener('keydown', onKey))
+  function toggle(open = !!panel.hidden) {
+    panel.hidden = !open
+    root.classList.toggle('open', open)
+    slip.setAttribute('aria-expanded', String(open))
+    if (open) (panel.querySelector('.p2k-copy') as HTMLElement | null)?.focus({ preventScroll: true })
+  }
+  slip.addEventListener('click', () => toggle())
+  return root
+}

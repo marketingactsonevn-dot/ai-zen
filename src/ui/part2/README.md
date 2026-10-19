@@ -113,6 +113,38 @@ ctx.art.append(h('div', { style: 'position:absolute;inset:0;display:flex' }, cod
 // data: { lang: 'js', code: '…\n…', notes: [{ line: 2, text: 'Tìm tấm canvas…' }] }
 ```
 
+## 10. Khung Phần 2 (`station.ts`, audit v3 G·F) — tự động, scene chỉ khai báo
+- **Prompt (H5):** `ctx.prompt(text)` không mất khi chạm hụt; chỉ ẩn khi `ctx.insight()` / `ctx.complete()`. Gọi lại cho từng bước: chữ đổi tại chỗ. `ctx.prompt(text, 'wrong')` = phản hồi sai, nói phải làm gì (H6); `'ok'` = bước đúng.
+- **Đứng yên 6 s (H7):** khung gắn `.is-idle` lên `.scene` (mọi dấu của `guide.ts` "mời": chấm son nghiêng theo `dir`, mũi tên cử chỉ thở), nhấc prompt lên hai lần, trả lại prompt của bước đang dở, và phát sự kiện `p2:idle` trên `ctx.el` cho lời mời riêng. Chạm / phím / cuộn đặt lại. Các hẹn giờ `alive()` trong trạm chỉ còn lo chuyển động sống (hiệu năng), không phải gợi ý.
+- **Vùng chữ:** `{ label, text: 'tr', mount }` (`'tl' | 'tr' | 'bl' | 'br'`) — trên màn rộng (≥ 721 px) insight nằm ở góc đó của tranh (dải trời / nước trống đối diện hero), trên một làn sương, không phải card; phone vẫn ở chân. Hero dời chỗ thì `ctx.textZone('bl')`.
+- "Thêm một chút" của Phần 2 là "Chi tiết & nguồn" (`L.moreP2`); Phần 1 giữ nguyên.
+
+## 11. Bộ dấu hướng dẫn H1–H7 · `guide.ts`
+```ts
+import { guide } from '../../ui/part2/guide'
+const g = guide(ctx)
+const next = g.dot(lampEl, { dir: [0, -1], label: S.pull })   // H1 chấm son + vầng thở; trên phần tử HTML thì "cưỡi" theo nó (kéo đi theo)
+const way = g.track(() => [[x0, y], [x1, y]], { ticks: 5, labels: S.ticks })   // H2 rãnh có vạch + nhãn; way.set(t) khi kéo (0…1)
+const bowl = g.drop(bowlEl)                       // H3 đích viền đứt: bowl.lift(true) khi nhấc, bowl.hit() khi thả đúng
+const lit = g.count(S.countTpl, 4, [x, y])        // H4 bộ đếm khắc "{n}/{total} đèn", lit.set(2) (aria-live sau lần đổi đầu)
+const step = g.steps(S.prompts); step(0)          // H5 prompt từng bước (chữ trong JSON)
+g.wrong(S.why, el); g.ok(el)                      // H6 sai: prompt nói phải làm gì + vật lắc nhẹ; đúng: vòng rêu
+g.gesture('rotate' | 'circle' | 'drag-h' | 'drag-v' | 'swipe', el)   // cử chỉ ẩn: mũi tên cong mực mờ
+const ring = g.gesture('hold', el); ring.fill(1)  // nhấn giữ: vòng nạp (CSS transition 1.2 s)
+// mọi dấu: .at(target) dời chỗ, .done() mờ dần; target = phần tử | [x, y] px trong ctx.art | () => [x, y]; g.refresh() sau khi tự dời vật
+```
+Không vòng frame: CSS thở, `quality=low` không thở mãi, reduced motion đứng yên (vẫn thấy). Đo vị trí trong `onSize` + `refresh()`, đọc hết rồi mới ghi. Thử ở `#/tram/99/9`.
+
+## 12. Quiz Phần 2 · `quiz.ts` (khung tự dùng cho t19–39)
+Đá bước trên mặt nước dưới trăng, câu hỏi ở trời trên-trái; mỗi đáp án viết trên mặt một viên đá, đi từ gần (dưới-trái) ra xa (trên-phải), phone từ xa (trên) tới gần (dưới). **Thứ tự xáo theo câu hỏi** (ổn định), nên đáp án đúng không còn luôn là B. Đúng: ấn son đóng lên đá. Sai: đá chìm nhẹ, prompt "thử viên khác" (H6). Rê / focus: chấm son (H1); đứng yên 6 s: các đá thở (H7). Phần 1 giữ màn quiz cũ.
+`node scripts/check-content.mjs` in thêm ghi chú các trạm có đáp án đúng dài nhất (sửa câu chữ ở phase 3).
+
+## 13. Thẻ mang về gấp · `foldedTakeaway(cards, ctx.onCleanup)` (`takeaway.ts`)
+Mảnh giấy gấp có ấn son + tên thẻ; chạm mới mở thẻ tại chỗ (×, Esc, chạm lại để gấp). `stepPath` và bia t19 đã dùng; trạm tự trao thẻ thì đặt nó vào chỗ trống của tranh thay vì `takeaway()` mở sẵn.
+
+## Dấu tin cậy riêng của AI Zen
+`kind: "opinion"` + `source: "editorial"` (câu tóm của AI Zen) mang dấu ấn triện nhỏ "AI Zen tóm lại", không còn ◐ "Quan điểm"; ◐ chỉ dành cho lời của người / phe có tên (audit v2 A.8).
+
 ## Tiện ích (`ink.ts`)
 `rng(seed)`, `seedOf(text)`, `shuffledIdx(n, seed)`, `blob()`, `rock()`, `stoneArt(w, h, seed)` (đá mực có bóng, sườn tối, viền trăng), `stroke(pts, w)` (nét cọ thon), `curve()`, `p2Defs()` (gradient `url(#p2-rock|p2-shade|p2-halo|p2-mist)`), `onSize(el, fn)` (ResizeObserver + fonts), `onDigit(fn)`, `stableHeight(ctx, [insight])`, `copyText(text, el)`.
 

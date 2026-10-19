@@ -7,12 +7,12 @@ Mỗi phase: làm → `npm run build` → perf-walk (README) → `node scripts/p
 - [x] Chụp baseline Part 2 bằng `scripts/part2-shots.mjs` (giữ local, không commit ảnh nặng). *(thêm chế độ `--slides 19-39 --label baseline --quiz`: 138 scene × desk-dark/phone-light, cùng khung ảnh audit; `docs/part2-shots/slides/baseline/` nằm trong .gitignore)*
 
 ## Phase 1 · Khung chung (lợi cho cả 96 slide)
-- [ ] Sửa `src/ui/station.ts:153`: prompt không ẩn khi chạm hụt; prompt đổi theo bước (H5).
-- [ ] Bộ dấu hướng dẫn H1–H7 dùng chung (dựa trên `src/ui/hint.ts`, mẫu tốt: vầng thở 23-3, `frameHint` 36-2, cung vạch 38-2, chấm thở 36-4). Slide chỉ khai báo.
-- [ ] Hẹn giờ đứng yên 6 s → gợi ý lại thay vì chỉ tắt chuyển động (`lantern.ts:610`, `t24/kit.ts:53`, `t23/lit.ts:487`).
-- [ ] Vùng chữ định sẵn (đối diện hero); thẻ mang về thu thành vật nhỏ, chạm mới mở.
-- [ ] Màn quiz chung vẽ lại (bỏ 4 viên đá xám kiểu nút) + xáo đáp án, đáp án đúng không luôn dài nhất.
-- [ ] Nhãn tin cậy (theo audit v2).
+- [x] Sửa `src/ui/station.ts:153`: prompt không ẩn khi chạm hụt; prompt đổi theo bước (H5). *(chỉ Phần 2; `ctx.prompt(text, 'wrong'|'ok')` cho H6)*
+- [x] Bộ dấu hướng dẫn H1–H7 dùng chung (dựa trên `src/ui/hint.ts`, mẫu tốt: vầng thở 23-3, `frameHint` 36-2, cung vạch 38-2, chấm thở 36-4). Slide chỉ khai báo. *(`src/ui/part2/guide.ts`, thử ở `#/tram/99/9`; gắn vào từng slide ở phase 2/4)*
+- [x] Hẹn giờ đứng yên 6 s → gợi ý lại thay vì chỉ tắt chuyển động (`lantern.ts:610`, `t24/kit.ts:53`, `t23/lit.ts:487`). *(khung lo cho mọi scene Phần 2: `.is-idle` + prompt trở lại + sự kiện `p2:idle`; 3 hẹn giờ cũ chỉ còn lo chuyển động sống)*
+- [x] Vùng chữ định sẵn (đối diện hero); thẻ mang về thu thành vật nhỏ, chạm mới mở. *(`SceneDef.text` / `ctx.textZone`; `foldedTakeaway` trong stepPath + bia t19; khai báo vùng từng slide ở phase 4)*
+- [x] Màn quiz chung vẽ lại (bỏ 4 viên đá xám kiểu nút) + xáo đáp án, đáp án đúng không luôn dài nhất. *(`src/ui/part2/quiz.ts`; độ dài đáp án là câu chữ → phase 3, `check-content` báo 18/21)*
+- [x] Nhãn tin cậy (theo audit v2). *(câu tóm AI Zen = ấn triện "AI Zen tóm lại"; chữ dùng chung A.9 trong site.json + en)*
 
 ## Phase 2 · 30 slide P1 (dạy sai / chặn chơi)
 Theo bảng ở `docs/part2-audit/README.md` (ô **P1**). Đi theo vườn, mỗi vườn một commit:
@@ -35,3 +35,4 @@ Theo bảng ở `docs/part2-audit/README.md` (ô **P1**). Đi theo vườn, mỗ
 ## Ghi chú đo đạc (Phase 0)
 - Máy cloud không GPU, CPU chậm hơn máy gốc: perf-walk ở đây cho Phần 1 (t01–06) 23/28 lần chuyển có frame > 50 ms (máy gốc ~1/89, `docs/perf-after.md`). Ngưỡng tuyệt đối README không đo được trên máy này → mỗi phase so **tương đối** với baseline dưới, đo cùng máy.
 - Baseline Part 2 (`docs/perf-data/part2-fix-p0-baseline.json`, `--only c --stations 19-39 --passes 2`, CPU 4×): 234 lần chuyển, 213 có frame > 50 ms, frame max trung vị 167 ms, tệ nhất 1150 ms (t33), 808 long task; vào trạm trung vị 319 ms. Heap lượt 1 → 2: 19,8 → 20,4 MB (về bản đồ 19,4 → 20,2); WebGL max 1, rAF ≤ 1.
+- Sau Phase 1 (`docs/perf-data/part2-fix-p1.json`, cùng máy, cùng lệnh): 193/234 lần chuyển có frame > 50 ms (baseline 213), frame max trung vị 117 ms (167), tệ nhất 1083 ms (1150), 688 long task (808); vào trạm trung vị 212 ms (319). Heap lượt 1 → 2: 20,0 → 20,3 MB; WebGL max 1, rAF ≤ 1. Không hồi quy.

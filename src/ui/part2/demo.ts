@@ -13,6 +13,7 @@ import { inkStage } from './stage3d'
 import { diorama, nightGarden } from './depth'
 import { stoneArt } from './ink'
 import { toro } from './paint'
+import { guide } from './guide'
 import { s } from '../../core/dom'
 import type * as THREE from 'three'
 
@@ -101,6 +102,69 @@ const station: StationModule = {
           thumb: () => glint,
           onStep: (_i, t) => void (glint.style.opacity = (0.45 + 0.55 * t).toFixed(2)),
         }).mount(ctx)
+      },
+    },
+    {
+      // guide.ts H1–H7: drag the stone along the ticked groove (dot, track) into the dashed ring (drop), the count goes up;
+      // hold the lantern (hold ring) — stand still 6 s and every mark invites (.is-idle from the frame)
+      label: S.guide.label,
+      mount(ctx) {
+        const G = S.guide
+        const g = guide(ctx)
+        const step = g.steps(G.steps)
+        step(0)
+        const stone = h('div', { style: 'position:absolute;left:0;top:0;width:110px;height:70px;touch-action:none;cursor:grab' },
+          s('svg', { viewBox: '-60 -70 120 80', width: 110, height: 70, 'aria-hidden': 'true' }, stoneArt(92, 58, 7)))
+        const lamp = h('div', { style: 'position:absolute;width:70px;height:110px' }, s('svg', { viewBox: '-40 -110 80 115', width: 70, height: 110, 'aria-hidden': 'true' }, toro(0, 0, 100, false)))
+        ctx.art.append(stone, lamp)
+        let W = 0, H = 0, x = 0, a: [number, number] = [0, 0], b: [number, number] = [0, 0]
+        const put = () => (stone.style.transform = `translate(${x - 55}px, ${a[1] - 50}px)`)
+        const ro = new ResizeObserver(() => {
+          W = ctx.art.clientWidth
+          H = ctx.art.clientHeight
+          a = [W * 0.18, H * 0.62]
+          b = [W * 0.72, H * 0.62]
+          x = a[0]
+          put()
+          lamp.style.transform = `translate(${W * 0.86 - 35}px, ${H * 0.62 - 100}px)`
+          g.refresh()
+        })
+        ro.observe(ctx.art)
+        ctx.onCleanup(() => ro.disconnect())
+        const dot = g.dot(stone, { dir: [1, 0], label: G.dot })
+        const way = g.track(() => [[a[0], a[1] + 20], [b[0], b[1] + 20]], { labels: G.ticks })
+        const ring = g.drop(() => b, { w: 130, h: 80 })
+        const count = g.count(G.count, 1, () => [W * 0.45, H * 0.2])
+        const hold = g.gesture('hold', lamp, { r: 46 })
+        stone.addEventListener('pointerdown', (e) => {
+          stone.setPointerCapture(e.pointerId)
+          ring.lift(true)
+          const x0 = e.clientX - x
+          const move = (ev: PointerEvent) => {
+            x = Math.max(a[0], Math.min(b[0], ev.clientX - x0))
+            put()
+            way.set((x - a[0]) / (b[0] - a[0]))
+          }
+          const up = () => {
+            stone.removeEventListener('pointermove', move)
+            ring.lift(false)
+            if (b[0] - x < 30) {
+              ring.hit(), dot.done(), way.done(), count.set(1), g.ok(stone), step(2)
+              dot.at(lamp)
+            } else g.wrong(G.wrong, stone)
+          }
+          stone.addEventListener('pointermove', move)
+          stone.addEventListener('pointerup', up, { once: true })
+        })
+        // the ring fills by a CSS transition while pressed (no frame loop); 1.2 s held = lit
+        let held = 0
+        lamp.addEventListener('pointerdown', () => {
+          hold.fill(1)
+          held = window.setTimeout(() => (hold.done(), ctx.insight(G.insight)), 1200)
+        })
+        lamp.addEventListener('pointerup', () => (clearTimeout(held), hold.fill(0)))
+        ctx.onCleanup(() => clearTimeout(held))
+        g.gesture('rotate', () => [W * 0.18, H * 0.3], { r: 34 })
       },
     },
     {

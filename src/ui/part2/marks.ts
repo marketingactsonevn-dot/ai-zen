@@ -5,12 +5,14 @@ import { L, type Fact } from '../../core/content'
 /**
  * B.7.3 Confidence marks. In Part 2 (html[data-part="2"]) `fact()` puts one small ink mark after the sentence instead of
  * the Part 1 text tag: ● verified fact · ◐ opinion · ○ prediction · ◇ the company's own claim, not independently confirmed.
- * Illustrations and `verify: true` keep their Part 1 tags (no mark).
+ * Illustrations and `verify: true` keep their Part 1 tags (no mark). AI Zen's own reading (source `editorial`, kind opinion)
+ * gets its own seal "AI Zen tóm lại", so ◐ stays for views a named person or camp holds (audit v2 A.8).
  */
-export type Mark = 'fact' | 'opinion' | 'prediction' | 'claim'
-const ORDER: Mark[] = ['fact', 'opinion', 'prediction', 'claim']
+export type Mark = 'fact' | 'opinion' | 'prediction' | 'claim' | 'aizen'
+const ORDER: Mark[] = ['fact', 'opinion', 'prediction', 'claim', 'aizen']
 
 export function markOf(f: Fact): Mark | null {
+  if (f.kind === 'opinion' && f.source === 'editorial') return 'aizen'
   if (f.kind === 'opinion' || f.kind === 'prediction') return f.kind
   if (f.kind === 'illustration') return null
   if (f.claimBy && !f.verifiedBy) return 'claim'
@@ -25,7 +27,10 @@ export function markGlyph(m: Mark, cls = 'cmark-glyph'): SVGSVGElement {
     m === 'opinion' ? s('circle', ring) : null,
     m === 'opinion' ? s('path', { d: 'M6 1.9A4.1 4.1 0 0 0 6 10.1Z', fill: 'currentColor' }) : null,
     m === 'prediction' ? s('circle', ring) : null,
-    m === 'claim' ? s('path', { d: 'M6 1.3L10.7 6L6 10.7L1.3 6Z', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.4, 'stroke-linejoin': 'round' }) : null)
+    m === 'claim' ? s('path', { d: 'M6 1.3L10.7 6L6 10.7L1.3 6Z', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.4, 'stroke-linejoin': 'round' }) : null,
+    // the painter's seal (hanko), as on the summary ensō: AI Zen signing its own reading
+    m === 'aizen' ? s('rect', { x: 2.2, y: 1.6, width: 7.6, height: 8.8, rx: 1.2, fill: 'currentColor', transform: 'rotate(-5 6 6)' }) : null,
+    m === 'aizen' ? s('path', { d: 'M4.4 4.6h3.2M4.4 7.2h3.2', stroke: 'var(--paper)', 'stroke-width': 1, 'stroke-linecap': 'round' }) : null)
 }
 
 /** [button, popover] for a Part 2 fact, or null when it carries no mark; fact.ts wires them like its source ⓘ. */
