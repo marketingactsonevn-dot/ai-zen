@@ -4,6 +4,7 @@ import type { Fact } from '../../core/content'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onSize, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon, pine, reeds, water } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import './keeper.css'
 import { f1, live, P, parallax, reedClump, t33Defs } from './kit'
@@ -424,6 +425,9 @@ export function keeperScene(ctx: SceneCtx) {
       root.classList.add('wrote')
       reply.hidden = false
       ctx.prompt(K.promptMoon)
+      // H1: the dot leaves the chime for the moon, leaning along its road toward the morning
+      dot?.done()
+      dot = g.dot(moonBtn, { dir: [1, -0.3] })
       moonBtn.focus({ preventScroll: true })
     })
   }
@@ -434,8 +438,13 @@ export function keeperScene(ctx: SceneCtx) {
   function morning() {
     dawn = true
     root.classList.add('dawn')
+    dot?.done()
+    dot = null
     later(400, () => {
       ring()
+      // what the agent sends back at 07:00: a sample summary
+      reply.textContent = K.morning
+      reply.hidden = false
       if (!quick) {
         const b = chimeBtn.getBoundingClientRect(), r = root.getBoundingClientRect()
         flyer.style.left = `${f1(b.left - r.left)}px`
@@ -475,6 +484,8 @@ export function keeperScene(ctx: SceneCtx) {
     root.classList.add('reading')
     if (sound) ctx.chime('tap')
   }
+  const g = guide(ctx)
+  let dot: Mark | null = g.dot(chimeBtn, { dir: [0, 1] })
   manBtn.addEventListener('click', () => read(0))
   studyBtn.addEventListener('click', () => read(1))
 }

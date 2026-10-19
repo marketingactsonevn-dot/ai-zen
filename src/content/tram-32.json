@@ -1,22 +1,22 @@
 {
   "id": 32,
-  "kicker": "Thắp đèn trong nhà mình — không cần xin lửa hàng xóm.",
-  "summary": "AI không chỉ ở trên mây — một chiếc laptop tốt đã đủ thắp một ngọn đèn AI riêng.",
+  "kicker": "Chạy AI ngay trên máy mình — như thắp đèn trong nhà, không cần xin lửa hàng xóm.",
+  "summary": "Laptop 16 GB RAM đã chạy được model 8B bản nén — dữ liệu ở lại trên máy, không cần mạng.",
   "takeaways": [
     "t32-ram-table",
     "t32-lmstudio-start",
     "t32-ollama-commands"
   ],
   "quiz": {
-    "q": "Máy bạn có 16 GB RAM, lần đầu chạy AI trên máy. Nên thử model nào trước?",
+    "q": "Máy bạn có 16 GB RAM. Bạn cần soạn hợp đồng có thông tin khách. Cách nào hợp nhất?",
     "options": [
-      "Model 70B bản gốc, càng to càng giỏi",
-      "Model khoảng 8B, bản nén 4-bit",
-      "Model 32B bản gốc 16-bit",
-      "Tải thật nhiều model rồi chạy cùng lúc"
+      "Dán vào chatbot trên mây cho nhanh",
+      "Chạy model 8B bản nén 4-bit trên máy",
+      "Chạy model 32B bản gốc trên máy cho giỏi",
+      "Chạy model 3B bản gốc cho chắc vừa máy"
     ],
     "answer": 1,
-    "explain": "Bản 8B nén 4-bit nặng khoảng 4–5 GB, vừa bàn 16 GB và còn chỗ cho máy thở. Bản 32B hay 70B sẽ tràn bàn."
+    "explain": "Dữ liệu khách nên ở lại trên máy. Bản 8B nén nặng khoảng 4,5 GB, dưới nửa RAM; bản 32B gốc khoảng 64 GB, không chạy nổi. Bản 3B gốc vừa máy nhưng kém hơn mà nặng gần bằng."
   },
   "scenes": {
     "scale": {
@@ -120,10 +120,10 @@
     },
     "table": {
       "label": "Model vừa cái bàn",
-      "art": "Một căn phòng trải chiếu tatami trong đêm. Sau chiếc bàn trà dài, thấp là ô cửa tròn có cành thông và trăng; ánh trăng rọi một elip sáng lên mặt bàn — chỗ còn trống. Chiều dài bàn là RAM của máy bạn; một phần tư bên phải luôn dành cho bộ ấm chén (hệ điều hành, app, ngữ cảnh). Trên kệ tường là năm bó cuộn giấy buộc dây, mỗi bó một model. Đặt một bó lên bàn: vừa thì quanh nó vẫn còn ánh trăng, chật thì che hết ánh trăng và đẩy bộ ấm chén, quá to thì cuộn giấy lăn khỏi mép bàn ra chiếu. Kéo tấm ván cuối bàn để đổi RAM; vặn chiếc máy ép gỗ để nén model xuống bản 4-bit.",
-      "prompt": "Đặt model lên bàn",
+      "art": "Một căn phòng trải chiếu tatami trong đêm. Sau chiếc bàn trà dài, thấp là ô cửa tròn có cành thông và trăng; ánh trăng rọi một elip sáng lên mặt bàn — chỗ còn trống. Chiều dài bàn là RAM của máy bạn; một phần tư bên phải luôn dành cho bộ ấm chén (máy và các app đang mở). Trên kệ tường là năm bó cuộn giấy buộc dây, mỗi bó một model, bản nén 4-bit. Đặt một bó lên bàn: vừa thì quanh nó vẫn còn ánh trăng, chật thì che hết ánh trăng và đẩy bộ ấm chén, quá to thì cuộn giấy lăn khỏi mép bàn ra chiếu. Kéo tấm ván cuối bàn để đổi RAM; chạm chiếc máy ép gỗ để xem bản gốc nặng thế nào.",
+      "prompt": "Kéo một bó giấy (một model) từ kệ lên bàn",
       "aria": "Mô phỏng: đặt model lên mặt bàn RAM để xem vừa hay tràn",
-      "ramLabel": "RAM máy bạn",
+      "ramLabel": "Chiều dài bàn = RAM máy bạn",
       "ramOptions": [
         8,
         16,
@@ -132,7 +132,7 @@
       ],
       "ramText": "{n} GB",
       "bitsLabel": "Bản model",
-      "pressAria": "Máy ép: nén model xuống bản 4-bit (Q4)",
+      "pressAria": "Máy ép: chạm để đổi giữa bản nén 4-bit và bản gốc 16-bit",
       "bits": [
         {
           "id": "b16",
@@ -140,7 +140,7 @@
         },
         {
           "id": "q4",
-          "label": "Bản nén 4-bit (Q4)"
+          "label": "Bản nén 4-bit"
         }
       ],
       "models": [
@@ -193,33 +193,38 @@
       "modelAria": "Đặt model {label} ({gb} GB) lên bàn {ram} GB",
       "modelsLabel": "Kệ cuộn giấy: mỗi bó là một model, kéo hoặc chạm để đặt lên bàn",
       "rule": {
-        "text": "Quy tắc ngón tay cái của AI Zen: file model nên chiếm dưới khoảng một nửa RAM; phần còn lại cho hệ điều hành, app và ngữ cảnh.",
+        "text": "Mẹo ước nhanh của AI Zen: file model nên dưới một nửa RAM; nửa còn lại cho máy và các app đang mở.",
         "asOf": "2026-10-15",
         "source": "editorial",
-        "kind": "illustration"
+        "kind": "opinion"
       },
-      "insight": {
-        "text": "Lượng tử hoá (quantization) giống nén ảnh: bản 4-bit nhẹ khoảng 3,5 lần bản 16-bit, đổi lại mất chút độ chính xác.",
+      "detail": "Máy có card đồ hoạ rời thì xem thêm bộ nhớ riêng của card; Mac chip Apple dùng chung RAM cho mọi việc.",
+      "prompts": [
+        "Kéo bó 8B lên bàn",
+        "Kéo tấm ván cuối bàn: máy bạn bao nhiêu RAM?",
+        "Chạm máy ép để xem bản gốc nặng thế nào"
+      ],
+      "sizeDecode": "{label} = {n} tỷ tham số, cỡ của model",
+      "insightFit": {
+        "text": "Model nên chiếm dưới nửa bàn: máy 16 GB chạy thoải mái model 8B bản nén.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "insightPress": {
+        "text": "Bản nén 4-bit nhẹ hơn bản gốc khoảng 3,5 lần, chỉ kém chính xác một chút — như nén ảnh.",
         "asOf": "2026-10-15",
         "source": "t32-hf-gguf"
       },
-      "detail": {
-        "text": "Ước nhanh: số tỷ tham số × số bit ÷ 8 ≈ số GB. Ví dụ: 8B ở mức 4,5 bit ≈ 4,5 GB.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "illustration"
-      },
-      "note": "Máy có card đồ hoạ rời thì xét thêm bộ nhớ của card (VRAM); Mac Apple Silicon dùng chung RAM cho cả CPU và GPU.",
       "takeaway": "t32-ram-table"
     },
     "lamps": {
       "label": "Ba ngọn đèn",
-      "art": "Một căn phòng tối, một kệ gỗ dài chạy từ gần ra xa. Gần nhất là chiếc đèn lồng giấy có nan (LM Studio), qua lớp giấy mờ thấy cây nến và sợi bấc; giữa kệ là đèn dầu có núm đồng khêu bấc (Ollama); cuối kệ là ngọn lửa trần trong ống kính (llama.cpp) — lúc đầu là nguồn sáng duy nhất — đứng cạnh hũ dầu gốm niêm ấn GGUF. Mang lửa từ ngọn xa tới các đèn gần: ánh sáng và bóng đổ trên vách nan tre đi theo tay. Đủ ba đèn, những sợi dầu vàng nối hũ GGUF với cả ba ngọn.",
-      "prompt": "Chạm từng ngọn đèn",
+      "art": "Một căn phòng tối, một kệ gỗ dài chạy từ gần ra xa. Gần nhất là chiếc đèn lồng giấy có nan (LM Studio), qua lớp giấy mờ thấy cây nến và sợi bấc; giữa kệ là đèn dầu (Ollama); cuối kệ là ngọn lửa trần trong ống kính (llama.cpp) — lúc đầu là nguồn sáng duy nhất — đứng cạnh hũ dầu gốm niêm ấn GGUF — dầu là file model GGUF. Mang lửa từ ngọn xa tới các đèn gần: ánh sáng và bóng đổ trên vách nan tre đi theo tay. Đủ ba đèn, những sợi dầu vàng nối hũ GGUF với cả ba ngọn.",
+      "prompt": "Chạm từng đèn để mang lửa tới",
       "aria": "Ba công cụ chạy AI trên máy: LM Studio, Ollama, llama.cpp",
       "lampAria": "Thắp đèn {name}",
       "wickAria": "Núm đồng khêu bấc đèn dầu Ollama",
-      "wickHint": "Bấc còn thấp nên lửa không bắt — vặn núm đồng khêu bấc lên rồi mang lửa tới lần nữa.",
       "docLabel": "Tài liệu chính thức",
       "changeNote": "Giá & tính năng thay đổi thường xuyên — kiểm tra trang chính thức.",
       "lamps": [
@@ -234,7 +239,8 @@
             "text": "LM Studio chạy được hoàn toàn offline khi đã có model; chạy file GGUF qua llama.cpp, và MLX trên Mac Apple Silicon.",
             "asOf": "2026-10-15",
             "source": "t32-lmstudio-docs"
-          }
+          },
+          "line": "App bấm là chạy — hợp người mới"
         },
         {
           "id": "ollama",
@@ -247,7 +253,8 @@
             "text": "Ollama phục vụ model trên máy tại localhost:11434, có cả cổng kiểu OpenAI để app khác dùng lại dễ dàng.",
             "asOf": "2026-10-15",
             "source": "t32-ollama-quickstart"
-          }
+          },
+          "line": "Một dòng lệnh — hợp khi muốn nối AI với app khác"
         },
         {
           "id": "llamacpp",
@@ -266,7 +273,8 @@
             "asOf": "2026-10-15",
             "source": "t32-hf-ggml",
             "claimBy": "Hugging Face"
-          }
+          },
+          "line": "Lõi chung chạy bên trong nhiều app"
         }
       ],
       "steps": {
@@ -301,11 +309,12 @@
       "wrongHint": "Chưa tới bước này — ngọn đèn cần thứ tự.",
       "done": "Đèn đã thắp.",
       "insight": {
-        "text": "Ba ngọn đèn cùng đọc một loại dầu: LM Studio, Ollama và llama.cpp đều chạy được file model GGUF tải từ Hugging Face.",
+        "text": "Một file GGUF chạy được ở cả ba; mới bắt đầu thì chọn LM Studio.",
         "asOf": "2026-10-15",
-        "source": "t32-hf-gguf"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "Giá & tính năng thay đổi thường xuyên — luôn kiểm tra trang chính thức trước khi cài.",
+      "detail": "Tính năng đổi thường xuyên — xem trang chính thức trước khi cài.",
       "stepPrompts": [
         "Dựng đèn từ đế lên mái — mỗi tầng là một bước",
         "Đặt tầng 2: thân đèn",
@@ -330,7 +339,14 @@
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
-      }
+      },
+      "prompts": [
+        "Chạm đèn giấy để mang lửa tới",
+        "Giờ tới đèn dầu Ollama",
+        "Chạm ngọn lửa trong ống: llama.cpp"
+      ],
+      "jar": "GGUF: kiểu file model gọn, chạy được trên laptop",
+      "more": "Chi tiết"
     },
     "scroll": {
       "label": "Cuộn lệnh",
@@ -359,7 +375,11 @@
       "door": "localhost:11434",
       "doorAria": "Cửa sau localhost:11434: chạm để xem nó dùng làm gì",
       "doorNote": "App khác trên máy gõ cửa ở đây để dùng model — không cần mật khẩu API.",
-      "modelNote": "Tên và cỡ model lấy từ thư viện Ollama (10/2026) và sẽ đổi theo thời gian; tra tên mới trong thư viện Ollama trước khi chạy.",
+      "modelNote": {
+        "text": "Theo thư viện Ollama: llama3.2 nặng khoảng 2 GB, gemma3:1b khoảng 0,8 GB. Tên model đổi theo thời gian; tra tên mới trong thư viện trước khi chạy.",
+        "asOf": "2026-10-15",
+        "source": "t32-ollama-library"
+      },
       "insight": {
         "text": "Một dòng lệnh: Ollama tự tải model rồi mở khung chat ngay trên máy bạn.",
         "asOf": "2026-10-15",
@@ -375,7 +395,7 @@
     "circle": {
       "label": "Bốn hòn đá bên hồ",
       "art": "Máy quay lướt sát mặt hồ tròn dưới trăng: hồ thành một elip mảnh, bóng trăng thành con đường dài vỡ ánh chạy về phía bạn. Bốn hòn đá ngồi quanh hồ — hai hòn nhỏ ở bờ xa, hai hòn lớn ở bờ gần — mỗi hòn giữ một ngọn đèn giấy nhỏ. Chạm vào một hòn, đèn thắp và vệt sáng ấm của nó kéo dài trên nước về phía bạn; nghe đủ bốn hòn, các vệt sáng và đường trăng cùng hội về giữa hồ.",
-      "prompt": "Nghe từng hòn đá",
+      "prompt": "Chạm từng hòn đá: mỗi hòn là một góc nhìn",
       "aria": "Vòng đá góc nhìn: người làm sáng tạo, marketing nên chạy AI trên máy hay trên mây?",
       "perspectives": {
         "stones": [
@@ -417,14 +437,14 @@
           }
         ],
         "common": {
-          "text": "Đồng ý: không có lựa chọn đúng cho mọi việc. Khác nhau ở độ nhạy cảm dữ liệu, chất lượng cần có và ngân sách.",
+          "text": "Việc có dữ liệu khách thì chạy trên máy; việc cần hay nhất thì gửi lên mây.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "Nhiều người dùng cả hai: việc nhạy cảm chạy trên máy, việc cần giỏi nhất gửi lên mây — chọn có ý thức từng lần.",
+        "text": "Dùng nhiều mỗi ngày thì chạy trên máy đỡ tiền; dùng thưa thì gói trên mây có khi rẻ hơn mua máy mới.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -461,6 +481,13 @@
       "publisher": "ggml-org (GitHub)",
       "url": "https://github.com/ggml-org/llama.cpp",
       "note": "Giấy phép MIT; hỗ trợ lượng tử hoá 1,5–8 bit; chạy trên CPU, Apple Silicon, GPU NVIDIA/AMD và nhiều backend khác."
+    },
+    "t32-ollama-library": {
+      "title": "Ollama library",
+      "publisher": "Ollama",
+      "url": "https://ollama.com/library",
+      "date": "2026-10-15",
+      "note": "Trang model llama3.2 và gemma3 ghi cỡ file tải về: llama3.2 (3B) khoảng 2,0 GB, gemma3:1b khoảng 815 MB."
     }
   }
 }

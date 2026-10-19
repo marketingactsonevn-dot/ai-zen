@@ -131,8 +131,11 @@ export function repoFlat(ctx: SceneCtx, host: HTMLElement) {
   host.append(root)
   const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
 
+  const read = new Set<string>() // the choice waits until two signals have been compared
   function show(id: string) {
     const sg = K.signals.find((x) => x.id === id)!
+    read.add(id)
+    if (read.size === 2) root.classList.add('t31r-ready'), ctx.prompt(K.prompts[2])
     chips.forEach((c, k) => c.setAttribute('aria-pressed', String(K.signals[k].id === id)))
     for (const x of houses) x.val.textContent = (x.r.values as Record<string, string>)[id]
     panel.say(h('p', null, h('strong', null, sg.label), ' — ', sg.what), h('p', { class: 'visually-hidden' }, houses.map((x) => `${x.r.name}: ${(x.r.values as Record<string, string>)[id]}`).join('. ')))
@@ -140,11 +143,12 @@ export function repoFlat(ctx: SceneCtx, host: HTMLElement) {
   }
 
   function choose(r: Repo, el: HTMLElement) {
+    if (read.size < 2) return ctx.prompt(K.readFirst, 'wrong')
     for (const x of houses) x.el.classList.toggle('picked', x.el === el)
     say.say(r.trust ? K.right : h('span', { class: 'bad' }, K.wrong))
     ctx.chime(r.trust ? 'ok' : 'low')
     root.classList.add('judged')
-    if (picked) return
+    if (!r.trust || picked) return
     picked = true
     ctx.insight(K.insight as Fact, K.detail as Fact)
     sheet.show()

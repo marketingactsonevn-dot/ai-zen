@@ -134,16 +134,17 @@ export function tableScene(ctx: SceneCtx) {
   const low = ctx.quality === 'low'
   const still = low || ctx.reduced
   let ram = 16
-  let q4 = false
+  // starts at the 4-bit version: the 8B fits a 16 GB table the first time; the press shows how heavy the original is
+  let q4 = true
   let sel = -1 // the model on the table
   let placed = 0
-  let told = false
+  const told = new Set<string>()
 
   // ── state of things (animated in the stage's one loop) ──
   let Lnow = LEN(ram) // table length shown (scaled by the room on layout)
   let Lfrom = Lnow, Lto = Lnow, tL = 1
   let lenNow = 0, lenFrom = 0, lenTo = 0, tLen = 1 // bundle length on the table
-  let pressQ = 0, pressFrom = 0, pressTo = 0, tPress = 1, crank = 0
+  let pressQ = 1, pressFrom = 1, pressTo = 1, tPress = 1, crank = 0
   let spillN = 0, tSpill = 1 // rolls rolled off, their roll-out progress
   let fly: { k: number; t: number; from: [number, number, number, number, number]; back: boolean } | null = null
   let drag: { k: number; x: number; z: number } | null = null
@@ -180,7 +181,7 @@ export function tableScene(ctx: SceneCtx) {
   const ramEl = h('div', { class: 't32t-ram', role: 'slider', tabindex: '0', 'aria-label': K.ramLabel, 'aria-valuemin': '0', 'aria-valuemax': String(RAMS.length - 1) },
     ramText)
   const pressText = h('span', { class: 't32t-pressn' })
-  const pressEl = h('button', { class: 't32t-press', type: 'button', 'aria-pressed': 'false', 'aria-label': K.pressAria }, h('span', { class: 't32-wood' }, pressText))
+  const pressEl = h('button', { class: 't32t-press', type: 'button', 'aria-pressed': 'true', 'aria-label': K.pressAria }, h('span', { class: 't32-wood' }, pressText))
   const root = h('div', { class: 't32 t32t', role: 'group', 'aria-label': K.aria },
     roomCv, liveCv, airCv,
     h('div', { class: 't32-mist', 'aria-hidden': 'true' }),
@@ -1153,11 +1154,14 @@ export function tableScene(ctx: SceneCtx) {
     settle(true)
     placed++
     rule.hidden = false
+    // the steps: a bundle on the table → the table's end board (your RAM) → the press (the original's weight)
+    if (placed === 1 && step === 0) (step = 1), ctx.prompt(K.prompts[1])
     if (placed >= 3) {
       sheet.show()
-      tell()
+      tell('fit')
     }
   }
+  let step = 0
   /** the fit after a change: state on the tag, rolls off the edge, the tea set pushed when it is tight */
   function settle(fresh: boolean) {
     if (sel < 0) return
@@ -1174,7 +1178,7 @@ export function tableScene(ctx: SceneCtx) {
     if (push && nudgeRest === 0 && !still) tNudge = 0
     nudgeRest = push * 0.03
     tag.hidden = str.hidden = false
-    tag.say(h('strong', null, `${m.label} · ${fill(K.sizeText, { gb: num(gbOf(m)) })}`), h('span', null, K.states[kind]))
+    tag.say(h('strong', null, `${m.label} · ${fill(K.sizeText, { gb: num(gbOf(m)) })}`), h('span', null, K.states[kind]), h('small', { class: 't32t-decode' }, fill(K.sizeDecode, { label: m.label, n: m.params })))
     ctx.chime(kind === 'spill' ? 'low' : 'tap')
     run()
   }
@@ -1198,6 +1202,7 @@ export function tableScene(ctx: SceneCtx) {
       if (tLen === 1) lenNow = lenTo
       if (changed) settle(false)
     }
+    if (changed && step === 1) (step = 2), ctx.prompt(K.prompts[2])
     run()
   }
   function setBits(on: boolean) {
@@ -1218,13 +1223,14 @@ export function tableScene(ctx: SceneCtx) {
       settle(false)
     }
     ctx.chime('soft')
-    tell()
+    tell('press')
     run()
   }
-  function tell() {
-    if (told) return
-    told = true
-    ctx.insight(K.insight as Fact, [K.detail as Fact, K.note])
+  /** two lessons, each once, after its evidence: three bundles placed → the half-the-table rule; the press → compression */
+  function tell(what: 'fit' | 'press') {
+    if (told.has(what)) return
+    told.add(what)
+    ctx.insight((what === 'fit' ? K.insightFit : K.insightPress) as Fact, K.detail)
   }
   function labelModels() {
     K.models.forEach((m, k) => {
@@ -1443,6 +1449,6 @@ export function tableScene(ctx: SceneCtx) {
   }))
 
   setRam(RAMS.indexOf(16), false)
-  pressText.textContent = K.bits[0].label
+  pressText.textContent = K.bits[q4 ? 1 : 0].label
   ctx.prompt(K.prompt)
 }

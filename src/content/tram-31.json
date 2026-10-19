@@ -1,25 +1,29 @@
 {
   "id": 31,
-  "kicker": "Giếng của làng — ai cũng múc được, nhưng phải biết nước nào sạch.",
-  "summary": "Thế giới AI mở như một ngôi làng chung giếng — biết đọc bia giếng là biết chọn nước.",
-  "takeaways": ["t31-model-card", "t31-ask-ai-repo", "t31-safe-download"],
+  "kicker": "Hugging Face và GitHub là hai giếng chung của làng AI — ai cũng múc được, nhưng phải biết nước nào sạch.",
+  "summary": "Model lấy ở Hugging Face, mã lấy ở GitHub — đọc nguồn gốc, giấy phép và định dạng trước khi tải.",
+  "takeaways": [
+    "t31-model-card",
+    "t31-ask-ai-repo",
+    "t31-safe-download"
+  ],
   "quiz": {
-    "q": "Bạn định dùng một model tải từ Hugging Face để làm nội dung cho khách hàng. Dòng nào trên model card cần đọc trước?",
+    "q": "Bạn thấy hai bản của cùng một model: một của tác giả gốc, file .gguf, giấy phép rõ; một do người lạ đăng lại, file .pkl, nhiều lượt tải hơn. Chọn bản nào?",
     "options": [
-      "Lượt tải tháng trước",
-      "Giấy phép (license)",
-      "Số tham số",
-      "Ảnh đại diện của tác giả"
+      "Bản nhiều lượt tải hơn",
+      "Bản của tác giả gốc, file .gguf",
+      "Bản người lạ, vì đã nén sẵn cho nhẹ",
+      "Tải cả hai, chạy thử bản nào nhanh hơn"
     ],
     "answer": 1,
-    "explain": "Giấy phép quyết định bạn được dùng thương mại, sửa, chia sẻ tới đâu. Lượt tải chỉ nói model phổ biến, không nói bạn được phép dùng."
+    "explain": "Lượt tải không chứng minh an toàn. File .pkl có thể chạy mã ngay khi mở; bản gốc có giấy phép rõ là lựa chọn an toàn hơn."
   },
   "scenes": {
     "wells": {
       "label": "Hai cái giếng",
-      "art": "Đêm trăng ở đầu làng: hai miệng giếng đá phủ rêu đứng cạnh nhau trên sân đá, chung một xà ròng rọc bằng tre có đèn lồng treo ở hai đầu. Nước giếng trái lấp lánh những dòng chữ mã; giếng phải chứa những hũ sành dán nhãn. Chiếc gàu tre treo ở giữa phía trước, buộc thẻ giấy ghi món cần thả.",
-      "prompt": "Thả gàu đúng giếng",
-      "aria": "Hai cái giếng: GitHub và Hugging Face. Đưa từng món về đúng giếng",
+      "art": "Đêm trăng ở đầu làng: hai miệng giếng đá phủ rêu đứng cạnh nhau trên sân đá, chung một xà ròng rọc bằng tre có đèn lồng treo ở hai đầu. Giếng trái là GitHub, nước lấp lánh những dòng chữ mã; giếng phải là Hugging Face, chứa những hũ sành dán nhãn — model và dữ liệu. Chiếc gàu tre treo ở giữa phía trước, buộc thẻ giấy ghi điều bạn cần.",
+      "prompt": "Kéo gàu thả vào giếng có thứ bạn cần",
+      "aria": "Hai cái giếng: GitHub và Hugging Face. Thả gàu vào giếng có thứ bạn cần",
       "wells": [
         {
           "id": "github",
@@ -35,39 +39,80 @@
         }
       ],
       "items": [
-        { "id": "app", "label": "Mã nguồn một app", "tag": "app", "well": "github", "aria": "Mã nguồn một app" },
-        { "id": "weights", "label": "File model đã huấn luyện", "tag": "file model", "well": "hf", "aria": "File model đã huấn luyện (trọng số)" },
-        { "id": "dataset", "label": "Bộ dữ liệu", "tag": "dữ liệu", "well": "hf", "aria": "Một bộ dữ liệu để huấn luyện hoặc kiểm thử" },
-        { "id": "space", "label": "Demo chạy thử trên web", "tag": "demo", "well": "hf", "aria": "Một bản demo chạy thử model ngay trên trình duyệt" },
-        { "id": "cli", "label": "Công cụ dòng lệnh", "tag": "dòng lệnh", "well": "github", "aria": "Mã nguồn một công cụ dòng lệnh" },
-        { "id": "site", "label": "Trang web như AI Zen", "tag": "trang web", "well": "github", "aria": "Mã nguồn một trang web như AI Zen" }
+        {
+          "id": "app",
+          "label": "Tôi muốn xem mã của một app",
+          "tag": "mã app",
+          "well": "github",
+          "aria": "Tôi muốn xem mã của một app"
+        },
+        {
+          "id": "weights",
+          "label": "Tôi muốn tải một model về máy",
+          "tag": "file model",
+          "well": "hf",
+          "aria": "Tôi muốn tải một model về máy"
+        },
+        {
+          "id": "dataset",
+          "label": "Tôi cần bộ ảnh mẫu để thử",
+          "tag": "bộ dữ liệu",
+          "well": "hf",
+          "aria": "Tôi cần bộ ảnh mẫu để thử"
+        },
+        {
+          "id": "space",
+          "label": "Tôi muốn thử model ngay trên web",
+          "tag": "bản chạy thử",
+          "well": "hf",
+          "aria": "Tôi muốn thử model ngay trên web"
+        },
+        {
+          "id": "cli",
+          "label": "Tôi muốn cài một công cụ dòng lệnh",
+          "tag": "công cụ",
+          "well": "github",
+          "aria": "Tôi muốn cài một công cụ dòng lệnh"
+        },
+        {
+          "id": "site",
+          "label": "Tôi muốn xem mã một trang web",
+          "tag": "mã trang web",
+          "well": "github",
+          "aria": "Tôi muốn xem mã một trang web"
+        }
       ],
-      "itemAria": "Thả “{item}” vào giếng {well}",
+      "itemAria": "Thả gàu “{item}” vào giếng {well}",
       "right": "Đúng giếng.",
-      "wrong": "Món này thường nằm ở giếng bên kia.",
-      "done": "Đủ cả sáu món.",
+      "wrong": "Giếng này không có thứ bạn cần.",
+      "done": "Đủ cả sáu nhu cầu.",
       "insight": {
-        "text": "Hugging Face là giếng chung cho model, bộ dữ liệu và bản chạy thử (demo) — hầu hết công khai, ai cũng tải được.",
+        "text": "GitHub giữ mã nguồn của app và công cụ; Hugging Face giữ model, dữ liệu và bản chạy thử.",
         "asOf": "2026-10-15",
         "source": "t31-hf-hub"
       },
       "detail": {
-        "text": "GitHub là giếng của mã nguồn: mỗi kho (repository) chứa code, file và lịch sử thay đổi của từng file.",
+        "text": "Ranh giới không tuyệt đối: GitHub cũng có file tải về, Hugging Face cũng có code. Cần model thì vào Hugging Face trước.",
         "asOf": "2026-10-15",
         "source": "t31-gh-repos"
       },
-      "note": "Ranh giới không tuyệt đối: GitHub cũng có file tải về, Hugging Face cũng chứa code. Nhớ thế này là đủ để bắt đầu."
+      "wrongIn": {
+        "github": "Giếng này chỉ có mã nguồn, không có file model hay dữ liệu.",
+        "hf": "Giếng này chứa model và dữ liệu, không chứa mã app."
+      },
+      "next": "Nhu cầu tiếp theo — kéo gàu tới giếng có thứ đó",
+      "count": "{n}/{total}"
     },
     "depth": {
       "label": "Giếng sâu dần",
-      "art": "Một giếng cổ bổ dọc từ miệng xuống đáy, treo như một bức tranh cuộn: miệng giếng tròn mở ra trời trăng, một nón ánh trăng rơi xuống lòng giếng, các hàng đá cong theo vách, ngoài vết cắt là các lớp đất. Cột nước trong giếng dâng theo năm tháng; mỗi mốc là một viên đá nhô khỏi vách, ngày khắc bên cạnh. Trên mặt nước hôm nay là sương.",
-      "prompt": "Kéo trăng qua các năm",
+      "art": "Một giếng cổ bổ dọc từ miệng xuống đáy, treo như một bức tranh cuộn: miệng giếng tròn mở ra trời trăng, một nón ánh trăng rơi xuống lòng giếng, các hàng đá cong theo vách, ngoài vết cắt là các lớp đất. Cột nước trong giếng dâng theo năm tháng; mỗi mốc là một viên đá nhô khỏi vách, ngày khắc bên cạnh. Kéo bóng trăng trên mặt nước lên để nước dâng qua các mốc.",
+      "prompt": "Kéo bóng trăng trên mặt nước lên",
       "aria": "Giếng sâu dần: số model công khai trên Hugging Face qua các năm. Kéo bóng trăng trên mặt nước lên, hoặc dùng phím mũi tên lên xuống",
       "tide": {
         "milestones": [
           {
             "date": "09/2024",
-            "label": "Một triệu model",
+            "label": "1 triệu model",
             "fact": {
               "text": "Tháng 9/2024, đồng sáng lập Hugging Face Clément Delangue công bố kho vượt 1 triệu model công khai.",
               "asOf": "2026-10-15",
@@ -77,25 +122,25 @@
           },
           {
             "date": "02/2026",
-            "label": "llama.cpp về chung nhà",
+            "label": "Lõi chạy AI trên máy về chung nhà",
             "fact": {
-              "text": "20/2/2026: đội ggml, tác giả llama.cpp — lõi chạy AI trên máy cá nhân — gia nhập Hugging Face; hai bên nói dự án vẫn mã nguồn mở.",
+              "text": "20/2/2026: nhóm làm ra lõi chạy AI ngay trên máy cá nhân (llama.cpp, gặp lại ở trạm sau) gia nhập Hugging Face; hai bên nói dự án vẫn mở.",
               "asOf": "2026-10-15",
               "source": "t31-hf-ggml",
               "claimBy": "Hugging Face"
             }
           },
           {
-            "date": "15/10/2026",
-            "label": "Hôm nay",
+            "date": "10/2026",
+            "label": "Hơn 3 triệu model",
             "fact": {
-              "text": "Trang Models của Hugging Face hiện hơn 3,15 triệu model công khai; hơn 211 nghìn model có file GGUF để chạy trên máy.",
+              "text": "Trang Models của Hugging Face ngày 15/10/2026 đếm hơn 3 triệu model công khai.",
               "asOf": "2026-10-15",
               "source": "t31-hf-models"
             },
             "compare": {
               "before": "1 triệu",
-              "after": "3,16 triệu",
+              "after": "hơn 3 triệu",
               "ratio": 3.16,
               "beforeLabel": "09/2024",
               "afterLabel": "10/2026"
@@ -103,23 +148,27 @@
           }
         ],
         "horizon": {
-          "text": "Giếng có lẽ còn sâu thêm mỗi năm; biết chọn đúng một model sẽ quý hơn biết tên nhiều model.",
+          "text": "Giếng có lẽ còn sâu thêm mỗi năm; biết lọc sẽ quý hơn biết tên nhiều model.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "prediction"
         }
       },
       "insight": {
-        "text": "Hôm nay kho Hugging Face có hơn 3,15 triệu model công khai — gấp ba mốc 1 triệu của tháng 9/2024.",
+        "text": "Hơn 3 triệu model, không ai xem hết — điều cần học là cách lọc.",
         "asOf": "2026-10-15",
         "source": "t31-hf-models"
       },
-      "detail": "Nhiều lựa chọn hơn cũng có nghĩa nhiều nước đục hơn. Kỹ năng cần có: đọc bia giếng — cảnh tiếp theo."
+      "detail": {
+        "text": "Trang Models của Hugging Face ngày 15/10/2026 đếm 3.156.130 model công khai; con số đổi hằng ngày.",
+        "asOf": "2026-10-15",
+        "source": "t31-hf-models"
+      }
     },
     "card": {
       "label": "Đọc bia giếng",
       "art": "Bên giếng dựng một tấm bia đá thấp phủ rêu, nhìn chéo ba phần tư. Một tờ giấy dó ẩm buộc dây áp lên mặt bia, che kín sáu dòng chữ khắc. Chấm bông mực lên giấy: mực chỉ bám chỗ đá nổi, nên từng dòng khắc hiện trắng trên nền mực. Dưới chân bia là nghiên mực và một vũng nước soi bóng bia cùng vầng trăng.",
-      "prompt": "Chấm mực lên tờ giấy",
+      "prompt": "Chấm mực lên tờ giấy để đọc từng dòng khắc",
       "aria": "Model card giả lập: sáu dòng cần đọc trước khi tải một model",
       "mock": "Model giả lập để học, không có thật",
       "model": "lang-mau / vuon-trang-8B-instruct-GGUF",
@@ -135,7 +184,7 @@
           "id": "params",
           "label": "Số tham số",
           "value": "8B — khoảng 8 tỷ tham số",
-          "read": "Số càng lớn thường càng giỏi nhưng càng nặng. Laptop phổ thông hợp các model khoảng 1B–14B (xem trạm sau)."
+          "read": "8B: 8 tỷ tham số — con số cho biết model to cỡ nào; càng to càng nặng máy."
         },
         {
           "id": "license",
@@ -147,7 +196,7 @@
           "id": "format",
           "label": "Định dạng file",
           "value": "GGUF · Q4_K_M",
-          "read": "GGUF chạy được bằng LM Studio, Ollama, llama.cpp. “Q4” là bản nén 4-bit, nhẹ hơn nhiều so với bản gốc."
+          "read": "GGUF, bản nén 4-bit: kiểu file gọn, chạy được trên laptop."
         },
         {
           "id": "downloads",
@@ -163,31 +212,58 @@
         }
       ],
       "insight": {
-        "text": "Thẻ mô tả model (model card) đi kèm mỗi model: mục đích, giới hạn, dữ liệu huấn luyện, kết quả đánh giá.",
+        "text": "Đọc xong 6 dòng là biết: ai làm, có vừa máy không, được dùng vào việc gì.",
         "asOf": "2026-10-15",
-        "source": "t31-hf-modelcards"
+        "source": "editorial",
+        "kind": "opinion"
       },
       "detail": {
-        "text": "Giấy phép hiện ngay trên trang model; nếu ghi “other”, tác giả phải kèm tên và đường dẫn tới điều khoản riêng.",
+        "text": "Giấy phép “other” nghĩa là tác giả tự đặt điều khoản; mở đường dẫn ra đọc trước khi dùng cho khách hàng.",
         "asOf": "2026-10-15",
         "source": "t31-hf-modelcards"
       },
-      "takeaway": "t31-model-card"
+      "takeaway": "t31-model-card",
+      "next": "Chấm dòng tiếp theo",
+      "decode": "Tấm bia này là model card — trang giới thiệu đi kèm model trên Hugging Face."
     },
     "repo": {
       "label": "Hai mái nhà",
-      "art": "Một đảo sỏi cào tròn giữa nước đen dưới trăng, hai ngôi nhà gỗ mái cong nhìn từ trước giống hệt nhau. Nhà trái ánh đèn tràn qua giấy dó xuống sỏi, đổ một khối bóng sâu, có lối đá băng qua nước tới những xóm nhà trên đồi xa. Nhà phải chỉ là một mặt tiền mỏng chống bằng hai sào tre: đi vòng ra sau thì thấy rỗng không, mạng nhện và một bọc vải không nhãn.",
-      "prompt": "Đoán nhà nào đáng tin",
+      "art": "Một đảo sỏi cào tròn giữa nước đen dưới trăng, hai ngôi nhà gỗ mái cong nhìn từ trước giống hệt nhau — mỗi nhà là một repo (kho mã) trên GitHub. Quanh mỗi nhà có những vật kể chuyện: cuộn giấy giới thiệu, đèn mái, lối mòn, hòm thư, bảng tin, biển cổng. Đi vòng ra sau để so hai nhà, rồi thắp đèn cổng nhà bạn tin.",
+      "prompt": "Đi vòng ra sau hai ngôi nhà, rồi thắp đèn nhà thật",
       "aria": "So sánh hai repo GitHub qua sáu tín hiệu, rồi chọn repo đáng tin",
       "hint": "Kéo để đi vòng đảo, hoặc dùng phím mũi tên khi khung đang được chọn; bánh xe hoặc chụm hai ngón để lại gần. Chạm một vật để đọc tín hiệu ở cả hai nhà; thắp đèn cổng để chọn nhà.",
       "signalAria": "Tín hiệu {label}: xem ở cả hai nhà",
       "signals": [
-        { "id": "readme", "label": "README", "what": "Trang giới thiệu: làm gì, cài thế nào, ví dụ dùng." },
-        { "id": "stars", "label": "Stars", "what": "Số người đánh dấu quan tâm: độ phổ biến, không phải bảo chứng an toàn." },
-        { "id": "forks", "label": "Fork", "what": "Bản sao người khác tạo ra để sửa riêng. Repo giả mạo thường là một bản sao đổi tên." },
-        { "id": "issues", "label": "Issues", "what": "Nơi báo lỗi, hỏi đáp. Có người trả lời gần đây là dấu hiệu dự án còn được chăm." },
-        { "id": "releases", "label": "Releases", "what": "Các bản phát hành có ghi chú. Tải từ đây chắc hơn lấy file trôi nổi." },
-        { "id": "license", "label": "License", "what": "Không có license thì mặc định bạn không được sao chép, sửa, phân phối." }
+        {
+          "id": "readme",
+          "label": "README",
+          "what": "Trang giới thiệu: làm gì, cài thế nào, ví dụ dùng."
+        },
+        {
+          "id": "stars",
+          "label": "Stars",
+          "what": "Số người đánh dấu quan tâm: độ phổ biến, không phải bảo chứng an toàn."
+        },
+        {
+          "id": "forks",
+          "label": "Fork",
+          "what": "Bản sao người khác tạo ra để sửa riêng. Repo giả mạo thường là một bản sao đổi tên."
+        },
+        {
+          "id": "issues",
+          "label": "Issues",
+          "what": "Nơi báo lỗi, hỏi đáp. Có người trả lời gần đây là dấu hiệu dự án còn được chăm."
+        },
+        {
+          "id": "releases",
+          "label": "Releases",
+          "what": "Các bản phát hành có ghi chú. Tải từ đây chắc hơn lấy file trôi nổi."
+        },
+        {
+          "id": "license",
+          "label": "License",
+          "what": "Không có license thì mặc định bạn không được sao chép, sửa, phân phối."
+        }
       ],
       "repos": [
         {
@@ -200,7 +276,7 @@
             "forks": "640",
             "issues": "Trả lời 2 ngày trước",
             "releases": "v2.3 · 3 tuần trước",
-            "license": "MIT"
+            "license": "MIT – giấy phép mở: được dùng, sửa, bán lại, chỉ cần ghi tên tác giả"
           }
         },
         {
@@ -217,13 +293,13 @@
           }
         }
       ],
-      "mock": "Hai repo giả lập để học",
+      "mock": "Hai repo giả lập để học — mỗi ngôi nhà là một repo (kho mã) trên GitHub",
       "pick": "Chọn nhà này",
       "pickAria": "Chọn repo {name} là đáng tin",
       "right": "Đúng. Bản gốc có lịch sử, có người chăm, có giấy phép rõ ràng.",
       "wrong": "Nhìn kỹ tên: “rn” đang giả làm “m”. Số sao gần bằng nhau, nhưng lịch sử và người chăm sóc thì khác hẳn.",
       "insight": {
-        "text": "Kẻ gian từng sao chép hàng loạt repo nổi tiếng trên GitHub, cài mã độc vào rồi đăng lại dưới tên giống hệt.",
+        "text": "Kẻ gian chép repo nổi tiếng, cài mã độc rồi đăng lại dưới tên gần giống — số sao không giúp bạn phân biệt.",
         "asOf": "2026-10-15",
         "source": "t31-repo-confusion"
       },
@@ -232,12 +308,18 @@
         "asOf": "2026-10-15",
         "source": "t31-gh-license"
       },
-      "takeaway": "t31-ask-ai-repo"
+      "takeaway": "t31-ask-ai-repo",
+      "prompts": [
+        "Kéo để đi vòng ra sau hai ngôi nhà",
+        "Chạm cuộn giấy, đèn, hòm thư… để so hai nhà",
+        "Thắp đèn cổng nhà bạn tin"
+      ],
+      "readFirst": "So ít nhất hai vật ở hai nhà trước đã — chạm cuộn giấy, đèn, hòm thư…"
     },
     "clean": {
       "label": "Lọc nước",
       "art": "Nhìn thấp từ bên một chiếc bát men tối: ống tre cao phía sau, nửa chìm trong sương, rót nước đục xuống sáu chậu đá bậc thang đi chéo về phía người xem, chậu càng gần càng to. Mỗi chậu chờ một viên đá lọc đánh số. Đặt đúng thứ tự thì nước trong dần; đủ sáu, bát đầy nước trong và in trọn vầng trăng.",
-      "prompt": "Xếp các lớp lọc",
+      "prompt": "Xếp sáu lớp lọc theo thứ tự bạn sẽ làm trước khi tải",
       "aria": "Lối đá từng bước: thứ tự an toàn khi tải một model hoặc một đoạn code. Chạm lần lượt hoặc dùng phím số",
       "stepAria": "Đặt bước {n}: {label}",
       "wrongHint": "Lớp này nằm sau — nước chưa qua lớp trước.",
@@ -256,7 +338,7 @@
           },
           {
             "label": "Chọn định dạng an toàn hơn",
-            "detail": "Ưu tiên safetensors hoặc GGUF; tránh file pickle (.bin, .pt, .pkl) của người lạ.",
+            "detail": "Ưu tiên file .safetensors hoặc .gguf; tránh file .pkl của người lạ — mở ra là có thể chạy mã.",
             "why": "File pickle có thể chạy mã ngay lúc được mở."
           },
           {
@@ -278,12 +360,12 @@
         "takeaway": "t31-safe-download"
       },
       "insight": {
-        "text": "File model kiểu pickle có thể chạy mã độc ngay khi được mở; hãy ưu tiên safetensors hoặc GGUF từ tác giả uy tín.",
+        "text": "Ba lớp lọc trước khi tải: đúng tác giả, đúng giấy phép, file .safetensors hoặc .gguf thay vì .pkl.",
         "asOf": "2026-10-15",
         "source": "t31-hf-pickle"
       },
       "detail": {
-        "text": "Năm 2024, hãng bảo mật JFrog tìm thấy model trên Hugging Face giấu cửa hậu, tự kích hoạt khi file pickle được nạp.",
+        "text": "Năm 2024, hãng bảo mật JFrog tìm thấy model trên Hugging Face cài sẵn mã độc, tự chạy khi file pickle được mở.",
         "asOf": "2026-10-15",
         "source": "t31-jfrog"
       },

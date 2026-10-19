@@ -1,18 +1,18 @@
 {
   "id": 32,
-  "kicker": "Light a lamp in your own house — no need to borrow fire from the neighbours.",
-  "summary": "AI doesn't only live in the cloud — a good laptop is enough to light your own AI lamp.",
+  "kicker": "Run AI right on your own machine — like lighting a lamp at home, no need to borrow fire from the neighbours.",
+  "summary": "A 16 GB laptop can already run a compressed 8B model — your data stays on the machine, no internet needed.",
   "takeaways": ["t32-ram-table", "t32-lmstudio-start", "t32-ollama-commands"],
   "quiz": {
-    "q": "Your computer has 16 GB of RAM and you're running AI on it for the first time. Which model should you try first?",
+    "q": "Your computer has 16 GB of RAM. You need to draft a contract with customer details. Which way fits best?",
     "options": [
-      "A 70B model at full size — bigger is smarter",
-      "A model of about 8B, 4-bit compressed",
-      "A 32B model at full 16-bit size",
-      "Download lots of models and run them all at once"
+      "Paste it into a cloud chatbot, it's quicker",
+      "Run an 8B 4-bit model on your machine",
+      "Run a full-size 32B model locally for quality",
+      "Run a full-size 3B model to be sure it fits"
     ],
     "answer": 1,
-    "explain": "An 8B model compressed to 4-bit weighs about 4–5 GB: it fits a 16 GB table and leaves the machine room to breathe. A 32B or 70B model would spill over."
+    "explain": "Customer data should stay on your machine. The compressed 8B weighs about 4.5 GB, under half your RAM; the full 32B is about 64 GB and won't run. The full 3B fits but is weaker and nearly as heavy."
   },
   "scenes": {
     "scale": {
@@ -57,26 +57,70 @@
     },
     "table": {
       "label": "A model that fits the table",
-      "art": "A tatami room at night. Behind a long, low tea table, a round window holds a pine bough and the moon; the moonlight throws a bright ellipse on the tabletop — the space still free. The table's length is your computer's RAM; its right quarter always belongs to the tea set (operating system, apps, context). On the wall shelf lie five tied bundles of paper scrolls, each bundle a model. Set one on the table: if it fits, moonlight still lies around it; if it is tight, it covers the moonlight and pushes the tea set; if it is too big, scrolls roll off the edge onto the mat. Slide the table's end board to change the RAM; turn the wooden press to squeeze a model down to the 4-bit version.",
-      "prompt": "Put a model on the table",
+      "art": "A tatami room at night. Behind a long, low tea table, a round window holds a pine bough and the moon; the moonlight throws a bright ellipse on the tabletop — the space still free. The table's length is your computer's RAM; its right quarter always belongs to the tea set (the system and the apps you have open). On the wall shelf lie five tied bundles of paper scrolls, each bundle a model, in its 4-bit compressed version. Set one on the table: if it fits, moonlight still lies around it; if it is tight, it covers the moonlight and pushes the tea set; if it is too big, scrolls roll off the edge onto the mat. Slide the table's end board to change the RAM; touch the wooden press to see how heavy the original is.",
+      "prompt": "Drag a bundle of scrolls (a model) from the shelf onto the table",
       "aria": "Simulation: put a model on the RAM table to see whether it fits or spills",
-      "ramLabel": "Your RAM",
-      "ramOptions": [8, 16, 32, 64],
+      "ramLabel": "Table length = your RAM",
+      "ramOptions": [
+        8,
+        16,
+        32,
+        64
+      ],
       "ramText": "{n} GB",
       "bitsLabel": "Version",
-      "pressAria": "The press: squeeze the model down to the 4-bit version (Q4)",
+      "pressAria": "The press: touch to switch between the 4-bit compressed version and the 16-bit original",
       "bits": [
-        { "id": "b16", "label": "Full 16-bit" },
-        { "id": "q4", "label": "4-bit compressed (Q4)" }
+        {
+          "id": "b16",
+          "label": "Full 16-bit"
+        },
+        {
+          "id": "q4",
+          "label": "4-bit compressed"
+        }
       ],
       "models": [
-        { "id": "3b", "label": "3B", "params": 3, "gb16": 6, "gbQ4": 1.7 },
-        { "id": "8b", "label": "8B", "params": 8, "gb16": 16, "gbQ4": 4.5 },
-        { "id": "14b", "label": "14B", "params": 14, "gb16": 28, "gbQ4": 7.9 },
-        { "id": "32b", "label": "32B", "params": 32, "gb16": 64, "gbQ4": 18 },
-        { "id": "70b", "label": "70B", "params": 70, "gb16": 140, "gbQ4": 39.4 }
+        {
+          "id": "3b",
+          "label": "3B",
+          "params": 3,
+          "gb16": 6,
+          "gbQ4": 1.7
+        },
+        {
+          "id": "8b",
+          "label": "8B",
+          "params": 8,
+          "gb16": 16,
+          "gbQ4": 4.5
+        },
+        {
+          "id": "14b",
+          "label": "14B",
+          "params": 14,
+          "gb16": 28,
+          "gbQ4": 7.9
+        },
+        {
+          "id": "32b",
+          "label": "32B",
+          "params": 32,
+          "gb16": 64,
+          "gbQ4": 18
+        },
+        {
+          "id": "70b",
+          "label": "70B",
+          "params": 70,
+          "gb16": 140,
+          "gbQ4": 39.4
+        }
       ],
-      "fitRule": { "roomy": 0.45, "tight": 0.75 },
+      "fitRule": {
+        "roomy": 0.45,
+        "tight": 0.75
+      },
       "states": {
         "roomy": "Fits — room left for other apps",
         "tight": "Tight — close some apps, keep questions short",
@@ -86,33 +130,38 @@
       "modelAria": "Put the {label} model ({gb} GB) on a {ram} GB table",
       "modelsLabel": "Scroll shelf: each bundle is a model, drag or tap it onto the table",
       "rule": {
-        "text": "AI Zen's rule of thumb: the model file should take up less than about half your RAM; the rest is for the system, apps and context.",
+        "text": "AI Zen's quick estimate: the model file should be under half your RAM; the other half is for the machine and the apps you have open.",
         "asOf": "2026-10-15",
         "source": "editorial",
-        "kind": "illustration"
+        "kind": "opinion"
       },
-      "insight": {
-        "text": "Quantization is like compressing a photo: a 4-bit version is about 3.5 times lighter than 16-bit, at the cost of a little accuracy.",
+      "detail": "If your machine has a separate graphics card, also check the card's own memory; Macs with Apple chips share one RAM for everything.",
+      "prompts": [
+        "Drag the 8B bundle onto the table",
+        "Drag the table's end board: how much RAM does your machine have?",
+        "Touch the press to see how heavy the original is"
+      ],
+      "sizeDecode": "{label} = {n} billion parameters, the model's size",
+      "insightFit": {
+        "text": "A model should take less than half the table: a 16 GB machine runs a compressed 8B model with ease.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "insightPress": {
+        "text": "The 4-bit compressed version is about 3.5 times lighter than the original and only a little less accurate — like compressing a photo.",
         "asOf": "2026-10-15",
         "source": "t32-hf-gguf"
       },
-      "detail": {
-        "text": "Quick estimate: billions of parameters × bits ÷ 8 ≈ GB. For example: 8B at 4.5 bits ≈ 4.5 GB.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "illustration"
-      },
-      "note": "With a separate graphics card, also look at the card's memory (VRAM); Apple Silicon Macs share one pool of RAM between CPU and GPU.",
       "takeaway": "t32-ram-table"
     },
     "lamps": {
       "label": "Three lamps",
-      "art": "A dark room, one long wooden shelf running away from you. Nearest, a ribbed paper lantern (LM Studio), its candle and wick showing through the paper; midway, an oil lamp with a brass knob to raise its wick (Ollama); at the far end, a bare flame in a glass chimney (llama.cpp) — at first the only light — beside a ceramic oil jar sealed GGUF. Carry fire from the far flame to the nearer lamps: the light and the shadows on the bamboo wall follow your hand. With all three lit, golden threads of oil run from the GGUF jar to every flame.",
-      "prompt": "Touch each lamp",
+      "art": "A dark room, one long wooden shelf running away from you. Nearest, a ribbed paper lantern (LM Studio), its candle and wick showing through the paper; midway, an oil lamp (Ollama); at the far end, a bare flame in a glass chimney (llama.cpp) — at first the only light — beside a ceramic oil jar sealed GGUF — the oil is a GGUF model file. Carry fire from the far flame to the nearer lamps: the light and the shadows on the bamboo wall follow your hand. With all three lit, golden threads of oil run from the GGUF jar to every flame.",
+      "prompt": "Touch each lamp to bring the fire to it",
       "aria": "Three tools for running AI on your machine: LM Studio, Ollama, llama.cpp",
       "lampAria": "Light the {name} lamp",
       "wickAria": "Brass knob that raises the Ollama lamp's wick",
-      "wickHint": "The wick is too low to catch — turn the brass knob to raise it, then bring the fire again.",
       "docLabel": "Official docs",
       "changeNote": "Prices & features change often — check the official site.",
       "lamps": [
@@ -127,7 +176,8 @@
             "text": "LM Studio can run fully offline once you have a model; it runs GGUF files through llama.cpp, and MLX on Apple Silicon Macs.",
             "asOf": "2026-10-15",
             "source": "t32-lmstudio-docs"
-          }
+          },
+          "line": "An app you click to run — good for beginners"
         },
         {
           "id": "ollama",
@@ -140,7 +190,8 @@
             "text": "Ollama serves models on your machine at localhost:11434, including an OpenAI-style endpoint that other apps can reuse easily.",
             "asOf": "2026-10-15",
             "source": "t32-ollama-quickstart"
-          }
+          },
+          "line": "One command — good for connecting AI to other apps"
         },
         {
           "id": "llamacpp",
@@ -159,7 +210,8 @@
             "asOf": "2026-10-15",
             "source": "t32-hf-ggml",
             "claimBy": "Hugging Face"
-          }
+          },
+          "line": "The shared engine inside many apps"
         }
       ],
       "steps": {
@@ -190,8 +242,18 @@
       "stepsLabel": "Lighting the first lamp",
       "stepsPrompt": "Build the lamp from base to roof — each tier is one step",
       "stepsArt": "An empty stone footing in a bed of moss under the moon; far off in the mist, your little house, its window still dark. The four parts of a stone lantern lie about — base, shaft, firebox, roof — each carved with its tier and one step. Build it from the base up to the roof and the lantern rises; once the roof is on, the firebox lights, and so does the window of the house far away.",
-      "stepPrompts": ["Build the lamp from base to roof — each tier is one step", "Place tier 2: the shaft", "Place tier 3: the firebox", "Place tier 4: the roof"],
-      "tiers": ["Base", "Shaft", "Firebox", "Roof"],
+      "stepPrompts": [
+        "Build the lamp from base to roof — each tier is one step",
+        "Place tier 2: the shaft",
+        "Place tier 3: the firebox",
+        "Place tier 4: the roof"
+      ],
+      "tiers": [
+        "Base",
+        "Shaft",
+        "Firebox",
+        "Roof"
+      ],
       "tierCount": "Tier {n}/{total}",
       "stepWrong": "This tier sits higher up — place the one below first ({tier}).",
       "stepsInsight": {
@@ -209,11 +271,19 @@
       "wrongHint": "Not this step yet — a lamp needs the right order.",
       "done": "The lamp is lit.",
       "insight": {
-        "text": "All three lamps burn the same oil: LM Studio, Ollama and llama.cpp can all run GGUF model files from Hugging Face.",
+        "text": "One GGUF file runs in all three; if you're just starting, choose LM Studio.",
         "asOf": "2026-10-15",
-        "source": "t32-hf-gguf"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "Prices & features change often — always check the official site before installing."
+      "detail": "Features change often — check the official site before installing.",
+      "prompts": [
+        "Touch the paper lantern to bring the fire",
+        "Now the Ollama oil lamp",
+        "Touch the flame in the glass: llama.cpp"
+      ],
+      "jar": "GGUF: a compact model file that runs on a laptop",
+      "more": "Details"
     },
     "scroll": {
       "label": "The command scroll",
@@ -223,14 +293,30 @@
       "typeHere": "Type this line into a command window (Terminal on Mac, PowerShell on Windows).",
       "cmd": "ollama run",
       "blankAria": "The blank after the command: a model's name",
-      "models": [{ "name": "llama3.2", "size": "≈ 2 GB" }, { "name": "gemma3:1b", "size": "≈ 0.8 GB" }],
+      "models": [
+        {
+          "name": "llama3.2",
+          "size": "≈ 2 GB"
+        },
+        {
+          "name": "gemma3:1b",
+          "size": "≈ 0.8 GB"
+        }
+      ],
       "modelAria": "Put the {name} model ({size}) into the blank",
-      "chat": { "you": "Hello", "ai": "Hi! I'm running right here on this machine." },
+      "chat": {
+        "you": "Hello",
+        "ai": "Hi! I'm running right here on this machine."
+      },
       "offline": "Offline and still running",
       "door": "localhost:11434",
       "doorAria": "The back door localhost:11434: touch to see what it is for",
       "doorNote": "Other apps on your machine knock here to use the model — no API password needed.",
-      "modelNote": "Model names and sizes come from the Ollama library (10/2026) and will change over time; look up the current name in the Ollama library before running it.",
+      "modelNote": {
+        "text": "From the Ollama library: llama3.2 weighs about 2 GB, gemma3:1b about 0.8 GB. Model names change over time; look up the current name in the library before running it.",
+        "asOf": "2026-10-15",
+        "source": "t32-ollama-library"
+      },
       "insight": {
         "text": "One command: Ollama downloads the model by itself, then opens a chat right on your machine.",
         "asOf": "2026-10-15",
@@ -246,7 +332,7 @@
     "circle": {
       "label": "Four stones by the pond",
       "art": "The camera skims a round pond under the moon: the pond becomes a thin ellipse, the moon's reflection a long broken road running toward you. Four stones sit round it — two small on the far bank, two large on the near one — each keeping a small paper lamp. Touch a stone and its lamp lights, its warm streak stretching across the water toward you; hear all four and the streaks and the moon's road gather at the pond's centre.",
-      "prompt": "Listen to each stone",
+      "prompt": "Touch each stone: each one is a point of view",
       "aria": "Circle of views: should creative and marketing people run AI locally or in the cloud?",
       "perspectives": {
         "stones": [
@@ -288,14 +374,14 @@
           }
         ],
         "common": {
-          "text": "They agree: no choice is right for every task. What differs is how sensitive the data is, the quality needed, and the budget.",
+          "text": "Work with customer data runs on your machine; work that needs the very best goes to the cloud.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "Many people use both: sensitive work runs locally, work that needs the very best goes to the cloud — choosing deliberately each time.",
+        "text": "Use it a lot every day and running it locally saves money; use it rarely and a cloud plan can be cheaper than a new machine.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -332,6 +418,13 @@
       "publisher": "ggml-org (GitHub)",
       "url": "https://github.com/ggml-org/llama.cpp",
       "note": "MIT license; supports 1.5–8 bit quantization; runs on CPU, Apple Silicon, NVIDIA/AMD GPUs and many other backends."
+    },
+    "t32-ollama-library": {
+      "title": "Ollama library",
+      "publisher": "Ollama",
+      "url": "https://ollama.com/library",
+      "date": "2026-10-15",
+      "note": "The llama3.2 and gemma3 model pages list the download sizes: llama3.2 (3B) about 2.0 GB, gemma3:1b about 815 MB."
     }
   }
 }

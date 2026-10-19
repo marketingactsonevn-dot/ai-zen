@@ -41,6 +41,8 @@
 .t31r3-sig-what { margin: 2px 0 0; font: 400 15px/1.45 var(--serif); color: var(--ink-2); }
 .t31r3-back :is(.t31r3-tag, .t31r3-name),
 .t31r3-picked .t31r3-tag { opacity: 0 !important; }
+/* the gate lamps' "choose" tags wait until two signals have been compared */
+.t31r3:not(.t31r3-ready) .t31r3-tag { opacity: 0 !important; }
 /* the proxy of a signal spans both houses: keep its keyboard ring small, the pair's warm glow shows the focus */
 .t31r3 .p2s3-hit:focus-visible { outline: none; }
 .t31r3 .p2s3-hit:focus-visible::after {

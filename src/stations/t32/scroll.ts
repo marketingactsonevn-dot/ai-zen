@@ -84,7 +84,7 @@ export function scrollScene(ctx: SceneCtx) {
     ctx.chime('soft')
     const id = setTimeout(() => {
       chat.hidden = false
-      ctx.insight(K.insight as Fact, [K.detail as Fact, K.modelNote])
+      ctx.insight(K.insight as Fact, [K.detail as Fact, K.modelNote as Fact])
       const card = findTakeaway(K.takeaway)
       if (card) fold.append(foldedTakeaway([card as Takeaway], ctx.onCleanup))
       dot = g.dot(door, { dir: [0, 1] })

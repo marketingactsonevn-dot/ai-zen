@@ -1,25 +1,25 @@
 {
   "id": 31,
-  "kicker": "The village well — anyone can draw from it, but you need to know which water is clean.",
-  "summary": "The open AI world is a village sharing its wells — learn to read the stone by the well and you can choose your water.",
+  "kicker": "Hugging Face and GitHub are the AI village's two shared wells — anyone can draw from them, but you need to know which water is clean.",
+  "summary": "Get models from Hugging Face and code from GitHub — check the source, the license and the file format before you download.",
   "takeaways": ["t31-model-card", "t31-ask-ai-repo", "t31-safe-download"],
   "quiz": {
-    "q": "You plan to use a model downloaded from Hugging Face to make content for a client. Which line on the model card should you read first?",
+    "q": "You find two copies of the same model: one from the original author, a .gguf file with a clear license; one re-uploaded by a stranger, a .pkl file with more downloads. Which do you pick?",
     "options": [
-      "Last month's downloads",
-      "The license",
-      "The number of parameters",
-      "The author's profile picture"
+      "The one with more downloads",
+      "The original author's .gguf file",
+      "The stranger's, since it's already compressed",
+      "Download both, see which runs faster"
     ],
     "answer": 1,
-    "explain": "The license decides whether you may use it commercially, change it or share it. Downloads only tell you the model is popular, not that you are allowed to use it."
+    "explain": "Downloads don't prove safety. A .pkl file can run code the moment it is opened; the original with a clear license is the safer choice."
   },
   "scenes": {
     "wells": {
       "label": "Two wells",
-      "art": "A moonlit night at the edge of the village: two mossy stone wells side by side on a flagstone yard, under one bamboo pulley beam with a lantern hanging at each end. Lines of code glint in the left well's water; the right well holds small labelled clay jars. A bamboo bucket hangs in front between them, a paper tag on it naming the thing to drop.",
-      "prompt": "Drop each into its well",
-      "aria": "Two wells: GitHub and Hugging Face. Put each item into the right well",
+      "art": "A moonlit night at the edge of the village: two mossy stone wells side by side on a flagstone yard, under one bamboo pulley beam with a lantern hanging at each end. The left well is GitHub, lines of code glinting in its water; the right is Hugging Face, holding small labelled clay jars — models and data. A bamboo bucket hangs in front between them, a paper tag on it saying what you need.",
+      "prompt": "Drag the bucket to the well that has what you need",
+      "aria": "Two wells: GitHub and Hugging Face. Drop the bucket into the well that has what you need",
       "wells": [
         {
           "id": "github",
@@ -35,39 +35,80 @@
         }
       ],
       "items": [
-        { "id": "app", "label": "An app's source code", "tag": "app", "well": "github", "aria": "An app's source code" },
-        { "id": "weights", "label": "A trained model file", "tag": "weights", "well": "hf", "aria": "A trained model file (the weights)" },
-        { "id": "dataset", "label": "A dataset", "tag": "dataset", "well": "hf", "aria": "A dataset for training or testing" },
-        { "id": "space", "label": "A web demo to try", "tag": "demo", "well": "hf", "aria": "A demo that runs a model right in the browser" },
-        { "id": "cli", "label": "A command-line tool", "tag": "CLI tool", "well": "github", "aria": "The source code of a command-line tool" },
-        { "id": "site", "label": "A website like AI Zen", "tag": "website", "well": "github", "aria": "The source code of a website like AI Zen" }
+        {
+          "id": "app",
+          "label": "I want to see an app's source code",
+          "tag": "app code",
+          "well": "github",
+          "aria": "I want to see an app's source code"
+        },
+        {
+          "id": "weights",
+          "label": "I want to download a model to my machine",
+          "tag": "model file",
+          "well": "hf",
+          "aria": "I want to download a model to my machine"
+        },
+        {
+          "id": "dataset",
+          "label": "I need a set of sample images to test with",
+          "tag": "dataset",
+          "well": "hf",
+          "aria": "I need a set of sample images to test with"
+        },
+        {
+          "id": "space",
+          "label": "I want to try a model right in the browser",
+          "tag": "demo",
+          "well": "hf",
+          "aria": "I want to try a model right in the browser"
+        },
+        {
+          "id": "cli",
+          "label": "I want to install a command-line tool",
+          "tag": "CLI tool",
+          "well": "github",
+          "aria": "I want to install a command-line tool"
+        },
+        {
+          "id": "site",
+          "label": "I want to see a website's source code",
+          "tag": "site code",
+          "well": "github",
+          "aria": "I want to see a website's source code"
+        }
       ],
-      "itemAria": "Drop “{item}” into the {well} well",
+      "itemAria": "Drop the bucket “{item}” into the {well} well",
       "right": "Right well.",
-      "wrong": "This one usually lives in the other well.",
-      "done": "All six are in.",
+      "wrong": "This well doesn't have what you need.",
+      "done": "All six needs met.",
       "insight": {
-        "text": "Hugging Face is the shared well for models, datasets and demos — mostly public, free for anyone to download.",
+        "text": "GitHub keeps the source code of apps and tools; Hugging Face keeps models, data and demos.",
         "asOf": "2026-10-15",
         "source": "t31-hf-hub"
       },
       "detail": {
-        "text": "GitHub is the well for source code: each repository holds code, files and the change history of every file.",
+        "text": "The line isn't absolute: GitHub also has downloadable files, and Hugging Face also has code. When you need a model, look on Hugging Face first.",
         "asOf": "2026-10-15",
         "source": "t31-gh-repos"
       },
-      "note": "The line isn't absolute: GitHub also has downloadable files, and Hugging Face also holds code. This is enough to get started."
+      "wrongIn": {
+        "github": "This well holds only source code — no model files or data.",
+        "hf": "This well holds models and data, not app code."
+      },
+      "next": "Next need — drag the bucket to the well that has it",
+      "count": "{n}/{total}"
     },
     "depth": {
       "label": "A deepening well",
-      "art": "An old well cut open from mouth to floor and hung like a scroll: the round mouth opens to the moonlit sky, a cone of moonlight falls down the shaft, the courses of stone curve round its wall, layers of earth lie outside the cut. The water column rises through the years; each milestone is a stone jutting from the wall with its date cut beside it. Above today's water there is mist.",
-      "prompt": "Drag the moon through the years",
+      "art": "An old well cut open from mouth to floor and hung like a scroll: the round mouth opens to the moonlit sky, a cone of moonlight falls down the shaft, the courses of stone curve round its wall, layers of earth lie outside the cut. The water column rises through the years; each milestone is a stone jutting from the wall with its date cut beside it. Drag the moon's reflection up the water to raise it past the milestones.",
+      "prompt": "Drag the moon's reflection up the water",
       "aria": "A deepening well: public models on Hugging Face over the years. Drag the moon's reflection up the water, or use the up and down arrow keys",
       "tide": {
         "milestones": [
           {
             "date": "09/2024",
-            "label": "One million models",
+            "label": "1 million models",
             "fact": {
               "text": "In September 2024, Hugging Face co-founder Clément Delangue announced the hub had passed 1 million public models.",
               "asOf": "2026-10-15",
@@ -77,25 +118,25 @@
           },
           {
             "date": "02/2026",
-            "label": "llama.cpp moves in",
+            "label": "The engine for local AI moves in",
             "fact": {
-              "text": "20 Feb 2026: the ggml team behind llama.cpp — the engine for running AI on personal computers — joined Hugging Face; both say it stays open source.",
+              "text": "20 Feb 2026: the team behind the engine that runs AI on personal computers (llama.cpp, you'll meet it in the next station) joined Hugging Face; both say the project stays open.",
               "asOf": "2026-10-15",
               "source": "t31-hf-ggml",
               "claimBy": "Hugging Face"
             }
           },
           {
-            "date": "15/10/2026",
-            "label": "Today",
+            "date": "10/2026",
+            "label": "Over 3 million models",
             "fact": {
-              "text": "Hugging Face's Models page now lists over 3.15 million public models; over 211,000 have GGUF files for running on your own machine.",
+              "text": "On 15 Oct 2026 Hugging Face's Models page counted over 3 million public models.",
               "asOf": "2026-10-15",
               "source": "t31-hf-models"
             },
             "compare": {
               "before": "1 million",
-              "after": "3.16 million",
+              "after": "over 3 million",
               "ratio": 3.16,
               "beforeLabel": "09/2024",
               "afterLabel": "10/2026"
@@ -103,23 +144,27 @@
           }
         ],
         "horizon": {
-          "text": "The well will probably keep getting deeper every year; knowing how to pick the right model will matter more than knowing many names.",
+          "text": "The well will probably keep getting deeper; knowing how to filter will matter more than knowing many names.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "prediction"
         }
       },
       "insight": {
-        "text": "Today Hugging Face holds over 3.15 million public models — three times the 1 million mark of September 2024.",
+        "text": "Over 3 million models — nobody can look at them all; what to learn is how to filter.",
         "asOf": "2026-10-15",
         "source": "t31-hf-models"
       },
-      "detail": "More choice also means more murky water. The skill you need: reading the stone by the well — the next scene."
+      "detail": {
+        "text": "On 15 Oct 2026 Hugging Face's Models page counted 3,156,130 public models; the number changes every day.",
+        "asOf": "2026-10-15",
+        "source": "t31-hf-models"
+      }
     },
     "card": {
       "label": "Reading the well stone",
       "art": "By the well stands a low mossy stele, seen three-quarters. A damp sheet of washi is tied over its face, hiding six carved lines. Dab the ink pad on the paper: ink takes only where the stone stands up, so each carved line comes out white on black. At its foot lie an inkstone and a puddle reflecting the stele and the moon.",
-      "prompt": "Dab ink on the paper",
+      "prompt": "Dab ink on the paper to read each carved line",
       "aria": "A mock model card: six lines to read before you download a model",
       "mock": "A made-up model for learning, not a real one",
       "model": "lang-mau / vuon-trang-8B-instruct-GGUF",
@@ -135,7 +180,7 @@
           "id": "params",
           "label": "Parameters",
           "value": "8B — about 8 billion parameters",
-          "read": "Bigger usually means smarter but heavier. An ordinary laptop suits models of about 1B–14B (see the next station)."
+          "read": "8B: 8 billion parameters — the number tells you how big the model is; the bigger, the heavier for your machine."
         },
         {
           "id": "license",
@@ -147,7 +192,7 @@
           "id": "format",
           "label": "File format",
           "value": "GGUF · Q4_K_M",
-          "read": "GGUF runs in LM Studio, Ollama and llama.cpp. “Q4” is a 4-bit compressed version, much lighter than the original."
+          "read": "GGUF, 4-bit compressed: a compact kind of file that runs on a laptop."
         },
         {
           "id": "downloads",
@@ -163,31 +208,58 @@
         }
       ],
       "insight": {
-        "text": "Every model comes with a model card: its purpose, limits, training data and evaluation results.",
+        "text": "Read these 6 lines and you know: who made it, whether it fits your machine, and what you may use it for.",
         "asOf": "2026-10-15",
-        "source": "t31-hf-modelcards"
+        "source": "editorial",
+        "kind": "opinion"
       },
       "detail": {
-        "text": "The license shows right on the model page; if it says “other”, the author must give the name of and a link to the separate terms.",
+        "text": "A license of “other” means the author wrote their own terms; open the link and read them before using it for clients.",
         "asOf": "2026-10-15",
         "source": "t31-hf-modelcards"
       },
-      "takeaway": "t31-model-card"
+      "takeaway": "t31-model-card",
+      "next": "Dab the next line",
+      "decode": "This stone is a model card — the introduction page that comes with a model on Hugging Face."
     },
     "repo": {
       "label": "Two houses",
-      "art": "A raked gravel island in black water under the moon, with two wooden houses whose curved roofs look identical from the front. Lamplight from the left house spills through its paper screens onto the gravel; it casts a deep block of shadow, and a stepping-stone path crosses the water to hamlets on the far hills. The right house is only a thin front propped on two bamboo poles: walk round it and it is hollow, with cobwebs and an unlabelled bundle.",
-      "prompt": "Guess which house to trust",
+      "art": "A raked gravel island in black water under the moon, with two wooden houses whose curved roofs look identical from the front — each house is a repo (a code store) on GitHub. Round each house are things that tell its story: the introduction scroll, the roof lamp, the worn path, the mailbox, the notice board, the gate sign. Walk round the back to compare them, then light the gate lamp of the house you trust.",
+      "prompt": "Walk round behind the two houses, then light the real one's lamp",
       "aria": "Compare two GitHub repos on six signals, then choose the one to trust",
       "hint": "Drag to walk round the island, or use the arrow keys when the view is focused; wheel or pinch to move closer. Tap a thing to read that signal on both houses; light a gate lamp to choose a house.",
       "signalAria": "Signal {label}: see it on both houses",
       "signals": [
-        { "id": "readme", "label": "README", "what": "The front page: what it does, how to install it, examples." },
-        { "id": "stars", "label": "Stars", "what": "How many people bookmarked it: popularity, not a guarantee of safety." },
-        { "id": "forks", "label": "Forks", "what": "Copies others made to change on their own. A fake repo is often a renamed copy." },
-        { "id": "issues", "label": "Issues", "what": "Where people report bugs and ask questions. Recent replies mean someone still looks after it." },
-        { "id": "releases", "label": "Releases", "what": "Published versions with notes. Downloading from here is safer than grabbing stray files." },
-        { "id": "license", "label": "License", "what": "With no license, by default you may not copy, change or distribute it." }
+        {
+          "id": "readme",
+          "label": "README",
+          "what": "The front page: what it does, how to install it, examples."
+        },
+        {
+          "id": "stars",
+          "label": "Stars",
+          "what": "How many people bookmarked it: popularity, not a guarantee of safety."
+        },
+        {
+          "id": "forks",
+          "label": "Forks",
+          "what": "Copies others made to change on their own. A fake repo is often a renamed copy."
+        },
+        {
+          "id": "issues",
+          "label": "Issues",
+          "what": "Where people report bugs and ask questions. Recent replies mean someone still looks after it."
+        },
+        {
+          "id": "releases",
+          "label": "Releases",
+          "what": "Published versions with notes. Downloading from here is safer than grabbing stray files."
+        },
+        {
+          "id": "license",
+          "label": "License",
+          "what": "With no license, by default you may not copy, change or distribute it."
+        }
       ],
       "repos": [
         {
@@ -200,7 +272,7 @@
             "forks": "640",
             "issues": "Answered 2 days ago",
             "releases": "v2.3 · 3 weeks ago",
-            "license": "MIT"
+            "license": "MIT – an open license: you may use, change and resell it, just credit the author"
           }
         },
         {
@@ -217,13 +289,13 @@
           }
         }
       ],
-      "mock": "Two made-up repos for learning",
+      "mock": "Two made-up repos for learning — each house is a repo (a code store) on GitHub",
       "pick": "Choose this house",
       "pickAria": "Choose repo {name} as the one to trust",
       "right": "Right. The original has a history, someone looking after it, and a clear license.",
       "wrong": "Look closely at the name: “rn” is pretending to be “m”. The stars are almost equal, but the history and the care are completely different.",
       "insight": {
-        "text": "Attackers have cloned popular GitHub repos in bulk, slipped in malware and re-uploaded them under identical names.",
+        "text": "Crooks copy famous repos, add malware and re-upload them under near-identical names — the star count won't tell you apart.",
         "asOf": "2026-10-15",
         "source": "t31-repo-confusion"
       },
@@ -232,12 +304,18 @@
         "asOf": "2026-10-15",
         "source": "t31-gh-license"
       },
-      "takeaway": "t31-ask-ai-repo"
+      "takeaway": "t31-ask-ai-repo",
+      "prompts": [
+        "Drag to walk round behind the two houses",
+        "Touch the scroll, lamp, mailbox… to compare the houses",
+        "Light the gate lamp of the house you trust"
+      ],
+      "readFirst": "Compare at least two things on both houses first — touch the scroll, lamp, mailbox…"
     },
     "clean": {
       "label": "Filtering the water",
       "art": "Seen low beside a big dark bowl: a tall bamboo spout at the back, half in mist, pours murky water down six stepped stone basins that come toward you, each nearer one bigger. Each basin waits for a numbered filter stone. In the right order the water clears step by step; with all six in, the bowl fills with clear water holding the whole moon.",
-      "prompt": "Stack the filter layers",
+      "prompt": "Order the six filters the way you'd do them before downloading",
       "aria": "Stepping-stone path: the safe order for downloading a model or some code. Tap them in turn or use the number keys",
       "stepAria": "Place step {n}: {label}",
       "wrongHint": "This layer comes later — the water hasn't passed the one before.",
@@ -256,7 +334,7 @@
           },
           {
             "label": "Pick a safer format",
-            "detail": "Prefer safetensors or GGUF; avoid pickle files (.bin, .pt, .pkl) from strangers.",
+            "detail": "Prefer .safetensors or .gguf files; avoid a stranger's .pkl file — opening it can run code.",
             "why": "A pickle file can run code the moment it is opened."
           },
           {
@@ -278,12 +356,12 @@
         "takeaway": "t31-safe-download"
       },
       "insight": {
-        "text": "Pickle model files can run malicious code the moment they're opened; prefer safetensors or GGUF from trusted authors.",
+        "text": "Three filters before you download: the right author, the right license, a .safetensors or .gguf file instead of .pkl.",
         "asOf": "2026-10-15",
         "source": "t31-hf-pickle"
       },
       "detail": {
-        "text": "In 2024 the security firm JFrog found models on Hugging Face hiding a backdoor that fired when the pickle file was loaded.",
+        "text": "In 2024 the security firm JFrog found models on Hugging Face with malware built in, running by itself when the pickle file was opened.",
         "asOf": "2026-10-15",
         "source": "t31-jfrog"
       },

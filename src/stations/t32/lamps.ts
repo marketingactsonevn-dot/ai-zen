@@ -30,7 +30,7 @@ export function lampsScene(ctx: SceneCtx) {
   const low = ctx.quality === 'low'
   const still = low || ctx.reduced
   const lit = new Set<Id>(['llamacpp'])
-  let wick = 0, wickTo = 0 // Ollama's wick: 0 down … 1 up
+  let wick = 1, wickTo = 1 // Ollama's wick: 0 down … 1 up (turned up: the knob puzzle is gone, audit 32-3)
   let shown: Id | null = null
   let thread = 0 // the oil threads, drawn in once all three burn
   let taper: { x: number; y: number; z: number; on: boolean; t: number; to: Id | null; from: V3 } | null = null
@@ -41,7 +41,8 @@ export function lampsScene(ctx: SceneCtx) {
   const cv = h('canvas', { class: 't32-cv t32-bleed', 'aria-hidden': 'true' })
   const info = live('t32l-info')
   info.hidden = true
-  const seal = h('span', { class: 't32l-seal', 'aria-hidden': 'true' }, 'GGUF')
+  // the jar's seal, and the line that says what the oil is (a GGUF model file)
+  const seal = h('span', { class: 't32l-seal', 'aria-hidden': 'true' }, 'GGUF', h('span', { class: 't32l-jar' }, K.jar))
   const btn: Record<Id, HTMLButtonElement> = {} as Record<Id, HTMLButtonElement>
   const plaque: Record<Id, HTMLElement> = {} as Record<Id, HTMLElement>
   for (const lp of K.lamps) {
@@ -57,7 +58,7 @@ export function lampsScene(ctx: SceneCtx) {
     })
   }
   btn.llamacpp.addEventListener('pointerdown', (e) => grab(e))
-  const knob = h('button', { class: 't32l-knob', type: 'button', 'aria-label': K.wickAria, 'aria-pressed': 'false' })
+  const knob = h('button', { class: 't32l-knob', type: 'button', 'aria-label': K.wickAria, 'aria-pressed': 'true', hidden: true })
   knob.addEventListener('click', () => setWick(wickTo ? 0 : 1))
   const root = h('div', { class: 't32 t32l', role: 'group', 'aria-label': K.aria },
     cv,
@@ -588,7 +589,7 @@ export function lampsScene(ctx: SceneCtx) {
   }
 
   // ── one loop: wick, taper flight, the threads, a slow breath in the flames (high, until idle) ──
-  let wickT = 1, wickFrom = 0
+  let wickT = 1, wickFrom = 1
   const loop = createLoop(root, (time, dt) => {
     let busy = false
     if (wickT < 1) {
@@ -643,17 +644,13 @@ export function lampsScene(ctx: SceneCtx) {
   }
   /** the fire touches lamp `id`: paper catches at once; oil only with the wick turned up */
   function kindle(id: Id) {
-    if (id === 'ollama' && wickTo < 1) {
-      info.hidden = false
-      info.say(h('p', { class: 't32l-hint' }, K.wickHint))
-      ctx.chime('low')
-      run()
-      return
-    }
     lit.add(id)
     btn[id].setAttribute('aria-pressed', 'true')
     ctx.chime('tap')
     read(id)
+    // the next lamp to bring fire to (H5)
+    const next = K.lamps.findIndex((lp) => !lit.has(lp.id as Id))
+    if (next >= 0) ctx.prompt(K.prompts[next])
     if (lit.size === K.lamps.length) {
       thread = 0.001
       root.classList.add('all')
@@ -677,14 +674,18 @@ export function lampsScene(ctx: SceneCtx) {
     const lp = K.lamps.find((x) => x.id === id)!
     const upd = (lp as { update?: Fact }).update
     info.hidden = false
+    // one short line on the paper; the rest one tap away
     info.say(
-      h('p', { class: 't32l-kind' }, lp.kind),
       h('h3', { class: 't32l-h' }, lp.name),
-      h('p', { class: 't32l-what' }, lp.what),
-      h('p', { class: 't32l-fit' }, lp.fit),
-      ctx.fact(lp.fact as Fact, 'p', 't32l-fact'),
-      upd ? ctx.fact(upd, 'p', 't32l-fact') : '',
-      h('p', { class: 't32l-foot' }, h('a', { class: 't32l-doc', href: lp.doc, target: '_blank', rel: 'noopener noreferrer' }, `${K.docLabel} ↗`), h('span', null, K.changeNote)))
+      h('p', { class: 't32l-line' }, lp.line),
+      h('details', { class: 't32l-more' },
+        h('summary', null, K.more),
+        h('p', { class: 't32l-kind' }, lp.kind),
+        h('p', { class: 't32l-what' }, lp.what),
+        h('p', { class: 't32l-fit' }, lp.fit),
+        ctx.fact(lp.fact as Fact, 'p', 't32l-fact'),
+        upd ? ctx.fact(upd, 'p', 't32l-fact') : '',
+        h('p', { class: 't32l-foot' }, h('a', { class: 't32l-doc', href: lp.doc, target: '_blank', rel: 'noopener noreferrer' }, `${K.docLabel} ↗`), h('span', null, K.changeNote))))
     placeInfo()
   }
 

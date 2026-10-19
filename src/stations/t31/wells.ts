@@ -4,6 +4,7 @@ import type { Fact } from '../../core/content'
 import { createLoop } from '../../core/loop'
 import { clamp, onSize, stoneArt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon, paperLantern, wash } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { bamboo, ground, live, night, rng, stroke, blob, type Pt } from './kit'
 
@@ -539,10 +540,13 @@ export function wellsScene(ctx: SceneCtx) {
     om = 0
     len = rest
     if (!ok) {
+      // say why: what that well holds (H6)
+      const why = (K.wrongIn as Record<string, string>)[K.wells[j].id] ?? K.wrong
       ctx.chime('low')
-      tag.replaceChildren(K.wrong)
+      tag.replaceChildren(why)
       tag.classList.add('bad')
-      say.say(K.wrong)
+      say.say(why)
+      ctx.prompt(why, 'wrong')
       later(() => B.drips.classList.remove('on'), 1600)
       settle()
       return
@@ -561,11 +565,12 @@ export function wellsScene(ctx: SceneCtx) {
     i++
     B.water.style.opacity = '1'
     showItem()
-    if (i < items.length) return say.say(K.right), settle()
+    dot?.done()
+    dot = null
+    if (i < items.length) return say.say(K.right), ctx.prompt(K.next), settle()
     say.say(K.done)
     root.classList.add('t31w2-done')
     chosen = false // all in: the bucket hangs straight and still
-    sky.replaceChildren(h('p', null, K.note))
     ctx.insight(K.insight as Fact, K.detail as Fact)
     settle()
   }
@@ -633,4 +638,6 @@ export function wellsScene(ctx: SceneCtx) {
 
   showItem()
   ctx.prompt(K.prompt)
+  // H1: a dot on the bucket's grip until the first need is met (it rides with the bucket)
+  let dot: Mark | null = guide(ctx).dot(bucket, { dir: [0, 1] })
 }

@@ -805,6 +805,8 @@ export function repoScene3d(ctx: SceneCtx) {
     }
     let tags: HTMLElement[] = []
     let lit: Sig | null = null
+    // the choice waits for evidence: the gate lamps' tags show once two signals have been compared on both houses
+    const compared = new Set<string>()
     const clear = () => {
       tags.forEach((t) => t.remove())
       tags = []
@@ -823,6 +825,9 @@ export function repoScene3d(ctx: SceneCtx) {
       void k.fly(t, yaw, portrait ? pitch - 0.1 : pitch, 1.3)
       k.dolly(z)
       ctx.chime('tap')
+      compared.add(id)
+      if (compared.size === 1) ctx.prompt(K.prompts[1])
+      else if (compared.size === 2 && !root.classList.contains('t31r3-ready')) root.classList.add('t31r3-ready'), ctx.prompt(K.prompts[2])
     }
     K.signals.forEach((sg) => k.tappable(sigGroups[sg.id as Sig], fill(K.signalAria, { label: sg.label }), () => signal(sg)))
 
@@ -846,6 +851,7 @@ export function repoScene3d(ctx: SceneCtx) {
       })
     }
     const pick = (j: number) => {
+      if (compared.size < 2) return ctx.prompt(K.readFirst, 'wrong')
       const rp2 = K.repos[j]
       clear()
       const a = andon[j]
@@ -865,6 +871,8 @@ export function repoScene3d(ctx: SceneCtx) {
       root.classList.add('t31r3-picked')
       say.say(rp2.trust ? K.right : K.wrong)
       ctx.chime(rp2.trust ? 'ok' : 'low')
+      // the insight comes with the real house, not with a wrong guess (the verdict says why it was wrong)
+      if (!rp2.trust) return ctx.prompt(K.prompts[2], 'wrong')
       if (picked) return
       picked = true
       ctx.insight(K.insight as Fact, K.detail as Fact)
