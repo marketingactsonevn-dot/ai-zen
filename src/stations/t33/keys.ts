@@ -5,16 +5,20 @@ import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onSize, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, toro } from '../../ui/part2/paint'
+import { guide } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import './keys.css'
-import { cardSheet, f1, live, P, parallax, t33Defs } from './kit'
+import { cardSheet, f1, guard, live, P, parallax, t33Defs } from './kit'
 
 const K = raw.scenes.keys
 const N = K.keys.length
 const rect = (x: number, y: number, w: number, hh: number) => `M${f1(x)} ${f1(y)}h${f1(w)}v${f1(hh)}h${f1(-w)}Z`
 const quad = (a: Pt, b: Pt, c: Pt, d: Pt) => `M${P(a)}L${P(b)}L${P(c)}L${P(d)}Z`
 
-/** A bronze key hanging bow-up (viewBox -20 0 40 120): five different bows and bits, a moonlit edge that slides as it swings. */
+/**
+ * A bronze key hanging bow-up (viewBox -20 0 40 120): six different bows and bits, a moonlit edge that slides as it swings.
+ * Only the bit end catches the pointer (with the tag): the bows all meet at the ring, so the bunch never fights for a touch.
+ */
 function keyArt(i: number) {
   const bows = [
     'M0 2A15 15 0 1 1 -0.01 2ZM0 10A7 7 0 1 0 0.01 10Z',
@@ -22,15 +26,19 @@ function keyArt(i: number) {
     'M-14 2H14V30H-14ZM-6 9H6V22H-6Z',
     'M0 4C6 -4 18 2 12 14L0 30L-12 14C-18 2 -6 -4 0 4ZM0 11A5 5 0 1 0 0.01 11Z',
     'M0 1C11 1 16 9 16 16C16 24 10 31 0 31C-10 31 -16 24 -16 16C-16 9 -11 1 0 1ZM-3 8H3V24H-3Z',
+    'M-15 4H15L9 16L15 28H-15L-9 16ZM-4 11H4V21H-4Z',
   ]
   const bits = [
-    'M3 92h12v6h-6v6h8v8h-14Z', 'M3 90h9v4h5v8h-5v4h7v8h-16Z', 'M3 94h14v20h-5v-6h-4v6h-5Z', 'M3 88h8v8h6v6h-6v12h-8Z', 'M3 92h15v4h-8v4h8v4h-8v4h8v6h-15Z',
+    'M3 92h12v6h-6v6h8v8h-14Z', 'M3 90h9v4h5v8h-5v4h7v8h-16Z', 'M3 94h14v20h-5v-6h-4v6h-5Z', 'M3 88h8v8h6v6h-6v12h-8Z', 'M3 92h15v4h-8v4h8v4h-8v4h8v6h-15Z', 'M3 90h10v6h6v6h-6v6h8v6h-18Z',
   ]
   return s('svg', { class: 't33y-keyart', viewBox: '-20 0 40 120', 'aria-hidden': 'true' },
     s('path', { class: 't33y-keysh', d: bows[i] + `M-3.4 30h6.8v86h-6.8Z` + bits[i], transform: 'translate(2.5 3)' }),
     s('path', { class: 't33y-bronze', d: bows[i] + `M-3.4 29h6.8v87h-6.8Z` + bits[i], 'fill-rule': 'evenodd' }),
     s('path', { class: 't33y-keyink', d: stroke([[3.4, 31], [3.4, 115]], 1.4, 0.05, 0.05, 0.6) + stroke(curve([12, 6], [16, 16], [8, 28], 6), 1.6, 0.1, 0.1, 0.4) }),
-    s('g', { class: 't33y-glint' }, s('path', { class: 't33y-glintp', d: stroke([[-2.2, 36], [-2.2, 70]], 1.5, 0.3, 0.3, 0.1) + stroke(curve([-12, 8], [-9, 2], [-2, 2], 6), 1.6, 0.3, 0.3, 0.1) })))
+    s('g', { class: 't33y-glint' }, s('path', { class: 't33y-glintp', d: stroke([[-2.2, 36], [-2.2, 70]], 1.5, 0.3, 0.3, 0.1) + stroke(curve([-12, 8], [-9, 2], [-2, 2], 6), 1.6, 0.3, 0.3, 0.1) })),
+    // "ask me first": a vermilion thread wound round the shaft (shown once tied)
+    s('path', { class: 't33y-thread', d: [44, 48, 52, 56].map((y) => stroke([[-5, y], [5, y - 2.5]], 1.6, 0.1, 0.1, 0.2)).join('') }),
+    s('path', { class: 't33y-hit', d: 'M-10 84h20v34h-20Z' }))
 }
 
 /** The house behind the lantern, seen out of focus (px W × H): five doors along a long eave, their paper faintly lit. */
@@ -249,14 +257,18 @@ export function keysScene(ctx: SceneCtx) {
   const low = ctx.quality === 'low'
   const still = low || ctx.reduced
   const given = new Set<string>()
+  /** keys given with a vermilion thread tied on: the agent must ask before using them */
+  const asked = new Set<string>()
   let solved = false
+  let last = -1 // the key given last: only its risk is written out
+  let order: number[] = [] // the given keys, in ring order (their tags' rows in the column)
 
   const back = s('svg', { class: 't33-night t33y-back', 'aria-hidden': 'true' })
   const house = s('svg', { class: 't33y-house', 'aria-hidden': 'true' })
   const doorsSvg = s('svg', { class: 't33y-doors', 'aria-hidden': 'true' })
   const roofSvg = s('svg', { class: 't33y-roof', 'aria-hidden': 'true' })
   const blurLayer = h('div', { class: 't33y-far' }, house, doorsSvg)
-  const risks = K.keys.map((k) => h('p', { class: 't33y-risk t33-ink' }, k.risk))
+  const risks = K.keys.map((k, i) => h('p', { class: 't33y-risk t33-ink', style: `--o:${(i % 3) - 1}` }, k.risk))
   const riskBox = h('div', { class: 't33y-risks', 'aria-hidden': 'true' }, ...risks)
   blurLayer.append(riskBox)
   const say = live('t33y-say t33-ink')
@@ -264,21 +276,30 @@ export function keysScene(ctx: SceneCtx) {
   const check = h('button', { class: 't33y-plaque', type: 'button' }, h('span', null, K.check))
   const task = h('p', { class: 't33y-task t33-ink' }, K.task)
   const keyEls = K.keys.map((k, i) => {
-    const tag = h('span', { class: 't33y-tag' }, h('span', { class: 't33y-string', 'aria-hidden': 'true' }), h('span', { class: 't33y-tagp' }, k.label))
+    const tag = h('span', { class: 't33y-tag' }, h('span', { class: 't33y-string', 'aria-hidden': 'true' }), h('span', { class: 't33y-tagp' }, k.label, h('small', { class: 't33y-ask' }, K.askTag)))
     const b = h('button', { class: 't33y-key', type: 'button', 'aria-pressed': 'false' }, keyArt(i), tag)
     return { k, b, tag, glint: b.querySelector('.t33y-glint') as SVGGElement }
   })
   const ringEl = h('div', { class: 't33y-ring', 'aria-hidden': 'true' })
+  const palmZone = h('div', { class: 't33y-palm', 'aria-hidden': 'true' }) // where a carried key is dropped (H3)
   const root = h('div', { class: `t33 t33y${low ? ' low' : ''}`, role: 'group', 'aria-label': K.aria },
-    back, blurLayer, roofSvg, task, say, hand, ringEl, ...keyEls.map((x) => x.b), check,
+    back, blurLayer, roofSvg, task, say, hand, palmZone, ringEl, ...keyEls.map((x) => x.b), check,
     h('p', { class: 'visually-hidden' }, K.art))
   ctx.art.append(root)
-  ctx.prompt(K.prompt)
+  // guide (H1–H6): a dot on the first key's tag, then on "Giao việc" once a key is in the hand; the palm wakes while a key
+  // is carried; a count of the keys handed over; the prompt per step
+  const g = guide(ctx)
+  const step = g.steps([K.prompt, K.promptAsk])
+  step(0)
+  const tagOf = (i: number) => keyEls[i].tag.querySelector('.t33y-tagp') as HTMLElement
+  const dot = g.dot(tagOf(0), { dir: [1, 0.6] })
+  const palm = g.drop(palmZone)
+  const count = g.count(K.count, N, () => G.countAt)
   const px = parallax(ctx, root, [[blurLayer, 0.3], [roofSvg, 0.9]], 12)
   const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
 
   // ── geometry
-  const G = { W: 0, H: 0, ring: [0, 0] as Pt, L: 0, spread: 0, palm: [] as [number, number, number][], mobile: false, doors: [] as { x: number; w: number }[], y0: 0, y1: 0, hand: { x: 0, y: 0, s: 1 } }
+  const G = { W: 0, H: 0, ring: [0, 0] as Pt, L: 0, spread: 0, palm: [] as [number, number, number][], mobile: false, doors: [] as { x: number; w: number }[], y0: 0, y1: 0, hand: { x: 0, y: 0, s: 1 }, col: [0, 0] as Pt, countAt: [0, 0] as Pt }
   const keys: KeyState[] = K.keys.map(() => ({ x: 0, y: 0, a: 0, tx: 0, ty: 0, ta: 0, lag: 0 }))
   let swing = 0, vel = 0
   let dragKey = -1
@@ -325,15 +346,21 @@ export function keysScene(ctx: SceneCtx) {
     G.H = H
     G.mobile = mobile
     G.ring = mobile ? [W * 0.62, H * 0.11] : [W * 0.27, H * 0.18]
-    G.L = mobile ? H * 0.18 : H * 0.4
-    G.spread = mobile ? 36 : 26
+    G.L = mobile ? H * 0.22 : H * 0.4
+    // a wide fan: the bits (the keys' touch areas) clear each other
+    G.spread = mobile ? 44 : 40
     // the hand: palm up, coming in from the lower right, kept inside the frame (its sleeve melts into the night)
     const hs = mobile ? (W * 0.8) / 400 : Math.min((W * 0.38) / 400, (H * 0.56) / 300)
     G.hand = mobile ? { x: W - 400 * hs + W * 0.02, y: H - 300 * hs - 36, s: hs } : { x: W - 400 * hs - W * 0.005, y: H - 300 * hs, s: hs }
     hand.style.cssText = `left:${f1(G.hand.x)}px;top:${f1(G.hand.y)}px;width:${f1(400 * hs)}px;height:${f1(300 * hs)}px`
     // where given keys lie: bows on the fingers, shafts across the palm; the first two far enough apart that their tags hang clear
     const HP = (x: number, y: number): [number, number] => [G.hand.x + x * hs, G.hand.y + y * hs]
-    G.palm = [[84, 206, -74], [102, 158, -70], [92, 184, -72], [110, 136, -68], [80, 226, -76]].map(([x, y, a]) => [...HP(x, y), a] as [number, number, number])
+    G.palm = [[84, 206, -74], [102, 158, -70], [92, 184, -72], [110, 136, -68], [80, 226, -76], [96, 120, -66]].map(([x, y, a]) => [...HP(x, y), a] as [number, number, number])
+    // the given keys' tags stand in one column left of the fingertips, one under another
+    G.col = mobile ? [Math.max(48, G.hand.x + 40 * hs - 46), G.hand.y + 50 * hs] : [G.hand.x + 40 * hs - 86, G.hand.y + 40 * hs]
+    // the count: under the job (wide), over the palm (phone)
+    G.countAt = mobile ? [G.hand.x + 210 * hs, G.hand.y + 40 * hs] : [W * 0.715, task.offsetTop + task.offsetHeight + 18]
+    palmZone.style.cssText = `left:${f1(G.hand.x + 70 * hs)}px;top:${f1(G.hand.y + 110 * hs)}px;width:${f1(230 * hs)}px;height:${f1(120 * hs)}px`
     // a phone stacks it: keys, then the house, then the verdict and the take-away slip just above the hand
     let y0 = H * 0.2, y1 = H * 0.4
     if (mobile) {
@@ -348,14 +375,17 @@ export function keysScene(ctx: SceneCtx) {
     }
     const dl = mobile ? W * 0.03 : W * 0.42, dr = mobile ? W * 0.97 : W * 0.97
     const dw = mobile ? (dr - dl) / 5 - 8 : (dr - dl) / 5 - 26
-    G.doors = K.keys.map((_, i) => ({ x: dl + ((dr - dl) * (i + 0.5)) / 5, w: dw }))
+    G.doors = [0, 1, 2, 3, 4].map((i) => ({ x: dl + ((dr - dl) * (i + 0.5)) / 5, w: dw }))
     G.y0 = y0
     G.y1 = y1
     root.style.setProperty('--kw', `${f1(G.L * 0.27)}px`)
     tagRows()
     root.style.setProperty('--kh', `${f1(G.L)}px`)
     for (const g of [back, house, doorsSvg, roofSvg]) g.setAttribute('viewBox', `0 0 ${W} ${H}`)
-    risks.forEach((p, i) => (p.style.cssText = `left:${f1(G.doors[i].x)}px;top:${f1(y1 + H * 0.025)}px;width:${f1(G.doors[i].w + 16)}px`))
+    risks.forEach((p, i) => {
+      const d = G.doors[K.keys[i].door]
+      Object.assign(p.style, { left: `${f1(d.x)}px`, top: `${f1(y1 + H * 0.025)}px`, width: `${f1(d.w + 16)}px` })
+    })
     ringEl.style.transform = `translate(${f1(G.ring[0])}px, ${f1(G.ring[1])}px)`
 
     function* draw() {
@@ -407,6 +437,7 @@ export function keysScene(ctx: SceneCtx) {
     job = sliced(draw(), { sync: ctx.reduced || !first })
     first = false
     px.resize()
+    g.refresh()
   }
   ctx.onCleanup(onSize(root, layout))
   ctx.onCleanup(() => job?.cancel())
@@ -425,8 +456,14 @@ export function keysScene(ctx: SceneCtx) {
       const onRing = !given.has(K.keys[i].id) && i !== dragKey
       const a = k.a + (onRing ? swing + k.lag : 0)
       keyEls[i].b.style.transform = `translate(${f1(k.x)}px,${f1(k.y)}px) rotate(${a.toFixed(2)}deg)`
-      // the tag hangs straight down from the bit whatever the key does
-      keyEls[i].tag.style.transform = `rotate(${(-a).toFixed(2)}deg)`
+      // the tag hangs straight down from the bit whatever the key does; in the hand it rides to its place in the column
+      const j = onRing ? -1 : order.indexOf(i)
+      if (j < 0) keyEls[i].tag.style.transform = `rotate(${(-a).toFixed(2)}deg)`
+      else {
+        const r = (k.ta * Math.PI) / 180, d = G.L * 0.27 * 2.9
+        const dx = G.col[0] - (k.tx - Math.sin(r) * d), dy = G.col[1] + j * (G.mobile ? 48 : 54) - (k.ty + Math.cos(r) * d)
+        keyEls[i].tag.style.transform = `rotate(${(-a).toFixed(2)}deg) translate(${f1(dx)}px,${f1(dy)}px)`
+      }
       keyEls[i].glint.style.transform = `translateY(${f1((swing + k.lag) * 1.6 + (i % 2) * 8)}px)`
     })
     ringEl.style.transform = `translate(${f1(G.ring[0])}px, ${f1(G.ring[1])}px) rotate(${swing.toFixed(2)}deg)`
@@ -488,28 +525,47 @@ export function keysScene(ctx: SceneCtx) {
 
   // ── a key: tap (or Enter) to give / take back; or pick it up and drop it in the open hand
   const label = () => keyEls.forEach(({ k, b }) => {
-    const on = given.has(k.id)
+    const on = given.has(k.id), ask = asked.has(k.id)
     b.setAttribute('aria-pressed', String(on))
-    b.setAttribute('aria-label', fill(K.keyAria, { label: k.label, state: on ? K.given : K.kept }))
+    b.classList.toggle('ask', ask)
+    b.setAttribute('aria-label', fill(K.keyAria, { label: k.label, state: ask ? K.asked : on ? K.given : K.kept }))
   })
+  /** a tap cycles a key: on the ring → in the hand → in the hand with the vermilion thread tied → back on the ring */
   function toggle(i: number, to?: boolean) {
     const id = K.keys[i].id
-    const on = to ?? !given.has(id)
-    if (on) given.add(id)
-    else given.delete(id)
-    root.classList.toggle(`g-${i}`, on)
-    root.classList.remove('judged', 'too-many', 'too-few', 'right')
+    const was = given.has(id)
+    const on = to ?? (!was || !asked.has(id))
+    if (to === undefined && was && on) asked.add(id)
+    if (!on) given.delete(id), asked.delete(id)
+    else given.add(id)
+    if (on && !was) last = i
+    else if (!on && last === i) last = -1
+    order = K.keys.map((_, j) => j).filter((j) => given.has(K.keys[j].id))
+    // a door opens while any of its keys is given; only the newest risk is written out, the older ones shrink to a dot
+    for (let d = 0; d < 5; d++) root.classList.toggle(`g-${d}`, K.keys.some((k) => k.door === d && given.has(k.id)))
+    risks.forEach((p, j) => {
+      p.classList.toggle('on', j === last)
+      p.classList.toggle('old', j !== last && given.has(K.keys[j].id))
+    })
+    root.classList.remove('judged', 'too-many', 'too-few', 'no-ask', 'right')
     label()
     tagRows()
     settleTargets()
     kick()
     ctx.chime('tap')
-    say.say(on ? h('span', null, h('strong', null, `${K.keys[i].label}: `), K.keys[i].risk) : '')
+    // a phone has no room for the risks under the doors: the line under the keys says it
+    say.say(on && G.mobile ? h('span', null, h('strong', null, `${K.keys[i].label}: `), K.keys[i].risk) : '')
+    count.set(given.size)
+    guard.send = !given.has('send') || asked.has('send')
+    if (solved) return
+    step(given.size ? 1 : 0)
+    dot.at(given.size ? check : tagOf(0))
   }
   keyEls.forEach(({ b }, i) => {
     let p0: Pt | null = null, moved = false, rel: Pt = [0, 0]
     b.addEventListener('pointerdown', (e) => {
       if (still) return
+      palm.lift(true)
       const r = root.getBoundingClientRect()
       p0 = [e.clientX, e.clientY]
       moved = false
@@ -536,6 +592,7 @@ export function keysScene(ctx: SceneCtx) {
     const up = (e: PointerEvent) => {
       if (!p0) return
       p0 = null
+      palm.lift(false)
       if (!moved) return
       dragKey = -1
       b.classList.remove('held')
@@ -544,6 +601,7 @@ export function keysScene(ctx: SceneCtx) {
       // dropped on the hand (its box, a little generous) = given
       const inHand = x > G.hand.x + 20 * G.hand.s && y > G.hand.y + 70 * G.hand.s
       toggle(i, inHand)
+      if (inHand) g.ok(palmZone)
       // the click that follows a drag is not a tap
       setTimeout(() => (moved = false), 0)
     }
@@ -556,27 +614,36 @@ export function keysScene(ctx: SceneCtx) {
   check.addEventListener('click', () => {
     const extra = K.keys.map((k, i) => (given.has(k.id) && !k.need ? i : -1)).filter((i) => i >= 0)
     const missing = K.keys.map((k, i) => (k.need && !given.has(k.id) ? i : -1)).filter((i) => i >= 0)
-    root.classList.remove('too-many', 'too-few', 'right')
-    for (let i = 0; i < N; i++) root.classList.remove(`x-${i}`, `m-${i}`)
+    const loose = K.keys.findIndex((k) => 'ask' in k && k.ask && given.has(k.id) && !asked.has(k.id))
+    root.classList.remove('too-many', 'too-few', 'no-ask', 'right')
+    for (let d = 0; d < 5; d++) root.classList.remove(`x-${d}`, `m-${d}`)
     void root.offsetWidth
     root.classList.add('judged')
+    // H6: the prompt says what to do instead, the key at fault shakes
     if (extra.length) {
-      extra.forEach((i) => root.classList.add(`x-${i}`))
+      extra.forEach((i) => root.classList.add(`x-${K.keys[i].door}`))
       root.classList.add('too-many')
       ctx.chime('low')
-      return say.say(h('span', { class: 'bad' }, fill(K.tooMany, { n: extra.length })))
+      return g.wrong(fill(K.tooMany, { n: extra.length }), tagOf(extra[0]))
     }
     if (missing.length) {
-      missing.forEach((i) => root.classList.add(`m-${i}`))
+      missing.forEach((i) => root.classList.add(`m-${K.keys[i].door}`))
       root.classList.add('too-few')
       ctx.chime('low')
-      return say.say(h('span', { class: 'bad' }, K.tooFew))
+      return g.wrong(K.tooFew, check)
+    }
+    if (loose >= 0) {
+      root.classList.add('no-ask')
+      ctx.chime('low')
+      return g.wrong(K.needAsk, tagOf(loose))
     }
     root.classList.add('right')
     ctx.chime('ok')
     say.say(K.right)
     if (solved) return
     solved = true
+    dot.done()
+    g.ok(check)
     ctx.insight(K.insight as Fact, K.detail as Fact)
     sheet.show()
   })

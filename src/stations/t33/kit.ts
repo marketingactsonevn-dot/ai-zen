@@ -13,6 +13,13 @@ import type { SceneCtx } from '../types'
 export const f1 = (n: number) => (Math.round(n * 10) / 10).toString()
 export const P = (p: Pt) => `${f1(p[0])} ${f1(p[1])}`
 
+/**
+ * What the keys scene left in the gardener's hand, for the letter scene after it: is sending out guarded (the key kept
+ * on the ring, or given with the vermilion thread)? null = the keys scene was never played (the letter scene then lets
+ * the crane fly, and offers to seal the gate).
+ */
+export const guard: { send: boolean | null } = { send: null }
+
 /** Gradients this station's SVG uses (stops read tokens, so a theme change needs no JS), added to the page once. */
 export function t33Defs() {
   p2Defs()

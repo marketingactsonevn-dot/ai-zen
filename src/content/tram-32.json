@@ -21,8 +21,8 @@
   "scenes": {
     "scale": {
       "label": "Cán cân",
-      "art": "Nhìn từ sát mặt nước lên: một cành thông già vắt ngang vầng trăng lớn, treo một chiếc cân đòn có đòn cân cắt ngang đĩa trăng. Đĩa trái là căn nhà nhỏ có ngọn đèn dầu sáng; đĩa phải là đám mây bạc che nửa vầng trăng nhỏ. Sáu quả cân đá khắc chữ nằm nửa chìm dưới nước nông; nhấc từng quả đặt lên một đĩa, đòn cân nghiêng rồi chao, một thẻ giấy ghi lý do treo dưới đĩa, mặt nước soi ngược cả chiếc cân.",
-      "prompt": "Đặt quả cân lên đĩa",
+      "art": "Nhìn từ sát mặt nước lên: một cành thông già vắt ngang vầng trăng lớn, treo một chiếc cân đòn có đòn cân cắt ngang đĩa trăng. Đĩa trái là căn nhà nhỏ có ngọn đèn dầu sáng (chạy trên máy mình); đĩa phải là đám mây bạc (chạy trên mây). Giữa đòn cân treo một tờ giấy ghi việc cần làm, lần lượt ba việc. Sáu quả cân đá khắc lý do nằm nửa chìm dưới nước nông; với mỗi việc, nhấc quả cân là lý do quan trọng nhất lên cân, đòn cân nghiêng hẳn về một bên — đó là câu trả lời, một thẻ giấy ghi lý do treo dưới đĩa.",
+      "prompt": "Kéo những quả cân quan trọng với việc này lên đĩa",
       "aria": "Cán cân: chạy AI trên máy mình hay trên mây. Đặt từng quả cân về phía nó nghiêng",
       "sides": [
         {
@@ -53,7 +53,7 @@
           "id": "fee",
           "label": "Không phí theo lượt",
           "side": "local",
-          "why": "Bạn trả bằng máy và tiền điện, không trả theo token."
+          "why": "Bạn trả tiền máy và tiền điện, không trả theo số chữ AI viết ra."
         },
         {
           "id": "quality",
@@ -75,19 +75,48 @@
         }
       ],
       "weightAria": "Đặt quả cân “{label}” lên đĩa {side}",
-      "stonesLabel": "Sáu quả cân đá dưới nước: kéo một quả lên đĩa cân, hoặc chọn rồi dùng ← → và Enter",
+      "stonesLabel": "Sáu quả cân đá dưới nước: kéo quả cân là lý do quan trọng với việc đang treo lên đĩa cân, hoặc chọn rồi bấm Enter",
       "right": "Đúng phía.",
-      "wrong": "Quả cân này nghiêng về phía bên kia.",
+      "wrong": "Với việc này, điều đó không phải lý do chính.",
       "insight": {
-        "text": "Chạy AI trên máy mình (local AI) có thể hoàn toàn không cần mạng sau khi tải model; đổi lại, máy phải đủ mạnh.",
+        "text": "Dữ liệu khách nhạy cảm thì chạy trên máy; cần chất lượng cao nhất thì gửi lên mây.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Chạy trên máy thì sau khi tải model không cần mạng nữa; đổi lại máy phải đủ mạnh — cảnh sau cho biết bao nhiêu là đủ.",
         "asOf": "2026-10-15",
         "source": "t32-lmstudio-docs"
       },
-      "detail": {
-        "text": "Riêng tư còn tuỳ công cụ: Ollama có cả model chạy trên máy lẫn model chạy trên mây (cần API key). Xem kỹ trước khi đưa dữ liệu nhạy cảm.",
-        "asOf": "2026-10-15",
-        "source": "t32-ollama-quickstart"
-      }
+      "tasks": [
+        {
+          "label": "Soạn hợp đồng có số điện thoại khách",
+          "short": "soạn hợp đồng khách",
+          "need": [
+            "privacy"
+          ],
+          "verdict": "→ Chạy trên máy"
+        },
+        {
+          "label": "Viết slogan cho chiến dịch lớn",
+          "short": "viết slogan chiến dịch lớn",
+          "need": [
+            "quality"
+          ],
+          "verdict": "→ Gửi lên mây"
+        },
+        {
+          "label": "Viết 300 caption mỗi ngày",
+          "short": "viết 300 caption mỗi ngày",
+          "need": [
+            "fee"
+          ],
+          "verdict": "→ Chạy trên máy, đỡ phí"
+        }
+      ],
+      "taskTpl": "Việc {n}/{total}: {task} — kéo lý do quan trọng lên đĩa",
+      "taskCount": "Việc {n}/{total}"
     },
     "table": {
       "label": "Model vừa cái bàn",
@@ -266,8 +295,8 @@
         "takeaway": "t32-lmstudio-start"
       },
       "stepsLabel": "Thắp đèn đầu tiên",
-      "stepsPrompt": "Xếp bốn bước thắp đèn",
-      "stepsArt": "Một nền đá trống giữa thảm rêu dưới trăng; xa xa trong sương là căn nhà nhỏ của bạn, cửa sổ còn tối. Bốn bộ phận của một ngọn đèn đá nằm quanh đó — đế, thân, lồng đèn, mái — mỗi bộ phận khắc một bước. Đặt đúng thứ tự, ngọn đèn dựng dần lên; đặt mái xong thì lồng đèn thắp sáng và cửa sổ nhà xa cũng sáng.",
+      "stepsPrompt": "Dựng đèn từ đế lên mái — mỗi tầng là một bước",
+      "stepsArt": "Một nền đá trống giữa thảm rêu dưới trăng; xa xa trong sương là căn nhà nhỏ của bạn, cửa sổ còn tối. Bốn bộ phận của một ngọn đèn đá nằm quanh đó — đế, thân, lồng đèn, mái — mỗi bộ phận khắc tên tầng và một bước. Dựng từ đế lên mái, ngọn đèn cao dần; đặt mái xong thì lồng đèn thắp sáng và cửa sổ nhà xa cũng sáng.",
       "stepAria": "Đặt bước {n}: {label}",
       "wrongHint": "Chưa tới bước này — ngọn đèn cần thứ tự.",
       "done": "Đèn đã thắp.",
@@ -276,45 +305,68 @@
         "asOf": "2026-10-15",
         "source": "t32-hf-gguf"
       },
-      "detail": "Giá & tính năng thay đổi thường xuyên — luôn kiểm tra trang chính thức trước khi cài."
+      "detail": "Giá & tính năng thay đổi thường xuyên — luôn kiểm tra trang chính thức trước khi cài.",
+      "stepPrompts": [
+        "Dựng đèn từ đế lên mái — mỗi tầng là một bước",
+        "Đặt tầng 2: thân đèn",
+        "Đặt tầng 3: lồng đèn",
+        "Đặt tầng 4: mái đèn"
+      ],
+      "tiers": [
+        "Đế",
+        "Thân",
+        "Lồng",
+        "Mái"
+      ],
+      "tierCount": "Tầng {n}/{total}",
+      "stepWrong": "Tầng này nằm cao hơn — đặt tầng dưới trước ({tier}).",
+      "stepsInsight": {
+        "text": "Bốn bước, không cần gõ lệnh: tải app, chọn model nhỏ, tải một lần, hỏi thử.",
+        "asOf": "2026-10-15",
+        "source": "t32-lmstudio-docs"
+      },
+      "stepsDetail": {
+        "text": "Lần đầu hãy hỏi điều bạn đã biết đáp án — bạn sẽ thấy model giỏi và yếu ở đâu.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      }
     },
     "scroll": {
       "label": "Cuộn lệnh",
-      "art": "Cận cảnh hốc tokonoma: một cuộn thư pháp treo, trục dưới nặng có tua. Ngọn đèn dầu nhỏ dưới sàn rọi ngược lên, bóng cuộn in mờ lên vách phía trên nó; bên cạnh là bình gốm cắm một cành hoa. Kéo trục xuống, giấy mở dần từng đoạn, mỗi đoạn một câu lệnh kèm lời dặn nhỏ bên lề như lời thầy dặn học trò.",
-      "prompt": "Mở cuộn lệnh",
-      "aria": "Cuộn mã: bốn lệnh Ollama cơ bản, có chú thích bên cạnh",
-      "rodAria": "Trục dưới của cuộn: kéo xuống (hoặc ↓, Enter) để mở từng đoạn",
-      "rodValue": "Đã mở {n}/{total} đoạn",
-      "code": {
-        "lang": "bash",
-        "code": "ollama pull gemma4:e2b\nollama run gemma4:e2b\nollama list\ncurl http://localhost:11434/api/chat -d '{\"model\": \"gemma4:e2b\", \"messages\": [{\"role\": \"user\", \"content\": \"Chào bạn\"}], \"stream\": false}'",
-        "notes": [
-          {
-            "line": 1,
-            "text": "Tải model về máy. Chỉ lần này cần mạng; bản mẫu này nặng khoảng 7 GB."
-          },
-          {
-            "line": 2,
-            "text": "Mở khung chat ngay trong terminal. Gõ /bye để thoát."
-          },
-          {
-            "line": 3,
-            "text": "Xem các model đang nằm trên máy bạn."
-          },
-          {
-            "line": 4,
-            "text": "App khác gọi model qua cổng nội bộ, không cần API key."
-          }
-        ]
+      "art": "Cận cảnh hốc tokonoma: một cuộn thư pháp treo, trục dưới nặng có tua. Ngọn đèn dầu nhỏ dưới sàn rọi ngược lên, bóng cuộn in mờ lên vách; bên cạnh là bình gốm cắm một cành hoa. Trên giấy chỉ có một dòng lệnh “ollama run” và một chỗ trống. Kéo thẻ tên một model nhỏ vào chỗ trống: đèn dầu bừng sáng, một khung trò chuyện viết mực hiện trên giấy với lời chào của model, cạnh biểu tượng wifi bị gạch — máy mất mạng mà vẫn chạy. Trong vách hốc có một cửa sau nhỏ ghi localhost:11434.",
+      "prompt": "Kéo tên một model vào chỗ trống trên cuộn",
+      "aria": "Cuộn lệnh: một dòng lệnh Ollama để chạy model ngay trên máy",
+      "typeHere": "Gõ dòng này vào cửa sổ lệnh (Terminal trên Mac, PowerShell trên Windows).",
+      "cmd": "ollama run",
+      "blankAria": "Chỗ trống sau lệnh: tên model",
+      "models": [
+        {
+          "name": "llama3.2",
+          "size": "≈ 2 GB"
+        },
+        {
+          "name": "gemma3:1b",
+          "size": "≈ 0,8 GB"
+        }
+      ],
+      "modelAria": "Đặt model {name} ({size}) vào chỗ trống",
+      "chat": {
+        "you": "Xin chào",
+        "ai": "Chào bạn! Mình đang chạy ngay trên máy này."
       },
-      "modelNote": "Tên model lấy từ ví dụ trong tài liệu Ollama và sẽ đổi theo thời gian; tra tên mới trong thư viện Ollama trước khi chạy.",
+      "offline": "Mất mạng vẫn chạy",
+      "door": "localhost:11434",
+      "doorAria": "Cửa sau localhost:11434: chạm để xem nó dùng làm gì",
+      "doorNote": "App khác trên máy gõ cửa ở đây để dùng model — không cần mật khẩu API.",
+      "modelNote": "Tên và cỡ model lấy từ thư viện Ollama (10/2026) và sẽ đổi theo thời gian; tra tên mới trong thư viện Ollama trước khi chạy.",
       "insight": {
-        "text": "Với Ollama, lệnh “ollama run” vừa tải model vừa mở khung trò chuyện ngay trên máy bạn.",
+        "text": "Một dòng lệnh: Ollama tự tải model rồi mở khung chat ngay trên máy bạn.",
         "asOf": "2026-10-15",
         "source": "t32-ollama-quickstart"
       },
       "detail": {
-        "text": "Model trên máy gọi qua localhost không cần API key; model trên mây của Ollama thì cần key và gửi dữ liệu đi.",
+        "text": "Lần đầu cần mạng để tải; từ lần sau chạy được cả khi mất mạng.",
         "asOf": "2026-10-15",
         "source": "t32-ollama-quickstart"
       },

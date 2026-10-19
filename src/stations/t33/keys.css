@@ -59,9 +59,12 @@
 /* judged: trails of leaked data (too many), sealed doors (right), barred doors (too few) */
 .t33y-trail { fill: var(--vermilion); opacity: 0; transition: opacity 0.8s var(--ease) 0.2s; }
 .t33y.too-many.x-0 .t33y-d0 .t33y-trail, .t33y.too-many.x-1 .t33y-d1 .t33y-trail, .t33y.too-many.x-2 .t33y-d2 .t33y-trail, .t33y.too-many.x-4 .t33y-d4 .t33y-trail { opacity: 0.85; }
+/* sending without the thread: the leak runs out of the mail gate itself */
+.t33y.no-ask .t33y-d3 .t33y-trail { opacity: 0.85; }
 /* the seals: two paper ofuda pasted in an X, a vermilion stamp where they cross */
 .t33y-ofuda { opacity: 0; transform: translateY(-6px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
-.t33y.right .t33y-d1 .t33y-ofuda, .t33y.right .t33y-d2 .t33y-ofuda, .t33y.right .t33y-d4 .t33y-ofuda { opacity: 1; transform: none; }
+.t33y.right .t33y-d0 .t33y-ofuda, .t33y.right .t33y-d1 .t33y-ofuda, .t33y.right .t33y-d2 .t33y-ofuda, .t33y.right .t33y-d4 .t33y-ofuda { opacity: 1; transform: none; }
+.t33y.right .t33y-d1 .t33y-ofuda { transition-delay: 0.08s; }
 .t33y.right .t33y-d2 .t33y-ofuda { transition-delay: 0.15s; }
 .t33y.right .t33y-d4 .t33y-ofuda { transition-delay: 0.3s; }
 .t33y-ofsh { fill: var(--umbra); opacity: 0.35; }
@@ -78,7 +81,10 @@
 /* the risk written under each door once its key is given */
 .t33y-risks { position: absolute; inset: 0; }
 .t33y-risk { position: absolute; margin: 0; transform: translateX(-50%); font: 400 0.84rem/1.4 var(--serif); text-align: center; color: var(--ink-2); opacity: 0; transition: opacity 0.8s var(--ease) 0.3s; }
-.t33y.g-0 .t33y-risk:nth-child(1), .t33y.g-1 .t33y-risk:nth-child(2), .t33y.g-2 .t33y-risk:nth-child(3), .t33y.g-3 .t33y-risk:nth-child(4), .t33y.g-4 .t33y-risk:nth-child(5) { opacity: 1; }
+/* only the newest key's risk is written out; the older ones fold to a vermilion dot under their door */
+.t33y-risk.on { opacity: 1; }
+.t33y-risk.old { opacity: 1; font-size: 0; transition: none; }
+.t33y-risk.old::before { content: ''; position: absolute; left: calc(50% + var(--o, 0) * 12px); top: 4px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--vermilion); opacity: 0.8; }
 
 /* foreground: the stone lantern's roof, its fire, the cord */
 .t33y-firehalo { fill: url(#t33-warm); opacity: 0.9; }
@@ -117,8 +123,18 @@
   z-index: 3;
   pointer-events: none;
 }
-/* only the bronze and the tag catch the pointer (the keys' boxes overlap in the bunch) */
-.t33y-bronze, .t33y-tagp { pointer-events: auto; }
+/* only the bit end and the tag catch the pointer: the bows meet at the ring, the fan keeps the bits and tags apart */
+.t33y-hit, .t33y-tagp { pointer-events: auto; }
+.t33y-hit { fill: transparent; }
+/* the vermilion thread "ask me first", wound round the shaft once tied */
+.t33y-thread { fill: var(--vermilion); opacity: 0; transition: opacity 0.3s; }
+.t33y-key.ask .t33y-thread { opacity: 0.95; }
+.t33y-ask { display: none; font: italic 400 0.72rem/1.2 var(--serif); color: var(--vermilion); }
+.t33y-key.ask .t33y-ask { display: block; }
+.t33y-key.ask .t33y-tagp { box-shadow: inset 3px 0 0 var(--vermilion), inset 0 0 0 999px color-mix(in srgb, var(--lantern) 18%, transparent), 0 8px 14px -10px var(--umbra); }
+/* in the hand the tags stand in a column (placed by JS): no string */
+.t33y-key[aria-pressed='true'] .t33y-string { display: none; }
+.t33y-palm { position: absolute; pointer-events: none; }
 .t33y-key.held { cursor: grabbing; z-index: 5; }
 .t33y-key:focus-visible { outline: none; }
 .t33y-key:focus-visible .t33y-tagp { outline: 2px solid var(--vermilion); outline-offset: 2px; }
@@ -139,6 +155,9 @@
   left: 0;
   width: max-content;
   max-width: 8.6em;
+  min-height: 44px;
+  display: grid;
+  align-content: center;
   padding: 5px 9px 6px;
   border-radius: 2px 3px 3px 2px;
   transform: translateX(-50%) rotate(calc((var(--row, 0) - 0.5) * 3deg));
@@ -222,8 +241,8 @@
   .t33y-say { left: 5%; right: 5%; bottom: auto; text-align: center; font-size: 0.9rem; }
   .t33y-risks { display: none; }
   .t33y-tagp { font-size: 0.74rem; max-width: 6.6em; padding: 3px 6px 4px; }
-  .t33y-tag { --sl: calc(6px + var(--row, 0) * 40px + var(--lift, 0px)); }
-  .t33y-key[aria-pressed='true'] .t33y-tag { --sl: calc(4px + var(--row, 0) * 40px); }
+  .t33y-tag { --sl: calc(6px + var(--row, 0) * 48px + var(--lift, 0px)); }
+  .t33y-key[aria-pressed='true'] .t33y-tag { --sl: 4px; }
   /* once the job is handed over, the keys left on the ring step back so the sealed doors behind them show */
   .t33y.right .t33y-key[aria-pressed='false'] .t33y-tag { opacity: 0.22; transition: opacity 0.6s var(--ease); }
   .t33y .t33-take { left: 50%; right: auto; bottom: auto; translate: -50% 0; }

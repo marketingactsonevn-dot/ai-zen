@@ -4,9 +4,10 @@ import type { Fact } from '../../core/content'
 import { sliced } from '../../core/chunk'
 import { blob, curve, onSize, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon } from '../../ui/part2/paint'
+import { guide, type Mark, type Track } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import './whisper.css'
-import { cardSheet, f1, lantern, live, P, t33Defs } from './kit'
+import { cardSheet, f1, guard, lantern, live, P, t33Defs } from './kit'
 
 const K = raw.scenes.whisper
 const L = K.letter
@@ -106,7 +107,32 @@ function stepArt(W: number, H: number, top: number, mobile: boolean, seed: numbe
   }
 }
 
-/** Scene 3 — a polite letter on a wet step: hold the lantern behind it and the hidden line glows through like a watermark. */
+/** The garden's mail gate (viewBox 0 0 80 100): two posts and a lintel, its leaves swung open — or shut under two paper seals. */
+function gateArt() {
+  return s('svg', { viewBox: '0 0 80 100', 'aria-hidden': 'true' },
+    s('path', { class: 't33w-gsh', d: 'M2 98H84L76 100H6Z' }),
+    s('g', { class: 't33w-gopen' }, s('path', { class: 't33w-gleaf', d: 'M22 30L10 36V96L22 92ZM58 30L70 36V96L58 92Z' })),
+    s('g', { class: 't33w-gshut' },
+      s('path', { class: 't33w-gleaf', d: 'M22 30H58V94H22Z' }),
+      s('path', { class: 't33w-gseam', d: 'M40 30V94' }),
+      s('path', { class: 't33w-gseal', d: 'M20 36L24 32L60 86L56 90ZM56 32L60 36L24 90L20 86Z' }),
+      s('path', { class: 't33w-gstamp', d: 'M36 56H44V64H36Z' })),
+    s('path', { class: 't33w-gpost', d: 'M15 20H22V98H15ZM58 20H65V98H58Z' }),
+    s('path', { class: 't33w-groof', d: 'M2 22Q40 10 78 22L74 28H6Z', filter: 'url(#ink-rough)' }),
+    s('path', { class: 't33w-gbeam', d: 'M10 30H70V34H10Z' }))
+}
+
+/** A folded paper crane (viewBox -30 -20 60 40): what the agent sends out when it obeys the hidden line. */
+const craneArt = () => s('svg', { viewBox: '-30 -20 60 40', 'aria-hidden': 'true' },
+  s('path', { class: 't33w-cwing', d: 'M-4 2L6 -18L10 2Z' }),
+  s('path', { class: 't33w-cbody', d: 'M-28 -6L-6 4L0 12L6 4L28 -10L8 6L0 14L-8 6Z' }),
+  s('path', { class: 't33w-cwing2', d: 'M-2 4L-14 -16L4 2Z' }))
+
+/**
+ * Scene 3 — a polite letter on a wet step: hold the lantern behind it and the hidden line glows through like a watermark.
+ * Then what the line does: the agent obeys, a paper crane carries the file to the garden gate. Sealed gate (the keys scene
+ * kept the "send" key, or tied its thread): the crane stops there. Open gate: it flies off, and touching the gate seals it.
+ */
 export function whisperScene(ctx: SceneCtx) {
   t33Defs()
   const low = ctx.quality === 'low'
@@ -130,12 +156,24 @@ export function whisperScene(ctx: SceneCtx) {
   const tex = h('div', { class: 't33w-tex t33-fade', 'aria-hidden': 'true' })
   const say = live('t33w-say t33-ink')
   const stage = h('div', { class: 't33w-stage' }, step, tex, letter, lamp)
+  const gate = h('button', { class: 't33w-gate', type: 'button', 'aria-label': K.gateAria, disabled: true }, gateArt())
+  const crane = h('div', { class: 't33w-crane', 'aria-hidden': 'true' }, craneArt())
+  let sealed = guard.send === true
+  gate.classList.toggle('sealed', sealed)
   const root = h('div', { class: `t33 t33w${low ? ' low up' : ''}`, role: 'group', 'aria-label': K.aria },
-    night, stage, say,
+    night, gate, stage, crane, say,
     h('p', { class: 'visually-hidden' }, K.art))
   ctx.art.append(root)
-  ctx.prompt(K.prompt)
   const card = cardSheet(root, K.takeaway, ctx.onCleanup)
+  // guide (H1, H2/H4, H5): a dot on the lantern's handle; held, a faint arrow toward the paper; a groove under the hidden
+  // line fills as the light passes behind it; the prompt per step
+  const g = guide(ctx)
+  const steps = g.steps(K.prompts)
+  ctx.prompt(K.prompt)
+  const dot = g.dot(lamp, { dir: [-1, -0.4] })
+  let arrow: Mark | null = null
+  let way: Track | null = null
+  let line: [number, number, number] = [0, 0, 0] // under the hidden line: x0, y, x1 (px in the scene)
 
   // ── layout: the night, the step, where the letter and the lantern rest
   const G = { W: 0, H: 0, home: [0, 0] as Pt }
@@ -151,6 +189,9 @@ export function whisperScene(ctx: SceneCtx) {
     root.style.setProperty('--lw', `${lw}px`)
     const top = H * (mobile ? 0.5 : 0.44)
     G.home = mobile ? [W * 0.89, H * 0.925] : [W * 0.5 + lw * 0.68, H * 0.76]
+    // the gate stands on the far bank, left of the letter (a phone: high on the left, clear of the standing letter)
+    const gw = mobile ? 58 : Math.max(70, Math.min(110, W * 0.07))
+    Object.assign(gate.style, { left: `${f1(W * 0.06)}px`, top: `${f1(mobile ? H * 0.16 : top - gw * 1.15)}px`, width: `${f1(gw)}px`, height: `${f1(gw * 1.25)}px` })
     for (const g of [night, step]) g.setAttribute('viewBox', `0 0 ${W} ${H}`)
     function* draw() {
       night.replaceChildren(
@@ -214,7 +255,9 @@ export function whisperScene(ctx: SceneCtx) {
         const cx = wm.left + ((i + 0.5) / seen.length) * wm.width
         if (Math.abs(cx - x) < R * 0.8) seen[i] = true
       }
-      if (seen.filter(Boolean).length >= seen.length * 0.7) sweep()
+      const n = seen.filter(Boolean).length
+      way?.set(n / (seen.length * 0.7))
+      if (n >= seen.length * 0.7) sweep()
     }
   }
   const measure = () => {
@@ -223,6 +266,11 @@ export function whisperScene(ctx: SceneCtx) {
     rootBox = root.getBoundingClientRect()
     sheet.style.setProperty('--wx', `${f1(wm.left - box.left)}px`)
     sheet.style.setProperty('--wy', `${f1(wm.top - box.top)}px`)
+    line = [wm.left - rootBox.left, wm.bottom - rootBox.top + 4, wm.right - rootBox.left]
+    if (!done) {
+      way ??= g.track(() => [[line[0], line[1]], [line[2], line[1]]])
+      g.refresh()
+    }
   }
   lamp.addEventListener('pointerdown', (e) => {
     if (done && !raised) return
@@ -233,6 +281,12 @@ export function whisperScene(ctx: SceneCtx) {
     p0 = [e.clientX, e.clientY]
     root.classList.add('held')
     raise()
+    if (!done) {
+      steps(1)
+      dot.done()
+      // the hidden gesture: carry it behind the paper (a faint curved arrow from the lantern toward the letter)
+      arrow ??= g.gesture('swipe', () => [(lx + (box && rootBox ? box.left - rootBox.left + box.width / 2 : lx)) / 2, ly - 60], { r: 46 })
+    }
     // the letter takes a moment to stand: measure it where it will be
     const later = quick ? 0 : 1100
     const id = setTimeout(measure, later)
@@ -277,6 +331,9 @@ export function whisperScene(ctx: SceneCtx) {
   function sweep() {
     if (done) return
     done = true
+    dot.done()
+    arrow?.done()
+    way?.set(1)
     const go = () => {
       root.classList.add('swept')
       ctx.chime('low')
@@ -285,12 +342,56 @@ export function whisperScene(ctx: SceneCtx) {
         behind = true
         if (!held) placeBehind()
         say.say(h('p', { class: 'visually-hidden' }, L.hidden), h('p', null, K.revealed))
-        ctx.insight(K.insight as Fact, K.detail as Fact)
-        card.show()
+        way?.done()
+        const fly = setTimeout(send, quick ? 600 : 1800)
+        ctx.onCleanup(() => clearTimeout(fly))
       }, quick ? 0 : 1500)
       ctx.onCleanup(() => clearTimeout(id))
     }
     const id = setTimeout(go, quick ? 0 : raised && root.classList.contains('up') ? 500 : 1300)
     ctx.onCleanup(() => clearTimeout(id))
   }
+
+  // ── what the hidden line does: the agent obeys and sends a crane out through the garden gate
+  let gateDot: Mark | null = null
+  function send() {
+    const sb = sheet.getBoundingClientRect(), gb = gate.getBoundingClientRect(), rb = root.getBoundingClientRect()
+    const a: Pt = [sb.left - rb.left + sb.width * 0.5, sb.top - rb.top + sb.height * 0.45]
+    const b: Pt = [gb.left - rb.left + gb.width * 0.5, gb.top - rb.top + gb.height * 0.55]
+    const at = (p: Pt, rot = 0, sc = 1) => `translate(${f1(p[0])}px, ${f1(p[1])}px) rotate(${rot}deg) scale(${sc})`
+    crane.classList.add('on')
+    const mid: Pt = [(a[0] + b[0]) / 2, Math.min(a[1], b[1]) - 60]
+    const frames = sealed
+      // it reaches the sealed gate, bumps it and drops to the ground
+      ? [{ transform: at(a, 0, 0.6), opacity: 0 }, { transform: at(a, -8), opacity: 1, offset: 0.12 }, { transform: at(mid, -14), offset: 0.5 }, { transform: at([b[0] + 26, b[1]], -6), offset: 0.82 }, { transform: at([b[0] + 34, b[1] + 40], 40, 0.9), opacity: 0.85 }]
+      // it flies through the open gate and is gone
+      : [{ transform: at(a, 0, 0.6), opacity: 0 }, { transform: at(a, -8), opacity: 1, offset: 0.12 }, { transform: at(mid, -14), offset: 0.45 }, { transform: at(b, -10, 0.8), offset: 0.75 }, { transform: at([b[0] - 120, b[1] - 140], -20, 0.4), opacity: 0 }]
+    const anim = crane.animate(frames, { duration: quick ? 1 : 2600, easing: 'ease-in-out', fill: 'forwards' })
+    ctx.onCleanup(() => anim.cancel())
+    anim.onfinish = () => {
+      if (sealed) return stopped()
+      ctx.chime('low')
+      ctx.prompt(K.flew, 'wrong')
+      gate.disabled = false
+      gateDot = g.dot(gate, { dir: [0, 1] })
+    }
+  }
+  function stopped() {
+    say.say(h('p', { class: 'visually-hidden' }, L.hidden), h('p', null, K.stopped))
+    ctx.chime('ok')
+    ctx.insight(K.insight as Fact, K.detail as Fact)
+    card.show()
+  }
+  // sealing the gate takes the "send out" right away from the agent: the crane is sent again and stops there
+  gate.addEventListener('click', () => {
+    if (sealed) return
+    sealed = true
+    gate.disabled = true
+    gate.classList.add('sealed')
+    gateDot?.done()
+    g.ok(gate)
+    ctx.chime('tap')
+    const id = setTimeout(send, quick ? 0 : 700)
+    ctx.onCleanup(() => clearTimeout(id))
+  })
 }

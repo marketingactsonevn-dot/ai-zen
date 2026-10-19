@@ -17,8 +17,8 @@
   "scenes": {
     "scale": {
       "label": "The scale",
-      "art": "Seen from low on the water: an old pine bough reaches across a great moon, a steelyard hanging from it with its beam across the moon's face. The left pan holds a little house with a lit oil lamp; the right, a silver cloud over half a small moon. Six carved stone weights lie half-sunk in the shallows; lift each onto a pan and the beam tips and sways, a paper tag with the reason hangs under the pan, and the water mirrors the whole scale upside down.",
-      "prompt": "Put each weight on a pan",
+      "art": "Seen from low on the water: an old pine bough reaches across a great moon, a steelyard hanging from it with its beam across the moon's face. The left pan holds a little house with a lit oil lamp (running on your own machine); the right, a silver cloud (running in the cloud). From the middle of the beam hangs a slip of paper with a job to do, three jobs in turn. Six carved stone weights, each a reason, lie half-sunk in the shallows; for each job, lift the reason that matters most onto the scale and the beam tips firmly to one side — that is the answer — while a paper tag with the reason hangs under the pan.",
+      "prompt": "Drag the weights that matter for this job onto a pan",
       "aria": "The scale: run AI on your own machine or in the cloud. Put each weight on the side it favours",
       "sides": [
         { "id": "local", "name": "Lamp at home (local)", "aria": "The pan for running on your own machine" },
@@ -27,25 +27,33 @@
       "weights": [
         { "id": "privacy", "label": "Privacy", "side": "local", "why": "Your questions and documents can stay on your machine." },
         { "id": "offline", "label": "Works offline", "side": "local", "why": "Download the model once; after that you don't need the internet." },
-        { "id": "fee", "label": "No per-use fees", "side": "local", "why": "You pay with your hardware and electricity, not per token." },
+        { "id": "fee", "label": "No per-use fees", "side": "local", "why": "You pay for the machine and the electricity, not for how many words the AI writes." },
         { "id": "quality", "label": "Top quality", "side": "cloud", "why": "The largest models usually live only in the cloud, or need a very powerful machine." },
         { "id": "light", "label": "Works on weak machines", "side": "cloud", "why": "The server does the heavy lifting; your machine just sends and receives text." },
         { "id": "update", "label": "Always the latest", "side": "cloud", "why": "The provider upgrades for you; locally, you download new versions yourself." }
       ],
       "weightAria": "Put the “{label}” weight on the {side} pan",
-      "stonesLabel": "Six stone weights in the water: drag one onto a pan, or pick it and use ← → and Enter",
+      "stonesLabel": "Six stone weights in the water: drag the weight that matters for the hanging job onto a pan, or pick it and press Enter",
       "right": "Right side.",
-      "wrong": "This weight leans the other way.",
+      "wrong": "For this job, that isn't the main reason.",
       "insight": {
-        "text": "Running AI on your own machine (local AI) can work fully offline once the model is downloaded; in return, the machine must be strong enough.",
+        "text": "Sensitive customer data: run it on your machine; when you need the very best quality: send it to the cloud.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Running on your machine means no internet needed once the model is downloaded; in return the machine must be strong enough — the next scene shows how strong is enough.",
         "asOf": "2026-10-15",
         "source": "t32-lmstudio-docs"
       },
-      "detail": {
-        "text": "Privacy depends on the tool: Ollama has both models that run on your machine and cloud models (which need an API key). Check before sharing sensitive data.",
-        "asOf": "2026-10-15",
-        "source": "t32-ollama-quickstart"
-      }
+      "tasks": [
+        { "label": "Draft a contract with customers' phone numbers", "short": "a contract with customer data", "need": ["privacy"], "verdict": "→ Run it on your machine" },
+        { "label": "Write the slogan for a big campaign", "short": "a big campaign slogan", "need": ["quality"], "verdict": "→ Send it to the cloud" },
+        { "label": "Write 300 captions a day", "short": "300 captions a day", "need": ["fee"], "verdict": "→ On your machine, to save fees" }
+      ],
+      "taskTpl": "Job {n}/{total}: {task} — drag the reason that matters onto a pan",
+      "taskCount": "Job {n}/{total}"
     },
     "table": {
       "label": "A model that fits the table",
@@ -180,8 +188,23 @@
         "takeaway": "t32-lmstudio-start"
       },
       "stepsLabel": "Lighting the first lamp",
-      "stepsPrompt": "Order the four lighting steps",
-      "stepsArt": "An empty stone footing in a bed of moss under the moon; far off in the mist, your little house, its window still dark. The four parts of a stone lantern lie about — base, shaft, firebox, roof — each carved with one step. Set them in order and the lantern rises; once the roof is on, the firebox lights, and so does the window of the house far away.",
+      "stepsPrompt": "Build the lamp from base to roof — each tier is one step",
+      "stepsArt": "An empty stone footing in a bed of moss under the moon; far off in the mist, your little house, its window still dark. The four parts of a stone lantern lie about — base, shaft, firebox, roof — each carved with its tier and one step. Build it from the base up to the roof and the lantern rises; once the roof is on, the firebox lights, and so does the window of the house far away.",
+      "stepPrompts": ["Build the lamp from base to roof — each tier is one step", "Place tier 2: the shaft", "Place tier 3: the firebox", "Place tier 4: the roof"],
+      "tiers": ["Base", "Shaft", "Firebox", "Roof"],
+      "tierCount": "Tier {n}/{total}",
+      "stepWrong": "This tier sits higher up — place the one below first ({tier}).",
+      "stepsInsight": {
+        "text": "Four steps, no typing commands: get the app, pick a small model, download it once, ask it something.",
+        "asOf": "2026-10-15",
+        "source": "t32-lmstudio-docs"
+      },
+      "stepsDetail": {
+        "text": "The first time, ask something you already know the answer to — you'll see where the model is good and where it is weak.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
       "stepAria": "Place step {n}: {label}",
       "wrongHint": "Not this step yet — a lamp needs the right order.",
       "done": "The lamp is lit.",
@@ -194,29 +217,27 @@
     },
     "scroll": {
       "label": "The command scroll",
-      "art": "A close view of a tokonoma alcove: a hanging calligraphy scroll, its heavy lower rod with a tassel. A small oil lamp on the floor lights it from below, so the scroll's soft shadow falls on the plaster above it; beside it, a ceramic vase with one flowering branch. Pull the rod down and the paper unrolls section by section, each a command with a small note in the margin, like a teacher's advice to a student.",
-      "prompt": "Unroll the command scroll",
-      "aria": "Code scroll: four basic Ollama commands, with notes beside them",
-      "rodAria": "The scroll's lower rod: pull it down (or ↓, Enter) to unroll one section at a time",
-      "rodValue": "{n} of {total} sections open",
-      "code": {
-        "lang": "bash",
-        "code": "ollama pull gemma4:e2b\nollama run gemma4:e2b\nollama list\ncurl http://localhost:11434/api/chat -d '{\"model\": \"gemma4:e2b\", \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}], \"stream\": false}'",
-        "notes": [
-          { "line": 1, "text": "Downloads the model to your machine. Only this step needs the internet; this sample model is about 7 GB." },
-          { "line": 2, "text": "Opens a chat right in the terminal. Type /bye to leave." },
-          { "line": 3, "text": "Lists the models stored on your machine." },
-          { "line": 4, "text": "Other apps call the model through the local port — no API key needed." }
-        ]
-      },
-      "modelNote": "The model name comes from an example in the Ollama docs and will change over time; look up current names in the Ollama library before running.",
+      "art": "A close view of a tokonoma alcove: a hanging calligraphy scroll with a heavy, tasselled lower rod. A small oil lamp on the floor lights it from below, the scroll's shadow faint on the wall; beside it, a pottery vase with one flowering branch. On the paper there is only one command, “ollama run”, and a blank. Drag the name slip of a small model into the blank: the oil lamp flares up, a chat written in ink appears on the paper with the model's greeting, beside a crossed-out wifi sign — the machine is offline and it still runs. In the alcove's side wall is a small back door marked localhost:11434.",
+      "prompt": "Drag a model's name into the blank on the scroll",
+      "aria": "The command scroll: one Ollama command to run a model right on your machine",
+      "typeHere": "Type this line into a command window (Terminal on Mac, PowerShell on Windows).",
+      "cmd": "ollama run",
+      "blankAria": "The blank after the command: a model's name",
+      "models": [{ "name": "llama3.2", "size": "≈ 2 GB" }, { "name": "gemma3:1b", "size": "≈ 0.8 GB" }],
+      "modelAria": "Put the {name} model ({size}) into the blank",
+      "chat": { "you": "Hello", "ai": "Hi! I'm running right here on this machine." },
+      "offline": "Offline and still running",
+      "door": "localhost:11434",
+      "doorAria": "The back door localhost:11434: touch to see what it is for",
+      "doorNote": "Other apps on your machine knock here to use the model — no API password needed.",
+      "modelNote": "Model names and sizes come from the Ollama library (10/2026) and will change over time; look up the current name in the Ollama library before running it.",
       "insight": {
-        "text": "With Ollama, “ollama run” both downloads a model and opens a chat right on your machine.",
+        "text": "One command: Ollama downloads the model by itself, then opens a chat right on your machine.",
         "asOf": "2026-10-15",
         "source": "t32-ollama-quickstart"
       },
       "detail": {
-        "text": "Local models called via localhost need no API key; Ollama's cloud models do need a key and send your data out.",
+        "text": "The first time it needs the internet to download; after that it runs even offline.",
         "asOf": "2026-10-15",
         "source": "t32-ollama-quickstart"
       },

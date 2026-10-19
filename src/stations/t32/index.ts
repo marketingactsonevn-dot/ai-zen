@@ -14,7 +14,7 @@ const S = raw.scenes
 const station: StationModule = {
   content: raw as unknown as StationContent,
   scenes: [
-    { label: S.scale.label, mount: scaleScene },
+    { label: S.scale.label, text: 'br', mount: scaleScene },
     { label: S.table.label, mount: tableScene },
     { label: S.lamps.label, mount: lampsScene },
     firstLamp(),

@@ -1,124 +1,135 @@
 import raw from '../../content/tram-32.json'
-import { fill, h } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
 import type { Fact } from '../../core/content'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
-import { codeScroll } from '../../ui/part2/code'
 import { curve, rng, type Pt } from '../../ui/part2/ink'
-import type { CodeScroll } from '../../ui/part2/types'
+import { guide, type Mark } from '../../ui/part2/guide'
+import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
+import type { Takeaway } from '../../ui/part2/types'
 import type { SceneCtx } from '../types'
-import { brush, cardSheet, clamp, fit, grainOver, mix, palette, rgba, stageSize, type Pal } from './kit'
+import { brush, clamp, fit, grainOver, mix, palette, rgba, stageSize, type Pal } from './kit'
 
 const K = raw.scenes.scroll
 
 /**
- * Scene 5 — the tokonoma: a hanging scroll in the alcove, seen straight on, a small oil lamp on the floor board lighting
- * it from below (the warmth climbs the plaster; the scroll's shadow falls above it). Pull the heavy lower rod down and
- * the paper unrolls the four commands, block by block; let go halfway and the rod springs back a little. Hover a line and
- * the flame leans toward it. 2.5D: the alcove painted once on a canvas, the scroll a DOM layer (clip + transform only).
+ * Scene 5 — "Một dòng lệnh": the tokonoma, a hanging scroll in the alcove seen straight on, a small oil lamp on the floor
+ * board lighting it from below. On the washi only one line, `ollama run ____`, with the margin note on where to type it.
+ * Drag (or tap) a small model's name slip into the blank: the lamp flares, and a chat written in ink appears on the paper
+ * — the model answering — beside a crossed-out wifi (it runs with the network off). A little back door in the alcove's
+ * side wall carries `localhost:11434`; touch it to read what it is for. The other commands stay in the take-away card.
+ * 2.5D: the alcove painted once on a canvas, the scroll and the slips DOM.
  */
 export function scrollScene(ctx: SceneCtx) {
   const still = ctx.quality === 'low' || ctx.reduced
-  const blocks = K.code.notes.length
-  // 0 rolled … 1 fully open: it hangs with its first command showing (low quality: hung open already)
-  let open = ctx.quality === 'low' ? 1 : 1 / blocks
   let done = false
 
   const cv = h('canvas', { class: 't32-cv t32-bleed', 'aria-hidden': 'true' })
-  const code = codeScroll(K.code as CodeScroll)
+  // the line on the paper: the command, the blank to drop a model name in, then the chat that answers
+  const blank = h('span', { class: 't32x-blank', 'aria-label': K.blankAria })
+  const chat = h('div', { class: 't32x-chat', hidden: true },
+    h('p', { class: 't32x-you' }, h('span', { 'aria-hidden': 'true' }, '>>> '), K.chat.you),
+    h('p', { class: 't32x-ai' }, K.chat.ai),
+    h('p', { class: 't32x-off' },
+      s('svg', { viewBox: '0 0 24 18', 'aria-hidden': 'true' },
+        s('path', { d: 'M2 6.5C8 1 16 1 22 6.5M5.5 10C9.5 6.5 14.5 6.5 18.5 10M9 13.4C10.8 12 13.2 12 15 13.4', fill: 'none' }),
+        s('circle', { cx: 12, cy: 16, r: 1.4 }),
+        s('path', { class: 't32x-cross', d: 'M4 1L20 17', fill: 'none' })),
+      K.offline))
+  const sheetIn = h('div', { class: 't32x-sheet' },
+    h('p', { class: 't32x-margin' }, K.typeHere),
+    h('p', { class: 't32x-cmd' }, h('code', null, `${K.cmd} `), blank),
+    chat)
   // the mounting: silk frame (chūmawashi) round the paper, gold bands (ichimonji) above and below it, the lower silk (chi)
-  const paper = h('div', { class: 't32x-paper' }, h('div', { class: 't32x-frame' }, h('i', { class: 't32x-ichi', 'aria-hidden': 'true' }), code, h('i', { class: 't32x-ichi', 'aria-hidden': 'true' })), h('i', { class: 't32x-chi', 'aria-hidden': 'true' }))
-  const roll = h('div', { class: 't32x-roll', 'aria-hidden': 'true' })
-  const rod = h('div', { class: 't32x-rod', role: 'slider', tabindex: '0', 'aria-label': K.rodAria, 'aria-valuemin': '0', 'aria-valuemax': String(blocks) },
-    h('span', { class: 't32x-knob', 'aria-hidden': 'true' }), h('span', { class: 't32x-knob t32x-knob-r', 'aria-hidden': 'true' }), h('span', { class: 't32x-tassel', 'aria-hidden': 'true' }))
+  const paper = h('div', { class: 't32x-paper' }, h('div', { class: 't32x-frame' }, h('i', { class: 't32x-ichi', 'aria-hidden': 'true' }), sheetIn, h('i', { class: 't32x-ichi', 'aria-hidden': 'true' })), h('i', { class: 't32x-chi', 'aria-hidden': 'true' }))
+  const rod = h('div', { class: 't32x-rod', 'aria-hidden': 'true' },
+    h('span', { class: 't32x-knob' }), h('span', { class: 't32x-knob t32x-knob-r' }), h('span', { class: 't32x-tassel' }))
   // the upper silk (ten) with its two hanging strips (fūtai), under the top rod
   const ten = h('div', { class: 't32x-ten', 'aria-hidden': 'true' }, h('i', { class: 't32x-futai' }), h('i', { class: 't32x-futai t32x-futai-r' }))
-  const hang = h('div', { class: 't32x-hang' }, h('span', { class: 't32x-cord', 'aria-hidden': 'true' }), ten, h('span', { class: 't32x-top', 'aria-hidden': 'true' }), paper, roll, rod)
+  const hang = h('div', { class: 't32x-hang' }, h('span', { class: 't32x-cord', 'aria-hidden': 'true' }), ten, h('span', { class: 't32x-top', 'aria-hidden': 'true' }), paper, rod)
   const flame = h('div', { class: 't32x-flame', 'aria-hidden': 'true' }, h('i'))
-  const note = h('p', { class: 't32-paper t32x-note', hidden: true }, K.modelNote)
+  // the model name slips on the floor board, and the back door in the side wall
+  const models = K.models.map((m) => h('button', { class: 't32x-model', type: 'button', 'aria-label': fill(K.modelAria, m) }, h('code', null, m.name), h('small', null, m.size)))
+  const tray = h('div', { class: 't32x-tray' }, ...models)
+  const door = h('button', { class: 't32x-door', type: 'button', 'aria-label': K.doorAria, 'aria-expanded': 'false' }, h('code', null, K.door))
+  const doorNote = h('p', { class: 't32-paper t32x-note', hidden: true }, K.doorNote)
+  const fold = h('div', { class: 't32x-fold' })
   const root = h('div', { class: `t32 t32x${still ? ' still' : ''}`, role: 'group', 'aria-label': K.aria },
     cv,
     h('div', { class: 't32-mist', 'aria-hidden': 'true' }),
     h('p', { class: 'visually-hidden' }, K.art),
-    flame, hang, note)
+    flame, hang, door, doorNote, tray, fold)
   ctx.art.append(root)
-  const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
+  ctx.prompt(K.prompt)
+  // guide: a dot on the first slip leaning toward the blank, the blank a dashed place to drop (H1, H3); then the back door
+  const g = guide(ctx)
+  let dot: Mark | null = g.dot(models[0], { dir: [-1, -0.4] })
+  const target = g.drop(blank, { round: false })
 
   let W = 0, H = 0, tall = false
-  let full = 0 // the paper's full open height, px
   let P: Pal = palette()
   let lamp: Pt = [0, 0] // the flame's foot, px
 
-  /** show `open` (0…1): the paper clipped from below, the roll and the rod riding its lower edge */
-  function show(glide = true) {
-    const y = full * open
-    paper.style.clipPath = `inset(0 0 ${(full - y).toFixed(1)}px 0)`
-    roll.style.transform = rod.style.transform = `translateY(${y.toFixed(1)}px)`
-    hang.classList.toggle('glide', glide && !still)
-    const n = Math.round(open * blocks)
-    rod.setAttribute('aria-valuenow', String(n))
-    rod.setAttribute('aria-valuetext', fill(K.rodValue, { n, total: blocks }))
-    if (open >= 0.999 && !done) finish()
-  }
-  function finish() {
+  /** a model's name goes into the blank: the lamp flares, the chat answers on the paper, the back door gets the dot */
+  function run(i: number) {
+    if (done) return
     done = true
-    root.classList.add('open')
-    // the model-name caveat: a slip beside the scroll (wide), or under the insight's "more" (a phone has no room)
-    note.hidden = tall
+    const m = K.models[i]
+    blank.textContent = m.name
+    blank.classList.add('filled')
+    models.forEach((b, j) => ((b.disabled = true), b.classList.toggle('used', j === i)))
+    target.hit()
+    dot?.done()
+    root.classList.add('lit')
     ctx.chime('soft')
-    ctx.insight(K.insight as Fact, tall ? [K.detail as Fact, K.modelNote] : (K.detail as Fact))
-    sheet.show()
+    const id = setTimeout(() => {
+      chat.hidden = false
+      ctx.insight(K.insight as Fact, [K.detail as Fact, K.modelNote])
+      const card = findTakeaway(K.takeaway)
+      if (card) fold.append(foldedTakeaway([card as Takeaway], ctx.onCleanup))
+      dot = g.dot(door, { dir: [0, 1] })
+    }, ctx.reduced ? 0 : 900)
+    ctx.onCleanup(() => clearTimeout(id))
   }
-  const notch = (d: number) => {
-    open = clamp(Math.round(open * blocks + d) / blocks, 0, 1)
-    show()
-  }
+  door.addEventListener('click', () => {
+    const open = doorNote.hidden
+    doorNote.hidden = !open
+    door.setAttribute('aria-expanded', String(open))
+    if (open) dot?.done(), (dot = null), ctx.chime('tap')
+  })
 
-  rod.addEventListener('keydown', (e) => {
-    const k = e.key
-    if (k === 'ArrowDown' || k === 'ArrowRight' || k === 'Enter' || k === ' ') notch(1)
-    else if (k === 'ArrowUp' || k === 'ArrowLeft') notch(-1)
-    else if (k === 'End') (open = 1), show()
-    else if (k === 'Home') (open = 0), show()
-    else return
-    e.preventDefault()
+  // drag a slip onto the blank (tap = it goes there by itself)
+  models.forEach((b, i) => {
+    let moved = false
+    b.addEventListener('click', () => !moved && run(i))
+    b.addEventListener('pointerdown', (e) => {
+      if (e.button || done) return
+      const x0 = e.clientX, y0 = e.clientY
+      moved = false
+      b.setPointerCapture(e.pointerId)
+      const move = (ev: PointerEvent) => {
+        if (!moved && Math.hypot(ev.clientX - x0, ev.clientY - y0) < 6) return
+        if (!moved) b.classList.add('drag'), target.lift(true)
+        moved = true
+        b.style.translate = `${(ev.clientX - x0).toFixed(1)}px ${(ev.clientY - y0).toFixed(1)}px`
+      }
+      const up = (ev: PointerEvent) => {
+        b.removeEventListener('pointermove', move)
+        b.removeEventListener('pointerup', up)
+        b.removeEventListener('pointercancel', up)
+        b.classList.remove('drag')
+        target.lift(false)
+        b.style.translate = ''
+        if (!moved) return
+        setTimeout(() => (moved = false))
+        const r = blank.getBoundingClientRect()
+        if (ev.type === 'pointerup' && ev.clientX > r.left - 40 && ev.clientX < r.right + 40 && ev.clientY > r.top - 30 && ev.clientY < r.bottom + 30) run(i)
+      }
+      b.addEventListener('pointermove', move)
+      b.addEventListener('pointerup', up)
+      b.addEventListener('pointercancel', up)
+    })
   })
-  // pull the rod: the paper follows the hand; let go between notches and the heavy rod springs back to the last one
-  let pulled = false
-  rod.addEventListener('pointerdown', (e) => {
-    if (e.button) return
-    const y0 = e.clientY, o0 = open
-    pulled = false
-    rod.setPointerCapture(e.pointerId)
-    const move = (ev: PointerEvent) => {
-      if (Math.abs(ev.clientY - y0) > 4) pulled = true
-      open = clamp(o0 + (ev.clientY - y0) / Math.max(1, full), 0, 1)
-      show(false)
-    }
-    const up = () => {
-      rod.removeEventListener('pointermove', move)
-      rod.removeEventListener('pointerup', up)
-      rod.removeEventListener('pointercancel', up)
-      if (open < 0.97) open = Math.floor(open * blocks + 0.15) / blocks
-      else open = 1
-      show()
-    }
-    rod.addEventListener('pointermove', move)
-    rod.addEventListener('pointerup', up)
-    rod.addEventListener('pointercancel', up)
-  })
-  rod.addEventListener('click', () => !pulled && open < 1 && notch(1)) // a tap opens one more section
-  // the flame leans toward the line under the hand (or the focus)
-  const lean = (e: Event) => {
-    const t = (e.target as Element).closest?.('.p2x-line, .p2x-block')
-    if (!t) return
-    const r = t.getBoundingClientRect(), b = root.getBoundingClientRect()
-    const dx = r.left + r.width / 2 - b.left - lamp[0]
-    flame.style.setProperty('--lean', `${clamp(dx / W, -0.5, 0.5) * 24}deg`)
-  }
-  paper.addEventListener('pointerover', lean)
-  paper.addEventListener('focusin', lean)
-  paper.addEventListener('pointerleave', () => flame.style.setProperty('--lean', '0deg'))
 
   // ── the alcove, painted once per size / theme ──
   function* paint(c: CanvasRenderingContext2D, sx: number, sw: number, top: number) {
@@ -332,26 +343,32 @@ export function scrollScene(ctx: SceneCtx) {
     root.classList.toggle('tall', tall)
     root.style.height = `${H}px`
     // a tall, narrow kakejiku: under half the width, its paper about 60 % of the height
-    const sw = tall ? Math.min(W - 64, 330) : clamp(W * 0.3, 340, 420)
+    const sw = tall ? Math.min(W - 48, 340) : clamp(W * 0.3, 360, 440)
     const sx = (W - sw) / 2 + (tall ? 4 : 0)
     const tenH = H * (tall ? 0.05 : 0.065)
     const top = H * 0.1 + tenH
-    full = H * (tall ? 0.555 : 0.64)
+    // the paper about 60 % of the height, hung open from the start
+    const full = H * (tall ? 0.5 : 0.6)
     Object.assign(hang.style, { left: `${sx}px`, top: `${top}px`, width: `${sw}px` })
     hang.style.setProperty('--ten', `${tenH.toFixed(1)}px`)
     paper.style.height = `${full}px`
+    rod.style.transform = `translateY(${full.toFixed(1)}px)`
     const floorY = H * (tall ? 0.76 : 0.82)
     // the lamp stands on the floor board left of the scroll (a phone: a low one under its corner)
     lamp = [tall ? W * 0.11 : sx - W * 0.09, floorY - H * (tall ? 0.04 : 0.22)]
     Object.assign(flame.style, { left: `${lamp[0]}px`, top: `${lamp[1] + 1}px` })
-    Object.assign(note.style, tall ? { left: '12px', right: '12px', top: `${top + full + 34}px`, width: 'auto' } : { left: `${sx + sw + 34}px`, top: `${top + 4}px`, width: `${Math.min(220, W - sx - sw - 60)}px` })
-    // the take-away card lies on the floor board, at the right
-    Object.assign(sheet.pill.style, { left: 'auto', right: tall ? '6px' : `${W * 0.04}px`, top: tall ? `${H * 0.012}px` : `${floorY + H * 0.012}px`, bottom: 'auto' })
+    // the name slips lie on the floor board right of the scroll (a phone: under it); the back door is in the side wall
+    const below = top + full + 40 // a phone: the row under the scroll (slips left, the door right; the card once done)
+    Object.assign(tray.style, tall ? { left: '12px', right: '72px', top: `${below}px`, width: 'auto' } : { left: `${sx + sw + 28}px`, right: 'auto', top: `${floorY - H * 0.2}px`, width: `${Math.min(200, W - sx - sw - 60)}px` })
+    Object.assign(door.style, tall ? { left: 'auto', right: '12px', top: `${below - 14}px` } : { left: `${W * 0.875}px`, right: 'auto', top: `${floorY - H * 0.36}px` })
+    Object.assign(doorNote.style, tall ? { left: '12px', right: '12px', top: `${top + full - 64}px`, width: 'auto' } : { left: `${sx + sw + 28}px`, right: 'auto', top: `${top + 4}px`, width: `${Math.min(220, W - sx - sw - 60)}px` })
+    // the take-away slip lies on the floor board at the right, away from the insight (a phone: where the slips were)
+    Object.assign(fold.style, tall ? { left: '12px', right: 'auto', top: `${below}px` } : { left: 'auto', right: `${W * 0.04}px`, top: `${floorY + H * 0.012}px` })
     const c = fit(cv, W, H, ctx.quality === 'low')
     job?.cancel()
     job = sliced(paint(c, sx, sw, top), { sync: ctx.reduced || painted })
     painted = true
-    show(false)
+    g.refresh()
   }
   ctx.onCleanup(() => job?.cancel())
   const ro = new ResizeObserver(() => requestAnimationFrame(() => layout()))

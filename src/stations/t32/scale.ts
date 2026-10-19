@@ -6,6 +6,7 @@ import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
 import { blob, curve, rng, rock, stroke, type Pt } from '../../ui/part2/ink'
 import type { SceneCtx } from '../types'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { brush, clamp, fit, grainOver, live, mix, palette, rgba, stageSize, type Pal, type RGB } from './kit'
 
 const K = raw.scenes.scale
@@ -20,55 +21,58 @@ const DENTS = (() => { const r = rng(3360); return Array.from({ length: 16 }, ()
 
 /**
  * Scene 1 — a steelyard hung from an old pine bough across a great moon, seen from low on the water. Left pan: your
- * house with its oil lamp; right pan: a silver cloud over a small moon. Lift a carved river stone out of the shallows and
- * drop it on a pan: the beam tips on a damped spring, the copper pans swing on their chains, a paper tag with the reason
- * hangs under the pan, the water mirrors it all. 2.5D: painted flats at depths (sky, bough, scale, water) with a little
- * parallax, the stones DOM over the water; one loop for the spring and the parallax.
+ * house with its oil lamp; right pan: a silver cloud over a small moon. A slip with a job hangs from the beam (three jobs
+ * in turn); lift the carved river stone that is the reason that matters for it and drop it on the scale: it settles on its
+ * own side, the beam tips firmly that way (the answer), the copper pans swing on their chains, a paper tag with the reason
+ * hangs under the pan, the water mirrors it all. A stone that is not the reason is thrown back. 2.5D: painted flats at
+ * depths (sky, bough, scale, water) with a little parallax, the stones DOM over the water; one loop for the spring.
  */
 export function scaleScene(ctx: SceneCtx) {
   const low = ctx.quality === 'low'
   const still = low || ctx.reduced
   const placed: Record<Side, number[]> = { local: [], cloud: [] }
   let sel = -1 // the lifted stone (tap / keys)
-  let aim: Side = 'local'
   let done = false
+  let task = 0 // the job hanging from the beam
+  let busyTask = false // between two jobs: the answer is showing
+  let wrongs = 0 // missed tries on this job (after one, the dot shows the stone)
+  const T = K.tasks.length
+  const idOf = (k: number) => K.weights[k].id
 
   // ── DOM: painted layers, then the stones in the water, the pans' hit areas, the reason tags ──
   const skyCv = h('canvas', { class: 't32-cv t32-bleed', 'aria-hidden': 'true' })
   const scaleCv = h('canvas', { class: 't32-cv t32-bleed', 'aria-hidden': 'true' })
   const waterCv = h('canvas', { class: 't32-cv t32-bleed t32s-water', 'aria-hidden': 'true' })
   const boughCv = h('canvas', { class: 't32-cv t32-bleed t32s-bough', 'aria-hidden': 'true' })
-  const say = live('t32s-say')
+  const say = live('t32s-say visually-hidden') // spoken only: the tags and the slip show it
   const tags: Record<Side, HTMLElement[]> = { local: [], cloud: [] }
   const tagH = new Map<HTMLElement, number>()
   const pans: Record<Side, HTMLButtonElement> = {} as Record<Side, HTMLButtonElement>
   for (const sd of K.sides) {
     const id = sd.id as Side
-    pans[id] = h('button', { class: 't32s-pan', type: 'button', 'data-side': id, 'aria-label': sd.aria, onClick: () => (sel >= 0 ? drop(sel, id) : undefined) })
+    pans[id] = h('button', { class: 't32s-pan', type: 'button', 'data-side': id, 'aria-label': sd.aria, onClick: () => (sel >= 0 ? drop(sel) : undefined) })
   }
   const stones = K.weights.map((w, k) => {
     const b = h('button', { class: 't32s-stone', type: 'button', 'aria-pressed': 'false', style: `--i:${k}` }, h('span', { class: 't32s-carve' }, w.label))
     b.addEventListener('click', () => !b.dataset.dragged && lift(k))
     b.addEventListener('pointerdown', (e) => grab(k, e))
     b.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault()
-        aim = e.key === 'ArrowLeft' ? 'local' : 'cloud'
-        lift(k, true)
-      } else if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault()
-        if (sel === k) drop(k, aim)
-        else lift(k, true)
+        drop(k)
       }
     })
     return b
   })
   const tagBox = h('div', { class: 't32s-tagbox' })
+  // the job on a paper slip hung from the beam's middle: its count, the job, then the answer once the beam has tipped
+  const slipN = h('small', null), slipJob = h('b', null), slipAns = h('span', { class: 't32s-ans' })
+  const slip = h('p', { class: 't32s-job' }, slipN, slipJob, slipAns)
   const root = h('div', { class: 't32 t32s', role: 'group', 'aria-label': K.aria },
     skyCv, scaleCv, waterCv, boughCv,
     h('div', { class: 't32-mist', 'aria-hidden': 'true' }),
     h('p', { class: 'visually-hidden' }, K.art),
-    pans.local, pans.cloud, tagBox,
+    slip, pans.local, pans.cloud, tagBox,
     h('div', { class: 't32s-stones', role: 'group', 'aria-label': K.stonesLabel }, ...stones),
     say)
   ctx.art.append(root)
@@ -87,7 +91,7 @@ export function scaleScene(ctx: SceneCtx) {
   let th = 0, thV = 0
   const sw2: Record<Side, number[]> = { local: [0, 0], cloud: [0, 0] } // pan swing angle, its speed
   let parX = 0, parY = 0, parTX = 0, parTY = 0
-  const target = () => clamp((placed.local.length - placed.cloud.length) * -0.075, -0.24, 0.24) // more on a side: that side sinks
+  const target = () => clamp((placed.local.length - placed.cloud.length) * -0.22, -0.24, 0.24) // the reason's side sinks, firmly
   let ripples: { x: number; y: number; t: number }[] = []
 
   /** the beam's two ends and the pans hanging under them (with their swing) */
@@ -701,53 +705,108 @@ export function scaleScene(ctx: SceneCtx) {
   }
 
   // ── actions ──
-  function lift(k: number, keys = false) {
-    if (done || stones[k].hidden) return
+  function lift(k: number) {
+    if (done || busyTask || stones[k].hidden) return
     sel = k
     stones.forEach((b, j) => b.setAttribute('aria-pressed', String(j === k)))
-    root.dataset.aim = keys ? aim : ''
+    root.classList.add('lifting')
     labelAll()
-    if (!keys) ctx.chime('tap')
+    ctx.chime('tap')
   }
   function labelAll() {
     const w = sel >= 0 ? K.weights[sel] : null
-    stones.forEach((b, k) => b.setAttribute('aria-label', fill(K.weightAria, { label: K.weights[k].label, side: K.sides[aim === 'local' ? 0 : 1].name })))
-    for (const sd of K.sides) pans[sd.id as Side].setAttribute('aria-label', w ? fill(K.weightAria, { label: w.label, side: sd.name }) : sd.aria)
+    const side = (k: number) => K.sides[K.weights[k].side === 'local' ? 0 : 1].name
+    stones.forEach((b, k) => b.setAttribute('aria-label', fill(K.weightAria, { label: K.weights[k].label, side: side(k) })))
+    for (const sd of K.sides) pans[sd.id as Side].setAttribute('aria-label', w && sel >= 0 ? fill(K.weightAria, { label: w.label, side: side(sel) }) : sd.aria)
   }
-  function drop(k: number, side: Side) {
+
+  // ── the jobs: the slip, the prompt, the dot ──
+  const g = guide(ctx)
+  let dot: Mark | null = null
+  const need = () => K.tasks[task].need as string[]
+  /** the stone that is (still) the answer to this job */
+  const answer = () => stones.findIndex((b, k) => need().includes(idOf(k)) && !b.hidden)
+  function showTask() {
+    const t = K.tasks[task]
+    slipN.textContent = fill(K.taskCount, { n: task + 1, total: T })
+    slipJob.textContent = t.label
+    slipAns.textContent = ''
+    slip.classList.remove('answered')
+    if (task) slip.setAttribute('aria-live', 'polite') // after the first fill only
+    ctx.prompt(task ? fill(K.taskTpl, { n: task + 1, total: T, task: t.short }) : K.prompt)
+    wrongs = 0
+    // the first job teaches the gesture: the dot sits on its stone, leaning up toward the scale; later jobs only after a miss
+    dot?.done()
+    dot = task === 0 ? g.dot(stones[answer()], { dir: [0, -1] }) : null
+  }
+  function nextTask() {
+    // the stones go back into the water, the tags come down, the beam rights itself, the next slip
+    for (const side of ['local', 'cloud'] as const) {
+      for (const k of placed[side]) {
+        stones[k].hidden = false
+        home(k)
+        ripples.push({ x: SG[k].x, y: SG[k].y, t: 0 })
+      }
+      placed[side] = []
+      tags[side] = []
+    }
+    tagBox.replaceChildren()
+    tagH.clear()
+    busyTask = false
+    task++
+    showTask()
+    run()
+  }
+
+  function drop(k: number) {
     const w = K.weights[k]
-    if (!w || stones[k].hidden || done) return
-    if (w.side !== side) {
-      // the pan jolts and throws it back into the water
+    if (!w || stones[k].hidden || done || busyTask) return
+    const side = w.side as Side
+    root.classList.remove('lifting')
+    if (!need().includes(w.id)) {
+      // not the reason for this job: the pan jolts and throws it back into the water (H6: the prompt says why)
       sw2[side][1] += side === 'local' ? -2.4 : 2.4
       ripples.push({ x: SG[k].x, y: SG[k].y, t: 0 })
       home(k)
+      sel = -1
+      stones[k].setAttribute('aria-pressed', 'false')
       ctx.chime('low')
-      say.say(h('span', { class: 'bad' }, K.wrong))
+      g.wrong(K.wrong, stones[k])
+      say.say(K.wrong)
+      if (++wrongs === 1 && !dot) dot = g.dot(stones[answer()], { dir: [0, -1] })
       run()
       return
     }
+    // the reason settles on its own side, whichever pan it was dropped on
     placed[side].push(k)
     stones[k].hidden = true
     sel = -1
     sw2[side][1] += side === 'local' ? 1.2 : -1.2
-    // a paper tag on a string under the pan: the newest says why; on a phone the older ones fold to their name
+    // a paper tag on a string under the pan: only the one just placed
     const tag = h('p', { class: 't32s-tag' }, h('b', null, w.label), h('span', null, w.why))
-    if (tall) for (const sd of ['local', 'cloud'] as const) tags[sd].forEach((t) => t.classList.add('old'))
     tags[side].push(tag)
     tagBox.append(tag)
     tag.style.width = `${tagW.toFixed(0)}px`
-    for (const sd of ['local', 'cloud'] as const) for (const t of tags[sd]) tagH.set(t, t.offsetHeight) // one read for the tags
-    say.say(h('strong', null, `${K.right} `), w.why)
+    tagH.set(tag, tag.offsetHeight)
+    say.say(w.why)
     ctx.chime('tap')
     run()
-    const rest = stones.findIndex((b) => !b.hidden)
-    if (rest >= 0) {
-      stones[rest].focus({ preventScroll: true })
+    if (answer() >= 0) return stones[answer()].focus({ preventScroll: true })
+    // the beam has tipped: the answer on the slip, then the next job (or the insight after the last)
+    dot?.done()
+    dot = null
+    slipAns.textContent = K.tasks[task].verdict
+    slip.classList.add('answered')
+    g.ok(slip)
+    if (task < T - 1) {
+      busyTask = true
+      ctx.prompt(K.tasks[task].verdict, 'ok')
+      const id = setTimeout(nextTask, ctx.reduced ? 1600 : 2600)
+      ctx.onCleanup(() => clearTimeout(id))
       return
     }
     done = true
-    root.classList.add('is-level')
+    root.classList.add('is-done')
     ctx.insight(K.insight as Fact, K.detail as Fact)
     ctx.chime('ok')
   }
@@ -758,7 +817,7 @@ export function scaleScene(ctx: SceneCtx) {
 
   // drag a stone out of the shallows: it follows the hand; let go over a pan to set it there
   function grab(k: number, e: PointerEvent) {
-    if (e.button || done) return
+    if (e.button || done || busyTask) return
     const b = stones[k]
     const sx = e.clientX, sy = e.clientY
     const box = root.getBoundingClientRect()
@@ -767,7 +826,7 @@ export function scaleScene(ctx: SceneCtx) {
     b.setPointerCapture(e.pointerId)
     const move = (ev: PointerEvent) => {
       if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 6) return
-      if (!moved) b.classList.add('drag'), run()
+      if (!moved) b.classList.add('drag'), root.classList.add('lifting'), run()
       moved = true
       b.style.transform = `translate(${f1(ev.clientX - box.left - SG[k].w / 2)}px, ${f1(ev.clientY - box.top - SG[k].hd)}px)`
       // the pan under the hand lights
@@ -781,10 +840,11 @@ export function scaleScene(ctx: SceneCtx) {
       b.classList.remove('drag')
       root.dataset.aim = ''
       if (!moved) return
+      root.classList.remove('lifting')
       b.dataset.dragged = '1'
       setTimeout(() => delete b.dataset.dragged)
       const over = ev.type === 'pointerup' ? overPan(ev.clientX - box.left, ev.clientY - box.top) : null
-      if (over) drop(k, over)
+      if (over) drop(k)
       else home(k), run()
     }
     b.addEventListener('pointermove', move)
@@ -875,7 +935,8 @@ export function scaleScene(ctx: SceneCtx) {
     tagW = tall ? clamp(W * 0.36, 112, 150) : clamp(G.rx * 1.45, 118, 150)
     for (const side of ['local', 'cloud'] as const) for (const t of tags[side]) t.style.width = `${tagW.toFixed(0)}px`
     for (const side of ['local', 'cloud'] as const) for (const t of tags[side]) tagH.set(t, t.offsetHeight)
-    say.style.top = `${f1(Math.max(...SG.map((g) => g.y + g.hb)) + 12)}px`
+    // the slip hangs on a short cord under the pivot, between the pans
+    Object.assign(slip.style, { left: `${f1(G.px)}px`, top: `${f1(G.py + G.rx * (tall ? 0.5 : 0.4))}px`, width: `${f1(tall ? W * 0.34 : Math.min(G.A * 0.62, 240))}px` })
     cS = fit(skyCv, W, H, low)
     cC = fit(scaleCv, W, H, low)
     cW = fit(waterCv, W, H, low)
@@ -911,5 +972,5 @@ export function scaleScene(ctx: SceneCtx) {
     drawLive()
   }))
   labelAll()
-  ctx.prompt(K.prompt)
+  showTask()
 }
