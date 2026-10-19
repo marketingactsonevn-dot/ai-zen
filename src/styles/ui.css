@@ -1406,6 +1406,14 @@ body:has(main.scroll-page) .topbar {
 }
 
 /* ───────── Part 2 frame (audit v3 G·F): the prompt follows the steps, an idle invite, text zones ───────── */
+:root[data-part='2'] .scene-prompt {
+  /* step prompts name the gesture and the object: they may run long, so they wrap instead of leaving the screen */
+  white-space: normal;
+  width: max-content;
+  max-width: min(36rem, calc(100vw - 2 * var(--gutter)));
+  text-align: center;
+  text-wrap: balance;
+}
 :root[data-part='2'] .scene-prompt[data-tone='wrong'] {
   color: var(--ink);
   border-color: color-mix(in srgb, var(--vermilion) 55%, var(--line));

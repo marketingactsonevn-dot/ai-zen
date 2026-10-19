@@ -219,11 +219,11 @@
     transform: scale(1.5);
   }
 }
-/* a dot riding inside its target element: centred on it, above its art */
+/* a dot riding inside its target element: on its top edge (clear of any words carved on it), above its art */
 .p2g-dot.ride {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 4px;
   z-index: 3;
   pointer-events: none;
   transition: opacity 0.45s var(--ease);
