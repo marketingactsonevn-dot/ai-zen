@@ -50,7 +50,7 @@
       "explain": "Lean kiểm logic từng bước rất chắc. Nhưng đề cho máy mà lệch đề thật, máy vẫn chấp nhận: người phải kiểm ý nghĩa."
     },
     {
-      "topic": "Diễn giải được AI",
+      "topic": "Nhìn vào bên trong AI",
       "station": 23,
       "art": "cairn",
       "q": "Neel Nanda (2025): nên coi diễn giải là một lớp trong nhiều lớp phòng vệ, vẫn rất đáng làm. Câu này là gì?",
@@ -92,7 +92,7 @@
       "explain": "Trạng thái bên trong làm đổi hành vi là tầng 2, do chính hãng công bố. Tầng 3 — có cảm thấy không — chưa ai đo được."
     },
     {
-      "topic": "Luật không bạo hành AI",
+      "topic": "Chính sách không bạo hành AI",
       "station": 26,
       "art": "write",
       "q": "Chính sách mới của Anthropic cấm “lạm dụng hoặc tàn nhẫn kéo dài và vô cớ” với mô hình. Việc nào bị cấm?",

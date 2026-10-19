@@ -50,7 +50,7 @@
       "explain": "Lean checks every logical step, but if the problem it was given differs from the real one, it still says yes."
     },
     {
-      "topic": "Interpretable AI",
+      "topic": "Looking inside AI",
       "station": 23,
       "art": "cairn",
       "q": "Neel Nanda (2025): treat interpretability as one layer of many defenses, still worth doing. What is this?",
@@ -92,7 +92,7 @@
       "explain": "Inner states that change behavior: layer 2, reported by the company itself. Layer 3, feeling, no one can measure yet."
     },
     {
-      "topic": "The “don’t abuse the AI” rule",
+      "topic": "The “don’t abuse the AI” policy",
       "station": 26,
       "art": "write",
       "q": "Anthropic’s new policy bans “sustained and needless” abuse or cruelty toward its models. Which is banned?",

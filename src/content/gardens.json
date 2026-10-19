@@ -95,8 +95,8 @@
       "tagline": "Nhìn vào bên trong một mô hình đang nghĩ",
       "motif": "brush",
       "stations": [
-        { "id": 22, "title": "Attention", "teaser": "AI “nhìn” chữ nào khi đọc", "kind": "concept", "prereq": [4, 5] },
-        { "id": 23, "title": "Diễn giải được AI", "teaser": "Soi đèn xuống đáy hồ", "kind": "concept" },
+        { "id": 22, "title": "AI nhìn chữ nào khi đọc", "teaser": "AI “nhìn” chữ nào khi đọc", "kind": "concept", "prereq": [4, 5] },
+        { "id": 23, "title": "Nhìn vào bên trong AI", "teaser": "Nhà nghiên cứu đã soi được gì trong ‘bộ não’ số", "kind": "concept" },
         { "id": 24, "title": "Học & nghĩ", "teaser": "Phần thưởng, suy luận, tật nịnh", "kind": "concept" }
       ]
     },

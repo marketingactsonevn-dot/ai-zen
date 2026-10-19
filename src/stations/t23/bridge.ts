@@ -99,7 +99,10 @@ export function bridgeScene(ctx: SceneCtx) {
     'aria-valuenow': '0', 'aria-valuetext': fill(K.valueText, { n: 0, total: N }),
   }, halo, lampArt)
   over.append(cord, lamp)
-  const note = h('div', { class: 't23b-note' }, ctx.fact(K.answersNote, 'p', 't23-note'))
+  // what the carved stone stands for (once it shows), and, at the top level, that this really happened
+  const stoneSays = h('p', { class: 't23-note t23b-stone', 'data-off': '' }, K.stone)
+  const real = h('div', { class: 't23b-real', 'data-off': '' }, ctx.fact(K.real, 'p', 't23-note'))
+  const note = h('div', { class: 't23b-note' }, ctx.fact(K.answersNote, 'p', 't23-note'), stoneSays, real)
   R.root.append(note)
   ctx.prompt(K.prompt)
 
@@ -859,6 +862,8 @@ export function bridgeScene(ctx: SceneCtx) {
     }
     if (low || ctx.reduced) placeFish(false)
     ctx.chime(v === N ? 'ok' : 'tap')
+    if (v > 0) delete stoneSays.dataset.off
+    if (v === N) delete real.dataset.off
     if (v === N && !done) {
       done = true
       ctx.insight(K.insight, K.detail)

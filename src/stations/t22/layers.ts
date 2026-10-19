@@ -38,7 +38,8 @@ export function layersScene(ctx: SceneCtx) {
   }, s('svg', { viewBox: '-60 -40 120 80', 'aria-hidden': 'true' }, ink))
   const world = h('div', { class: 'g8y2-world' }, shadow, veilB, bed, back, inner, front, side, top, pebble, dust, veil)
   const view = h('div', { class: 'g8y2-view' }, world)
-  const root = h('div', { class: 'g8y2' }, h('p', { class: 'visually-hidden' }, K.art), sky, view)
+  // the sentence of slide 2, so this slide reads on its own (whose “nó” is it?)
+  const root = h('div', { class: 'g8y2' }, h('p', { class: 'visually-hidden' }, K.art), sky, view, h('p', { class: 'g8y2-sentence' }, K.sentence))
   ctx.art.append(root)
   ctx.prompt(K.prompt)
 
@@ -176,7 +177,8 @@ export function layersScene(ctx: SceneCtx) {
       s('path', { class: 'g8y2-strata', d: strata, filter: 'url(#ink-dry)' }),
       s('path', { class: 'g8y2-grain', d: grains }),
       ...rings,
-      s('text', { class: 'g8y2-ruler', x: f1(Bw - 8), y: -10, 'text-anchor': 'end' }, K.slider),
+      s('text', { class: 'g8y2-ruler', x: f1(Bw - 22), y: 22, 'text-anchor': 'end' }, K.slider),
+      s('text', { class: 'g8y2-ruler note', x: f1(Bw - 22), y: 38, 'text-anchor': 'end' }, K.ruler),
       // the glass: a faint specular sheet across it, bevels catching the moon along its top and cut edge, a dark lip below
       s('rect', { class: 'g8y2-spec', width: Bw, height: f1(fy), fill: `url(#${id}-spec)` }),
       s('path', { class: 'g8y2-bevel', d: stroke([[1, 1.5], [Bw * 0.5, 1], [Bw - 1, 1.5]], 3, 0.02, 0.06, 0.5) + stroke([[Bw - 1.5, 2], [Bw - 1.8, Bh * 0.5], [Bw - 1.5, Bh - 2]], 2.4, 0.04, 0.08, 0.5) }),
@@ -327,7 +329,7 @@ export function layersScene(ctx: SceneCtx) {
     if (n === N && !done && animate) {
       done = true
       root.classList.add('done')
-      ctx.insight(K.insight, [K.detail, K.stagesNote])
+      ctx.insight(K.insight, [K.detail, K.layers96, K.stagesNote])
     }
   }
 

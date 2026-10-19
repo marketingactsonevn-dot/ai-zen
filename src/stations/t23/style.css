@@ -504,3 +504,11 @@ button.t23s-slab:focus-visible { outline: none; box-shadow: 0 0 0 2px color-mix(
 .t23s-lim { margin-top: 6px; transition: opacity 1s; }
 .t23s-lim .t23-note { font-size: 13px; color: var(--ink-2); }
 .t23s-lim[data-off] { opacity: 0; visibility: hidden; }
+/* phase 3 copy: decoding lines (what the stone, the flicking, "looking inside" stand for), shown once */
+.t23b-note > [data-off] { opacity: 0; visibility: hidden; }
+.t23b-note > * { transition: opacity 0.8s; margin-top: 4px; }
+.t23b-note .t23b-stone { color: var(--ink-2); }
+.t23o-note .t23o-decode { color: var(--ink-2); }
+.t23o-note .t23-note { margin-top: 3px; }
+.t23c-decode { position: absolute; left: 14px; top: 8px; max-width: min(360px, 45%); margin: 0; text-align: left; z-index: 2; pointer-events: none; }
+.t23o-neuron { white-space: normal; width: max-content; max-width: min(300px, 40vw); line-height: 1.3; }

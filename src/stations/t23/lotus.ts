@@ -70,7 +70,8 @@ export function lotusScene(ctx: SceneCtx) {
   R.layer(150, 't23o-slips').append(...labels)
   const pond = h('button', { class: 't23o-pond', type: 'button', 'aria-label': K.shakeAria, 'aria-pressed': 'false' })
   const list = h('ul', { class: 'visually-hidden' })
-  const note = h('div', { class: 't23o-note', 'data-off': '' }, ctx.fact(K.meaningsNote, 'p', 't23-note'))
+  // once the bud opens: what the flicking stands for, the real numbers behind it, and the illustration mark
+  const note = h('div', { class: 't23o-note', 'data-off': '' }, h('p', { class: 't23-note t23o-decode' }, K.decode), ctx.fact(K.count, 'p', 't23-note'), ctx.fact(K.meaningsNote, 'p', 't23-note'))
   R.view.append(pond)
   R.root.append(list, note)
   ctx.prompt(K.prompt)

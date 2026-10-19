@@ -1,24 +1,25 @@
 {
   "id": 22,
-  "kicker": "Mỗi chữ thắp một chiếc đèn, soi về những chữ nó cần.",
-  "summary": "Mỗi chữ nhìn quanh để hiểu mình.",
+  "kicker": "Khi đọc, AI cho mỗi chữ nhìn quanh cả câu — như thắp một chiếc đèn soi về những chữ nó cần.",
+  "summary": "AI hiểu mỗi chữ bằng cách nhìn cả câu — còn với văn bản dài, nó nhớ rõ nhất phần đầu và cuối.",
   "quiz": {
-    "q": "Trong câu “Con mèo không bắt được con chuột vì nó quá nhanh”, cơ chế chú ý (attention) giúp AI làm gì?",
+    "q": "Bạn dán tài liệu 50 trang cho AI và cần nó làm đúng một yêu cầu. Nên đặt yêu cầu ở đâu?",
     "options": [
-      "Đếm xem câu có bao nhiêu chữ",
-      "Cân xem “nó” nên nối với chữ nào để hiểu đúng",
-      "Dịch câu sang tiếng Anh trước rồi mới hiểu",
-      "Tra từ điển trên mạng cho từng chữ"
+      "Giữa tài liệu, ngay chỗ liên quan nhất",
+      "Ở đầu hoặc ở cuối tài liệu",
+      "Ở đâu cũng được, AI đọc đều cả",
+      "Viết hoa toàn bộ để AI chú ý"
     ],
     "answer": 1,
-    "explain": "Mỗi chữ chấm điểm các chữ khác trong câu; ở đây chữ “nhanh” kéo “nó” về phía con chuột."
+    "explain": "Với văn bản dài, AI thường nhớ rõ phần đầu và cuối hơn phần giữa."
   },
   "scenes": {
     "lantern": {
       "label": "Đèn lồng trên câu",
       "art": "Đứng trên một cây cầu gỗ nhìn xuống: dưới trăng nhỏ trên cao, một dòng sông mực uốn hình chữ S từ chân cầu tới chân trời. Mỗi chữ của câu là một chiếc đèn lồng giấy trôi theo dòng, gần thì to, xa thì nhỏ; hai chữ cuối chưa thắp, chờ trong một xoáy nước. Chạm chữ “nó”: đèn bùng sáng, nhấc khỏi mặt nước và vắt những sợi chỉ trăng tới từng chữ, chữ nó cần nhất nhận sợi sáng nhất. Kéo chiếc đèn trong xoáy vào cuối câu, sợi sáng nhất đổi hướng.",
-      "prompt": "Chạm chữ “nó”",
-      "swapPrompt": "Kéo đèn trong xoáy vào cuối câu",
+      "prompt": "Chạm chữ “nó” — nó là ai?",
+      "swapPrompt": "Kéo đèn trong xoáy, thả đè lên chữ “chậm”",
+      "decode": "Sợi càng sáng = AI càng dựa vào chữ đó",
       "words": ["Con", "mèo", "không", "bắt", "được", "con", "chuột", "vì", "nó", "quá"],
       "pivot": 8,
       "pivotAria": "Chạm chữ “nó” để xem nó chú ý tới chữ nào (hoặc nhấn Enter)",
@@ -46,12 +47,12 @@
         "kind": "illustration"
       },
       "insight": {
-        "text": "Cơ chế chú ý (attention): mỗi chữ chấm điểm mọi chữ khác trong câu, rồi mượn nghĩa nhiều nhất từ chữ được điểm cao.",
+        "text": "Chỉ đổi chữ cuối, “nó” đổi từ con mèo sang con chuột: AI hiểu một chữ bằng cách nhìn cả câu.",
         "asOf": "2026-10-15",
         "source": "vaswani-2017"
       },
       "detail": {
-        "text": "Soi mô hình BERT năm 2019, các nhà nghiên cứu thấy có những “đầu chú ý” nối khá chính xác đại từ với người, vật được nhắc tới.",
+        "text": "Cách đọc này gọi là cơ chế chú ý (attention). Năm 2019, soi mô hình BERT, các nhà nghiên cứu thấy nó thật sự nối đại từ với đúng người, vật được nhắc tới.",
         "asOf": "2026-10-15",
         "source": "clark-2019"
       }
@@ -117,31 +118,47 @@
     "layers": {
       "label": "Tầng tầng lớp lớp",
       "art": "Một khối hồ sâu bị cắt ra như một vật, lơ lửng trong đêm: trên mặt là nước, lá súng và bóng trăng; mặt cắt trong như kính, nước xếp tầng như những dải lụa, mực đậm dần về phía đáy; vách đá có rễ cây; dọc mép cắt là 96 vạch mảnh chia thành ba dải. Một viên sỏi khắc chữ “nó” chìm xuống; qua mỗi dải, nét chữ được tô thêm một lớp mực, tới đáy thì nằm cạnh cuộn giấy là bài văn.",
-      "prompt": "Thả viên sỏi xuống đáy",
+      "prompt": "Kéo viên sỏi “nó” chìm xuống",
+      "sentence": "Cô giáo khen bài văn của Lan vì nó rất hay",
       "word": "nó",
-      "slider": "Độ sâu",
-      "sliderAria": "Kéo để đưa chữ “nó” qua các tầng (phím ← →)",
+      "slider": "Các tầng của AI",
+      "ruler": "Mỗi vạch = một tầng (GPT-3 có 96)",
+      "sliderAria": "Kéo viên sỏi “nó” chìm qua các tầng (phím ← →)",
       "valueText": "Tầng {n}/{total}",
       "stages": [
-        { "at": "Tầng nông", "reads": "“nó”: một đại từ, đứng sau “vì”" },
-        { "at": "Tầng giữa", "reads": "“nó”: một vật, không phải người" },
-        { "at": "Tầng sâu", "reads": "“nó” = bài văn của Lan, thứ được khen hay" }
+        {
+          "at": "Tầng đầu",
+          "reads": "“nó” là một đại từ"
+        },
+        {
+          "at": "Tầng giữa",
+          "reads": "“nó” chỉ một vật, không phải người"
+        },
+        {
+          "at": "Tầng sâu",
+          "reads": "“nó” = bài văn của Lan"
+        }
       ],
       "stagesNote": {
-        "text": "Ba nấc là minh hoạ; mô hình thật có hàng chục tầng, mỗi tầng đổi nghĩa một chút.",
+        "text": "Ba nấc ở đây là minh hoạ.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "illustration"
       },
       "insight": {
-        "text": "Mô hình chồng nhiều tầng chú ý — GPT-3 có 96 tầng; qua mỗi tầng, nghĩa của chữ được tô đậm thêm từ ngữ cảnh.",
-        "asOf": "2026-10-15",
-        "source": "gpt3-2020"
-      },
-      "detail": {
-        "text": "Soi mô hình BERT, nhóm Tenney (2019) thấy thứ tự khá đều: tầng thấp nắm từ loại, ngữ pháp; tầng cao hơn mới nối đại từ với đúng thứ được nhắc.",
+        "text": "Càng qua nhiều tầng, AI càng hiểu rõ “nó” là gì: từ một đại từ, tới đúng bài văn của Lan.",
         "asOf": "2026-10-15",
         "source": "tenney-2019"
+      },
+      "detail": {
+        "text": "Năm 2019, soi mô hình BERT, các nhà nghiên cứu thấy tầng đầu nắm ngữ pháp, tầng sau mới nối đại từ với đúng thứ được nhắc.",
+        "asOf": "2026-10-15",
+        "source": "tenney-2019"
+      },
+      "layers96": {
+        "text": "GPT-3 có 96 tầng như vậy.",
+        "asOf": "2026-10-15",
+        "source": "gpt3-2020"
       }
     },
     "window": {

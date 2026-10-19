@@ -1195,3 +1195,27 @@
 .t24d-data { position: absolute; transition: opacity 1s; font: 400 13px/1.5 var(--sans); color: var(--ink-2); text-shadow: 0 0 8px var(--paper); }
 .t24d-data p { margin: 0; }
 .t24d-data[data-off] { opacity: 0; visibility: hidden; }
+/* phase 3 copy (audit v3): decoding lines said once where the object is, the real story on screen, the stele's puzzle */
+.t24f-decode { display: block; margin-top: 6px; font: 400 13px/1.45 var(--sans); color: var(--ink-2); }
+.scene-insight .t24f-before { margin: 0 0 6px; font-size: 0.82em; opacity: 0.75; }
+.t24t-decode, .t24t-real { position: absolute; left: 14px; margin: 0; max-width: min(340px, 44%); font: 400 13px/1.45 var(--sans); color: var(--ink-2); text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); z-index: 4; pointer-events: none; }
+.t24t-decode { top: 10px; }
+.t24t-real { top: 34px; color: var(--ink); transition: opacity 1s 0.6s; }
+.t24t-real p { margin: 0; }
+.t24t-real[data-off] { opacity: 0; visibility: hidden; }
+.t24c-ema.task small, .t24c-plaque small { display: block; margin-top: 5px; font: 400 12px/1.35 var(--sans); color: var(--stone-text); opacity: 0.85; white-space: normal; }
+.t24c-plaque small { width: max-content; max-width: 200px; }
+.t24i-top { position: absolute; left: 14px; top: 8px; max-width: min(360px, 46%); z-index: 3; pointer-events: none; }
+.t24i-top p { margin: 0; text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); }
+.t24i-bridge { font: 400 15px/1.4 var(--serif); color: var(--ink); }
+.t24i-decode { margin-top: 4px !important; font: 400 13px/1.45 var(--sans); color: var(--ink-2); }
+.t24i-puzzle { position: absolute; z-index: 2; pointer-events: none; color: var(--stone-text); font-family: var(--serif); }
+.t24i-puzzle p { margin: 0; }
+.t24i-pq { font-size: 0.86em; line-height: 1.4; opacity: calc(0.35 + var(--t, 0) * 0.65); transition: opacity 1.2s; }
+.t24i-pa { margin-top: 0.5em !important; font-size: 1.5em; line-height: 1.1; }
+.t24i-pa s { text-decoration: none; }
+.t24i[data-v='2'] .t24i-pa s { text-decoration: line-through; opacity: 0.6; }
+.t24i:is([data-v='3'], [data-v='4']) .t24i-pa s { display: none; }
+.t24i-pa b { display: none; font-weight: 500; color: var(--vermilion); }
+.t24i:is([data-v='3'], [data-v='4']) .t24i-pa b { display: inline; }
+.t24i-pnote { margin-top: 4px !important; font: 400 12px/1.4 var(--sans); color: var(--ink-3); }

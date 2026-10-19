@@ -542,3 +542,7 @@
 .g8w2-seal span { position: absolute; bottom: 100%; margin-bottom: 6px; white-space: nowrap; font: 400 13px/1 var(--serif); color: var(--ink); text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper); }
 .g8w2-seal:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 .g8w2-decode.flat { left: 12px; right: 12px; max-width: none; text-align: center; }
+/* phase 3 copy: the threads' meaning once (22-1), the marks' meaning and the sentence over the block (22-3) */
+.g8l2-note .g8l2-decode { color: var(--ink-2); margin-bottom: 4px; }
+.g8y2 .g8y2-ruler.note { font-size: 11.5px; }
+.g8y2-sentence { position: absolute; left: 50%; top: 8px; translate: -50% 0; margin: 0; max-width: calc(100% - 32px); font: 400 clamp(15px, 1.6vw, 19px)/1.4 var(--serif); color: var(--ink); text-align: center; text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); pointer-events: none; z-index: 2; }

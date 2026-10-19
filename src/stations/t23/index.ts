@@ -10,8 +10,9 @@ const S = C.scenes
 const station: StationModule = {
   content: C,
   scenes: [
-    { label: S.bridge.label, mount: bridgeScene },
+    // the problem first (one neuron, many meanings), then pulling a concept out and turning it (audit v3 t23)
     { label: S.lotus.label, mount: lotusScene },
+    { label: S.bridge.label, mount: bridgeScene },
     { label: S.stream.label, mount: streamScene },
     circleScene,
   ],
