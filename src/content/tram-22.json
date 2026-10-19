@@ -1,24 +1,25 @@
 {
   "id": 22,
-  "kicker": "Mỗi chữ thắp một chiếc đèn, soi về những chữ nó cần.",
-  "summary": "Mỗi chữ nhìn quanh để hiểu mình.",
+  "kicker": "Khi đọc, AI cho mỗi chữ nhìn quanh cả câu — như thắp một chiếc đèn soi về những chữ nó cần.",
+  "summary": "AI hiểu mỗi chữ bằng cách nhìn cả câu — còn với văn bản dài, nó nhớ rõ nhất phần đầu và cuối.",
   "quiz": {
-    "q": "Trong câu “Con mèo không bắt được con chuột vì nó quá nhanh”, cơ chế chú ý (attention) giúp AI làm gì?",
+    "q": "Bạn dán tài liệu 50 trang cho AI và cần nó làm đúng một yêu cầu. Nên đặt yêu cầu ở đâu?",
     "options": [
-      "Đếm xem câu có bao nhiêu chữ",
-      "Cân xem “nó” nên nối với chữ nào để hiểu đúng",
-      "Dịch câu sang tiếng Anh trước rồi mới hiểu",
-      "Tra từ điển trên mạng cho từng chữ"
+      "Giữa tài liệu, ngay chỗ liên quan nhất",
+      "Ở đầu hoặc ở cuối tài liệu",
+      "Ở đâu cũng được, AI đọc đều cả",
+      "Viết hoa toàn bộ để AI chú ý"
     ],
     "answer": 1,
-    "explain": "Mỗi chữ chấm điểm các chữ khác trong câu; ở đây chữ “nhanh” kéo “nó” về phía con chuột."
+    "explain": "Với văn bản dài, AI thường nhớ rõ phần đầu và cuối hơn phần giữa."
   },
   "scenes": {
     "lantern": {
       "label": "Đèn lồng trên câu",
       "art": "Đứng trên một cây cầu gỗ nhìn xuống: dưới trăng nhỏ trên cao, một dòng sông mực uốn hình chữ S từ chân cầu tới chân trời. Mỗi chữ của câu là một chiếc đèn lồng giấy trôi theo dòng, gần thì to, xa thì nhỏ; hai chữ cuối chưa thắp, chờ trong một xoáy nước. Chạm chữ “nó”: đèn bùng sáng, nhấc khỏi mặt nước và vắt những sợi chỉ trăng tới từng chữ, chữ nó cần nhất nhận sợi sáng nhất. Kéo chiếc đèn trong xoáy vào cuối câu, sợi sáng nhất đổi hướng.",
-      "prompt": "Chạm chữ “nó”",
-      "swapPrompt": "Kéo đèn trong xoáy vào cuối câu",
+      "prompt": "Chạm chữ “nó” — nó là ai?",
+      "swapPrompt": "Kéo đèn trong xoáy, thả đè lên chữ “chậm”",
+      "decode": "Sợi càng sáng = AI càng dựa vào chữ đó",
       "words": ["Con", "mèo", "không", "bắt", "được", "con", "chuột", "vì", "nó", "quá"],
       "pivot": 8,
       "pivotAria": "Chạm chữ “nó” để xem nó chú ý tới chữ nào (hoặc nhấn Enter)",
@@ -46,12 +47,12 @@
         "kind": "illustration"
       },
       "insight": {
-        "text": "Cơ chế chú ý (attention): mỗi chữ chấm điểm mọi chữ khác trong câu, rồi mượn nghĩa nhiều nhất từ chữ được điểm cao.",
+        "text": "Chỉ đổi chữ cuối, “nó” đổi từ con mèo sang con chuột: AI hiểu một chữ bằng cách nhìn cả câu.",
         "asOf": "2026-10-15",
         "source": "vaswani-2017"
       },
       "detail": {
-        "text": "Soi mô hình BERT năm 2019, các nhà nghiên cứu thấy có những “đầu chú ý” nối khá chính xác đại từ với người, vật được nhắc tới.",
+        "text": "Cách đọc này gọi là cơ chế chú ý (attention). Năm 2019, soi mô hình BERT, các nhà nghiên cứu thấy nó thật sự nối đại từ với đúng người, vật được nhắc tới.",
         "asOf": "2026-10-15",
         "source": "clark-2019"
       }
@@ -61,106 +62,133 @@
       "art": "Một hồ trăng giữa vườn đá đêm. Bốn chiếc đèn đá đứng ở bốn góc hồ, mỗi đèn một sắc mực: đen đậm, xám nhạt, lam khói, son đỏ. Trên mặt nước, chín bè giấy dó mang chín chữ của câu. Thắp một đèn: một nón sáng rơi qua sương xuống hồ, các chữ mà đèn ấy nối vồng lên thành dải sáng, mỗi đèn ở một độ cao riêng. Nhìn từ trên, các dải rối vào nhau; hạ tầm mắt xuống ngang mặt nước thì chúng tách thành bốn tầng.",
       "aria": "Hồ trăng ba chiều với bốn đèn đá và chín bè chữ",
       "hint": "Kéo để xoay vườn, cuộn hoặc chụm để lại gần, chạm đúp hoặc phím Home để về góc đầu. Phím mũi tên cũng xoay được; phím 1 đến 4 thắp đèn.",
-      "prompt": "Thắp từng ngọn đèn",
-      "orbit": "Kéo để hạ tầm mắt xuống mặt nước",
+      "prompt": "Thắp cả 4 đèn ({n}/4)",
+      "orbit": "Kéo xuống để nhìn ngang mặt nước",
+      "decode": "Mỗi đèn = một cách AI nhìn câu",
       "words": ["Cô giáo", "khen", "bài văn", "của", "Lan", "vì", "nó", "rất", "hay"],
       "heads": [
         {
-          "name": "Ai làm",
-          "relation": "nối việc làm với người làm",
-          "aria": "Thắp đèn 1: nối việc làm với người làm",
+          "name": "Ai làm?",
+          "relation": "khen ← Cô giáo",
+          "aria": "Thắp đèn 1: nối “khen” với người khen, “Cô giáo”",
           "links": [[1, 0]]
         },
         {
-          "name": "Làm gì",
-          "relation": "nối việc làm với thứ được nhắc tới",
-          "aria": "Thắp đèn 2: nối việc làm với thứ chịu tác động",
+          "name": "Làm gì?",
+          "relation": "khen → bài văn",
+          "aria": "Thắp đèn 2: nối “khen” với thứ được khen, “bài văn”",
           "links": [[1, 2]]
         },
         {
-          "name": "Hàng xóm",
-          "relation": "nhìn chữ đứng ngay trước",
+          "name": "Chữ liền trước",
+          "relation": "mỗi chữ nhìn chữ ngay trước nó",
           "aria": "Thắp đèn 3: mỗi chữ nhìn chữ đứng ngay trước nó",
           "links": [[1, 0], [2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 7]]
         },
         {
-          "name": "“Nó” là ai",
-          "relation": "nối đại từ với thứ được nhắc trước đó",
-          "aria": "Thắp đèn 4: nối chữ “nó” với thứ được nhắc trước đó",
+          "name": "“Nó” là ai?",
+          "relation": "nó → bài văn",
+          "aria": "Thắp đèn 4: nối chữ “nó” với “bài văn”",
           "links": [[6, 2]]
         }
       ],
       "allLit": "Bốn ánh nhìn, một câu",
       "headsNote": {
-        "text": "Mỗi đèn một kiểu quan hệ rõ ràng là cách vẽ đơn giản; đầu chú ý thật thường lẫn lộn hơn.",
+        "text": "Đầu thật thường lẫn nhiều kiểu hơn hình vẽ.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "illustration"
       },
       "insight": {
-        "text": "Nhiều đầu chú ý (multi-head attention) cùng soi một câu, mỗi đầu bắt một kiểu quan hệ: ai làm, làm gì, “nó” là ai.",
+        "text": "Bốn đèn soi cùng một câu, mỗi đèn bắt một mối nối khác — AI đọc nhiều kiểu cùng lúc.",
         "asOf": "2026-10-15",
         "source": "clark-2019"
       },
       "detail": {
-        "text": "Bản Transformer gốc năm 2017 dùng 8 đầu chú ý chạy song song trong mỗi tầng.",
+        "text": "Mỗi “đèn” như vậy gọi là một đầu chú ý (attention head). Transformer gốc (2017) có 8 đầu mỗi tầng.",
         "asOf": "2026-10-15",
         "source": "vaswani-2017"
       },
-      "caveat": {
-        "text": "Nhưng đèn sáng chưa phải lời giải thích đầy đủ: hai kiểu chú ý rất khác nhau vẫn có thể cho ra cùng một đáp án.",
+      "detail2": {
+        "text": "GPT-3 có 96 đầu mỗi tầng.",
         "asOf": "2026-10-15",
-        "source": "jain-wallace-2019"
+        "source": "gpt3-2020"
       }
     },
     "layers": {
       "label": "Tầng tầng lớp lớp",
       "art": "Một khối hồ sâu bị cắt ra như một vật, lơ lửng trong đêm: trên mặt là nước, lá súng và bóng trăng; mặt cắt trong như kính, nước xếp tầng như những dải lụa, mực đậm dần về phía đáy; vách đá có rễ cây; dọc mép cắt là 96 vạch mảnh chia thành ba dải. Một viên sỏi khắc chữ “nó” chìm xuống; qua mỗi dải, nét chữ được tô thêm một lớp mực, tới đáy thì nằm cạnh cuộn giấy là bài văn.",
-      "prompt": "Thả viên sỏi xuống đáy",
+      "prompt": "Kéo viên sỏi “nó” chìm xuống",
+      "sentence": "Cô giáo khen bài văn của Lan vì nó rất hay",
       "word": "nó",
-      "slider": "Độ sâu",
-      "sliderAria": "Kéo để đưa chữ “nó” qua các tầng (phím ← →)",
+      "slider": "Các tầng của AI",
+      "ruler": "Mỗi vạch = một tầng (GPT-3 có 96)",
+      "sliderAria": "Kéo viên sỏi “nó” chìm qua các tầng (phím ← →)",
       "valueText": "Tầng {n}/{total}",
       "stages": [
-        { "at": "Tầng nông", "reads": "“nó”: một đại từ, đứng sau “vì”" },
-        { "at": "Tầng giữa", "reads": "“nó”: một vật, không phải người" },
-        { "at": "Tầng sâu", "reads": "“nó” = bài văn của Lan, thứ được khen hay" }
+        {
+          "at": "Tầng đầu",
+          "reads": "“nó” là một đại từ"
+        },
+        {
+          "at": "Tầng giữa",
+          "reads": "“nó” chỉ một vật, không phải người"
+        },
+        {
+          "at": "Tầng sâu",
+          "reads": "“nó” = bài văn của Lan"
+        }
       ],
       "stagesNote": {
-        "text": "Ba nấc là minh hoạ; mô hình thật có hàng chục tầng, mỗi tầng đổi nghĩa một chút.",
+        "text": "Ba nấc ở đây là minh hoạ.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "illustration"
       },
       "insight": {
-        "text": "Mô hình chồng nhiều tầng chú ý — GPT-3 có 96 tầng; qua mỗi tầng, nghĩa của chữ được tô đậm thêm từ ngữ cảnh.",
-        "asOf": "2026-10-15",
-        "source": "gpt3-2020"
-      },
-      "detail": {
-        "text": "Soi mô hình BERT, nhóm Tenney (2019) thấy thứ tự khá đều: tầng thấp nắm từ loại, ngữ pháp; tầng cao hơn mới nối đại từ với đúng thứ được nhắc.",
+        "text": "Càng qua nhiều tầng, AI càng hiểu rõ “nó” là gì: từ một đại từ, tới đúng bài văn của Lan.",
         "asOf": "2026-10-15",
         "source": "tenney-2019"
+      },
+      "detail": {
+        "text": "Năm 2019, soi mô hình BERT, các nhà nghiên cứu thấy tầng đầu nắm ngữ pháp, tầng sau mới nối đại từ với đúng thứ được nhắc.",
+        "asOf": "2026-10-15",
+        "source": "tenney-2019"
+      },
+      "layers96": {
+        "text": "GPT-3 có 96 tầng như vậy.",
+        "asOf": "2026-10-15",
+        "source": "gpt3-2020"
       }
     },
     "window": {
       "label": "Khung cửa đọc được bao xa",
-      "art": "Trong một phòng trà, nhìn ra một vách cửa giấy dài; vầng trăng là quầng sáng sau lớp giấy. Kéo trăng qua các năm, từng ô cửa trượt mở ra một khu vườn sâu: mỗi mốc là một tấm bia nhô lên mang thứ đọc được trong một lần, từ một chữ, vài trang, một cuốn tiểu thuyết, một chồng sách, cả một tủ sách, tới hôm nay là một thư viện bia sách chạy tới chân trời.",
+      "art": "Trong một phòng trà, nhìn ra một vách cửa giấy dài; vầng trăng là quầng sáng sau lớp giấy. Kéo trăng qua các năm, từng ô cửa trượt mở ra một khu vườn sâu: mỗi mốc là một tấm bia nhô lên mang thứ AI đọc được trong một lần: một chữ, vài trang, một cuốn tiểu thuyết, hôm nay là một chồng chừng mười cuốn; xa trong sương là một kệ sách mờ, con số 10 triệu do hãng tự nêu. Tới hôm nay, một cuộn thư dài trải trên chiếu: kéo ấn son “điều quan trọng” dọc cuộn, ngọn đèn đọc sáng rõ ở hai đầu cuộn và mờ đi ở đoạn giữa.",
       "prompt": "Kéo trăng qua các năm",
+      "prompt2": "Kéo ấn son dọc cuộn thư",
+      "decode": "Khung cửa = lượng chữ AI đọc được trong một lần. 1 triệu token ≈ hơn 700.000 từ.",
+      "claim": "10 triệu · Meta tự nêu",
+      "sealLabel": "điều quan trọng",
+      "sealAria": "Ấn son “điều quan trọng”: kéo dọc cuộn thư từ đầu tới cuối (phím ← →)",
+      "ticks": [
+        "đầu",
+        "giữa",
+        "cuối"
+      ],
       "tide": {
         "milestones": [
           {
             "date": "2017-06",
-            "label": "Attention Is All You Need",
+            "label": "Transformer ra đời",
             "fact": {
-              "text": "Tám nhà nghiên cứu công bố Transformer: mô hình chỉ dựa vào cơ chế chú ý, bỏ hẳn lối đọc lần lượt từng chữ.",
+              "text": "Tám nhà nghiên cứu công bố Transformer: AI đọc cả câu cùng lúc bằng cơ chế chú ý, không còn đọc lần lượt từng chữ — nhờ vậy về sau đọc được rất dài.",
               "asOf": "2026-10-15",
               "source": "vaswani-2017"
             }
           },
           {
             "date": "2020-05",
-            "label": "GPT-3",
+            "label": "GPT-3 · vài trang",
             "fact": {
               "text": "GPT-3 đọc tối đa 2.048 token mỗi lần — chừng vài trang giấy.",
               "asOf": "2026-10-15",
@@ -169,65 +197,34 @@
           },
           {
             "date": "2023-05",
-            "label": "Claude 100K",
+            "label": "Claude · một cuốn tiểu thuyết",
             "fact": {
-              "text": "Anthropic nâng cửa sổ ngữ cảnh của Claude lên 100.000 token, khoảng 75.000 từ — đủ đọc trọn một cuốn tiểu thuyết ngắn.",
+              "text": "Anthropic nâng mức đọc của Claude lên 100.000 token, khoảng 75.000 từ — đủ đọc trọn một cuốn tiểu thuyết ngắn.",
               "asOf": "2026-10-15",
               "source": "anthropic-100k"
-            }
-          },
-          {
-            "date": "2024-02",
-            "label": "Gemini 1.5 Pro",
-            "fact": {
-              "text": "Google cho thử Gemini 1.5 Pro với 1 triệu token, hơn 700.000 từ; hãng nói trong phòng lab đã thử tới 10 triệu.",
-              "asOf": "2026-10-15",
-              "source": "google-gemini-15",
-              "claimBy": "Google"
-            }
-          },
-          {
-            "date": "2025-04",
-            "label": "Llama 4 Scout",
-            "fact": {
-              "text": "Meta công bố Llama 4 Scout có cửa sổ 10 triệu token — con số do hãng tự nêu.",
-              "asOf": "2026-10-15",
-              "source": "meta-llama4",
-              "claimBy": "Meta"
-            }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Hôm nay",
-            "fact": {
-              "text": "Nhiều mô hình hàng đầu nay đọc khoảng 1 triệu token; từ 03/2026, Anthropic mở mức này cho Claude Opus 4.6 và Sonnet 4.6.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-1m-ga"
-            },
-            "compare": {
-              "before": "2.048",
-              "after": "1.000.000",
-              "beforeLabel": "GPT-3 · 2020",
-              "afterLabel": "Hôm nay"
             }
           }
         ],
         "horizon": {
-          "text": "Cửa sổ có lẽ còn rộng thêm. Câu hỏi khó hơn: AI có dùng tốt từng chữ ở giữa, hay chủ yếu nhớ đầu và cuối?",
+          "text": "Nay nhiều mô hình hàng đầu đọc khoảng 1 triệu token mỗi lần — chừng 9–10 cuốn tiểu thuyết như vậy.",
           "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "prediction"
+          "source": "anthropic-1m-ga"
         }
       },
       "insight": {
-        "text": "Từ 2.048 lên khoảng 1 triệu token: cửa sổ ngữ cảnh rộng gần 500 lần trong sáu năm, nhưng đọc nhiều chưa chắc nhớ đều.",
-        "asOf": "2026-10-15",
-        "source": "anthropic-1m-ga"
-      },
-      "detail": {
-        "text": "Nghiên cứu năm 2023 (Liu và cộng sự): mô hình tìm thông tin tốt nhất ở đầu hoặc cuối văn bản dài, kém hơn khi nó nằm ở giữa. Mẹo: đặt điều quan trọng ở đầu hoặc cuối câu lệnh.",
+        "text": "AI đọc được cả chồng sách, nhưng nhớ rõ nhất phần đầu và cuối — phần giữa dễ bị bỏ sót.",
         "asOf": "2026-10-15",
         "source": "lost-in-middle"
+      },
+      "detail": {
+        "text": "Mẹo: đặt yêu cầu quan trọng ở đầu hoặc cuối câu lệnh dài (Liu và cộng sự, 2023).",
+        "asOf": "2026-10-15",
+        "source": "lost-in-middle"
+      },
+      "growth": {
+        "text": "Từ GPT-3 (2.048 token, 2020) tới nay (khoảng 1 triệu), cửa sổ rộng gần 500 lần.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-1m-ga"
       }
     }
   },

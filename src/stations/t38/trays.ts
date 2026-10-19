@@ -3,6 +3,7 @@ import { fill, h, nextId, s } from '../../core/dom'
 import { onPrefs } from '../../core/prefs'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onDigit, onSize, rng, seedOf, shuffledIdx, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './shell'
 import { brush, canvas, col, dprOf, fillD, fit, glow, grainOver, inkHills, mistBank, mix, moonDisc, palette, sky, type Pal } from './ink2d'
@@ -442,7 +443,10 @@ export function traysScene(ctx: SceneCtx) {
     h('p', { class: 'visually-hidden', id: keysId }, K.keys),
     defs, cv, warm, ...dents.values(), paths, ...trayBtns, note, rays, ...order.map((i) => pebs.get(ids[i])!), veil, fx, tag, blind, match, h('div', { class: 't38t-cord' }, pull))
   ctx.art.append(root)
-  ctx.prompt(K.prompt)
+  ctx.prompt(fill(K.prompt, { n: 0, total: K.tasks.length }))
+  // H1: a dot on the top pebble of the basket until the first throw; then on the curtain's cord when all are placed
+  const g = guide(ctx)
+  let dot: Mark | null = g.dot(pebs.get(ids[order[0]])!, { dir: [1, -0.4] })
 
   // ── where each pebble lies now
   function target(id: string): Box {
@@ -603,7 +607,14 @@ export function traysScene(ctx: SceneCtx) {
     fly(id, from ?? pos.get(id) ?? null, Math.min(160, 40 + dist * 0.35), from ? 620 : 700).then(() => G && land(j, target(id)))
     pebs.get(id)!.focus({ preventScroll: true })
     say('')
-    if (Object.keys(placed).length === ids.length) pull.hidden = false
+    dot?.done()
+    dot = null
+    const m = Object.keys(placed).length
+    if (m < ids.length) return ctx.prompt(fill(K.prompt, { n: m, total: ids.length }))
+    if (!pull.hidden) return
+    pull.hidden = false
+    ctx.prompt(K.pullPrompt)
+    dot = g.dot(pull, { dir: [0, -1] })
   }
   function compare() {
     if (compared) return
@@ -637,8 +648,19 @@ export function traysScene(ctx: SceneCtx) {
       ctx.onCleanup(() => clearTimeout(t))
     })
     ctx.chime('ok')
-    // the first light reaches the far tray in the mist (taste, owning a mistake) last: then the insight
-    const t = window.setTimeout(() => ctx.insight(K.insight, [K.detail, K.jobs]), ctx.reduced ? 0 : 2900)
+    dot?.done()
+    dot = null
+    // the pebbles that were off are lifted one by one with why AI Zen put them elsewhere (2 s each), then the insight
+    // (audit 38-4: the reasons come before the conclusion)
+    const step = ctx.reduced ? 0 : 2000, t0 = ctx.reduced ? 0 : 1300
+    wrong.forEach((id, k) => {
+      const t = window.setTimeout(() => say(id), t0 + k * step)
+      ctx.onCleanup(() => clearTimeout(t))
+    })
+    const t = window.setTimeout(() => {
+      ctx.insight(K.insight, [K.detail, K.jobs])
+      if (wrong.length) ctx.prompt(K.why)
+    }, Math.max(ctx.reduced ? 0 : 2900, t0 + wrong.length * step))
     ctx.onCleanup(() => clearTimeout(t))
   }
 

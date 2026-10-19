@@ -6,12 +6,14 @@ import { blob, curve, onSize, rng, stableHeight, stroke, type Pt } from '../../u
 import { grass, hills, mist, moon, paperLantern } from '../../ui/part2/paint'
 import { findTakeaway, takeaway } from '../../ui/part2/takeaway'
 import { C } from './data'
+import { guide } from '../../ui/part2/guide'
 import { arm, kura, runner, scribe, t29Defs } from './figures'
 import { at3, billboard, clamp, f1, P, plane, project, rig, stand } from './rig'
 
 const G = C.scenes.desk
-const GB = [8, 16, 32, 64, 96, 141]
-const OPEN = [1, 2, 3, 5, 6, 8] // scrolls laid open at each width (as many as fit)
+// a laptop's RAM (audit v3 29-1: the H200's 141 GB of HBM is not a desk you can buy; it goes in the detail)
+const GB = [8, 16, 32, 64]
+const OPEN = [1, 3, 5, 8] // scrolls laid open at each width (as many as fit)
 const PLATES = 10
 // garden units (× k = px): desk height, apron, depth; the inkstone (the chip), the HBM tower, a scroll; the camera distance
 const HD = 66, TA = 14, DD = 200
@@ -128,18 +130,24 @@ export function deskScene(ctx: SceneCtx) {
     }
   }
 
+  // the insight comes once both ends have been tried: the cramped desk and the wide one (audit v3 29-1)
+  const ends = new Set<number>()
   function step(to: number) {
     to = clamp(to, 0, GB.length - 1)
     if (to === idx) return
     idx = to
     setDesk()
     ctx.chime('soft')
-    if (stage === 0) {
+    if (idx === 0 || idx === GB.length - 1) ends.add(idx)
+    if (stage === 0 && ends.size === 2) {
       stage = 1
       ctx.insight(G.insights[0] as Fact)
+      prompts(2)
+      boardDot.done()
+      towerDot = gd.dot(tower, { dir: [0, -1] })
       shift()
       root.classList.add('is-cue') // the tower glows a few times: touch me
-    }
+    } else if (stage === 0) prompts(1)
   }
 
   function toggle() {
@@ -151,16 +159,18 @@ export function deskScene(ctx: SceneCtx) {
     if (open) {
       aim()
       if (stage < 2) stage = 2
+      if (stage === 2) prompts(3)
       root.classList.remove('is-cue')
       ctx.chime('soft')
     } else {
       aim()
       if (stage === 2) {
         stage = 3
-        ctx.insight(G.insights[1] as Fact, G.detail as Fact)
+        ctx.insight(G.insights[1] as Fact, G.detail as Fact[])
         ctx.chime('ok')
         root.classList.add('is-sealed')
-        slip.hidden = false
+        towerDot?.done()
+        // (the take-away card now waits at the end of the station, slide 4)
       }
     }
   }
@@ -447,7 +457,11 @@ export function deskScene(ctx: SceneCtx) {
   }
 
   ctx.onCleanup(onSize(ctx.art, layout))
-  ctx.prompt(G.prompt)
+  const gd = guide(ctx)
+  const prompts = gd.steps(G.prompts)
+  prompts(0)
+  const boardDot = gd.dot(board, { dir: [1, 0] })
+  let towerDot: ReturnType<typeof gd.dot> | null = null
 
   // ── paintings
   function drawBack(fx: number, hz: number) {

@@ -188,3 +188,29 @@
     transition: none;
   }
 }
+
+/* the line that decodes the reflection: ink on the water under it, after the first ripple */
+.t34r-decode {
+  position: absolute;
+  z-index: 4;
+  margin: 0;
+  translate: -50% 0;
+  font: 400 14px/1.4 var(--serif);
+  color: var(--ink);
+  text-align: center;
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 2px var(--paper);
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-soft);
+  pointer-events: none;
+}
+.t34r-decode.on {
+  opacity: 1;
+}
+/* the checklist card, folded on the near water once the four sides are heard */
+.t34r-slip {
+  position: absolute;
+  right: 21%;
+  bottom: 3%;
+  z-index: 6;
+  max-width: min(420px, 92%);
+}

@@ -1,23 +1,25 @@
 {
   "id": 38,
   "kicker": "Many paths lead into the mist — no one has reached the end.",
-  "summary": "No one knows AI's future for sure — but we can choose where we stand.",
+  "summary": "Ask “what is AGI” before “when will it come”; and in your own work, keep taste, checking and responsibility.",
   "quiz": {
     "q": "One person says “AGI arrives in 2027”, another says “it's still far off”. What should you ask first?",
     "options": [
-      "Who is more famous?",
-      "What does each of them mean by AGI?",
-      "Which company is richer?",
-      "Who said it first?"
+      "Who has the newer data?",
+      "What does each mean by AGI?",
+      "Which company is in the lead now?",
+      "Which date comes sooner?"
     ],
     "answer": 1,
-    "explain": "Each side may use a different ruler: economic work, cognitive tests, or a panel's signature. Same word AGI, different definitions."
+    "explain": "Each side may use a different ruler: jobs, a ladder of levels, a test, or the signature of a panel. Same word AGI, different definitions."
   },
   "scenes": {
     "defs": {
       "label": "Everyone has a definition",
       "art": "Four water vessels along the edge of a wooden veranda as the moon sets: a celadon tea bowl, a split-bamboo trough, a bronze basin and a stone tsukubai; each holds a round moon in its water, and before each lies a small stone carved with the name of who defines it. Touch a vessel and more water is poured in; the surface ripples, stills, and the moon in it takes the shape of that definition: a coin with a square hole, a ladder, a ten-spoke wheel, a council's seal. A paper strip hung below the vessel says who says what, and one veil of mist lifts from the garden. With all four, four threads of moonlight join the same moon to the four waters.",
-      "prompt": "Touch a stone to read",
+      "legend": "AGI: AI as broadly capable as a person. Four groups measure it with four different rulers.",
+      "prompt": "Touch each name stone to pour the water",
+      "next": "Touch the other stones ({n}/{total})",
       "group": "Four definitions of AGI",
       "stoneAria": "Definition by {who}",
       "names": [
@@ -50,7 +52,7 @@
           {
             "who": "Hendrycks, Bengio & colleagues · 2025",
             "view": {
-              "text": "AGI is AI as versatile and proficient as a well-educated adult, scored across 10 cognitive areas. They scored GPT-4 at 27% and GPT-5 at 57%.",
+              "text": "AGI is AI as versatile as a well-educated adult, scored on 10 areas such as reading and writing, maths and memory. On this scale GPT-4 scores 27%, GPT-5 57%.",
               "asOf": "2026-10-15",
               "source": "t38-agidef",
               "kind": "opinion"
@@ -66,14 +68,14 @@
           }
         ],
         "common": {
-          "text": "All four mean “broadly as capable as people”, but measure with different rulers: work, a ladder, tests, or a panel's signature.",
+          "text": "Four rulers: OpenAI measures by jobs, DeepMind by a ladder of levels, the Hendrycks group by a test, Microsoft–OpenAI by the signature of a panel.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "Arguments about “when AGI arrives” are often arguments about “what AGI is”. Ask for the definition before trusting a date.",
+        "text": "Arguing about “when AGI comes” is often arguing about “what AGI is”. Ask for the definition before you believe a date.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -81,8 +83,17 @@
     },
     "tide": {
       "label": "The rope that measures work",
-      "art": "A long scroll of sand at moonset. Drag the moon along its arc from high in the sky down to the western horizon: the bamboo pole on the right throws a shadow that grows to the left along a knotted cord, one notch per doubling, from ≈ 1 hour to ≥ 16 hours. Where the shadow reaches a notch it leaves a small stake; a milestone with no length raises a stone beside the pole instead. The lower the moon, the faster the shadow leaps; by today it runs on into the dawn mist.",
-      "prompt": "Drag the moon along",
+      "art": "A long scroll of sand at moonset. Drag the moon along its arc from high in the sky down to the western horizon: the bamboo pole on the right throws a shadow that grows to the left along a measuring cord marked evenly in hours, from 1 hour at the pole's foot to 16 hours out in the mist. When the shadow reaches a notch, the notch shows its hours. The lower the moon, the faster the shadow leaps; by today it runs on into the dawn mist.",
+      "prompt": "Drag the moon down past each mark",
+      "next": "Keep dragging to the horizon",
+      "legend": "The pole's shadow = how long a task AI can do on its own. Drag the moon down: time runs on to today.",
+      "hours": [
+        "1 hour",
+        "2 hours",
+        "4 hours",
+        "8 hours",
+        "16 hours"
+      ],
       "slider": "Timeline",
       "valueText": "{date}: {label}",
       "tide": {
@@ -91,36 +102,25 @@
             "date": "2025-03",
             "label": "METR's ruler",
             "fact": {
-              "text": "METR measures how long a task (in human working hours) an AI can finish on its own. Claude 3.7 Sonnet reached about 1 hour; that length doubled roughly every 7 months for 6 years.",
+              "text": "Claude 3.7 Sonnet: tasks about 1 hour long.",
               "asOf": "2026-10-15",
               "source": "t38-metr-2025"
-            }
-          },
-          {
-            "date": "2025-07",
-            "label": "Math Olympiad gold",
-            "fact": {
-              "text": "Google DeepMind's Gemini Deep Think solved 5 of 6 IMO problems, scoring 35/42, gold-medal level; IMO coordinators graded and confirmed it.",
-              "asOf": "2026-10-15",
-              "source": "t38-imo",
-              "claimBy": "Google DeepMind",
-              "verifiedBy": "IMO"
             }
           },
           {
             "date": "2025-08",
             "label": "Over 2 hours",
             "fact": {
-              "text": "According to METR, an agent using GPT-5 finished tasks about 2 hours 17 minutes long, with a 50% success rate.",
+              "text": "An agent using GPT-5: about 2 hours 17 minutes.",
               "asOf": "2026-10-15",
               "source": "t38-metr-page"
             }
           },
           {
             "date": "2026-03",
-            "label": "The ruler runs out",
+            "label": "The ruler runs out: METR has no tasks long enough to measure",
             "fact": {
-              "text": "METR tested an early Claude Mythos Preview: at least 16 hours (confidence interval 8.5–55 hours). Beyond 16 hours, the current task suite can no longer measure reliably.",
+              "text": "An early Claude Mythos Preview: at least 16 hours (estimated 8.5 to 55 hours).",
               "asOf": "2026-10-15",
               "source": "t38-metr-mythos"
             },
@@ -130,25 +130,6 @@
               "ratio": 16,
               "beforeLabel": "Mar 2025",
               "afterLabel": "Mar 2026"
-            }
-          },
-          {
-            "date": "2026-09",
-            "label": "The million-dollar problem",
-            "fact": {
-              "text": "OpenAI announced that 10,000 agents found a “singularity” in the Navier–Stokes equations, checked in Lean; mathematicians are still reviewing it and no prize has been awarded.",
-              "asOf": "2026-10-15",
-              "source": "t38-quanta",
-              "claimBy": "OpenAI"
-            }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Today",
-            "fact": {
-              "text": "METR's tracking page stopped updating on Sep 8, 2026; the latest model measured is Mythos Preview. The current ruler can't reliably measure beyond 16 hours.",
-              "asOf": "2026-10-15",
-              "source": "t38-metr-page"
             }
           }
         ],
@@ -160,37 +141,46 @@
         }
       },
       "insight": {
-        "text": "In about a year, the tasks AI can finish alone grew from about 1 hour to at least 16 hours, mostly in programming.",
+        "text": "In one year, the tasks AI can do on its own (succeeding half the time) grew from about 1 hour to at least 16 hours.",
         "asOf": "2026-10-15",
         "source": "t38-metr-mythos"
       },
-      "detail": {
-        "text": "Note: METR's tasks are mostly programming, machine learning and cybersecurity, self-contained and automatically graded. Real-world work is far messier.",
-        "asOf": "2026-10-15",
-        "source": "t38-metr-page"
-      }
+      "detail": [
+        {
+          "text": "METR is an independent research group that measures with real tasks: programming, machine learning, cybersecurity. Real-world work is far messier.",
+          "asOf": "2026-10-15",
+          "source": "t38-metr-page"
+        },
+        {
+          "text": "In the same period, AI also reached gold-medal level at the International Mathematical Olympiad (Jul 2025).",
+          "asOf": "2026-10-15",
+          "source": "t38-imo",
+          "claimBy": "Google DeepMind",
+          "verifiedBy": "IMO"
+        }
+      ]
     },
     "fork": {
       "label": "Three paths into the mist",
       "art": "A fork in the stone path at moonset; at its end a stone sand table on a pedestal holds a whole garden of hills, fields, woods and walls. Three bamboo well-sweeps stand at the three mouths: speed, sharing, control. Pull one and the garden in the tray reshapes at once: terraced paddies holding slivers of sky, a wild pine wood, a ring wall rising, a gate opening wide, forty lantern dots crowding inside the wall or spreading over the whole tray; leave all three midway and mist fills it. Three bands of mist lie across the branches; touch one and it parts on a slip of paper.",
-      "prompt": "Pull the three levers",
+      "prompt": "Drag the buckets of the three bamboo well-sweeps up and down",
       "sliderAria": "{label}: {value}",
       "sliders": [
         {
           "id": "speed",
-          "label": "Pace of progress",
+          "label": "How fast AI advances",
           "low": "Slow",
           "high": "Very fast"
         },
         {
           "id": "share",
-          "label": "Sharing the benefits",
-          "low": "To a few",
-          "high": "Widely shared"
+          "label": "Who gets the benefits",
+          "low": "A few companies",
+          "high": "Everyone"
         },
         {
           "id": "control",
-          "label": "Level of control",
+          "label": "Rules & oversight",
           "low": "Loose",
           "high": "Tight"
         }
@@ -242,10 +232,11 @@
           "id": "drift",
           "when": {},
           "name": "A path through the mist",
-          "text": "Everything in between: some benefits, some risks, and the outcome depends on each year's choices."
+          "text": "Everything halfway. Some benefit, some risk; the outcome depends on each year’s choices."
         }
       ],
-      "mistsLabel": "Two scenarios people often cite",
+      "mistsLabel": "Three slips: what people are guessing",
+      "mistPrompt": "Touch the mist on the paths: what people are guessing",
       "mists": [
         {
           "who": "AI 2027 · Kokotajlo et al., Apr 2025",
@@ -275,7 +266,13 @@
         }
       ],
       "insight": {
-        "text": "Scenarios are tools for thinking, not prophecies. People set these three levers; they don't move on their own.",
+        "text": "The future of AI does not just arrive: its speed, its rules and how its benefits are shared are all chosen by people.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Governments set the rules, companies choose the speed, users choose what to use. This tray is a simulation AI Zen built for thinking, not a forecast.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -283,12 +280,14 @@
     },
     "trays": {
       "label": "Three trays of work",
-      "art": "Low over a wooden veranda at moonset, boards running toward the garden. Bottom left, a rattan basket holds eight pebbles engraved with tasks. Three stone trays recede on a diagonal: dry gravel nearest, one half under water at the pond's edge, the farthest sunk in mist under the moon. Pick up a pebble and throw it into a tray. With all eight placed, pull the blind's cord: early sun spills across the trays, the hollows where the experts would lay each pebble appear, and stray pebbles roll along dotted paths to their places.",
-      "prompt": "Sort tasks into trays",
+      "art": "Low over a wooden veranda at moonset, boards running toward the garden. Bottom left, a rattan basket holds eight pebbles engraved with tasks. Three stone trays recede on a diagonal: dry gravel nearest, one half under water at the pond's edge, the farthest sunk in mist under the moon. Pick up a pebble and throw it into a tray. With all eight placed, pull the blind's cord: early sun spills across the trays, the hollows where AI Zen would lay each pebble appear, and stray pebbles roll along dotted paths to their places.",
+      "prompt": "Drag each pebble and throw it into the tray you think is right ({n}/{total})",
+      "pullPrompt": "Pull the blind’s cord up",
+      "why": "Touch a pebble that moved to see why",
       "keys": "Pick a pebble, then press 1, 2 or 3 to place it in a tray",
       "pickAria": "Place “{task}” in the tray {tray}",
-      "compare": "Compare with the expert view",
-      "match": "You and the expert view agree on {n}/{total} pebbles",
+      "compare": "Pull the blind: compare with AI Zen’s sorting",
+      "match": "You and AI Zen sorted {n}/{total} pebbles the same way",
       "trays": [
         {
           "id": "good",
@@ -300,7 +299,7 @@
         },
         {
           "id": "far",
-          "name": "Still far off"
+          "name": "Needs a person to answer for it"
         }
       ],
       "tasks": [
@@ -349,32 +348,32 @@
         {
           "id": "taste",
           "label": "Choose ideas that fit the brand's taste",
-          "short": "Pick by taste",
+          "short": "Choosing to taste",
           "expert": "far",
           "why": "Taste is an accountable choice, rooted in knowing customers and culture."
         },
         {
           "id": "trust",
-          "label": "Keep relationships, own mistakes",
-          "short": "Keep relationships",
+          "label": "Answering for mistakes, keeping relationships",
+          "short": "Answering for it",
           "expert": "far",
           "why": "Clients and partners need a person who stands behind the commitment."
         }
       ],
       "expertNote": {
-        "text": "The “expert” sorting is AI Zen's editorial view as of Oct 2026, informed by METR and the WEF; it may change month to month.",
+        "text": "This is AI Zen’s own sorting as of Oct 2026, informed by METR and WEF; it may change month to month.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
       "insight": {
-        "text": "Skills worth investing in: taste, clear briefs, verification, directing AI, and human relationships.",
+        "text": "Two things AI cannot take yet: choosing by taste, and answering for the result. Invest in those.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
       "detail": {
-        "text": "A survey of 1,000+ employers (WEF, Jan 2025) expects nearly 40% of core skills to change by 2030; creative thinking and tech skills matter more and more.",
+        "text": "Alongside them: writing a clear brief (the instructions for a job), checking results yourself, and combining several AI tools. WEF (Jan 2025) forecasts that nearly 40% of core skills will change by 2030.",
         "asOf": "2026-10-15",
         "source": "t38-wef",
         "kind": "prediction"

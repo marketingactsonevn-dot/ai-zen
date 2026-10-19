@@ -1,31 +1,31 @@
 {
   "id": 34,
-  "kicker": "Xưởng có trăm cây đục — thợ giỏi biết cầm cây nào cho nhát nào.",
-  "summary": "Chọn đúng cây đục cho đúng nhát — và luôn biết mình đang tiêu bao nhiêu nước trong bình.",
+  "kicker": "Chợ có nhiều sạp, bình chỉ có chừng ấy nước — chọn sạp theo việc, và đừng để bình cạn giữa chừng.",
+  "summary": "Chọn nền tảng theo việc, nháp rẻ trước khi tốn credit, và gắn nhãn AI, xin phép trước khi đăng.",
   "takeaways": ["t34-brief", "t34-publish-check"],
   "quiz": {
     "q": "Bạn làm 20 video review có người mẫu ảo cầm sản phẩm. Trước khi đăng, việc nào không được bỏ qua?",
     "options": [
-      "Chuyển sang nền tảng đắt nhất cho chắc",
-      "Gắn nhãn AI và kiểm tra quyền hình ảnh, nhạc",
-      "Phóng nét tất cả bản nháp lên 4K",
-      "Đăng thật nhanh để kịp xu hướng"
+      "Chỉ cần gắn nhãn AI là đủ, phần còn lại không sao",
+      "Người mẫu ảo nên không cần xin phép ai cả",
+      "Gắn nhãn AI, kiểm quyền hình và giấy phép nhạc",
+      "Phóng nét cả 20 bản lên 4K cho chuyên nghiệp"
     ],
-    "answer": 1,
-    "explain": "Luật Trí tuệ nhân tạo Việt Nam yêu cầu gắn nhãn dễ nhận biết khi AI giả lập người thật; dùng hình người thật thì cần họ đồng ý."
+    "answer": 2,
+    "explain": "Nhãn AI là bắt buộc khi giả lập người; nhưng hình người thật và nhạc vẫn cần giấy phép riêng."
   },
   "scenes": {
     "market": {
       "label": "Chợ đêm dưới trăng",
       "art": "Tranh mực nhìn từ một con thuyền nhỏ giữa hồ đêm: mũi thuyền có ngọn đèn, ngoài mặt nước ba sạp chợ đứng trên cột ở ba độ xa. Sạp gom gần nhất treo cụm bảy đèn giấy nhiều sắc mực, bóng nước thành một dải bảy màu; hai sạp chuyên mỗi sạp một đèn lớn, bóng nước một vệt hổ phách. Tên và việc của mỗi sạp viết trên rèm vải. Bốn đèn hoa đăng trôi cạnh thuyền, mỗi đèn mang một việc cần làm.",
-      "prompt": "Thả việc vào đúng sạp",
+      "prompt": "Kéo từng đèn tới sạp làm tốt việc đó",
       "group": "Các sạp trong chợ",
       "taskGroup": "Việc cần làm",
       "stalls": [
         {
           "id": "hub",
           "name": "Sạp gom nhiều model",
-          "what": "Một chỗ có model ảnh, video của nhiều hãng; đổi model mà không đổi nơi làm.",
+          "what": "Một chỗ có nhiều ‘bộ máy’ AI (model) tạo ảnh, video của nhiều hãng.",
           "example": "Ví dụ: Higgsfield",
           "source": "t34-higgsfield"
         },
@@ -47,39 +47,59 @@
       "tasks": [
         {
           "id": "photo4k",
-          "text": "Ảnh sản phẩm 4K",
-          "short": "Ảnh 4K",
-          "fits": ["image", "hub"],
-          "why": "Phóng nét (upscale) là việc chính của sạp ảnh; sạp gom cũng có công cụ ảnh."
+          "text": "Phóng nét ảnh chụp sẵn lên 4K",
+          "short": "Ảnh lên 4K",
+          "best": "image",
+          "also": ["hub"],
+          "why": "Phóng nét (upscale) là việc chính của sạp ảnh.",
+          "no": {
+            "sales": "Không hợp: sạp video bán hàng làm video từ sản phẩm, không phóng nét ảnh."
+          }
         },
         {
           "id": "review",
-          "text": "Video review có người mẫu ảo",
+          "text": "Video review có người dẫn ảo",
           "short": "Video review",
-          "fits": ["sales", "hub"],
-          "why": "Cả hai đều có người dẫn ảo đứng cạnh sản phẩm. Nhớ gắn nhãn AI."
+          "best": "sales",
+          "also": ["hub"],
+          "why": "Người dẫn ảo đứng cạnh sản phẩm là việc chính của sạp này. Nhớ gắn nhãn AI.",
+          "no": {
+            "image": "Không hợp: sạp ảnh không có người dẫn ảo đứng cạnh sản phẩm."
+          }
         },
         {
           "id": "film",
-          "text": "Phim ngắn có góc máy",
-          "short": "Phim ngắn",
-          "fits": ["hub"],
-          "why": "Cần chỉnh chuyển động máy quay từng cảnh và thử nhiều model video."
+          "text": "Phim ngắn đổi góc máy từng cảnh",
+          "short": "Phim đổi góc máy",
+          "best": "hub",
+          "also": [],
+          "why": "Phim nhiều cảnh cần thử nhiều model video và chỉnh góc máy từng cảnh.",
+          "no": {
+            "sales": "Không hợp: sạp video bán hàng không cho chỉnh góc máy từng cảnh.",
+            "image": "Không hợp: sạp ảnh có tạo video, nhưng không cho chỉnh góc máy từng cảnh."
+          }
         },
         {
           "id": "link",
-          "text": "Dán link shop thành quảng cáo",
-          "short": "Link shop",
-          "fits": ["sales", "hub"],
-          "why": "Cả hai sạp đều tự giới thiệu tính năng đi từ link sản phẩm tới video."
+          "text": "50 video bán hàng từ link shop",
+          "short": "50 video từ link",
+          "best": "sales",
+          "also": ["hub"],
+          "why": "Đi từ link sản phẩm tới hàng loạt video quảng cáo là việc chính của sạp này.",
+          "no": {
+            "image": "Không hợp: sạp ảnh không đi từ link shop tới video quảng cáo."
+          }
         }
       ],
       "dropAria": "Thả “{task}” vào {stall}",
       "lanternAria": "Đèn hoa đăng: {task}",
       "keys": "Chọn một đèn hoa đăng, dùng mũi tên trái phải để chọn sạp, Enter để thả. Hoặc kéo đèn qua mặt nước.",
-      "right": "Hợp sạp này.",
-      "also": "Cũng hợp: {stalls}",
-      "wrong": "Sạp này không chuyên việc đó — thử sạp khác.",
+      "right": "Sạp này chuyên việc này.",
+      "dim": "Sạp gom cũng làm được, nhưng không chuyên.",
+      "wrong": "Sạp này không làm việc đó — kéo sang sạp khác",
+      "dimTry": "Có sạp chuyên hơn — kéo sang đó",
+      "left": "Còn {n} đèn — kéo tới sạp làm tốt việc đó",
+      "count": "{n}/{total} đèn đã thả",
       "officialLabel": "Trang chính thức",
       "volatile": "Giá & tính năng thay đổi thường xuyên — kiểm tra trang chính thức.",
       "facts": [
@@ -112,22 +132,21 @@
         }
       ],
       "insight": {
-        "text": "Không có sạp “tốt nhất”: chọn theo việc. Một việc thường hợp vài sạp; khác nhau ở model có sẵn, cách làm và giá.",
+        "text": "Không có sạp tốt nhất: sạp chuyên làm một việc thật tốt, sạp gom làm được nhiều việc. Chọn theo việc bạn cần.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Mô tả tính năng ở đây là lời các hãng tự giới thiệu (◇), chưa có bên độc lập đo. Hãy thử bản miễn phí hoặc gói nhỏ với đúng việc của bạn trước khi trả nhiều."
+      "detail": "Tính năng ở đây là lời các hãng tự giới thiệu (◇). Hãy thử gói miễn phí với đúng việc của bạn trước khi trả tiền."
     },
     "path": {
-      "label": "Đường đi của một asset",
+      "label": "Đường đi của một ảnh/video AI",
       "art": "Tranh mực nhìn từ trên cao sau cổng xưởng: vườn cát cào uốn quanh hai tảng đá rêu, tám hốc nông nối thành lối chữ S chạy xa dần về bờ hồ, nơi một ngọn đèn đá chờ thắp. Tám viên đá bước nằm rải trên cát gần; đặt đúng thứ tự thì lối sáng dần, cuối cùng đèn thắp và bóng đèn hiện trên mặt hồ.",
-      "prompt": "Xếp đá theo thứ tự",
-      "pathAria": "Lối đá tám bước làm một asset AI",
+      "prompt": "Chạm từng viên đá theo thứ tự làm",
+      "pathAria": "Lối đá tám bước làm một ảnh/video AI",
       "stoneAria": "Viên đá: {label}",
       "slotAria": "Chỗ trống số {n} trên lối",
       "keys": "Chạm lần lượt hoặc dùng phím số 1 đến 8.",
-      "wrongHint": "Chưa đúng chỗ — {why}",
       "done": "Lối đã sáng. Mở thẻ mang về.",
       "steps": {
         "steps": [
@@ -148,13 +167,13 @@
           },
           {
             "label": "Chọn một bản",
-            "detail": "Đặt các bản cạnh nhau, chấm theo brief chứ không theo cảm hứng nhất thời.",
+            "detail": "Đặt các bản cạnh nhau, so với brief để chọn, đừng chọn theo cảm hứng nhất thời.",
             "why": "Quay về brief giữ đúng mục tiêu."
           },
           {
             "label": "Phóng nét & sửa",
             "detail": "Phóng nét (upscale) bản đã chốt; sửa vùng lỗi như tay, chữ, logo.",
-            "why": "Chỉ phóng nét bản cuối để không đốt credit vào bản bỏ đi."
+            "why": "Chỉ phóng nét bản cuối để không tốn credit vào bản sẽ bỏ đi."
           },
           {
             "label": "Dựng",
@@ -172,22 +191,21 @@
             "why": "Có công thức thì lần sau làm lại nhanh và giống."
           }
         ],
-        "takeaway": "t34-publish-check"
+        "takeaway": "t34-brief"
       },
       "insight": {
-        "text": "Asset AI tốt đi qua nhiều trạm: nháp rẻ, chọn kỹ, rồi mới phóng nét — và kiểm tra quyền trước khi đăng.",
+        "text": "Nháp rẻ trước, chốt theo brief, phóng nét bản cuối, kiểm quyền rồi mới đăng — đổi thứ tự là tốn credit hoặc mất bài.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Thứ tự này là một gợi ý của AI Zen, không phải quy chuẩn. Phần mềm dựng nêu tên chỉ là ví dụ; dùng công cụ nào bạn quen."
+      "detail": "Đây là thứ tự AI Zen gợi ý, không phải quy chuẩn. Phần mềm dựng dùng cái nào bạn quen cũng được."
     },
     "credit": {
       "label": "Credit là nước trong bình",
       "art": "Tranh tĩnh vật trong xưởng đêm: một bình nguyệt men rạn trên ghế ván, một phần tư thân bình cắt mở như hiện vật bảo tàng để thấy cột nước bên trong và các vạch khắc. Tia trăng từ ô cửa giấy rót vào miệng bình. Trước bình là giá tre với gáo nhỏ và muôi lớn, hai vòng cổ hẹp và rộng, hai đồng hồ cát, một chén trà; thẻ gỗ treo dưới ghế để chọn. Mỗi lần tạo, gáo múc nước ra rót vào chén; mực nước hạ dần.",
-      "prompt": "Múc thử một gáo",
+      "prompt": "Kéo muôi nhỏ vào miệng bình để tạo một lượt",
       "jarAria": "Bình credit, còn {n} phần trên 100",
-      "look": "Nhìn xuống cổ bình",
       "modelLabel": "Model",
       "models": ["Model nhẹ", "Model nặng"],
       "resLabel": "Độ phân giải",
@@ -196,9 +214,13 @@
       "lengths": ["5 giây", "10 giây"],
       "generate": "Tạo",
       "refill": "Đổ đầy lại",
-      "cost": "Lượt này tốn {n} phần",
+      "cost": "Lượt này tốn {n} phần (cả bình là 100).",
       "costShort": "{n} phần",
-      "empty": "Bình cạn. Hết credit thì phải chờ kỳ sau hoặc mua thêm.",
+      "tryHeavy": "Thử muôi lớn, vòng 1080p, 10 giây.",
+      "tryLight": "Thử muôi nhỏ, vòng 720p, 5 giây.",
+      "short": "Không đủ nước cho lượt này: còn {left} phần, cần {n}.",
+      "empty": "Bình cạn. Chờ kỳ sau được nạp lại, hoặc mua thêm.",
+      "marks": ["100", "50", "0"],
       "scale": {
         "text": "Số phần nước chỉ để minh hoạ tỉ lệ, không phải giá thật của nền tảng nào.",
         "asOf": "2026-10-15",
@@ -221,42 +243,39 @@
       ],
       "tips": [
         "Nháp ở độ phân giải thấp, chỉ phóng nét bản đã chốt.",
-        "Khoá seed khi đã ưng bố cục, chỉ đổi từng chi tiết.",
-        "Viết prompt rõ trước khi bấm, đừng “thử đại”.",
         "Nhìn giá trên nút tạo trước khi xác nhận."
       ],
       "tipsLabel": "Mẹo giữ nước",
       "insight": {
-        "text": "Credit (tín dụng nền tảng) như nước trong bình: model nặng, độ phân giải cao, video dài thì mỗi gáo càng to.",
+        "text": "Cùng một video: bản nặng, nét, dài tốn 33 phần; bản nhẹ tốn 5. Nháp bằng bản nhẹ, chỉ làm bản nặng khi đã chốt.",
         "asOf": "2026-10-15",
-        "source": "t34-hf-credits",
-        "kind": "fact"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "Mỗi nền tảng tính khác nhau, và bảng giá đổi thường xuyên. Đọc trang giá chính thức, xem credit có cộng dồn không, trước khi chọn gói.",
-      "takeaway": "t34-brief"
+      "detail": "Credit là điểm bạn trả trước để dùng nền tảng; mỗi lượt tạo trừ một ít. Số ở đây chỉ minh hoạ tỉ lệ. Xem trang giá chính thức và xem credit có được dồn sang kỳ sau không."
     },
     "real": {
       "label": "Thật và giả",
       "art": "Tranh mực nhìn chéo từ bờ hồ đêm: cây cầu cong vắt qua mặt nước, cầu và bóng của nó khép thành một vòng tròn. Trên đỉnh cầu một người mẫu quàng khăn son, trăng sau lưng trong sương. Bóng cô dưới nước là một avatar đa giác vẽ bằng nét mảnh thẳng. Bốn hòn đá bờ, mỗi hòn một ngọn đèn nhỏ chờ thắp.",
-      "prompt": "Chạm từng hòn đá",
+      "prompt": "Vuốt ngón tay qua bóng dưới hồ",
       "group": "Bốn góc nhìn về người mẫu ảo",
       "stoneAria": "Góc nhìn: {who}",
       "waterAria": "Mặt hồ: vuốt ngón tay hoặc nhấn phím cách để gợn sóng",
       "perspectives": {
         "stones": [
           {
-            "who": "Thương hiệu (bên đăng)",
+            "who": "Bên đăng (thương hiệu)",
             "view": {
-              "text": "Luật AI Việt Nam, từ 01/03/2026: ảnh, video, giọng AI giả lập người thật phải có nhãn dễ nhận biết.",
+              "text": "Theo Luật AI (hiệu lực 01/03/2026), video có người do AI giả lập phải gắn nhãn dễ nhận ra.",
               "asOf": "2026-10-15",
               "source": "t34-vn-ai-law",
               "kind": "fact"
             }
           },
           {
-            "who": "Người tiêu dùng",
+            "who": "Người xem",
             "view": {
-              "text": "Tôi không cần biết bạn dùng công cụ gì — nhưng cần biết người trong video có thật hay không.",
+              "text": "Ví dụ một người xem: “Tôi không cần biết bạn dùng công cụ gì, chỉ cần biết người trong video có thật không.”",
               "asOf": "2026-10-15",
               "source": "editorial",
               "kind": "opinion"
@@ -265,7 +284,7 @@
           {
             "who": "Người mẫu thật",
             "view": {
-              "text": "Bộ luật Dân sự: dùng hình ảnh một người phải được họ đồng ý; dùng vì mục đích thương mại phải trả thù lao.",
+              "text": "Muốn dùng hình tôi phải hỏi tôi; dùng để bán hàng phải trả tiền (Bộ luật Dân sự, Điều 32).",
               "asOf": "2026-10-15",
               "source": "t34-civil-code",
               "kind": "fact"
@@ -274,7 +293,7 @@
           {
             "who": "Nền tảng mạng xã hội",
             "view": {
-              "text": "YouTube yêu cầu người đăng khai báo nội dung AI trông như thật, ví dụ khiến người thật nói điều họ không nói.",
+              "text": "YouTube buộc người đăng khai báo khi nội dung AI trông như thật.",
               "asOf": "2026-10-15",
               "source": "t34-youtube",
               "kind": "fact"
@@ -282,13 +301,17 @@
           }
         ],
         "common": {
-          "text": "Đều đồng ý: người xem có quyền biết. Khác nhau ở: nhãn đặt đâu, to cỡ nào, và ai chịu trách nhiệm.",
+          "text": "Cả bốn phía cùng đòi một điều: người xem phải biết ai là thật. Gắn nhãn và xin phép trước khi đăng.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
-      "detail": "Luật còn yêu cầu thông báo rõ khi nội dung AI có thể gây nhầm về sự kiện, nhân vật thật; tác phẩm nghệ thuật được gắn nhãn theo cách không cản trở thưởng thức. Đây không phải tư vấn pháp lý."
+      "detail": "Luật còn yêu cầu thông báo rõ khi nội dung AI có thể gây nhầm về sự kiện, nhân vật thật; tác phẩm nghệ thuật được gắn nhãn theo cách không cản trở thưởng thức. Đây không phải tư vấn pháp lý.",
+      "listen": "Chạm từng ngọn đèn đá để nghe bốn phía",
+      "left": "Còn {n} phía",
+      "decode": "Người trên cầu là thật; bóng dưới nước là người mẫu ảo do AI tạo.",
+      "takeaway": "t34-publish-check"
     }
   },
   "sources": {

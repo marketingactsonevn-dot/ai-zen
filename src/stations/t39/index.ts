@@ -11,9 +11,10 @@ const station: StationModule = {
   content: C,
   scenes: [
     { label: S.ask.label, mount: askScene },
-    { label: S.kit.label, mount: kitScene },
-    pathScene,
+    { label: S.kit.label, text: 'br', mount: kitScene },
+    // "learning that lasts" is the ground of week 1, so it comes before the 30-day path (audit v2 B.5)
     adviceScene,
+    pathScene,
     { label: S.enso.label, mount: ensoScene },
   ],
 }

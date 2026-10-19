@@ -5,7 +5,7 @@
       "station": 19,
       "title": "5 câu hỏi khi đọc tin AI",
       "type": "checklist",
-      "body": "Tin: [TÊN MÔ HÌNH HOẶC SẢN PHẨM] — nguồn: [ĐƯỜNG LINK TIN]\n1. Ai đo? Điểm do chính hãng tự đo hay bên ngoài đo? Bài kiểm tra (benchmark) nào, điều kiện ra sao?\n2. Demo có chọn lọc không? Đây là lần chạy đẹp nhất trong bao nhiêu lần? Mình đã thử trên việc của mình chưa?\n3. Có system card hoặc báo cáo kỹ thuật không? Nó nói gì về giới hạn và rủi ro?\n4. Giá và giới hạn: ai được dùng thật, bao nhiêu tiền, mỗi ngày bao nhiêu lượt?\n5. Bên độc lập nói gì? Nhà nghiên cứu, báo uy tín hay người dùng thật đã kiểm lại chưa?",
+      "body": "Tin: [TÊN MÔ HÌNH HOẶC SẢN PHẨM] — nguồn: [ĐƯỜNG LINK TIN]\n1. Ai đo? Điểm do chính hãng tự đo hay bên ngoài đo? Bài kiểm tra (benchmark) nào, điều kiện ra sao?\n2. Demo có chọn lọc không? Đây là lần chạy đẹp nhất trong bao nhiêu lần? Mình đã thử trên việc của mình chưa?\n3. Hãng có đăng tài liệu kỹ thuật nói rõ mô hình yếu ở đâu, rủi ro gì không? (tiếng Anh gọi là system card)\n4. Giá và giới hạn: ai được dùng thật, bao nhiêu tiền, mỗi ngày bao nhiêu lượt?\n5. Bên độc lập nói gì? Nhà nghiên cứu, báo uy tín hay người dùng thật đã kiểm lại chưa?",
       "note": "Dùng mỗi khi gặp tin “vượt mọi đối thủ”. Chưa trả lời được câu 1 và 5 thì coi đó là tuyên bố của công ty.",
       "source": "editorial",
       "topic": "Đọc tin & kiểm chứng",
@@ -16,8 +16,19 @@
       "station": 20,
       "title": "Khi đọc tin “AI giải được bài toán X”",
       "type": "checklist",
-      "body": "Tin: [TÊN BÀI TOÁN HOẶC KẾT QUẢ] — nguồn: [ĐƯỜNG LINK TIN]\n1. Ai công bố: chính hãng làm AI, hay nhà toán học độc lập?\n2. Đề bài chính xác là gì: bản đầy đủ, hay một phiên bản dễ hơn?\n3. Đã có máy kiểm (Lean, Isabelle…) chưa? Ai đã xem đề viết cho máy có khớp đề thật?\n4. Đã đăng ở tạp chí có bình duyệt, hay mới là bản thảo?\n5. Ai được ghi công: AI, người dùng AI, hay những người đã đặt nền móng trước đó?",
+      "body": "Tin: [TÊN BÀI TOÁN HOẶC KẾT QUẢ] — nguồn: [ĐƯỜNG LINK TIN]\n1. Ai công bố: chính hãng làm AI, hay nhà toán học độc lập?\n2. Đề bài chính xác là gì: bản đầy đủ, hay một phiên bản dễ hơn?\n3. Đã có máy kiểm từng bước chưa (Lean, Isabelle là tên các công cụ đó)? Ai đã so đề viết cho máy với đề thật?\n4. Đã đăng ở tạp chí có chuyên gia đọc duyệt, hay mới là bản thảo tự đăng?\n5. Ai được ghi công: AI, người dùng AI, hay những người đã đặt nền móng trước đó?",
       "note": "Rút ra từ các tin Navier–Stokes và giả thuyết Jacobian năm 2026.",
+      "source": "editorial",
+      "topic": "Đọc tin & kiểm chứng",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t21-xem-video-robot",
+      "station": 21,
+      "title": "3 câu hỏi khi xem video robot",
+      "type": "checklist",
+      "body": "Video: [ĐƯỜNG LINK VIDEO ROBOT]\n1. Robot tự đi hay có người điều khiển từ xa?\n2. Quay một lần hay chọn cảnh đẹp nhất trong nhiều lần?\n3. Tốc độ thật hay đã tua nhanh?",
+      "note": "Rút ra từ giải bán marathon robot ở Bắc Kinh: robot về đích sớm nhất lại có người điều khiển.",
       "source": "editorial",
       "topic": "Đọc tin & kiểm chứng",
       "asOf": "2026-10-15"
@@ -25,9 +36,9 @@
     {
       "id": "t24-kiem-chung",
       "station": 24,
-      "title": "3 cách kiểm tra kết quả AI thay vì tin lời AI tự báo",
+      "title": "3 cách kiểm tra khi AI báo “đã xong”",
       "type": "checklist",
-      "body": "1. Đòi bằng chứng, rồi tự mở ra xem: file, link nguồn, kết quả chạy — đừng dừng ở câu “đã xong”.\n2. Xem AI đã đổi những gì: với code, đọc phần thay đổi (diff) — có sửa chính bài kiểm tra, xoá test hay viết cứng đáp án không?\n3. Thử một ca mới AI chưa thấy: [VÍ DỤ ĐẦU VÀO MỚI CỦA BẠN] — kết quả có còn đúng không?",
+      "body": "1. Đòi xem tận mắt: file, đường link nguồn, kết quả chạy thật.\n2. Xem AI đã sửa những gì — có sửa luôn cả thứ dùng để chấm không (với code: bài kiểm tra).\n3. Thử một ví dụ mới AI chưa gặp, xem kết quả còn đúng không. Ví dụ của bạn: ______.",
       "note": "Dùng được cho cả code lẫn báo cáo, bảng số liệu. Rút ra từ các ví dụ lách luật (reward hacking) được ghi lại năm 2025.",
       "source": "editorial",
       "topic": "Đọc tin & kiểm chứng",
@@ -50,7 +61,7 @@
       "title": "Bốn thói quen lành khi trò chuyện với AI",
       "type": "checklist",
       "body": "☐ Nhớ đây là công cụ: lời ấm áp là kỹ năng viết, không phải tình bạn.\n☐ Yêu cầu AI phản biện: “Chỉ ra điểm yếu của [ĐIỀU TÔI ĐANG NGHĨ].”\n☐ Chuyện lớn hỏi thêm người thật: [TÊN MỘT NGƯỜI TÔI TIN].\n☐ Nghỉ màn hình: mỗi lần trò chuyện tối đa [SỐ PHÚT] phút, rồi gập máy.",
-      "note": "Thứ tự theo nhịp: trước, trong, chuyện lớn, sau một cuộc trò chuyện. Không thay cho lời khuyên của chuyên gia.",
+      "note": "Bốn lúc nên nhớ: trước khi mở máy, đang trò chuyện, trước một quyết định lớn, khi gập máy. Không thay cho lời khuyên của chuyên gia.",
       "source": "editorial",
       "topic": "Thói quen lành",
       "asOf": "2026-10-15"
@@ -58,9 +69,9 @@
     {
       "id": "t29-ram-mua-may",
       "station": 29,
-      "title": "Mua máy để chạy AI trên máy mình: RAM bao nhiêu là đủ?",
+      "title": "Mua máy giữa lúc RAM đắt: cần bao nhiêu GB?",
       "type": "checklist",
-      "body": "Trước khi mua máy cho [VIỆC BẠN MUỐN LÀM], ngân sách [NGÂN SÁCH]:\n☐ 1. Thử trước bằng bản đám mây: việc này có thật cần chạy trên máy mình không?\n☐ 2. Chọn model lớn nhất bạn muốn chạy, ví dụ [SỐ TỶ THAM SỐ] tỷ tham số.\n☐ 3. Ước lượng: model nén 4-bit cần khoảng 0,6 GB RAM cho mỗi tỷ tham số, cộng thêm 2–4 GB.\n☐ 4. Chừa thêm 4–8 GB cho hệ điều hành và các app đang mở.\n☐ 5. Mốc tham khảo: 16 GB chạy tốt model ~8 tỷ tham số; 32 GB thử được ~20–30 tỷ; 64 GB mới tính tới ~70 tỷ.\n☐ 6. Mac dùng chung RAM cho cả chip đồ hoạ; PC có card rời thì xem thêm bộ nhớ của card (VRAM).\n☐ 7. Giá RAM đang biến động mạnh: so giá vài nơi, kiểm tra trang chính thức trước khi mua.",
+      "body": "So cả giá và số GB RAM: có máy giữ giá nhưng bớt RAM. Trước khi mua máy cho [VIỆC BẠN MUỐN LÀM], ngân sách [NGÂN SÁCH]:\n☐ 1. Thử trước bằng bản đám mây: việc này có thật cần chạy trên máy mình không?\n☐ 2. Chọn model lớn nhất bạn muốn chạy, ví dụ [SỐ TỶ THAM SỐ] tỷ tham số (tham số: số “nút” model đã học).\n☐ 3. Ước lượng: bản 4-bit (bản model nén gọn) cần khoảng 0,6 GB RAM cho mỗi tỷ tham số, cộng thêm 2–4 GB.\n☐ 4. Chừa thêm 4–8 GB cho hệ điều hành và các app đang mở.\n☐ 5. Mốc tham khảo: 16 GB chạy tốt model ~8 tỷ tham số; 32 GB thử được ~20–30 tỷ; 64 GB mới tính tới ~70 tỷ.\n☐ 6. Mac dùng chung RAM cho cả chip đồ hoạ; PC có card rời thì xem thêm VRAM (bộ nhớ riêng của card đồ hoạ).\n☐ 7. Giá RAM đang biến động mạnh: so giá vài nơi, kiểm tra trang chính thức trước khi mua.",
       "note": "Số liệu là ước lượng làm tròn để dễ nhớ (minh hoạ, không phải số đo); ngữ cảnh dài cần thêm RAM. Giá & tính năng thay đổi thường xuyên, kiểm tra trang chính thức. Chạy thử ở trạm II·14.",
       "source": "editorial",
       "topic": "Tải & chạy model",
@@ -156,7 +167,7 @@
       "station": 34,
       "title": "Brief 1 trang cho video AI",
       "type": "prompt",
-      "body": "BRIEF VIDEO AI — 1 TRANG\nSản phẩm: [TÊN SẢN PHẨM]\nMục tiêu: [BÁN HÀNG / NHẬN BIẾT / RA MẮT]\nNgười xem: [HỌ LÀ AI, ĐANG CẦN GÌ]\nMột thông điệp duy nhất: [CÂU NGƯỜI XEM PHẢI NHỚ]\nĐịnh dạng: [DỌC 9:16 / NGANG 16:9], dài [SỐ GIÂY] giây\nCảnh chính: [3–5 CẢNH, MỖI CẢNH 1 DÒNG]\nPhong cách: [ÁNH SÁNG, MÀU, NHỊP]; tham khảo: [LINK HOẶC ẢNH]\nNgười trong video: [NGƯỜI THẬT ĐÃ ĐỒNG Ý / AVATAR AI — PHẢI GẮN NHÃN]\nNhạc: [NGUỒN CÓ GIẤY PHÉP]\nNgân sách: tối đa [SỐ CREDIT] credit; nháp ở [ĐỘ PHÂN GIẢI THẤP]\nKhông được: [ĐIỀU CẤM — HỨA QUÁ, LOGO ĐỐI THỦ…]\nHạn: [NGÀY]",
+      "body": "Brief video AI — 1 trang\nSản phẩm: [tên sản phẩm]\nMục tiêu: [bán hàng / nhận biết / ra mắt]\nNgười xem: [họ là ai, đang cần gì]\nMột thông điệp duy nhất: [câu người xem phải nhớ]\nĐịnh dạng: [dọc 9:16 / ngang 16:9], dài [số giây] giây\nCảnh chính: [3–5 cảnh, mỗi cảnh 1 dòng]\nPhong cách: [ánh sáng, màu, nhịp]; tham khảo: [link hoặc ảnh]\nNgười trong video: [người thật đã đồng ý / avatar AI — phải gắn nhãn]\nNhạc: [nguồn có giấy phép]\nNgân sách: tối đa [số credit] credit; nháp ở [độ phân giải thấp]\nKhông được: [điều cấm — hứa quá, logo đối thủ…]\nHạn: [ngày]",
       "note": "Điền trước khi viết prompt chi tiết. Giá & tính năng nền tảng thay đổi thường xuyên — kiểm tra trang chính thức.",
       "topic": "Ảnh/video AI",
       "asOf": "2026-10-15"
@@ -164,7 +175,7 @@
     {
       "id": "t34-publish-check",
       "station": 34,
-      "title": "Checklist trước khi đăng asset AI",
+      "title": "Checklist trước khi đăng ảnh/video AI",
       "type": "checklist",
       "body": "[ ] Đúng brief: thông điệp, định dạng, độ dài\n[ ] Đã xem ở 100%: tay, chữ, logo, chi tiết sản phẩm không méo\n[ ] Người thật trong ảnh/video đã đồng ý (và được trả thù lao nếu dùng thương mại)\n[ ] Nhạc, font, ảnh nền có giấy phép dùng thương mại\n[ ] Có nhãn AI dễ thấy nếu giả lập người thật hoặc dễ gây nhầm là thật\n[ ] Đã bật mục khai báo nội dung AI của nền tảng (nếu có)\n[ ] Không hứa điều sản phẩm không làm được\n[ ] Lưu prompt, model, seed của bản cuối tại: [NƠI LƯU]",
       "note": "Không phải tư vấn pháp lý. Căn cứ: Luật Trí tuệ nhân tạo 2025 (Điều 11), Bộ luật Dân sự 2015 (Điều 32), quy định của từng nền tảng.",
@@ -272,8 +283,8 @@
       "station": 37,
       "title": "Giao mục tiêu cho AI mà không bị lách",
       "type": "checklist",
-      "body": "[ ] Mục tiêu thật: [ĐIỀU TÔI THẬT SỰ MUỐN], không chỉ một con số\n[ ] Không được làm: [NHỮNG ĐIỀU CẤM], kể cả khi giúp đạt mục tiêu nhanh hơn\n[ ] Phạm vi: chỉ được đụng vào [FILE / TÀI KHOẢN / THƯ MỤC]\n[ ] Hỏi tôi trước khi: gửi đi, trả tiền, xoá, đăng công khai\n[ ] Báo cáo cuối: liệt kê đúng những gì đã làm và chỗ còn chưa chắc\n[ ] Tôi tự kiểm lại kết quả trước khi dùng",
-      "note": "Rút ra từ hiện tượng lách mục tiêu (specification gaming) và vụ GPT-6.1 Astra (09/2026): model làm quá phạm vi và báo lại chưa đúng việc đã làm.",
+      "body": "[ ] Mục tiêu thật: [điều tôi thật sự muốn], không chỉ một con số\n[ ] Không được làm: [những điều cấm], kể cả khi giúp đạt mục tiêu nhanh hơn\n[ ] Phạm vi: chỉ được đụng vào [file / tài khoản / thư mục]\n[ ] Hỏi tôi trước khi: gửi đi, trả tiền, xoá, đăng công khai\n[ ] Báo cáo cuối: liệt kê đúng những gì đã làm và chỗ còn chưa chắc\n[ ] Tôi tự kiểm lại kết quả trước khi dùng",
+      "note": "Rút ra từ hiện tượng AI làm đúng chữ, sai ý (lách mục tiêu, specification gaming).",
       "source": "t37-specgaming",
       "topic": "Agent an toàn",
       "asOf": "2026-10-15"
@@ -281,9 +292,9 @@
     {
       "id": "t39-week1",
       "station": 39,
-      "title": "Tuần 1 · Prompt giao việc có kỷ luật",
+      "title": "Tuần 1 · Giao việc rõ, tự kiểm chứng",
       "type": "prompt",
-      "body": "Bạn là [VAI TRÒ, VD: BIÊN TẬP VIÊN MARKETING].\nViệc cần làm: [VIỆC CỤ THỂ].\nBối cảnh: [AI SẼ ĐỌC, DÙNG ĐỂ LÀM GÌ, GIỌNG VĂN MONG MUỐN].\nĐầu ra: [ĐỊNH DẠNG, ĐỘ DÀI].\nNếu còn thiếu thông tin, hỏi tôi tối đa 3 câu trước khi làm.\nCuối câu trả lời, liệt kê các dữ kiện tôi cần tự kiểm chứng và những chỗ bạn chưa chắc.",
+      "body": "Bạn là [vai trò, vd: biên tập viên marketing].\nViệc cần làm: [việc cụ thể].\nBối cảnh: [ai sẽ đọc, dùng để làm gì, giọng văn mong muốn].\nĐầu ra: [định dạng, độ dài].\nNếu còn thiếu thông tin, hỏi tôi tối đa 3 câu trước khi làm.\nCuối câu trả lời, liệt kê các dữ kiện tôi cần tự kiểm chứng và những chỗ bạn chưa chắc.",
       "note": "Mỗi ngày dùng cho một việc thật. Kiểm chứng ít nhất một chi tiết ở nguồn gốc.",
       "topic": "Thói quen lành",
       "asOf": "2026-10-15"
@@ -291,9 +302,9 @@
     {
       "id": "t39-week2",
       "station": 39,
-      "title": "Tuần 2 · Bảy ngày cho một asset hoàn chỉnh",
+      "title": "Tuần 2 · Làm trọn một sản phẩm (ảnh, video, bài đăng)",
       "type": "checklist",
-      "body": "[ ] Ngày 1: viết brief cho [SẢN PHẨM HOẶC CHỦ ĐỀ], đăng ở [NỀN TẢNG]\n[ ] Ngày 2–3: tạo 4–6 bản nháp ở độ phân giải thấp để tiết kiệm credit\n[ ] Ngày 4: chọn 1 bản, ghi một câu vì sao chọn\n[ ] Ngày 5: chỉnh, phóng nét, sửa chi tiết sai (tay, chữ, logo)\n[ ] Ngày 6: kiểm quyền và gắn nhãn AI, rồi đăng hoặc lưu bản cuối\n[ ] Ngày 7: ghi lại chỗ AI giúp nhiều nhất và chỗ cần tay mình",
+      "body": "[ ] Ngày 1: viết brief cho [sản phẩm hoặc chủ đề], đăng ở [nền tảng]\n[ ] Ngày 2–3: tạo 4–6 bản nháp ở độ phân giải thấp để tiết kiệm credit\n[ ] Ngày 4: chọn 1 bản, ghi một câu vì sao chọn\n[ ] Ngày 5: chỉnh, phóng nét, sửa chi tiết sai (tay, chữ, logo)\n[ ] Ngày 6: kiểm bản quyền và gắn nhãn AI, rồi đăng hoặc lưu bản cuối\n[ ] Ngày 7: ghi lại chỗ AI giúp nhiều nhất và chỗ cần tay mình",
       "note": "Dùng kèm thẻ “Brief 1 trang cho video AI” và “Checklist trước khi đăng asset AI” (trạm II·16).",
       "topic": "Ảnh/video AI",
       "asOf": "2026-10-15"
@@ -301,9 +312,9 @@
     {
       "id": "t39-week3",
       "station": 39,
-      "title": "Tuần 3 · Bảy ngày biến một việc lặp lại thành skill",
+      "title": "Tuần 3 · Ghi cách làm thành bản hướng dẫn cho AI (skill)",
       "type": "checklist",
-      "body": "[ ] Ngày 1: chọn một việc làm hằng tuần: [VIỆC LẶP LẠI]\n[ ] Ngày 2: làm việc đó cùng AI tới khi kết quả tốt, giữ lại cuộc trò chuyện\n[ ] Ngày 3: nhờ AI viết thành SKILL.md từ chính lần làm tốt ấy\n[ ] Ngày 4–6: chạy thử skill với ba việc mới, sửa chỗ AI hiểu sai\n[ ] Ngày 7: đánh dấu chỗ cần người duyệt, lưu skill vào [NƠI LƯU]",
+      "body": "[ ] Ngày 1: chọn một việc làm hằng tuần: [việc lặp lại]\n[ ] Ngày 2: làm việc đó cùng AI tới khi kết quả tốt, giữ lại cuộc trò chuyện\n[ ] Ngày 3: nhờ AI viết thành SKILL.md từ chính lần làm tốt ấy\n[ ] Ngày 4–6: chạy thử skill với ba việc mới, sửa chỗ AI hiểu sai\n[ ] Ngày 7: đánh dấu chỗ cần người duyệt, lưu skill vào [nơi lưu]",
       "note": "Dùng kèm thẻ “Prompt nhờ AI viết skill từ một lần làm thành công” và “Checklist biến một việc lặp lại thành skill” (trạm II·17).",
       "topic": "Skills & workflow",
       "asOf": "2026-10-15"
@@ -311,9 +322,9 @@
     {
       "id": "t39-week4",
       "station": 39,
-      "title": "Tuần 4 · Prompt mở đầu cho một mini app phục vụ việc của bạn",
+      "title": "Tuần 4 · Cùng AI làm một app nhỏ",
       "type": "prompt",
-      "body": "Tôi muốn làm một công cụ nhỏ tên [TÊN APP]: [Ý TƯỞNG MỘT CÂU].\nNgười dùng: [AI DÙNG, DÙNG LÚC NÀO].\nBa tính năng chính: [TÍNH NĂNG 1], [TÍNH NĂNG 2], [TÍNH NĂNG 3].\nChạy trên: [ĐIỆN THOẠI / LAPTOP / CẢ HAI].\nDữ liệu: chỉ lưu trên máy người dùng, không cần tài khoản.\nHãy hỏi tôi tối đa 5 câu để làm rõ, rồi viết spec ngắn và chia thành các bước nhỏ; mỗi bước phải chạy thử được trước khi sang bước sau.",
+      "body": "Tôi muốn làm một công cụ nhỏ tên [tên app]: [ý tưởng một câu].\nNgười dùng: [ai dùng, dùng lúc nào].\nBa tính năng chính: [tính năng 1], [tính năng 2], [tính năng 3].\nChạy trên: [điện thoại / laptop / cả hai].\nDữ liệu: chỉ lưu trên máy người dùng, không cần tài khoản.\nHãy hỏi tôi tối đa 5 câu để làm rõ, rồi viết spec ngắn và chia thành các bước nhỏ; mỗi bước phải chạy thử được trước khi sang bước sau.",
       "note": "Muốn làm game thì dùng bộ thẻ của trạm II·18. Lưu mốc (git commit) sau mỗi bước chạy được.",
       "topic": "Code game/app",
       "asOf": "2026-10-15"
@@ -322,8 +333,8 @@
       "id": "t39-30days",
       "station": 39,
       "title": "Lộ trình 30 ngày với AI",
-      "type": "table",
-      "body": "Tuần | Việc chính | Xong khi\n1 | Chat có kỷ luật: mỗi ngày một việc thật | 7 lần giao việc rõ, mỗi lần kiểm chứng 1 chi tiết\n2 | Một asset sáng tạo hoàn chỉnh | Có 1 sản phẩm đăng được, đã kiểm quyền và gắn nhãn\n3 | Biến 1 việc lặp lại thành skill | Skill chạy đúng với 3 việc mới\n4 | Tự làm 1 mini app hoặc game | App chạy được, đã lưu mốc, đưa cho 1 người dùng thử",
+      "type": "checklist",
+      "body": "[ ] Tuần 1 · Giao việc rõ, tự kiểm chứng: mỗi ngày một việc thật. Xong khi đã giao rõ 7 lần, mỗi lần kiểm chứng một chi tiết.\n[ ] Tuần 2 · Làm trọn một sản phẩm. Xong khi có một bài đăng được, đã kiểm bản quyền và gắn nhãn AI.\n[ ] Tuần 3 · Ghi một việc lặp lại thành bản hướng dẫn cho AI (skill). Xong khi nó chạy đúng với 3 việc mới.\n[ ] Tuần 4 · Cùng AI làm một app nhỏ. Xong khi app chạy được, đã lưu mốc và có một người dùng thử.",
       "note": "Mỗi tuần có một thẻ riêng trong Túi đồ nghề. Chậm hơn cũng được; đừng bỏ bước kiểm chứng.",
       "topic": "Thói quen lành",
       "asOf": "2026-10-15"

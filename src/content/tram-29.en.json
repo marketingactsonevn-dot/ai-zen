@@ -1,6 +1,6 @@
 {
   "id": 29,
-  "kicker": "The great lake drains the little wells.",
+  "kicker": "AI data centres are a great lake draining the memory chips from the small wells: phones and laptops.",
   "summary": "AI does not live in the cloud — it competes for every memory chip with the phone in your pocket.",
   "newsTags": [
     "bo-nho"
@@ -9,54 +9,69 @@
     "t29-ram-mua-may"
   ],
   "quiz": {
-    "q": "Why can the AI boom make phones and laptops more expensive?",
+    "q": "Why might the AI boom make phones and laptops dearer?",
     "options": [
-      "Phones must add a separate AI chip",
-      "Factories send memory to AI data centres, leaving less for personal devices",
-      "Import tax on phones has doubled",
-      "Phones with AI use more power"
+      "Phone makers must pay licence fees to AI companies",
+      "Factories send memory to AI, leaving less for phones",
+      "Import taxes on phones have doubled this year alone",
+      "New phones need much bigger screens to be able to use AI"
     ],
     "answer": 1,
-    "explain": "Big companies sign long-term contracts to buy memory for data centres; what is left for consumer devices is scarce, so prices rise."
+    "explain": "Big AI companies sign multi-year contracts to buy memory for their data centres. Less is left for phones and laptops, so prices rise."
   },
   "scenes": {
     "desk": {
       "label": "AI's writing desk",
-      "art": "A low black-lacquered desk on a bed of moss, under a paper lantern hung from a bamboo rod. The chip is the black inkstone in the middle, the scribe kneels behind it; right at its edge stands a tower of ten celadon plates: HBM memory. Behind, stepping stones lead into the mist to a white-walled store. The wider the desk, the more scrolls lie open at once and the faster the brush runs.",
-      "prompt": "Drag the board to widen the desk",
-      "towerAria": "HBM plate tower at the inkstone's edge: open it layer by layer",
+      "art": "A low black lacquer desk on moss, under a paper lantern hung from a bamboo pole. The desk top is RAM; the chip is the black inkstone in the middle, the scribe kneeling behind it; the scrolls are data. Beside the inkstone stands a tower of ten celadon plates: HBM, the AI chip's own memory. Behind, stepping stones lead into the mist to a white-walled storehouse, the storage drive. The wider the desk, the more scrolls lie open at once and the faster the brush runs.",
+      "towerAria": "The HBM plate tower by the inkstone: open it layer by layer",
       "closePrompt": "Touch again to stack the plates back",
-      "slider": "Desk width (memory)",
-      "valueText": "A {n} GB desk",
-      "small": "A cramped desk: scrolls go back to the store and come out again, much slower",
-      "large": "A wide desk: every scroll within reach, fast",
-      "stackLabel": "HBM · memory stacked beside the chip",
+      "slider": "Your computer’s RAM (the width of the desk)",
+      "valueText": "Your computer’s RAM: {n} GB",
+      "small": "Cramped desk: data has to go to the storehouse (the drive) and come back",
+      "large": "Wide desk: all the data within reach",
+      "stackLabel": "HBM · layers of memory chips stacked right by the AI chip",
       "insights": [
         {
-          "text": "RAM is the desk where a model spreads out its data. On a cramped desk it keeps running to fetch papers, and slows right down.",
+          "text": "RAM is the model’s desk. On a cramped desk the model keeps putting data away on the drive and fetching it back, so it slows right down.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "illustration"
         },
         {
-          "text": "AI chips use high-bandwidth memory (HBM): layers of DRAM stacked right beside the chip so data moves very fast.",
+          "text": "AI chips have a desk of their own: HBM, layers of memory chips stacked right beside the chip, moving data many times faster than ordinary RAM.",
           "asOf": "2026-10-15",
           "source": "t29-samsung-hbm"
         }
       ],
-      "detail": {
-        "text": "For example, one NVIDIA H200 chip has 141 GB of HBM3e memory and moves 4.8 terabytes per second.",
-        "asOf": "2026-10-15",
-        "source": "t29-h200"
-      }
+      "detail": [
+        {
+          "text": "For example, an NVIDIA H200 chip has 141 GB of HBM and moves 4.8 terabytes of data a second.",
+          "asOf": "2026-10-15",
+          "source": "t29-h200"
+        },
+        {
+          "text": "Making HBM takes more factory capacity than ordinary RAM; the next slide shows what follows.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      ],
+      "prompts": [
+        "Drag the board to widen the desk",
+        "Drag the board to both ends: the narrowest desk and the widest",
+        "Touch the plate tower by the inkstone",
+        "Touch the tower again to stack the plates back"
+      ]
     },
     "wells": {
       "label": "The lake drinks the wells",
-      "art": "From the hilltop, looking down: three small stone wells carved Phone, Laptop and Graphics card; from each a bamboo pipe runs down the slope, the three meet at a stone sluice gate and flow on to the great moon lake in the valley — AI data centres, its shore lined with rows of lit halls. Each time the gate opens the lake rises, another row lights up, and the water in the wells sinks deeper into the stone.",
-      "prompt": "Open the water gate",
+      "art": "Looking down from a hilltop: in the dip of the brow stands the stone sluice of the memory-chip factory, one source flowing two ways. Bamboo pipes carry water to three small stone wells carved Phone, Laptop and Graphics card; over the brow, water falls to a great moonlit lake in the valley, its shore carved AI data centres, lined with rows of lit halls. Each pull of the sluice is a long-term contract: the run to the lake grows, the lake rises and lights another row; the runs to the wells shrink and their water sinks deep into the stone.",
+      "prompt": "Pull the sluice up: a new contract",
       "lake": "AI data centres",
-      "gate": "Open the gate",
-      "gateAria": "Open the water gate: see where the memory flows",
+      "source": "Memory-chip factory",
+      "gate": "Long-term contract",
+      "gateAria": "The Long-term contract sluice: pull it up, or press it, to sign another contract",
+      "countTpl": "Contract {n}/{total}",
       "wells": [
         {
           "id": "phone",
@@ -74,44 +89,55 @@
       "wellAria": "{name} well: water at {n} tenths",
       "facts": [
         {
-          "text": "Oct 2025: SK hynix said it had buyers lined up for all of its 2026 DRAM and NAND output, and its HBM talks were done.",
+          "text": "Oct 2025: SK hynix, one of the three biggest memory-chip makers, said all of its 2026 output already has buyers.",
           "asOf": "2026-10-15",
           "source": "t29-skhynix-3q25",
           "claimBy": "SK hynix"
         },
         {
-          "text": "Dec 2025: Micron closed Crucial, its RAM and SSD brand for consumers, to send supply to big customers in fast-growing areas like AI.",
+          "text": "The big cloud companies reserve memory with long-term contracts, some for five years or more.",
           "asOf": "2026-10-15",
-          "source": "t29-micron-crucial"
+          "source": "t29-jpm"
         }
       ],
       "insight": {
-        "text": "Factories put AI data centres first, so less and less memory is left for phones and laptops.",
+        "text": "Memory-chip factories send their output to AI data centres first, so what flows to phones and laptops runs dry.",
         "asOf": "2026-10-15",
         "source": "t29-jpm"
       }
     },
     "bill": {
       "label": "Who gets the bill",
-      "art": "An accordion ledger runs straight from the great lake under the moon (the data centres) toward the viewer, over sand raked toward the same vanishing point, to the phone stall at the garden gate. Drag the stone paperweight carrying the moon's reflection along it: each milestone's fold stands up as it passes; the two DRAM-price folds lie on the ground, the second five times the first.",
-      "prompt": "Drag the moon through the news",
-      "sliderAria": "Drag the moon through the milestones of the memory squeeze",
+      "art": "An accordion ledger runs straight from the great lake under the moon (the data centres) toward the viewer, over raked sand, to the phone stall at the garden gate. On the counter, a phone hangs a price tag and a RAM tag. Drag the stone paperweight along the ledger: each milestone's fold stands up as it passes and a scrap of the bill flies to pin itself on the price tag; the two DRAM-price folds lie on the ground, the second five times the first. At today, the RAM tag shrinks.",
+      "prompts": [
+        "Drag the paperweight along the ledger to the stall",
+        "Look at the phone's price tag"
+      ],
+      "sliderAria": "Drag the stone paperweight along the ledger through the milestones of the memory squeeze",
+      "priceTag": "Price",
+      "ramTag": "RAM",
+      "board": {
+        "text": "Buying a device now: compare the price and the GB of RAM.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
       "tide": {
         "milestones": [
           {
             "date": "2025-12-03",
-            "label": "A brand bows out",
+            "label": "Micron stops selling RAM to consumers",
             "fact": {
-              "text": "Micron announces it is ending Crucial; consumer products ship only until the end of February 2026.",
+              "text": "Micron, one of the three biggest memory-chip makers, stopped selling RAM and SSDs to consumers (its Crucial brand); shipments only ran to the end of Feb 2026.",
               "asOf": "2026-10-15",
               "source": "t29-micron-crucial"
             }
           },
           {
             "date": "2026-02-26",
-            "label": "A forecast for phones",
+            "label": "IDC: phones get pricier",
             "fact": {
-              "text": "IDC forecasts 2026 phone sales down 12.9%, with the average price up 14% to a record $523.",
+              "text": "IDC, a market-research firm, forecasts the average phone price in 2026 at a record 523 USD.",
               "asOf": "2026-10-15",
               "source": "t29-idc",
               "kind": "prediction"
@@ -119,9 +145,9 @@
           },
           {
             "date": "2026-08-06",
-            "label": "A DRAM price forecast",
+            "label": "J.P. Morgan: memory chips 5× the price",
             "fact": {
-              "text": "J.P. Morgan estimates DRAM prices will rise over 400% from early 2024 to late 2026, more than five times over.",
+              "text": "J.P. Morgan estimates DRAM (the memory chips RAM is made of) will cost over 5 times as much at the end of 2026 as at the start of 2024.",
               "asOf": "2026-10-15",
               "source": "t29-jpm",
               "kind": "prediction"
@@ -130,43 +156,47 @@
               "before": "1 part",
               "after": "over 5 parts",
               "beforeLabel": "DRAM price, early 2024",
-              "afterLabel": "Estimate, late 2026"
-            }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Today",
-            "fact": {
-              "text": "The cloud giants lock in memory supply with long-term contracts, some of five years or more.",
-              "asOf": "2026-10-15",
-              "source": "t29-jpm"
+              "afterLabel": "Estimate, end of 2026"
             }
           }
         ],
         "horizon": {
-          "text": "IDC expects memory prices to settle by mid-2027 but not to return to old levels; phones under $100 may stop being profitable.",
+          "text": "IDC: phones under 100 USD may no longer make a profit.",
           "asOf": "2026-10-15",
           "source": "t29-idc",
           "kind": "prediction"
         }
       },
       "insight": {
-        "text": "“Chipflation”: dearer memory pushes up the price of phones and computers — after the power and water bills of station 18.",
+        "text": "As memory gets dearer, the phone at the stall gets dearer too: IDC forecasts a record 2026 average of 523 USD.",
         "asOf": "2026-10-15",
-        "source": "t29-jpm"
+        "source": "t29-idc",
+        "kind": "prediction"
       },
-      "detail": {
-        "text": "When buying a device, compare both price and RAM: some keep the price but cut the RAM, others keep the RAM but raise the price.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "illustration"
-      }
+      "detail": [
+        {
+          "text": "People call this “chipflation”: inflation driven by chips. Like the power bills at station 18, the AI boom pushes costs onto people who don't even use AI.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        },
+        {
+          "text": "IDC also forecasts that phone sales will fall 12.9% in 2026.",
+          "asOf": "2026-10-15",
+          "source": "t29-idc",
+          "kind": "prediction"
+        }
+      ]
     },
     "refill": {
       "label": "When will the wells refill?",
       "art": "Eye level with a dry well's curb, a great sky above is the stage. Three stones on the curb, each bringing its weather: heat shimmer over a clear sky and a cracking curb; masons raising a fab on a far hill under a cloud just forming; rain clouds rolling in, and the moon's reflection in the well at last, still trembling, not yet round.",
-      "prompt": "Touch each stone",
-      "stoneNames": ["J.P. Morgan", "SK hynix", "IDC"],
+      "prompt": "Touch each stone on the well’s rim",
+      "stoneNames": [
+        "J.P. Morgan",
+        "SK hynix",
+        "IDC"
+      ],
       "perspectives": {
         "stones": [
           {
@@ -181,7 +211,7 @@
           {
             "who": "Maker SK hynix",
             "view": {
-              "text": "It is expanding its M15X plant, moving quickly to newer technology and raising 2026 investment to meet demand.",
+              "text": "The company is building another factory (M15X) and raising investment in 2026 to make more memory chips.",
               "asOf": "2026-10-15",
               "source": "t29-skhynix-3q25",
               "claimBy": "SK hynix"
@@ -198,18 +228,19 @@
           }
         ],
         "common": {
-          "text": "All agree the shortage will not end this year; they differ on how quickly new factories can cool prices.",
+          "text": "No one sees the well filling up again this year. The question is whether new factories open first, or AI demand cools first.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "How long the memory shortage lasts is still a guess: new factories take years, and AI demand is hard to predict.",
+        "text": "If you need a computer this year, don’t wait for RAM prices to return to what they were: every forecast has them high until at least mid-2027.",
         "asOf": "2026-10-15",
-        "source": "t29-jpm",
+        "source": "editorial",
         "kind": "opinion"
-      }
+      },
+      "countTpl": "Heard {n}/{total}"
     }
   },
   "sources": {

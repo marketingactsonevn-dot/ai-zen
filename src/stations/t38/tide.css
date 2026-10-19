@@ -85,31 +85,33 @@
   font-size: 0.98rem;
   line-height: 1.45;
 }
-/* the two written notches: ≈ 1 h and ≥ 16 h; once the shadows can be compared, their dates under them */
+/* the hours written on the cord: hidden until the shadow reaches their notch (audit 38-2: no answer on the cord) */
 .t38m-len {
   position: absolute;
   z-index: 1;
   margin: 0;
   transform: translateX(-50%);
-  font: 400 0.95rem/1.15 var(--serif);
+  font: 400 0.9rem/1.15 var(--serif);
   color: var(--ink);
   text-align: center;
   white-space: nowrap;
   pointer-events: none;
   text-shadow: 0 0 5px var(--paper), 0 0 9px var(--paper), 0 0 12px var(--paper);
-}
-.t38m-len small {
-  display: block;
-  font: 400 0.7rem/1.3 var(--sans);
-  color: var(--ink-3);
   opacity: 0;
-  transition: opacity 0.8s;
+  transition: opacity 0.6s;
 }
-.is-cmp .t38m-len small {
+.t38m-len.on {
   opacity: 1;
 }
 @media (prefers-reduced-motion: reduce) {
-  .t38m-len small {
+  .t38m-len {
     transition: none;
   }
+}
+/* the key to the picture, above the stop's reading */
+.t38m-legend {
+  margin: 0 0 0.5em;
+  font: 400 0.86rem/1.4 var(--sans);
+  color: var(--ink-2);
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper);
 }

@@ -1,31 +1,28 @@
 import './lab.css'
 import { h, s } from '../../core/dom'
-import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, moon, pine, wash } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './shell'
 import { bamboo, f1, g13Defs, lines, mossBed } from './sumi'
 
 /**
- * Scene 2 — the sealed test room (art direction §4 t37 `lab`): the corner of a tea house in true CSS 3D (preserve-3d,
- * perspective ≈1100 px). The front is a lit shōji, a 10 × 10 kumiko lattice, and on it the paper gardener's shadow
- * kneeling upright before the test table. A bamboo wing fence hides the garden at the side. Drag across (or ←/→) to
- * walk round the corner, yaw 0 → 70°, with a little inertia: past the fence the low moon behind the house corner rims
- * the ridge, backlights the fence and lays the gardener's second shadow long on the moss, out where the stone path forks
- * on the gravel. The three ways of testing are figures in the scene (the stack of papers on the table, a vermilion
- * sleeve crouched prying at a shōji cell, a bearer at the gate with a lantern on a pole); the Astra story is a box sealed
- * with red paper tape on the veranda; the switch is the chōchin under the eave, its state on a paper slip tied to the
- * cord. Put the lantern out and the shadow outside leaves the main path for the other one; the shadow on the paper stays
- * upright. With the detail open, the lattice becomes the chart: 12 cells inked while lit, 3 while dark.
- * Low: fixed at 35°, both faces seen; changes are instant. A tall frame starts at 30° so both faces are in it.
+ * Scene 2 — the sealed test room (art direction §4 t37 `lab`; audit 37-2 "the bamboo blind"): the corner of a tea house
+ * in true CSS 3D (preserve-3d, perspective ≈1100 px), seen from a fixed 35° (30° in a tall frame) so the lit shōji and
+ * the side garden are in view together. On the shōji (a 10 × 10 kumiko lattice) the paper gardener's shadow kneels
+ * upright before the test table: the AI in the test room. Out in the garden the low moon behind the house corner lays
+ * its second shadow long on the moss, on the main path where the stone path forks. A bamboo blind hangs rolled over the
+ * shōji: pull its handle down (or the arrow keys) and the room is no longer watched — the shadow on the paper, seen
+ * through the slats, stays upright; the one outside turns down the other path. The first time: look at the two
+ * shadows, then the insight, then the three ways of testing get their names (the stack of papers on the table, a
+ * vermilion sleeve prying at a shōji cell, a bearer at the gate with a lantern on a pole); the box sealed with red tape
+ * on the veranda is a separate story (Astra), told by the company itself.
+ * Low: changes are instant.
  */
 
 const K = C.scenes.lab
-/** cells of the 10 × 10 lattice inked for the chart (lit: 12 of 100, dark: 3) */
-const CELLS = [[3, 2], [7, 1], [1, 5], [5, 6], [8, 4], [2, 8], [6, 8], [4, 3], [9, 7], [0, 1], [5, 9], [3, 6]]
-const YAW_MAX = 70
 
 /** a kneeling figure in shadow (feet at 0, 0; ≈ 34 tall) */
 const KNEEL = 'M-1 -40a6 6.4 0 1 0 0.1 0zM-9 -30Q-1 -34 7 -30Q11 -18 12 -3Q13 0 10 1H-12Q-14 0 -13 -4Q-11 -18 -9 -30Z'
@@ -59,7 +56,7 @@ function stepStones(pts: Pt[], size: (i: number) => number, seed: number): SVGGE
 
 export function labScene(ctx: SceneCtx) {
   g13Defs()
-  // low: fixed at 35°, both faces seen; reduced motion still walks, but in steps, without inertia
+  // low: the same view, every change instant
   const still = ctx.quality === 'low'
   const tallAtMount = ctx.art.clientHeight > ctx.art.clientWidth
   const stable = stableHeight(ctx, [K.insight])
@@ -110,18 +107,16 @@ export function labScene(ctx: SceneCtx) {
     () => stepStones(side, (i) => 26 - i * 2.2, 3730),
     // the second shadow: from the fork it lies along the main path toward the gate, or turns down the other one
     () => s('g', { class: 't37l-second', style: `transform-origin:${fork[0]}px ${fork[1]}px;--turn:${f1(turn)}deg` },
-      s('path', { class: 't37l-shadow2', d: longShadow(fork, onMain, 430) })),
+      s('path', { class: 't37l-shadow2', d: longShadow(fork, onMain, 640) })),
     // where the other path goes: into the dark under the bamboo
     wash(blob(...G(6.1, -4.3), 190, 90, 3734, 0.2), 0.5, 'p2p-wash t37l-cast'))
 
   // the front: a lit shōji in a dark frame, the kumiko lattice, the kneeling shadow, the table and its papers
   let lattice = ''
   for (let i = 1; i < 10; i++) lattice += `M${40 + i * 32} 30V250M40 ${30 + i * 22}H360`
-  const cells = CELLS.map(([cx, cy], i) => s('rect', { class: `t37l-cell c${i}`, x: 40 + cx * 32 + 2, y: 30 + cy * 22 + 2, width: 28, height: 18 }))
   const frontWall = plane('t37l-front', 4, 2.6,
     s('rect', { class: 't37l-paper', x: 40, y: 30, width: 320, height: 220 }),
     s('rect', { class: 't37l-glow', x: 40, y: 30, width: 320, height: 220 }),
-    s('g', { class: 't37l-cells' }, ...cells),
     s('path', { class: 't37l-shadow', d: KNEEL, transform: 'translate(170 246) scale(2.7)', filter: 'url(#ink-wash)' }),
     s('path', { class: 't37l-shadow', d: 'M212 196h90v8h-90zM222 204v42M292 204v42M236 178h44v18h-44zM240 172h36v6h-36z', filter: 'url(#ink-wash)' }),
     s('path', { class: 't37l-lattice', d: lattice }),
@@ -278,22 +273,31 @@ export function labScene(ctx: SceneCtx) {
     pine(900, 356, 130, 3743, -1),
     mist(500, 344, 650, 30))
   const skyEl = h('div', { class: 't37l-skyw' }, sky)
-  const view = h('div', { class: 't37l-view', tabindex: still ? null : '0', role: 'group', 'aria-label': K.aria, 'aria-description': K.hint }, world)
-  // the things to touch, inside the 3D planes so they turn with them
-  const tag = (el: HTMLElement, cls: string, label: string, fn: () => void, extra: Record<string, string> = {}) => {
-    const b = h('button', { class: `t37l-hit ${cls}`, type: 'button', 'aria-label': label, ...extra, onClick: fn })
+  const view = h('div', { class: 't37l-view', role: 'group', 'aria-label': K.aria, 'aria-description': K.hint }, world)
+  // the bamboo blind over the shōji: a roll at the top, slats that come down to --p (0 open … 1 down), the handle with a
+  // vermilion tassel on its lower edge (the thing to pull: a ≥ 44 px target that rides down with the blind)
+  const slats = h('i', { class: 't37l-slats', 'aria-hidden': 'true' })
+  const pull = h('button', {
+    class: 't37l-pull', type: 'button', role: 'slider', 'aria-label': K.toggle, 'aria-orientation': 'vertical',
+    'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '0', 'aria-valuetext': K.watched,
+  }, h('i', { class: 't37l-tassel', 'aria-hidden': 'true' }))
+  const blind = h('div', { class: 't37l-blind' }, slats, h('i', { class: 't37l-roll', 'aria-hidden': 'true' }), pull)
+  frontWall.append(blind)
+  // the things to touch, inside the 3D planes so they sit on the right spot
+  const tag = (el: HTMLElement, cls: string, label: string, fn: () => void) => {
+    const b = h('button', { class: `t37l-hit ${cls}`, type: 'button', 'aria-label': label, onClick: fn })
     el.append(b)
     return b
   }
   const note = h('div', { class: 't37l-note', hidden: true })
   const status = h('p', { class: 't37l-status' }, K.watched)
-  // the lamp's state on a paper slip tied to its cord, out to the side so it hides neither the lamp nor the shōji
-  const state = h('span', { class: 't37l-state', 'aria-hidden': 'true' }, K.on)
-  chochin.append(state)
-  const sw = tag(chochin, 'sw', K.toggle, flip, { role: 'switch', 'aria-checked': 'true' })
   const tools = [tag(frontWall, 'papers', K.tools[0].name, () => tell(0)), tag(red, 'red', K.tools[1].name, () => tell(1)), tag(keeper, 'keeper', K.tools[2].name, () => tell(2))]
   const box = tag(boxF, 'box', K.exampleLabel, () => tell(3))
-  const root = h('div', { class: `t37l${still ? ' still' : ''}${tallAtMount ? ' tall' : ''}` }, h('p', { class: 'visually-hidden' }, K.art), skyEl, view, note, status)
+  // their names, flat on the picture over each one (the view is fixed, so placed once per layout); shown once the blind
+  // has been down (audit 37-2)
+  const names = [...K.tools.map((t) => t.name), K.exampleLabel].map((t) => h('span', { class: 't37l-tag' }, t))
+  const tagLayer = h('div', { class: 't37l-tags', 'aria-hidden': 'true' }, ...names)
+  const root = h('div', { class: `t37l${still ? ' still' : ''}${tallAtMount ? ' tall' : ''}` }, h('p', { class: 'visually-hidden' }, K.art), skyEl, view, tagLayer, note, status)
   ctx.art.append(root)
   // the brushwork soaks in after mount, one piece per slice (reduced motion: at once)
   const job = sliced((function* () {
@@ -305,88 +309,102 @@ export function labScene(ctx: SceneCtx) {
   ctx.onCleanup(job.cancel)
   ctx.prompt(K.prompt)
 
-  // ── walking round the corner: yaw 0 (front) … 70° (side), a little inertia, ←/→
-  let yaw = still ? 35 : tallAtMount ? 30 : 0, want = yaw, vel = 0
-  const apply = () => {
-    root.style.setProperty('--yaw', f1(yaw))
-    skyEl.style.transform = `translateX(${f1(-yaw * 1.6)}px)`
-  }
-  const loop = createLoop(root, (_t, dt) => {
-    if (!drag) {
-      want = clamp(want + vel * dt, 0, YAW_MAX)
-      vel *= Math.exp(-dt * 3.5)
-      if (want === 0 || want === YAW_MAX) vel = 0
-    }
-    yaw += (want - yaw) * (dt > 0 ? 1 - Math.exp(-dt * 9) : 1)
-    apply()
-    return !!drag || Math.abs(vel) > 0.5 || Math.abs(want - yaw) > 0.05
-  })
-  ctx.onCleanup(() => loop.dispose())
-  const go = (to: number) => {
-    want = clamp(to, 0, YAW_MAX)
-    if (ctx.reduced) (yaw = want), apply()
-    else loop.start()
-  }
-  let drag: { id: number; x: number; t: number; y0: number; moved: boolean } | null = null
-  if (!still) {
-    view.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0 || (e.target as Element).closest('.t37l-hit')) return
-      drag = { id: e.pointerId, x: e.clientX, t: performance.now(), y0: want, moved: false }
-      vel = 0
-    })
-    view.addEventListener('pointermove', (e) => {
-      if (!drag || e.pointerId !== drag.id) return
-      const dx = e.clientX - drag.x
-      if (!drag.moved && Math.abs(dx) < 5) return
-      if (!drag.moved) (drag.moved = true), view.setPointerCapture(e.pointerId), root.classList.add('grabbing')
-      const now = performance.now(), dt = Math.max(8, now - drag.t) / 1000
-      const next = clamp(drag.y0 + dx * 0.16, 0, YAW_MAX)
-      vel = vel * 0.4 + ((next - want) / dt) * 0.6
-      want = next
-      drag.t = now
-      if (ctx.reduced) (vel = 0), (yaw = want), apply()
-      else loop.start()
-    })
-    const up = (e: PointerEvent) => {
-      if (!drag || e.pointerId !== drag.id) return
-      if (performance.now() - drag.t > 90) vel = 0
-      drag = null
-      root.classList.remove('grabbing')
-      if (!ctx.reduced) loop.start()
-    }
-    view.addEventListener('pointerup', up)
-    view.addEventListener('pointercancel', up)
-    view.addEventListener('keydown', (e) => {
-      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
-      e.preventDefault()
-      vel = 0
-      go(want + (e.key === 'ArrowRight' ? 10 : -10))
-    })
-  }
+  // ── one fixed view from 35°: the shōji and the side garden both seen (no walking round, audit 37-2)
+  const yaw = tallAtMount ? 30 : 35
+  root.style.setProperty('--yaw', f1(yaw))
+  skyEl.style.transform = `translateX(${f1(-yaw * 1.6)}px)`
 
-  // ── the lantern: the room believes it is watched while it burns
-  let watched = true
+  // ── guide: H1 on the handle (leans down when idle), H2 a groove beside the window from "open" to "down"
+  const g = guide(ctx)
+  let grab: Mark | null = g.dot(pull, { dir: [0, 1] })
+  const way = g.track(() => {
+    const a = ctx.art.getBoundingClientRect(), r = blind.getBoundingClientRect()
+    const x = r.left - a.left - (tallAtMount ? 8 : 16)
+    return [[x, r.top - a.top + 4], [x, r.bottom - a.top - 4]]
+  }, { ticks: 2, labels: tallAtMount ? undefined : [K.open, K.down] }) // a phone has no room left of the window for words
+  const toolDots: (Mark | null)[] = []
+
+  // ── the blind: drag its handle (or tap it, or ↑ ↓ Home End Enter); let go past half way and it drops, else it rolls up
+  let p = 0
+  let down = false
   let told = false
-  let detail = false
-  function flip() {
-    watched = !watched
-    root.classList.toggle('dark', !watched)
-    sw.setAttribute('aria-checked', String(watched))
-    state.textContent = watched ? K.on : K.off
-    status.textContent = watched ? K.watched : K.unwatched
-    if (!told) {
-      told = true
-      status.setAttribute('aria-live', 'polite')
-      const box2 = ctx.insight(K.insight, K.detail)
-      // the "more" opens the chart in the lattice
-      box2.querySelector('.insight-more')?.addEventListener('click', () => {
-        detail = !detail
-        root.classList.toggle('chart', detail)
-      })
-      // walk round so the change outside can be seen (it happens past the fence)
-      if (yaw < 30) go(40)
+  const seen = new Set<number>()
+  const setP = (v: number) => {
+    p = clamp(v, 0, 1)
+    blind.style.setProperty('--p', p.toFixed(3))
+    pull.setAttribute('aria-valuenow', String(Math.round(p * 100)))
+    way.set(p)
+  }
+  function commit(d: boolean) {
+    setP(d ? 1 : 0)
+    if (d === down) return
+    down = d
+    root.classList.toggle('dark', down)
+    status.textContent = down ? K.unwatched : K.watched
+    pull.setAttribute('aria-valuetext', status.textContent)
+    if (!down || told) return
+    // the first time down: look at the two shadows, then what it means, then the three ways of testing
+    told = true
+    grab?.done()
+    grab = null
+    status.setAttribute('aria-live', 'polite')
+    ctx.prompt(K.steps[0], 'ok')
+    const t = window.setTimeout(() => {
+      ctx.insight(K.insight, K.detail)
+      ctx.prompt(K.steps[1])
+      root.classList.add('tested')
+      tools.forEach((b, i) => (toolDots[i] = g.dot(b, { dir: [0, -1] })))
+    }, ctx.reduced || still ? 0 : 2200)
+    ctx.onCleanup(() => clearTimeout(t))
+  }
+  let drag: { id: number; y: number; p0: number; span: number; moved: boolean } | null = null
+  pull.addEventListener('pointerdown', (e) => {
+    if (e.button) return
+    drag = { id: e.pointerId, y: e.clientY, p0: p, span: Math.max(40, blind.getBoundingClientRect().height), moved: false }
+    pull.setPointerCapture(e.pointerId)
+  })
+  pull.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return
+    const dy = e.clientY - drag.y
+    if (!drag.moved && Math.abs(dy) < 5) return
+    if (!drag.moved) (drag.moved = true), root.classList.add('pulling')
+    setP(drag.p0 + dy / drag.span)
+  })
+  const up = (e: PointerEvent) => {
+    if (!drag || e.pointerId !== drag.id) return
+    const moved = drag.moved
+    drag = null
+    root.classList.remove('pulling')
+    if (moved) {
+      pull.dataset.dragged = '1'
+      setTimeout(() => delete pull.dataset.dragged)
+      commit(p >= 0.5)
     }
   }
+  pull.addEventListener('pointerup', up)
+  pull.addEventListener('pointercancel', up)
+  pull.addEventListener('click', () => !pull.dataset.dragged && commit(!down))
+  pull.addEventListener('keydown', (e) => {
+    const to = ({ ArrowDown: true, PageDown: true, End: true, ArrowUp: false, PageUp: false, Home: false } as Record<string, boolean>)[e.key]
+    if (to === undefined) return
+    e.preventDefault()
+    commit(to)
+  })
+  // H7: standing still before the first pull, the blind slips down a little and rolls back
+  let nudge = 0
+  const invite = () => {
+    if (told || drag || ctx.reduced) return
+    setP(0.06)
+    clearTimeout(nudge)
+    nudge = window.setTimeout(() => !drag && setP(0), 700)
+  }
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => {
+    ctx.el.removeEventListener('p2:idle', invite)
+    clearTimeout(nudge)
+  })
+
+  // ── the three ways of testing (and the company's own story in the sealed box)
   let shown = -1
   function tell(i: number) {
     if (shown === i && !note.hidden) return void (note.hidden = true, (shown = -1))
@@ -398,6 +416,12 @@ export function labScene(ctx: SceneCtx) {
     if (i < 3) note.replaceChildren(h('p', { class: 't37l-name' }, K.tools[i].name), h('p', { class: 't37l-what' }, K.tools[i].what))
     else note.replaceChildren(h('p', { class: 't37l-name' }, K.exampleLabel), ctx.fact(K.example, 'p', 't37l-what'))
     note.setAttribute('aria-live', 'polite')
+    if (i < 3 && !seen.has(i)) {
+      seen.add(i)
+      toolDots[i]?.done()
+      toolDots[i] = null
+      if (told && seen.size === 3) ctx.complete()
+    }
   }
   tools.forEach((b) => b.setAttribute('aria-pressed', 'false'))
   box.setAttribute('aria-pressed', 'false')
@@ -411,16 +435,24 @@ export function labScene(ctx: SceneCtx) {
     const tall = H > W
     const u = tall ? Math.min(W / 9.4, H / 10) : Math.min(W / 13.4, H / 7.6)
     root.style.setProperty('--u', `${f1(u)}px`)
-    // the lamp's slip floats 2.4 u toward you: shrink it back by as much as the perspective (1100 px) enlarges it
-    root.style.setProperty('--slipk', ((1100 - 2.4 * u) / 1100).toFixed(3))
     world.style.left = `${f1(W * (tall ? 0.46 : 0.55))}px`
     // a narrow sky keeps its right side: the moon low beside the house corner
     sky.setAttribute('preserveAspectRatio', tall ? 'xMaxYMax slice' : 'xMidYMax slice')
     world.style.top = `${f1(H * (tall ? 0.63 : 0.73))}px`
     view.style.perspectiveOrigin = `${f1(W * 0.5)}px ${f1(H * 0.3)}px`
     root.classList.toggle('tall', tall)
+    g.refresh()
+    cancelAnimationFrame(tagRaf)
+    tagRaf = requestAnimationFrame(placeTags)
   }))
-  apply()
+  // read every box first, then write
+  let tagRaf = 0
+  ctx.onCleanup(() => cancelAnimationFrame(tagRaf))
+  function placeTags() {
+    const a = root.getBoundingClientRect()
+    const at = [...tools, box].map((b) => b.getBoundingClientRect())
+    at.forEach((r, i) => (names[i].style.transform = `translate(${f1(r.left - a.left + r.width / 2)}px, ${f1(r.top - a.top - 6)}px) translate(-50%, -100%)`))
+  }
 }
 
 /** points along a polyline through `pts`, n of them (for stepping stones) */

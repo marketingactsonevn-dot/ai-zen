@@ -1,6 +1,6 @@
 {
   "id": 36,
-  "kicker": "You don't need to carve wood — you need to draw a clear plan for the carver.",
+  "kicker": "You don't need to write code yourself — AI is the carpenter; your job is to draw a really clear plan and check every cut.",
   "summary": "The best AI game makers aren't the fastest typists — they describe clearly and fix in small steps.",
   "takeaways": [
     "t36-spec",
@@ -18,13 +18,13 @@
   "quiz": {
     "q": "Your game has a bug: the koi stays still instead of following your finger. Which report helps AI fix it best?",
     "options": [
-      "“Fix it, it doesn't work.”",
-      "Paste the Console error + “expected the koi to follow the mouse, but it stays still”",
+      "Send AI a screenshot of the game and add: “the fish won't swim, fix it”",
+      "Paste the whole long code file and ask AI to find the bug",
       "Ask AI to rewrite the whole game from scratch",
-      "Switch to another technology, just in case"
+      "Paste the red error (F12) + “expected it to follow, but it stays”"
     ],
-    "answer": 1,
-    "explain": "Evidence (the Console error) plus “expected vs saw” points at the broken spot; AI fixes the root instead of guessing."
+    "answer": 3,
+    "explain": "The red error line (in the Console, opened with F12) plus “expected – saw” points at exactly what broke, so AI fixes the root instead of guessing."
   },
   "scenes": {
     "blueprint": {
@@ -32,7 +32,7 @@
       "art": "Ink painting: a dark drawing room, a six-sided paper andon lamp glowing on the table. Each face is one piece of the design; under the front face hang two paper strips, the two ways it could go. Choose a strip: it sticks to the face, the lamp throws that part of the game sharp onto the wall — the pond, the fish, a piece of moon — and a line is written into spec.md on the table. With all six faces done, the whole game stands on the wall before a single line of code.",
       "lampRole": "six-sided lantern",
       "lampAria": "The spec lantern, face {n}: {piece}. Left and right arrow keys turn it.",
-      "prompt": "Choose each piece",
+      "prompt": "Pick one paper strip for each face of the lamp",
       "group": "The six pieces of the plan",
       "pieceAria": "{piece}: {option}",
       "specTitle": "spec.md",
@@ -43,74 +43,93 @@
           "id": "idea",
           "label": "One-line idea",
           "options": [
-            "A koi catches moon pieces falling on the night pond, dodging dry leaves.",
-            "A koi glides around rocks, gathering fireflies before dawn."
-          ]
+            "A fun game about a fish",
+            "A koi snaps falling moon shards, dodging dry leaves"
+          ],
+          "vague": 0
         },
         {
           "id": "rules",
           "label": "Rules in 3 lines",
           "options": [
-            "Catch a moon piece +1 · touch a dry leaf, lose a heart · the moon falls faster and faster.",
-            "Gather a firefly +1 · touch a rock, slow down for 2 s · fewer fireflies over time."
-          ]
+            "Moon +1 · dry leaf costs 1 heart · the moon falls faster and faster",
+            "Has points, gets harder"
+          ],
+          "vague": 1
         },
         {
           "id": "controls",
           "label": "Controls",
           "options": [
-            "Drag or tap and the koi follows your finger; on a computer use the mouse or arrow keys.",
-            "Tap the left/right half of the screen to turn the koi."
-          ]
+            "Easy controls",
+            "Drag or tap, the fish swims after your finger"
+          ],
+          "vague": 0
         },
         {
           "id": "end",
           "label": "Win / lose",
           "options": [
-            "Play 30 seconds or until 3 hearts are gone; the final score shows in an ensō.",
-            "No losing; when time runs out show the score and a replay button."
-          ]
+            "After 30 seconds or 3 lost hearts, show the score",
+            "Play until bored"
+          ],
+          "vague": 1
         },
         {
           "id": "style",
           "label": "Style",
           "options": [
-            "Chinese ink painting: indigo night, ivory moon, few colours.",
-            "Soft watercolour on dó paper, gentle brush strokes."
-          ]
+            "Pretty, artistic",
+            "Ink painting: indigo night, ivory moon, few colours"
+          ],
+          "vague": 0
         },
         {
           "id": "device",
           "label": "Device",
           "options": [
-            "Phone in portrait first, computer works too.",
-            "Computer first, with a keyboard."
-          ]
+            "Mainly a phone held upright",
+            "Runs everywhere"
+          ],
+          "vague": 1
         }
       ],
       "facts": [
         {
-          "text": "GitHub's Spec Kit post proposes putting intent first: a living spec guides the code AI writes.",
+          "text": "GitHub (Spec Kit) advises: write down clearly what you want first, then let that description guide the AI writing the code.",
           "asOf": "2026-10-15",
           "source": "t36-spec-kit",
           "kind": "opinion"
         }
       ],
       "insight": {
-        "text": "One clear page — idea, rules, controls, win/lose, style, device — means AI guesses less and you fix less.",
+        "text": "A vague strip leaves a blurred shadow: AI has to guess. A clear strip makes it sharp — that is the game AI will build.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Two more lines worth adding: “not in the first version” (so AI doesn't overdo it) and “what counts as done” (so you know when to stop).",
-      "takeaway": "t36-spec"
+      "detail": "The last two lines keep AI from overdoing it and tell you when to stop.",
+      "takeaway": "t36-spec",
+      "facePrompt": "Face ‘{piece}’: pick a paper strip",
+      "specDecode": "spec.md = the sheet that describes the game; AI reads it before writing code",
+      "guess": "AI guesses: ???",
+      "extra": [
+        [
+          "Not in the first version",
+          "sound, leaderboard"
+        ],
+        [
+          "Done when",
+          "30 seconds of play with no errors on a phone"
+        ]
+      ]
     },
     "pens": {
       "label": "Choosing a pen",
       "art": "Ink painting: a night workshop. On an easel, a wooden frame holds a stone basin with a koi, seen from above; under the lamp, a bamboo pot of five pens. The three flat pens can only paint a sheet of paper — drag it and the sheet just slides; the Three.js pen turns the frame into a 3D window — drag and the whole pond turns in the moonlight; the Godot/Unity pen pulls the camera back over the whole garden and the frame becomes a screen's bezel.",
       "frameAria": "The koi pond picture on the easel",
       "frameHint": "Flat pens: drag or use the arrow keys to slide the sheet. 3D pens: drag or use the arrow keys to turn the pond, + and − to move closer.",
-      "prompt": "Tap each pen",
+      "prompt": "Tap each brush in the pot",
       "group": "Five pens",
       "penAria": "Pen: {name}",
       "fitsLabel": "Good for",
@@ -127,14 +146,14 @@
         {
           "id": "p5",
           "name": "p5.js",
-          "fits": "Beginners, generative art",
+          "fits": "Beginners, pictures drawn with code",
           "ask": "“Use p5.js from a CDN.”",
           "source": "t36-p5"
         },
         {
           "id": "phaser",
           "name": "Phaser",
-          "fits": "2D games with levels, sprites, collisions",
+          "fits": "2D games with many levels, animated characters, collisions",
           "ask": "“Use Phaser 4 + Vite.”",
           "source": "t36-phaser"
         },
@@ -162,72 +181,79 @@
         }
       ],
       "insight": {
-        "text": "Rule of thumb: small 2D → Canvas or Phaser; 3D in the browser → Three.js; big app games → an engine like Godot or Unity.",
+        "text": "A quick rule: small 2D game → Canvas or Phaser; 3D in the browser → Three.js; a big game needing an app → Godot or Unity.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "There is no “best” pen. Name the pen in your instruction so AI doesn't pick something you don't know. Library versions change often — check the official site."
+      "detail": "There is no “best” pen. Name the pen in your instruction so AI doesn't pick something you don't know. Library versions change often — check the official site.",
+      "dragPrompt": "Drag inside the frame to try this brush",
+      "otherFlat": "Now pick a flat brush: Canvas, p5.js or Phaser",
+      "other3d": "Now pick the Three.js or Godot / Unity brush",
+      "askNote": "Copy this line to AI as it is; the odd words are tool names, AI knows them."
     },
     "carve": {
-      "label": "Seven steps to carve a game",
+      "label": "Carve one cut at a time, save each step",
       "art": "Ink painting: the wood shop at night, seen at table height. A cypress block on its carving stand stands against the open door onto the moonlit lake, the moon behind it rimming its outline in light. Seven stones in a row along the bench's front edge are the seven steps; each one placed right is a stroke of the mallet — chips fly and the block becomes one stage more of a fish: chalk lines, rough cut, split tail, fins, scales, eye. The work lamp can be dragged so its warm light rakes the wood; the code lies rolled up on the bench.",
       "lampAria": "Work lamp: drag left or right, or use the arrow keys, to light the wood",
-      "prompt": "Set the seven stones",
-      "pathAria": "A seven-step stone path for making a web game",
+      "prompt": "Tap the stones in the order you'd do them",
+      "pathAria": "A seven-stone path for making a web game",
       "stoneAria": "Stone: {label}",
       "slotAria": "Empty spot {n} on the path",
       "keys": "Tap in turn, or use number keys 1 to 7.",
-      "wrongHint": "Not quite — {why}",
       "done": "The path is lit. Open your take-away card.",
       "promptLabel": "Sample prompts",
       "steps": {
         "steps": [
           {
             "label": "Create the project",
-            "detail": "Type npm create vite@latest and pick the vanilla template. Needs Node.js 20.19+ or 22.12+.",
-            "why": "Vite sets up the skeleton and a dev server, no manual config."
+            "detail": "Once: have AI walk you through creating the project with Vite (a tool that sets up a web page skeleton).",
+            "why": "A ready skeleton and test server, no manual setup."
           },
           {
-            "label": "Ask AI for a skeleton from the spec",
-            "detail": "Paste spec.md and say: build a skeleton that runs, no need to be pretty.",
-            "why": "A running skeleton first; every later feature hooks into it."
+            "label": "Have AI build the frame",
+            "detail": "Paste the game description (spec.md) and say: build a frame that runs, it needn't look good yet.",
+            "why": "Get something running first; every feature hangs on it."
           },
           {
-            "label": "Run npm run dev",
-            "detail": "Open http://localhost:5173 in the browser; save a file and see it at once.",
-            "why": "Seeing results after each change catches bugs early."
+            "label": "Run it on your computer",
+            "detail": "One command (npm run dev) opens the game in the browser; save and you see it at once.",
+            "why": "Seeing the result after each change catches mistakes early."
           },
           {
-            "label": "Add one feature at a time",
-            "detail": "Ask for one thing, run it, then ask for the next.",
-            "why": "One thing at a time tells you exactly what broke what."
+            "label": "Add one feature",
+            "detail": "Ask for exactly one thing, test it, then ask for the next.",
+            "why": "One thing at a time, so you know what broke what."
           },
           {
             "label": "Fix bugs with evidence",
-            "detail": "Paste the Console error (F12) + “expected… but saw…”.",
-            "why": "Evidence helps AI fix the root, not guess."
+            "detail": "Paste the red error line (Console, opened with F12) + “expected… but saw…”.",
+            "why": "Evidence lets AI fix the root cause, not guess."
           },
           {
-            "label": "Save checkpoints with git",
-            "detail": "After each working step: git add . then git commit -m \"add dry leaves\".",
-            "why": "If it breaks, go back to the last checkpoint without losing work."
+            "label": "Save a checkpoint, next feature",
+            "detail": "Checkpoint = a saved version of the game (git commit); if something breaks you can go back. Then return to step 4 with the next feature.",
+            "why": "One checkpoint per feature: if it breaks, go back instead of starting over."
           },
           {
             "label": "Put it online",
-            "detail": "npm run build makes a dist folder; publish it on GitHub Pages, Vercel or Netlify.",
-            "why": "With a link, your friends can play right away."
+            "detail": "Once, at the end: have AI package it (npm run build) and publish to GitHub Pages, Vercel or Netlify.",
+            "why": "With a link, friends can play right away."
           }
         ],
-        "takeaway": "t36-scaffold"
+        "takeaway": "t36-scaffold",
+        "cards": [
+          "t36-feature",
+          "t36-bug"
+        ]
       },
       "prompts": [
         "Create a Vite project with the vanilla template named koi-pond and explain each generated file.",
         "Here is my spec.md. Build a running skeleton with Canvas 2D: the pond surface and one koi. No score or sound yet.",
-        "I ran npm run dev but see nothing. Here is all the text in the terminal: [PASTE].",
+        "Show me how to run the game on my computer, and what I should see on screen.",
         "Add exactly one feature: dry leaves fall slowly, and touching one costs the koi 1 heart. Keep everything else the same.",
         "Expected the koi to follow the mouse, but it stays still. Console error: [PASTE]. Find the root cause and fix it with as little change as possible.",
-        "Suggest a short commit message describing the change I just made.",
+        "Save a checkpoint of what we just changed, with a short line describing it. If the next step breaks, show me how to go back to it.",
         "Walk me step by step through building and publishing the game on GitHub Pages, including the usual pitfalls."
       ],
       "codeAria": "Sample code: a koi following your finger on Canvas 2D",
@@ -287,54 +313,54 @@
         }
       ],
       "insight": {
-        "text": "Seven steps, each a small loop: ask, run, look, save a checkpoint. Small loops mean small bugs, easy to undo.",
+        "text": "One cut per feature, and save a checkpoint after each cut. If something breaks, go back to the last checkpoint instead of carving again from scratch.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "The sample code uses Canvas 2D like the game at the end of this station. Commands and versions may change — follow Vite's official guide."
+      "detail": "You don't need to remember git commands: tell AI “save a checkpoint of this change” or “go back to the last checkpoint”. Commands and versions change — follow Vite's official guide."
     },
     "layers": {
       "label": "The game grows layer by layer",
       "art": "Ink painting: an empty round stone basin floating in the dark over its soft shadow. Above it hang seven sheets of tracing paper, apart, each one layer of the game — water, koi, the leading hand, falling moon, score and hearts, the sound of water, fireflies — its name on the front edge. Touch the lit sheet: it sinks into the basin with a ring of ripples, the prompt for that layer is written beside the basin and the pond comes one step more alive. With all seven, the view rises over the basin and the real game plays in its water.",
-      "prompt": "Lay down each layer",
+      "prompt": "Tap the glowing sheet to drop it into the basin",
       "layerAria": "Layer {n}: {name}",
       "promptLabel": "The prompt that made this layer",
       "layers": [
         {
           "id": "water",
           "name": "Water",
-          "prompt": "Draw an indigo night pond with slow, gentle ripples."
+          "prompt": "Paint an indigo night pond with gentle ripples."
         },
         {
           "id": "fish",
           "name": "Koi",
-          "prompt": "Add one red-and-white koi whose body bends a little as it swims."
+          "prompt": "Add one red-and-white koi whose body bends as it swims."
         },
         {
           "id": "control",
           "name": "Controls",
-          "prompt": "Make the koi follow the finger or mouse, gliding smoothly; on computers also use arrow keys."
+          "prompt": "Make the fish swim after a finger or the mouse."
         },
         {
           "id": "moon",
           "name": "Falling moon",
-          "prompt": "Drop moon pieces at random; the koi touching one scores +1. Add dry leaves: touching one costs a heart."
+          "prompt": "Drop moon shards; when the fish touches one, +1 point."
         },
         {
-          "id": "score",
-          "name": "Score",
-          "prompt": "Show the score and 3 hearts in a corner; after 30 seconds or no hearts, show the score in an ensō with a replay button."
+          "id": "leaf",
+          "name": "Dry leaves",
+          "prompt": "Add slowly falling dry leaves; touching one costs 1 of 3 hearts."
+        },
+        {
+          "id": "end",
+          "name": "End of round",
+          "prompt": "After 30 seconds or no hearts left, show the score in an ensō circle."
         },
         {
           "id": "sound",
           "name": "Sound",
-          "prompt": "Add a soft “plop” when catching the moon; off by default, with a toggle."
-        },
-        {
-          "id": "fx",
-          "name": "Effects",
-          "prompt": "Add ripple rings when the koi catches and a few fireflies; turn all of it off if the user prefers reduced motion."
+          "prompt": "A soft “plop” when it snaps the moon; off by default."
         }
       ],
       "play": {
@@ -355,25 +381,30 @@
       },
       "facts": [
         {
-          "text": "The prompt shown with each layer illustrates how to split the work; it is not a real log of this game's build.",
+          "text": "The instructions here are examples of breaking a game into small steps.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "illustration"
         }
       ],
       "insight": {
-        "text": "Good games grow layer by layer: one prompt per layer, run it, save a checkpoint — not one giant prompt.",
+        "text": "Seven short instructions, one feature each, test after each one — the game grows without breaking.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
       "detail": "After a round, open the take-away card: the full prompt pack to rebuild this game from scratch.",
-      "takeaway": "t36-pack"
+      "takeaway": "t36-pack",
+      "wrongOrder": "Not this layer yet — drop the “{name}” sheet first",
+      "cards": [
+        "t36-mobile",
+        "t36-ship"
+      ]
     },
     "vibe": {
       "label": "Is coding by feel enough?",
       "art": "Ink painting: looking down into a deep, clear pond. On the surface the koi game is playing: the fish on its round, a shard of moon, the moon's broken road. On the bed, the game's source code is written in ink on flat stones, caustics drifting over it. Along the near edge stand five big candle stones, out of focus. Touch one: its candle lights, who spoke is written on the water and the pond changes with them: the focus at the surface or down on the code, red cracks through half the lines, a paper lantern with a red seal floating up, a bamboo fence growing round the shallows. Drag up or down on the water to move the focus yourself. With all five, the water stills and an ensō appears.",
-      "prompt": "Touch each stone",
+      "prompt": "Tap each candle to hear five people",
       "group": "Five views on vibe coding",
       "stoneAria": "View: {who}",
       "perspectives": {
@@ -399,7 +430,7 @@
           {
             "who": "Security company",
             "view": {
-              "text": "Veracode tested 80 tasks across 100+ models: in about 45% of cases, AI-written code had security flaws.",
+              "text": "Veracode (a security company, its own report): tested 80 coding tasks on 100+ AI models; about 45% of the solutions had security holes.",
               "asOf": "2026-10-15",
               "source": "t36-veracode",
               "kind": "fact",
@@ -416,9 +447,9 @@
             }
           },
           {
-            "who": "Beginner",
+            "who": "A beginner",
             "view": {
-              "text": "A small game is a safe practice ground: if it breaks, start over; nobody loses money or data.",
+              "text": "One beginner, for example: “A small game is a safe place to practise — if it breaks, start again, nobody loses money.”",
               "asOf": "2026-10-15",
               "source": "editorial",
               "kind": "opinion"
@@ -426,13 +457,16 @@
           }
         ],
         "common": {
-          "text": "AI helps beginners make things that run. They differ on when code must be read carefully — when money or data is involved.",
+          "text": "For a small game, let AI write it and play-test. With logins, money or users' data, someone must read the code carefully.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
-      "detail": "The koi game runs in the browser with no accounts or payments, so the risk is low. When an app has logins, money or user data, ask someone who knows code to review it."
+      "detail": "The koi game runs in the browser with no accounts or payments, so the risk is low. When an app has logins, money or user data, ask someone who knows code to review it.",
+      "question": "Vibe coding: ask AI to write the code, run it, never read the code.",
+      "focusPrompt": "Drag up and down on the pond to look down at the code on the bottom",
+      "left": "{n} people left"
     }
   },
   "sources": {

@@ -13,11 +13,12 @@ const S = raw.scenes
 const station: StationModule = {
   content: raw as unknown as StationContent,
   scenes: [
-    { label: S.peaks.label, mount: peaksScene },
+    { label: S.peaks.label, text: 'bl', mount: peaksScene },
+    // audit v3: the launch tide is the context ("why the news comes so fast"), so it comes second, before the fence
+    { label: S.tide.label, mount: tideScene },
     { label: S.gate.label, mount: gateScene },
     courtScene(),
     { label: S.stele.label, mount: steleScene },
-    { label: S.tide.label, mount: tideScene },
   ],
 }
 export default station

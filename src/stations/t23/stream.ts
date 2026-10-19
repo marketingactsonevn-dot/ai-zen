@@ -1,6 +1,7 @@
-import { fill, h, nextId, s } from '../../core/dom'
+import { h, nextId, s } from '../../core/dom'
 import type { SceneCtx } from '../types'
 import { rng } from '../../ui/part2/ink'
+import { guide, type Drop, type Mark } from '../../ui/part2/guide'
 import { C } from './data'
 import { canvas, clamp, f1, fbm, field, lerp, mix, put, rgba, rig, sm, softEllipse, stone, vn, type Pal, type Pt, type RGB, type Rig } from './lit'
 
@@ -88,10 +89,11 @@ const TALL: Lay = {
  * Scene 3 — HIGH, from the source: we stand at the top of a terraced cascade and look down the valley. Each terrace ends
  * in a stone lip that catches the moon on its edge; below it a steep face (in shadow) drops to the next pond. Near and
  * big, two springs break from clefts in rocks carved "Dallas" and "capital"; bamboo pipes (kakehi) carry them. In the
- * middle the pool "Texas" behind its carved weir; far below, the small pool "Austin" holds the moon. Lift each sluice
- * stone in turn and the water finds its way: white curtains fall from lip to pond, the pools fill, Austin fills → the
- * insight. Then lift Texas out and set California in: the water reroutes and the last pool reads "Sacramento", while mist
- * thickens over the three other cascades on the hillsides (the method's limit).
+ * middle the pool "Texas" behind its carved weir; far below, the small pool "Austin" holds the moon.
+ * Beat 1: tilt the bamboo trough at the question slab and the question pours in: the sluices lift one after another,
+ * white curtains fall from lip to pond, Texas fills, Austin fills. Beat 2 (audit v3 23-3, the main act): drag the
+ * "Texas" weir out of the middle pool and set "California" in its place: the water reroutes, the last pool is carved
+ * again as "Sacramento", the limit line shows, then the insight (after the evidence, not before).
  */
 export function streamScene(ctx: SceneCtx) {
   const ids = K.nodes.map((n) => n.id)
@@ -137,12 +139,24 @@ export function streamScene(ctx: SceneCtx) {
   const q = h('p', { class: 't23s-q t23-carve' }, K.question)
   Lfront.append(qArt, q)
   // the sluice stones: one button each, in the order the water must be followed
-  const sluices = K.nodes.map((n, i) => h('button', { class: `t23s-sluice t23-grab s-${n.id}`, type: 'button', onClick: () => go(i) }, h('i', { class: 't23s-sh' }), h('i', { class: 't23s-st' })))
-  const over = h('div', { class: 't23-over' }, ...sluices)
+  // the sluice stones lift by themselves as the poured water reaches them (no hidden order to guess any more)
+  const sluices = K.nodes.map((n) => h('button', { class: `t23s-sluice s-${n.id}`, type: 'button', tabindex: '-1', 'aria-hidden': 'true' }, h('i', { class: 't23s-sh' }), h('i', { class: 't23s-st' })))
+  // the bamboo trough at the question slab: tilt it (tap, drag down, Enter) and the question pours into the springs
+  const pour = h('button', { class: 't23s-pour', type: 'button', 'aria-label': K.pourAria }, s('svg', { viewBox: '-60 -12 120 24', 'aria-hidden': 'true' },
+    s('path', { class: 'tube', d: 'M-56 -7L56 -7Q60 -7 60 0Q60 7 56 7L-56 7Q-60 7 -60 0Q-60 -7 -56 -7Z' }),
+    s('path', { class: 'node', d: 'M-22 -7.5v15M18 -7.5v15' }),
+    s('path', { class: 'lit', d: 'M-54 -4.5L54 -4.5' }),
+    s('path', { class: 'water', d: 'M60 0q14 2 18 14' })))
+  const over = h('div', { class: 't23-over' }, ...sluices, pour)
   R.view.append(over)
-  const limit = h('div', { class: 't23s-limit', 'data-off': '' }, ctx.fact(K.limit, 'p', 't23-note'))
+  // what the water stands for, from the start; the method's limit joins it once the swap has shown the evidence
+  const limit = h('div', { class: 't23s-limit' }, h('p', { class: 't23-note t23s-decode' }, K.decode), h('div', { class: 't23s-lim', 'data-off': '' }, ctx.fact(K.limit, 'p', 't23-note')))
   R.root.append(limit)
   ctx.prompt(K.prompt)
+  const gd = guide(ctx)
+  let mark: Mark | null = gd.dot(pour, { dir: [0, 1] })
+  let hole: Drop | null = null
+  let lifted = false
   sync()
 
   const P = (pt: Pt): Pt => [X(pt[0]), Y(pt[1])]
@@ -545,7 +559,7 @@ export function streamScene(ctx: SceneCtx) {
         const st = yield* stone({ ...sOpts, w, h: hh, seed, slab: flat ? 0.18 : 0.1, sq: 3.4, wob: 0.06, bump: 0.04, height: flat ? 0.3 : 0.5, moss: 0.25 }, R.dpr)
         st.style.cssText = `width:${f1(w)}px;height:${f1(hh)}px;left:0;top:0`
         Object.assign(el.style, { left: `${f1(X(at[0]) - w / 2)}px`, top: `${f1(Y(at[1]) - hh)}px`, width: `${f1(w)}px`, height: `${f1(hh)}px`, fontSize: `${f1(fs)}px` })
-        out(el, st, el.lastElementChild as HTMLElement)
+        out(el, st, ...el.querySelectorAll(':scope > .t23-carve, :scope > .p2g-dot'))
       }
       yield* slab(weir, L.weir, Math.max(76, fs * 5.2), fs * (wide ? 2.6 : 2.3), 2403, false)
       yield* slab(cal, L.cal, Math.max(100, fs * 7), fs * 2.3, 2404, true)
@@ -559,6 +573,12 @@ export function streamScene(ctx: SceneCtx) {
         const box = Math.max(44, sz * 1.5)
         Object.assign(sluices[i].style, { left: `${f1(at[0] - box / 2)}px`, top: `${f1(at[1] - box / 2)}px`, width: `${f1(box)}px`, height: `${f1(box)}px`, '--sz': `${f1(sz)}px` })
         out(sluices[i].lastElementChild as HTMLElement, st)
+      }
+      // the trough: from the slab's top edge toward the Dallas spring, its far end lower (water runs that way once tilted)
+      {
+        const a = P([L.q[2] - (wide ? 0.05 : 0.12), L.q[1] + 0.01]), b = P(L.cleft.dallas)
+        const len = clamp(Math.hypot(b[0] - a[0], b[1] - a[1]) * 0.8, 90, 200), ang = Math.atan2(b[1] - a[1], b[0] - a[0])
+        Object.assign(pour.style, { left: `${f1((a[0] + b[0]) / 2 - len / 2)}px`, top: `${f1((a[1] + b[1]) / 2 - 22)}px`, width: `${f1(len)}px`, height: '44px', '--a': `${f1((ang * 180) / Math.PI)}deg` })
       }
       for (const [el, at] of [[names.dallas, L.rocks.dallas], [names.capital, L.rocks.capital]] as [HTMLElement, E4][]) {
         Object.assign(el.style, { left: `${f1(X(at[0]) - X(at[2]) * 0.42)}px`, top: `${f1(Y(at[1]) + Y(at[3]) * 0.04)}px`, width: `${f1(X(at[2]) * 0.84)}px`, fontSize: `${f1(clamp(W * 0.014, 15, 19))}px` })
@@ -652,14 +672,7 @@ export function streamScene(ctx: SceneCtx) {
   }
 
   function sync() {
-    sluices.forEach((b, i) => {
-      const n = K.nodes[i]
-      const isNext = i === step
-      b.classList.toggle('next', isNext)
-      b.classList.toggle('up', i < step)
-      b.setAttribute('aria-disabled', String(!isNext))
-      b.setAttribute('aria-label', isNext ? fill(K.stepAria, { label: label(i) }) : `${n.aria}${swapped && n.id !== 'dallas' && n.id !== 'capital' ? ` · ${label(i)}` : ''}`)
-    })
+    sluices.forEach((b, i) => b.classList.toggle('up', i < step))
   }
   function label(i: number) {
     return swapped && ids[i] === 'texas' ? K.swapTo : swapped && ids[i] === 'austin' ? K.swapResult : K.nodes[i].label
@@ -671,43 +684,125 @@ export function streamScene(ctx: SceneCtx) {
     ctx.chime(step === ids.length ? 'ok' : 'tap')
     drawFlow(true, ids[i])
     sync()
-    if (step === ids.length) {
-      cal.disabled = false
-      cal.classList.add('ready')
-      ctx.insight(K.insight, K.detail)
-    } else sluices[step].focus({ preventScroll: true })
+    if (step === ids.length) ready()
   }
 
-  // lift by dragging a sluice stone upward too
-  for (const [i, b] of sluices.entries()) {
-    let y0 = NaN
-    b.addEventListener('pointerdown', (e) => void (y0 = e.clientY))
-    b.addEventListener('pointermove', (e) => {
-      if (Number.isNaN(y0) || y0 - e.clientY < 18) return
-      y0 = NaN
-      go(i)
+  // ── beat 1: tilt the trough; the water runs on by itself, one sluice after another
+  const timers: number[] = []
+  ctx.onCleanup(() => timers.forEach(clearTimeout))
+  function tilt() {
+    if (pour.disabled) return
+    pour.disabled = true
+    pour.classList.add('tilted')
+    mark?.done()
+    mark = null
+    ctx.chime('tap')
+    ids.forEach((_, i) => (still ? go(i) : timers.push(window.setTimeout(() => go(i), 450 + i * 1100))))
+  }
+  pour.addEventListener('click', tilt)
+  let py = NaN
+  pour.addEventListener('pointerdown', (e) => void (py = e.clientY))
+  pour.addEventListener('pointermove', (e) => void (!Number.isNaN(py) && e.clientY - py > 14 && ((py = NaN), tilt())))
+  pour.addEventListener('pointerup', () => void (py = NaN))
+
+  // ── beat 2: drag "Texas" out of the middle pool (or Enter on it), then "California" into the empty place
+  function ready() {
+    weir.classList.add('live')
+    weir.setAttribute('role', 'button')
+    weir.setAttribute('tabindex', '0')
+    weir.setAttribute('aria-label', K.liftAria)
+    ctx.prompt(K.lift)
+    mark = gd.dot(weir, { dir: [-1, 0.4] })
+  }
+  /** a slab follows the pointer from where it was picked up; let go → done(moved px, client point) */
+  function draggable(el: HTMLElement, done: (moved: number, x: number, y: number) => void) {
+    let id = -1, x0 = 0, y0 = 0, dx = 0, dy = 0
+    el.addEventListener('pointerdown', (e) => {
+      if (!el.classList.contains('live')) return
+      id = e.pointerId
+      x0 = e.clientX
+      y0 = e.clientY
+      dx = dy = 0
+      el.setPointerCapture(id)
+      el.classList.add('held')
     })
-    b.addEventListener('pointerup', () => void (y0 = NaN))
+    el.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== id) return
+      dx = e.clientX - x0
+      dy = e.clientY - y0
+      el.style.translate = `${f1(dx)}px ${f1(dy)}px`
+    })
+    const up = (e: PointerEvent) => {
+      if (e.pointerId !== id) return
+      id = -1
+      el.classList.remove('held')
+      done(Math.hypot(dx, dy), e.clientX, e.clientY)
+    }
+    el.addEventListener('pointerup', up)
+    el.addEventListener('pointercancel', up)
+    el.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && el.classList.contains('live') && (e.preventDefault(), done(0, NaN, NaN)))
   }
-
-  cal.addEventListener('click', () => {
-    swapped = !swapped
-    R.root.classList.toggle('swapped', swapped)
-    cal.setAttribute('aria-pressed', String(swapped))
-    ;(weir.lastElementChild as HTMLElement).textContent = swapped ? K.swapTo : K.nodes[2].label
-    ;(cal.lastElementChild as HTMLElement).textContent = swapped ? K.nodes[2].label : K.swapTo
+  // the weir's place in the art, read once on lifting (an event, not a frame)
+  let home: Pt = [0, 0]
+  draggable(weir, () => {
+    if (lifted) return
+    lifted = true
+    const a = ctx.art.getBoundingClientRect(), b = weir.getBoundingClientRect()
+    home = [b.left - a.left + b.width / 2, b.top - a.top + b.height / 2]
+    // set down on the bank beside the pool
+    weir.classList.remove('live')
+    weir.removeAttribute('role')
+    weir.removeAttribute('tabindex')
+    weir.style.translate = `${f1(-b.width * 1.15)}px ${f1(b.height * 0.9)}px`
+    weir.classList.add('lifted')
+    mark?.done()
+    hole = gd.drop(home, { w: b.width + 18, h: b.height + 14, round: false })
+    hole.lift(true)
+    ctx.chime('soft')
+    ctx.prompt(K.drop)
+    cal.disabled = false
+    cal.classList.add('live')
+    mark = gd.dot(cal, { dir: [0.6, -1] })
+    cal.focus({ preventScroll: true })
+  })
+  draggable(cal, (moved, x, y) => {
+    if (swapped || !lifted) return
+    if (moved > 8) {
+      const a = ctx.art.getBoundingClientRect()
+      if (Math.hypot(x - a.left - home[0], y - a.top - home[1]) > 90) {
+        cal.style.translate = ''
+        gd.wrong(K.dropWrong, cal)
+        return
+      }
+    }
+    swap()
+  })
+  // (a tap or Enter on California, without dragging, sets it in too)
+  function swap() {
+    swapped = true
+    R.root.classList.add('swapped')
+    cal.classList.remove('live')
+    cal.disabled = true
+    cal.setAttribute('aria-pressed', 'true')
+    for (const el of [weir, cal]) (el.style.translate = ''), el.classList.remove('lifted')
+    // (the carved word, not the last child: a guide dot may still be fading out inside the slab)
+    weir.querySelector('.t23-carve')!.textContent = K.swapTo
+    cal.querySelector('.t23-carve')!.textContent = K.nodes[2].label
     ausName.textContent = label(3)
     if (!still) for (const el of [weir, cal]) el.animate([{ transform: 'translateY(-14px)', opacity: 0.3 }, { transform: 'none', opacity: 1 }], { duration: 900, easing: 'cubic-bezier(.3,.1,.2,1)' })
     if (!still) ausName.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1200 })
-    delete limit.dataset.off
-    ctx.chime('soft')
+    mark?.done()
+    hole?.hit()
+    delete (limit.lastElementChild as HTMLElement).dataset.off
+    ctx.chime('ok')
     sync()
     const keep = step
     step = 0
     drawFlow(false)
     step = keep
     drawFlow(true, 'austin')
-  })
+    ctx.insight(K.insight, K.detail)
+  }
 }
 
 /** A thin rill's bed: a wet dark groove finding its way down the terraces, a pale lip on the moon's side. */

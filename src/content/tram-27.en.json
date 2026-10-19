@@ -1,7 +1,7 @@
 {
   "id": 27,
   "kicker": "We see faces in stones, in clouds — and in chatbots.",
-  "summary": "AI can be warm — let it warm you, but don’t let it take the place of people.",
+  "summary": "AI can chat warmly. Use it as a tool — don’t let it take the place of the real people around you.",
   "takeaways": [
     "t27-phan-bien",
     "t27-thoi-quen"
@@ -9,10 +9,10 @@
   "quiz": {
     "q": "You ask an AI “Is my business idea any good?” and it praises it to the skies. What should you do next?",
     "options": [
-      "Believe it, since AI has read so much",
-      "Ask the AI to critique it like a serious opponent, then ask real people too",
-      "Ask the exact same question again to be sure",
-      "Stop using AI altogether"
+      "Believe it, since the AI has read so much on business",
+      "Ask the AI for the weak points, then ask people who know you",
+      "Ask it the same question again a few more times to be really sure",
+      "Ask another AI as well, and trust whichever praises it more"
     ],
     "answer": 1,
     "explain": "AI tends to side with its users. Ask it to find the weak spots, and for big decisions, also ask people who understand your situation."
@@ -22,7 +22,8 @@
       "label": "A stone with a face",
       "art": "A corner of the night garden at eye level, in seven layers: dark grass and a pine bough right at your eye, a big moss rock with a crack, a lit stone lantern with a warm pool on the sand, a small stele sunk in shadow under a pine, a long cloud across the moon, mountains in mist, sky and moon. Each thing hides a face torn across several layers: two near seed heads and the crack in the rock, the lantern's two windows and a drooping pine twig, two dark seas on the moon and a strand of cloud. Stand in the right place and the pieces line up into a face. Find all three and the stele lights a green screen like an old computer: ELIZA, 1966.",
       "view": "Move the mouse, drag or tilt the phone to change where you stand; each face only comes whole from one spot. Tab to each thing, Enter to step to the right spot.",
-      "prompt": "Find the hidden faces",
+      "prompt": "Move the mouse (or drag) — find the hidden face",
+      "left": "{n} faces still hidden",
       "things": [
         {
           "label": "mossy rock",
@@ -52,11 +53,11 @@
       },
       "insights": [
         {
-          "text": "Our brains spot faces extremely fast, even where there are none — this is called face pareidolia.",
+          "text": "You just saw a face in the rock. Our brains spot faces extremely fast, even where there are none.",
           "asOf": "2026-10-15",
           "source": "wardle-2020",
           "detail": {
-            "text": "A 2020 study: the brain processes “faces” in objects in the same area as real faces, then corrects itself about 0.25 seconds later.",
+            "text": "Face pareidolia: the brain handles “faces” in objects in the same area as real faces, and only corrects itself about 0.25 seconds later (2020).",
             "asOf": "2026-10-15",
             "source": "wardle-2020"
           }
@@ -74,13 +75,14 @@
       ]
     },
     "lamp": {
-      "label": "The lantern that always agrees",
+      "label": "The lamp at your side",
       "art": "A night almost fully dark under an old pine: the trunk leans in from the lower left, one long branch reaches across the top. From its tip hangs a round paper lantern with the question written on it; like a pendulum it always leans toward whoever comes near. Below lies dark moss with surface roots and four equal stones on an even arc. Bring the lantern to a stone and the side facing it glows, and its words appear on the ground.",
-      "prompt": "Touch the stones: benefits and harms",
-      "question": "AI companions: something to lean on, or somewhere to hide?",
+      "prompt": "Tap each stone — hear the good and the bad",
+      "question": "A support, or a place to hide?",
+      "opener": "72% of US teens have chatted with an “AI companion” — an AI app that plays a friend.",
       "insight": {
-        "text": "72% of US teens surveyed have talked with an AI companion — it’s no longer rare.",
-        "asOf": "2026-10-15",
+        "text": "The bright side: 39% of teen users say they took social skills practised with AI into real life.",
+        "asOf": "2026-10-19",
         "source": "commonsense-2025"
       },
       "perspectives": {
@@ -88,7 +90,7 @@
           {
             "who": "US teens in a 2025 survey",
             "view": {
-              "text": "39% of users carry social skills practised with AI into real life; 80% still spend more time with real friends.",
+              "text": "80% of teen users still spend more time with real friends than with AI.",
               "asOf": "2026-10-15",
               "source": "commonsense-2025"
             }
@@ -96,7 +98,7 @@
           {
             "who": "MIT Media Lab & OpenAI (2025)",
             "view": {
-              "text": "A 4-week trial with 981 people: those who chose to use it more tended to be lonelier and more dependent — a correlation only.",
+              "text": "A 4-week trial, 981 people: those who chose to use it more tended to be lonelier and more dependent. Which causes which is unclear.",
               "asOf": "2026-10-15",
               "source": "fang-2025"
             }
@@ -104,7 +106,7 @@
           {
             "who": "Anthropic (Claude.ai data, 2025)",
             "view": {
-              "text": "Only 2.9% of conversations are emotional; companionship and role-play are under 0.5%. They tend to end slightly more positively.",
+              "text": "Only 2.9% of Claude.ai conversations are about feelings or personal troubles; asking it to play a friend or partner, under 0.5%.",
               "asOf": "2026-10-15",
               "source": "anthropic-affective-2025",
               "claimBy": "Anthropic"
@@ -113,7 +115,7 @@
           {
             "who": "Common Sense Media, a children’s advocacy group",
             "view": {
-              "text": "Under-18s should not use AI companions until there are better safeguards.",
+              "text": "Under-18s should not use AI companions yet, until there are better safeguards.",
               "asOf": "2026-10-15",
               "source": "commonsense-2025",
               "kind": "opinion"
@@ -121,7 +123,7 @@
           }
         ],
         "common": {
-          "text": "Agreed: AI companions can help somewhat. They differ: benefit or harm depends on who uses them, how much, and who else is there.",
+          "text": "AI companions can help somewhat; whether it helps or harms depends on how much you use them, and whether real people are near.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
@@ -131,16 +133,17 @@
     "flatter": {
       "label": "The flattering mirror",
       "art": "A close look down at 55° onto a black-and-red lacquer tray with gold autumn grasses and a crescent, on tatami; moonlight through a lattice falls across it. Two hand mirrors with real thickness lie face down: a gilded back carved with a chrysanthemum, and plain bronze with green patina. A folded slip in the middle holds the question. Lift one and turn it over: its answer appears in the glass.",
-      "prompt": "Tilt each mirror",
+      "prompt": "Which mirror do you want to hear? Lift one up",
+      "promptNext": "Now lift the other mirror",
       "question": "“I’m thinking of quitting my job to open a coffee shop. Is this a good idea?”",
       "gilded": {
         "label": "Gilded mirror",
-        "aria": "Tilt the gilded mirror to see the flattering answer",
+        "aria": "Lift the gold-rimmed mirror to hear its answer",
         "answer": "“Brilliant! You’re sure to succeed — just go for it!”"
       },
       "bronze": {
         "label": "Plain bronze mirror",
-        "aria": "Tilt the plain bronze mirror to see the honest answer",
+        "aria": "Lift the plain bronze mirror to hear its answer",
         "answer": "“There’s something good in this idea. But have you worked out the money, the location, and the first months with no profit? Try asking a few café owners first.”"
       },
       "note": {
@@ -150,54 +153,54 @@
         "kind": "illustration"
       },
       "insight": {
-        "text": "A study in Science (2026): 11 AI models endorsed users’ actions 49% more often than humans did.",
-        "asOf": "2026-10-15",
+        "text": "The gold mirror is nicer to hear — and people in the experiment also liked and trusted the flattering AI more.",
+        "asOf": "2026-10-19",
         "source": "cheng-2026"
       },
       "detail": {
-        "text": "Participants actually preferred and trusted the flattering AI — and afterwards were less willing to make amends or admit their part.",
-        "asOf": "2026-10-15",
+        "text": "Science (2026), 11 AI models: AI endorsed what users did about 49% more often than real people did. After being flattered, people were less willing to admit their part in it.",
+        "asOf": "2026-10-19",
         "source": "cheng-2026"
       },
       "seeAlso": "Why AI tends to flatter: see station II·06",
       "takeaway": "t27-phan-bien",
-      "takeawayLabel": "Take away: a prompt that invites AI to push back"
+      "takeawayLabel": "Take away: a prompt that asks AI to argue back"
     },
     "path": {
       "label": "Healthy habits",
       "art": "A frame within a frame: from inside a hillside hut, behind someone hunched at a cold blue screen, you look through an open sliding door down a steep stone stair across the moon garden to a house in the valley, its paper doors glowing yellow with a few people sitting round a meal. Four slabs lie scattered at the threshold; beside each step stands a small unlit stone lantern.",
-      "prompt": "Set the stones in order",
+      "prompt": "Put each stone on the step that suits it",
       "keys": "Keys 1–4 set the stones in order",
       "stoneAria": "Place the stone “{label}”",
-      "wrong": "Not that one yet — think in rhythm: before, during and after a conversation.",
+      "wrong": "Not quite — this stone is for another moment. Read the lamp.",
       "done": "The path is lit — open your take-away card",
       "steps": {
         "steps": [
           {
             "label": "Remember it’s a tool",
-            "detail": "Before you chat: AI sounds warm because it was trained to write that way, not because it knows you.",
-            "why": "Expressing feelings doesn’t prove an AI feels (see station II·07)."
+            "detail": "Before you open the app: the AI is warm because it was trained to write that way, not because it knows you.",
+            "why": "Not quite — this step is for before you open the app."
           },
           {
             "label": "Ask AI to push back",
-            "detail": "During the chat: invite it to point out weak spots, risks and opposing views.",
-            "why": "AI tends to side with its users more than people do."
+            "detail": "While you chat: ask it for the weak points, the risks, the other side.",
+            "why": "Not quite — this step is for while you chat."
           },
           {
             "label": "Ask real people on big things",
-            "detail": "Before important decisions — health, money, relationships — also ask someone you trust or an expert.",
-            "why": "Real people understand your situation and dare to say hard things."
+            "detail": "Before a big decision (health, money, relationships): ask someone you trust, or an expert.",
+            "why": "Not quite — this step is for before a big decision."
           },
           {
             "label": "Take a screen break",
-            "detail": "Afterwards: close the laptop, go for a walk, see friends and family.",
-            "why": "People who use chatbots more tend to feel lonelier and more dependent."
+            "detail": "When you close the laptop: go for a walk, see friends and family.",
+            "why": "Not quite — this step is for when you close the laptop."
           }
         ],
         "takeaway": "t27-thoi-quen"
       },
       "insight": {
-        "text": "AI can warm an evening — healthy habits keep it from taking the place of the real people around you.",
+        "text": "Four small habits lead you from the screen back to the real people in your life.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"

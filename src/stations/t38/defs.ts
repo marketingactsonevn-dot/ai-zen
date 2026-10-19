@@ -4,6 +4,7 @@ import { L } from '../../core/content'
 import { onPrefs } from '../../core/prefs'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, onDigit, onSize, rng, seedOf, shuffledIdx, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { guide } from '../../ui/part2/guide'
 import type { SceneDef } from '../types'
 import { C } from './shell'
 import { pine, toro } from '../../ui/part2/paint'
@@ -287,7 +288,7 @@ export const defsScene: SceneDef = {
   mount(ctx) {
     const n = P.stones.length
     const order = shuffledIdx(n, seedOf(P.stones.map((x) => x.who).join('|'))) // order[k] = the view slot k (near → far) holds
-    const stable = stableHeight(ctx, [P.common])
+    const stable = stableHeight(ctx, [D.insight])
     const low = ctx.quality === 'low'
     const cv = canvas('t38d-cv')
     const garden = s('svg', { class: 't38d-garden', 'aria-hidden': 'true' })
@@ -325,8 +326,12 @@ export const defsScene: SceneDef = {
     const count = h('p', { class: 't38d-count' })
     const strip = h('div', { class: 't38d-strip', role: 'region', 'aria-label': D.strip, hidden: true }, who, view, count)
     const cord = s('svg', { class: 't38d-cord', 'aria-hidden': 'true' }, s('path'))
-    const root = h('div', { class: 't38d' }, h('p', { class: 'visually-hidden' }, D.art), defs, world, cord, strip)
+    // what AGI means in plain words, and what the four vessels are (audit 38-1)
+    const legend = h('p', { class: 't38d-legend' }, D.legend)
+    const root = h('div', { class: 't38d' }, h('p', { class: 'visually-hidden' }, D.art), defs, world, cord, strip, legend)
     ctx.art.append(root)
+    const g = guide(ctx)
+    const dots = btns.map((b) => g.dot(b, { dir: [0, -1] }))
     ctx.prompt(D.prompt)
 
     const heard = new Set<number>()
@@ -344,6 +349,8 @@ export const defsScene: SceneDef = {
       const b = btns[k]
       if (!heard.has(k)) {
         heard.add(k)
+        dots[k].done()
+        if (heard.size < n) ctx.prompt(fill(D.next, { n: heard.size, total: n }))
         b.classList.add('heard')
         if (!ctx.reduced && !low) {
           b.classList.add('pouring')
@@ -361,7 +368,8 @@ export const defsScene: SceneDef = {
       frame()
       if (heard.size === n && !root.classList.contains('is-all')) {
         root.classList.add('is-all')
-        ctx.insight(P.common, D.insight)
+        // the main idea on screen, the four rulers in the detail (audit 38-1)
+        ctx.insight(D.insight, P.common)
         ctx.chime('ok')
       } else ctx.chime('soft')
     }

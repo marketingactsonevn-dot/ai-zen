@@ -125,6 +125,10 @@
 .t25o .p2c-ring { display: none; }
 .t25o-stone { transition: opacity 1s; }
 .t25o.is-all .t25o-stone { opacity: calc(1 - var(--down, 0)); }
+/* the stance carved on each stone's face */
+.t25o-stance { font: 500 13px var(--serif); letter-spacing: 0.03em; fill: var(--stone-text, var(--ink)); paint-order: stroke; stroke: color-mix(in srgb, var(--rock-hi) 60%, transparent); stroke-width: 2.5px; transition: opacity 1s; }
+:root[data-theme='dark'] .t25o-stance { fill: var(--moon); stroke: color-mix(in srgb, #000 55%, transparent); }
+.t25o.is-all .t25o-stance { opacity: calc(1 - var(--down, 0)); }
 .t25o-mossdot { fill: var(--moss-a); opacity: 0; transition: opacity 1s; }
 .t25o.is-all .t25o-mossdot { opacity: calc(var(--down, 0) * 0.9); }
 .t25o.is-all .p2c-num { opacity: calc(0.8 - var(--down, 0) * 0.8); }

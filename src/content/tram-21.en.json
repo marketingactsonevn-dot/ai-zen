@@ -1,28 +1,31 @@
 {
   "id": 21,
-  "kicker": "The fish reads no books about water — it swims.",
-  "summary": "AI is learning to walk — running faster than people doesn't yet mean understanding the world as people do.",
+  "kicker": "The fish reads no books about water — it swims. Robots too: they have to practise; reading alone is not enough.",
+  "summary": "Robots now run faster than people — but finding their own way and holding a cup of tea are still hard.",
   "newsTags": [
     "robots"
   ],
+  "takeaways": ["t21-xem-video-robot"],
   "quiz": {
-    "q": "A robot crossed the finish line first, but a person was steering it remotely. What does that show?",
+    "q": "A robot understands “pick up the teacup” at once, but its hand still slips. Why?",
     "options": [
-      "The robot understood the course by itself, as a person would",
-      "The robot's legs are good, but finding the way was still done by a person",
-      "Remote-controlled robots are always slower than self-guided ones",
-      "Robots no longer need AI"
+      "There is little real grasping data for robots to learn from",
+      "The motors in the robot's hand are still far too weak to grip",
+      "The command was not written clearly enough",
+      "The teacup is too heavy for the robot's hand"
     ],
-    "answer": 1,
-    "explain": "“Can walk” is not “knows where to walk”. The organisers multiplied remote-controlled robots' times by 1.2 to favour robots that navigate on their own."
+    "answer": 0,
+    "explain": "The head learns from the mountain of text online. The hand has to learn from real grasps — and that kind of data is very scarce."
   },
   "scenes": {
     "race": {
       "label": "The finish line draws nearer",
       "art": "A low camera runs behind an ink robot on a track that curves round a moonlit lake; pines and stone lanterns slide past on the right, a bamboo rail keeps the human lane apart. Drag the moon through the racing seasons: in 2025 the robot staggers and falls, another lies on the track; in March 2026 a mist-white runner sets the record in the next lane; in April 2026 the robot strides past it and the red ribbon breaks across its chest, leaving two finish lines on the track at two depths. Today the camera cranes up and the valley behind the lake is dotted with factory lamps.",
-      "prompt": "Drag the moon through two races",
+      "prompt": "Drag the moon left through the racing seasons",
+      "next": "Keep dragging to today",
+      "ticks": ["2025", "03/2026", "04/2026", "today"],
+      "road": ["2:41", "0:57", "0:50"],
       "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
-      "humanTime": "57:20",
       "tide": {
         "milestones": [
           {
@@ -52,8 +55,8 @@
               "source": "chinadaily-robot"
             },
             "compare": {
-              "before": "2:40:42",
-              "after": "50:26",
+              "before": "2 hours 41 min",
+              "after": "50 min",
               "ratio": 0.31,
               "beforeLabel": "Winning robot · 2025",
               "afterLabel": "Winning robot · 2026"
@@ -61,12 +64,7 @@
           },
           {
             "date": "2026-10-15",
-            "label": "Today",
-            "fact": {
-              "text": "Off the track: by the end of 2025, factories worldwide had about 5 million industrial robots at work.",
-              "asOf": "2026-10-15",
-              "source": "ifr-2026"
-            }
+            "label": "Today"
           }
         ],
         "horizon": {
@@ -77,12 +75,12 @@
         }
       },
       "insight": {
-        "text": "In one year, the winning time fell from 2:40:42 to 50:26 — a robot ran faster than the human half marathon record.",
+        "text": "In just one year, the robot finished three times faster: from 2 hours 41 minutes to 50 minutes — faster than the human record.",
         "asOf": "2026-10-15",
         "source": "chinadaily-robot"
       },
       "detail": {
-        "text": "Robots and people ran in separate lanes, so this compares times; it was not one shared race.",
+        "text": "Robots and people ran in separate lanes: this compares times; it was not one shared race.",
         "asOf": "2026-10-15",
         "source": "aljazeera-robot"
       }
@@ -90,45 +88,41 @@
     "strings": {
       "label": "Walking alone or on strings",
       "art": "Low at the finish line: two identical ink robots run toward us with the moon behind them. On a pine bough a person in a conical hat holds a control bar and a small lamp. The robot on the right lights its own way with its lamp eyes; the one on the left has dark eyes. Pull the bar: threads tighten from it to the left robot's head, hands and knee and catch the moonlight. Drag sideways to walk round: head-on the threads almost vanish, from the side they shine.",
-      "prompt": "Switch the strings on and off",
+      "prompt": "Touch the robot on the left: who is steering it?",
+      "steps": ["Drag sideways to see the strings from the side"],
       "toggle": "Remote-control strings",
       "toggleAria": "Show or hide the remote-control strings",
       "turnAria": "Walk round the finish line: drag sideways or use ← →",
       "turnValue": "{n} degrees off",
-      "remoteLabel": "Steered remotely by a person",
-      "autoLabel": "Self-navigating robot",
+      "remoteLabel": "Steered by a person",
+      "autoLabel": "Finds its own way",
       "remoteTime": "48:19",
-      "remoteNote": "finished first · time counted ×1.2",
+      "remoteNote": "finished first · counted as 57:59",
       "autoTime": "50:26",
       "autoNote": "champion",
       "facts": [
         {
-          "text": "Only just over 40% of teams let their robot find its own way; the rest steered their robots remotely.",
-          "asOf": "2026-10-15",
-          "source": "chinadaily-robot"
-        },
-        {
-          "text": "A remote-controlled Honor robot crossed the line earlier, in 48 minutes 19 seconds, but was not ranked first.",
-          "asOf": "2026-10-15",
-          "source": "ie-robot"
-        },
-        {
-          "text": "Race rules multiplied remote-controlled robots' times by 1.2: running 60 minutes counted as 72.",
+          "text": "Race rule: a robot steered by a person has its time multiplied by 1.2 — 48:19 becomes 57:59.",
           "asOf": "2026-10-15",
           "source": "beijing-gov-robot"
         }
       ],
+      "detail": {
+        "text": "Only just over 40% of teams let their robot find its own way; the rest steered remotely.",
+        "asOf": "2026-10-15",
+        "source": "chinadaily-robot"
+      },
       "insight": {
-        "text": "“Can walk” isn't “knows the way”: a robot on strings may be faster, but a person still sees the road and picks the route.",
+        "text": "“Can walk” is not “knows the way”: a robot steered by a person may be faster, but a person still watches the road.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       }
     },
     "teacup": {
-      "label": "A brain for hands and feet",
+      "label": "A mountain of words, a basket of moves",
       "art": "A stone tea table under a paper lantern: a celadon cup, a clay teapot and a tiny bamboo basket with a few paper rolls of “hand data”. A many-jointed robot arm reaches in from the right; the robot's head is a lantern. Behind, blurred in mist, a mountain of book spines climbs into the clouds. Pull a bamboo slip: the head lights up at once, while the hand trembles, slips and tries again.",
-      "prompt": "Give the hand a command",
+      "prompt": "Pull a bamboo slip to give a command",
       "commands": [
         {
           "label": "Pick up the teacup",
@@ -145,25 +139,25 @@
       ],
       "head": "Head: understands at once",
       "hand": "Hand: trembles, slips, tries again",
-      "scaleTitle": "Two baskets of data",
+      "scaleTitle": "A mountain of words, a basket of moves",
       "scaleAria": "Compare the amount of text data with robot movement data",
-      "pullPrompt": "Drag down to step back",
+      "pullPrompt": "Drag the weight down to step back",
       "pullValue": "{n}% further back",
-      "textLabel": "text",
-      "robotLabel": "robot actions",
+      "textLabel": "mountain of words",
+      "robotLabel": "basket of moves",
       "insight": {
-        "text": "A vision–language–action (VLA) model sees, reads a command, then outputs movements — like Google DeepMind's Gemini Robotics (03/2025).",
+        "text": "The robot's head understands the command at once. The hand trembles and slips: it has not practised enough.",
         "asOf": "2026-10-15",
         "source": "gemini-robotics"
       },
       "data": [
         {
-          "text": "The open robot dataset Open X-Embodiment (2023) gathers over 1 million recorded manipulations from 22 kinds of robot.",
+          "text": "Moves for robots to learn from: the Open X-Embodiment collection holds over 1 million manipulations",
           "asOf": "2026-10-15",
           "source": "oxe-2023"
         },
         {
-          "text": "The text model Llama 3 (2024), meanwhile, read more than 15 trillion tokens.",
+          "text": "Words for AI to learn from: Llama 3 read more than 15 trillion pieces of text (tokens)",
           "asOf": "2026-10-15",
           "source": "meta-llama3"
         }
@@ -174,7 +168,8 @@
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "World model: an AI practising to predict what will happen next when it moves — the way we know a cup will spill if we tip it too far."
+      "common": "Two different units — but one is a mountain, the other a basket.",
+      "detail": "The faint cup you just saw was the robot's own guess: the cup will spill if tipped too far. AI that practises guessing like this is called a “world model”."
     },
     "circle": {
       "label": "Does it need a human shape?",
@@ -193,9 +188,9 @@
             }
           },
           {
-            "who": "The specialised-robot camp · IFR figures (09/2026)",
+            "who": "The specialised-robot camp · robot counts from the IFR (09/2026)",
             "view": {
-              "text": "About 5 million industrial robots already work in factories without any human shape. Repetitive work needs specialised machines, not legs.",
+              "text": "About 5 million robots work in factories (IFR figures) — not one of them has legs. This camp says: repetitive work needs specialised machines.",
               "asOf": "2026-10-15",
               "source": "ifr-2026",
               "kind": "opinion"
@@ -204,7 +199,7 @@
           {
             "who": "Those worried about jobs · economists Acemoglu & Restrepo",
             "view": {
-              "text": "In the US from 1990 to 2007, one more robot per 1,000 workers lowered the employment rate by 0.18–0.34 percentage points and wages by 0.25–0.5%.",
+              "text": "A US study (1990–2007, factory robots): one more robot per 1,000 workers meant roughly 2–3 more people out of work in every 1,000.",
               "asOf": "2026-10-15",
               "source": "nber-robots"
             }
@@ -220,17 +215,11 @@
           }
         ],
         "common": {
-          "text": "Agreed: robots are advancing very fast. Disputed: what shape they should take, when they will enter our homes, and who benefits.",
+          "text": "Running fast on a track is not working in a home. The question left: in what shape will robots enter our lives?",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
-      },
-      "insight": {
-        "text": "Running fast on a track is not working in a home; the question now is in what form robots enter our lives.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
       }
     }
   },

@@ -21,6 +21,9 @@
 .cmark-btn[data-mark='claim'] {
   color: var(--vermilion);
 }
+.cmark-btn[data-mark='aizen'] {
+  color: var(--ink-3);
+}
 .cmark-btn:hover,
 .src.open > .cmark-btn {
   color: var(--vermilion);

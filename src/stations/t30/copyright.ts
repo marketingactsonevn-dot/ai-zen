@@ -6,6 +6,7 @@ import type { Perspectives } from '../../ui/part2/types'
 import { blob, clamp, curve, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon, reeds, wash } from '../../ui/part2/paint'
 import { C } from './data'
+import { guide } from '../../ui/part2/guide'
 import { bucket, f1, P, sheet } from './kit'
 
 const cp = C.scenes.copyright
@@ -39,6 +40,8 @@ export function copyrightScene(ctx: SceneCtx) {
   const sweepBtn = h('button', { class: 't30c-sweep', type: 'button', 'aria-label': cp.sweepAria })
   const names: string[] = [] // who stands at stone k
   let heardK = -1
+  let bucketDot: { done(): void } | null = null, bucketArrow: { done(): void } | null = null
+  let said = false // the insight is up: no more prompts
   let idle = 0
 
   // the pole turns about its pivot; the bucket hangs plumb from the tip whatever the angle
@@ -73,6 +76,10 @@ export function copyrightScene(ctx: SceneCtx) {
     full = true
     host?.classList.add('full')
     ctx.chime('soft')
+    // step 2: the stones (unless the voices are already being heard)
+    bucketDot?.done()
+    bucketArrow?.done()
+    if (!said) ctx.prompt(cp.prompts[1])
   }
   // life (drifting pages, drips) runs for 10 s after the last touch, then the pond rests
   function stir() {
@@ -95,20 +102,21 @@ export function copyrightScene(ctx: SceneCtx) {
     const bw = clamp(Math.min(g.w, g.h * 1.7) * 0.19, 64, 140)
     return Math.min(g.w / 2 - bw * 1.15, (g.h / 2 - bw * 0.75 * 1.2) / 0.46, bw * 2.3) < 50 ? 60 : bw
   }
+  const N = WHO.length // four voices on the data that went in (audit v3 30-4: the user's stone was about output, off topic)
   const spots = (k: number): { x: number; y: number; s: number } => {
+    const u = k / Math.max(1, N - 1) // 0 … 1 left to right
     if (tall) {
-      // a phone: three in front, two between and behind them
+      // a phone: alternately in front and a little behind
       const front = k % 2 === 0
-      const x = [0.17, 0.33, 0.5, 0.67, 0.83][k] ?? 0.5
-      return { x: FW * x, y: FH * (front ? 0.625 : 0.53), s: front ? 1.35 : 1.2 }
+      return { x: FW * (0.17 + 0.66 * u), y: FH * (front ? 0.625 : 0.53), s: front ? 1.35 : 1.2 }
     }
-    const d = Math.abs(k - 2) / 2
-    return { x: FW * (0.3 + 0.14 * k), y: FH * (0.955 - (1 - d) * 0.035), s: 0.92 + d * 0.12 }
+    const d = Math.abs(u - 0.5) * 2
+    return { x: FW * (0.3 + 0.56 * u), y: FH * (0.955 - (1 - d) * 0.035), s: 0.92 + d * 0.12 }
   }
 
   const circle = perspectiveCircle(cp.perspectives as Perspectives, {
     label: cp.label,
-    prompt: cp.prompt,
+    prompt: cp.prompts[0], // step 1: fetch the data up out of the pond
     detail: cp.insight as Fact,
     stage(el, api) {
       host = el
@@ -460,13 +468,18 @@ export function copyrightScene(ctx: SceneCtx) {
   const off = circle.mount({
     ...ctx,
     insight(f, d) {
+      said = true
       const el = ctx.insight(f, d)
-      // the court files: two wooden boards hung from the beam (a phone: from the rail at the bank, in place of the reading)
+      // the court file: a wooden board hung from the beam (a phone: from the rail at the bank, in place of the reading)
       if (!boards.childElementCount) boards.append(...cp.cases.map((c, j) => h('div', { class: `t30c-board b${j} t30-new` }, j ? null : h('p', { class: 't30-eyebrow' }, cp.casesLabel), ctx.fact(c as Fact, 'p'))))
       ctx.art.querySelector('.p2c')?.classList.add('files')
       return el
     },
   })
   ctx.art.querySelector('.p2c')?.classList.add('t30c')
+  // guide: a dot on the bucket and an arrow down to the water (the dip is a hidden gesture)
+  const gd = guide(ctx)
+  bucketDot = gd.dot(sweepBtn, { dir: [0, 1] })
+  bucketArrow = gd.gesture('drag-v', sweepBtn, { r: 34 })
   return off
 }

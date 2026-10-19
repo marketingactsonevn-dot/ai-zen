@@ -1,14 +1,14 @@
 {
   "id": 39,
-  "kicker": "Done learning from others' gardens — now plant your own.",
-  "summary": "AI is a shared garden — how you tend it is your own.",
+  "kicker": "Your turn: choose your own toolkit and your own 30-day path.",
+  "summary": "Anyone can use AI tools; the difference is how you hand over tasks, check the results and practise every day.",
   "quiz": {
     "q": "You're just starting, on an ordinary laptop, and don't want to spend money yet. What's the most sensible first step?",
     "options": [
-      "Buy a powerful computer to run AI locally",
-      "Use a chat assistant's free plan and practise clear briefs and fact-checking",
-      "Sign up for lots of platforms at once",
-      "Wait until AI is perfect before learning"
+      "Pay for the top plan of an image and video generator",
+      "Use a free chat assistant, practise clear tasks",
+      "Install AI on the laptop to keep data private",
+      "Sign up to try three AI platforms at once"
     ],
     "answer": 1,
     "explain": "Clear briefs and verification are the base skills and work with every tool. Add tools once you know what you need."
@@ -24,7 +24,7 @@
     "ask": {
       "label": "Four questions by the pond",
       "art": "Looking almost straight down at a pond at first light: four stepping stones run diagonally across it to a stone lantern on the far bank, pebbles and the shadows of two koi on the bottom. Each stone is engraved with a question; the answers float round it like lotus leaves. Choose a leaf and it drifts to the stone, ripples spread and the next stone rises out of the water. After all four, the view pulls back over the whole path and the far lantern lights up.",
-      "prompt": "Answer four questions",
+      "prompt": "Touch a lotus leaf to answer — question {n}/4",
       "progress": "Question {n}/4",
       "optionAria": "{q} — {label}",
       "change": "Change my answers",
@@ -32,31 +32,37 @@
       "questions": [
         {
           "id": "role",
-          "q": "What do you do?",
+          "q": "What is your main work?",
           "options": [
             {
               "id": "creative",
-              "label": "Creative: design, video, writing"
+              "label": "Creative: design, video, writing",
+              "say": "do creative work"
             },
             {
               "id": "marketing",
-              "label": "Marketing"
+              "label": "Marketing",
+              "say": "work in marketing"
             },
             {
               "id": "sales",
-              "label": "Sales, shop owner"
+              "label": "Sales, shop owner",
+              "say": "sell things"
             },
             {
               "id": "student",
-              "label": "Student"
+              "label": "Student",
+              "say": "are studying"
             },
             {
               "id": "dev",
-              "label": "Programming"
+              "label": "Programming",
+              "say": "write code"
             },
             {
               "id": "manager",
-              "label": "Management"
+              "label": "Management",
+              "say": "manage people"
             }
           ]
         },
@@ -66,15 +72,18 @@
           "options": [
             {
               "id": "faster",
-              "label": "Do my current work faster"
+              "label": "Do my current work faster",
+              "say": "do your current work faster"
             },
             {
               "id": "new",
-              "label": "Make new things"
+              "label": "Make new things",
+              "say": "make new things"
             },
             {
               "id": "understand",
-              "label": "Understand it to manage and decide"
+              "label": "Understand it to manage and decide",
+              "say": "understand AI to manage and decide"
             }
           ]
         },
@@ -84,15 +93,18 @@
           "options": [
             {
               "id": "phone",
-              "label": "Mostly a phone"
+              "label": "Mostly a phone",
+              "say": "mostly a phone"
             },
             {
               "id": "laptop",
-              "label": "An ordinary laptop"
+              "label": "An ordinary laptop",
+              "say": "an ordinary laptop"
             },
             {
               "id": "strong",
-              "label": "A powerful machine: lots of RAM, a graphics card"
+              "label": "A powerful machine (gaming or video-editing PC)",
+              "say": "a powerful machine"
             }
           ]
         },
@@ -102,21 +114,24 @@
           "options": [
             {
               "id": "free",
-              "label": "Free"
+              "label": "Not paying yet",
+              "say": "aren’t paying yet"
             },
             {
               "id": "mid",
-              "label": "Moderate"
+              "label": "Pay for one tool",
+              "say": "will pay for one tool"
             },
             {
               "id": "invest",
-              "label": "Ready to invest"
+              "label": "Pay for a few tools",
+              "say": "will pay for a few tools"
             }
           ]
         }
       ],
       "insight": {
-        "text": "A good toolkit starts from your work, not from a list of trending tools.",
+        "text": "You {role}, want to {goal}, use {device}, and {budget}. The tool basket is sorted by exactly these four things.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -125,7 +140,9 @@
     "kit": {
       "label": "Your suggested toolkit",
       "art": "A close view of a lidded rattan basket on a wooden veranda table, the first ray of sun coming low from the right, the basket throwing a long shadow to the left. Lift the lid and the tools that fit your answers by the pond float up inside: a brush, a colour box with an ink stick and a vermilion cake, a small oil lamp, a wood plane, a scroll tied with cord. Whatever doesn’t fit lies outside on the table, faint as a moon shadow. Touch a tool and it floats toward you as its paper card opens.",
-      "prompt": "Open the tool basket",
+      "prompt": "Touch the lid to open the basket",
+      "next": "Touch each tool to see what it does ({n}/{total})",
+      "later": "When you need it",
       "open": "Open the basket",
       "empty": "Answer the four questions by the pond and the basket will pack itself.",
       "revisit": "Worth revisiting",
@@ -160,7 +177,7 @@
         {
           "id": "media",
           "name": "Image & video tools",
-          "what": "Create, edit and upscale images; make short videos. Usually paid in credits.",
+          "what": "Create and edit images, put together short videos. Usually paid per generation (credits).",
           "examples": [
             {
               "name": "Higgsfield",
@@ -188,7 +205,7 @@
         {
           "id": "local",
           "name": "AI on your own machine",
-          "what": "Download an open model and run it on your computer: private, works offline. Needs enough RAM.",
+          "what": "Download a free AI and run it right on your computer; your data never leaves it. Needs a strong machine.",
           "examples": [
             {
               "name": "Ollama",
@@ -207,7 +224,7 @@
         {
           "id": "code",
           "name": "Coding agent",
-          "what": "You describe it in words; the agent writes, runs and fixes the code. Good for mini apps and games.",
+          "what": "You describe it in words; the AI writes, runs and fixes the code itself.",
           "examples": [
             {
               "name": "Claude Code",
@@ -229,8 +246,8 @@
         },
         {
           "id": "skill",
-          "name": "Skills & workflows",
-          "what": "Package repeated work as reusable instructions (SKILL.md), then chain them into a workflow.",
+          "name": "Skill",
+          "what": "Write down how you do a recurring task as instructions the AI reuses every time.",
           "examples": [
             {
               "name": "Agent Skills open standard",
@@ -320,7 +337,7 @@
           },
           "laptop": {
             "drop": [],
-            "note": "An ordinary laptop can run small models; try local AI when you need to keep data private."
+            "note": "Ordinary laptop: AI on your own machine only runs small versions; you don’t need it at first."
           },
           "strong": {
             "add": [
@@ -331,6 +348,10 @@
         },
         "budget": {
           "free": {
+            "keep": [
+              "chat",
+              "skill"
+            ],
             "note": "Most tools have a limited free plan. Starting with one chat assistant is enough."
           },
           "mid": {
@@ -348,7 +369,7 @@
         "kind": "opinion"
       },
       "insight": {
-        "text": "Choose by type of work first, tool name second: tools change monthly, your work changes less.",
+        "text": "This basket is sorted by the work you do, not by whatever name is trending. Tool names change every month; kinds of work change far less.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -356,31 +377,33 @@
     },
     "path": {
       "label": "A 30-day path",
-      "art": "From the veranda step, looking up a backlit moss slope: a gravel path leads to a garden gate on the horizon, the sun about to rise behind it, a thin moon still in the corner of the sky. Four empty hollows wait along the path, each farther one smaller; four week-stones lie on the veranda floor. Lay them in order and the sun clears the gate while a ray runs down the path, waking each stone.",
-      "prompt": "Lay the four stones",
-      "keys": "Press 1 to 4 to lay the stones in order",
+      "art": "From the veranda step you look up a backlit moss slope: a gravel path leads to a garden gate on the horizon, the sun about to rise behind it, a thin moon still in a corner of the sky. Along the path wait four empty hollows, smaller the farther they are; four week-stones lie on the veranda floor, each carved with a thing: a tea bowl, a picture frame, a scroll, a wooden box. Each stone stands on the one before; once all are set, the sun clears the gate and a ray runs down the path waking each stone.",
+      "prompt": "Drag each stone up the path — the one that is the base goes first",
+      "next": "Drag the next stone up to hollow {n} ({n}/{total})",
+      "keys": "Press 1 to 4 to set the stone of week 1 to week 4",
       "stoneAria": "Week {n}: {label}",
-      "wrong": "This stone needs the previous week as its base.",
-      "done": "The path is lit. Each week has a take-away card.",
+      "wrong": "This stone needs “{prev}” underneath as its base.",
+      "wrongFirst": "This stone is the base: set it in the lowest hollow.",
+      "done": "The path is lit. Touch the scroll to take each week’s card.",
       "steps": {
         "steps": [
           {
-            "label": "Week 1 · Disciplined chat",
+            "label": "Give clear tasks, check for yourself",
             "detail": "Every day, give a chat assistant one real task: state the role, context and output; always verify one detail.",
             "why": "Clear briefs and verification are the base for every other tool."
           },
           {
-            "label": "Week 2 · One finished asset",
+            "label": "Finish one whole piece (image, video, post)",
             "detail": "Finish one piece: an image, a short video or a post. From brief to many drafts, choosing, editing, then checking rights and labelling it as AI-made.",
             "why": "Only a full loop shows where AI helps and where your hands are needed."
           },
           {
-            "label": "Week 3 · Turn a repeated task into a skill",
+            "label": "Write your method down as instructions for AI (a skill)",
             "detail": "Pick something you do every week, write down the steps from a time it went well, have AI turn them into a SKILL.md, and test it three times.",
             "why": "From then on AI remembers how you work, so you don't have to repeat yourself every day."
           },
           {
-            "label": "Week 4 · Build a mini app yourself",
+            "label": "Build a small app with AI",
             "detail": "Write a one-page spec for a small app or game, have a coding agent build it piece by piece, test it, fix each bug.",
             "why": "You reuse everything you've learned: describe clearly, break it down, verify, save it."
           }
@@ -394,7 +417,7 @@
         "t39-week4"
       ],
       "insight": {
-        "text": "One stone a week, each resting on the last: discipline, a product, a habit, then building your own tool.",
+        "text": "Each week stands on the one before: give clear tasks, finish one whole piece, write down how you do it, then build your own tool.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -402,8 +425,11 @@
     },
     "advice": {
       "label": "Learning that lasts",
-      "art": "The camera lies in the moss: a rain puddle mirrors the dawn, with three stone lanterns around it — a huge one close on the left, one on the right, one far beyond the water. Each lays a wedge of light on the water. A red maple leaf floats in the middle with three soft shadows spreading three ways. Steer the leaf toward a lantern and it brightens, its shadow shortens and its words appear.",
-      "prompt": "Touch each lantern",
+      "art": "The camera lies in the moss: a rain puddle mirrors the dawn sky, three stone lanterns stand around it, a near one on the left, one on the right, a far one beyond the water. Each lantern lays a wedge of light on the water. A red maple leaf floats in the middle with three soft shadows spreading three ways. Steer the leaf to a lantern and that lantern brightens, its shadow shortens and its words appear. Once all three have spoken, let the leaf go in the middle of the puddle: its three shadows come out equal.",
+      "prompt": "Drag the leaf to visit each lantern ({n}/{total})",
+      "drop": "Let the leaf go in the ring in the middle",
+      "legend": "Each lantern is a piece of advice or a study about learning with AI. The leaf is you.",
+      "leafAria": "The leaf is you: Enter to visit the next lantern; once all three have spoken, Enter to let it go in the middle",
       "group": "Three views on learning with AI",
       "stoneAria": "View: {who}",
       "perspectives": {
@@ -420,7 +446,7 @@
           {
             "who": "Microsoft Research · survey of 319 people, 2025",
             "view": {
-              "text": "The more people trusted AI, the less they thought critically; those confident in their own expertise questioned more. This is a correlation, self-reported.",
+              "text": "A survey of 319 knowledge workers: the more people trusted AI, the less they checked its results themselves. This is what they reported, not proof that AI is the cause.",
               "asOf": "2026-10-15",
               "source": "t39-chi"
             }
@@ -428,21 +454,21 @@
           {
             "who": "MIT Media Lab · experiment with 54 people, 2025",
             "view": {
-              "text": "The group writing essays with ChatGPT showed the weakest brain connectivity (measured by EEG), compared with search-engine users and those writing unaided. A small study, not yet peer-reviewed.",
+              "text": "An experiment with 54 people: the group writing essays with ChatGPT showed the least connected brain activity (measured by EEG). A small study, not yet reviewed by other experts.",
               "asOf": "2026-10-15",
               "source": "t39-mit"
             }
           }
         ],
         "common": {
-          "text": "Use AI a lot to learn fast, but keep the thinking and checking for yourself.",
+          "text": "All three lanterns light the same idea: think for yourself first, ask AI after, then check it yourself.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
-      "insight": {
-        "text": "AI is a good companion while you keep the wheel: think first, ask AI second, then check.",
+      "detail": {
+        "text": "Using AI a lot to learn faster is good, as long as the thinking and the checking stay yours.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -450,19 +476,17 @@
     },
     "enso": {
       "label": "Your ensō",
-      "art": "Dawn over a raked sand garden, seen from just above the sand. Draw an ensō in one stroke: the sun flares and the camera cranes up over the garden, where every Moon Garden station you visited rises as a stone inside the circle and every station not yet visited waits as a raked hollow. At the ring’s open mouth lie a vermilion seal on a sheet of paper and a furoshiki cloth bundle.",
-      "prompt": "Draw the ensō",
+      "art": "Dawn over a raked sand garden, seen from just above the sand. Draw an ensō in one stroke along the dotted ring: the sun flares and the camera cranes up over the garden, where every Moon Garden station you visited rises as a stone inside the circle and every station not yet visited waits as a raked hollow. At the ring’s open mouth lies a sheet of paper counting the stations you walked.",
+      "legend": "Ensō: a Zen circle drawn in one stroke, left open on purpose.",
+      "prompt": "Put your finger on the red dot and draw a circle along the dotted ring",
+      "more": "Keep drawing from here",
       "draw": "Draw ensō",
       "drawAria": "Draw the ensō that sums up your journey",
       "visited": "{n}/21 Moon Garden stations visited",
       "visitedAll": "{n}/39 stations across both gardens",
       "copied": "{n} take-away cards copied",
-      "exam": "Moon Garden exam",
-      "examAria": "Take the Moon Garden exam",
-      "toolkit": "Open the Toolkit",
-      "toolkitAria": "Open the Toolkit: every Part 2 take-away card",
       "insight": {
-        "text": "The moonlit journey ends here. The next garden is the one you plant yourself, a little each day.",
+        "text": "Each stone is a station you have walked. Each empty hollow is a station still waiting for you.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"

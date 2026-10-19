@@ -3,7 +3,8 @@ import { fill, h, nextId, s } from '../../core/dom'
 import { blob, clamp, curve, onSize, rng, stableHeight, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, moon, toro } from '../../ui/part2/paint'
 import { diorama, type FloorGeo } from '../../ui/part2/depth'
-import { findTakeaway, takeaway } from '../../ui/part2/takeaway'
+import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './shell'
 import { f1, g13Defs, leafCloud, leafD, lines, mossBed } from './sumi'
@@ -353,9 +354,13 @@ export function goalScene(ctx: SceneCtx) {
   const emas = h('div', { class: 't37g-emas', role: 'group', 'aria-label': K.group })
   const caption = h('div', { class: 't37g-caption', hidden: true })
   const kept = h('div', { class: 't37g-kept', hidden: true })
-  root.append(h('p', { class: 'visually-hidden' }, K.art), stageEl, sky, foreEl, boughEl, emas, morning, caption, kept)
+  // who the paper gardener is, said once where it stands (audit 37-1)
+  const legend = h('p', { class: 't37g-legend' }, K.legend)
+  root.append(h('p', { class: 'visually-hidden' }, K.art), stageEl, sky, foreEl, boughEl, emas, morning, caption, kept, legend)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
+  const g = guide(ctx)
+  let retryDot: Mark | null = null
 
   // ── the stage: L3 / L2 / L1 as a diorama (backdrop flats, the floor in true perspective, cut-outs standing on it)
   const P = { maple: 0, toro: 1, dozer: 2, screen: 3, man: 4, hut: 5, man2: 6, basket: 7, dry: 8, log: 9 }
@@ -390,7 +395,7 @@ export function goalScene(ctx: SceneCtx) {
   const cls = ['maple', 'toro', 'dozer', 'screen', 'man', 'hut', 'man2', 'basket', 'dry', 'log']
   props.forEach((p, i) => p.classList.add(`t37g-p-${cls[i]}`))
   // the dry branch is a button laid over the branch (the diorama redraws its props, so it lives in the overlay)
-  const retry = h('button', { class: 't37g-retry', type: 'button', 'aria-label': K.retry, onClick: reset })
+  const retry = h('button', { class: 't37g-retry', type: 'button', 'aria-label': K.retry, onClick: reset }, h('span', { class: 't37g-retry-label', 'aria-hidden': 'true' }, K.retry))
   root.append(retry)
   retry.hidden = true
   const placeRetry = () => {
@@ -561,14 +566,21 @@ export function goalScene(ctx: SceneCtx) {
       caption.replaceChildren(h('p', { class: 't37g-res' }, o.result))
       caption.setAttribute('aria-live', 'polite')
       kept.hidden = !(o.ok && card)
-      // the card to keep: open beside the garden on a wide frame, folded to its title on a tall one (the picture stays visible)
-      if (o.ok && card) kept.replaceChildren(h('details', { class: 't37g-fold', open: !tallAtMount }, h('summary', null, card.title), takeaway(card, null, ctx.onCleanup)))
+      // the card to keep once the order is right: a folded slip, opened by a touch (it never covers the garden by itself)
+      if (o.ok && card) kept.replaceChildren(foldedTakeaway([card], ctx.onCleanup))
       retry.hidden = false
       placeRetry()
-      if (!told) {
+      // the insight only once the visitor has seen a morning go wrong (audit 37-1: never before the evidence); until
+      // then, and after a careless order, the dry branch rewinds the night
+      if (!o.ok && !told) {
         told = true
         root.classList.add('told')
         ctx.insight(K.insight, K.detail)
+      }
+      if (!told || !o.ok) {
+        ctx.prompt(o.ok ? K.tryLoose : K.rewind)
+        retryDot ??= g.dot(retry, { dir: [0, -1] })
+        g.refresh()
       }
     }
     if (low) {
@@ -589,6 +601,9 @@ export function goalScene(ctx: SceneCtx) {
     btns.forEach((b) => (b.classList.remove('given'), (b.style.transform = ''), b.setAttribute('aria-pressed', 'false')))
     caption.hidden = kept.hidden = true
     retry.hidden = true
+    retryDot?.done()
+    retryDot = null
+    ctx.prompt(K.again)
     btns[0].focus()
   }
 

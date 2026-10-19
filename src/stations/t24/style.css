@@ -1169,3 +1169,53 @@
   border-top: 1px solid color-mix(in srgb, var(--ink-3) 35%, transparent);
 }
 .t24d-words.flat .t24d-who { color: var(--ink-2); opacity: 1; }
+/* 24-5 (audit v3): the hint experiment — the question across the top, the pebble, the page's words, the answer stele */
+.t24d-q.flat { writing-mode: horizontal-tb; }
+.t24d-q.flat.wide { left: 14px; right: auto; max-width: 52%; border-bottom: 0; text-align: left; padding: 6px 8px; }
+.t24d-q p { margin: 0; }
+.t24d-q .t24d-decode { margin-top: 4px; font: 400 13px/1.45 var(--sans); color: var(--ink-2); }
+.t24d-pebble { position: absolute; width: 56px; height: 44px; margin: -22px 0 0 -28px; padding: 0; border: 0; background: none; cursor: grab; touch-action: none; z-index: 3; transition: left 0.7s var(--ease), top 0.7s var(--ease), opacity 0.7s; }
+.t24d-pebble.held { cursor: grabbing; transition: none; }
+.t24d-pebble svg { width: 100%; height: 100%; overflow: visible; }
+.t24d-pebble .body { fill: color-mix(in srgb, var(--vermilion) 80%, var(--umbra)); stroke: color-mix(in srgb, var(--vermilion) 50%, var(--ink)); stroke-width: 1; }
+.t24d-pebble .hi { fill: none; stroke: color-mix(in srgb, #fff 70%, var(--vermilion)); stroke-width: 1.6; stroke-linecap: round; opacity: 0.8; }
+.t24d-pebble .sh { fill: var(--umbra); opacity: 0.3; }
+.t24d-pebble.placed { opacity: 0.55; cursor: default; }
+.t24d-pebble.placed .sh { opacity: 0; }
+.t24d-text { position: absolute; margin: 0; font: italic 400 15px/1.5 var(--serif); color: var(--stone-text); cursor: pointer; }
+.t24d-flip { position: absolute; width: 60px; height: 60px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+.t24d-flip:disabled { visibility: hidden; }
+.t24d-stele { position: absolute; text-align: center; pointer-events: none; }
+.t24d-stele p { margin: 0; color: var(--stone-text); text-shadow: 0 0 6px color-mix(in srgb, var(--paper) 60%, transparent); }
+.t24d-ans-l { font: 400 12px/1.3 var(--serif); opacity: 0.85; }
+.t24d-ans { margin-top: 6px !important; font: 500 clamp(15px, 1.6vw, 22px)/1.25 var(--serif); }
+.t24d .t24d-hintseal { opacity: 0; transition: opacity 0.9s 0.3s; }
+.t24d.is-hinted .t24d-hintseal { opacity: 1; }
+.t24d-art[data-page='3'] .p3 { opacity: 1; }
+.t24d-data { position: absolute; transition: opacity 1s; font: 400 13px/1.5 var(--sans); color: var(--ink-2); text-shadow: 0 0 8px var(--paper); }
+.t24d-data p { margin: 0; }
+.t24d-data[data-off] { opacity: 0; visibility: hidden; }
+/* phase 3 copy (audit v3): decoding lines said once where the object is, the real story on screen, the stele's puzzle */
+.t24f-decode { display: block; margin-top: 6px; font: 400 13px/1.45 var(--sans); color: var(--ink-2); }
+.scene-insight .t24f-before { margin: 0 0 6px; font-size: 0.82em; opacity: 0.75; }
+.t24t-decode, .t24t-real { position: absolute; left: 14px; margin: 0; max-width: min(340px, 44%); font: 400 13px/1.45 var(--sans); color: var(--ink-2); text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); z-index: 4; pointer-events: none; }
+.t24t-decode { top: 10px; }
+.t24t-real { top: 34px; color: var(--ink); transition: opacity 1s 0.6s; }
+.t24t-real p { margin: 0; }
+.t24t-real[data-off] { opacity: 0; visibility: hidden; }
+.t24c-ema.task small, .t24c-plaque small { display: block; margin-top: 5px; font: 400 12px/1.35 var(--sans); color: var(--stone-text); opacity: 0.85; white-space: normal; }
+.t24c-plaque small { width: max-content; max-width: 200px; }
+.t24i-top { position: absolute; left: 14px; top: 8px; max-width: min(360px, 46%); z-index: 3; pointer-events: none; }
+.t24i-top p { margin: 0; text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); }
+.t24i-bridge { font: 400 15px/1.4 var(--serif); color: var(--ink); }
+.t24i-decode { margin-top: 4px !important; font: 400 13px/1.45 var(--sans); color: var(--ink-2); }
+.t24i-puzzle { position: absolute; z-index: 2; pointer-events: none; color: var(--stone-text); font-family: var(--serif); }
+.t24i-puzzle p { margin: 0; }
+.t24i-pq { font-size: 0.86em; line-height: 1.4; opacity: calc(0.35 + var(--t, 0) * 0.65); transition: opacity 1.2s; }
+.t24i-pa { margin-top: 0.5em !important; font-size: 1.5em; line-height: 1.1; }
+.t24i-pa s { text-decoration: none; }
+.t24i[data-v='2'] .t24i-pa s { text-decoration: line-through; opacity: 0.6; }
+.t24i:is([data-v='3'], [data-v='4']) .t24i-pa s { display: none; }
+.t24i-pa b { display: none; font-weight: 500; color: var(--vermilion); }
+.t24i:is([data-v='3'], [data-v='4']) .t24i-pa b { display: inline; }
+.t24i-pnote { margin-top: 4px !important; font: 400 12px/1.4 var(--sans); color: var(--ink-3); }

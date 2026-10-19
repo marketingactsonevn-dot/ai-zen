@@ -1,5 +1,7 @@
 import raw from '../../content/tram-32.json'
-import { h, s } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
+import type { Fact } from '../../core/content'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneDef } from '../types'
 import type { StepPath } from '../../ui/part2/types'
 import { stepPath, type PathGeo, type SlotGeo } from '../../ui/part2/steps'
@@ -264,14 +266,63 @@ function onPlace(k: number) {
   el.style.setProperty('--str', `${f1(16 + ov + (0.5 - (PW[k] * S) / 2) * unit)}px`)
 }
 
+/**
+ * The scene, wrapped round stepPath: no numbers on the parts (the order is read from the lantern itself, base to roof, each
+ * part's tag naming its tier); a wrong part slides back and the right tier shows as a faint ghost where it goes, the prompt
+ * saying why (after one miss, the dot sits on the right part); a count of the tiers by the lantern; the prompt per tier.
+ * Done: the window far off lights, and two seconds later the insight comes under the lantern. The card stays folded.
+ */
 export function firstLamp(): SceneDef {
-  const def = stepPath(K.steps as StepPath, { label: K.stepsLabel, prompt: K.stepsPrompt, slots, pile, piece, art, onPlace })
   return {
-    label: def.label,
+    label: K.stepsLabel,
     mount(ctx) {
       ctx.art.classList.add('t32p')
       ctx.art.append(h('p', { class: 'visually-hidden' }, K.stepsArt))
-      return def.mount(ctx)
+      const n = K.steps.steps.length
+      let placed = 0, wrongs = 0
+      let dot: Mark | null = null
+      const stoneOf = (i: number) => [...ctx.art.querySelectorAll<HTMLElement>('.p2s-stone')].find((el) => el.querySelector('.p2s-label')?.textContent === K.steps.steps[i].label)
+      const clearGhost = () => ctx.art.querySelectorAll('.p2s-slot.ghost').forEach((el) => (el.classList.remove('ghost'), el.replaceChildren()))
+      const def = stepPath(K.steps as StepPath, {
+        label: K.stepsLabel, prompt: K.stepPrompts[0], slots, pile, piece, art,
+        onPlace(k) {
+          onPlace(k)
+          placed = k + 1
+          wrongs = 0
+          clearGhost()
+          dot?.done()
+          dot = null
+          count.set(placed)
+          if (placed < n) return step(placed)
+          // the roof is on: the fire box and the far window light (CSS); the insight waits for that moment to be seen
+          const id = setTimeout(() => ctx.insight(K.stepsInsight as Fact, K.stepsDetail as Fact), ctx.reduced ? 300 : 2000)
+          ctx.onCleanup(() => clearTimeout(id))
+        },
+      })
+      const out = def.mount(ctx)
+      // the guide after the path: its marks lay out after the path has placed the lantern's footing
+      const g = guide(ctx)
+      const step = g.steps(K.stepPrompts)
+      const count = g.count(K.tierCount, n, () => [foot[0], foot[1] + unit * S * 0.3]) // carved on the footing, under the lantern
+      // each part's tag names its tier ("Đế · …"): the order can be read from the lantern
+      K.steps.steps.forEach((_, i) => stoneOf(i)?.querySelector('.p2s-label')?.setAttribute('data-tier', K.tiers[i]))
+      // a wrong part (stepPath shakes it back and writes its own line, hidden here): say which tier comes first, show its ghost
+      const note = ctx.art.querySelector('.p2s-note')
+      if (note) {
+        const mo = new MutationObserver(() => {
+          if (!note.classList.contains('wrong') || !note.textContent) return
+          note.textContent = ''
+          g.wrong(fill(K.stepWrong, { tier: K.tiers[placed].toLowerCase() }))
+          const right = stoneOf(placed)
+          const slot = ctx.art.querySelectorAll('.p2s-slot')[placed]
+          const art = right?.querySelector('.p2s-art')
+          if (slot && art && !slot.classList.contains('ghost')) slot.classList.add('ghost'), slot.replaceChildren(art.cloneNode(true))
+          if (++wrongs === 1 && right && !dot) dot = g.dot(right, { dir: [0, -1] })
+        })
+        mo.observe(note, { attributes: true, attributeFilter: ['class'], childList: true })
+        ctx.onCleanup(() => mo.disconnect())
+      }
+      return out
     },
   }
 }

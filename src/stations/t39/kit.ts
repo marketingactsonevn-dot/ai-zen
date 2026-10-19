@@ -3,6 +3,7 @@ import { fill, h, s } from '../../core/dom'
 import { getSource } from '../../core/content'
 import { blob, clamp, curve, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { pine } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { loadAnswers } from './ask'
 import { C } from './shell'
@@ -21,8 +22,11 @@ function pick() {
   const set = new Set(R.role[a.role] ?? ['chat'])
   const notes: string[] = []
   const stations = new Set<number>()
-  for (const rule of [R.goal[a.goal ?? ''], R.device[a.device ?? ''], R.budget[a.budget ?? '']]) {
+  // the budget before the device: "not paying yet" keeps only the chat assistant (+ skill) in the basket, and a strong
+  // machine still adds the free AI that runs on it (audit 39-2: the basket, the tag and the quiz say the same thing)
+  for (const rule of [R.goal[a.goal ?? ''], R.budget[a.budget ?? ''], R.device[a.device ?? '']]) {
     if (!rule) continue
+    if (rule.keep) for (const x of [...set]) if (!rule.keep.includes(x)) set.delete(x)
     rule.add?.forEach((x) => set.add(x))
     rule.drop?.forEach((x) => set.delete(x))
     rule.stations?.forEach((x) => stations.add(x))
@@ -65,16 +69,17 @@ export function kitScene(ctx: SceneCtx) {
   const binds = [-1, 1].map(() => h('i', { class: 't39k-bind', 'aria-hidden': 'true' }))
   const lidSh = h('i', { class: 't39k-lidsh', 'aria-hidden': 'true' })
   const lid = h('button', { class: 't39k-lid', type: 'button', 'aria-label': K.open, 'aria-expanded': 'false' }, s('svg', { class: 't39k-lid-art', viewBox: '-100 -100 200 200', 'aria-hidden': 'true' }))
-  const lidTag = h('span', { class: 't39k-lidtag g39-say', 'aria-hidden': 'true' }, K.open)
   const tools = K.types.map((t, i) => h('button', { class: 't39k-tool', type: 'button', 'aria-label': t.name, 'aria-pressed': 'false', 'data-id': t.id, style: `--i:${i}`, onClick: () => lift(i) },
-    s('svg', { class: 't39k-tool-art', 'aria-hidden': 'true' })))
+    s('svg', { class: 't39k-tool-art', 'aria-hidden': 'true' }),
+    // its name on a small wooden tag (in the basket), or "when you need it" (left on the table)
+    h('span', { class: 't39k-name g39-say', 'aria-hidden': 'true' }, set.has(t.id) ? t.name : K.later)))
   const liftSh = h('i', { class: 't39k-liftsh', 'aria-hidden': 'true' })
   // the paper tag tied to the right handle: a manila tag on a string, its hole reinforced
   const notes = h('div', { class: 't39k-tag' },
     h('i', { class: 't39k-string', 'aria-hidden': 'true' }),
     ...(chosen ? [...chosen.notes.map((n) => h('p', null, n)), ctx.fact(K.priceNote, 'p', 't39k-price')] : [h('p', null, h('a', { href: '#/tram/39/1' }, K.empty))]),
     chosen?.stations.size ? h('p', { class: 't39k-rev' }, h('span', null, K.revisit), ' ', ...[...chosen.stations].sort((a, b) => a - b).map((n) => h('a', { class: 't39k-st', href: `#/tram/${n}` }, fill(K.stationLink, { n })))) : null)
-  const world = h('div', { class: 't39k-world' }, table, floor, ...slats, rimSide, rim, ...handles, ...tools, lidSh, ...binds, lid, lidTag)
+  const world = h('div', { class: 't39k-world' }, table, floor, ...slats, rimSide, rim, ...handles, ...tools, lidSh, ...binds, lid)
   const stage = h('div', { class: 't39k-stage' }, world)
   // a lifted tool's paper slip: it rises out of the basket beside the tool (no box, no close button: touch the tool again)
   const card = h('aside', { class: 't39k-card', hidden: true })
@@ -90,6 +95,13 @@ export function kitScene(ctx: SceneCtx) {
   let told = false
   let sel = -1
   let tx = 0, ty = 0
+  // H1 on the lid until it opens, then on every tool in the basket not yet looked at; H5 the count in the prompt
+  const g = guide(ctx)
+  let lidDot: Mark | null = g.dot(lid, { dir: [0, -1] })
+  const inBasket = K.types.flatMap((t, i) => (set.has(t.id) ? [i] : []))
+  const seen = new Set<number>()
+  const dots = new Map<number, Mark>()
+  const say = () => ctx.prompt(fill(K.next, { n: seen.size, total: inBasket.length }))
 
   const par = parallax(ctx, root, (x, y) => {
     tx = x
@@ -113,7 +125,7 @@ export function kitScene(ctx: SceneCtx) {
   }
   let drag: { y: number; a: number; moved: boolean } | null = null
   lid.addEventListener('pointerdown', (e) => {
-    if (open || e.button) return
+    if (open || e.button || !chosen) return
     drag = { y: e.clientY, a: ang, moved: false }
     lid.setPointerCapture(e.pointerId)
     root.classList.add('is-dragging')
@@ -140,6 +152,8 @@ export function kitScene(ctx: SceneCtx) {
   lid.addEventListener('click', () => !lid.dataset.dragged && !open && show())
 
   function show() {
+    // nothing answered by the pond yet: the lid stays shut and says why (the tag links back to the questions)
+    if (!chosen) return g.wrong(K.empty, lid)
     open = true
     root.classList.add('is-open')
     lid.setAttribute('aria-expanded', 'true')
@@ -147,10 +161,10 @@ export function kitScene(ctx: SceneCtx) {
     setLid(OPEN)
     place()
     ctx.chime('soft')
-    if (!told) {
-      told = true
-      ctx.insight(K.insight)
-    }
+    lidDot?.done()
+    lidDot = null
+    if (!dots.size && !told) for (const i of inBasket) dots.set(i, g.dot(tools[i], { dir: [0, -1] }))
+    if (!told) say()
     if (document.activeElement === lid) tools.find((t) => set.has(t.dataset.id!))?.focus({ preventScroll: true })
   }
 
@@ -212,6 +226,17 @@ export function kitScene(ctx: SceneCtx) {
     b.classList.add('up')
     b.setAttribute('aria-pressed', 'true')
     const t = K.types[i]
+    if (inBasket.includes(i) && !seen.has(i)) {
+      seen.add(i)
+      b.classList.add('seen')
+      dots.get(i)?.done()
+      if (!told && seen.size < inBasket.length) say()
+      else if (!told) {
+        // every tool in the basket looked at: what the basket was sorted by
+        told = true
+        ctx.insight(K.insight)
+      }
+    }
     // its shadow drops onto the table in front, far and soft
     Object.assign(liftSh.style, { left: b.style.left, width: b.style.width, transform: `translate3d(${f1(-G!.r * 0.18)}px,-1px,${f1(G!.r * 1.25)}px) rotateX(90deg)` })
     card.replaceChildren(
@@ -299,7 +324,6 @@ export function kitScene(ctx: SceneCtx) {
     Object.assign(lid.style, { left: `${f1(-r * 1.04)}px`, top: `${f1(-hB - rt * 1.2)}px`, width: `${f1(r * 2.08)}px`, height: `${f1(r * 2.08)}px` })
     ;(lid.firstChild as SVGSVGElement).replaceChildren(...lidArt())
     setLid(open ? OPEN : CLOSED)
-    Object.assign(lidTag.style, { transform: `translate3d(${f1(r * 0.08)}px,${f1(-hB - r * 0.18)}px,${f1(r * 0.35)}px) rotateX(${PITCH}deg)` })
     Object.assign(liftSh.style, { top: `${f1(-r * 0.3)}px`, height: `${f1(r * 0.6)}px` })
     tools.forEach((b, i) => {
       const [w, hh] = toolSize(K.types[i].id, r, hB)
@@ -308,6 +332,7 @@ export function kitScene(ctx: SceneCtx) {
       art.replaceChildren(...toolArt(K.types[i].id, w, hh))
     })
     place()
+    g.refresh()
     // the garden beyond the veranda, out of focus: the sun just up on the right, a pine, mist, the moon nearly gone
     const hz = T0 + Ha * (wide ? 0.36 : 0.3)
     bg.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
@@ -337,8 +362,11 @@ export function kitScene(ctx: SceneCtx) {
   }
   root.addEventListener('keydown', esc)
   ctx.onCleanup(onSize(ctx.art, layout))
-  if (still) {
+  if (still && chosen) {
     // low / reduced: the basket stands open from the start
+    lidDot.done()
+    lidDot = null
+    for (const i of inBasket) dots.set(i, g.dot(tools[i], { dir: [0, -1] }))
     open = true
     root.classList.add('is-open')
     lid.setAttribute('aria-expanded', 'true')
@@ -347,7 +375,8 @@ export function kitScene(ctx: SceneCtx) {
     if (G) (setLid(OPEN), place())
   }
   par.kick()
-  ctx.prompt(K.prompt)
+  if (open) say()
+  else ctx.prompt(chosen ? K.prompt : K.empty)
 }
 
 /** Size (w, h) of a tool's standing cut-out. */

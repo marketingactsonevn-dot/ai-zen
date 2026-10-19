@@ -5,32 +5,32 @@ import { createLoop } from '../../core/loop'
 import { onPrefs } from '../../core/prefs'
 import { sliced } from '../../core/chunk'
 import { clamp, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { guide } from '../../ui/part2/guide'
 import type { SceneDef } from '../types'
 import { C } from './shell'
-import { brush, canvas, col, dprOf, fillD, fit, glow, grainOver, inkHills, mistBank, mix, moonDisc, paintRock, palette, sky, type Pal, type RGB } from './ink2d'
+import { brush, canvas, col, dprOf, fillD, fit, glow, grainOver, inkHills, mistBank, mix, moonDisc, palette, sky, type Pal, type RGB } from './ink2d'
 
 const T = C.scenes.tide
 const MS = T.tide.milestones
 const N = MS.length // stops 0…N−1 milestones, N = the moon on the horizon (ahead, in the mist)
 const f1 = (n: number) => n.toFixed(1)
-const cmp = MS.find((m) => m.compare)!.compare!
 
 /**
- * Where the shadow's tip lies at each stop, in doublings of an hour along the cord (u = log2 hours): METR's 1 h, the IMO
- * gold (no length: in between), 2 h 17, ≥ 16 h (its 8.5–55 h interval is the penumbra), Navier–Stokes (no length),
- * today's frayed end, then the moon on the horizon: the shadow runs off into the dawn. `peg` = leaves a tag on the
- * cord; `float` = a stone rises beside the pole instead (a result with no length).
+ * Where the shadow's tip lies at each stop, along a cord marked evenly in hours (u = hours / 4, so 16 h is u = 4; audit
+ * 38-2: a linear cord, so the leap from 2 h to 16 h shows): METR's 1 h, 2 h 17, ≥ 16 h (its 8.5–55 h interval is the
+ * penumbra), then the moon on the horizon: the shadow runs off into the dawn. `peg` = leaves a tag on the cord. The two
+ * results with no length (IMO gold, Navier–Stokes) are not on the cord: the detail tells the first.
  */
+const U = (hours: number) => hours / 4
 const STOPS = [
-  { u: 0, peg: true },
-  { u: 0.9, float: true },
-  { u: Math.log2(2.28), peg: true },
-  { u: 4, peg: true, lo: Math.log2(8.5), hi: Math.log2(55) },
-  { u: 4.3, float: true },
-  { u: 4.55 },
+  { u: U(1), peg: true },
+  { u: U(2.28), peg: true },
+  { u: U(16), peg: true, lo: U(8.5), hi: U(55) },
   { u: 30 },
-] as { u: number; peg?: boolean; float?: boolean; lo?: number; hi?: number }[]
-const U_MAX = 4.6 // where the cord frays and breaks
+] as { u: number; peg?: boolean; lo?: number; hi?: number }[]
+/** the notches that get their hours written once the shadow reaches them (T.hours, same order) */
+const MARKS = [1, 2, 4, 8, 16].map(U)
+const U_MAX = U(18.4) // where the cord frays and breaks
 const OFF = 10000 // shadows are cast from shapes drawn this far off the canvas
 /** u (doublings) at t (0 first milestone … 1 the horizon): piecewise linear between the stops */
 const uAt = (t: number) => {
@@ -48,16 +48,18 @@ const uAt = (t: number) => {
 function rig(W: number, H: number) {
   const wide = W / H > 1.1
   const hz = H * (wide ? 0.42 : 0.47)
-  const ax = W * (wide ? 0.4 : 0.28), rx = W * (wide ? 0.53 : 0.62)
-  const ry = hz - H * (wide ? 0.1 : 0.3)
-  const moonAt = (t: number): Pt => {
-    const th = ((82 - 78 * clamp(t, 0, 1)) * Math.PI) / 180
-    return [ax + rx * Math.cos(th), hz - ry * Math.sin(th)]
-  }
   const mr = clamp(Math.min(W, H) * 0.045, 14, 27)
   const F: Pt = [W * (wide ? 0.8 : 0.8), H * (wide ? 0.79 : 0.79)]
   const Hp = H * (wide ? 0.47 : 0.38)
   const pw = clamp(H * 0.023, 8, 15)
+  // the moon's arc stays on the far side of the pole, to its right, all the way down (audit 38-2: the shadow falls left,
+  // so the moon is never left of the pole): from high over it down to the western horizon
+  const ax = F[0] + pw, rx = Math.max(24, W * 0.975 - mr - ax)
+  const ry = hz - H * (wide ? 0.1 : 0.3)
+  const moonAt = (t: number): Pt => {
+    const th = ((84 - 78 * clamp(t, 0, 1)) * Math.PI) / 180
+    return [ax + rx * Math.cos(th), hz - ry * Math.sin(th)]
+  }
   const C0: Pt = [W * (wide ? 0.755 : 0.71), H * (wide ? 0.885 : 0.9)]
   let D: Pt = wide ? [-1, -0.13] : [-0.74, -0.67]
   const dl = Math.hypot(D[0], D[1])
@@ -174,8 +176,10 @@ function paintBack(g: CanvasRenderingContext2D, p: Pal, R: Rig) {
   g.strokeStyle = col(rope, 0.9)
   g.lineWidth = 0.9
   g.stroke(new Path2D(fray))
-  // half-doubling ticks on the cord
-  for (let u = 0.5; u < 4; u++) {
+  // an ink tick at every hour on the cord (the written notches get a stake)
+  for (let hr = 1; hr <= 16; hr++) {
+    const u = U(hr)
+    if (MARKS.includes(u)) continue
     const [x, y] = tip(u)
     brush(g, [[x - 1, y - 4 * persp(u)], [x + 1, y + 4 * persp(u)]], 1.1, col(p.dark ? p.umbra : p.wash, 0.5), 0.1, 0.1, 0.4)
   }
@@ -215,12 +219,18 @@ export const tideScene: SceneDef = {
     const tag = h('p', { class: 't38m-tag', 'aria-hidden': 'true' })
     const eyebrow = h('p', { class: 'p2-eyebrow t38m-eyebrow' })
     const factBox = h('div')
-    const read = h('div', { class: 't38m-read' }, eyebrow, factBox)
-    const lenB = h('p', { class: 't38m-len', 'aria-hidden': 'true' }, cmp.before, h('small', null, cmp.beforeLabel ?? ''))
-    const lenA = h('p', { class: 't38m-len', 'aria-hidden': 'true' }, cmp.after, h('small', null, cmp.afterLabel ?? ''))
-    const root = h('div', { class: 't38m' }, h('p', { class: 'visually-hidden' }, T.art), back, live, lenB, lenA, tag, read, moon)
+    // the key to the picture first (audit 38-2: the shadow is the length of work), then the stop's reading
+    const read = h('div', { class: 't38m-read' }, h('p', { class: 't38m-legend' }, T.legend), eyebrow, factBox)
+    // the hours written on the cord: each appears only when the shadow gets there (no answer waiting on the cord)
+    const hrs = T.hours.map((t) => h('p', { class: 't38m-len', 'aria-hidden': 'true' }, t))
+    const root = h('div', { class: 't38m' }, h('p', { class: 'visually-hidden' }, T.art), back, live, ...hrs, tag, read, moon)
     ctx.art.append(root)
     ctx.prompt(T.prompt)
+    // H1 on the moon (it leans down when idle), H2 + H4: the arc as a groove with one numbered tick per stop
+    const g = guide(ctx)
+    const grab = g.dot(moon, { dir: [0.2, 1] })
+    const way = g.track(() => (samples.length ? samples.filter((_, k) => k % 6 === 0) : [[0, 0], [1, 0]]), { ticks: N + 1, labels: STOPS.map((_, i) => String(i + 1)) })
+    let marked = 0
 
     let R: Rig | null = null
     let p: Pal = palette()
@@ -236,8 +246,9 @@ export const tideScene: SceneDef = {
       at = i
       moon.setAttribute('aria-valuenow', String(i))
       moon.setAttribute('aria-valuetext', valueText(i))
+      if (i > reached && i === 2 && i < N) ctx.prompt(T.next) // past the third mark: on to the horizon
       reached = Math.max(reached, i)
-      root.classList.toggle('is-cmp', reached >= 3)
+      root.classList.toggle('is-cmp', reached >= 2)
       root.classList.toggle('is-end', i === N)
       tag.textContent = i < N ? viDate(MS[i].date) : L.today
       if (i < N) {
@@ -251,6 +262,7 @@ export const tideScene: SceneDef = {
       if (!ctx.reduced) read.animate([{ opacity: 0.2, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'ease-out' })
       if (i === N && !told) {
         told = true
+        grab.done()
         ctx.insight(T.insight, T.detail)
       }
     }
@@ -359,7 +371,7 @@ export const tideScene: SceneDef = {
       g.rect(0, R.hz + R.H * 0.02, R.W, R.H)
       g.clip()
       // 03/2025 stays on the sand as a pale ghost once the moon has gone past 08/2025: the 16 × is two shadows side by side
-      const ghost = clamp(shown * N - 2.2, 0, 1)
+      const ghost = clamp(shown * N - 1.2, 0, 1)
       if (ghost > 0) {
         shadow(tip(0), 0.7 * ghost, 1)
         // remembered, not cast: a dashed ink edge round the old shadow
@@ -380,8 +392,8 @@ export const tideScene: SceneDef = {
       const to = u > U_MAX + 0.2 ? tip(Math.min(u, 40)) : tip(u)
       const [ux, uy, len] = shadow(to, 1, u > U_MAX + 0.2 ? 0 : 0.6)
       // at 03/2026 its tip blurs into the 8.5–55 h interval (the penumbra)
-      const s3 = STOPS[3]
-      const near3 = clamp(1 - Math.abs(shown * N - 3) * 1.6, 0, 1)
+      const s3 = STOPS[2]
+      const near3 = clamp(1 - Math.abs(shown * N - 2) * 1.6, 0, 1)
       if (near3 > 0) {
         const a = tip(s3.lo!), b = tip(Math.min(s3.hi!, U_MAX + 1.3))
         const m: Pt = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]
@@ -392,11 +404,14 @@ export const tideScene: SceneDef = {
         g.restore()
       }
       g.restore()
-      // the notch stakes, one per doubling, each throwing its own small shadow the same way as the pole's
+      // the notch stakes at 1, 2, 4, 8, 16 h, each throwing its own small shadow the same way as the pole's; the shadow
+      // reaching one writes its hours beside it
       const sl = len / Hp // shadow length per unit of height
-      for (let n = 0; n <= 4; n++) {
-        const [x, y] = tip(n)
-        const q = persp(n)
+      let on = 0
+      for (let n = 0; n < MARKS.length; n++) {
+        if (u >= MARKS[n] - 0.02) on = n + 1
+        const [x, y] = tip(MARKS[n])
+        const q = persp(MARKS[n])
         const hs = R.H * 0.06 * q, ws = Math.max(3, pw * 0.5 * q)
         const sx = ux * Math.min(hs * sl, 70 * q), sy = uy * Math.min(hs * sl, 70 * q)
         g.strokeStyle = col(ink, 0.32 * k)
@@ -406,8 +421,13 @@ export const tideScene: SceneDef = {
         g.moveTo(x, y)
         g.lineTo(x + sx, y + sy)
         g.stroke()
-        stake(g, p, x, y, ws, hs, n === 4 && reached >= 3 ? 1 : 0)
+        stake(g, p, x, y, ws, hs, n === 4 && reached >= 2 ? 1 : 0)
       }
+      if (on > marked) {
+        for (let n = marked; n < on; n++) hrs[n].classList.add('on')
+        marked = on
+      }
+      way.set(shown)
       // tags where a measured shadow touched the cord; stones risen beside the pole for results with no length
       STOPS.forEach((st, i) => {
         if (i > reached || i >= N) return
@@ -415,7 +435,7 @@ export const tideScene: SceneDef = {
           const [x, y] = tip(st.u)
           const q = persp(st.u)
           const hs = R!.H * 0.06 * q
-          g.fillStyle = col(i === 3 ? p.vermilion : p.card, 0.95)
+          g.fillStyle = col(i === 2 ? p.vermilion : p.card, 0.95)
           g.beginPath()
           g.moveTo(x + 1, y - hs * 0.92)
           g.lineTo(x + 1 + 9 * q, y - hs * 0.84)
@@ -423,10 +443,6 @@ export const tideScene: SceneDef = {
           g.lineTo(x + 1, y - hs * 0.62)
           g.closePath()
           g.fill()
-        } else if (st.float) {
-          const n = i === 1 ? 0 : 1
-          const x = F[0] + (n ? 30 : -34), y = F[1] + (n ? -6 : 10)
-          paintRock(g, p, x, y, 22 - n * 4, 13 - n * 2, 3860 + i, { light: 1, moss: n ? 0 : 0.6, cast: 0.3 })
         }
       })
       // the pole: a bamboo gnomon, lit on the moon's side, knots, a lashing at the top
@@ -448,10 +464,12 @@ export const tideScene: SceneDef = {
       R = rig(W, H)
       root.classList.toggle('wide', R.wide)
       samples = Array.from({ length: 121 }, (_, k) => R!.moonAt(k / 120))
-      const [bx, by] = R.tip(0), [ax, ay] = R.tip(4)
-      Object.assign(lenB.style, { left: `${f1(bx)}px`, top: `${f1(by + 8)}px` })
-      Object.assign(lenA.style, { left: `${f1(ax)}px`, top: `${f1(ay + 6)}px` })
+      hrs.forEach((el, n) => {
+        const [x, y] = R!.tip(MARKS[n])
+        Object.assign(el.style, { left: `${f1(x)}px`, top: `${f1(y + 7)}px` })
+      })
       paint()
+      g.refresh()
     }
     let job: { cancel(): void } | null = null
     let drawn = false

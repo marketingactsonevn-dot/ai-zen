@@ -300,6 +300,11 @@
   font: normal 600 0.88rem/1.2 var(--serif);
   color: var(--stone-text);
 }
+/* the size decoded once more in words: "8B = 8 tỷ tham số" */
+.t32t-decode {
+  font: normal 400 0.72rem/1.25 var(--serif);
+  opacity: 0.8;
+}
 .t32t[data-fit='spill'] .t32t-tag span {
   color: color-mix(in srgb, var(--vermilion) 85%, var(--umbra));
 }
@@ -559,6 +564,58 @@
 .t32s-say .bad {
   color: var(--vermilion);
 }
+/* while a stone is carried, both pans wake (H3); the one under the hand glows brighter */
+.t32s.lifting .t32s-pan {
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--vermilion) 45%, transparent);
+  outline: 1.5px dashed color-mix(in srgb, var(--vermilion) 55%, transparent);
+  outline-offset: 4px;
+}
+/* the job: a paper slip on a short cord under the pivot (count, job, then the answer) */
+.t32s-job {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  padding: 12px 10px 9px;
+  transform: translateX(-50%) rotate(-1deg);
+  clip-path: polygon(14% 0, 86% 0, 100% 10%, 100% 100%, 0 100%, 0 10%);
+  background: var(--t32-fibre), color-mix(in srgb, color-mix(in srgb, var(--card) 92%, var(--lantern)) 97%, transparent);
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--umbra) 10%, transparent);
+  color: var(--ink);
+  font: 400 0.9rem/1.35 var(--serif);
+  text-align: center;
+  pointer-events: none;
+}
+.t32s-job small {
+  display: block;
+  color: var(--vermilion);
+  font: 600 0.7rem/1.2 var(--sans);
+  letter-spacing: 0.04em;
+}
+.t32s-job b {
+  display: block;
+  font-weight: 600;
+}
+.t32s-ans {
+  display: block;
+  color: var(--vermilion);
+  font-style: italic;
+}
+.t32s-job:not(.answered) .t32s-ans {
+  display: none;
+}
+:root[data-theme='dark'] .t32s-job {
+  background: var(--t32-fibre), color-mix(in srgb, var(--step-hi) 80%, var(--moon));
+  color: var(--stone-text);
+}
+.t32s.tall .t32s-job {
+  padding: 10px 7px 7px;
+  font-size: 0.74rem;
+}
+/* all three jobs answered: the stones left in the water step back for the insight on the water */
+.t32s.is-done .t32s-stone {
+  opacity: 0.3;
+  transition: opacity 0.8s var(--ease);
+}
 
 /* ── Scene 3: three lamps on a shelf in the dark (canvas light map + DOM hit areas, plaques, the words on the lit wall) ── */
 .t32l-lamp {
@@ -642,6 +699,30 @@
 }
 .t32l-knob[aria-pressed='true'] {
   transform: rotate(160deg);
+}
+/* what the oil is: one line under the jar's seal */
+.t32l-jar {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 6px);
+  width: max-content;
+  max-width: 150px;
+  translate: -50% 0;
+  color: var(--ink-2);
+  font: italic 400 0.72rem/1.3 var(--serif);
+  letter-spacing: 0;
+  text-align: center;
+  text-shadow: 0 0 6px var(--paper), 0 0 6px var(--paper);
+  rotate: 4deg;
+}
+.t32l-line {
+  margin: 2px 0 6px;
+  font: 400 0.95rem/1.35 var(--serif);
+}
+.t32l-more summary {
+  cursor: pointer;
+  color: var(--ink-2);
+  font: 400 0.76rem/1.6 var(--sans);
 }
 .t32l-seal {
   position: absolute;
@@ -919,19 +1000,31 @@
 .t32p .p2s.cols .p2s-stone.placed::after {
   display: none;
 }
-.t32p .p2s-key {
-  position: absolute;
-  left: 4px;
-  top: 2px;
-  width: 16px;
-  height: 16px;
-  border: 0;
-  color: var(--ink-2);
-  font: 600 0.66rem/1 var(--serif);
-  opacity: 0.7;
+/* no numbers: the order is read from the lantern (each tag names its tier); stepPath's own "path lit" line and wrong line
+   are replaced by the scene's prompt */
+.t32p .p2s-key,
+.t32p .p2s-slot span,
+.t32p .p2s-done,
+.t32p .p2s-note.wrong {
+  display: none !important;
 }
-.t32p .p2s-stone.placed .p2s-key {
-  display: none;
+.t32p .p2s-label[data-tier]::before {
+  content: attr(data-tier) ' · ';
+  color: var(--vermilion);
+  font-weight: 600;
+}
+/* after a wrong part: the right tier shows as a faint ghost where it goes */
+.t32p .p2s-slot.ghost {
+  opacity: 0.32;
+  background: none;
+}
+.t32p .p2s-slot.ghost .p2s-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: grayscale(1);
 }
 /* the empty places only show while a part is carried */
 .t32p .p2s-slot {
@@ -1141,172 +1234,6 @@
   margin: 0 -11.2%;
   background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--moon) 5%, transparent) 0 2px, transparent 2px 7px), linear-gradient(to top, color-mix(in srgb, var(--lantern) 22%, var(--x-outer)), var(--x-outer));
 }
-.t32x .p2x-rod,
-.t32x .p2x-head .p2-eyebrow {
-  display: none;
-}
-.t32x .p2x {
-  flex: 1 1 auto;
-  max-height: none;
-  min-height: 0;
-}
-/* the paper (honshi): washi, the commands typeset in mono, the teacher's notes in vermilion in the margin */
-.t32x .p2x-paper {
-  position: relative;
-  flex: 1 1 auto;
-  margin: 0;
-  padding: 10px 12px 44px;
-  border: 0;
-  background:
-    var(--t32-fibre),
-    linear-gradient(to top, color-mix(in srgb, var(--lantern) 18%, transparent), transparent 55%),
-    color-mix(in srgb, var(--card) 92%, var(--moon));
-}
-.t32x .p2x-head {
-  display: block;
-  height: 0;
-  padding: 0;
-  border: 0;
-}
-.t32x .p2x-blocks {
-  padding-top: 2px;
-  scrollbar-width: thin;
-}
-.t32x .p2x-block {
-  grid-template-columns: minmax(0, 1fr) 36%;
-  align-items: start;
-  gap: 2px 10px;
-  padding: 5px 0;
-}
-.t32x .p2x-block + .p2x-block {
-  border-top: 0;
-}
-.t32x .p2x-code {
-  font-size: 0.7rem;
-  line-height: 1.6;
-}
-.t32x .p2x-line {
-  padding-left: 1.9em;
-}
-.t32x .p2x-ln {
-  width: 1.3em;
-  opacity: 0.45;
-}
-.t32x .p2x-f {
-  text-decoration: none;
-  font-weight: 600;
-}
-.t32x .p2x-note {
-  margin: 0;
-  padding: 0 0 0 9px;
-  color: var(--vermilion);
-  font: italic 400 0.72rem/1.3 var(--serif);
-}
-.t32x .p2x-note::before {
-  top: 0.2em;
-  bottom: auto;
-  width: 5px;
-  height: 0.9em;
-  border-radius: 0;
-  background: none;
-  border-left: 1.5px solid var(--vermilion);
-  border-bottom: 1.5px solid var(--vermilion);
-  opacity: 0.7;
-}
-.t32x .p2x-at {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-.t32x.tall .p2x-block {
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
-  padding: 3px 0;
-}
-.t32x.tall .p2x-note {
-  margin: 0 0 1px 1.6em;
-  font-size: 0.66rem;
-  line-height: 1.25;
-}
-.t32x.tall .p2x-code {
-  font-size: 0.62rem;
-  line-height: 1.5;
-}
-.t32x.tall .p2x-line {
-  padding-left: 1.6em;
-}
-.t32x.tall .t32x-paper {
-  padding: 0 7%;
-}
-.t32x.tall .t32x-chi {
-  height: 6%;
-  margin: 0 -8.2%;
-}
-.t32x.tall .p2x-paper {
-  padding: 8px 9px 36px;
-}
-.t32x.tall .p2x-copy {
-  width: 38px;
-  height: 38px;
-  font-size: 0.54rem;
-  bottom: 4px;
-}
-/* the copy button: a vermilion seal pressed in the paper's lower corner, once the scroll is open */
-.t32x .p2x-copy {
-  position: absolute;
-  right: 10px;
-  bottom: 8px;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  min-height: 0;
-  padding: 3px;
-  border: 0;
-  border-radius: 3px;
-  background: radial-gradient(circle at 30% 70%, transparent 1.2px, color-mix(in srgb, var(--vermilion) 92%, var(--umbra)) 1.6px) 0 0 / 9px 11px, var(--vermilion);
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--card) 70%, transparent), inset 0 0 0 3px var(--vermilion);
-  color: color-mix(in srgb, var(--card) 92%, var(--moon));
-  font: 700 0.62rem/1.05 var(--serif);
-  text-align: center;
-  letter-spacing: 0.02em;
-  opacity: 0;
-  pointer-events: none;
-  rotate: -5deg;
-  transition: opacity 0.6s var(--ease), scale 0.2s;
-}
-:root[data-theme='dark'] .t32x .p2x-copy {
-  color: #fff;
-}
-.t32x .p2x-copy:active {
-  scale: 0.94;
-}
-.t32x .p2x-copy .p2k-ico {
-  display: none;
-}
-.t32x.open .p2x-copy {
-  opacity: 0.95;
-  pointer-events: auto;
-}
-.t32x-roll {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -10px;
-  height: 20px;
-  z-index: 1;
-  border-radius: 10px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--moon) 35%, var(--x-outer)), var(--x-outer) 40%, color-mix(in srgb, var(--umbra) 45%, var(--x-outer)) 80%, color-mix(in srgb, var(--lantern) 40%, var(--x-outer)));
-  box-shadow: 0 6px 10px -6px var(--umbra);
-  pointer-events: none;
-}
-.t32x.open .t32x-roll {
-  opacity: 0;
-}
 /* the weighted lower rod (jiku): lacquer, two turned end knobs, a red tassel hanging in reach */
 .t32x-rod {
   position: absolute;
@@ -1345,13 +1272,6 @@
   translate: -50% 0;
   border-radius: 2px 2px 5px 5px;
   background: linear-gradient(var(--vermilion) 0 7px, transparent 7px 9px, var(--vermilion) 9px 11px, transparent 11px), repeating-linear-gradient(90deg, color-mix(in srgb, var(--vermilion) 75%, var(--umbra)) 0 1px, transparent 1px 2px);
-}
-.t32x-hang.glide .t32x-paper {
-  transition: clip-path 0.6s cubic-bezier(0.3, 1.35, 0.5, 1);
-}
-.t32x-hang.glide .t32x-roll,
-.t32x-hang.glide .t32x-rod {
-  transition: transform 0.6s cubic-bezier(0.3, 1.35, 0.5, 1);
 }
 /* the lamp's flame (it leans toward the line you point at) and its glow */
 .t32x-flame {
@@ -1406,8 +1326,174 @@
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, var(--moon), var(--rock-lo));
 }
-.t32x .t32-take {
-  bottom: auto;
+/* the paper: washi, one command typeset large, the note on where to type it in the margin, then the chat in ink */
+.t32x-sheet {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px 16px 24px;
+  background:
+    var(--t32-fibre),
+    linear-gradient(to top, color-mix(in srgb, var(--lantern) 18%, transparent), transparent 55%),
+    color-mix(in srgb, var(--card) 92%, var(--moon));
+  color: var(--ink);
+}
+.t32x-margin {
+  margin: 0;
+  color: var(--vermilion);
+  font: italic 400 0.86rem/1.4 var(--serif);
+  rotate: -1deg;
+}
+.t32x-cmd {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 0;
+  font: 500 1.15rem/1.4 var(--mono, ui-monospace, monospace);
+}
+.t32x-cmd code {
+  font: inherit;
+  white-space: pre;
+}
+/* the blank: a dashed space for a model's name, filled in ink once a slip is dropped */
+.t32x-blank {
+  display: inline-block;
+  min-width: 6.5em;
+  min-height: 1.4em;
+  border-bottom: 2px dashed color-mix(in srgb, var(--vermilion) 70%, transparent);
+}
+.t32x-blank.filled {
+  min-width: 0;
+  border-bottom-color: transparent;
+  color: var(--vermilion);
+  animation: p2-fade 0.6s var(--ease) both;
+}
+.t32x-chat {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-left: 2px solid color-mix(in srgb, var(--ink) 50%, transparent);
+  font: 400 0.98rem/1.45 var(--serif);
+  animation: p2-rise 0.7s var(--ease) both;
+}
+.t32x-chat p {
+  margin: 0;
+}
+.t32x-you {
+  color: var(--ink-2);
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 0.9rem;
+}
+.t32x-off {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  font: italic 400 0.82rem/1.3 var(--serif);
+}
+.t32x-off svg {
+  width: 24px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  fill: currentColor;
+}
+.t32x-off .t32x-cross {
+  stroke: var(--vermilion);
+  stroke-width: 2;
+}
+/* the model name slips on the floor board, waiting to be carried to the blank */
+.t32x-tray {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.t32x.tall .t32x-tray {
+  justify-content: center;
+}
+.t32x-model {
+  display: grid;
+  min-width: 120px;
+  min-height: 48px;
+  padding: 8px 14px 7px;
+  border: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 7px 50%);
+  background: var(--t32-fibre), color-mix(in srgb, var(--card) 90%, var(--lantern) 6%);
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--umbra) 12%, transparent);
+  color: var(--ink);
+  text-align: left;
+  cursor: grab;
+  touch-action: none;
+  rotate: -1.5deg;
+}
+.t32x-model code {
+  font: 600 1rem/1.2 var(--mono, ui-monospace, monospace);
+}
+.t32x-model small {
+  color: var(--ink-2);
+  font: 400 0.74rem/1.3 var(--serif);
+}
+.t32x-model.drag {
+  z-index: 5;
+  cursor: grabbing;
+  filter: drop-shadow(0 10px 8px color-mix(in srgb, var(--umbra) 35%, transparent));
+}
+.t32x-model:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.t32x-model.used {
+  visibility: hidden;
+}
+.t32x-model:focus-visible,
+.t32x-door:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 3px;
+}
+/* the back door: a small sliding panel in the alcove's side wall, its address carved on the frame */
+.t32x-door {
+  position: absolute;
+  z-index: 3;
+  min-width: 44px;
+  min-height: 72px;
+  padding: 8px 6px;
+  border: 3px solid color-mix(in srgb, var(--rock-lo) 70%, var(--lantern));
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg, transparent 0 11px, color-mix(in srgb, var(--rock-lo) 30%, transparent) 11px 12px), color-mix(in srgb, var(--card) 70%, var(--lantern) 14%);
+  color: var(--ink);
+  writing-mode: vertical-rl;
+  cursor: pointer;
+}
+.t32x-door code {
+  font: 500 0.78rem/1 var(--mono, ui-monospace, monospace);
+}
+.t32x-door[aria-expanded='true'] {
+  box-shadow: 0 0 18px -4px var(--lantern);
+}
+/* the lamp flares once the line runs */
+.t32x.lit .t32x-flame {
+  scale: 1.35;
+}
+.t32x.lit .t32x-flame::before {
+  width: 420px;
+  height: 420px;
+}
+.t32x-fold {
+  position: absolute;
+  z-index: 4;
+}
+.t32x.tall.lit .t32x-tray {
+  display: none;
+}
+.t32x.tall .t32x-door {
+  min-height: 44px;
+  writing-mode: horizontal-tb;
 }
 
 /* ── Scene 6: four stones round the pond, the camera grazing the water (canvas stage behind perspectiveCircle) ── */

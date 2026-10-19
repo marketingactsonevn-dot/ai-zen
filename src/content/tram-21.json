@@ -1,28 +1,31 @@
 {
   "id": 21,
-  "kicker": "Con cá không đọc sách về nước — nó bơi.",
-  "summary": "AI đang học đi — chạy nhanh hơn người chưa có nghĩa là hiểu thế giới như người.",
+  "kicker": "Con cá không đọc sách về nước — nó bơi. Robot cũng vậy: phải tự tập, đọc thôi chưa đủ.",
+  "summary": "Robot đã chạy nhanh hơn người — nhưng tự tìm đường và cầm một chén trà vẫn còn khó.",
   "newsTags": [
     "robots"
   ],
+  "takeaways": ["t21-xem-video-robot"],
   "quiz": {
-    "q": "Một robot cán đích sớm nhất cuộc đua, nhưng có người điều khiển từ xa. Điều đó cho thấy gì?",
+    "q": "Robot hiểu lệnh “cầm chén trà” ngay, nhưng tay vẫn trượt. Vì sao?",
     "options": [
-      "Robot đã tự hiểu đường đua như người",
-      "Chân robot đã giỏi, nhưng phần tìm đường vẫn do người làm",
-      "Robot điều khiển từ xa luôn chậm hơn robot tự đi",
-      "Robot không cần AI nữa"
+      "Dữ liệu cầm nắm thật để robot học còn ít",
+      "Động cơ trong bàn tay robot vẫn còn quá yếu",
+      "Câu lệnh viết cho robot chưa đủ rõ",
+      "Chén trà quá nặng so với tay robot"
     ],
-    "answer": 1,
-    "explain": "“Đi được” khác “tự biết đi”. Ban tổ chức nhân thời gian của robot điều khiển từ xa với hệ số 1,2 để ưu tiên robot tự định hướng."
+    "answer": 0,
+    "explain": "Đầu học từ núi chữ trên mạng. Tay phải học từ những lần cầm nắm thật — loại dữ liệu đó rất hiếm."
   },
   "scenes": {
     "race": {
-      "label": "Vạch đích lùi dần",
+      "label": "Vạch đích tới gần",
       "art": "Máy quay chạy thấp sau lưng một robot mực trên đường đua uốn quanh hồ trăng; thông và đèn đá lướt qua bên phải, lan can tre ngăn làn của người. Kéo trăng qua các mùa đua: năm 2025 robot loạng choạng rồi ngã, một robot khác nằm trên đường; tháng 3/2026 một bóng người trắng sương lập kỷ lục ở làn bên; tháng 4/2026 robot sải đều, vượt bóng người, dải lụa đỏ đứt ngang ngực, hai vạch đích nằm lại trên đường ở hai độ sâu. Hôm nay máy quay cẩu lên, thung lũng sau hồ lấm tấm đèn nhà máy.",
-      "prompt": "Kéo trăng qua hai mùa đua",
+      "prompt": "Kéo trăng sang trái qua các mùa đua",
+      "next": "Kéo tiếp tới hôm nay",
+      "ticks": ["2025", "03/2026", "04/2026", "nay"],
+      "road": ["2:41", "0:57", "0:50"],
       "moonAria": "Kéo vầng trăng, hoặc dùng phím ← → để đi qua các mốc",
-      "humanTime": "57:20",
       "tide": {
         "milestones": [
           {
@@ -52,8 +55,8 @@
               "source": "chinadaily-robot"
             },
             "compare": {
-              "before": "2:40:42",
-              "after": "50:26",
+              "before": "2 giờ 41 phút",
+              "after": "50 phút",
               "ratio": 0.31,
               "beforeLabel": "Robot thắng · 2025",
               "afterLabel": "Robot thắng · 2026"
@@ -61,12 +64,7 @@
           },
           {
             "date": "2026-10-15",
-            "label": "Hôm nay",
-            "fact": {
-              "text": "Ngoài đường đua: cuối năm 2025, các nhà máy trên thế giới có khoảng 5 triệu robot công nghiệp đang làm việc.",
-              "asOf": "2026-10-15",
-              "source": "ifr-2026"
-            }
+            "label": "Hôm nay"
           }
         ],
         "horizon": {
@@ -77,12 +75,12 @@
         }
       },
       "insight": {
-        "text": "Một năm, thời gian về đích giảm từ 2:40:42 xuống 50:26 — robot chạy nhanh hơn cả kỷ lục bán marathon của người.",
+        "text": "Chỉ một năm, robot về đích nhanh gấp ba: từ 2 giờ 41 phút xuống 50 phút — nhanh hơn kỷ lục người.",
         "asOf": "2026-10-15",
         "source": "chinadaily-robot"
       },
       "detail": {
-        "text": "Robot và người chạy trên hai làn riêng, nên đây là phép so thời gian, không phải một cuộc đua chung.",
+        "text": "Robot và người chạy hai làn riêng: đây là so thời gian, không phải một cuộc đua chung.",
         "asOf": "2026-10-15",
         "source": "aljazeera-robot"
       }
@@ -90,45 +88,41 @@
     "strings": {
       "label": "Tự đi hay được giật dây",
       "art": "Đứng thấp ở vạch đích: hai robot mực giống hệt nhau chạy về phía ta, trăng sau lưng chúng. Trên cành thông, một người đội nón lá cầm thanh điều khiển và một ngọn đèn nhỏ. Robot bên phải tự soi đường bằng mắt đèn; robot bên trái mắt tối. Giật thanh điều khiển: những sợi tơ căng từ thanh xuống đầu, tay, gối robot trái và bắt ánh trăng. Kéo ngang để đi vòng: nhìn chính diện dây gần như biến mất, nhìn nghiêng dây sáng lên.",
-      "prompt": "Bật tắt dây điều khiển",
+      "prompt": "Chạm robot bên trái: ai đang điều khiển nó?",
+      "steps": ["Kéo ngang để nhìn dây từ bên hông"],
       "toggle": "Dây điều khiển",
       "toggleAria": "Bật hoặc tắt dây điều khiển từ xa",
       "turnAria": "Xoay quanh vạch đích: kéo ngang hoặc dùng phím ← →",
       "turnValue": "lệch {n} độ",
-      "remoteLabel": "Có người điều khiển từ xa",
-      "autoLabel": "Robot tự định hướng",
+      "remoteLabel": "Có người điều khiển",
+      "autoLabel": "Tự tìm đường",
       "remoteTime": "48:19",
-      "remoteNote": "cán đích trước · tính hệ số 1,2",
+      "remoteNote": "về đích trước · tính thành 57:59",
       "autoTime": "50:26",
       "autoNote": "vô địch",
       "facts": [
         {
-          "text": "Chỉ hơn 40% số đội cho robot tự tìm đường; các đội còn lại điều khiển robot từ xa.",
-          "asOf": "2026-10-15",
-          "source": "chinadaily-robot"
-        },
-        {
-          "text": "Một robot điều khiển từ xa của Honor cán đích sớm hơn, 48 phút 19 giây, nhưng không được xếp nhất.",
-          "asOf": "2026-10-15",
-          "source": "ie-robot"
-        },
-        {
-          "text": "Luật đua nhân thời gian của robot điều khiển từ xa với hệ số 1,2: chạy 60 phút được tính 72 phút.",
+          "text": "Luật đua: robot có người điều khiển bị nhân thời gian 1,2 lần — 48:19 thành 57:59.",
           "asOf": "2026-10-15",
           "source": "beijing-gov-robot"
         }
       ],
+      "detail": {
+        "text": "Chỉ hơn 40% số đội để robot tự tìm đường; số còn lại điều khiển từ xa.",
+        "asOf": "2026-10-15",
+        "source": "chinadaily-robot"
+      },
       "insight": {
-        "text": "“Đi được” khác “tự biết đi”: robot giật dây có thể nhanh hơn, nhưng phần nhìn đường, chọn lối vẫn do người làm.",
+        "text": "“Đi được” khác “tự biết đi”: robot có người điều khiển có thể nhanh hơn, nhưng việc nhìn đường vẫn do người làm.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       }
     },
     "teacup": {
-      "label": "Bộ não cho tay chân",
+      "label": "Núi chữ và giỏ cử động",
       "art": "Bàn trà đá dưới đèn lồng giấy: chén men ngọc, ấm đất, một giỏ tre nhỏ đựng vài cuộn giấy “dữ liệu bàn tay”. Cánh tay robot nhiều khớp vươn vào từ bên phải, đầu robot là một chiếc đèn lồng. Phía sau, mờ trong sương, một núi gáy sách dâng vào mây. Rút một thẻ tre: đầu sáng lên ngay, còn bàn tay run, trượt, thử lại.",
-      "prompt": "Ra lệnh cho bàn tay",
+      "prompt": "Rút một thẻ tre để ra lệnh",
       "commands": [
         {
           "label": "Cầm chén trà lên",
@@ -145,25 +139,25 @@
       ],
       "head": "Đầu: hiểu lệnh ngay",
       "hand": "Tay: run, trượt, thử lại",
-      "scaleTitle": "Hai giỏ dữ liệu",
+      "scaleTitle": "Núi chữ và giỏ cử động",
       "scaleAria": "So lượng dữ liệu chữ với dữ liệu thao tác của robot",
-      "pullPrompt": "Kéo xuống để lùi xa",
+      "pullPrompt": "Kéo quả nặng xuống để lùi xa",
       "pullValue": "lùi xa {n}%",
-      "textLabel": "chữ",
-      "robotLabel": "thao tác robot",
+      "textLabel": "núi chữ",
+      "robotLabel": "giỏ cử động",
       "insight": {
-        "text": "Mô hình thị giác–ngôn ngữ–hành động (VLA) nhìn, đọc lệnh rồi xuất ra cử động — như Gemini Robotics của Google DeepMind (03/2025).",
+        "text": "Đầu robot hiểu lệnh ngay. Bàn tay thì run và trượt: nó chưa được tập đủ.",
         "asOf": "2026-10-15",
         "source": "gemini-robotics"
       },
       "data": [
         {
-          "text": "Kho dữ liệu robot mở Open X-Embodiment (2023) gom hơn 1 triệu lượt thao tác, từ 22 loại robot.",
+          "text": "Cử động để robot học: kho Open X-Embodiment gom hơn 1 triệu lần thao tác",
           "asOf": "2026-10-15",
           "source": "oxe-2023"
         },
         {
-          "text": "Còn mô hình chữ Llama 3 (2024) đã đọc hơn 15 nghìn tỷ token.",
+          "text": "Chữ để AI học: Llama 3 đã đọc hơn 15 nghìn tỷ mẩu chữ (token)",
           "asOf": "2026-10-15",
           "source": "meta-llama3"
         }
@@ -174,7 +168,8 @@
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Mô hình thế giới (world model): AI tập đoán điều gì sẽ xảy ra tiếp theo khi nó cử động — như ta biết chén sẽ đổ nếu nghiêng quá tay."
+      "common": "Hai thứ khác đơn vị — nhưng một bên là núi, một bên là giỏ.",
+      "detail": "Chén mờ bạn vừa thấy là robot tự đoán: chén sẽ đổ nếu nghiêng quá tay. Loại AI tập đoán như vậy gọi là “mô hình thế giới”."
     },
     "circle": {
       "label": "Có cần hình người?",
@@ -193,9 +188,9 @@
             }
           },
           {
-            "who": "Phe robot chuyên dụng · số liệu IFR (09/2026)",
+            "who": "Phe robot chuyên dụng · số robot từ IFR (09/2026)",
             "view": {
-              "text": "Khoảng 5 triệu robot công nghiệp đã làm việc trong nhà máy mà chẳng cần dáng người. Việc lặp lại cần máy chuyên dụng, không cần chân.",
+              "text": "Khoảng 5 triệu robot đang làm việc trong nhà máy (số liệu IFR) — không con nào có chân. Phe này nói: việc lặp lại cần máy chuyên dụng.",
               "asOf": "2026-10-15",
               "source": "ifr-2026",
               "kind": "opinion"
@@ -204,7 +199,7 @@
           {
             "who": "Người lo việc làm · nhà kinh tế Acemoglu & Restrepo",
             "view": {
-              "text": "Ở Mỹ 1990–2007, thêm một robot trên 1.000 lao động làm tỷ lệ có việc giảm 0,18–0,34 điểm phần trăm, lương giảm 0,25–0,5%.",
+              "text": "Nghiên cứu ở Mỹ (1990–2007, robot nhà máy): thêm 1 robot cho mỗi 1.000 công nhân thì cứ 1.000 người lại có thêm khoảng 2–3 người không có việc.",
               "asOf": "2026-10-15",
               "source": "nber-robots"
             }
@@ -220,17 +215,11 @@
           }
         ],
         "common": {
-          "text": "Đồng ý: robot đang tiến rất nhanh. Khác nhau: nên mang hình dạng gì, bao giờ vào nhà ta, và ai được lợi.",
+          "text": "Chạy nhanh trên đường đua chưa phải làm việc trong nhà. Câu hỏi còn lại: robot vào đời ta với hình dạng nào?",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
-      },
-      "insight": {
-        "text": "Chạy nhanh trên đường đua chưa phải làm việc trong nhà; câu hỏi giờ là robot vào đời ta theo dạng nào.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
       }
     }
   },

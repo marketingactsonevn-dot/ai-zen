@@ -194,7 +194,7 @@
       "stations": [
         {
           "id": 22,
-          "title": "Attention",
+          "title": "Which words AI looks at",
           "teaser": "Which words AI “looks” at as it reads",
           "kind": "concept",
           "prereq": [
@@ -204,8 +204,8 @@
         },
         {
           "id": 23,
-          "title": "Interpreting AI",
-          "teaser": "A lantern lowered to the bottom of the pond",
+          "title": "Looking inside AI",
+          "teaser": "What researchers have seen inside the digital ‘brain’",
           "kind": "concept"
         },
         {
@@ -352,8 +352,8 @@
       "stations": [
         {
           "id": 37,
-          "title": "Safety & alignment",
-          "teaser": "Teaching AI to want the right things",
+          "title": "AI safety: doing what people mean",
+          "teaser": "Right words are not always the right intent",
           "kind": "concept"
         },
         {

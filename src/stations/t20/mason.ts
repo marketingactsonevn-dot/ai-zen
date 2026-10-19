@@ -7,10 +7,11 @@ import type { SceneCtx } from '../types'
 import { curve, onSize, p2Defs, rng, stableHeight, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, mist, moon, paperLantern, pine } from '../../ui/part2/paint'
 import { brush, col, glow, mix, mossDots, palette, range, type Pal, type RGB } from './ink2d'
+import { guide } from '../../ui/part2/guide'
+import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
 
 const M = raw.scenes.mason
-const LINES = M.code.code.split('\n') // one stone step per line of the proof
-const NOTES = new Map(M.code.notes.map((n) => [n.line, n.text]))
+const LINES = M.lines // one stone step per step of the solution, in plain words (audit v3 20-3: no raw Lean)
 const DEG = Math.PI / 180
 
 /** The stair's geometry in design units: risers Wb × Hb, treads Db deep, a camera low on the left (perspective P at o).
@@ -29,6 +30,10 @@ const TALL: Design = { DW: 360, DH: 600, P: 820, o: [180, 440], Wb: 236, Hb: 74,
  * "the machine: every step checks out" is cut into the landing. Then the original problem's scroll can be held up to the
  * sign: lit from behind, everything fades but the mismatch — odd vs Even — in vermilion. The second mason (Isabelle)
  * appears on a parallel stair across the misty valley. Portrait: the stair folds into two flights.
+ * Audit v3 20-3 (P1: the scroll step had no prompt, the answer showed early): the steps are plain words and must be tapped
+ * in order (a step out of turn is refused: H6), a dot on the next one and "tapped n/4" at the stair's foot; then the dot
+ * goes to the scroll, a dashed place on the sign, its own prompt; touched early, the scroll shakes. The card is handed
+ * at the end as a folded slip.
  */
 export function masonScene(ctx: SceneCtx) {
   p2Defs()
@@ -64,16 +69,14 @@ export function masonScene(ctx: SceneCtx) {
     s('path', { class: 't20m-chisel-lip', d: 'M4 9.6Q8 11.4 13 11Q18.5 10.6 21.5 7.8Q20 11.6 13 12.2Q7 12.6 4 9.6Z' }),
     s('path', { class: 't20m-chisel-cut', d: 'M1 5.5l1.6 0.6l-0.9 1.2Z M22 12.5l1.4 -0.4l-0.2 1.5Z' }))
   const steps = LINES.map((line, i) => {
-    const note = NOTES.get(i + 1)
     return h('button', { class: 't20m-step', type: 'button', style: `--i:${i}`, 'aria-label': fill(M.stepAria, { n: i + 1 }), 'aria-pressed': 'false', onClick: () => tap(i) },
       h('span', { class: 't20m-tread', 'aria-hidden': 'true', style: `clip-path:${chipped(2090 + i * 3)}` }),
       h('span', { class: 't20m-flank r', 'aria-hidden': 'true' }),
       h('span', { class: 't20m-flank l', 'aria-hidden': 'true' }),
       h('span', { class: 't20m-face', 'aria-hidden': 'true', style: `clip-path:${chipped(2080 + i * 7)}` }),
-      h('code', { class: 't20m-line' }, line.trim()),
+      h('span', { class: 't20m-line' }, line),
       h('span', { class: 't20m-glint', 'aria-hidden': 'true' }),
-      chisel(),
-      note ? h('span', { class: 't20m-note' }, note) : '')
+      chisel())
   })
   const landing = h('div', { class: 't20m-step t20m-landing', 'aria-hidden': 'true', style: `--i:${LINES.length}` },
     h('span', { class: 't20m-tread', style: `clip-path:${chipped(2099)}` }), h('span', { class: 't20m-flank r' }), h('span', { class: 't20m-flank l' }),
@@ -96,7 +99,7 @@ export function masonScene(ctx: SceneCtx) {
       stroke([[-22, -37], [-31, -31]], 2.2, 0.05, 0.05, 0.6), filter: 'url(#ink-rough)' }),
     s('path', { class: 't20m-mason-rim', d: stroke(curve([-12, -57], [-18, -46], [-12, -31], 8), 1.6, 0.2, 0.3, 0.2) + stroke(curve([-24, -61], [-10, -66], [-3, -79], 8), 1.4, 0.2, 0.3, 0.2) }))
   const mason = h('div', { class: 't20m-mason', 'aria-hidden': 'true' }, masonArt)
-  const signLines = LINES.slice(1, 3).join('\n')
+  const signLines = LINES[0]
   const sign = h('div', { class: 't20m-sign', 'aria-hidden': 'true' },
     h('span', { class: 't20m-post l' }), h('span', { class: 't20m-post r' }),
     h('div', { class: 't20m-board' }, h('code', null, ...mark(signLines, M.signWord))))
@@ -108,13 +111,20 @@ export function masonScene(ctx: SceneCtx) {
     h('span', { class: 't20m-rod b' }),
     h('span', { class: 't20m-tag' }, M.compare))
   const mismatch = h('p', { class: 't20m-mismatch' }, M.mismatch)
-  const codeNote = ctx.fact(M.codeNote as Fact, 'p', 't20m-codenote')
-  const cap = h('p', { class: 't20m-cap', 'aria-hidden': 'true' })
+  const slot = h('div', { class: 't20m-card' }) // the folded card, handed at the end
   stage.append(...steps, landing, mason, sign, lampWrap, scroll)
-  const root = h('div', { class: 't20 t20m' }, h('p', { class: 'visually-hidden' }, M.art), back, world, cap, codeNote, mismatch)
+  const root = h('div', { class: 't20 t20m' }, h('p', { class: 'visually-hidden' }, M.art), back, world, mismatch, slot)
   if (still) root.classList.add('still')
   ctx.art.append(root)
   ctx.prompt(M.prompt)
+  // H1 one dot on the next step, H4 the count at the stair's foot, then H3 a dashed place on the sign for the scroll
+  const g = guide(ctx)
+  const dot = g.dot(steps[0], { dir: [0, -1] })
+  const count = g.count(M.count, steps.length, () => {
+    const a = ctx.art.getBoundingClientRect(), b = steps[0].getBoundingClientRect()
+    return [b.left - a.left + b.width / 2, Math.min(b.bottom - a.top + 26, a.height - 14)]
+  })
+  let place: ReturnType<typeof g.drop> | null = null
 
   // ── 3D layout in design units ──
   let D = WIDE
@@ -372,13 +382,16 @@ export function masonScene(ctx: SceneCtx) {
   // ── tapping the steps ──
   function tap(i: number) {
     const b = steps[i]
+    if (!done.has(i) && i !== done.size) {
+      // out of turn: the machine takes the steps one by one
+      g.wrong(fill(M.steps[0], { n: done.size + 1, total: steps.length }), b)
+      ctx.chime('low')
+      return
+    }
     b.classList.remove('ring')
     void b.offsetWidth // restart the light run on a second tap
     b.classList.add('ring', 'done')
     b.setAttribute('aria-pressed', 'true')
-    const note = NOTES.get(i + 1)
-    cap.replaceChildren(h('code', null, LINES[i].trim()), note ? h('span', null, note) : '')
-    cap.classList.add('on')
     placeMason(i, masonAt !== i)
     masonAt = i
     mason.classList.remove('knock')
@@ -387,9 +400,13 @@ export function masonScene(ctx: SceneCtx) {
     ctx.chime('tap')
     if (done.has(i)) return
     done.add(i)
-    if (done.size < steps.length) return
+    count.set(done.size)
+    if (done.size < steps.length) {
+      dot.at(steps[done.size])
+      ctx.prompt(fill(M.steps[0], { n: done.size + 1, total: steps.length }), 'ok')
+      return
+    }
     root.classList.add('ok')
-    cap.classList.remove('on')
     // after the last ring, up onto the landing, clear of the words cut into it
     const tm = setTimeout(() => {
       placeMason(steps.length, true)
@@ -398,6 +415,10 @@ export function masonScene(ctx: SceneCtx) {
     ctx.onCleanup(() => clearTimeout(tm))
     scroll.setAttribute('aria-disabled', 'false')
     ctx.insight(M.insights[0] as Fact)
+    // step 3: the dot goes to the scroll, a dashed place waits on the sign, and the prompt says so
+    dot.at(scroll)
+    place = g.drop(sign.querySelector('.t20m-board')!, { round: false })
+    ctx.prompt(M.steps[1])
   }
 
   // ── the scroll onto the sign: drag (pointer) or Enter / Space ──
@@ -408,15 +429,27 @@ export function masonScene(ctx: SceneCtx) {
     scroll.style.transform = t3(held)
     scroll.setAttribute('aria-disabled', 'true')
     ctx.chime('low')
-    ctx.insight(M.insights[1] as Fact, M.detail as Fact)
+    dot.done()
+    place?.hit()
+    ctx.insight(M.insights[1] as Fact, [M.detail as Fact, M.codeNote as Fact])
+    const card = findTakeaway(M.takeaway)
+    if (card) slot.append(foldedTakeaway([card], ctx.onCleanup))
+  }
+  /** the scroll touched before every step has rung: it shakes, the prompt says what comes first */
+  const early = () => {
+    g.wrong(M.early, scroll)
+    ctx.chime('low')
   }
   let drag: { x: number; y: number; f: number; moved: boolean } | null = null
   scroll.addEventListener('click', (e) => {
     if ((e as PointerEvent).pointerType) return // pointer clicks: the drag (or tap) decides
+    if (!root.classList.contains('ok')) return early()
     compare() // Enter / Space
   })
   scroll.addEventListener('pointerdown', (e) => {
-    if (!root.classList.contains('ok') || root.classList.contains('compared')) return
+    if (!root.classList.contains('ok')) return early()
+    if (root.classList.contains('compared')) return
+    place?.lift(true)
     drag = { x: e.clientX, y: e.clientY, f: k * (D.P / (D.P - restScroll[2])), moved: false }
     scroll.setPointerCapture(e.pointerId)
     scroll.classList.add('drag')
@@ -431,6 +464,7 @@ export function masonScene(ctx: SceneCtx) {
     if (!drag) return
     const tapped = !drag.moved
     drag = null
+    place?.lift(false)
     scroll.classList.remove('drag')
     const a = scroll.querySelector('.t20m-paper')!.getBoundingClientRect(), b = sign.querySelector('.t20m-board')!.getBoundingClientRect()
     const over = Math.abs(a.left + a.width / 2 - (b.left + b.width / 2)) < b.width * 0.6 && Math.abs(a.top + a.height / 2 - (b.top + b.height / 2)) < b.height

@@ -6,7 +6,10 @@ import { blob, clamp, curve, onDigit, onSize, rng, rock, stableHeight, stroke, t
 import { grass, hills, mist, moon, reeds } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
 import { C } from './content'
-import { cardButton, F, f1, gdefs, ink } from './kit'
+import { F, f1, gdefs, ink } from './kit'
+import { guide } from '../../ui/part2/guide'
+import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
+import type { Takeaway } from '../../ui/part2/types'
 import { koi } from './koi'
 
 const K = C.scenes.layers
@@ -73,18 +76,16 @@ function layerArt(i: number): SVGSVGElement {
     [ink(stroke(arc(70, 62, 5.5, 5.5, 0, TAU, 20), 1.6, 0.1, 0.1, 0.4) + stroke(arc(70, 62, 10, 10, 3.6, 5.9, 12), 1.1, 0.2, 0.2, 0.2), 't36g-line', 'rough'),
       ink(stroke([[88, 86], [80, 75], [72, 65]], 6.5, 0.04, 0.35, 0.45), 't36g-finger', 'wash'),
       ink(curve([40, 30], [68, 38], [68, 56], 7).map(([x, y]) => blob(x, y, 1.3, 1.3, 1, 0.2, 6)).join(''), 't36g-line')],
-    // the moon falling in shards, a dry leaf (the one to avoid)
-    [ink(shard(30, 28, 2.1) + shard(56, 16, 1.7) + shard(24, 56, 1.5), 't36g-shard', 'rough'),
-      ink(stroke(curve([60, 70], [67, 62], [74, 70], 6), 5, 0.3, 0.3, 0.2) + stroke([[59, 71], [75, 69]], 0.7, 0.1, 0.1, 0.3), 't36g-leaf', 'rough')],
-    // the score: an ensō by the rim, three hearts, a vermilion seal
+    // the moon falling in shards (one feature per sheet: the leaves are the next one)
+    [ink(shard(30, 28, 2.1) + shard(56, 16, 1.7) + shard(24, 56, 1.5), 't36g-shard', 'rough')],
+    // dry leaves (the ones to avoid) and the three hearts they cost
+    [ink(stroke(curve([60, 70], [67, 62], [74, 70], 6), 5, 0.3, 0.3, 0.2) + stroke([[59, 71], [75, 69]], 0.7, 0.1, 0.1, 0.3), 't36g-leaf', 'rough'),
+      ink([0, 1, 2].map((k) => `M${f1(62 + k * 7)} ${f1(42)}c-3 -2.1 -2.1 -4.5 0 -3c2.1 -1.5 3 0.9 0 3Z`).join(''), 't36g-heart')],
+    // the end of a round: an ensō by the rim with the score's vermilion seal
     [ink(stroke(arc(78, 24, 10, 10, -1.3, 4.6, 26), 2.8, 0.08, 0.55, 0.12), 't36g-line', 'rough'),
-      ink([0, 1, 2].map((k) => `M${f1(62 + k * 7)} ${f1(42)}c-3 -2.1 -2.1 -4.5 0 -3c2.1 -1.5 3 0.9 0 3Z`).join(''), 't36g-heart'),
       s('rect', { class: 't36g-seal', x: 12, y: 16, width: 9, height: 9, rx: 0.8 })],
     // sound: a drop and the rings of its "tõm"
     [ink(blob(28, 70, 2, 2.8, 3693, 0.1, 8) + [1, 2, 3].map((k) => stroke(arc(28, 74, k * 7, k * 3.4, 0.3 * k, TAU - 0.4 + 0.3 * k, 24), 1.2, 0.1, 0.1, 0.2)).join(''), 't36g-line', 'rough')],
-    // effects: fireflies, and the ring a shard leaves on the water
-    [s('g', { class: 't36g-flies' }, ...Array.from({ length: 8 }, () => s('circle', { class: 't36g-fly', cx: f1(16 + r() * 66), cy: f1(12 + r() * 52), r: f1(1.6 + r() * 1.1) }))),
-      ink([0.5, 1].map((k) => stroke(arc(42, 44, 14 * k, 7 * k, 0, TAU, 20), 1.1, 0.1, 0.1, 0.4)).join(''), 't36g-line')],
   ]
   g.append(...parts[i])
   return g
@@ -196,8 +197,10 @@ export function layersScene(ctx: SceneCtx) {
     ctx.reduced ? h('p', { class: 't36g-still' }, P.still) : null)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
-  const pill = cardButton(ctx, root, K.takeaway)
-  if (pill) endRow.append(pill)
+  // the take-away after a round: the full prompt pack, with the phone and before-you-publish cards folded in it
+  const kit = [K.takeaway, ...K.cards].map((id) => findTakeaway(id)).filter((c): c is Takeaway => !!c)
+  if (kit.length) endRow.append(foldedTakeaway(kit, ctx.onCleanup))
+  const GD = guide(ctx)
   sheets[0].classList.add('lit', 't36g-base')
   ctx.onCleanup(onDigit((d) => d === next + 1 && add(next)))
 
@@ -380,7 +383,12 @@ export function layersScene(ctx: SceneCtx) {
 
   // ── building: the lit sheet sinks into the basin; the pond comes one step more alive
   function add(i: number) {
-    if (i !== next || mode !== 'build') return
+    if (mode !== 'build') return
+    if (i !== next) {
+      // not this one yet: it shakes and the prompt names the sheet that comes first (one feature builds on the last)
+      if (i > next) GD.wrong(fill(K.wrongOrder, { name: K.layers[next].name }), sheets[i])
+      return
+    }
     next++
     const sh = sheets[i]
     sh.classList.remove('lit')
@@ -399,7 +407,7 @@ export function layersScene(ctx: SceneCtx) {
     const cut = Math.ceil(all.length / 2)
     rimText.firstElementChild!.textContent = all.slice(0, cut).join('  ·  ')
     rimText2.firstElementChild!.textContent = all.slice(cut).join('  ·  ')
-    said.replaceChildren(h('p', { class: 't36g-eye' }, `${fill(K.layerAria, { n: i + 1, name: K.layers[i].name })} · ${K.promptLabel}`), h('p', { class: 't36g-prompt' }, K.layers[i].prompt), ctx.fact(F(K.facts[0]), 'p', 't36g-fact'))
+    said.replaceChildren(h('p', { class: 't36g-eye' }, `${fill(K.layerAria, { n: i + 1, name: K.layers[i].name })} · ${K.promptLabel}`), h('p', { class: 't36g-prompt' }, K.layers[i].prompt), i === 0 ? ctx.fact(F(K.facts[0]), 'p', 't36g-fact') : '')
     if (!said.hasAttribute('aria-live')) said.setAttribute('aria-live', 'polite')
     if (next < N) sheets[next].querySelector('button')!.focus({ preventScroll: true })
     else {

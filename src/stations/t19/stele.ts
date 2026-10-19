@@ -6,7 +6,7 @@ import { onPrefs } from '../../core/prefs'
 import type { SceneCtx } from '../types'
 import { blob, clamp, onSize, p2Defs, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { moon, paperLantern, pine, wash } from '../../ui/part2/paint'
-import { findTakeaway, takeaway } from '../../ui/part2/takeaway'
+import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
 
 const T = raw.scenes.stele
 const f1 = (n: number) => n.toFixed(1)
@@ -201,7 +201,7 @@ export function steleScene(ctx: SceneCtx) {
     ctx.insight(T.insight as Fact, T.detail as Fact)
     if (!card) return
     root.classList.add('carded')
-    slot.append(h('div', { class: 't19s-card' }, takeaway(card, null, ctx.onCleanup)))
+    slot.append(h('div', { class: 't19s-card' }, foldedTakeaway([card], ctx.onCleanup))) // a slip in the plinth; opens on touch
   }
 
   // ── layout + bake

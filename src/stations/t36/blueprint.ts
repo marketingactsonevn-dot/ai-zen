@@ -3,6 +3,7 @@ import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { blob, clamp, curve, onDigit, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import type { SceneCtx } from '../types'
+import { guide } from '../../ui/part2/guide'
 import { C } from './content'
 import { cardButton, F, f1, gdefs, ink } from './kit'
 import { koi } from './koi'
@@ -105,6 +106,8 @@ function room(W: number, H: number, A: number): Room {
  * onto the table, the thin shadows of the lamp's kumiko across it. A line is written into spec.md, a sheet lying on the
  * table. Moonlight comes in cold through the shoji on the side wall. Six faces: the whole game stands on the wall before a
  * line of code, and the take-away is a folded card on the table. Drag (or ← →) turns the lamp; it settles on a face.
+ * Each face has one vague strip and one clear one: the vague one throws its part blurred and writes "AI guesses: ???"
+ * into spec.md, the clear one throws it sharp. Once all six are set, spec.md gains its two last lines by itself.
  * Low: no free turn; six small wooden tags at the lamp's foot turn it.
  */
 export function blueprintScene(ctx: SceneCtx) {
@@ -129,7 +132,8 @@ export function blueprintScene(ctx: SceneCtx) {
   const tail = h('div', { class: 't36b-tail' })
   const count = h('span', { class: 't36b-count' })
   const slip = h('button', { class: 't36b-slip', type: 'button', 'aria-expanded': 'false' }, h('span', { class: 't36b-sliptitle' }, K.specTitle), count)
-  const sheet = h('div', { class: 't36b-sheet' }, h('p', { class: 't36b-title' }, K.specTitle), h('ol', { class: 't36b-lines', 'aria-live': 'off' }, ...lines), tail)
+  const extra = K.extra.map(([k, v]) => h('li', { class: 't36b-extra', hidden: true }, h('span', { class: 't36b-key' }, k), h('span', { class: 't36b-val' }, v)))
+  const sheet = h('div', { class: 't36b-sheet' }, h('p', { class: 't36b-title' }, K.specTitle), h('p', { class: 't36b-decode' }, K.specDecode), h('ol', { class: 't36b-lines', 'aria-live': 'off' }, ...lines, ...extra), tail)
   const spec = h('div', { class: 't36b-spec' }, slip, sheet)
   const tent = h('div', { class: 't36b-tent', hidden: true })
   // the room behind it all; the lamp's throw on the wall and its spill onto the table (two views of one picture)
@@ -142,6 +146,9 @@ export function blueprintScene(ctx: SceneCtx) {
   const root = h('div', { class: 't36 t36b' }, back, throwBox, spillBox, h('p', { class: 'visually-hidden' }, K.art), lamp, near, stripBox, feet, spec, tent)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
+  // the turn is a gesture nobody guesses: a faint curved arrow at the lamp until every face is set
+  const GD = guide(ctx)
+  const turnMark = GD.gesture('drag-h', lamp, { r: 70 })
   const pill = cardButton(ctx, root, K.takeaway)
   if (pill) tent.append(pill)
   const setCount = () => {
@@ -253,6 +260,7 @@ export function blueprintScene(ctx: SceneCtx) {
     void stripBox.offsetWidth
     stripBox.classList.add('in')
     faces.forEach((f, k) => f.classList.toggle('front', k === i))
+    if (chosen[i] < 0) ctx.prompt(fill(K.facePrompt, { piece: p.label }))
   }
 
   let advance = 0
@@ -266,8 +274,12 @@ export function blueprintScene(ctx: SceneCtx) {
     void strips[k].offsetWidth
     strips[k].classList.add('stick')
     faces[i].classList.add('on')
-    faces[i].querySelector('.t36b-fmotif')!.replaceChildren(faceMotif(i, k))
-    lines[i].lastElementChild!.textContent = p.options[k]
+    // the vague strip: the lamp throws that part blurred and spec.md says AI must guess (the art is the clear one's)
+    const vague = k === p.vague
+    faces[i].classList.toggle('vague', vague)
+    faces[i].querySelector('.t36b-fmotif')!.replaceChildren(faceMotif(i, 0))
+    lines[i].classList.toggle('vague', vague)
+    lines[i].lastElementChild!.textContent = vague ? K.guess : p.options[k]
     lines[i].classList.remove('on')
     void lines[i].offsetWidth
     lines[i].classList.add('on')
@@ -284,6 +296,8 @@ export function blueprintScene(ctx: SceneCtx) {
       return
     }
     if (!tail.childElementCount) {
+      turnMark.done()
+      for (const x of extra) x.hidden = false
       tail.append(ctx.fact(F(K.facts[0]), 'p', 't36b-fact'))
       tent.hidden = false
       ctx.insight(F(K.insight), K.detail)
@@ -294,7 +308,8 @@ export function blueprintScene(ctx: SceneCtx) {
     for (const pic of [wallPic, spillPic]) {
       const g = pic.querySelector(`.t36b-t${i}`)
       g?.classList.toggle('on', chosen[i] >= 0)
-      g?.setAttribute('data-k', String(chosen[i]))
+      g?.classList.toggle('vague', chosen[i] === K.pieces[i].vague)
+      g?.setAttribute('data-k', '0')
     }
   }
 
@@ -329,6 +344,7 @@ export function blueprintScene(ctx: SceneCtx) {
       Object.assign(tent.style, { left: `${f1(W * 0.66)}px`, top: `${f1(H - 50)}px` })
     }
     paintRoom(o)
+    GD.refresh() // the lamp has just been placed
   }))
   write()
   face(0)

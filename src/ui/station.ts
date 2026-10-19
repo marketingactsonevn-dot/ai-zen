@@ -1,7 +1,7 @@
 import { h, s } from '../core/dom'
 import { ALL_STATIONS, L, PARTS, addSources, displayNo, gardensOfPart, stationIndex, type Fact } from '../core/content'
 import { STATIONS } from '../stations/registry'
-import type { Detail, SceneCtx, SceneDef, StationModule } from '../stations/types'
+import type { Detail, SceneCtx, SceneDef, StationModule, TextZone } from '../stations/types'
 import { prefs } from '../core/prefs'
 import { progress } from '../core/progress'
 import { gsap } from '../core/anim'
@@ -15,6 +15,10 @@ import { prefetchStation, whenIdle } from './prefetch'
 import { watchScene } from './autolow'
 
 const TYPING = 'input, textarea, select, [contenteditable], [role="slider"], [role="listbox"]'
+/** Part 2 (H7): after this long without a touch, key or wheel in the scene, the frame invites again */
+const IDLE_MS = 6000
+/** Part 2: text zones (TextZone) only from this width; below it the insight stays in the foot */
+const ZONES_MQ = '(min-width: 721px)'
 
 /** Station = full-viewport scene player: art → interaction → insight, flipped with ← → or the rail. */
 export async function renderStation(root: HTMLElement, id: number, start: number, stale: () => boolean): Promise<(() => void) | null> {
@@ -43,9 +47,14 @@ export async function renderStation(root: HTMLElement, id: number, start: number
   }
   const loading = h('p', { class: 'player-loading' }, L.loading)
   player.append(loading)
+  const p2 = part === 2
   let mod: StationModule
+  let quiz: typeof quizScene = quizScene
   try {
-    mod = (await loader()).default
+    // Part 2 draws its own quiz (stones on moonlit water): loaded beside the station so Part 1 never carries it
+    const [m, q] = await Promise.all([loader(), p2 ? import('./part2/quiz') : null])
+    mod = m.default
+    if (q) quiz = q.quizScene2
   } catch (e) {
     console.error(e)
     loading.textContent = L.error
@@ -57,7 +66,7 @@ export async function renderStation(root: HTMLElement, id: number, start: number
   if (!demo) progress.visit(id)
 
   // the last station of a part has no next one: 18's ensō leads over the bridge to Part 2, 39's to its exam and toolkit
-  const scenes: SceneDef[] = [...mod.scenes, quizScene(id, mod.content.quiz), summaryScene(mod.content.summary, mapHref, next, next ? 0 : part)]
+  const scenes: SceneDef[] = [...mod.scenes, quiz(id, mod.content.quiz), summaryScene(mod.content.summary, mapHref, next, next ? 0 : part)]
   const explored = new Set<number>()
   const host = h('div', { class: 'scenes' })
   const prevBtn = h('button', { class: 'rail-btn', type: 'button', 'aria-label': L.prevScene, onClick: () => go(cur - 1) }, icon('arrowL'))
@@ -141,6 +150,7 @@ export async function renderStation(root: HTMLElement, id: number, start: number
     const cleanups: (() => void)[] = []
     const gctx = gsap.context(() => {}, el)
     let promptEl: HTMLElement | null = null
+    let promptText = '' // Part 2: the step's instruction, said again when the viewer stalls
     let insightEl: HTMLElement | null = null
 
     const hidePrompt = () => {
@@ -150,8 +160,11 @@ export async function renderStation(root: HTMLElement, id: number, start: number
       p.classList.add('out')
       setTimeout(() => p.remove(), 500)
     }
-    art.addEventListener('pointerdown', hidePrompt)
-    el.addEventListener('keydown', (e) => !['ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key) && hidePrompt())
+    if (!p2) {
+      // Part 1: the pill fades on the first touch or key. Part 2 keeps it until the scene is done (audit G, H5)
+      art.addEventListener('pointerdown', hidePrompt)
+      el.addEventListener('keydown', (e) => !['ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key) && hidePrompt())
+    }
 
     const markExplored = () => {
       if (explored.has(i)) return
@@ -159,15 +172,64 @@ export async function renderStation(root: HTMLElement, id: number, start: number
       if (i === cur) sync()
     }
 
+    // Part 2 · H7: 6 s without input → .is-idle on the scene (guide marks breathe harder and lean the way to go, see
+    // part2/guide.ts) and a 'p2:idle' event; an unfinished step gets its prompt back. Any touch, key or wheel re-arms.
+    let idleT = 0
+    if (p2) {
+      const arm = () => {
+        clearTimeout(idleT)
+        el.classList.remove('is-idle')
+        idleT = window.setTimeout(() => {
+          el.classList.add('is-idle')
+          if (!promptEl && promptText && !explored.has(i)) ctx.prompt(promptText)
+          el.dispatchEvent(new CustomEvent('p2:idle'))
+        }, IDLE_MS)
+      }
+      const evs = ['pointerdown', 'keydown', 'wheel'] as const
+      evs.forEach((e) => el.addEventListener(e, arm, { passive: true }))
+      arm()
+      cleanups.push(() => clearTimeout(idleT))
+    }
+
+    // Part 2 · text zone: on wide screens the insight sits in a quiet corner of the art instead of the foot
+    let zone: TextZone | null = p2 ? (scenes[i].text ?? null) : null
+    let zoneEl: HTMLElement | null = null
+    const wide = p2 ? matchMedia(ZONES_MQ) : null
+    const placeInsight = () => {
+      if (!insightEl) return
+      if (zone && wide?.matches) {
+        zoneEl ??= h('div', { class: 'scene-zone' })
+        zoneEl.dataset.z = zone
+        if (!zoneEl.isConnected) art.append(zoneEl)
+        if (insightEl.parentElement !== zoneEl) zoneEl.append(insightEl)
+      } else {
+        if (insightEl.parentElement !== foot) foot.prepend(insightEl)
+        zoneEl?.remove()
+      }
+    }
+    if (wide) {
+      wide.addEventListener('change', placeInsight)
+      cleanups.push(() => wide.removeEventListener('change', placeInsight))
+    }
+
     const ctx: SceneCtx = {
       reduced: prefs.reduced,
       quality: prefs.quality,
       art,
       el,
-      prompt(text) {
-        promptEl?.remove()
-        promptEl = h('p', { class: 'scene-prompt', role: 'status' }, h('span', { class: 'prompt-dot', 'aria-hidden': 'true' }), text)
-        foot.append(promptEl)
+      prompt(text, tone) {
+        if (p2 && promptEl) {
+          // the next step: swap the words in place (no pill popping out and back in)
+          promptEl.lastChild!.textContent = text
+          if (tone) promptEl.dataset.tone = tone
+          else delete promptEl.dataset.tone
+          if (!prefs.reduced) promptEl.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 380, easing: 'ease-out' })
+        } else {
+          promptEl?.remove()
+          promptEl = h('p', { class: 'scene-prompt', role: 'status', 'data-tone': tone ?? null }, h('span', { class: 'prompt-dot', 'aria-hidden': 'true' }), p2 ? h('span', null, text) : text)
+          foot.append(promptEl)
+        }
+        if (tone !== 'wrong') promptText = text
       },
       insight(f: Fact | string, detail?: Detail) {
         hidePrompt()
@@ -177,23 +239,33 @@ export async function renderStation(root: HTMLElement, id: number, start: number
         if (lines.length) {
           const more = lines.length === 1 ? fact(lines[0], 'p', 'insight-detail') : h('div', { class: 'insight-detail' }, ...lines.map((d) => fact(d, 'p')))
           more.hidden = true
-          const btn = h('button', { class: 'insight-more', type: 'button', 'aria-expanded': 'false' }, L.more)
+          const moreLabel = p2 ? L.moreP2 : L.more
+          const btn = h('button', { class: 'insight-more', type: 'button', 'aria-expanded': 'false' }, moreLabel)
           btn.addEventListener('click', () => {
             more.hidden = !more.hidden
             btn.setAttribute('aria-expanded', String(!more.hidden))
-            btn.textContent = more.hidden ? L.more : L.less
+            btn.textContent = more.hidden ? moreLabel : L.less
           })
           box.append(btn, more)
         }
         foot.prepend(box)
         insightEl = box
+        placeInsight()
         if (!prefs.reduced) {
           gctx.add(() => gsap.fromTo(box, { clipPath: 'inset(0 100% 0 0)', opacity: 0.2 }, { clipPath: 'inset(0 -2% 0 0)', opacity: 1, duration: 1.4, ease: 'power2.out', clearProps: 'clipPath' }))
         }
         markExplored()
         return box
       },
-      complete: markExplored,
+      complete() {
+        if (p2) hidePrompt()
+        markExplored()
+      },
+      textZone(z) {
+        if (!p2) return
+        zone = z
+        placeInsight()
+      },
       fact,
       tag,
       chime,

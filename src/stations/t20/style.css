@@ -82,7 +82,39 @@
   text-shadow: 0 0 8px var(--paper), 0 0 14px var(--paper);
 }
 :root[data-theme='dark'] .t20v-name { color: var(--moon); text-shadow: 0 0 10px var(--wash), 0 0 16px var(--wash); }
-.t20v-name-r { transform: scaleY(-0.55); margin-top: -0.2em; opacity: 0.2; }
+.t20v-name-r { display: none; } /* no upside-down echo (audit v3 20-2: it read as a glitch) */
+.t20v-name { transition: opacity 0.8s var(--ease); }
+.t20v[data-phase='0'] .t20v-name { opacity: 0; }
+.t20v-lean p { min-width: 4.5em; min-height: 1.3em; }
+/* step 2: the big firefly at the shore that sends the swarm out — a warm light with its words beside it */
+.t20v-release {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 10px 0 0;
+  border: 0;
+  background: none;
+  translate: -24px -50%;
+  font: 400 0.95rem/1.3 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
+  cursor: pointer;
+  animation: t20v-in 0.8s var(--ease) both;
+}
+.t20v-release[hidden] { display: none; }
+.t20v-release:disabled { cursor: default; opacity: 0; transition: opacity 0.8s; }
+.t20v-release:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 4px; }
+.t20v-release > i {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--firefly) 0 5px, color-mix(in srgb, var(--lantern) 45%, transparent) 7px, transparent 70%);
+}
+@keyframes t20v-in { from { opacity: 0; } }
 .t20v-fly, .t20v-lean, .t20v-stele {
   position: absolute;
   left: 0;
@@ -103,7 +135,8 @@
 .t20v.wide .t20v-stele-2 { font-size: 17px; }
 .t20v-stele, .t20v-lean { white-space: normal; max-width: 15.5em; text-wrap: balance; }
 .t20v:not(.wide) .t20-carved { font-size: 14px; padding: 12px 16px 8px; white-space: normal; max-width: 43%; text-wrap: balance; }
-.t20v:not(.wide) .t20v-fly { max-width: none; white-space: nowrap; }
+.t20v-fly { white-space: normal; max-width: 16em; text-wrap: balance; }
+.t20v:not(.wide) .t20v-fly { max-width: 70%; }
 
 /* ── the stonemason (mason.ts): a CSS-3D stair of rough stone on an earth slope, camera low beside it ── */
 .t20m { overflow: hidden; }
@@ -214,7 +247,7 @@
 :root[data-theme='dark'] .t20m-flank { background-color: var(--rock-lo); }
 .t20m-flank.r { left: var(--wb); transform-origin: 0 0; transform: rotateY(90deg); }
 .t20m-flank.l { left: calc(var(--db) * -1); transform-origin: 100% 0; transform: rotateY(-90deg); }
-/* the proof's line cut into the riser: sunk letters, shade on their upper lip, moonlight on the lower */
+/* the solution's step cut into the riser: sunk letters, shade on their upper lip, moonlight on the lower */
 .t20m-line {
   position: relative;
   display: block;
@@ -250,23 +283,6 @@
 :root[data-theme='dark'] .t20m-chisel-cut { fill: #000; opacity: 0.95; }
 :root[data-theme='dark'] .t20m-chisel-lip { fill: var(--moon); opacity: 0.45; }
 .t20m-step.done .t20m-chisel { opacity: 1; transform: none; }
-/* the margin note of a line: beside its riser, turned to face us, on a breath of paper */
-.t20m-note {
-  position: absolute;
-  right: calc(100% + 16px);
-  top: 0;
-  width: 200px;
-  font: 400 15px/1.4 var(--sans);
-  color: var(--ink-2);
-  text-align: right;
-  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 14px var(--paper);
-  transform-origin: 100% 0;
-  transform: rotateY(36deg);
-  opacity: 0;
-  transition: opacity 0.8s 0.3s;
-  pointer-events: none;
-}
-.t20m-step.done .t20m-note { opacity: 1; }
 .t20m-landing { cursor: default; height: calc(var(--hb) * 0.8); padding: 0; }
 .t20m-landing .t20m-flank { height: calc(var(--hb) * 1.05); }
 .t20m-ok {
@@ -397,33 +413,14 @@
 .t20m-far-stair { fill: var(--rock-lo); opacity: 0.5; }
 .t20m-far-mason { fill: var(--wash); }
 :root[data-theme='dark'] .t20m-far-mason { fill: var(--moon); opacity: 0.6; }
-.t20m-codenote { position: absolute; left: 4px; bottom: 4px; max-width: min(26rem, 70%); margin: 0; font: 400 13px/1.4 var(--sans); color: var(--ink-3); text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper); }
-.t20m-cap { display: none; }
-.t20m:not(.wide) .t20m-cap {
-  display: block;
-  position: absolute;
-  left: 4px;
-  top: 4px;
-  width: 58%;
-  margin: 0;
-  font: 400 13.5px/1.4 var(--sans);
-  color: var(--ink-2);
-  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 14px var(--paper);
-  opacity: 0;
-  transition: opacity 0.6s;
-  pointer-events: none;
-}
-.t20m-cap.on { opacity: 1; }
-.t20m-cap code { display: block; margin-bottom: 3px; font: 400 14px/1.35 var(--serif); white-space: pre-wrap; color: var(--ink); background: none; }
-.t20m:not(.wide) .t20m-note { display: none; }
+/* the folded card, handed once the scroll has been compared (top left, clear of the stair) */
+.t20m-card { position: absolute; left: 8px; top: 8px; z-index: 3; }
 .t20m:not(.wide) .t20m-line { font-size: 14.5px; }
 .t20m:not(.wide) .t20m-step { padding: 8px 30px 4px 12px; }
 .t20m:not(.wide) .t20m-sign { scale: 0.72; transform-origin: 50% 100%; }
 .t20m:not(.wide) .t20m-scroll { scale: 0.72; transform-origin: 50% 178px; /* the same anchor as the sign, so it lands square on the board */ }
 .t20m:not(.wide) .t20m-lampwrap { scale: 0.6; transform-origin: 33% 100%; }
 .t20m:not(.wide) .t20m-mason { scale: 0.74; transform-origin: 50% 100%; }
-.t20m:not(.wide) .t20m-codenote { left: 4px; right: 4px; max-width: none; bottom: 0; transition: opacity 0.6s; }
-.t20m:not(.wide).compared .t20m-codenote { opacity: 0; visibility: hidden; transition: opacity 0.6s, visibility 0s 0.6s; }
 .t20m:not(.wide) .t20m-mismatch { left: 4px; right: 4px; top: auto; bottom: 0; width: auto; translate: none; text-align: left; font-size: 14px; }
 .t20m.still .t20m-stage,
 .t20m.still .t20m-back { transform: none; transition: none; }
@@ -435,6 +432,7 @@
 .t20w .p2t-horizon-label,
 .t20w .p2t-moon::after { display: none; } /* the tide's light-on-the-sand: here the moon's light is the beam into the well */
 .t20w-paint { position: absolute; left: 0; top: 0; pointer-events: none; }
+.t20w-legend { position: absolute; z-index: 3; left: 4px; bottom: 4px; margin: 0; font: 400 0.84rem/1.4 var(--serif); color: var(--ink-2); text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper); pointer-events: none; }
 .t20w-base,
 .t20w-fx { position: absolute; left: 0; top: 0; max-width: none; }
 .t20w-year,

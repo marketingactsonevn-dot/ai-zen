@@ -92,10 +92,11 @@ export function shortcutScene(ctx: SceneCtx) {
   entry.append(entrySvg)
   gate.append(gateSvg)
   // things hung in the scene (screen space, at their projected cords): the bell's plaque, the result strip, the ema
-  const plaque = h('p', { class: 't24c-plaque' }, h('i', { class: 't24c-cord', 'aria-hidden': 'true' }), h('span', null, K.bell))
+  const plaque = h('p', { class: 't24c-plaque' }, h('i', { class: 't24c-cord', 'aria-hidden': 'true' }), h('span', null, K.bell, h('small', { class: 't24c-claim' }, K.claim)))
   const reveal = h('p', { class: 't24c-reveal t24-paper', 'aria-live': 'polite' }, h('i', { class: 't24c-cord', 'aria-hidden': 'true' }), h('span'))
   const tag = card ? h('button', { class: 't24c-ema small', type: 'button', onClick: openCard }, h('i', { class: 't24c-cord', 'aria-hidden': 'true' }), h('span', null, card.title)) : null
-  const task = h('p', { class: 't24c-ema task' }, h('i', { class: 't24c-cord', 'aria-hidden': 'true' }), h('span', null, K.task))
+  // the task, and once what the bell and the raked lanes stand for
+  const task = h('p', { class: 't24c-ema task' }, h('i', { class: 't24c-cord', 'aria-hidden': 'true' }), h('span', null, K.task, h('small', { class: 't24c-decode' }, K.decode)))
   const bough = s('svg', { class: 't24-svg t24c-bough', 'aria-hidden': 'true' })
   const stones = K.paths.map((p, i) => h('button', { class: `t24c-stone s${i}`, type: 'button', 'aria-label': p.aria, 'aria-pressed': 'false', onClick: () => walk(i) },
     s('svg', { viewBox: '-60 -46 120 52', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, stoneArt(116, 42, 2460 + i)), h('span', null, p.stone)))

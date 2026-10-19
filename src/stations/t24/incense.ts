@@ -62,7 +62,11 @@ export function incenseScene(ctx: SceneCtx) {
     h('span', { class: 't24i-ticks' }, ...Array.from({ length: N }, (_, i) => h('i', { class: `t${i + 1}` }))),
     h('span', { class: 't24i-end' }, K.long))
   const censer = h('div', { class: 't24i-censer', role: 'slider', tabindex: '0', 'aria-label': K.sliderAria, 'aria-valuemin': '1', 'aria-valuemax': String(N), 'aria-orientation': 'vertical' })
-  root.append(bg, embers, moonSvg, smoke, figSvg, ...notches, scale, censer)
+  // the bridge from learning to thinking, what a stick stands for (once, top left), and that the stele's puzzle is ours
+  const top = h('div', { class: 't24i-top' }, h('p', { class: 't24i-bridge' }, K.bridge), h('p', { class: 't24i-decode' }, K.decode), ctx.fact(K.puzzleNote, 'p', 't24i-pnote'))
+  const puzzle = h('div', { class: 't24i-puzzle' }, h('p', { class: 't24i-pq' }, K.puzzle),
+    h('p', { class: 't24i-pa', 'aria-live': 'polite' }, h('s', { class: 't24i-quick' }, K.quick), h('b', { class: 't24i-right' }, K.right)))
+  root.append(bg, embers, moonSvg, smoke, figSvg, ...notches, scale, censer, top, puzzle)
   root.dataset.v = '1'
   ctx.prompt(K.prompt)
 
@@ -412,21 +416,9 @@ export function incenseScene(ctx: SceneCtx) {
     const outline = `M${left.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}Q${f1(x0 + sw * 0.1)} ${f1(base - sh * 1.02)} ${f1(x0 + sw * 0.5)} ${f1(base - sh)}Q${f1(x0 + sw * 0.95)} ${f1(base - sh * 0.98)} ${f1(x0 + sw)} ${f1(base - sh * 0.86)}L${f1(x0 + sw * 1.02)} ${f1(base)}Z`
     // the cut's inside: in shadow above (the moon is high), a pale chipped face below
     const notchInk = nY.map((y) => `M${f1(x0 - 1)} ${f1(y - u * 0.035)}L${f1(x0 + sw * 0.13)} ${f1(y)}L${f1(x0 - 1)} ${f1(y + u * 0.004)}Z`).join('')
-    // the answer: short columns of carved marks in the upper right of the face
-    const gr = rng(2445)
-    let glyphs = ''
-    for (let c = 0; c < 3; c++) {
-      const x = x0 + sw * (0.82 - c * 0.17)
-      for (let k = 0; k < 6 - c; k++) {
-        const y = base - sh * 0.86 + k * sh * 0.11, q = sw * 0.05
-        const kind = Math.floor(gr() * 4)
-        if (kind === 0) glyphs += stroke([[x - q, y], [x + q, y + 0.6]], 2, 0.2, 0.3, 0.3) + stroke([[x + q * 0.4, y + q * 0.9], [x + q * 0.7, y + q * 1.4]], 2.2, 0.1, 0.5, 0.3)
-        else if (kind === 1) glyphs += stroke([[x - q * 0.3, y - q * 0.4], [x - q, y + q * 1.1]], 1.8, 0.2, 0.4, 0.3) + stroke([[x + q * 0.3, y - q * 0.3], [x + q, y + q * 1.1]], 1.8, 0.2, 0.5, 0.3)
-        else if (kind === 2) glyphs += stroke([[x - q * 0.5, y - q * 0.5], [x - q * 0.5, y + q * 1.2]], 2, 0.2, 0.4, 0.3) + stroke([[x + q * 0.4, y], [x + q * 0.7, y + q * 0.4]], 2.2, 0.1, 0.5, 0.3)
-        else glyphs += [0, 1, 2].map((j) => stroke([[x - q * (0.8 - j * 0.1), y - q * 0.4 + j * q * 0.7], [x + q * (0.8 - j * 0.2), y - q * 0.4 + j * q * 0.7 + 0.5]], 1.6, 0.2, 0.3, 0.3)).join('')
-      }
-    }
-    answer.replaceChildren(s('path', { class: 't24i-glyphs', d: glyphs }), s('path', { class: 't24i-seal', d: blob(x0 + sw * 0.66, base - sh * 0.16, sw * 0.07, sw * 0.08, 3, 0.05) }))
+    // the answer: a real puzzle carved on the face (HTML over it), the hasty answer struck out, the right one in vermilion
+    Object.assign(puzzle.style, { left: `${f1(x0 + sw * 0.2)}px`, top: `${f1(base - sh * 0.9)}px`, width: `${f1(sw * 0.74)}px`, fontSize: `${f1(clamp(sw * 0.075, 12, 16))}px` })
+    answer.replaceChildren(s('path', { class: 't24i-seal', d: blob(x0 + sw * 0.66, base - sh * 0.16, sw * 0.07, sw * 0.08, 3, 0.05) }))
     // the scores written on the stone just right of their notches
     notches.forEach((el, i) => Object.assign(el.style, { left: `${f1(x0 + sw * 0.17)}px`, top: `${f1(nY[i] - 9)}px` }))
     const lit = stroke([[x0 + sw * 0.98, base - sh * 0.84], [x0 + sw * 1.0, base - sh * 0.3]], Math.max(1.6, u * 0.012), 0.2, 0.3, 0.2)

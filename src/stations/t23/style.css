@@ -483,3 +483,32 @@ button.t23s-slab:focus-visible { outline: none; box-shadow: 0 0 0 2px color-mix(
 .t23c .p2c-card .p2c-view { margin: 0 0 0.2em; font: 400 clamp(0.95rem, 1.3vw, 1.06rem) / 1.42 var(--serif); }
 .t23c .p2c-card .p2c-count { justify-content: flex-end; font-size: 0.72rem; }
 .t23c .p2c-card .p2c-dots { display: none; }
+/* 23-3 (audit v3): the bamboo trough at the question slab, tilted to pour; the Texas weir lifted out, California set in */
+.t23s .t23s-sluice { pointer-events: none; cursor: default; }
+.t23s-pour { position: absolute; padding: 0; border: 0; background: none; pointer-events: auto; cursor: pointer; touch-action: none; rotate: var(--a, 0deg); }
+.t23s-pour svg { position: absolute; left: 0; top: 50%; width: 100%; height: 26px; translate: 0 -50%; overflow: visible; transition: rotate 0.8s cubic-bezier(.3,.1,.2,1); transform-origin: 20% 50%; }
+.t23s-pour.tilted svg { rotate: 9deg; }
+.t23s-pour:disabled { cursor: default; }
+.t23s-pour .tube { fill: color-mix(in srgb, var(--moss, #6d7a52) 55%, var(--wash)); stroke: var(--ink-2); stroke-width: 1.2; }
+.t23s-pour .node { stroke: var(--ink-2); stroke-width: 2.2; fill: none; }
+.t23s-pour .lit { stroke: var(--moon); stroke-width: 1.6; stroke-linecap: round; opacity: 0.7; fill: none; }
+.t23s-pour .water { fill: none; stroke: var(--moon); stroke-width: 3; stroke-linecap: round; opacity: 0; stroke-dasharray: 40; stroke-dashoffset: 40; transition: opacity 0.4s 0.5s, stroke-dashoffset 0.9s 0.5s; }
+:root[data-theme='light'] .t23s-pour .water { stroke: #fff; }
+.t23s-pour.tilted .water { opacity: 0.9; stroke-dashoffset: 0; }
+.t23s-pour:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; border-radius: 8px; }
+.t23s-slab.live { pointer-events: auto; cursor: grab; touch-action: none; }
+.t23s-slab.held { cursor: grabbing; z-index: 2; }
+.t23s-slab.live:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; border-radius: 6px; }
+.t23s-slab.lifted { opacity: 0.85; transition: translate 0.6s cubic-bezier(.3,.1,.2,1); }
+.t23s-limit .t23s-decode { color: var(--ink-2); }
+.t23s-lim { margin-top: 6px; transition: opacity 1s; }
+.t23s-lim .t23-note { font-size: 13px; color: var(--ink-2); }
+.t23s-lim[data-off] { opacity: 0; visibility: hidden; }
+/* phase 3 copy: decoding lines (what the stone, the flicking, "looking inside" stand for), shown once */
+.t23b-note > [data-off] { opacity: 0; visibility: hidden; }
+.t23b-note > * { transition: opacity 0.8s; margin-top: 4px; }
+.t23b-note .t23b-stone { color: var(--ink-2); }
+.t23o-note .t23o-decode { color: var(--ink-2); }
+.t23o-note .t23-note { margin-top: 3px; }
+.t23c-decode { position: absolute; left: 14px; top: 8px; max-width: min(360px, 45%); margin: 0; text-align: left; z-index: 2; pointer-events: none; }
+.t23o-neuron { white-space: normal; width: max-content; max-width: min(300px, 40vw); line-height: 1.3; }

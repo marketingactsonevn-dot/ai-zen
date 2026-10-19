@@ -1,7 +1,7 @@
 {
   "id": 20,
-  "kicker": "A small pebble rolls for a hundred years without reaching the bottom of the well — then one night, it touches water.",
-  "summary": "AI has reached the biggest problems in mathematics — and the way humans check knowledge is changing with it.",
+  "kicker": "Some problems stayed open for nearly a hundred years. In 2026, AI helped put forward solutions.",
+  "summary": "AI has put forward solutions to problems that stood for decades. Right or not: a machine checks every step, people check the problem.",
   "newsTags": [
     "ai-math"
   ],
@@ -9,21 +9,21 @@
     "t20-kiem-tuyen-bo-toan"
   ],
   "quiz": {
-    "q": "Why is a proof written in Lean more trustworthy than an ordinary write-up, yet still needs people?",
+    "q": "A solution has been checked by a machine step by step. Why do people still need to look again?",
     "options": [
-      "The machine checks every logical step, but people must check that the problem stated in Lean really is the original problem",
-      "Lean is written by AI so it is always right; people only need to skim it",
-      "Lean only checks spelling; people still have to check all the maths themselves",
-      "Lean runs faster but makes more mistakes than a handwritten proof"
+      "The machine can't tell if its problem matches the real one",
+      "The machine often gets the harder steps of a solution wrong",
+      "The machine only checks spelling and punctuation",
+      "The machine checks many times slower than people"
     ],
     "answer": 0,
-    "explain": "The machine checks logic very reliably. But if the problem written for the machine drifts from the real one, the machine still says yes — only people can check the meaning."
+    "explain": "The machine checks each step very reliably. But if the problem written for it drifts from the real one, it still says yes."
   },
   "scenes": {
     "well": {
       "label": "The pebble well",
       "art": "Looking down into an old stone well with moss and ferns, a bucket hanging from a wooden beam; the moon runs an arc along the top and its beam lights the well's wall. Drag the moon over each pebble on the rim: it flips and drops to a ledge, 2025 high, 2026 deeper; Navier–Stokes hits the water and breaks the moon's reflection, the 722 drafts fall like rain, today the water stills with a carved ring, and mist lies at the bottom.",
-      "prompt": "Drag the moon, drop pebbles",
+      "prompt": "Drag the moon: drop the pebbles one by one",
       "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
       "tide": {
         "milestones": [
@@ -53,7 +53,7 @@
             "date": "2026-07-20",
             "label": "Jacobian conjecture",
             "fact": {
-              "text": "Levent Alpöge (Anthropic), with help from Claude Fable, gave a 3-dimensional counterexample to the Jacobian conjecture, posed in 1939.",
+              "text": "Mathematician Levent Alpöge (Anthropic), helped by the AI Claude, found an example showing the Jacobian conjecture (posed in 1939) is false.",
               "asOf": "2026-10-15",
               "source": "afp-jacobian",
               "verifiedBy": "Archive of Formal Proofs (checked in Isabelle)"
@@ -64,7 +64,7 @@
             "date": "2026-09-08",
             "label": "Navier–Stokes",
             "fact": {
-              "text": "OpenAI announced a proof that Navier–Stokes flow can “blow up”, with a version rewritten in Lean for machine checking.",
+              "text": "OpenAI says its AI proved that smooth water can “blow up” by itself — with a version rewritten so a machine can check every step.",
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "claimBy": "OpenAI"
@@ -75,7 +75,7 @@
             "date": "2026-10-06",
             "label": "722 manuscripts",
             "fact": {
-              "text": "OpenAI posted 722 manuscripts, grouped into 372 sets of results, from about 4,000 problems attempted; it warned that some still contain errors.",
+              "text": "OpenAI posted 722 draft solutions to maths problems; the company itself says some still contain errors.",
               "asOf": "2026-10-15",
               "source": "aa-openai-math",
               "claimBy": "OpenAI"
@@ -94,149 +94,125 @@
           }
         ],
         "horizon": {
-          "text": "The Math & AI advisory group at the IAS (Princeton): the future of mathematics cannot just be sitting and understanding results produced by AI labs.",
+          "text": "The Math & AI advisory group at the IAS (Princeton): the future of mathematics cannot just be sitting and understanding results produced by AI companies.",
           "asOf": "2026-10-15",
           "source": "aa-openai-math",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "In just one year, AI went from Olympiad problems (07/2025) to a counterexample for a conjecture dating from 1939 (07/2026).",
+        "text": "One year: from a school competition (07/2025) to a conjecture left open for 87 years (07/2026).",
         "asOf": "2026-10-15",
         "source": "afp-jacobian"
       },
-      "detail": "Watch for the ◇ mark: many milestones are companies' own announcements. Where someone outside has checked, it says who."
+      "legend": "◇ the company's own claim · ● checked by someone outside"
     },
     "vortex": {
       "label": "Water that blows up",
-      "art": "A round pond under the moon seen three-quarter, a ring of mossy stones on raked sand, fireflies circling the bank — each one an agent. Stir in circles: the water sinks into a funnel, the moon's reflection winds into a spiral and the camera sinks toward the water until the far ridges rise; at the top the core flares into one point, a shockwave runs out and the agents line up into a stair of light climbing out of the pond.",
-      "prompt": "Stir the pond",
-      "stirAria": "Stir the pond: drag in a circle, or hold an arrow key",
+      "art": "A round pond under the moon seen three-quarter, a ring of mossy stones on raked sand, fireflies circling the bank — each one an AI copy running on its own (an agent). Swirl the pond and let go: the water calms by itself. Release the swarm: they spread out trying swirls, one tightens by itself into a funnel and the camera sinks toward the water until the far ridges rise; at the bottom the core flares into one point, a shockwave runs out and the agents line up into a stair of light climbing out of the pond.",
+      "prompt": "Swirl the pond, then let go",
+      "stirAria": "Swirl the pond: drag in a circle or hold an arrow key, then let go",
+      "steps": [
+        "Release the AI swarm to search"
+      ],
+      "release": "Release the AI swarm",
+      "releaseAria": "Release the AI swarm to search for a swirl that tightens by itself",
       "stages": [
-        "Smooth flow",
-        "Eddies tighten",
+        "The water calms by itself",
+        "A swirl tightens by itself",
         "One point “blows up”"
       ],
-      "fireflies": "about 10,000 agents · 88 hours",
-      "leanNote": "plus 17 hours rewriting it in Lean",
+      "fireflies": "Each firefly: one AI copy running on its own (an agent). About 10,000 copies, 88 hours.",
       "insight": {
-        "text": "The Navier–Stokes equations describe how water and air flow. The million-dollar question: can a smooth flow suddenly “blow up”?",
-        "asOf": "2026-10-15",
-        "source": "quanta-ns"
-      },
-      "detail": {
-        "text": "OpenAI says about 10,000 agents ran for 88 hours on an unreleased model to find the proof; another AI took 17 more hours to rewrite it in Lean.",
+        "text": "Can smooth water “blow up” by itself? OpenAI says 10,000 AI copies searched for 88 hours and found a way it can.",
         "asOf": "2026-10-15",
         "source": "quanta-ns",
         "claimBy": "OpenAI"
       },
-      "contextTitle": "Who, when, whose credit",
-      "context": [
-        {
-          "text": "Tristan Buckmaster (NYU) and Levent Alpöge (Anthropic) posted a result on a closely related problem about 12 hours earlier; who came first is still disputed.",
-          "asOf": "2026-10-15",
-          "source": "quanta-ns"
-        },
-        {
-          "text": "Both teams built on a strategy by mathematicians Diego Córdoba and Luis Martínez-Zoroa, published in 2023.",
-          "asOf": "2026-10-15",
-          "source": "quanta-ns"
-        },
-        {
-          "text": "The Clay Institute has not awarded the prize; OpenAI says it does not plan to accept the $1 million and has published the manuscript and Lean version for anyone to check.",
-          "asOf": "2026-10-15",
-          "source": "datacamp-ns"
-        }
-      ],
-      "contextShort": [
-        "Another team: ~12 hours earlier",
-        "Both built on a 2023 strategy",
-        "No Clay prize awarded yet"
-      ]
+      "detail": {
+        "text": "Another team (Buckmaster, NYU, and Alpöge, Anthropic) posted a near-identical result about 12 hours earlier. Both built on the approach of Córdoba and Martínez-Zoroa (2023). The Clay Institute has not awarded the prize.",
+        "asOf": "2026-10-15",
+        "source": "quanta-ns"
+      }
     },
     "mason": {
-      "label": "The mason who tests every stone",
-      "art": "A stone stair climbs the moonlit hillside, one line of a Lean proof cut into each step; tap a step and the old stonemason climbs to it and strikes it with his hammer. On the landing, under a paper lantern, a wooden sign carries the problem as written for the machine; beside it hangs the scroll with the original problem, to drag up and compare.",
-      "prompt": "Tap each step",
+      "label": "The mason who tests every step",
+      "art": "A stone stair climbs the moonlit hillside, one step of the solution written for the machine cut into each stair; tapped in order, the old stonemason climbs to it and strikes it with his hammer. On the landing, under a paper lantern, a wooden sign carries the problem as written for the machine; beside it hangs the scroll with the original problem, to drag up and compare.",
+      "prompt": "Tap the first step",
+      "steps": [
+        "Tap the next step ({n}/{total})",
+        "Drag the original scroll up to the sign"
+      ],
+      "early": "Tap all the steps first",
+      "count": "Tapped {n}/{total} steps",
       "stepAria": "Tap step {n}",
       "machineOk": "Machine: every step checks out",
       "compare": "Compare the sign with the original",
       "compareAria": "Compare the problem written for the machine with the original problem",
-      "signWord": "Even",
+      "lines": [
+        "For the machine: a even, b even",
+        "To prove: a + b even",
+        "Step: add two even numbers",
+        "Conclusion: a + b even ✓"
+      ],
+      "signWord": "even",
       "originalWord": "odd",
       "original": "Original: the sum of two odd numbers is even",
-      "mismatch": "The sign says “even numbers” — the machine checked correctly, but a different problem!",
-      "code": {
-        "lang": "text",
-        "code": "-- Original: the sum of two odd numbers is even\ntheorem sum_even (a b : ℕ) (ha : Even a) (hb : Even b) :\n    Even (a + b) := by\n  exact Even.add ha hb",
-        "notes": [
-          {
-            "line": 1,
-            "text": "A comment line: the problem a human wants to prove."
-          },
-          {
-            "line": 2,
-            "text": "The problem as written for the machine. Notice: it says “Even”, not odd."
-          },
-          {
-            "line": 4,
-            "text": "The machine checks this step: valid. But it has just proved a different problem."
-          }
-        ]
-      },
+      "mismatch": "The original says odd numbers; the problem for the machine says even. The machine checked correctly — but a different problem.",
       "codeNote": {
-        "text": "This code is a small Lean-style example AI Zen wrote for illustration, not taken from a real proof.",
+        "text": "The steps are a small example AI Zen wrote for illustration, not taken from a real proof.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "illustration"
       },
       "insights": [
         {
-          "text": "Lean is a proof assistant: you write a proof the machine checks step by step; one wrong step and it refuses.",
+          "text": "The machine checks one step at a time. Any wrong step, it stops right there.",
           "asOf": "2026-10-15",
           "source": "lean-lang"
         },
         {
-          "text": "But people must still check the problem written in Lean is the real one: the machine checks logic, people check meaning.",
+          "text": "The machine can check every step. Whether the problem itself is right, a person has to check.",
           "asOf": "2026-10-15",
           "source": "quanta-ns"
         }
       ],
       "detail": {
-        "text": "The Jacobian counterexample was checked again by an independent team in another proof assistant, Isabelle — two masons, two hammers.",
+        "text": "The checking tool here is called Lean. The Jacobian solution was checked again by another team with a second tool, Isabelle.",
         "asOf": "2026-10-15",
         "source": "afp-jacobian"
-      }
+      },
+      "takeaway": "t20-kiem-tuyen-bo-toan"
     },
     "circle": {
-      "label": "Four stones round the well",
+      "label": "Four chimes",
       "art": "A stone well with a thick curb, the moon in its water; above it a square frame of wooden posts, a polished black stone chime hanging from each beam. Strike a chime and it swings, rings and sends a train of ripples across the well; the speaker's words appear on a hanging paper strip. When all four have rung, the ripples meet in the middle and cancel, the water stills and holds the whole moon.",
       "prompt": "Strike each stone chime",
       "stoneAria": "Hear the view of {who}",
       "perspectives": {
         "stones": [
           {
-            "who": "Charles Fefferman · Princeton, who wrote the official problem statement for the Clay Institute",
+            "who": "Charles Fefferman · who wrote the problem for the Clay Institute",
             "view": {
-              "text": "“I'm very happy the problem is solved” — the man who wrote the problem welcomes the result, even though it still faces many rounds of checking.",
+              "text": "“I'm very happy the problem is solved.”",
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "kind": "opinion"
             }
           },
           {
-            "who": "Tristan Buckmaster · NYU, the rival team",
+            "who": "Tristan Buckmaster · NYU",
             "view": {
-              "text": "He called one of his own team's three papers “AI slop” and apologised: machine-written proofs can be very hard to read.",
+              "text": "He called one of his own team's papers “AI slop” and apologised.",
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "kind": "opinion"
             }
           },
           {
-            "who": "Those asking about money and credit",
+            "who": "Sébastien Bubeck · OpenAI",
             "view": {
-              "text": "According to Sébastien Bubeck (OpenAI), the proof hunt cost a few million dollars in compute; who came first, the two teams still don't agree.",
+              "text": "The search for the solution cost a few million dollars in computing.",
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "claimBy": "OpenAI"
@@ -245,7 +221,7 @@
           {
             "who": "Math & AI advisory group · IAS, Princeton",
             "view": {
-              "text": "This is “a significant event in mathematics” — but the future of mathematics cannot just be sitting and understanding results produced by AI labs.",
+              "text": "This is “a significant event in mathematics” — but the future of mathematics cannot just be sitting and understanding results produced by AI companies.",
               "asOf": "2026-10-15",
               "source": "aa-openai-math",
               "kind": "opinion"
@@ -253,17 +229,11 @@
           }
         ],
         "common": {
-          "text": "Agreed: AI has done real mathematics, and it must be checked. Disputed: whose credit, at what cost, and what role people play.",
+          "text": "A solution made by AI raises three questions: is it right, whose credit is it, and what is left for people to do.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
-      },
-      "insight": {
-        "text": "A maths result made by AI opens three questions: is it right, whose credit is it, and what is left for people to do.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
       }
     }
   },

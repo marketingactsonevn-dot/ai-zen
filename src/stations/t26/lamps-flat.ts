@@ -193,13 +193,14 @@ export function lampsFlat(ctx: SceneCtx) {
     btns.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)))
     aim()
     card.replaceChildren(
-      h('p', { class: 'p2-eyebrow' }, `${i + 1} · ${l.en}`),
-      h('p', { class: 't26l-name' }, l.name),
+      h('p', { class: 'p2-eyebrow' }, fill(K.eyebrow, { i: i + 1, n, name: l.name, en: l.en })),
       h('p', { class: 'p2-question t26l-asks' }, l.asks),
-      ctx.fact(F(l.view)))
+      ctx.fact(F(l.view)),
+      h('p', { class: 't26l-decode' }, K.decode))
     card.hidden = false
     if (!card.hasAttribute('aria-live')) card.setAttribute('aria-live', 'polite')
     ctx.chime('soft')
+    if (lit.size < n) ctx.prompt(fill(K.promptNext, { n: n - lit.size }))
     if (lit.size === n && !done) {
       done = true
       ctx.insight(F(K.insight), F(K.detail))

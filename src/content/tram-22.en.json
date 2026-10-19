@@ -1,24 +1,25 @@
 {
   "id": 22,
-  "kicker": "Every word lights a lantern toward the words it needs.",
-  "summary": "Every word looks around to understand itself.",
+  "kicker": "When it reads, an AI lets every word look around the whole sentence — like lighting a lantern toward the words it needs.",
+  "summary": "An AI understands each word by looking at the whole sentence — and in a long text, it remembers the start and the end best.",
   "quiz": {
-    "q": "In “The cat didn’t catch the mouse because it was too fast”, what does the attention mechanism help an AI do?",
+    "q": "You paste a 50-page document into an AI and need it to do one thing right. Where should the request go?",
     "options": [
-      "Count how many words the sentence has",
-      "Weigh which word “it” should connect to, so the meaning comes out right",
-      "Translate the sentence into another language first, then understand it",
-      "Look up every word in an online dictionary"
+      "In the middle, next to the most relevant part",
+      "At the start or at the end of it",
+      "Anywhere — the AI reads it all evenly",
+      "In capital letters so the AI notices"
     ],
     "answer": 1,
-    "explain": "Each word scores every other word in the sentence; here “fast” pulls “it” toward the mouse."
+    "explain": "In a long text, an AI usually remembers the start and the end better than the middle."
   },
   "scenes": {
     "lantern": {
       "label": "Lanterns on a sentence",
       "art": "Looking down from a wooden bridge: under a small high moon, a river of ink winds in an S from the foot of the bridge to the horizon. Each word of the sentence is a paper lantern drifting with the current, large when near, small when far; the last two words wait unlit in an eddy. Touch the word “it”: its lantern flares, lifts off the water and casts threads of moonlight to every word, the brightest to the word it needs most. Drag the lantern from the eddy to the end of the sentence and the brightest thread swings elsewhere.",
-      "prompt": "Touch the word “it”",
-      "swapPrompt": "Drag the eddy’s lantern to the end",
+      "prompt": "Touch the word “it” — who is it?",
+      "swapPrompt": "Drag the eddy’s lantern onto the word “slow”",
+      "decode": "The brighter the thread, the more the AI leans on that word",
       "words": ["The", "cat", "didn’t", "catch", "the", "mouse", "because", "it", "was", "too"],
       "pivot": 7,
       "pivotAria": "Touch the word “it” to see which word it attends to (or press Enter)",
@@ -46,12 +47,12 @@
         "kind": "illustration"
       },
       "insight": {
-        "text": "Attention: every word scores every other word in the sentence, then borrows the most meaning from the words that score highest.",
+        "text": "Change only the last word and “it” turns from the cat into the mouse: an AI understands a word by looking at the whole sentence.",
         "asOf": "2026-10-15",
         "source": "vaswani-2017"
       },
       "detail": {
-        "text": "Probing the BERT model in 2019, researchers found “attention heads” that link pronouns to the people and things they refer to quite accurately.",
+        "text": "This way of reading is called attention. In 2019, probing the BERT model, researchers found it really does link pronouns to the right person or thing mentioned.",
         "asOf": "2026-10-15",
         "source": "clark-2019"
       }
@@ -61,106 +62,133 @@
       "art": "A moon pond in a night stone garden. Four stone lanterns stand at its corners, each in its own shade of ink: deep black, pale grey, smoky blue, vermilion. Nine paper rafts on the water carry the nine words of the sentence. Light a lantern: a cone of light falls through the mist onto the pond, and the words that lantern joins arc up as bands of light, each lantern at its own height. From above the bands tangle; bring your eye down to the water and they part into four tiers.",
       "aria": "A 3D moon pond with four stone lanterns and nine word rafts",
       "hint": "Drag to turn the garden, scroll or pinch to come closer, double-tap or press Home to return. Arrow keys turn it too; keys 1 to 4 light the lanterns.",
-      "prompt": "Light each lantern",
-      "orbit": "Drag to bring your eye down to the water",
+      "prompt": "Light all 4 lanterns ({n}/4)",
+      "orbit": "Drag down to look along the water",
+      "decode": "Each lantern = one way the AI looks at the sentence",
       "words": ["The teacher", "praised", "the essay", "by", "Lan", "because", "it", "was", "superb"],
       "heads": [
         {
-          "name": "Who did it",
-          "relation": "links the action to whoever did it",
-          "aria": "Light lantern 1: links the action to whoever did it",
+          "name": "Who did it?",
+          "relation": "praised ← The teacher",
+          "aria": "Light lantern 1: links “praised” to who praised, “The teacher”",
           "links": [[1, 0]]
         },
         {
-          "name": "Did what",
-          "relation": "links the action to what it was done to",
-          "aria": "Light lantern 2: links the action to what it was done to",
+          "name": "Did what?",
+          "relation": "praised → the essay",
+          "aria": "Light lantern 2: links “praised” to what was praised, “the essay”",
           "links": [[1, 2]]
         },
         {
-          "name": "Neighbour",
-          "relation": "looks at the word just before",
+          "name": "The word before",
+          "relation": "each word looks at the word just before it",
           "aria": "Light lantern 3: each word looks at the word just before it",
           "links": [[1, 0], [2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 7]]
         },
         {
-          "name": "Who is “it”",
-          "relation": "links a pronoun to what was mentioned earlier",
-          "aria": "Light lantern 4: links the word “it” to what was mentioned earlier",
+          "name": "What is “it”?",
+          "relation": "it → the essay",
+          "aria": "Light lantern 4: links the word “it” to “the essay”",
           "links": [[6, 2]]
         }
       ],
       "allLit": "Four gazes, one sentence",
       "headsNote": {
-        "text": "One clear relation per lantern is a simplified drawing; real attention heads are usually messier.",
+        "text": "Real heads usually mix more kinds than the drawing shows.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "illustration"
       },
       "insight": {
-        "text": "Multi-head attention: several heads read the same sentence, each catching one kind of relation: who did it, did what, who “it” is.",
+        "text": "Four lanterns light the same sentence, each catching a different link — the AI reads in several ways at once.",
         "asOf": "2026-10-15",
         "source": "clark-2019"
       },
       "detail": {
-        "text": "The original 2017 Transformer ran 8 attention heads in parallel in every layer.",
+        "text": "Each such “lantern” is called an attention head. The original Transformer (2017) had 8 heads per layer.",
         "asOf": "2026-10-15",
         "source": "vaswani-2017"
       },
-      "caveat": {
-        "text": "But a lit lantern is not a full explanation: two very different attention patterns can still give the same answer.",
+      "detail2": {
+        "text": "GPT-3 has 96 per layer.",
         "asOf": "2026-10-15",
-        "source": "jain-wallace-2019"
+        "source": "gpt3-2020"
       }
     },
     "layers": {
       "label": "Layer upon layer",
       "art": "A deep pond cut out like a block and floating in the night: water, lily pads and the moon on top; a glass-clear cut face where the water lies in bands like silk, the ink deepening toward the bottom; rock walls with roots; 96 fine marks along the cut edge in three bands. A pebble carved with the word “it” sinks; with each band the word gains another coat of ink, until at the bottom it rests beside a scroll: the essay.",
-      "prompt": "Drop the pebble to the bottom",
+      "prompt": "Drag the “it” pebble down",
+      "sentence": "The teacher praised the essay by Lan because it was superb",
       "word": "it",
-      "slider": "Depth",
-      "sliderAria": "Drag to take the word “it” through the layers (← → keys)",
+      "slider": "The AI’s layers",
+      "ruler": "Each mark = one layer (GPT-3 has 96)",
+      "sliderAria": "Drag the “it” pebble down through the layers (← → keys)",
       "valueText": "Layer {n}/{total}",
       "stages": [
-        { "at": "Shallow layer", "reads": "“it”: a pronoun, after “because”" },
-        { "at": "Middle layer", "reads": "“it”: a thing, not a person" },
-        { "at": "Deep layer", "reads": "“it” = Lan’s essay, the thing praised as superb" }
+        {
+          "at": "First layers",
+          "reads": "“it” is a pronoun"
+        },
+        {
+          "at": "Middle layers",
+          "reads": "“it” is a thing, not a person"
+        },
+        {
+          "at": "Deep layers",
+          "reads": "“it” = Lan’s essay"
+        }
       ],
       "stagesNote": {
-        "text": "Three steps is an illustration; real models have dozens of layers, each shifting the meaning a little.",
+        "text": "The three steps here are an illustration.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "illustration"
       },
       "insight": {
-        "text": "Models stack many attention layers (GPT-3 has 96); with each one, a word’s meaning is inked in further by its context.",
-        "asOf": "2026-10-15",
-        "source": "gpt3-2020"
-      },
-      "detail": {
-        "text": "Probing BERT, Tenney’s team (2019) found a fairly steady order: lower layers capture word classes and grammar; only higher ones link pronouns to the right thing.",
+        "text": "The more layers it passes, the clearer “it” becomes to the AI: from a pronoun to exactly Lan’s essay.",
         "asOf": "2026-10-15",
         "source": "tenney-2019"
+      },
+      "detail": {
+        "text": "In 2019, probing the BERT model, researchers found the first layers handle grammar, and only later layers link a pronoun to the right thing.",
+        "asOf": "2026-10-15",
+        "source": "tenney-2019"
+      },
+      "layers96": {
+        "text": "GPT-3 has 96 such layers.",
+        "asOf": "2026-10-15",
+        "source": "gpt3-2020"
       }
     },
     "window": {
       "label": "How far the window reaches",
-      "art": "In a tea room, facing a long wall of paper sliding doors; the moon is a glow behind the paper. Drag the moon through the years and panel after panel slides open onto a deep garden: at each milestone a stele rises carrying what could be read in one go, from a single letter, a few pages, a novel, a stack of books, a whole bookshelf, to today’s library of book-steles running to the horizon.",
+      "art": "In a tea room, facing a long wall of paper sliding doors; the moon is a glow behind the paper. Drag the moon through the years and panel after panel slides open onto a deep garden: at each milestone a stele rises carrying what an AI could read in one go: a single letter, a few pages, a novel, and today a stack of about ten; far back in the mist stands a pale bookshelf, the 10-million figure its maker states itself. At today a long scroll unrolls on the mats: drag the vermilion seal “what matters” along it, and the reading lamp burns bright at both ends of the scroll and dims in the middle.",
       "prompt": "Drag the moon through the years",
+      "prompt2": "Drag the vermilion seal along the scroll",
+      "decode": "The window = how much text an AI can read in one go. 1 million tokens ≈ over 700,000 words.",
+      "claim": "10 million · Meta's own claim",
+      "sealLabel": "what matters",
+      "sealAria": "The vermilion seal “what matters”: drag it along the scroll from start to end (← → keys)",
+      "ticks": [
+        "start",
+        "middle",
+        "end"
+      ],
       "tide": {
         "milestones": [
           {
             "date": "2017-06",
-            "label": "Attention Is All You Need",
+            "label": "The Transformer arrives",
             "fact": {
-              "text": "Eight researchers publish the Transformer: a model built on attention alone, dropping word-by-word reading entirely.",
+              "text": "Eight researchers publish the Transformer: the AI reads the whole sentence at once through attention instead of word by word — which later lets it read very long texts.",
               "asOf": "2026-10-15",
               "source": "vaswani-2017"
             }
           },
           {
             "date": "2020-05",
-            "label": "GPT-3",
+            "label": "GPT-3 · a few pages",
             "fact": {
               "text": "GPT-3 reads at most 2,048 tokens at a time: a few pages of text.",
               "asOf": "2026-10-15",
@@ -169,65 +197,34 @@
           },
           {
             "date": "2023-05",
-            "label": "Claude 100K",
+            "label": "Claude · a novel",
             "fact": {
-              "text": "Anthropic expands Claude’s context window to 100,000 tokens, about 75,000 words: enough to read a short novel in one go.",
+              "text": "Anthropic raises how much Claude can read to 100,000 tokens, about 75,000 words: enough for a short novel in one go.",
               "asOf": "2026-10-15",
               "source": "anthropic-100k"
-            }
-          },
-          {
-            "date": "2024-02",
-            "label": "Gemini 1.5 Pro",
-            "fact": {
-              "text": "Google previews Gemini 1.5 Pro with 1 million tokens, over 700,000 words; the company says it tested up to 10 million in the lab.",
-              "asOf": "2026-10-15",
-              "source": "google-gemini-15",
-              "claimBy": "Google"
-            }
-          },
-          {
-            "date": "2025-04",
-            "label": "Llama 4 Scout",
-            "fact": {
-              "text": "Meta announces Llama 4 Scout with a 10-million-token window, a figure the company states itself.",
-              "asOf": "2026-10-15",
-              "source": "meta-llama4",
-              "claimBy": "Meta"
-            }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Today",
-            "fact": {
-              "text": "Many leading models now read about 1 million tokens; since March 2026 Anthropic offers this for Claude Opus 4.6 and Sonnet 4.6.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-1m-ga"
-            },
-            "compare": {
-              "before": "2,048",
-              "after": "1,000,000",
-              "beforeLabel": "GPT-3 · 2020",
-              "afterLabel": "Today"
             }
           }
         ],
         "horizon": {
-          "text": "The window will probably widen further. The harder question: does the AI use every word in the middle well, or mostly remember the start and the end?",
+          "text": "Many leading models now read about 1 million tokens at a time — some 9–10 such novels.",
           "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "prediction"
+          "source": "anthropic-1m-ga"
         }
       },
       "insight": {
-        "text": "From 2,048 to about 1 million tokens: the context window grew nearly 500-fold in six years, but reading more is not remembering evenly.",
-        "asOf": "2026-10-15",
-        "source": "anthropic-1m-ga"
-      },
-      "detail": {
-        "text": "A 2023 study (Liu et al.): models find information best at the start or end of a long text, worse in the middle. Tip: put what matters at the start or end of your prompt.",
+        "text": "An AI can read a whole stack of books, but it remembers the start and the end best — the middle is easily missed.",
         "asOf": "2026-10-15",
         "source": "lost-in-middle"
+      },
+      "detail": {
+        "text": "Tip: put what matters at the start or end of a long prompt (Liu et al., 2023).",
+        "asOf": "2026-10-15",
+        "source": "lost-in-middle"
+      },
+      "growth": {
+        "text": "From GPT-3 (2,048 tokens, 2020) to today (about 1 million), the window has grown nearly 500-fold.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-1m-ga"
       }
     }
   },

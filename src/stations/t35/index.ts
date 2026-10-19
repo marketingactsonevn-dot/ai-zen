@@ -11,11 +11,13 @@ const S = C.scenes
 const station: StationModule = {
   content: C,
   scenes: [
-    { label: S.ladder.label, mount: ladderScene },
+    // one concrete skill first, then how a good run becomes one, then how far to automate, where you approve, and
+    // last that a skill travels between tools (audit v2 B: the station opened with five terms at once)
     { label: S.scroll.label, mount: scrollScene },
-    { label: S.moons.label, mount: moonsScene },
     { label: S.spec.label, mount: specScene },
-    { label: S.line.label, mount: lineScene },
+    { label: S.ladder.label, text: 'tr', mount: ladderScene },
+    { label: S.line.label, text: 'br', mount: lineScene },
+    { label: S.moons.label, mount: moonsScene },
   ],
 }
 export default station

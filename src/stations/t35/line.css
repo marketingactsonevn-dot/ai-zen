@@ -198,6 +198,8 @@
   width: 100%;
   height: 100%;
   overflow: visible;
+  /* the halo spreads far over the next lanterns: only the lantern's own box takes the touch */
+  pointer-events: none;
 }
 .t35d-lamp .p2p-lamp-halo {
   opacity: 0;
@@ -344,6 +346,18 @@
     transform: translateY(-3px) scale(1.08);
   }
 }
+/* a floor spot is a thin ellipse: its touch area reaches 44 px tall */
+.t35d-spot::before {
+  content: '';
+  position: absolute;
+  inset: -14px -2px;
+}
+/* H3: while a stone is carried, every spot wakes in vermilion; a human station the boat rushed past stays marked */
+.t35d.carry .t35d-chalk,
+.t35d-spot.missed .t35d-chalk {
+  fill: var(--vermilion);
+  opacity: 0.6;
+}
 .t35d-spot:focus-visible {
   outline: 2px solid var(--vermilion);
   outline-offset: 2px;
@@ -428,10 +442,10 @@
 }
 .t35d-boat {
   position: absolute;
-  left: -20px;
-  top: -14px;
-  width: 40px;
-  height: 24px;
+  left: -40px;
+  top: -28px;
+  width: 80px;
+  height: 48px;
   opacity: 0;
   pointer-events: none;
 }
@@ -443,9 +457,50 @@
 .t35d-boat-paper {
   fill: var(--firefly);
 }
+.t35d.ready .t35d-boat,
 .t35d.running .t35d-boat,
 .t35d.lost .t35d-boat {
   opacity: 1;
+}
+/* the boat never sets off by itself: its button waits by the first lantern once the cord is whole */
+.t35d-release {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 22;
+  min-height: 44px;
+  padding: 0.4em 0.9em;
+  border: 0;
+  translate: -50% 0;
+  font: 500 14px/1.2 var(--serif);
+  color: var(--ink);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease-soft);
+}
+.t35d.ready:not(.running) .t35d-release {
+  opacity: 1;
+  pointer-events: auto;
+}
+.t35d-release:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: 2px;
+}
+.t35d-bowl-label {
+  position: absolute;
+  left: 100%;
+  top: 18%;
+  width: 11em;
+  margin-left: 6px;
+  font: 400 13px/1.35 var(--serif);
+  color: var(--ink-2);
+  text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper);
+  pointer-events: none;
+}
+.t35d-done {
+  font-weight: 600;
+  margin-bottom: 0.3em !important;
 }
 .t35d.lost .t35d-boat {
   transition: opacity 1.2s 0.3s;
@@ -495,7 +550,7 @@
   margin: 0;
   animation: p2-fade 1s 0.4s var(--ease-soft) both;
 }
-.t35d.port.is-done .t35d-note {
+.t35d.is-done .t35d-note {
   display: none;
 }
 .t35d-doorfact {
@@ -507,4 +562,13 @@
 .t35d.still * {
   transition: none !important;
   animation: none !important;
+}
+/* phone: the bowl's words sit above it (the words of the run take the strip to its right) */
+.t35d.port .t35d-bowl-label {
+  left: 0;
+  top: auto;
+  bottom: 100%;
+  width: 10em;
+  margin: 0 0 4px;
+  font-size: 12px;
 }

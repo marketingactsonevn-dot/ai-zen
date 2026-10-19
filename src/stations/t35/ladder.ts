@@ -5,12 +5,14 @@ import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onSize, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon, pine, reeds, toro, wash } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
+import { guide } from '../../ui/part2/guide'
 import { C } from './content'
 import { F, P, f1, fern, gdefs, ink, roof, slab, wood, woodG } from './kit'
 
 const K = C.scenes.ladder
 const N = K.rungs.length
-const P0 = -0.5 // the camera starts at the foot of the stairs, the report lying on the ground
+const T = K.tasks
+const P0 = -0.5 // the camera starts at the foot of the stairs, the task scrolls lying on the ground
 const W8 = [3.4, 2.8, 2.2, 1.6, 1.15, 0.8] // the red thread from the viewer's hand, thinner at each step up
 const side = (i: number) => (i % 2 ? 1 : -1) // terraces zig-zag: 0 left, 1 right, …
 
@@ -22,11 +24,14 @@ type Geo = {
 }
 
 /**
- * Scene 1 (hero) — five dry-stone terraces zig-zag up a hillside to a lamp-lit workshop. Each terrace is its own painted
- * plane placed by a small perspective camera (farther = smaller, higher, mistier); the camera cranes up one terrace at a
- * time while six layers slide at their own rates (moon, ridges, pines, mist, terraces, ferns). At each stop the terrace's
- * stone lantern lights its moss and wall, and its little scene plays as the subject of the frame. A red thread runs from
- * the weekly report along the terrace edge to the viewer's hand, thinner at every step. Reduced motion / low: cuts.
+ * Scene 1 (hero) — four dry-stone terraces zig-zag up a hillside to a lamp-lit workshop: Prompt, Skill, Workflow, Agent
+ * (a workflow's laid-out route sits below an agent that picks its own). Three task scrolls lie at the foot; carry each up
+ * to the lowest terrace that can do it (drag the scroll up — the camera cranes after it — or tap a terrace's stone).
+ * Too low: the terrace says what it can't do and the scroll slides back; too high: the same, and on the Agent terrace the
+ * red thread to the viewer's hand snaps. Just enough: the terrace's lantern lights and its little scene plays, the scroll
+ * stays. Dragging anywhere else (wheel, arrows) only looks up and down the stairs. Each terrace is its own painted plane
+ * placed by a small perspective camera (farther = smaller, higher, mistier) while six layers slide at their own rates.
+ * The hook / schedule is not a rung: it starts any rung by itself (the board at the foot). Reduced motion / low: cuts.
  */
 export function ladderScene(ctx: SceneCtx) {
   gdefs()
@@ -45,10 +50,11 @@ export function ladderScene(ctx: SceneCtx) {
   // one group per terrace: its painting, a veil (mist / night), the carved inscription stone, its lamp's slip, its little scene
   const steps = K.rungs.map((r, i) => {
     const wordsId = `t35l-w${i}`
-    const fact = r.id === 'workflow' ? K.facts[0] : r.id === 'hook' ? K.facts[1] : null
-    const ex = h('p', { class: 't35l-ex' }, ...(i === 0 ? r.example.split(' ').flatMap((w, k) => [h('span', { style: `--k:${k}` }, w), ' ']) : [r.example]))
+    const fact = r.id === 'workflow' ? K.facts[0] : null
+    // the verdict when a scroll is carried here (too low / too high), carved under what the rung is
+    const ex = h('p', { class: 't35l-ex' })
     const words = h('div', { class: 't35l-words', id: wordsId }, h('p', { class: 't35l-what' }, r.what), ex)
-    const btn = h('button', { class: 't35l-rung', type: 'button', 'aria-label': fill(K.rungAria, { n: i + 1, name: r.name }), 'aria-describedby': wordsId, 'aria-pressed': 'false', onClick: () => !dragged && go(i) },
+    const btn = h('button', { class: 't35l-rung', type: 'button', 'aria-label': fill(K.rungAria, { n: i + 1, name: r.name }), 'aria-describedby': wordsId, 'aria-pressed': 'false', onClick: () => !dragged && place(i) },
       h('span', { class: 't35l-n', 'aria-hidden': 'true' }, String(i + 1)), h('span', { class: 't35l-name' }, r.name))
     const face = h('div', { class: 't35l-face' }, btn, words)
     const art = s('svg', { class: 't35l-art', 'aria-hidden': 'true' })
@@ -63,30 +69,43 @@ export function ladderScene(ctx: SceneCtx) {
   })
   const houseArt = s('svg', { class: 't35l-art', 'aria-hidden': 'true' })
   const house = h('div', { class: 't35l-step t35l-house', 'aria-hidden': 'true' }, houseArt)
-  // the weekly report: a little rolled scroll with a red cord and its tag; it rides in the group of the terrace it rests on
-  const roll = h('div', { class: 't35l-roll', 'aria-hidden': 'true' },
+  // the task scrolls: little rolled scrolls with a red cord and a tag; each rides in the group of the terrace it rests on
+  const rolls = T.map((t) => h('div', { class: 't35l-roll', 'aria-hidden': 'true' },
     s('svg', { viewBox: '0 0 60 26' },
       s('ellipse', { class: 't35k-contact', cx: 31, cy: 24, rx: 28, ry: 2.4 }),
       s('rect', { class: 't35l-paper', x: 7, y: 6, width: 46, height: 15, rx: 7 }),
       ink(stroke([[9, 7], [30, 6.2], [51, 7]], 1.6, 0.1, 0.1, 0.3) + stroke([[9, 20], [30, 21], [51, 20]], 2.4, 0.1, 0.1, 0.3), 't35k-edge'),
       s('path', { class: 't35l-knob', d: 'M2 8Q1 13.5 2 19L8 20L8 7Z M58 8Q59 13.5 58 19L52 20L52 7Z' }),
       ink(stroke([[28, 5], [30, 13.5], [28, 22]], 2.6, 0.1, 0.1, 0.5) + stroke([[30, 13.5], [36, 24]], 1.5, 0.1, 0.5, 0.2), 't35l-tie')),
-    h('span', { class: 't35l-tag t35k-paper' }, K.task))
-  // the scale note: a small carved board on two stakes at the foot of the stairs
-  const plank = h('div', { class: 't35l-plank' }, ctx.fact(F(K.scale), 'p'))
+    h('span', { class: 't35l-tag t35k-paper' }, t.text)))
+  const rollSay = h('p', { class: 'visually-hidden', 'aria-live': 'polite' })
+  // the hook is not a rung: a small carved board on two stakes at the foot of the stairs says it starts any rung by itself
+  const plank = h('div', { class: 't35l-plank' }, h('p', null, h('strong', null, K.hook.name), ' — ', K.hook.what))
   steps[0].el.append(plank)
   // far terraces sit behind near ones: back to front in the DOM
   world.append(house, ...[...steps].reverse().map((x) => x.el))
   // on a phone the terrace's example and its lamp's slip sit in a strip along the bottom of the frame
   const footbar = h('div', { class: 't35l-footbar' })
   const root = h('div', { class: `t35 t35l${still ? ' still' : ''}`, role: 'group', 'aria-label': K.label },
-    h('p', { class: 'visually-hidden' }, K.art), sky, far, woods, haze, world, front, thread, footbar)
+    h('p', { class: 'visually-hidden' }, K.art), h('p', { class: 'visually-hidden' }, K.task), rollSay, sky, far, woods, haze, world, front, thread, footbar)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
 
+  // ── guide: a dot on the scroll in hand, an ink arrow up the stairs, the count; while a scroll is carried the terraces'
+  // stones show a dashed edge where it can go (CSS .carrying: they ride the camera, nothing to measure)
+  const GD = guide(ctx)
+  const next = GD.dot(rolls[0], { dir: [0, -1] })
+  const count = GD.count(K.count, T.length, () => (g ? [g.W * (g.port ? 0.5 : 0.13), g.H * 0.07] : [0, 0]))
+  const arrow = GD.gesture('drag-v', () => (g ? [g.W * (g.port ? 0.88 : 0.8), g.H * 0.62] : [0, 0]), { r: 34 })
+  const lift = (on: boolean) => root.classList.toggle('carrying', on)
+
   let g: Geo | null = null
   let cx: number[] = [] // each terrace's centre, px off the frame's middle
-  let at = -1 // the terrace the report rests on (-1 = the foot)
+  let at = -1 // the terrace under the camera (-1 = the foot)
+  let cur = 0 // the scroll in hand (T.length = all placed)
+  const where = T.map(() => -1) // the terrace each scroll rests on (-1 = the foot)
+  let busy = false // a scroll is on its way up, or sliding back
+  let carry: { x: number; y: number; w: number } | null = null // the scroll being dragged up, in px of the frame
   let p = P0, from = P0, to = P0, u = 1 // camera: p = terrace under the camera (fractional while it moves)
   const par = { x: 0, y: 0, tx: 0, ty: 0 }
   let dragged = false
@@ -155,9 +174,10 @@ export function ladderScene(ctx: SceneCtx) {
     })
   }
 
-  /** Camera arrived: light the terrace, play its little scene, draw the thread back to the hand. */
+  /** Camera arrived: the terrace under it shows its words; a scroll just carried here gets its verdict. */
   function settle() {
     drawThread()
+    GD.refresh()
     if (at < 0) return
     const i = at
     if (g?.port) {
@@ -168,30 +188,21 @@ export function ladderScene(ctx: SceneCtx) {
       x.el.classList.toggle('now', k === i)
       x.el.classList.toggle('next', k === i + 1)
       x.el.classList.toggle('past', k < i)
-      x.btn.setAttribute('aria-pressed', String(k === i))
+      x.btn.setAttribute('aria-pressed', String(cur < T.length && where[cur] === k))
     })
-    if (!seen.has(i)) {
-      seen.add(i)
-      steps[i].el.classList.add('on')
-      root.classList.add(`on-${i}`)
-      ctx.chime(i === N - 1 ? 'ok' : 'tap')
-      if (seen.size === N) ctx.insight(F(K.insight), K.detail)
-    }
+    if (busy && cur < T.length && where[cur] === i) judge(i)
     veils()
   }
 
-  /** Carry the report to terrace i (−1 = the foot): it hops into that terrace's group and the camera cranes after it. */
+  /** Look up or down the stairs (−1 = the foot): only the camera moves. */
   function go(i: number) {
     if (!g) return
     i = clamp(i, -1, N - 1)
-    const prev = at
     at = i
     root.dataset.at = String(i)
     root.classList.toggle('up', i >= 0)
     thread.classList.remove('in')
     footbar.classList.remove('in')
-    seatRoll()
-    if (!still && prev !== i) roll.animate([{ transform: `${roll.style.transform} translateY(-34px)`, opacity: 0 }, { transform: roll.style.transform, opacity: 1 }], { duration: 700, delay: 350, easing: 'cubic-bezier(.3,1.4,.5,1)', fill: 'backwards' })
     steps.forEach((x) => x.el.classList.remove('now', 'next'))
     veils()
     const tgt = i < 0 ? P0 : i
@@ -209,23 +220,91 @@ export function ladderScene(ctx: SceneCtx) {
     loop.start()
   }
 
-  /** The report on the front of terrace `at` (or on the ground at the foot), in that terrace's own coordinates. */
-  function rollAt(i: number): Pt {
-    const G = g!
-    if (i < 0) return [G.rw * (G.port ? 0.24 : 0.12), G.wallH + G.treadH * (G.port ? 0.3 : 0.42)]
-    return [side(i) * G.rw * (G.port ? 0.3 : 0.32), -G.treadH * 0.16]
-  }
-  function seatRoll() {
-    const G = g!
-    const [x, y] = rollAt(at)
-    const w = clamp(G.rw * 0.09, 54, 80)
-    steps[Math.max(0, at)].el.append(roll)
-    roll.style.width = `${f1(w)}px`
-    roll.style.transform = `translate3d(${f1(x - w / 2)}px, ${f1(y - w * 0.43)}px, 0)`
-    roll.classList.toggle('flip', at >= 0 && side(at) < 0)
+  /** Carry the scroll in hand to terrace i: it hops into that terrace's group, the camera cranes after it, then the verdict. */
+  function place(i: number) {
+    if (!g || busy || cur >= T.length) return
+    busy = true
+    carry = null
+    root.classList.remove('carrying')
+    where[cur] = i
+    steps.forEach((x) => (x.ex.textContent = ''))
+    seat()
+    const r = rolls[cur]
+    if (!still) r.animate([{ transform: `${r.style.transform} translateY(-34px)`, opacity: 0 }, { transform: r.style.transform, opacity: 1 }], { duration: 700, delay: 350, easing: 'cubic-bezier(.3,1.4,.5,1)', fill: 'backwards' })
+    if (at === i) settle()
+    else go(i)
   }
 
-  function approve() {
+  /** Just enough: the lamp lights and the scroll stays. Too low or too high: say why on the stone, slide the scroll back. */
+  function judge(i: number) {
+    const t = T[cur], r = K.rungs[i] as { low?: string; high?: string }
+    if (i === t.need) {
+      seen.add(i)
+      steps[i].el.classList.add('on')
+      root.classList.add(`on-${i}`)
+      ctx.chime('ok')
+      GD.ok(steps[i].btn)
+      cur++
+      busy = false
+      count.set(cur)
+      seat()
+      if (cur === 1) arrow.done()
+      if (cur < T.length) {
+        next.at(rolls[cur])
+        ctx.prompt(fill(K.left, { n: T.length - cur }))
+        rollSay.textContent = fill(K.rollAria, { task: T[cur].text })
+      } else {
+        next.done()
+        root.classList.add('all')
+        ctx.insight(F(K.insight), [K.detail, F(K.facts[1])])
+      }
+      return
+    }
+    const why = (i < t.need ? r.low : r.high) ?? ''
+    steps[i].ex.textContent = why
+    rollSay.textContent = why
+    // on the Agent terrace the thread to the viewer's hand snaps: the job runs and nobody checks it
+    if (i === N - 1) thread.classList.add('snap')
+    GD.wrong(K.again, steps[i].btn)
+    ctx.chime('low')
+    later(() => {
+      thread.classList.remove('snap')
+      where[cur] = -1
+      busy = false
+      seat()
+      drawThread()
+    }, 1900)
+  }
+  const later = (fn: () => void, ms: number) => {
+    const tm = setTimeout(fn, still ? 300 : ms)
+    ctx.onCleanup(() => clearTimeout(tm))
+  }
+
+  /** A scroll on the front of terrace i (or on the ground at the foot, the waiting ones side by side), in that terrace's own coordinates. */
+  function rollAt(i: number, slot = 0): Pt {
+    const G = g!
+    if (i < 0) return [G.rw * (G.port ? 0.24 : 0.12) - slot * G.rw * (G.port ? 0.2 : 0.09), G.wallH + G.treadH * (G.port ? 0.3 : 0.42) + slot * 10]
+    return [side(i) * G.rw * (G.port ? 0.3 : 0.32), -G.treadH * 0.16]
+  }
+  /** Every scroll where it rests; the one in hand (not being dragged) shows its tag. */
+  function seat() {
+    const G = g!
+    const w = clamp(G.rw * 0.09, 54, 80)
+    let slot = 0
+    rolls.forEach((r, k) => {
+      if (carry && k === cur) return
+      const i = where[k]
+      const [x, y] = rollAt(i, i < 0 ? slot++ : 0)
+      steps[Math.max(0, i)].el.append(r)
+      r.style.width = `${f1(w)}px`
+      r.style.transform = `translate3d(${f1(x - w / 2)}px, ${f1(y - w * 0.43)}px, 0)`
+      r.classList.toggle('flip', i >= 0 && side(i) < 0)
+      r.classList.toggle('cur', k === cur)
+    })
+  }
+
+  function approve(e?: Event) {
+    e?.stopPropagation()
     root.classList.add('approved')
     ctx.chime('soft')
   }
@@ -234,32 +313,37 @@ export function ladderScene(ctx: SceneCtx) {
   function drawThread() {
     if (!g) return
     const G = g
-    const i = Math.max(0, at)
+    if (carry) return
+    // the thread runs from the scroll in hand (all placed: the last one) back to the viewer's hand
+    const ci = where[Math.min(cur, T.length - 1)]
+    const i = Math.max(0, ci)
     const v = view(i, p)
     const S = (q: Pt): Pt => [v.x + q[0] * v.k, v.y + q[1] * v.k]
-    const [rx, ry] = rollAt(at)
+    const [rx, ry] = rollAt(ci)
     let pts: Pt[]
-    if (at < 0) {
+    if (ci < 0) {
       const a = S([rx + 20, ry + 4])
       const dx = G.port ? G.W * 0.06 : -G.W * 0.06
       pts = curve(a, [a[0] + dx * 0.2 + G.W * 0.03, (a[1] + G.H) / 2 + 20], [a[0] + dx, G.H + 8], 16)
     } else {
-      const sd = side(at)
+      const sd = side(ci)
       const end = sd * (G.rw / 2 + 4)
       const a = S([rx + sd * 24, ry + 6]), b = S([end - sd * 14, 3]), c = S([end + sd * 6, G.wallH * 0.55]), d = S([end + sd * 10, G.wallH + 6])
       const e: Pt = [clamp(d[0] + sd * G.W * 0.03, G.W * 0.03, G.W * 0.97), G.H + 8]
       pts = [...curve(a, [(a[0] + b[0]) / 2, Math.max(a[1], b[1]) + 3], b, 8), ...curve(b, [b[0] + sd * 8, b[1] + 4], c, 6).slice(1), ...curve(c, [c[0] + sd * 2, (c[1] + d[1]) / 2], d, 6).slice(1), ...curve(d, [d[0] + sd * 18, (d[1] + e[1]) / 2], e, 10).slice(1)]
     }
     thread.setAttribute('viewBox', `0 0 ${f1(G.W)} ${f1(G.H)}`)
-    thread.replaceChildren(ink(stroke(pts, W8[at + 1], 0.02, 0.02, 0.7), 't35l-red'))
+    thread.replaceChildren(ink(stroke(pts, W8[ci + 1], 0.02, 0.02, 0.7), 't35l-red'))
     thread.classList.add('in')
   }
 
-  // ── drag (finger or mouse) cranes the camera directly; release settles on a terrace
-  let drag: { id: number; y: number; p0: number } | null = null
+  // ── drag (finger or mouse) cranes the camera directly; release settles on a terrace. Dragging the scroll in hand carries
+  // it up with the camera: let go and it is placed on the terrace under the camera (or back on the ground near the foot)
+  let drag: { id: number; y: number; p0: number; box: DOMRect | null } | null = null
   root.addEventListener('pointerdown', (e) => {
     if (e.button || !g) return
-    drag = { id: e.pointerId, y: e.clientY, p0: p }
+    const onRoll = cur < T.length && !busy && where[cur] < 0 && rolls[cur].contains(e.target as Node)
+    drag = { id: e.pointerId, y: e.clientY, p0: p, box: onRoll ? root.getBoundingClientRect() : null }
     dragged = false
   })
   root.addEventListener('pointermove', (e) => {
@@ -272,19 +356,46 @@ export function ladderScene(ctx: SceneCtx) {
     if (!drag || e.pointerId !== drag.id || !g) return
     const dy = e.clientY - drag.y
     if (!dragged && Math.abs(dy) < 10) return
-    if (!dragged) root.setPointerCapture(e.pointerId)
+    if (!dragged) {
+      root.setPointerCapture(e.pointerId)
+      if (drag.box) lift(true)
+    }
     dragged = true
+    if (drag.box) {
+      // the scroll rides in the hand, over the stairs, while the camera climbs under it
+      const w = rolls[cur].offsetWidth || 60
+      carry = { x: e.clientX - drag.box.left, y: e.clientY - drag.box.top, w }
+      if (rolls[cur].parentElement !== root) root.append(rolls[cur])
+      rolls[cur].style.transform = `translate3d(${f1(carry.x - w / 2)}px, ${f1(carry.y - w * 0.3)}px, 0)`
+      thread.classList.remove('in')
+    }
     if (still) return
     u = 1
-    p = clamp(drag.p0 - dy / (g.rh * 1.6), P0 - 0.2, N - 1 + 0.2)
+    p = clamp(drag.p0 - dy / (g.rh * (drag.box ? 1.2 : 1.6)), P0 - 0.2, N - 1 + 0.2)
     loop.start()
   })
   const release = (e: PointerEvent) => {
     if (!drag || e.pointerId !== drag.id) return
     const dy = e.clientY - drag.y
+    const held = !!drag.box
     drag = null
-    if (!dragged) return
+    if (!dragged) {
+      // a tap on the scroll picks it up: the stones show where it can go (then tap one)
+      if (held) lift(!root.classList.contains('carrying'))
+      return
+    }
     setTimeout(() => (dragged = false))
+    if (held) {
+      lift(false)
+      const i = still ? clamp(at + Math.round(-dy / (g!.rh * 0.6)), -1, N - 1) : p < -0.2 ? -1 : clamp(Math.round(p), 0, N - 1)
+      if (i >= 0) place(i)
+      else {
+        carry = null
+        seat()
+        go(-1)
+      }
+      return
+    }
     go(dy < -24 ? at + 1 : dy > 24 ? at - 1 : at)
   }
   root.addEventListener('pointerup', release)
@@ -393,11 +504,12 @@ export function ladderScene(ctx: SceneCtx) {
     Object.assign(houseArt.style, { left: `${f1(-hw / 2)}px`, top: `${f1(-hh2)}px`, width: `${f1(hw)}px`, height: `${f1(hh2 + G.treadH)}px` })
     houseArt.setAttribute('viewBox', `0 0 ${f1(hw)} ${f1(hh2 + G.treadH)}`)
     houseArt.replaceChildren(...workshop(hw, hh2, G.treadH, 400))
-    seatRoll()
+    seat()
     if (!still) (p = to, u = 1)
     write()
     drawThread()
     veils()
+    GD.refresh()
   }
 
   /** A flat taller than the frame (it slides down as the camera climbs): its art spans y = H − fh … H. */

@@ -500,7 +500,8 @@ export function lanternScene(ctx: SceneCtx) {
     const first = !lit
     if (first) {
       lit = true
-      note.replaceChildren(ctx.fact(K.weightsNote, 'p', 'g8-note'))
+      // what the threads mean, said once where they appear, with the illustration mark (not repeated in the detail)
+      note.replaceChildren(h('p', { class: 'g8-note g8l2-decode' }, K.decode), ctx.fact(K.weightsNote, 'p', 'g8-note'))
       delete note.dataset.off
       setRead()
       read.setAttribute('aria-live', 'polite')
@@ -527,7 +528,7 @@ export function lanternScene(ctx: SceneCtx) {
       ctx.chime('tap')
       if (!swapped) {
         swapped = true
-        ctx.insight(K.insight, [K.detail, K.weightsNote])
+        ctx.insight(K.insight, K.detail)
       }
     }
     if (ctx.reduced) return done()

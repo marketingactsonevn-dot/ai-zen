@@ -1,6 +1,5 @@
 import raw from '../../content/tram-20.json'
 import { h, s } from '../../core/dom'
-import type { Fact } from '../../core/content'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
@@ -15,7 +14,7 @@ import { brush, canvas, col, dprOf, fit, glow, mix, mossDots, paintRock, palette
 const S = raw.scenes.circle
 const P = S.perspectives as Perspectives
 const TAU = Math.PI * 2
-const PHI0 = (22 * Math.PI) / 180 // the frame's square, turned so its front post stands left of the well's middle
+const PHI0 = Math.PI / 4 // the frame square on, so the four chimes hang apart: left, front, right, and the far one above the front
 const TRAIN = 4.2 // seconds a ripple train runs before it holds still
 type V3 = [number, number, number]
 
@@ -104,7 +103,7 @@ export const circleScene: SceneDef = {
     let g: CanvasRenderingContext2D | null = null
 
     const def = perspectiveCircle(P, {
-      label: S.label, prompt: S.prompt, detail: S.insight as Fact,
+      label: S.label, prompt: S.prompt, // the three questions are the common line on screen (audit v3 20-4)
       stage(el, api) {
         host = el
         el.append(back, base, fx, front)
@@ -151,8 +150,44 @@ export const circleScene: SceneDef = {
       card.classList.toggle('left', !right)
     }
 
+    /**
+     * Audit v3 20-4 (P1: the chimes' touch boxes overlapped, so a touch on one rang another): every box at least MIN px
+     * square round its chime, then each overlapping pair is cut apart halfway between their centres, along the axis they
+     * stand furthest apart on, with a small gap. Reads only the inline styles the component has just written.
+     */
+    function unstack() {
+      const btns = [...rootOf()!.querySelectorAll<HTMLElement>('.p2c-stone')]
+      const MIN = 56, GAP = 4
+      const bx = btns.map((b) => {
+        const l = parseFloat(b.style.left), t = parseFloat(b.style.top), w = parseFloat(b.style.width), hh = parseFloat(b.style.height)
+        const cx = l + w / 2, cy = t + hh / 2, W2 = Math.max(w, MIN) / 2, H2 = Math.max(hh, MIN) / 2
+        return { cx, cy, l: cx - W2, r: cx + W2, t: cy - H2, b: cy + H2 }
+      })
+      for (let i = 0; i < bx.length; i++)
+        for (let j = i + 1; j < bx.length; j++) {
+          const a = bx[i], c = bx[j]
+          if (a.r <= c.l || c.r <= a.l || a.b <= c.t || c.b <= a.t) continue
+          if (Math.abs(a.cx - c.cx) >= Math.abs(a.cy - c.cy)) {
+            const m = (a.cx + c.cx) / 2
+            const [lo, hi] = a.cx < c.cx ? [a, c] : [c, a]
+            lo.r = Math.min(lo.r, m - GAP / 2)
+            hi.l = Math.max(hi.l, m + GAP / 2)
+          } else {
+            const m = (a.cy + c.cy) / 2
+            const [up, dn] = a.cy < c.cy ? [a, c] : [c, a]
+            up.b = Math.min(up.b, m - GAP / 2)
+            dn.t = Math.max(dn.t, m + GAP / 2)
+          }
+        }
+      btns.forEach((b, k) => {
+        const q = bx[k]
+        Object.assign(b.style, { left: `${q.l.toFixed(1)}px`, top: `${q.t.toFixed(1)}px`, width: `${(q.r - q.l).toFixed(1)}px`, height: `${(q.b - q.t).toFixed(1)}px` })
+      })
+    }
+
     function layout(geo: PondGeo) {
       if (!host) return
+      unstack()
       const stage = host.parentElement!
       dpr = dprOf(low)
       const W = geo.w, H = stageH(geo)

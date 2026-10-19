@@ -1,4 +1,4 @@
-import { h, nextId, s } from '../../core/dom'
+import { fill, h, nextId, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
@@ -253,7 +253,9 @@ export function facesScene(ctx: SceneCtx) {
     fx[i].classList.add('kept')
     ctx.chime('soft')
     live.textContent = `${K.things[i].label} — ${K.found}`
-    if (found.filter(Boolean).length === 1) ctx.insight(F(K.insights[0]), F(K.insights[0].detail))
+    const nf = found.filter(Boolean).length
+    if (nf === 1) ctx.insight(F(K.insights[0]), F(K.insights[0].detail))
+    if (nf < found.length) ctx.prompt(fill(K.left, { n: found.length - nf })) // H5: how many faces are still hidden
     if (found.every(Boolean)) {
       root.classList.add('all')
       screen.disabled = false

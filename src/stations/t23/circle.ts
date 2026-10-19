@@ -532,6 +532,8 @@ export const circleScene: SceneDef = {
     })
     const off = def.mount(ctx)
     ctx.art.querySelector('.p2c')?.prepend(h('p', { class: 'visually-hidden' }, K.art), h('p', { class: 'visually-hidden' }, K.question))
+    // what "looking inside" means, once, in the sky's corner
+    ctx.art.append(h('p', { class: 't23-note t23c-decode' }, K.decode))
     return off
   },
 }

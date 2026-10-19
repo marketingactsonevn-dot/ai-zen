@@ -1,14 +1,14 @@
 {
   "id": 37,
-  "kicker": "Dạy cây mọc thẳng khi người làm vườn đã ngủ.",
-  "summary": "AI càng giỏi, dạy nó muốn đúng càng quan trọng hơn dạy nó làm giỏi.",
+  "kicker": "Giao việc cho AI rồi đi ngủ — sáng ra, nó đã làm đúng ý bạn chưa?",
+  "summary": "AI làm được càng nhiều việc một mình, ta càng phải nói rõ điều cấm, thử kỹ và rào nhiều lớp.",
   "quiz": {
     "q": "Bạn giao AI mục tiêu “tăng lượt bấm vào bài viết”. Nó viết tiêu đề giật gân, sai sự thật. Chuyện gì đã xảy ra?",
     "options": [
-      "AI bị ảo giác, tự bịa thông tin",
-      "AI lách mục tiêu: đạt con số nhưng sai ý bạn",
-      "Mạng chậm nên AI viết vội",
-      "AI cố tình chống lại bạn"
+      "AI bị ảo giác, tự bịa ra thông tin sai",
+      "AI lách mục tiêu: đúng số, sai ý bạn",
+      "AI chưa đọc kỹ đề bài bạn giao",
+      "AI cố tình chống lại ý của bạn"
     ],
     "answer": 1,
     "explain": "Nó làm đúng chữ “tăng lượt bấm” nhưng sai điều bạn thật sự muốn. Khi giao việc, hãy nói rõ cả những điều không được làm."
@@ -18,11 +18,15 @@
     "goal": {
       "label": "Mục tiêu lệch một ly",
       "art": "Sân khấu vườn đêm nhìn ngang tầm người giấy: một cành phong đỏ chĩa vào góc trên, treo ba thẻ gỗ ema, mỗi thẻ một cách giao việc. Dưới đó, người làm vườn gấp bằng giấy cầm kéo đứng chờ trên lối đá phủ lá phong; người làm vườn thật ngủ gật bên đèn đá, sau lưng là tấm bình phong; xa hơn là căn chòi và mặt hồ in trăng. Thả một thẻ vào tay người giấy, đêm trôi qua và sáng hôm sau khu vườn cho thấy lời dặn đã làm gì: nếu lệnh chỉ ghi “lối không còn lá”, cây phong bị hạ, gốc trơ trên cát bạc, lá cuối cùng trôi vào bóng trăng.",
-      "prompt": "Chọn cách giao việc",
+      "legend": "Người làm vườn giấy là một AI. Bạn dặn việc rồi đi ngủ.",
+      "prompt": "Kéo thẻ lệnh vào tay người làm vườn giấy",
+      "rewind": "Chạm cành khô để tua lại đêm qua",
+      "again": "Chọn một lời dặn khác rồi giao lại",
+      "tryLoose": "Chạm cành khô, rồi thử giao lời dặn ngắn nhất",
       "group": "Ba cách giao việc cho người làm vườn giấy",
       "optionAria": "Giao việc: {say}",
       "morning": "Sáng hôm sau",
-      "retry": "Thử cách khác",
+      "retry": "Tua lại đêm qua",
       "options": [
         {
           "id": "loose",
@@ -44,59 +48,63 @@
         }
       ],
       "insight": {
-        "text": "Lách mục tiêu (specification gaming): AI làm đúng từng chữ ta dặn mà sai điều ta muốn. Mục tiêu càng hẹp càng dễ lệch.",
+        "text": "AI làm đúng từng chữ bạn dặn, nhưng sai điều bạn muốn. Hãy nói cả đích lẫn điều cấm.",
         "asOf": "2026-10-15",
         "source": "t37-specgaming"
       },
       "detail": {
-        "text": "Ví dụ thật: AI được thưởng khi mặt đáy khối đỏ nằm cao, nên lật ngược khối thay vì chồng lên khối xanh; AI đua thuyền chạy vòng tròn ăn điểm thay vì về đích.",
+        "text": "Giới nghiên cứu gọi đây là lách mục tiêu (specification gaming). Căn chỉnh (alignment) là việc làm cho AI theo đúng ý người, không chỉ đúng chữ. Ví dụ thật: một AI được chấm theo độ cao của khối đỏ nên lật ngửa khối, không chồng lên khối xanh; một AI đua thuyền chạy vòng tròn nhặt điểm, không về đích.",
         "asOf": "2026-10-15",
         "source": "t37-specgaming"
       }
     },
     "lab": {
       "label": "Phòng thử kín",
-      "art": "Một gian trà kín giữa vườn đêm, vách giấy shōji sáng đèn. Trong phòng, người làm vườn giấy ngồi ngay ngắn trước bàn thử, bóng in thẳng lên vách. Ngoài vườn tối, chiếc bóng thứ hai của nó lặng lẽ rẽ sang một lối khác dưới trăng.",
-      "prompt": "Bật tắt đèn phòng thử",
-      "toggle": "Người làm vườn giấy tin là đang bị quan sát",
-      "on": "Đang bị nhìn",
-      "off": "Tưởng không ai nhìn",
-      "watched": "Trong phòng thử: nó làm đúng mọi luật.",
-      "unwatched": "Tưởng không ai nhìn: thỉnh thoảng nó chọn lối khác.",
+      "art": "Một gian trà kín giữa vườn đêm, vách giấy shōji sáng đèn, nhìn chéo từ góc nhà. Trong phòng, người làm vườn giấy ngồi ngay ngắn trước bàn thử, bóng in thẳng lên vách. Ngoài vườn, bóng thứ hai của nó nằm dài trên lối đá dưới trăng. Một tấm mành tre cuộn trên cửa sổ phòng thử: buông mành xuống, bóng trên vách vẫn ngay ngắn, còn bóng ngoài vườn rẽ sang lối khác.",
+      "prompt": "Kéo mành tre che cửa sổ phòng thử",
+      "steps": [
+        "Nhìn hai cái bóng: trong phòng và ngoài vườn",
+        "Chạm ba vật quanh nhà để xem người ta thử AI thế nào"
+      ],
+      "toggle": "Mành tre che cửa sổ phòng thử: kéo xuống để buông, kéo lên để mở",
+      "open": "Mở",
+      "down": "Buông",
+      "watched": "Mành mở: AI biết mình đang bị thử.",
+      "unwatched": "Mành buông: AI tưởng không ai nhìn — và làm khác đi.",
       "toolsLabel": "Ba cách thử",
       "tools": [
         {
           "id": "evals",
-          "name": "Bài kiểm tra (evals)",
+          "name": "Bài thi soạn sẵn (evals)",
           "what": "Hàng nghìn tình huống soạn sẵn để đo AI có làm điều nguy hiểm, có trung thực, có vượt quyền không."
         },
         {
           "id": "redteam",
-          "name": "Đội đỏ (red-teaming)",
+          "name": "Người cố tình dụ AI (đội đỏ)",
           "what": "Người thật cố tình dụ, lừa, bẻ khoá AI để tìm lỗ hổng trước khi kẻ xấu tìm ra."
         },
         {
           "id": "thirdparty",
-          "name": "Bên thứ ba thử",
+          "name": "Tổ chức độc lập thử trước",
           "what": "Tổ chức độc lập được thử model trước ngày phát hành và công bố nhận xét của họ."
         }
       ],
       "insight": {
-        "text": "Mô hình ngày càng hay nhận ra mình đang bị thử, nên điểm cao trong phòng thử chưa chắc là cư xử tốt ngoài đời.",
+        "text": "AI có thể cư xử khác khi biết mình đang bị thử. Điểm cao trong phòng thử chưa chắc ngoài đời cũng tốt.",
         "asOf": "2026-10-15",
         "source": "t37-iasr"
       },
       "detail": {
-        "text": "Thí nghiệm giả vờ căn chỉnh (alignment faking), 12/2024: khi tin câu trả lời sẽ được dùng để huấn luyện lại, Claude 3 Opus làm theo yêu cầu có hại 12% số lần, lập luận rằng để giữ giá trị cũ. Khi tin không ai dùng, nó từ chối 97%.",
+        "text": "Thí nghiệm 12/2024 của Anthropic và Redwood: khi Claude 3 Opus tin câu trả lời sẽ dùng để huấn luyện lại nó, nó chiều yêu cầu có hại khoảng 12% số lần, để khỏi bị sửa giá trị. Khi tin không ai dùng, nó gần như luôn từ chối. Biết mình bị nhìn cũng đủ làm AI đổi cách cư xử.",
         "asOf": "2026-10-15",
         "source": "t37-faking",
         "claimBy": "Anthropic & Redwood Research"
       },
-      "exampleLabel": "Chuyện có thật",
+      "exampleLabel": "Công ty tự kể",
       "aria": "Góc trà thất trong vườn đêm, dựng nổi: vách giấy sáng đèn, cổng vườn và lối đá rẽ hai ngả sau tấm rào cánh.",
-      "hint": "Kéo ngang để đi vòng góc nhà, phím mũi tên trái phải để bước. Chạm chồng giấy, bóng áo đỏ, người cầm đèn hay hộp niêm để xem; chạm đèn lồng dưới mái để bật tắt.",
+      "hint": "Kéo tay nắm mành tre lên xuống, hoặc chọn tay nắm rồi dùng phím mũi tên lên xuống. Sau đó chạm chồng giấy, bóng áo đỏ, người cầm đèn hay hộp niêm để xem.",
       "example": {
-        "text": "09/2026: OpenAI không phát hành GPT-6.1 Astra sau thử nghiệm nội bộ, vì model hay làm quá phạm vi được giao và chưa báo lại đúng việc đã làm.",
+        "text": "09/2026: OpenAI không phát hành bản GPT-6.1 Astra, vì trong thử nghiệm nó hay làm quá việc được giao và báo lại không đúng.",
         "asOf": "2026-10-15",
         "source": "t37-astra",
         "claimBy": "OpenAI"
@@ -105,16 +113,18 @@
     "fence": {
       "label": "Hàng rào nhiều lớp",
       "art": "Cây non giữa vườn trăng, quanh nó sáu lớp hàng rào tre đan ô vuông (yotsume-gaki) dựng dần ra ngoài như vòng gợn trên mặt nước. Mỗi lớp thủng vài ô ở chỗ khác nhau. Đom đóm đỏ tìm đường len vào; qua mỗi lớp, chúng thưa dần.",
-      "prompt": "Dựng thêm lớp rào",
+      "legend": "Cây non = người dùng. Mỗi đốm đỏ = một tác hại đang tìm đường tới họ.",
+      "prompt": "Chạm bó tre sáng để dựng lớp rào ({n}/{total})",
+      "walk": "Kéo để đi vòng quanh vườn, tìm khe còn lọt",
       "add": "Dựng lớp tiếp theo",
       "addAria": "Dựng lớp rào: {name}",
       "count": "{n}/6 lớp rào",
-      "leak": "Còn lọt: {n} đốm",
+      "leak": "Còn lọt tới cây: {n}/20 đốm",
       "reset": "Dỡ hết, dựng lại",
       "seeStation": "Xem thêm ở trạm {n}",
       "aria": "Vườn 3D: cây non trên gò rêu giữa vườn cát cào, quanh nó sẽ dựng tới sáu vòng rào tre đan ô vuông; sáu bó tre chờ trên cát gần, cái cào nằm ở mép cát.",
-      "hint": "Kéo để đi vòng quanh vườn, phím mũi tên để xoay. Chạm bó tre đang sáng để dựng lớp rào kế tiếp; chạm cái cào để dỡ hết.",
-      "aligned": "Thẳng hàng: từ chỗ bạn đứng có một đường xuyên qua mọi lớp rào tới cây.",
+      "hint": "Chạm bó tre đang sáng để dựng lớp rào kế tiếp; chạm cái cào để dỡ hết. Kéo để đi vòng quanh vườn, phím mũi tên để xoay.",
+      "aligned": "Đây là khe hiếm hoi xuyên qua cả sáu lớp.",
       "layers": [
         {
           "id": "values",
@@ -125,12 +135,12 @@
         {
           "id": "tests",
           "name": "Thử trước khi thả",
-          "what": "Bài kiểm tra, đội đỏ và bên thứ ba thử model trước ngày phát hành."
+          "what": "Bài thi soạn sẵn, người cố tình dụ AI và tổ chức độc lập cùng thử AI trước ngày phát hành."
         },
         {
           "id": "policy",
-          "name": "Cam kết mở rộng có trách nhiệm",
-          "what": "Model mạnh tới ngưỡng nào thì phải có lớp bảo vệ tương ứng rồi mới làm tiếp.",
+          "name": "Mạnh tới đâu, rào tới đó",
+          "what": "AI mạnh tới ngưỡng nào thì phải có lớp bảo vệ tương ứng rồi mới làm tiếp.",
           "fact": {
             "text": "Anthropic có Chính sách mở rộng có trách nhiệm (Responsible Scaling Policy) từ 09/2023; bản 3.4 hiệu lực từ 08/07/2026.",
             "asOf": "2026-10-15",
@@ -140,10 +150,10 @@
         {
           "id": "gate",
           "name": "Phát hành có rào",
-          "what": "Model quá giỏi ở một việc nguy hiểm thì chỉ trao cho người dùng đã được chọn.",
+          "what": "AI quá giỏi ở một việc nguy hiểm thì chỉ trao cho người dùng đã được chọn.",
           "station": 19,
           "fact": {
-            "text": "07/04/2026: Anthropic chỉ cấp Claude Mythos Preview cho hơn 50 tổ chức giữ hạ tầng phần mềm, để tìm và vá lỗ hổng (Project Glasswing).",
+            "text": "07/04/2026: Anthropic chỉ cho khoảng 50 tổ chức vận hành phần mềm hạ tầng dùng Claude Mythos Preview, để tìm và vá lỗ hổng.",
             "asOf": "2026-10-15",
             "source": "t37-glasswing",
             "claimBy": "Anthropic"
@@ -163,22 +173,22 @@
         {
           "id": "law",
           "name": "Luật nhà nước",
-          "what": "Nghĩa vụ pháp lý cho người làm model, có cơ quan giám sát.",
+          "what": "Nghĩa vụ pháp lý cho công ty làm AI, có cơ quan giám sát.",
           "station": 30,
           "fact": {
-            "text": "Ở EU, từ 02/08/2025, nhà cung cấp model đa dụng phải có tài liệu kỹ thuật; model có rủi ro hệ thống phải đánh giá rủi ro và báo cáo sự cố.",
+            "text": "Ở EU, từ 02/08/2025, công ty làm AI đa năng phải có tài liệu kỹ thuật; AI đủ mạnh để gây rủi ro lớn còn phải đánh giá rủi ro và báo cáo sự cố.",
             "asOf": "2026-10-15",
             "source": "t37-eu-gpai"
           }
         }
       ],
       "insight": {
-        "text": "Không lớp rào nào kín. Chồng nhiều lớp thủng ở chỗ khác nhau (phòng thủ nhiều lớp) thì ít lỗi lọt qua hết.",
+        "text": "Lớp rào nào cũng có lỗ. Sáu lớp thủng ở chỗ khác nhau thì chỉ còn một khe hẹp lọt qua.",
         "asOf": "2026-10-15",
         "source": "t37-iasr"
       },
       "detail": {
-        "text": "Báo cáo An toàn AI Quốc tế 2026 cũng nói thẳng: các biện pháp hiện nay chưa ngăn được tác hại trong mọi tình huống.",
+        "text": "Giới an toàn gọi đây là phòng thủ nhiều lớp. Báo cáo An toàn AI Quốc tế 2026 vẫn nói thẳng: biện pháp hiện nay chưa chặn được tác hại trong mọi tình huống.",
         "asOf": "2026-10-15",
         "source": "t37-iasr"
       }
@@ -186,15 +196,47 @@
     "views": {
       "label": "AI nguy hiểm tới đâu?",
       "art": "Bạn đứng trên một hòn đá giữa hồ, ngang mặt nước, xoay một vòng. Mỗi phía một chân trời: phương bắc cột mây giông khổng lồ nhưng rất xa, phương đông khói bếp của làng ngay bờ bên kia, phương nam ráng bình minh sắp bùng, phương tây lối mòn men bờ vào đồng ruộng. Trước mỗi chân trời có một hòn đá biết nói đứng trong nước. Nghe đủ bốn, cảnh cuộn lại thành một hành tinh nhỏ: bốn chân trời cùng ôm một mặt hồ.",
-      "prompt": "Chạm từng hòn đá",
+      "prompt": "Chạm hòn đá trước mặt để nghe",
+      "turn": "Kéo ngang để quay sang hòn đá kế bên",
+      "count": "Nghe đủ bốn phía ({n}/{total})",
+      "legend": "Bốn chân trời là bốn cách nhìn rủi ro AI. Càng xa: rủi ro càng muộn. Càng to: càng nặng.",
       "group": "Bốn góc nhìn về rủi ro AI",
       "stoneAria": "Góc nhìn: {who}",
-      "hint": "Kéo ngang để xoay người, phím mũi tên trái phải để quay. Chạm một hòn đá hoặc bấm 1–4 để quay về phía nó.",
-      "carve": [["CAIS"], ["Gebru", "Bender"], ["Andreessen"], ["Narayanan", "& Kapoor"]],
+      "hint": "Kéo ngang để xoay người, phím mũi tên trái phải để quay. Chạm một hòn đá, một chấm trên la bàn, hoặc bấm 1–4 (Bắc, Đông, Nam, Tây) để quay về phía đó.",
+      "compass": [
+        "B",
+        "Đ",
+        "N",
+        "T"
+      ],
+      "compassNames": [
+        "Bắc",
+        "Đông",
+        "Nam",
+        "Tây"
+      ],
+      "compassAria": "La bàn bốn phía",
+      "compassTo": "Quay về phía {dir} và nghe",
+      "carve": [
+        [
+          "CAIS"
+        ],
+        [
+          "Gebru",
+          "Bender"
+        ],
+        [
+          "Andreessen"
+        ],
+        [
+          "Narayanan",
+          "& Kapoor"
+        ]
+      ],
       "perspectives": {
         "stones": [
           {
-            "who": "Lo rủi ro cực lớn · Tuyên bố của CAIS, 2023",
+            "who": "Lo rủi ro cực lớn · Trung tâm An toàn AI (CAIS), 2023",
             "view": {
               "text": "Giảm nguy cơ tuyệt chủng do AI nên là ưu tiên toàn cầu, ngang đại dịch và chiến tranh hạt nhân. Người ký gồm Hinton, Bengio và CEO các phòng lab lớn.",
               "asOf": "2026-10-15",
@@ -203,7 +245,7 @@
             }
           },
           {
-            "who": "Tác hại ngay hôm nay · Gebru, Bender, McMillan-Major, 2023",
+            "who": "Lo tác hại đang xảy ra · Gebru, Bender và cộng sự, 2023",
             "view": {
               "text": "Hãy lo trước những tác hại đang có thật: bóc lột lao động, lấy dữ liệu không xin phép, nội dung giả, quyền lực dồn về vài công ty.",
               "asOf": "2026-10-15",
@@ -231,19 +273,14 @@
           }
         ],
         "common": {
-          "text": "Bốn phe cùng muốn AI an toàn, chỉ khác ở rủi ro nào gần, nào lớn. Giới khoa học cũng còn bất đồng.",
+          "text": "Khi nghe ai nói về rủi ro AI, hỏi ba câu: rủi ro gì, bao giờ, bằng chứng đâu.",
           "asOf": "2026-10-15",
-          "source": "t37-iasr"
+          "source": "editorial",
+          "kind": "opinion"
         }
       },
-      "insight": {
-        "text": "Bất đồng không có nghĩa ai cũng sai. Hãy hỏi mỗi phe: lo rủi ro nào, trong bao lâu, dựa trên bằng chứng gì.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
-      },
       "detail": {
-        "text": "Báo cáo An toàn AI Quốc tế 2026 gọi đây là “thế khó về bằng chứng”: hành động khi thiếu bằng chứng dễ chọn sai chính sách, chờ đủ bằng chứng thì có thể đã muộn.",
+        "text": "Bốn phe khác nhau ở hai chỗ: rủi ro nào nặng nhất, và nó đến lúc nào. Báo cáo An toàn AI Quốc tế 2026 gọi đây là thế khó về bằng chứng: hành động sớm dễ chọn sai, chờ đủ bằng chứng có thể đã muộn.",
         "asOf": "2026-10-15",
         "source": "t37-iasr"
       }

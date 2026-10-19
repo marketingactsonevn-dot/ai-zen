@@ -1405,6 +1405,82 @@ body:has(main.scroll-page) .topbar {
   border-bottom: 1px solid var(--line);
 }
 
+/* ───────── Part 2 frame (audit v3 G·F): the prompt follows the steps, an idle invite, text zones ───────── */
+:root[data-part='2'] .scene-prompt {
+  /* step prompts name the gesture and the object: they may run long, so they wrap instead of leaving the screen */
+  white-space: normal;
+  width: max-content;
+  max-width: min(36rem, calc(100vw - 2 * var(--gutter)));
+  text-align: center;
+  text-wrap: balance;
+}
+:root[data-part='2'] .scene-prompt[data-tone='wrong'] {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--vermilion) 55%, var(--line));
+}
+:root[data-part='2'] .scene-prompt[data-tone='ok'] .prompt-dot {
+  background: var(--moss);
+  animation: none;
+}
+/* H7: six seconds still — the pill lifts twice and its dot beats faster (guide marks do the same, part2/guide.css) */
+:root[data-part='2'] .scene.is-idle .scene-prompt:not(.out) {
+  /* prompt-in stays first in the list, so it does not replay when the idle class goes */
+  animation: prompt-in 0.9s 0.4s var(--ease) both, prompt-nudge 1.4s var(--ease) 2;
+}
+:root[data-part='2'] .scene.is-idle .prompt-dot {
+  animation-duration: 1s;
+}
+@keyframes prompt-nudge {
+  30% {
+    translate: 0 -5px;
+  }
+}
+/* text zone: the insight in a quiet corner of sky or water, written on a breath of mist rather than a card */
+.scene-zone {
+  position: absolute;
+  z-index: 4;
+  width: min(27rem, 36%);
+}
+.scene-zone[data-z^='t'] {
+  top: clamp(8px, 3%, 28px);
+}
+.scene-zone[data-z^='b'] {
+  bottom: clamp(8px, 3%, 28px);
+}
+.scene-zone[data-z$='l'] {
+  left: clamp(8px, 2.5%, 36px);
+}
+.scene-zone[data-z$='r'] {
+  right: clamp(8px, 2.5%, 36px);
+}
+.scene-zone::before {
+  content: '';
+  position: absolute;
+  inset: -28% -18%;
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 78%, transparent), color-mix(in srgb, var(--paper) 40%, transparent) 60%, transparent);
+  pointer-events: none;
+}
+.scene-zone .scene-insight {
+  max-width: none;
+}
+.scene-zone .insight-text {
+  text-shadow: 0 0 12px var(--paper), 0 0 3px var(--paper);
+}
+.scene-zone[data-z^='t'] .insight-detail {
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+.scene-zone[data-z$='r'] .insight-detail {
+  left: auto;
+  right: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-part='2'] .scene.is-idle .scene-prompt:not(.out) {
+    animation: none;
+  }
+}
+
 /* ───────── quality=low (spec A.5): no backdrop blur — a denser paper instead; no big static blur ───────── */
 :root[data-quality='low'] :is(.scene-prompt, .gx) {
   -webkit-backdrop-filter: none;

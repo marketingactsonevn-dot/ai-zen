@@ -5,20 +5,22 @@ import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onSize, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { mist, moon, pine } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
+import { guide } from '../../ui/part2/guide'
 import { C } from './content'
 import { F, P, drift, f1, gdefs, ink, lantern, wood, woodG } from './kit'
 
 const K = C.scenes.line
 const N = K.stations.length
-type St = (typeof K.stations)[number] & { why?: string }
+type St = (typeof K.stations)[number] & { why?: string; miss?: string }
 
 /**
  * Scene 5 — a long workshop corridor at night in one-point perspective, its far door open on the moonlit garden.
  * Eight paper lanterns hang down it, left and right, near and big to far and small. Draw an ink cord from lantern to
  * lantern (or tap them in order): each joined lantern lights. Set vermilion stones on the floor under the stations that
- * need a person (drag one from the bowl, or tap the floor spot). When the cord reaches the door a glowing paper boat runs
- * along it: at each red stone it waits for you to tap the stone (you are the human in the loop); a human station with
- * no stone lets it rush through and out of the door into the night. Reduced motion / low: no boat run, lights by class.
+ * need a person (drag one from the bowl, or tap the floor spot). Once the cord is whole the paper boat waits by the
+ * first lantern until you tap it: then it runs the cord (it never sets off by itself). At each red stone it waits for you
+ * to tap the stone (you are the human in the loop); a human station with no stone, it rushes through and that station
+ * says what went wrong. Reduced motion / low: no boat run, lights by class.
  */
 export function lineScene(ctx: SceneCtx) {
   gdefs()
@@ -41,7 +43,9 @@ export function lineScene(ctx: SceneCtx) {
     const btn = h('button', { class: 't35d-lamp', type: 'button', 'aria-pressed': 'false', 'aria-label': fill(K.stationAria, { n: i + 1, name: st.name }) },
       art, h('span', { class: 't35d-on', 'aria-hidden': 'true' }, h('span', { class: 't35d-on-name' }, st.name), h('span', { class: 't35d-on-n' }, String(i + 1))),
       h('span', { class: 't35d-name t35k-paper', 'aria-hidden': 'true' }, st.name))
-    btn.addEventListener('click', () => !swiped && join(i))
+    // keyboard only (a click with detail 0): a pointer tap is placed by geometry in the hall (see tapAt), since the near
+    // lanterns' boxes and tanzaku overlap the far ones
+    btn.addEventListener('click', (e) => e.detail === 0 && join(i))
     btn.addEventListener('keydown', (e) => {
       if (e.key !== 's' && e.key !== 'S') return
       e.preventDefault()
@@ -65,14 +69,39 @@ export function lineScene(ctx: SceneCtx) {
     ...[[40, 22], [58, 20], [76, 23], [50, 26], [68, 26]].map(([x, y], k) => s('path', { class: 't35d-seal-body', d: blob(x, y, 9, 5, 3600 + k, 0.14, 10) }))))
   const ghost = h('div', { class: 't35d-ghost', 'aria-hidden': 'true' }, s('svg', { viewBox: '-20 -12 40 24' }, s('path', { class: 't35d-seal-body', d: blob(0, 0, 16, 9, 3610, 0.14, 12) })))
   const board = h('div', { class: 't35d-board', 'aria-hidden': 'true' }, K.task)
+  // what the bowl is for, written beside it; the boat's own button, by the first lantern once the cord is whole
+  bowl.append(h('span', { class: 't35d-bowl-label' }, K.bowlLabel))
+  const release = h('button', { class: 't35d-release t35k-paper', type: 'button', onClick: () => launch() }, K.release)
   const note = h('div', { class: 't35d-note t35k-halo' })
   const doorFact = h('div', { class: 't35d-doorfact t35k-paper' })
   const root = h('div', { class: `t35 t35d${still ? ' still' : ''}` },
     h('p', { class: 'visually-hidden' }, K.art), hall, cord, board, table,
     h('ol', { class: 't35d-line', 'aria-label': K.lineAria }, ...lamps.map((l) => h('li', null, l.btn, l.spot))),
-    bowl, boat, ghost, doorFact, note)
+    bowl, boat, release, ghost, doorFact, note)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
+
+  // ── guide: a dot on the next lantern (then the bowl, then the boat), a faint ink line to the next lantern, two counts
+  const GD = guide(ctx)
+  const dot = GD.dot(lamps[0].btn, { dir: [1, 0] })
+  const way = GD.track(() => {
+    const a = lamps[Math.max(0, lit.size - 1)], b = lamps[Math.min(N - 1, lit.size)]
+    return [[a.x, a.y - a.r * 1.3], [b.x, b.y - b.r * 1.3]]
+  })
+  const lampN = GD.count(K.lampCount, N, () => [W * (port ? 0.82 : 0.88), H * 0.05])
+  const stoneN = GD.count(K.stoneCount, 0, () => [W * (port ? 0.82 : 0.88), H * 0.05 + 24])
+  /** the step after the cord: stones first, the boat once there is at least one */
+  function nextStep() {
+    if (lit.size < N || run || done) return
+    root.classList.add('ready')
+    if (stones.size) {
+      dot.at(release)
+      ctx.prompt(K.releasePrompt)
+    } else {
+      dot.at(bowl)
+      ctx.prompt(K.stonesPrompt)
+    }
+  }
   const par = drift(ctx, root, [[hall, 5, 3]])
 
   let W = 0, H = 0, vx = 0, vy = 0, port = false
@@ -117,15 +146,33 @@ export function lineScene(ctx: SceneCtx) {
     ctx.chime('tap')
     drawCord()
     if (port) (names(), stack())
-    if (lit.size === N) launch()
+    lampN.set(lit.size)
+    if (lit.size < N) {
+      dot.at(lamps[lit.size].btn)
+      GD.refresh()
+    } else {
+      way.done()
+      nextStep()
+    }
   }
   let swiped = false
   let drawing = -1
   const pts: Pt[] = []
   let ox = 0, oy = 0
+  /** A tap in the hall: the next lantern if it is near, else the nearest lantern (by its own size), else nothing. */
+  function tapAt(x: number, y: number) {
+    const d = (l: (typeof lamps)[number]) => Math.hypot(l.x - x, l.y - y) / Math.max(l.r, 18)
+    const nx = lit.size < N ? lamps[lit.size] : null
+    if (nx && d(nx) < 1.9) return join(lit.size)
+    let best = -1, bd = 1.5
+    lamps.forEach((l, i) => {
+      const v = d(l)
+      if (v < bd) (bd = v), (best = i)
+    })
+    if (best >= 0) join(best)
+  }
   root.addEventListener('pointerdown', (e) => {
-    const lampEl = (e.target as Element).closest('.t35d-lamp')
-    if (!lampEl || e.button) return
+    if (e.button || (e.target as Element).closest('.t35d-spot, .t35d-bowl, .t35d-release, .t35d-doorfact, .t35d-seal')) return
     const r = root.getBoundingClientRect()
     ox = r.left
     oy = r.top
@@ -133,7 +180,7 @@ export function lineScene(ctx: SceneCtx) {
     swiped = false
     pts.length = 0
     pts.push([e.clientX - ox, e.clientY - oy])
-    root.setPointerCapture(e.pointerId)
+    // no capture yet: a plain tap must still reach the lantern's own button (its click joins it)
   })
   root.addEventListener('pointermove', (e) => {
     if (e.pointerId === drawing) {
@@ -141,6 +188,7 @@ export function lineScene(ctx: SceneCtx) {
       if (!swiped && Math.hypot(p[0] - pts[0][0], p[1] - pts[0][1]) < 12) return
       if (!swiped) {
         swiped = true
+        root.setPointerCapture(e.pointerId)
         const first = lamps.findIndex((l) => Math.hypot(l.x - pts[0][0], l.y - pts[0][1]) < l.r * 1.8)
         if (first >= 0) join(first)
       }
@@ -154,6 +202,7 @@ export function lineScene(ctx: SceneCtx) {
   const endDraw = (e: PointerEvent) => {
     if (e.pointerId === drawing) {
       drawing = -1
+      if (!swiped && e.type === 'pointerup') tapAt(pts[0][0], pts[0][1])
       trail.setAttribute('d', '')
       setTimeout(() => (swiped = false))
     } else if (e.pointerId === dragStone) dropStone(e)
@@ -201,7 +250,8 @@ export function lineScene(ctx: SceneCtx) {
     lamps[i].spot.setAttribute('aria-pressed', String(on))
     say(on ? (st.human ? st.why ?? '' : K.extraStone) : '')
     ctx.chime(on ? 'soft' : 'low')
-    if (on && lit.size === N) launch()
+    stoneN.set(stones.size)
+    nextStep()
   }
   function say(text: string, cls = '') {
     note.replaceChildren(text ? h('p', { class: cls }, text) : '')
@@ -209,25 +259,41 @@ export function lineScene(ctx: SceneCtx) {
   }
 
   // ── the run: a glowing paper boat along the cord to the door
-  let run: { s: number; wait: number; leak: number; passed: Set<number> } | null = null
+  let run: { s: number; wait: number; leak: number; miss: number; passed: Set<number> } | null = null
   let path: Pt[] = [] // lantern feet then the door, the boat's way
   let lens: number[] = []
   function launch() {
-    if (done || run) return
-    const missing = stations.filter((x, i) => x.human && !stones.has(i)).length
+    if (done || run || lit.size < N) return
+    const firstMiss = stations.findIndex((x, i) => x.human && !stones.has(i))
     if (still) {
-      if (missing) return say(fill(K.missingStone, { n: missing }), 'miss')
+      if (firstMiss >= 0) {
+        lamps[firstMiss].spot.classList.add('missed')
+        return lose(firstMiss)
+      }
       return finish()
     }
-    run = { s: 0, wait: -1, leak: 0, passed: new Set() }
+    run = { s: 0, wait: -1, leak: 0, miss: -1, passed: new Set() }
     root.classList.add('running')
+    lamps.forEach((l) => l.spot.classList.remove('missed'))
+    dot.at(boat)
     loop.start()
+  }
+  function lose(i: number) {
+    root.classList.add('lost')
+    say(`${stations[i].miss ?? ''} ${K.lost}`, 'miss')
+    nextStep()
+    dot.at(bowl)
+    GD.wrong(K.stonesPrompt)
+    setTimeout(() => root.classList.remove('lost'), 1600)
+    ctx.chime('low')
   }
   function approve() {
     if (!run) return
     lamps[run.wait].spot.classList.remove('waiting')
     run.passed.add(run.wait)
     run.wait = -1
+    dot.at(boat)
+    ctx.prompt(K.releasePrompt)
     ctx.chime('soft')
     loop.start()
   }
@@ -244,31 +310,35 @@ export function lineScene(ctx: SceneCtx) {
     const total = lens[lens.length - 1]
     const next = run.passed.size < N ? run.passed.size : -1 // lanterns are met in order
     // it slows near each lantern; a human station without a stone, it rushes past
-    const hurry = run.leak ? 3.2 : 1
-    run.s = Math.min(total, run.s + dt * W * 0.16 * hurry)
+    const hurry = run.leak ? 2.4 : 1
+    run.s = Math.min(total, run.s + dt * W * 0.42 * hurry)
     if (next >= 0 && run.s >= lens[next]) {
       run.s = lens[next]
       if (stones.has(next)) {
         run.wait = next
         lamps[next].spot.classList.add('waiting')
+        dot.at(lamps[next].spot)
+        ctx.prompt(K.waitPrompt)
         if (!stations[next].human) say(K.extraStone)
       } else {
         run.passed.add(next)
-        if (stations[next].human) run.leak++
+        if (stations[next].human) {
+          // nobody there: what goes wrong is said at that station, at once
+          run.leak++
+          if (run.miss < 0) run.miss = next
+          lamps[next].spot.classList.add('missed')
+          say(stations[next].miss ?? '', 'miss')
+        }
       }
     }
     const [x, y] = at(run.s)
     boat.style.transform = `translate3d(${f1(x)}px, ${f1(y)}px, 0) scale(${f1(clamp(1 - run.s / total * 0.7, 0.3, 1))})`
     if (run.s >= total) {
-      const leak = run.leak
+      const miss = run.miss
       run = null
       root.classList.remove('running')
-      if (leak) {
-        root.classList.add('lost')
-        say(fill(K.missingStone, { n: stations.filter((x, i) => x.human && !stones.has(i)).length }), 'miss')
-        setTimeout(() => root.classList.remove('lost'), 1600)
-        ctx.chime('low')
-      } else finish()
+      if (miss >= 0) lose(miss)
+      else finish()
       return false
     }
     return run?.wait === -1
@@ -278,8 +348,10 @@ export function lineScene(ctx: SceneCtx) {
     if (done) return
     done = true
     root.classList.add('is-done')
-    say(K.done, 'done')
-    doorFact.replaceChildren(ctx.fact(F(K.facts[0]), 'p'))
+    root.classList.remove('ready')
+    say('')
+    dot.done()
+    doorFact.replaceChildren(h('p', { class: 't35d-done' }, K.done), ctx.fact(F(K.facts[0]), 'p'))
     ctx.chime('ok')
     ctx.insight(F(K.insight), K.detail)
   }
@@ -447,6 +519,7 @@ export function lineScene(ctx: SceneCtx) {
     lens = [0]
     for (let i = 1; i < path.length; i++) lens.push(lens[i - 1] + Math.hypot(path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1]))
     boat.style.transform = `translate3d(${f1(path[0][0])}px, ${f1(path[0][1])}px, 0)`
+    release.style.transform = `translate3d(${f1(path[0][0])}px, ${f1(lamps[0].y + lamps[0].r * 1.3)}px, 0)`
     cord.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     drawCord()
     // the near table, cut by the frame: the bowl of red stones, the inkstone with the brush across it
@@ -474,9 +547,10 @@ export function lineScene(ctx: SceneCtx) {
     const fw = Math.min(Math.max(dW * 1.05, 240), 320)
     Object.assign(doorFact.style, port
       ? { left: '4%', right: '4%', width: 'auto', top: 'auto', bottom: `${f1(H * 0.02)}px` }
-      : { left: `${f1(vx - fw / 2)}px`, right: 'auto', width: `${f1(fw)}px`, top: `${f1(dy + dH * 0.42)}px`, bottom: 'auto' })
+      : { left: `${f1(Math.max(W * 0.03, dx - fw - 18))}px`, right: 'auto', width: `${f1(fw)}px`, top: `${f1(dy + dH * 0.8)}px`, bottom: 'auto' })
     root.classList.toggle('port', port)
     par.resize()
+    GD.refresh()
   }
   let job: { cancel(): void } | null = null
   let first = true

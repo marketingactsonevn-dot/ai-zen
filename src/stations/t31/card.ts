@@ -57,6 +57,8 @@ export function cardScene(ctx: SceneCtx) {
   const still = ctx.reduced || low
   const lines = K.lines
   const read = live('t31c2-read')
+  // decode the stone once, where it stands: it is the model card (no aria-live yet: filled before the first line)
+  read.append(h('p', { class: 't31c2-readp' }, K.decode))
   const say = live('visually-hidden')
   const stoneCv = h('canvas', { class: 't31c2-stone', 'aria-hidden': 'true' })
   const paperCv = h('canvas', { class: 't31c2-paper', 'aria-hidden': 'true' })
@@ -544,6 +546,7 @@ export function cardScene(ctx: SceneCtx) {
     leader(n)
     if (opened.has(n)) return
     opened.add(n)
+    if (opened.size === 1) ctx.prompt(K.next)
     ctx.chime('tap')
     drawPuddle()
     if (opened.size === lines.length) finish()
@@ -655,7 +658,8 @@ export function cardScene(ctx: SceneCtx) {
     const pw = Math.round(fw * (tall ? 1.3 : 1.55)), ph = Math.round(fw * 0.3)
     const total = fh + fw * 0.12 + ph
     const cxF = tall ? 14 + fw / 2 : W * 0.42
-    const topF = tall ? Math.max(8, (H - total) * 0.55) : Math.max(14, (H - total) * 0.42)
+    // a phone: the stele high, its reading full width under the puddle (not a 2-word column beside it)
+    const topF = tall ? Math.max(8, (H - total) * 0.12) : Math.max(14, (H - total) * 0.42)
     Object.assign(stage.style, { left: `${f1(cxF - fw / 2)}px`, top: `${f1(topF)}px`, width: `${fw}px`, height: `${fh}px` })
     root.style.setProperty('--fw', `${fw}px`)
     root.style.setProperty('--fh', `${fh}px`)
@@ -666,9 +670,10 @@ export function cardScene(ctx: SceneCtx) {
     puddle.height = Math.round(ph * dpr)
     const py = topF + fh + fw * 0.1
     Object.assign(puddle.style, { width: `${pw}px`, height: `${ph}px`, left: `${f1(cxF - pw * (tall ? 0.42 : 0.4))}px`, top: `${f1(py)}px` })
-    // the read note: in the margin right of the stele (beside it on a phone too, in a narrower column)
-    const rl = cxF + fw * 0.5 + depth * 0.5 + (tall ? 8 : 40)
-    Object.assign(read.style, { left: `${f1(rl)}px`, top: `${f1(topF + fh * (tall ? 0.1 : 0.3))}px`, width: `${f1(Math.min(340, W - rl - (tall ? 4 : 24)))}px`, right: 'auto' })
+    // the read note: in the margin right of the stele; on a phone under the puddle, full width
+    const rl = cxF + fw * 0.5 + depth * 0.5 + 40
+    if (tall) Object.assign(read.style, { left: '12px', top: `${f1(py + ph + 6)}px`, width: `${f1(W - 24)}px`, right: 'auto' })
+    else Object.assign(read.style, { left: `${f1(rl)}px`, top: `${f1(topF + fh * 0.3)}px`, width: `${f1(Math.min(340, W - rl - 24))}px`, right: 'auto' })
     // the foot: a ground shadow toward the camera, moss and grass at the stone's base; the inkstone and the pad's rest
     foot.setAttribute('viewBox', `0 0 ${W} ${H}`)
     const by = topF + fh

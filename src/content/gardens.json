@@ -95,8 +95,8 @@
       "tagline": "Nhìn vào bên trong một mô hình đang nghĩ",
       "motif": "brush",
       "stations": [
-        { "id": 22, "title": "Attention", "teaser": "AI “nhìn” chữ nào khi đọc", "kind": "concept", "prereq": [4, 5] },
-        { "id": 23, "title": "Diễn giải được AI", "teaser": "Soi đèn xuống đáy hồ", "kind": "concept" },
+        { "id": 22, "title": "AI nhìn chữ nào khi đọc", "teaser": "AI “nhìn” chữ nào khi đọc", "kind": "concept", "prereq": [4, 5] },
+        { "id": 23, "title": "Nhìn vào bên trong AI", "teaser": "Nhà nghiên cứu đã soi được gì trong ‘bộ não’ số", "kind": "concept" },
         { "id": 24, "title": "Học & nghĩ", "teaser": "Phần thưởng, suy luận, tật nịnh", "kind": "concept" }
       ]
     },
@@ -155,7 +155,7 @@
       "tagline": "Tương lai đi đâu — và bạn bắt đầu từ đâu",
       "motif": "mist",
       "stations": [
-        { "id": 37, "title": "An toàn & căn chỉnh", "teaser": "Dạy AI muốn đúng", "kind": "concept" },
+        { "id": 37, "title": "An toàn AI: để AI làm đúng ý người", "teaser": "Đúng chữ chưa chắc đúng ý", "kind": "concept" },
         { "id": 38, "title": "AGI, tương lai & nghề", "teaser": "Trong sương có nhiều ngả", "kind": "concept" },
         { "id": 39, "title": "Khu vườn của riêng bạn", "teaser": "Bộ đồ nghề và lộ trình 30 ngày", "kind": "practice" }
       ]

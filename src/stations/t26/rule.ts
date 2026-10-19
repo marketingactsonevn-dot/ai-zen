@@ -3,6 +3,7 @@ import { blob, curve, onSize, p2Defs, rng, stoneArt, stroke, type Pt } from '../
 import { progressTide, type TideGeo } from '../../ui/part2/tide'
 import { mist } from '../../ui/part2/paint'
 import type { Tide } from '../../ui/part2/types'
+import type { Fact } from '../../core/content'
 import type { SceneDef } from '../types'
 import C from '../../content/tram-26.json'
 import { bamboo, f1 } from '../t25/kit'
@@ -126,7 +127,10 @@ function oki(hh: number, seed: number) {
  * lantern warms as you reach it. Today the reflection sinks into the mist.
  */
 const R = C.scenes.rule
+const F = (x: unknown) => x as Fact
+// one milestone object per dated milestone, in order (the last bend after them is today, sinking into the mist)
 const MARKS = [scroll, gate, door, stele, boundary]
+const N = R.tide.milestones.length
 
 /** bends of the bridge in band shares (u across, v down = near): B0 on the bank … B6 today in the mist … B8 gone */
 function bends(w: number, hh: number): Pt[] {
@@ -239,11 +243,11 @@ function back({ w, h: hh, seed }: TideGeo): SVGElement[] {
   out.push(...planks(B, (y) => near(y, hh)))
   // the light that follows you along the planks (stroke dash = how far the moon has come)
   live.len = B.slice(1).map((p, k) => Math.hypot(p[0] - B[k][0], p[1] - B[k][1]))
-  live.total = live.len.slice(0, 6).reduce((a, b) => a + b, 0)
-  live.lit = s('path', { class: 't26r-lit', d: `M${B.slice(0, 7).map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}`, 'stroke-dasharray': `${f1(live.total)} ${f1(live.total)}`, 'stroke-dashoffset': f1(live.total) }) as SVGPathElement
+  live.total = live.len.slice(0, N + 1).reduce((a, b) => a + b, 0)
+  live.lit = s('path', { class: 't26r-lit', d: `M${B.slice(0, N + 2).map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}`, 'stroke-dasharray': `${f1(live.total)} ${f1(live.total)}`, 'stroke-dashoffset': f1(live.total) }) as SVGPathElement
   out.push(live.lit)
   // a milestone at each bend, a little lantern beside it, both scaled by distance
-  live.marks = MARKS.map((mk, i) => {
+  live.marks = MARKS.slice(0, N).map((mk, i) => {
     const [x, y] = B[i + 1]
     const k = near(y, hh)
     const z = Math.min(116, w * 0.19) * k
@@ -274,7 +278,7 @@ function back({ w, h: hh, seed }: TideGeo): SVGElement[] {
     live.near.replaceChildren(...planks(run, (y) => 0.97 + 0.4 * Math.max(0, (y - b0[1]) / Math.max(1, H - b0[1]))))
   }
   // the far end melts into the mist where today becomes the horizon
-  const [fx, fy] = B[6]
+  const [fx, fy] = B[N + 1]
   out.push(mist(fx + w * 0.05, fy - hh * 0.04, w * 0.3, hh * 0.22), mist(B[8][0], B[8][1], w * 0.25, hh * 0.18))
   return out
 }
@@ -283,8 +287,8 @@ function back({ w, h: hh, seed }: TideGeo): SVGElement[] {
 function track(g: TideGeo) {
   const B = bends(g.w, g.h)
   return (t: number): Pt => {
-    const u = Math.max(0, Math.min(5, t * 5))
-    const i = Math.min(4, Math.floor(u)), f = u - i
+    const u = Math.max(0, Math.min(N, t * N))
+    const i = Math.min(N - 1, Math.floor(u)), f = u - i
     const [ax, ay] = B[i + 1], [bx, by] = B[i + 2]
     const x = ax + (bx - ax) * f, y = ay + (by - ay) * f
     return [x, y + 34 * near(y, g.h)]
@@ -305,7 +309,7 @@ function thumb() {
 function onStep(i: number, t: number) {
   const { lit, walker, marks, B, len, total, hh } = live
   if (!lit || !walker || !B.length) return
-  const u = t * 5, k = Math.min(4, Math.floor(u)), f = u - k
+  const u = t * N, k = Math.min(N - 1, Math.floor(u)), f = u - k
   const done = len[0] + len.slice(1, k + 1).reduce((a, b) => a + b, 0) + len[k + 1] * f
   lit.setAttribute('stroke-dashoffset', f1(Math.max(0, total - done)))
   const [ax, ay] = B[k + 1], [bx, by] = B[k + 2]
@@ -372,6 +376,7 @@ export const ruleScene: SceneDef = {
       kids.push(s('rect', { class: 't26r-far', width: W, height: H * 0.5 }))
       marsh.replaceChildren(...kids)
     }))
-    return progressTide(R.tide as Tide, { label: R.label, prompt: R.prompt, aria: R.sliderAria, art: { back }, track, thumb, onStep }).mount(ctx)
+    // the bridge's point arrives at today: still nobody knows, yet one company chose caution (audit v3 26-3)
+    return progressTide(R.tide as Tide, { label: R.label, prompt: R.prompt, aria: R.sliderAria, insight: F(R.tideInsight), detail: F(R.tideDetail), art: { back }, track, thumb, onStep }).mount(ctx)
   },
 }

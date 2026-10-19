@@ -97,6 +97,10 @@ export function flatteryScene(ctx: SceneCtx) {
   nearLayer.append(ledgeSvg, slip, shears)
   for (const t of [goldTag, realTag]) t.addEventListener('click', () => t.setAttribute('aria-expanded', String(t.getAttribute('aria-expanded') !== 'true')))
   ctx.prompt(K.prompt)
+  // what the fireflies stand for, once, beside the visitor's own words; after the cut, what really happened
+  const decode = h('p', { class: 't24t-decode' }, K.decode)
+  const real = h('div', { class: 't24t-real', 'data-off': '' }, ctx.fact(K.detail, 'p'))
+  root.append(decode, real)
   const poke = alive(ctx, root)
 
   // geometry shared by draw / onView / prune
@@ -536,7 +540,8 @@ export function flatteryScene(ctx: SceneCtx) {
       shears.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 900, delay: 500, fill: 'forwards' })
     }
     ctx.chime('ok')
-    const t = setTimeout(() => ctx.insight(K.insight, [K.detail, K.cause]), quick ? 0 : 900)
+    delete real.dataset.off
+    const t = setTimeout(() => ctx.insight(K.insight, K.cause), quick ? 0 : 900)
     ctx.onCleanup(() => clearTimeout(t))
     R.set(0, 0)
   }

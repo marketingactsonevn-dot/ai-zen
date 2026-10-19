@@ -15,6 +15,8 @@ const PART2 = Array.from({ length: 21 }, (_, i) => 19 + i)
 const TH0 = 82, TH1 = 12, CRANE = 3
 /** how much of the circle one stroke closes: an ensō stays open */
 const SWEEP = 330
+/** how far the hand has to turn to close it (audit 39-5: a tilted ellipse turns less than a circle; ~300° is enough) */
+const GESTURE = 300
 
 type Lay = { W: number; H: number; R: number; wB: number; U: number; Vf: number; Vn: number; P: number; oy: number; hz0: number; s0: number; yc0: number; yc1: number; gap: number; wide: boolean }
 type Spot = { id: number; u: number; v: number; w: number; seed: number; on: boolean }
@@ -23,8 +25,8 @@ type Spot = { id: number; u: number; v: number; w: number; seed: number; on: boo
  * ★ Scene 5 — the ensō (CRANE, CSS 3D). Dawn over a raked sand garden seen from just above the sand: one stroke of the
  * visitor's own hand (any drag that turns ~330°, or the brush) lays a wet-cored, dry-edged ensō on the sand canvas; the
  * sun flares and the view cranes up to above the garden while a stone rises for every Moon Garden station walked
- * (the rest are raked hollows, an invitation). At the ensō's mouth: the vermilion seal (exam) and the cloth bundle
- * (toolkit). The sand is a canvas baked once in slices (grazing sun: every ridge throws a shadow); the plane, the stones
+ * (the rest are raked hollows, an invitation), and the paper counting them is stamped. The ways on (the exam, the
+ * toolkit) are left to the station's closing ensō, so the station ends once (audit 39-5). The sand is a canvas baked once in slices (grazing sun: every ridge throws a shadow); the plane, the stones
  * and the camera are transforms only, one createLoop that runs while drawing / craning / turning.
  */
 export function ensoScene(ctx: SceneCtx) {
@@ -44,30 +46,20 @@ export function ensoScene(ctx: SceneCtx) {
   const stamp = s('svg', { class: 't39e-stamp', viewBox: '-12 -12 24 24', 'aria-hidden': 'true' })
   const paper = h('div', { class: 't39e-paper' }, stamp,
     h('p', null, fill(K.visited, { n: nVisited })), h('p', null, fill(K.visitedAll, { n: nAll })))
-  const seal = h('a', { class: 't39e-seal', href: '#/bai-thi-trang', 'aria-label': K.examAria }, sealArt(), h('span', { class: 't39e-tag g39-say' }, K.exam))
-  const cloth = h('a', { class: 't39e-cloth', href: '#/do-nghe', 'aria-label': K.toolkitAria }, clothArt(), h('span', { class: 't39e-tag g39-say' }, K.toolkit))
-  const exits = h('div', { class: 't39e-exits' }, paper, seal, cloth)
-  const plane = h('div', { class: 't39e-plane' }, ...tiles, warm, ink, garden, exits)
+  const exits = h('div', { class: 't39e-exits' }, paper)
+  // H2 + H1: a faint dotted ring on the sand to brush along, a vermilion dot where the stroke starts
+  const trace = s('svg', { class: 't39e-trace', 'aria-hidden': 'true' })
+  const plane = h('div', { class: 't39e-plane' }, ...tiles, warm, ink, trace, garden, exits)
   const view = h('div', { class: 't39e-view' }, plane)
   const brush = h('button', { class: 't39e-brush', type: 'button', 'aria-label': K.drawAria, onClick: () => auto() }, brushArt(), h('span', { class: 'g39-say' }, K.draw))
   const fore = s('svg', { class: 't39e-fore', 'aria-hidden': 'true', preserveAspectRatio: 'none' })
   // morning mist lying on the sand at the horizon, drifting a little (CSS, quality=high only, pauses when idle)
   const mist = h('div', { class: 't39e-mist', 'aria-hidden': 'true' }, h('i'), h('i'))
-  const root = h('div', { class: `t39e${still ? ' is-still is-risen is-top' : ''}` }, h('p', { class: 'visually-hidden' }, K.art), sky, mist, view, fore, brush)
-  for (const a of [seal, cloth]) a.tabIndex = -1
+  // what an ensō is, said once (audit 39-5)
+  const legend = h('p', { class: 't39e-legend' }, K.legend)
+  const root = h('div', { class: `t39e${still ? ' is-still is-risen is-top' : ''}` }, h('p', { class: 'visually-hidden' }, K.art), sky, mist, view, fore, brush, legend)
   stamp.append(s('rect', { x: -10, y: -10, width: 20, height: 20, rx: 1.5, class: 't39e-stamp-ink', filter: 'url(#ink-rough)' }),
     s('path', { class: 't39e-stamp-cut', d: stroke([[-6, -5], [6, -5]], 1.8, 0.1, 0.1, 0.4) + stroke([[0, -5], [0, 6]], 1.8, 0.1, 0.1, 0.4) + stroke([[-6, 6], [6, 6]], 1.8, 0.1, 0.1, 0.4) }))
-  // the seal presses onto the paper, then the exam opens
-  let pressing = 0
-  seal.addEventListener('click', (e) => {
-    e.preventDefault()
-    if (pressing) return
-    seal.classList.add('is-pressed')
-    paper.classList.add('is-stamped')
-    ctx.chime('soft')
-    pressing = window.setTimeout(() => (location.hash = '#/bai-thi-trang'), ctx.reduced ? 120 : 520)
-  })
-  ctx.onCleanup(() => clearTimeout(pressing))
   ctx.art.append(root)
   idle(ctx, root)
   ctx.prompt(K.prompt)
@@ -210,14 +202,11 @@ export function ensoScene(ctx: SceneCtx) {
       return
     }
     if (phase !== 'idle' || !L) return
-    if (painted > 0) {
-      strokes = []
-      painted = 0
-      clearInk()
-    }
     phase = 'draw'
-    turn = 0
-    sign = 0
+    // a stroke lifted half way goes on from where it stopped (audit 39-5: lifting the finger never wipes the sand)
+    turn = painted > 0 && sign ? sign * painted * GESTURE * D2R : 0
+    if (!turn) sign = 0
+    else ctx.prompt(K.prompt)
     lastDir = NaN
     lx = e.clientX
     ly = e.clientY
@@ -250,20 +239,20 @@ export function ensoScene(ctx: SceneCtx) {
     ly = e.clientY
     lt = e.timeStamp
     if (!sign && Math.abs(turn) > 0.3) sign = Math.sign(turn)
-    if (sign) paintTo(Math.max(painted, (sign * turn) / (SWEEP * D2R)), clamp((speed - 0.7) / 2.6, 0, 0.75))
+    if (sign) paintTo(Math.max(painted, (sign * turn) / (GESTURE * D2R)), clamp((speed - 0.7) / 2.6, 0, 0.75))
   })
   const up = () => {
     root.classList.remove('is-drawing', 'is-turning')
-    if (phase === 'draw') phase = 'idle' // half a stroke stays on the sand; the next touch smooths it and starts again
+    if (phase !== 'draw') return
+    phase = 'idle' // half a stroke stays on the sand; the next touch goes on from its end (H6: say so)
+    if (painted > 0.02) ctx.prompt(K.more, 'wrong')
   }
   root.addEventListener('pointerup', up)
   root.addEventListener('pointercancel', up)
 
   let autoT = 0
-  let fromKeys = false
   function auto() {
     if (phase !== 'idle' || !L) return
-    fromKeys = true
     strokes = []
     painted = 0
     clearInk()
@@ -292,8 +281,7 @@ export function ensoScene(ctx: SceneCtx) {
     camT = 1
     apply()
     root.classList.add('is-done')
-    for (const a of [seal, cloth]) a.tabIndex = 0
-    if (fromKeys) seal.focus({ preventScroll: true })
+    paper.classList.add('is-stamped')
     if (!told) {
       told = true
       ctx.insight(K.insight)
@@ -414,6 +402,13 @@ export function ensoScene(ctx: SceneCtx) {
     kI = low ? 1 : Math.min(devicePixelRatio || 1, 2)
     ink.width = ink.height = Math.round(side * kI)
     Object.assign(ink.style, { width: `${side}px`, height: `${side}px`, left: `${U - side / 2}px`, top: `${Vf - side / 2}px` })
+    // the dotted ring to follow and the dot where the stroke starts (clockwise from the ensō's mouth, as the brush does)
+    const a0 = L.gap + 15 * D2R
+    trace.setAttribute('viewBox', `${f1(-side / 2)} ${f1(-side / 2)} ${side} ${side}`)
+    Object.assign(trace.style, { width: `${side}px`, height: `${side}px`, left: `${U - side / 2}px`, top: `${Vf - side / 2}px` })
+    trace.replaceChildren(
+      s('circle', { class: 't39e-trace-ring', r: f1(R), 'stroke-width': f1(Math.max(2, wB * 0.18)), 'stroke-dasharray': `${f1(wB * 0.25)} ${f1(wB * 0.9)}` }),
+      s('circle', { class: 't39e-trace-start', cx: f1(Math.cos(a0) * R), cy: f1(Math.sin(a0) * R), r: f1(Math.max(7, wB * 0.55)) }))
     inkOrigin()
     replay()
     job?.cancel()
@@ -504,19 +499,15 @@ export function ensoScene(ctx: SceneCtx) {
     return [shadow, stone]
   }
 
-  // the seal at the ensō's mouth, the paper beside it, the cloth bundle a little apart
+  // the paper counting the stations, just outside the ensō's mouth
   function placeExits() {
     const { R, gap, wide, W } = L!
     const gx = Math.cos(gap) * R, gy = Math.sin(gap) * R
     const pw = Math.round(wide ? clamp(R * 1.2, 250, 290) : Math.min(W - 150, 224))
     const seat = (el: HTMLElement, x: number, y: number) => Object.assign(el.style, { left: `${f1(L!.U + x)}px`, top: `${f1(L!.Vf + y)}px` })
     paper.style.width = `${pw}px`
-    // the seal sits on the paper's corner, just outside the ensō's mouth; the cloth bundle a little apart
     const [px, py] = wide ? [gx + L!.wB * 0.7, gy - 26] : [-W / 2 + 128, gy + L!.wB * 0.55]
     seat(paper, px, py)
-    seat(seal, px + 38, py + 36)
-    if (wide) seat(cloth, px + pw + 56, py + 46)
-    else seat(cloth, -W / 2 + 78, gy + L!.wB + 40)
   }
 
   /** the far sand under the sky (the plane covers the near part): sand, receding rake lines, the sun's path on it */
@@ -734,28 +725,6 @@ export function ensoScene(ctx: SceneCtx) {
   ctx.onCleanup(() => job?.cancel())
 }
 
-/** The stone seal seen from above: a squat block of dark stone, its carved lion knob, vermilion paste on its foot. */
-function sealArt() {
-  return s('svg', { class: 't39e-seal-art', viewBox: '-30 -30 60 60', 'aria-hidden': 'true' },
-    s('ellipse', { cx: 2, cy: 6, rx: 25, ry: 23, fill: 'url(#g39-ao)' }),
-    s('path', { class: 't39e-seal-paste', d: blob(1.5, 3, 19, 18, 3993, 0.06, 12) }),
-    s('path', { class: 't39e-seal-body', d: 'M-17 -15Q-18 -18 -15 -18H15Q18 -18 18 -15V15Q18 18 15 18H-15Q-18 18 -18 15Z', filter: 'url(#ink-rough)' }),
-    s('path', { class: 't39e-seal-side', d: 'M-18 9V15Q-18 18 -15 18H15Q18 18 18 15V9Z' }),
-    s('path', { class: 't39e-seal-knob', d: blob(0, -2, 10, 9, 3994, 0.25, 12) }),
-    s('path', { class: 't39e-seal-knob-hi', d: stroke([[-7, -6], [-1, -10], [6, -8]], 2, 0.3, 0.3, 0.2) }),
-    s('path', { class: 't39e-seal-rim', d: stroke([[-16, -17], [0, -18.5], [16, -17]], 1.6, 0.2, 0.2, 0.2) }))
-}
-
-/** A furoshiki bundle from above: a square of indigo cloth tied over its load, two ears of the knot, its folds. */
-function clothArt() {
-  return s('svg', { class: 't39e-cloth-art', viewBox: '-34 -34 68 68', 'aria-hidden': 'true' },
-    s('ellipse', { cx: 3, cy: 7, rx: 30, ry: 27, fill: 'url(#g39-ao)' }),
-    s('path', { class: 't39e-cloth-body', d: 'M-24 -6Q-27 -24 -8 -25Q8 -28 24 -20Q29 -2 25 16Q12 27 -6 25Q-26 22 -24 -6Z', filter: 'url(#ink-rough)' }),
-    s('path', { class: 't39e-cloth-fold', d: stroke([[-20, 14], [-6, 4], [2, -2]], 1.6, 0.2, 0.4, 0.2) + stroke([[20, -14], [8, -4], [2, -2]], 1.6, 0.2, 0.4, 0.2) + stroke([[18, 16], [6, 4]], 1.2, 0.2, 0.4, 0.2) }),
-    s('path', { class: 't39e-cloth-dots', d: [[-14, -12], [-2, -16], [10, -14], [-16, 2], [14, 4], [-8, 14], [6, 14], [16, -4]].map(([x, y]) => blob(x, y, 1.6, 1.6, x * 7 + y, 0.2, 8)).join('') }),
-    s('path', { class: 't39e-cloth-knot', d: blob(2, -2, 7, 6, 3995, 0.2, 10) + stroke([[2, -2], [-6, -12], [-12, -16]], 6, 0.1, 0.6, 0.3) + stroke([[2, -2], [12, -10], [17, -18]], 6, 0.1, 0.6, 0.3) }),
-    s('path', { class: 't39e-cloth-hi', d: stroke([[-22, -8], [-18, -22], [-4, -24]], 1.4, 0.3, 0.3, 0.1) }))
-}
 
 /** The brush on its rest, ready: a bamboo handle, a wet black tip, a small river stone under it. */
 function brushArt() {

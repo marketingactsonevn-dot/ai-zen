@@ -7,6 +7,7 @@ import type { SceneCtx } from '../types'
 import { blob, clamp, onDigit, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon, reeds, toro } from '../../ui/part2/paint'
 import { C } from './data'
+import { guide } from '../../ui/part2/guide'
 import { f1, figure, P, paperSlip } from './kit'
 
 const G = C.scenes.fence
@@ -47,7 +48,13 @@ export function fenceScene(ctx: SceneCtx) {
   const lamp = h('div', { class: 't30f-lamp', role: 'slider', tabindex: '0', 'aria-label': G.lampAria, 'aria-valuemin': '0', 'aria-valuemax': '359', 'aria-valuenow': '90' })
   root.append(h('p', { class: 'visually-hidden' }, G.art), bg, cw, mid, ca, lampSvg, cb, lamp, gate, denied, ...guards, ...hangs)
   ctx.art.append(root)
-  ctx.prompt(G.prompt)
+  // guide (audit v3 30-2): a prompt per step — the gate, the two guards' lanterns, then turn the lamp on the wall; a dot
+  // on the next thing; a count of the cracks found
+  const gd = guide(ctx)
+  const step = gd.steps(G.prompts)
+  step(0)
+  let next = gd.dot(gate)
+  let cracksFound: ReturnType<typeof gd.count> | null = null
   const stableH = stableHeight(ctx, [G.insight as Fact])
   const xa = ca.getContext('2d')!, xb = cb.getContext('2d')!, xw = cw.getContext('2d')!
 
@@ -497,7 +504,7 @@ export function fenceScene(ctx: SceneCtx) {
       xw.globalCompositeOperation = 'source-over'
       for (let i = 0; i < crackAt.length; i++) {
         const [x, y] = crackAt[i]
-        if (!revealed.has(i) && Math.abs(x - sx) < rx * 0.6 && Math.abs(y - sy) < ry * 1.4) reveal(i)
+        if (!revealed.has(i) && Math.abs(x - sx) < rx * 1.0 && Math.abs(y - sy) < ry * 1.6) reveal(i) // wide enough for a natural sweep (audit v3 30-2)
       }
     }
   }
@@ -537,7 +544,10 @@ export function fenceScene(ctx: SceneCtx) {
     root.classList.add('knock', 'knocked')
     denied.classList.add('on')
     ctx.chime('soft')
-    if (!seen.size) ctx.prompt(G.prompt)
+    if (!seen.size) {
+      step(1)
+      next.at(guards.find((_, k) => !seen.has(k))!)
+    }
   }
   function pick(i: number) {
     guards.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)))
@@ -546,8 +556,11 @@ export function fenceScene(ctx: SceneCtx) {
     put(slips[i], h('p', { class: 't30f-who' }, G.cases[i].name), ctx.fact(G.cases[i].fact as Fact, 'p'))
     if (seen.size === G.cases.length && !root.classList.contains('guarded')) {
       root.classList.add('guarded')
-      ctx.prompt(G.lampHint)
-    }
+      step(2)
+      next.done()
+      next = gd.dot(lamp, { dir: [1, 0] })
+      cracksFound = gd.count(G.crackTpl, CRACKS.length, gate, { n: revealed.size })
+    } else if (seen.size < G.cases.length) next.at(guards.find((_, k) => !seen.has(k))!)
     ctx.chime('soft')
     void knocked
   }
@@ -556,9 +569,12 @@ export function fenceScene(ctx: SceneCtx) {
     root.classList.add('found')
     if (revealed.size === 1) put(whySlip, h('p', { class: 't30-eyebrow' }, G.whyLabel), ctx.fact(G.why as Fact, 'p'))
     ctx.chime(revealed.size === CRACKS.length ? 'ok' : 'soft')
+    cracksFound?.set(revealed.size)
     if (revealed.size === CRACKS.length) {
+      next.done()
+      cracksFound?.done()
       put(plaque, h('p', { class: 't30f-carved-label' }, G.debateLabel), ctx.fact(G.debate as Fact, 'p'))
-      ctx.insight(G.insight as Fact, G.detail)
+      ctx.insight(G.insight as Fact, G.detail as Fact)
     }
   }
 

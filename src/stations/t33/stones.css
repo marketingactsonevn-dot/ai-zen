@@ -94,7 +94,7 @@
   overflow-y: auto;
   scrollbar-width: none;
 }
-.t33s .p2n-back .p2-eyebrow { color: color-mix(in srgb, currentColor 58%, transparent); font: 600 0.62rem/1.3 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; }
+.t33s .p2n-back .p2-eyebrow { color: color-mix(in srgb, currentColor 58%, transparent); font: 600 0.7rem/1.3 var(--sans); letter-spacing: 0.02em; }
 .t33s .p2n-what { margin: 0 0 4px; font: 500 clamp(0.8rem, 0.95vw, 0.88rem) / 1.42 var(--serif); text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 70%, transparent); }
 .t33s .p2n-why { margin: 0 0 2px; font: 400 clamp(0.74rem, 0.85vw, 0.8rem) / 1.42 var(--serif); color: color-mix(in srgb, currentColor 82%, transparent); }
 .t33s .p2n-what .cmark-btn, .t33s .p2n-what .src-btn { color: currentColor; }

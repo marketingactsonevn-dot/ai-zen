@@ -7,6 +7,8 @@ import { mist, moon, pine } from '../../ui/part2/paint'
 import { codeScroll } from '../../ui/part2/code'
 import type { CodeScroll } from '../../ui/part2/types'
 import type { SceneCtx } from '../types'
+import { guide } from '../../ui/part2/guide'
+import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
 import { C } from './content'
 import { F, drift, f1, gdefs, ink, lantern, wood, woodG } from './kit'
 
@@ -48,7 +50,7 @@ export function scrollScene(ctx: SceneCtx) {
       : h('span', { class: 't35s-tag', 'aria-hidden': 'true' }, tagArt)
     const el = readable
       ? h('button', { class: 't35s-roll read', type: 'button', 'aria-label': K.codeAria, 'aria-expanded': 'false', 'aria-controls': 't35s-maki', onClick: open }, art, tag)
-      : h('div', { class: 't35s-roll', 'aria-hidden': 'true' }, art, tag)
+      : h('div', { class: 't35s-roll', 'aria-hidden': 'true', onClick: () => !opened && !found && GD.wrong(K.notReadable) }, art, tag)
     const depth = readable ? 0 : [1, 2, 0, 2, 1, 0, 2, 1, 0][k]
     return { el, art, shadow, tag, tagArt, depth, len: 0.58 + r0() * 0.42, d: 0.78 + r0() * 0.5, silk: Math.floor(r0() * 4), knob: Math.floor(r0() * 3), x: 0, tagOp: -1 }
   })
@@ -93,6 +95,9 @@ export function scrollScene(ctx: SceneCtx) {
     h('p', { class: 'visually-hidden' }, K.art), wall, shades, rail, ...layers.slice().reverse(), dark, win, pool, ledge, maki, pouchSlip, lamp)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
+  // guide: a dot on the lantern until it finds the readable tag, then on that scroll
+  const GD = guide(ctx)
+  const dot = GD.dot(lamp, { dir: [1, 0] })
   const par = drift(ctx, root, [[wall, 3], [win, 3], [shades, 5], [rail, 7], [layers[2], 4], [layers[1], 7], [layers[0], 11]])
 
   let W = 0, H = 0, port = false
@@ -121,6 +126,8 @@ export function scrollScene(ctx: SceneCtx) {
     scrolls[READ].el.classList.toggle('lit', on)
     if (on && !found && !opened) {
       found = true
+      dot.at(scrolls[READ].el)
+      ctx.prompt(K.openPrompt)
       ledge.replaceChildren(h('div', { class: 't35s-slip t35k-paper' }, ctx.fact(F(K.facts[1]), 'p')))
       if (!ledge.hasAttribute('aria-live')) ledge.setAttribute('aria-live', 'polite')
       ctx.chime('soft')
@@ -173,7 +180,10 @@ export function scrollScene(ctx: SceneCtx) {
     scrolls[READ].el.setAttribute('aria-expanded', 'true')
     maki.hidden = false
     ctx.chime('soft')
-    ledge.replaceChildren(...(port ? [pouchSlip] : []), ...K.facts.map((f) => h('div', { class: 't35s-slip t35k-paper' }, ctx.fact(F(f), 'p'))))
+    dot.done()
+    // one fact at a time (the other was shown when the tag was found), and the blank SKILL.md card folded beside it
+    const kit = findTakeaway(K.takeaway)
+    ledge.replaceChildren(...(port ? [pouchSlip] : []), h('div', { class: 't35s-slip t35k-paper' }, ctx.fact(F(K.facts[0]), 'p')), ...(kit ? [foldedTakeaway([kit], ctx.onCleanup)] : []))
     // the lantern steps aside to the scroll's tail so its pool lights the reading
     aim(port ? W * 0.9 : W * 0.29)
     const done = () => {

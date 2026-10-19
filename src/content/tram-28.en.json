@@ -1,164 +1,171 @@
 {
   "id": 28,
-  "kicker": "In a gold rush, the shovel sellers get rich first.",
-  "summary": "Every question you type runs on someone's chip — and the money flowing around those chips is shaping the whole AI industry.",
+  "kicker": "In a gold rush, the shovel sellers get rich first. The AI boom is the same, and the shovels here are chips.",
+  "summary": "Every question you ask AI runs on chips, mostly NVIDIA chips. The chip seller gets paid first, then puts money back into the very customers who buy its chips.",
   "newsTags": [
     "nvidia",
     "dau-tu"
   ],
   "quiz": {
-    "q": "Rivals already have powerful chips. Why is NVIDIA still hard to beat?",
+    "q": "Other companies already have powerful chips. Why is NVIDIA still hard to replace?",
     "options": [
-      "NVIDIA chips are the cheapest on the market",
-      "The whole industry is used to writing software on CUDA",
-      "The law bans chips from other makers",
-      "Other makers' chips cannot run AI"
+      "NVIDIA chips are 10 times faster than any rival's",
+      "AI code is written on CUDA; switching means rewriting",
+      "NVIDIA owns more chip factories than anyone in the world",
+      "AI companies signed contracts to buy only NVIDIA chips ever"
     ],
     "answer": 1,
-    "explain": "NVIDIA's moat is CUDA, a software platform dating from 2006. Switching to another chip means rewriting or converting a great deal of code."
+    "explain": "NVIDIA doesn't win through factories (TSMC makes its chips) but through CUDA: programming tools that run only on NVIDIA chips, which the whole industry has written code on since 2006."
   },
   "scenes": {
     "gardeners": {
-      "label": "A thousand gardeners",
+      "label": "A thousand spouts",
       "art": "A terraced hill like a bonsai tray under a low full moon: 25 curved rows of 40 moss beds each, a bamboo gutter along every lip with a little spout over every bed. Front left, a paper gardener stands on a stepping stone by a stone lantern, his watering can on a rock beside him; on the crest, the bamboo valve at the head of the gutters meets the spring.",
-      "prompt": "Choose how to water",
-      "hint": "Drag to turn the tray. Touch the watering can, or the bamboo valve on the crest.",
+      "hint": "Drag to turn the tray. Touch the watering can, then pull the bamboo valve on the crest.",
       "group": "Two ways to water the same garden",
       "one": "1 watering can · CPU",
-      "oneAria": "Water with one can: a few strong cores doing one job after another",
+      "oneAria": "Water with one can (CPU): a few strong cores doing one job after another",
       "many": "1,000 bamboo spouts · GPU",
-      "manyAria": "Water with a thousand bamboo spouts: thousands of small cores working at once",
+      "manyAria": "Water with a thousand bamboo spouts (GPU): each spout is a small core, a thousand working at once",
       "rows": "{n}/1,000 beds watered",
       "sep": ",",
       "done": "The whole garden is soaked",
       "insight": {
-        "text": "A GPU (graphics processor) is like a thousand gardeners watering at once: just right for AI's billions of tiny sums.",
-        "asOf": "2026-10-15",
-        "source": "t28-cuda-guide"
-      },
-      "detail": "CPUs are still needed to coordinate and make decisions. A neural network, though, mostly multiplies and adds huge tables of numbers, work that splits neatly into parallel pieces."
-    },
-    "scaling": {
-      "label": "Growing takes more shovels",
-      "art": "A three-cornered stone basin on a mossy boulder, seen from a little above; each corner spills into a jar: Data front left, Size at the back, Compute front right. A bamboo spout resting on a single post lets a thread of silver drops fall into the middle, where a sapling stands on a small stone against the moon. Behind the mist, an old tree with a great trunk waits.",
-      "prompt": "Share out 100 drops",
-      "basinAria": "The three-cornered stone basin: drag it, or use the arrow keys, to tilt it toward a corner",
-      "jars": [
-        {
-          "id": "data",
-          "name": "Data",
-          "aria": "Data jar: how much text the model reads"
-        },
-        {
-          "id": "size",
-          "name": "Size",
-          "aria": "Size jar: the model's number of parameters"
-        },
-        {
-          "id": "compute",
-          "name": "Compute",
-          "aria": "Compute jar: chips and hours of running"
-        }
-      ],
-      "slider": "Drops for the {name} jar",
-      "valueText": "{n} drops for {name}",
-      "remaining": "{n} drops left",
-      "balanced": "The tree grows straight",
-      "lopsided": "The tree leans: the {name} jar is low",
-      "insights": [
-        {
-          "text": "Scaling laws: add data, size and compute, and a model improves steadily and predictably.",
-          "asOf": "2026-10-15",
-          "source": "t28-kaplan"
-        },
-        {
-          "text": "In 2022 Chinchilla (70 billion parameters, 1.4 trillion tokens) beat Gopher, four times its size: balancing data with size pays off.",
-          "asOf": "2026-10-15",
-          "source": "t28-chinchilla"
-        }
-      ],
-      "detail": "Because the curve is so steady, many companies believe more chips mean better models — so they keep buying chips."
-    },
-    "moat": {
-      "label": "The moat round the castle",
-      "art": "Seen from high above, a round disc floating in the night: in the middle, a three-roofed stone castle on its island; round it, a black moat crossed by six hundred little bamboo bridges from a village of low roofs. On the far lake, three boats with paper lanterns (round, tall, square) wait by three canals.",
-      "prompt": "Touch each boat",
-      "castle": "NVIDIA",
-      "moatLabel": "CUDA · the software everyone knows",
-      "group": "Three boats crossing the moat",
-      "boatAria": "{name} boat: see what this rival is doing",
-      "boats": [
-        {
-          "id": "google",
-          "name": "Google · TPU",
-          "fact": {
-            "text": "Oct 2025: Anthropic announced it will use up to a million Google TPU chips, over 1 gigawatt of capacity in 2026.",
-            "asOf": "2026-10-15",
-            "source": "t28-anthropic-tpu",
-            "claimBy": "Anthropic"
-          }
-        },
-        {
-          "id": "amazon",
-          "name": "Amazon · Trainium",
-          "fact": {
-            "text": "Feb 2026: in its new funding round, OpenAI agreed to use 2 gigawatts of compute running on Amazon's Trainium chips.",
-            "asOf": "2026-10-15",
-            "source": "t28-ap-openai-round"
-          }
-        },
-        {
-          "id": "amd",
-          "name": "AMD · Instinct",
-          "fact": {
-            "text": "Oct 2025: AMD and OpenAI signed a 6-gigawatt GPU deal; the first gigawatt (MI450) starts in the second half of 2026.",
-            "asOf": "2026-10-15",
-            "source": "t28-amd-openai",
-            "claimBy": "AMD, OpenAI"
-          }
-        }
-      ],
-      "insight": {
-        "text": "NVIDIA's moat is CUDA: a software platform from 2006 that the whole industry is used to writing code on.",
+        "text": "Each bamboo spout is one GPU core: a thousand water together, so AI's billions of tiny sums finish very fast.",
         "asOf": "2026-10-15",
         "source": "t28-cuda-guide"
       },
       "detail": {
-        "text": "Some big AI labs use several kinds of chip side by side: Anthropic says it uses TPUs, Trainium and NVIDIA GPUs.",
+        "text": "The CPU is a computer's main chip: few cores, each good at complex work, so it still coordinates. GPUs were made to draw game graphics. AI's work is multiplying and adding huge tables of numbers, which splits into small pieces, so it suits a GPU.",
         "asOf": "2026-10-15",
-        "source": "t28-anthropic-tpu"
+        "source": "t28-cuda-guide"
+      },
+      "prompts": [
+        "Touch the watering can by the gardener",
+        "The gardener waters bed by bed. Now pull the bamboo valve on the crest",
+        "A thousand spouts at once. Now touch the watering can by the gardener to compare"
+      ]
+    },
+    "scaling": {
+      "label": "More shovels, steady growth",
+      "art": "A long stone seesaw resting on a mossy boulder, a jar standing on each end: Data on the left, Model size on the right. A sapling stands in the middle of the seesaw against the moon; a bamboo pipe with a turning handle lets a thread of silver drops fall to its foot. Beyond the mist, Gopher, a thick-trunked tree with a thin crown, stands on a knoll: its Model size jar overflows, its Data jar is nearly dry.",
+      "prompts": [
+        "Turn the bamboo tap to add compute",
+        "Tilt the seesaw until both jars are even"
+      ],
+      "compute": "Compute · chips × hours running",
+      "tapAria": "Bamboo tap handle: each turn multiplies compute by 10",
+      "ticks": [
+        "",
+        "×10",
+        "×100",
+        "×1000"
+      ],
+      "illus": "Illustration",
+      "beamAria": "Stone seesaw: use the arrow keys to tilt it toward the Data jar or the Model size jar",
+      "jars": [
+        {
+          "id": "data",
+          "name": "Data · words the model reads"
+        },
+        {
+          "id": "size",
+          "name": "Model size"
+        }
+      ],
+      "valueText": "Data {data}%, model size {size}%",
+      "level": "level",
+      "lopsided": "The {name} jar is short: lower that end",
+      "gopher": "Gopher",
+      "insights": [
+        {
+          "text": "Each tenfold of compute raises the tree one even step. With results that predictable, companies keep buying more chips.",
+          "asOf": "2026-10-15",
+          "source": "t28-kaplan"
+        },
+        {
+          "text": "With the same water, the tree that splits it evenly grows taller than the one that pours it all into size: a moderate model that reads more is more efficient.",
+          "asOf": "2026-10-15",
+          "source": "t28-chinchilla"
+        }
+      ],
+      "detail": {
+        "text": "In 2022 DeepMind tested it: Chinchilla, a model 4 times smaller that read more text, beat Gopher on the same compute. The AI world calls these “scaling laws”.",
+        "asOf": "2026-10-15",
+        "source": "t28-chinchilla"
       }
+    },
+    "moat": {
+      "label": "The moat round the castle",
+      "art": "Seen from high above, a round disc floating in the night: in the middle, NVIDIA's three-roofed stone castle on its island; round it, a black moat crossed by bamboo bridges you can count, out to a village. One village house is tied to the castle wall by five bridges. On the far lake, three boats with paper lanterns, Google's, Amazon's and AMD's, wait by three canals.",
+      "prompts": [
+        "Drag a house to a rival's boat",
+        "Tap each bridge to cut it",
+        "Drop the house on the boat"
+      ],
+      "castle": "NVIDIA",
+      "moatLabel": "CUDA · programming tools that run only on NVIDIA chips",
+      "houseAria": "A village house, that is an AI programming team: drag it to a rival's boat",
+      "cutAria": "Cut tying bridge {n}",
+      "countTpl": "{n} bridges still tied",
+      "rewrite": "rewrite the code",
+      "boats": [
+        {
+          "id": "google",
+          "name": "Google · TPU chips"
+        },
+        {
+          "id": "amazon",
+          "name": "Amazon · Trainium chips"
+        },
+        {
+          "id": "amd",
+          "name": "AMD · Instinct chips"
+        }
+      ],
+      "insight": {
+        "text": "Each bridge is code already written for CUDA, programming tools that run only on NVIDIA chips. Switching chips means tearing down the bridges and writing it again.",
+        "asOf": "2026-10-15",
+        "source": "t28-cuda-guide"
+      },
+      "detail": [
+        {
+          "text": "The moat is deep, but it can be crossed. Anthropic uses Google's TPUs, Amazon's Trainium and NVIDIA GPUs alike. OpenAI has also signed for chips from Amazon and AMD.",
+          "asOf": "2026-10-15",
+          "source": "t28-anthropic-tpu",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "Oct 2025: Anthropic announced it will use up to a million Google TPU chips in 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-anthropic-tpu",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "Feb 2026: in its new funding round, OpenAI agreed to run part of its compute on Amazon's Trainium chips.",
+          "asOf": "2026-10-15",
+          "source": "t28-ap-openai-round"
+        },
+        {
+          "text": "Oct 2025: AMD and OpenAI signed a GPU deal of about 6 gigawatts (measured by the power the chips draw); the first batch starts in the second half of 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-amd-openai",
+          "claimBy": "AMD, OpenAI"
+        }
+      ]
     },
     "goldrush": {
       "label": "Gold-rush season",
-      "art": "A long black ridge cut from paper runs across the lower part, a giant moon behind it that you drag through the seasons. Each milestone is a lamp post on the ridge; diggers with lanterns climb in ever greater numbers toward the shovel seller's tent on the summit, where two heaps of gold stand in true proportion.",
-      "prompt": "Drag the moon through the seasons",
-      "sliderAria": "Drag the moon through NVIDIA's milestones",
+      "art": "A long black ridge cut from paper runs across the lower part, a giant moon behind it that you drag through the years. Each milestone is a lamp post on the ridge; diggers with lanterns, the AI companies, climb in ever greater numbers toward NVIDIA's tent on the summit, where it sells the shovels (chips); beside it two heaps of gold stand in true proportion.",
+      "prompt": "Drag the moon through the years",
+      "sliderAria": "Drag the moon through NVIDIA's years",
       "tide": {
         "milestones": [
-          {
-            "date": "2006-11",
-            "label": "CUDA is born",
-            "fact": {
-              "text": "NVIDIA introduces CUDA: a way to use GPUs for any calculation, not just drawing game graphics.",
-              "asOf": "2026-10-15",
-              "source": "t28-cuda-guide"
-            }
-          },
-          {
-            "date": "2020-01",
-            "label": "Scaling laws",
-            "fact": {
-              "text": "Kaplan's team (OpenAI) shows that bigger models with more data and compute make fewer word-prediction errors, along a smooth curve.",
-              "asOf": "2026-10-15",
-              "source": "t28-kaplan"
-            }
-          },
           {
             "date": "2023-01",
             "label": "Before the boom",
             "fact": {
-              "text": "In the fiscal year ending January 2023, NVIDIA's data-centre business brought in $15.0 billion.",
+              "text": "Fiscal 2023 (to Jan 2023): NVIDIA sold $15.0 billion of chips to data centres, the buildings full of machines that run AI.",
               "asOf": "2026-10-15",
               "source": "t28-nvda-10k-fy23"
             }
@@ -174,9 +181,9 @@
           },
           {
             "date": "2026-01",
-            "label": "Nearly 13 times bigger",
+            "label": "Nearly 13× in 3 years",
             "fact": {
-              "text": "In fiscal 2026 data centres brought in $193.7 billion, nearly 13 times the figure three years earlier.",
+              "text": "Fiscal 2026: NVIDIA sold $193.7 billion of chips to data centres, nearly 13 times the figure three years earlier.",
               "asOf": "2026-10-15",
               "source": "t28-nvda-fy26"
             },
@@ -191,7 +198,7 @@
             "date": "2026-10-15",
             "label": "Today",
             "fact": {
-              "text": "Latest report (26 Aug 2026): data centres earned $89 billion in one quarter, up 117% on a year earlier.",
+              "text": "The latest quarter alone (report of 26 Aug 2026): $89 billion, more than double the same quarter a year before.",
               "asOf": "2026-10-15",
               "source": "t28-nvda-q2fy27"
             }
@@ -205,17 +212,24 @@
         }
       },
       "insight": {
-        "text": "About 9 in 10 dollars of NVIDIA's fiscal 2026 revenue came from data centres: the shovel seller gets paid first.",
+        "text": "In three years, NVIDIA's chip sales to data centres grew almost 13 times: the shovel seller gets paid first.",
+        "asOf": "2026-10-15",
+        "source": "t28-nvda-fy26"
+      },
+      "crowd": "AI companies digging for gold",
+      "seller": "NVIDIA sells the shovels (chips)",
+      "detail": {
+        "text": "In fiscal 2026 about 9 in 10 dollars of NVIDIA's revenue came from chips for data centres.",
         "asOf": "2026-10-15",
         "source": "t28-nvda-fy26"
       }
     },
     "loop": {
       "label": "The money loop",
-      "art": "Looking up from below the axle at a great wooden waterwheel beside NVIDIA's stone mill, against the moon. A stone flume carries water from the wheel's tail round the lake past the AI company's island (a pavilion with a lamp) and the data centre's (a row of stone lanterns), then over the mill roof back onto the wheel; the mill wall bears two notches, 22 and 51.",
-      "prompt": "Follow the money",
+      "art": "Looking up from below the axle at a great wooden waterwheel beside NVIDIA's stone mill, against the moon. A stone flume carries water, the money, from the wheel's tail round the lake past the AI company's island (a pavilion with a lamp) and the data centre's (a row of stone lanterns), then over the mill roof back onto the wheel. At the last step two water marks appear on the mill wall: $22 and $51 billion.",
+      "prompt": "Tap or drag the waterwheel round, the way the arrow points",
       "flowLabel": "Money flowing in a loop",
-      "wheelAria": "The waterwheel: drag it round its axle, or press the right arrow or Enter, to turn it a quarter",
+      "wheelAria": "The waterwheel: tap it, drag it round its axle, or press Enter, to turn it a quarter",
       "islands": [
         "NVIDIA",
         "AI company",
@@ -231,17 +245,17 @@
       "flowAria": "Step {n} of the money loop: {text}",
       "facts": [
         {
-          "text": "Feb 2026: NVIDIA put $30 billion into OpenAI's $110 billion funding round, alongside Amazon and SoftBank.",
+          "text": "Feb 2026: NVIDIA put in $30 billion of the $110 billion OpenAI had just raised.",
           "asOf": "2026-10-15",
           "source": "t28-ap-openai-round"
         },
         {
-          "text": "NVIDIA's stakes in private companies grew from $22 billion to $51 billion in just the first six months of 2026.",
+          "text": "In the first six months of 2026, what NVIDIA owns in companies not yet on the stock market grew from $22 billion to $51 billion.",
           "asOf": "2026-10-15",
           "source": "t28-nvda-10q"
         },
         {
-          "text": "Aug 2026: NVIDIA guaranteed up to $105 billion for building data centres that serve an OpenAI subsidiary.",
+          "text": "Aug 2026: NVIDIA promised to repay up to $105 billion of debt if the company building data centres for OpenAI cannot.",
           "asOf": "2026-10-15",
           "source": "t28-nvda-10q"
         }
@@ -249,18 +263,18 @@
       "perspectives": {
         "stones": [
           {
-            "who": "A Wedbush analyst",
+            "who": "Wedbush, a US brokerage",
             "view": {
-              "text": "These deals sit “right in the middle” of the circular-investment debate, but if they work they could become a competitive moat.",
+              "text": "It is circular investment, true, but if it works, customers will be tied tightly to NVIDIA.",
               "asOf": "2026-10-15",
               "source": "t28-benzinga",
               "kind": "opinion"
             }
           },
           {
-            "who": "A Global X strategist",
+            "who": "Global X, an investment fund",
             "view": {
-              "text": "NVIDIA weighing a guarantee for OpenAI adds strain to the already contested story of “the supplier funding its customer”.",
+              "text": "NVIDIA sells the chips and also promises to repay its chip buyers' debt; that makes it all the more contested.",
               "asOf": "2026-10-15",
               "source": "t28-asiae",
               "kind": "opinion"
@@ -269,7 +283,7 @@
           {
             "who": "Jensen Huang, NVIDIA CEO",
             "view": {
-              "text": "NVIDIA's money is only part of what customers must raise; he calls the “circular” charge groundless.",
+              "text": "NVIDIA's money is only part of what customers raise; calling it “circular” is baseless.",
               "asOf": "2026-10-15",
               "source": "t28-asiae",
               "kind": "opinion",
@@ -279,7 +293,7 @@
           {
             "who": "Bank of England",
             "view": {
-              "text": "Oct 2025: share prices, especially of AI-focused tech companies, look stretched; the risk of a sharp market correction has risen.",
+              "text": "Oct 2025: AI companies' share prices look too high; the risk of a sharp fall is growing.",
               "asOf": "2026-10-15",
               "source": "t28-boe",
               "kind": "opinion"
@@ -287,16 +301,29 @@
           }
         ],
         "common": {
-          "text": "Everyone sees money circling between NVIDIA and its customers; they differ on whether it is a moat or the seed of a bubble.",
+          "text": "The money really does go round. The debate: does it keep customers loyal, or inflate a value that could burst?",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "NVIDIA invests in the very customers who buy its chips: moat or bubble, analysts still disagree.",
+        "text": "The money NVIDIA puts into customers comes back as money spent on NVIDIA chips. The faster the wheel turns, the bigger the revenue.",
         "asOf": "2026-10-15",
-        "source": "t28-benzinga"
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "countTpl": "Step {n}/{total}",
+      "notches": [
+        "$22 billion",
+        "$51 billion in stakes"
+      ],
+      "circlePrompt": "Tap each stone: keeping customers, or a bubble?",
+      "detail": {
+        "text": "When you read “NVIDIA invests in X”, ask: does X buy NVIDIA chips?",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
       }
     }
   },

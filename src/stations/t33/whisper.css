@@ -153,12 +153,12 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  color: color-mix(in srgb, #7f9cc4 80%, #e8f1ff);
-  text-shadow: 0 1px 0 color-mix(in srgb, #fff 85%, transparent), 0 -1px 0 color-mix(in srgb, #3c5a86 55%, transparent), 0 0 6px color-mix(in srgb, #bcd6ff 70%, transparent);
+  /* the revealed line: deep vermilion on the lit paper, easy to read */
+  color: color-mix(in srgb, var(--vermilion) 82%, #2a0c06);
+  text-shadow: 0 0 10px color-mix(in srgb, #fff6e0 90%, transparent), 0 0 2px #fffaf0;
   letter-spacing: 0.01em;
   transition: opacity 0.9s var(--ease);
 }
-:root[data-theme='dark'] .t33w-full { color: color-mix(in srgb, #8fb0d8 75%, #f2f7ff); }
 .t33w.shown .t33w-full { opacity: 0.95; }
 .t33w.shown .t33w-glow { opacity: 0; }
 /* the agent's eye: a cold even band across the whole sheet */
@@ -195,7 +195,6 @@
   font: 600 0.62rem/1.25 var(--sans);
   letter-spacing: 0.04em;
   text-align: center;
-  text-transform: uppercase;
   transform: rotate(-5deg);
   opacity: 0.85;
 }
@@ -251,6 +250,26 @@
 .t33w-say { position: absolute; left: 8%; right: 8%; top: 3%; z-index: 3; margin: 0; text-align: center; font: 400 1.02rem/1.45 var(--serif); }
 .t33w-say p { margin: 0; }
 .t33w.low .t33w-letter, .t33w.low .t33w-shadow, .t33w.low .t33w-lamp { transition: none; }
+/* the garden's mail gate on the far bank, and the paper crane the agent sends through it */
+.t33w-gate { position: absolute; z-index: 2; padding: 0; border: 0; background: none; cursor: pointer; }
+.t33w-gate:disabled { cursor: default; }
+.t33w-gate:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; }
+.t33w-gate svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.t33w-gpost, .t33w-gbeam { fill: var(--t33-wood-lo); }
+.t33w-groof { fill: color-mix(in srgb, var(--wash) 80%, var(--t33-wood-lo)); }
+.t33w-gleaf { fill: var(--t33-wood); }
+.t33w-gseam { stroke: var(--t33-wood-lo); stroke-width: 1.4; }
+.t33w-gsh { fill: var(--umbra); opacity: 0.3; }
+.t33w-gseal { fill: color-mix(in srgb, #f8f0dc 88%, var(--lantern)); }
+.t33w-gstamp { fill: var(--vermilion); }
+.t33w-gshut { opacity: 0; transition: opacity 0.5s var(--ease); }
+.t33w-gate.sealed .t33w-gshut { opacity: 1; }
+.t33w-gate.sealed .t33w-gopen { opacity: 0; }
+.t33w-crane { position: absolute; left: -24px; top: -16px; z-index: 4; width: 48px; height: 32px; opacity: 0; pointer-events: none; }
+.t33w-crane svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.t33w-cbody { fill: color-mix(in srgb, #fbf5e6 90%, var(--lantern)); stroke: var(--wash); stroke-width: 0.8; }
+.t33w-cwing { fill: color-mix(in srgb, #f2e8d0 80%, var(--rock-mid)); }
+.t33w-cwing2 { fill: color-mix(in srgb, #fffaf0 90%, var(--moon)); }
 @media (max-width: 640px) {
   .t33w-letter { bottom: 20%; }
   .t33w.up .t33w-letter { transform: translateY(-12%) scale(1.04) rotateX(8deg) rotateY(-9deg) rotateZ(-0.8deg); }

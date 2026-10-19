@@ -5,6 +5,7 @@ import type { SceneCtx } from '../types'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, moon, reeds, toro, wash, water } from '../../ui/part2/paint'
 import { C } from './data'
+import { guide } from '../../ui/part2/guide'
 
 const G = C.scenes.loop
 // step k carries the money to island TO[k]; the fact each step brings (facts[1] is the 22 → 51 one: the water rises)
@@ -40,6 +41,7 @@ export function wheelScene(ctx: SceneCtx) {
   const still = low || ctx.reduced
   const stableH = stableHeight(ctx, [G.insight as Fact])
   ctx.prompt(G.prompt)
+  const gd = guide(ctx)
 
   const sky = s('svg', { class: 't28w-sky', 'aria-hidden': 'true' })
   const back = s('svg', { class: 't28w-back', 'aria-hidden': 'true' }) // rims' far face and the spokes
@@ -70,11 +72,16 @@ export function wheelScene(ctx: SceneCtx) {
   let done = false
 
   function label() {
-    const k = Math.min(step, G.flow.length - 1)
+    // the step just taken (none yet: the slider's own name)
     wheel.setAttribute('aria-valuenow', String(step))
-    wheel.setAttribute('aria-valuetext', step < G.flow.length ? fill(G.flowAria, { n: step + 1, text: G.flow[step] }) : G.flow[k])
+    wheel.setAttribute('aria-valuetext', step ? fill(G.flowAria, { n: step, text: G.flow[step - 1] }) : G.flowLabel)
   }
   label()
+  // guide: a dot on a paddle at three o'clock, a curved arrow along the rim (the turn is a hidden gesture), a count of
+  // the four steps
+  const dot = gd.dot(() => [geo.cx + geo.R * 1.02 * geo.sx, geo.cy], { dir: [0, 1] })
+  const arrow = gd.gesture('rotate', () => [geo.cx, geo.cy], { r: 70 })
+  const steps = gd.count(G.countTpl, G.flow.length, () => [geo.cx, geo.cy + geo.R * 1.3])
 
   /** a quarter turn forward: the next run of water lights, its words go on the plank, its fact on the slip */
   function advance() {
@@ -92,10 +99,14 @@ export function wheelScene(ctx: SceneCtx) {
     slip.classList.toggle('open', f != null)
     if (f === 1) root.classList.add('high') // NVIDIA's stakes 22 → 51: the water climbs to the second notch
     label()
+    steps.set(step)
+    arrow.done()
     if (step === G.flow.length && !done) {
       done = true
+      dot.done()
+      steps.done()
       root.classList.add('round')
-      ctx.insight(G.insight as Fact)
+      ctx.insight(G.insight as Fact, G.detail as Fact)
       ctx.chime('ok')
       if (!still) (spin = 0.9), loop.start()
     } else ctx.chime('soft')
@@ -158,13 +169,13 @@ export function wheelScene(ctx: SceneCtx) {
   }
 
   // ── input: drag round the axle (a quarter forward = a step), keys
-  let drag: { id: number; a0: number; t0: number } | null = null
+  let drag: { id: number; a0: number; t0: number; moved: number } | null = null
   let rect: DOMRect | null = null
   const angAt = (e: PointerEvent) => Math.atan2(e.clientY - rect!.top - geo.cy, (e.clientX - rect!.left - geo.cx) / geo.sx)
   wheel.addEventListener('pointerdown', (e) => {
     if (e.button) return
     rect = root.getBoundingClientRect()
-    drag = { id: e.pointerId, a0: angAt(e), t0: target }
+    drag = { id: e.pointerId, a0: angAt(e), t0: target, moved: 0 }
     wheel.setPointerCapture(e.pointerId)
     spin = 0
   })
@@ -174,23 +185,39 @@ export function wheelScene(ctx: SceneCtx) {
     d = Math.atan2(Math.sin(d), Math.cos(d))
     drag.a0 = angAt(e)
     drag.t0 += d
+    drag.moved += Math.abs(d)
     turnTo(drag.t0)
     while (step < G.flow.length && drag.t0 >= ((step + 1) * Math.PI) / 2 - 0.15) advance()
   })
   const up = (e: PointerEvent) => {
     if (!drag || e.pointerId !== drag.id) return
+    const tap = drag.moved < 0.08
     drag = null
-    // settle on the nearest quarter (never back past a step already taken)
+    // a tap turns it a quarter (audit v3 28-5: a touch was a dead click); a drag settles on the nearest quarter (never
+    // back past a step already taken)
+    if (tap) return void quarter()
     turnTo(Math.max(Math.round(target / (Math.PI / 2)), step) * (Math.PI / 2))
   }
+  function quarter() {
+    spin = 0
+    if (step < G.flow.length) advance()
+    turnTo((Math.round(target / (Math.PI / 2)) + 1) * (Math.PI / 2))
+  }
+  // H7: the wheel nudges 8° on and back
+  const invite = () => {
+    if (done || still) return
+    turnTo(target + 0.14)
+    const tm = window.setTimeout(() => turnTo(target - 0.14), 450)
+    ctx.onCleanup(() => clearTimeout(tm))
+  }
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', invite))
   wheel.addEventListener('pointerup', up)
   wheel.addEventListener('pointercancel', up)
   wheel.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      spin = 0
-      if (step < G.flow.length) advance()
-      turnTo((Math.round(target / (Math.PI / 2)) + 1) * (Math.PI / 2))
+      quarter()
     } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
       e.preventDefault()
       spin = 0
@@ -307,7 +334,7 @@ export function wheelScene(ctx: SceneCtx) {
       s('path', { class: 't28w-side', d: quad(S0), filter: 'url(#ink-rough)' }),
       s('path', { class: 't28w-course', d: blocks }),
       s('rect', { class: 't28w-level', x: f1(millX), y: f1(n51), width: f1(millW), height: f1(wallBot - n51) }),
-      notch(n22, '22'), notch(n51, '51'),
+      notch(n22, G.notches[0]), notch(n51, G.notches[1]),
       s('path', { class: 't28w-slope', d: slope, filter: 'url(#ink-rough)' }),
       s('path', { class: 't28w-soffit', d: soffit }),
       s('path', { class: 't28w-fascia', d: fascia }),
@@ -375,12 +402,13 @@ export function wheelScene(ctx: SceneCtx) {
     tag(islandTags[1], isleAI)
     tag(islandTags[2], isleDC)
     islandTags[0].hidden = true // NVIDIA is cut into the mill wall
-    // the board stands in the shallows at the front left (wide) / under the wheel's race (tall): never on the wheel or mill
+    // the board stands in the shallows at the front right (wide: the insight takes the left) / under the wheel's race (tall): never on the wheel or mill
     Object.assign(board.style, wide
-      ? { left: `${f1(W * 0.035)}px`, top: `${f1(Math.min(H * 0.7, wl + R * 0.28))}px`, width: `${f1(Math.min(360, W * 0.27))}px` }
+      ? { left: `${f1(W * 0.965 - Math.min(360, W * 0.27))}px`, top: `${f1(Math.min(H * 0.7, wl + R * 0.28))}px`, width: `${f1(Math.min(360, W * 0.27))}px` }
       : { left: `${f1(W * 0.06)}px`, top: `${f1(wl + R * 0.48)}px`, width: `${f1(W * 0.88)}px` })
     Object.assign(wheel.style, { left: `${f1(cx - R * 1.05)}px`, top: `${f1(cy - R * 1.05)}px`, width: `${f1(R * 2.1)}px`, height: `${f1(R * 2.1)}px` })
     place()
+    gd.refresh()
   }
   ctx.onCleanup(onSize(ctx.art, layout))
 }

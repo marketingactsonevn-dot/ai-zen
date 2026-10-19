@@ -1,24 +1,25 @@
 {
   "id": 23,
-  "kicker": "Thả đèn xuống đáy hồ để xem cá bơi thế nào.",
-  "summary": "Hộp đen đang được mở dần — mới thấy được vài góc.",
+  "kicker": "Bên trong AI là hàng tỉ con số không ai đọc thẳng được. Các nhà nghiên cứu đang thả đèn xuống để soi.",
+  "summary": "Nhà nghiên cứu đã soi được khái niệm và các bước nghĩ bên trong AI — nhưng mới thấy một phần nhỏ.",
   "quiz": {
-    "q": "Thí nghiệm Golden Gate Claude (05/2024) cho thấy điều gì?",
+    "q": "Làm sao biết AI thật sự nghĩ qua bước “Texas” trước khi trả lời “Austin”?",
     "options": [
-      "Claude tự mê cây cầu sau khi đọc tin tức",
-      "Có thể tìm một “khái niệm” bên trong mô hình và vặn nó để đổi cách mô hình trả lời",
-      "Các nhà khoa học đã hiểu trọn vẹn bên trong AI",
-      "Mỗi khái niệm nằm gọn trong đúng một nơ-ron"
+      "Hỏi thẳng AI xem nó đã nghĩ những bước nào, rồi tin lời kể đó",
+      "Đổi “Texas” thành “California” bên trong, xem đáp án có đổi",
+      "Đo xem AI trả lời câu này nhanh hay chậm",
+      "Đếm xem bên trong có bao nhiêu nơ-ron cùng sáng lên"
     ],
     "answer": 1,
-    "explain": "Anthropic tìm ra một hướng ứng với Cầu Cổng Vàng rồi vặn mạnh nó. Đó mới là một góc nhỏ, chưa phải hiểu hết mô hình."
+    "explain": "Lời AI tự kể chưa chắc đúng; đổi thử bên trong rồi xem kết quả mới là bằng chứng."
   },
   "scenes": {
     "bridge": {
       "label": "Viên đá khái niệm",
       "art": "Nhìn gần như thẳng xuống một hồ tròn có vành đá rêu dày ôm quanh, như tranh cá koi. Dưới làn nước trong, một phiến đá dưới đáy khắc nổi hình cây cầu treo. Một chiếc đèn lồng treo trên sào tre ngay phía trên; kéo đèn xuống gần mặt nước thì quầng sáng thu lại trên phiến đá, nét khắc ánh son, đàn cá rời chỗ bơi tự do để bám rồi bơi thành đoàn theo dây cáp, và mặt nước hiện bóng hai trụ cầu son dù phía trên hồ không có gì.",
-      "prompt": "Vặn đèn khái niệm",
-      "slider": "Độ mạnh của khái niệm “Cầu Cổng Vàng”",
+      "prompt": "Kéo đèn xuống gần mặt nước",
+      "slider": "Núm vặn: độ mạnh của khái niệm “Cầu Cổng Vàng”",
+      "stone": "Phiến đá = một khái niệm nằm sẵn bên trong AI",
       "sliderAria": "Kéo để vặn mạnh khái niệm “Cầu Cổng Vàng” bên trong mô hình (phím ← →)",
       "valueText": "Mức {n}/{total}",
       "question": "“Có 10 đô, nên tiêu thế nào?”",
@@ -33,13 +34,18 @@
         "source": "anthropic-golden-gate",
         "kind": "illustration"
       },
+      "real": {
+        "text": "Chuyện có thật: Anthropic thử trên Claude, 05/2024",
+        "asOf": "2026-10-15",
+        "source": "anthropic-golden-gate"
+      },
       "insight": {
-        "text": "Bên trong mô hình có những “hướng” ứng với khái niệm (feature). Vặn mạnh hướng “Cầu Cổng Vàng”, Claude câu nào cũng lái về cầu.",
+        "text": "Chỉ vặn mạnh một khái niệm bên trong, câu trả lời về tiêu tiền cũng quay sang Cầu Cổng Vàng.",
         "asOf": "2026-10-15",
         "source": "anthropic-golden-gate"
       },
       "detail": {
-        "text": "Golden Gate Claude là bản thử nghiệm Anthropic mở cho công chúng khoảng 24 giờ, từ 23/05/2024, dựa trên nghiên cứu tìm ra hàng triệu khái niệm trong Claude 3 Sonnet.",
+        "text": "Anthropic tìm ra hàng triệu khái niệm như thế trong Claude 3 Sonnet (gọi là feature), rồi mở bản “Golden Gate Claude” cho mọi người thử khoảng 24 giờ.",
         "asOf": "2026-10-15",
         "source": "anthropic-mapping-mind"
       }
@@ -47,14 +53,15 @@
     "lotus": {
       "label": "Một cuống, nhiều cánh",
       "art": "Máy quay sát mặt hồ đêm; trăng ở ngoài khung, chỉ thấy đường trăng chạy về phía mình. Giữa đường trăng là một búp sen trắng lớn: năm cánh khép thành một nụ trên một cuống, cuống lặn xuống nước, trên đó ghi “một nơ-ron”. Búng mặt nước thì gợn sóng lan ra, cánh sen rung rồi khép lại; đủ sức thì nụ bung, năm cánh trôi thành năm bông nhỏ ở các độ xa khác nhau, mỗi bông mang một nét mực và nghĩa của nó: chuỗi ADN, chữ Do Thái, văn bản luật, yêu cầu web, thông tin dinh dưỡng. Dưới nước, sợi bạc vẫn nối cả năm về một cuống.",
-      "prompt": "Lắc nhẹ mặt nước",
+      "prompt": "Búng mặt nước vài lần để tách búp sen",
       "shakeAria": "Lắc mặt nước để tách các nghĩa đang chồng lên nhau (hoặc nhấn phím cách)",
-      "neuron": "một nơ-ron",
+      "neuron": "một nơ-ron — một điểm nhỏ trong AI, sáng lên khi gặp thứ nó nhận ra",
+      "decode": "Búng = cách nhà nghiên cứu tách các nghĩa ra",
       "meanings": [
         "chuỗi ADN",
         "chữ Do Thái",
         "văn bản luật",
-        "yêu cầu web (HTTP)",
+        "lệnh gửi tới trang web",
         "thông tin dinh dưỡng"
       ],
       "meaningsNote": {
@@ -63,21 +70,32 @@
         "source": "anthropic-monosemanticity",
         "kind": "illustration"
       },
-      "insight": {
-        "text": "Mô hình nhét nhiều khái niệm hơn số nơ-ron bằng cách xếp chồng (superposition) — nên một nơ-ron thường mang nhiều nghĩa cùng lúc.",
-        "asOf": "2026-10-15",
-        "source": "toy-superposition"
-      },
-      "detail": {
-        "text": "Năm 2023, Anthropic tách một lớp 512 nơ-ron của một mô hình nhỏ thành hơn 4.000 khái niệm dễ đọc hơn, như ADN hay văn bản luật.",
+      "count": {
+        "text": "Năm 2023: 512 nơ-ron của một AI nhỏ được tách thành hơn 4.000 khái niệm riêng.",
         "asOf": "2026-10-15",
         "source": "anthropic-monosemanticity"
+      },
+      "insight": {
+        "text": "Một nơ-ron sáng lên cho cả ADN, chữ Do Thái lẫn văn bản luật: AI cất nhiều ý hơn số nơ-ron nó có.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-monosemanticity"
+      },
+      "detail": {
+        "text": "Hiện tượng này gọi là xếp chồng (superposition). Năm 2023, Anthropic tách 512 nơ-ron của một mô hình nhỏ thành hơn 4.000 khái niệm riêng — cũng là cách tìm ra “phiến đá” ở slide sau.",
+        "asOf": "2026-10-15",
+        "source": "toy-superposition"
       }
     },
     "stream": {
       "label": "Lần theo mạch nước",
       "art": "Đứng trên đỉnh một dòng thác bậc thang dưới trăng, nhìn xuống thung lũng. Gần nhất là hai mạch nước chảy ra từ khe đá khắc “Dallas” và “thủ phủ”; ở bậc giữa là ao “Texas” có phiến đá chặn khắc chữ; xa dưới thung lũng là ao nhỏ “Austin” in bóng trăng. Nhấc lần lượt từng viên đá cống thì nước chảy: Dallas đổ vào Texas, Texas tràn xuống Austin, mạch “thủ phủ” theo máng tre chảy thẳng xuống Austin, và một dòng mảnh đi tắt, mờ hơn. Đổi phiến Texas lấy phiến California thì ao cuối thành “Sacramento”, còn sương dày lên trên ba thác khác.",
-      "prompt": "Lần theo dòng nước",
+      "prompt": "Nghiêng máng tre để rót câu hỏi vào",
+      "pourAria": "Nghiêng máng tre: rót câu hỏi vào dòng nước",
+      "lift": "Kéo phiến “Texas” ra khỏi ao",
+      "liftAria": "Nhấc phiến Texas ra khỏi ao giữa",
+      "drop": "Thả “California” vào chỗ trống",
+      "dropWrong": "Thả “California” vào ao giữa, chỗ viền đứt",
+      "decode": "Dòng nước = ý nghĩ chảy bên trong AI · ao giữa = một bước nghĩ",
       "question": "“Thủ phủ của bang có thành phố Dallas là…”",
       "nodes": [
         {
@@ -123,24 +141,22 @@
           "austin"
         ]
       ],
-      "shortcut": "lối tắt (mờ hơn)",
-      "stepAria": "Đi tiếp theo dòng nước tới “{label}” (Enter)",
-      "swap": "Đổi “Texas” thành “California”",
+      "shortcut": "đường tắt Dallas → Austin (yếu hơn)",
       "swapAria": "Thay ý Texas bằng California bên trong mô hình",
       "swapTo": "California",
       "swapResult": "Sacramento",
       "insight": {
-        "text": "Bản đồ quy kết (attribution graph) cho thấy mô hình nghĩ qua bước trung gian: Dallas → Texas → thủ phủ là Austin.",
+        "text": "Đổi “Texas” thành “California” bên trong, đáp án đổi từ Austin sang Sacramento: AI thật sự nghĩ qua bước giữa.",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       },
       "detail": {
-        "text": "Thay ý “Texas” bằng “California” ngay bên trong mô hình, câu trả lời đổi thành Sacramento. Nghiên cứu trên Claude 3.5 Haiku, công bố 27/03/2025.",
+        "text": "Cách soi này gọi là bản đồ các bước nghĩ (attribution graph). Anthropic làm trên Claude 3.5 Haiku, công bố 03/2025; chính nhóm tác giả nói nó chỉ giải thích được khoảng ¼ số câu họ thử.",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       },
       "limit": {
-        "text": "Chính nhóm tác giả ước tính cách này chỉ cho lời giải thích thoả đáng ở khoảng một phần tư số câu họ thử.",
+        "text": "Mới soi rõ khoảng 1 trong 4 câu thử",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       }
@@ -148,14 +164,15 @@
     "circle": {
       "label": "Vòng đá bên hồ",
       "art": "Một khay sơn mài đen tròn trên chân thấp, đặt trên bàn gỗ dưới trăng. Trên mặt khay xoay có bốn hòn đá bốn dáng: đá đứng cao, đá nằm dài, đá phủ rêu, đá khắc ấn son; giữa khay là nước in trăng với những gợn tròn mảnh; câu hỏi khắc quanh thành khay. Kéo để xoay khay: hòn nào dừng trước mặt thì nói, lời nó trải trên một dải giấy trước khay và bóng trăng nghiêng về phía nó; nghe đủ bốn hòn thì gợn lặng, bóng trăng thành một vòng tròn yên.",
-      "prompt": "Nghe từng hòn đá",
-      "question": "Việc soi bên trong có theo kịp tốc độ AI lớn lên?",
+      "prompt": "Xoay khay hoặc chạm từng hòn đá để nghe",
+      "question": "Soi bên trong AI có kịp trước khi AI mạnh hơn không?",
+      "decode": "Soi bên trong = đọc xem AI đang dùng khái niệm nào khi trả lời",
       "perspectives": {
         "stones": [
           {
             "who": "Dario Amodei · CEO Anthropic (04/2025)",
             "view": {
-              "text": "Đang có một cuộc đua giữa diễn giải và trí thông minh của mô hình. Mục tiêu: đến 2027, diễn giải phát hiện được phần lớn vấn đề của mô hình.",
+              "text": "Đang có một cuộc đua: phải soi được bên trong AI trước khi AI quá mạnh. Mục tiêu: đến 2027, việc soi bên trong phát hiện được phần lớn vấn đề của mô hình.",
               "asOf": "2026-10-15",
               "source": "amodei-urgency",
               "kind": "prediction"
@@ -164,7 +181,7 @@
           {
             "who": "Neel Nanda · nhà nghiên cứu diễn giải ở Google DeepMind, ý kiến cá nhân (05/2025)",
             "view": {
-              "text": "Diễn giải sẽ không đủ tin cậy để một mình bắt được AI lừa dối. Hãy coi nó là một lớp trong nhiều lớp phòng vệ — vẫn rất đáng làm.",
+              "text": "Soi bên trong sẽ không đủ tin cậy để một mình bắt được AI lừa dối. Hãy coi nó là một lớp trong nhiều lớp phòng vệ — vẫn rất đáng làm.",
               "asOf": "2026-10-15",
               "source": "nanda-2025",
               "kind": "opinion"
@@ -173,7 +190,7 @@
           {
             "who": "Nhà Trắng · Kế hoạch hành động AI của Mỹ (07/2025)",
             "view": {
-              "text": "Bên trong AI tiên tiến còn rất ít được hiểu, nên khó dùng ở quốc phòng và nơi liên quan tính mạng. Cần đầu tư để có đột phá về diễn giải.",
+              "text": "Bên trong AI tiên tiến còn rất ít được hiểu, nên khó dùng ở quốc phòng và nơi liên quan tính mạng. Cần đầu tư để soi được bên trong AI.",
               "asOf": "2026-10-15",
               "source": "us-ai-action-plan",
               "kind": "opinion"
@@ -182,7 +199,7 @@
           {
             "who": "Nhóm kiểm định của Anthropic · trước khi phát hành Claude Sonnet 4.5 (09/2025)",
             "view": {
-              "text": "Soi bên trong, họ thấy những khái niệm kiểu “nội dung giả, đáng ngờ” mạnh lên khi mô hình gặp bài thử. Tắt bớt chúng, hành vi trong bài thử thay đổi.",
+              "text": "Trước khi phát hành Claude Sonnet 4.5, họ thấy bên trong có dấu hiệu mô hình “nhận ra mình đang bị kiểm tra”. Giảm dấu hiệu đó thì cách nó cư xử trong bài thử đổi đi.",
               "asOf": "2026-10-15",
               "source": "transformer-sonnet45",
               "claimBy": "Anthropic"
@@ -190,14 +207,14 @@
           }
         ],
         "common": {
-          "text": "Đồng ý: nhìn được bên trong là cần. Khác nhau ở: có kịp trước khi AI mạnh hơn, và tin được tới đâu khi ra quyết định lớn.",
+          "text": "Bốn người, một điểm chung: soi bên trong mới là một lớp kiểm tra thêm, chưa đủ để chứng nhận AI an toàn.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "Diễn giải (interpretability) hiện là một lớp kiểm tra thêm, chưa phải giấy chứng nhận an toàn: mới soi được vài góc hộp đen.",
+        "text": "Họ khác nhau ở tốc độ: CEO Anthropic đặt mục tiêu 2027, còn một nhà nghiên cứu DeepMind cho rằng soi bên trong sẽ không bao giờ đủ một mình.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"

@@ -7,6 +7,8 @@ import { onPrefs } from '../../core/prefs'
 import type { SceneCtx } from '../types'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, moon as moonArt, pine, toro as toroArt } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
+import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
 import { FRONT, bake, bamboo, col, figure, fit, glow, joints, JI, mix, palette, pick, pose, ramp, toneRamp, veil, type Pal, type RGB, type Sprite, type Tones } from './cv'
 
 const R = raw.scenes.strings
@@ -128,6 +130,14 @@ export function stringsScene(ctx: SceneCtx) {
   if (still) root.classList.add('still')
   ctx.art.append(root)
   ctx.prompt(R.prompt)
+  // H1 on the dark-eyed robot (the thing people touch first; a tap on it pulls the strings too) and on the bar
+  const gd = guide(ctx)
+  const at = (y: number): (() => Pt) => () => {
+    const a = ctx.art.getBoundingClientRect(), r = root.getBoundingClientRect()
+    return [r.left - a.left + SX(RX[0], ZP), r.top - a.top + SY(y, RX[0], ZP)]
+  }
+  const dots: Mark[] = [gd.dot(at(1.25), { dir: [0, -1] }), gd.dot(toggle, { dir: [0, 1] })]
+  let turnArrow: Mark | null = null
 
   let W = 0, H = 0, F = 1, cx = 0, hy = 0, port = false, dpr = 1, moonX = 0
   let BW = 0.8, BH = 0.62, BIN = 0 // board size (m) and how far it hangs inward of its post
@@ -542,7 +552,16 @@ export function stringsScene(ctx: SceneCtx) {
       backT = 1
       root.classList.add('shown')
       facts.removeAttribute('aria-hidden')
-      ctx.insight(R.insight as Fact)
+      ctx.insight(R.insight as Fact, R.detail as Fact)
+      dots.forEach((d) => d.done())
+      // the station's card (audit v3 t21: it had none), handed here as a folded slip
+      const card = findTakeaway(raw.takeaways[0])
+      if (card) root.append(h('div', { class: 't21s-card' }, foldedTakeaway([card], ctx.onCleanup)))
+      if (!still) {
+        // the hidden gesture: walk round the finish line to see the strings catch the moon from the side
+        ctx.prompt(R.steps[0])
+        turnArrow = gd.gesture('drag-h', at(-0.15), { r: 46 })
+      }
     }
     kick()
   }
@@ -565,8 +584,11 @@ export function stringsScene(ctx: SceneCtx) {
     kick()
   }
   let drag: { id: number; x: number; y0: number } | null = null
+  let tap: { x: number; y: number } | null = null
   root.addEventListener('pointerdown', (e) => {
-    if (e.button || still || (e.target as Element).closest('.t21s-toggle, .t21s-facts')) return
+    if (e.button || (e.target as Element).closest('.t21s-toggle, .t21s-facts')) return
+    tap = { x: e.clientX, y: e.clientY }
+    if (still) return
     drag = { id: e.pointerId, x: e.clientX, y0: (yawT * 180) / Math.PI }
     root.setPointerCapture(e.pointerId)
     root.classList.add('grab')
@@ -574,6 +596,17 @@ export function stringsScene(ctx: SceneCtx) {
   root.addEventListener('pointermove', (e) => {
     if (!drag || e.pointerId !== drag.id) return
     setYaw(drag.y0 - ((e.clientX - drag.x) / Math.max(200, W)) * 90)
+    if (turnArrow && Math.abs(e.clientX - drag.x) > 24) turnArrow.done(), (turnArrow = null)
+  })
+  // a tap (no drag) on the dark-eyed robot: who is steering it? — the same as pulling the bar
+  root.addEventListener('pointerup', (e) => {
+    const t = tap
+    tap = null
+    if (!t || Math.hypot(e.clientX - t.x, e.clientY - t.y) > 8) return
+    const r = root.getBoundingClientRect()
+    const px = e.clientX - r.left, py = e.clientY - r.top
+    const x0 = SX(RX[0], ZP), y0 = SY(0, RX[0], ZP), y1 = SY(1.9, RX[0], ZP)
+    if (Math.abs(px - x0) < Math.max(30, (y0 - y1) * 0.32) && py > y1 && py < y0) flip()
   })
   const end = () => {
     drag = null
@@ -740,7 +773,7 @@ export function stringsScene(ctx: SceneCtx) {
   }
 
   colours()
-  ctx.onCleanup(onSize(ctx.art, layout))
+  ctx.onCleanup(onSize(ctx.art, () => (layout(), gd.refresh()))) // the guide's marks follow the robot's new place
   let job: ReturnType<typeof sliced> | null = null
   ctx.onCleanup(onPrefs(() => {
     const before = pal

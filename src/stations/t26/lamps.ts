@@ -852,13 +852,15 @@ export function lampsScene(ctx: SceneCtx) {
     const l = K.lamps[i]
     tags.forEach((t, j) => t.classList.toggle('on', j === i))
     side.replaceChildren(
-      h('p', { class: 't26l-eyebrow' }, `${i + 1} · ${l.en}`),
-      h('p', { class: 't26l-sname' }, l.name),
+      h('p', { class: 't26l-eyebrow' }, fill(K.eyebrow, { i: i + 1, n, name: l.name, en: l.en })),
       h('p', { class: 't26l-q' }, l.asks),
-      ctx.fact(F(l.view), 'p', 't26l-view'))
+      ctx.fact(F(l.view), 'p', 't26l-view'),
+      // what the two shadows mean, said once where they appear
+      h('p', { class: 't26l-decode' }, K.decode))
     side.hidden = false
     if (!side.hasAttribute('aria-live')) side.setAttribute('aria-live', 'polite')
     ctx.chime('soft')
+    if (!all) ctx.prompt(fill(K.promptNext, { n: n - lit.size }))
     if (all && !done) {
       done = true
       ctx.insight(F(K.insight), F(K.detail))

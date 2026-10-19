@@ -1,167 +1,186 @@
 {
   "id": 28,
-  "kicker": "Thời đào vàng, người bán xẻng giàu trước.",
-  "summary": "Mỗi câu hỏi bạn gõ đều chạy trên chip của ai đó — và dòng tiền quanh chip ấy đang định hình cả ngành AI.",
+  "kicker": "Thời đào vàng, người bán xẻng giàu trước. Cơn sốt AI cũng vậy, và xẻng ở đây là chip.",
+  "summary": "Mỗi câu bạn hỏi AI đều chạy trên chip, phần lớn là chip NVIDIA. Người bán chip thu tiền trước, rồi rót tiền lại cho chính khách mua chip.",
   "newsTags": ["nvidia", "dau-tu"],
   "quiz": {
-    "q": "Đối thủ đã có chip mạnh, vì sao vẫn khó vượt NVIDIA?",
+    "q": "Các hãng khác đã có chip mạnh. Vì sao NVIDIA vẫn khó bị thay?",
     "options": [
-      "Chip NVIDIA rẻ nhất thị trường",
-      "Cả ngành đã quen viết phần mềm trên CUDA",
-      "Luật cấm dùng chip của hãng khác",
-      "Chip của hãng khác không chạy được AI"
+      "Chip NVIDIA nhanh gấp 10 lần chip của mọi đối thủ",
+      "Cả ngành đã viết mã AI trên CUDA, đổi chip phải viết lại",
+      "NVIDIA có nhiều nhà máy sản xuất chip nhất trên thế giới",
+      "Các hãng AI đã ký hợp đồng cam kết chỉ mua chip của NVIDIA"
     ],
     "answer": 1,
-    "explain": "Hào nước của NVIDIA là CUDA, nền tảng phần mềm có từ 2006. Đổi sang chip khác nghĩa là phải viết lại hoặc chuyển đổi rất nhiều mã."
+    "explain": "NVIDIA không thắng nhờ nhà máy (chip của họ do TSMC sản xuất) mà nhờ CUDA: bộ công cụ chỉ chạy trên chip NVIDIA, cả ngành đã viết mã trên đó từ 2006."
   },
   "scenes": {
     "gardeners": {
-      "label": "Một nghìn người làm vườn",
+      "label": "Một nghìn vòi tưới",
       "art": "Một quả đồi bậc thang như khay bonsai dưới trăng rằm thấp: 25 bậc cong, mỗi bậc 40 luống rêu, máng tre chạy dọc mép mọi bậc với một vòi nhỏ trên mỗi luống. Tiền cảnh trái, lão làm vườn bằng giấy đứng trên đá bước cạnh đèn đá, bình tưới đặt trên hòn đá bên ông; trên đỉnh đồi, nút tre đầu máng nối với mạch nước.",
-      "prompt": "Chọn cách tưới vườn",
-      "hint": "Kéo để xoay khay vườn. Chạm bình tưới, hoặc nút tre trên đỉnh đồi.",
+      "hint": "Kéo để xoay khay vườn. Chạm bình tưới, rồi gạt nút tre trên đỉnh đồi.",
       "group": "Hai cách tưới cùng một khu vườn",
       "one": "1 bình tưới · CPU",
-      "oneAria": "Tưới bằng một bình: vài lõi mạnh làm lần lượt từng việc",
-      "many": "1.000 ống tre · GPU",
-      "manyAria": "Tưới bằng một nghìn ống tre: hàng nghìn lõi nhỏ cùng làm một lúc",
+      "oneAria": "Tưới bằng một bình (CPU): vài lõi mạnh làm lần lượt từng việc",
+      "many": "1.000 vòi tre · GPU",
+      "manyAria": "Tưới bằng một nghìn vòi tre (GPU): mỗi vòi là một lõi nhỏ, nghìn lõi cùng làm một lúc",
       "rows": "{n}/1.000 luống đã tưới",
       "sep": ".",
       "done": "Cả vườn đã đẫm nước",
       "insight": {
-        "text": "GPU (bộ xử lý đồ hoạ) như nghìn người làm vườn cùng tưới một lúc: hợp với hàng tỷ phép tính nhỏ của AI.",
-        "asOf": "2026-10-15",
-        "source": "t28-cuda-guide"
-      },
-      "detail": "CPU vẫn cần cho việc điều phối, rẽ nhánh. Còn mạng nơ-ron chủ yếu là nhân rồi cộng những bảng số khổng lồ, chia nhỏ ra làm song song được."
-    },
-    "scaling": {
-      "label": "Lớn lên cần thêm xẻng",
-      "art": "Một chậu đá ba góc đặt trên tảng đá phủ rêu, nhìn chếch từ trên xuống; mỗi góc chảy vào một chiếc chum: Dữ liệu ở trước bên trái, Kích thước phía sau, Tính toán ở trước bên phải. Ống tre gác trên một cọc tre thả một sợi giọt bạc vào giữa chậu, nơi cây non đứng trên hòn đá nhỏ, ngược sáng vầng trăng. Sau màn sương, một cây cổ thụ thân to chờ sẵn.",
-      "prompt": "Chia 100 giọt nước",
-      "basinAria": "Chậu đá ba góc: kéo chậu, hoặc dùng phím mũi tên, để nghiêng nó về một góc",
-      "jars": [
-        { "id": "data", "name": "Dữ liệu", "aria": "Chum dữ liệu: số chữ model được đọc" },
-        { "id": "size", "name": "Kích thước", "aria": "Chum kích thước: số tham số của model" },
-        { "id": "compute", "name": "Tính toán", "aria": "Chum tính toán: số chip và giờ chạy" }
-      ],
-      "slider": "Chia giọt nước cho chum {name}",
-      "valueText": "{n} giọt cho {name}",
-      "remaining": "Còn {n} giọt",
-      "balanced": "Cây lớn đều",
-      "lopsided": "Cây nghiêng: chum {name} còn vơi",
-      "insights": [
-        {
-          "text": "Quy luật mở rộng (scaling laws): thêm dữ liệu, kích thước và sức tính thì model giỏi lên đều đặn, đoán trước được.",
-          "asOf": "2026-10-15",
-          "source": "t28-kaplan"
-        },
-        {
-          "text": "Năm 2022, Chinchilla (70 tỷ tham số, học 1.400 tỷ token) thắng Gopher lớn gấp 4: cân dữ liệu với kích thước mới hiệu quả.",
-          "asOf": "2026-10-15",
-          "source": "t28-chinchilla"
-        }
-      ],
-      "detail": "Vì đường cong này khá đều, nhiều công ty tin rằng thêm chip sẽ ra model giỏi hơn — nên họ mua chip không ngừng."
-    },
-    "moat": {
-      "label": "Hào nước quanh lâu đài",
-      "art": "Nhìn từ trên cao xuống một tấm đĩa tròn trôi trong đêm: giữa là lâu đài đá ba tầng mái trên đảo, quanh là hào nước đen với sáu trăm cây cầu tre nhỏ nối sang bờ làng mái thấp. Ngoài cùng là hồ xa, ba con thuyền treo đèn giấy (tròn, cao, vuông) đang đợi bên ba con kênh.",
-      "prompt": "Chạm từng con thuyền",
-      "castle": "NVIDIA",
-      "moatLabel": "CUDA · phần mềm cả ngành đã quen",
-      "group": "Ba con thuyền đang vượt hào",
-      "boatAria": "Thuyền {name}: xem đối thủ này đang làm gì",
-      "boats": [
-        {
-          "id": "google",
-          "name": "Google · TPU",
-          "fact": {
-            "text": "10/2025: Anthropic công bố sẽ dùng tới một triệu chip TPU của Google, hơn 1 gigawatt công suất trong năm 2026.",
-            "asOf": "2026-10-15",
-            "source": "t28-anthropic-tpu",
-            "claimBy": "Anthropic"
-          }
-        },
-        {
-          "id": "amazon",
-          "name": "Amazon · Trainium",
-          "fact": {
-            "text": "02/2026: trong vòng gọi vốn mới, OpenAI đồng ý dùng 2 gigawatt sức tính chạy trên chip Trainium của Amazon.",
-            "asOf": "2026-10-15",
-            "source": "t28-ap-openai-round"
-          }
-        },
-        {
-          "id": "amd",
-          "name": "AMD · Instinct",
-          "fact": {
-            "text": "10/2025: AMD và OpenAI ký thoả thuận 6 gigawatt GPU; 1 gigawatt đầu tiên (MI450) bắt đầu từ nửa cuối 2026.",
-            "asOf": "2026-10-15",
-            "source": "t28-amd-openai",
-            "claimBy": "AMD, OpenAI"
-          }
-        }
-      ],
-      "insight": {
-        "text": "Hào nước của NVIDIA là CUDA: nền tảng phần mềm có từ 2006 mà cả ngành đã quen viết mã trên đó.",
+        "text": "Mỗi vòi tre là một lõi GPU: nghìn lõi cùng tưới, nên hàng tỷ phép tính nhỏ của AI xong rất nhanh.",
         "asOf": "2026-10-15",
         "source": "t28-cuda-guide"
       },
       "detail": {
-        "text": "Có hãng AI lớn dùng song song nhiều loại chip: Anthropic cho biết họ dùng cả TPU, Trainium lẫn GPU NVIDIA.",
+        "text": "CPU là chip chính của máy tính: ít lõi, mỗi lõi giỏi việc phức tạp, nên vẫn lo điều phối. GPU vốn làm ra để vẽ hình trong game. Việc của AI là nhân và cộng những bảng số khổng lồ, chia nhỏ được, nên hợp với GPU.",
         "asOf": "2026-10-15",
-        "source": "t28-anthropic-tpu"
+        "source": "t28-cuda-guide"
+      },
+      "prompts": [
+        "Chạm bình tưới cạnh lão làm vườn",
+        "Lão làm vườn tưới từng luống. Giờ gạt nút tre trên đỉnh đồi",
+        "Nghìn vòi tưới cùng lúc. Giờ chạm bình tưới cạnh lão làm vườn để so"
+      ]
+    },
+    "scaling": {
+      "label": "Thêm xẻng, cây lớn đều",
+      "art": "Một bập bênh bằng đá dài gác trên hòn đá kê phủ rêu, hai đầu là hai chiếc chum: Dữ liệu bên trái, Độ lớn model bên phải. Cây non đứng giữa bập bênh, ngược sáng vầng trăng; ống tre có tay vặn thả một sợi giọt bạc xuống gốc cây. Sau màn sương, cây Gopher thân to tán thưa đứng trên gò: chum Độ lớn model của nó tràn nước, chum Dữ liệu gần cạn.",
+      "prompts": [
+        "Vặn vòi tre để thêm sức tính",
+        "Nghiêng bập bênh cho hai chum cân nhau"
+      ],
+      "compute": "Sức tính · số chip × giờ chạy",
+      "tapAria": "Tay vặn vòi tre: mỗi lần vặn, sức tính gấp 10",
+      "ticks": [
+        "",
+        "×10",
+        "×100",
+        "×1000"
+      ],
+      "illus": "Minh họa",
+      "beamAria": "Bập bênh đá: dùng phím mũi tên để nghiêng về chum Dữ liệu hoặc chum Độ lớn model",
+      "jars": [
+        {
+          "id": "data",
+          "name": "Dữ liệu · số chữ model đọc"
+        },
+        {
+          "id": "size",
+          "name": "Độ lớn model"
+        }
+      ],
+      "valueText": "Dữ liệu {data}%, độ lớn model {size}%",
+      "level": "cân",
+      "lopsided": "Chum {name} còn ít nước: hạ đầu bên ấy xuống",
+      "gopher": "Gopher",
+      "insights": [
+        {
+          "text": "Mỗi lần gấp 10 sức tính, cây cao thêm một bậc đều đặn. Đoán trước được kết quả, các hãng cứ thế mua thêm chip.",
+          "asOf": "2026-10-15",
+          "source": "t28-kaplan"
+        },
+        {
+          "text": "Cùng lượng nước, cây chia cân hai chum cao hơn cây dồn hết vào độ lớn: model vừa phải mà đọc nhiều mới hiệu quả.",
+          "asOf": "2026-10-15",
+          "source": "t28-chinchilla"
+        }
+      ],
+      "detail": {
+        "text": "Năm 2022, DeepMind thử: model Chinchilla nhỏ hơn 4 lần nhưng đọc nhiều chữ hơn đã thắng model Gopher, dù tốn cùng sức tính. Giới AI gọi đây là “quy luật mở rộng” (scaling laws).",
+        "asOf": "2026-10-15",
+        "source": "t28-chinchilla"
       }
+    },
+    "moat": {
+      "label": "Hào nước quanh lâu đài",
+      "art": "Nhìn từ trên cao xuống một tấm đĩa tròn trôi trong đêm: giữa là lâu đài đá ba tầng mái của NVIDIA trên đảo, quanh là hào nước đen với những cây cầu tre đếm được nối sang làng. Một mái nhà trong làng bị năm cây cầu buộc vào tường thành. Ngoài hồ xa, ba con thuyền treo đèn giấy của Google, Amazon và AMD đang đợi bên ba con kênh.",
+      "prompts": [
+        "Kéo một mái nhà sang thuyền đối thủ",
+        "Chạm cắt từng cây cầu",
+        "Thả mái nhà lên thuyền"
+      ],
+      "castle": "NVIDIA",
+      "moatLabel": "CUDA · bộ công cụ lập trình chỉ chạy trên chip NVIDIA",
+      "houseAria": "Một mái nhà trong làng, tức một đội lập trình AI: kéo sang thuyền đối thủ",
+      "cutAria": "Cắt cây cầu buộc số {n}",
+      "countTpl": "Còn {n} cầu buộc",
+      "rewrite": "viết lại mã",
+      "boats": [
+        {
+          "id": "google",
+          "name": "Google · chip TPU"
+        },
+        {
+          "id": "amazon",
+          "name": "Amazon · chip Trainium"
+        },
+        {
+          "id": "amd",
+          "name": "AMD · chip Instinct"
+        }
+      ],
+      "insight": {
+        "text": "Mỗi cây cầu là mã đã viết cho CUDA, bộ công cụ chỉ chạy trên chip NVIDIA. Đổi chip là phải dỡ cầu, viết lại.",
+        "asOf": "2026-10-15",
+        "source": "t28-cuda-guide"
+      },
+      "detail": [
+        {
+          "text": "Hào sâu nhưng vẫn qua được. Anthropic dùng cả chip TPU của Google, Trainium của Amazon lẫn GPU NVIDIA. OpenAI cũng ký mua chip của Amazon và AMD.",
+          "asOf": "2026-10-15",
+          "source": "t28-anthropic-tpu",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "10/2025: Anthropic công bố sẽ dùng tới một triệu chip TPU của Google trong năm 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-anthropic-tpu",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "02/2026: trong vòng gọi vốn mới, OpenAI đồng ý chạy một phần sức tính trên chip Trainium của Amazon.",
+          "asOf": "2026-10-15",
+          "source": "t28-ap-openai-round"
+        },
+        {
+          "text": "10/2025: AMD và OpenAI ký thoả thuận GPU cỡ 6 gigawatt (đo bằng lượng điện các chip dùng); lô đầu bắt đầu từ nửa cuối 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-amd-openai",
+          "claimBy": "AMD, OpenAI"
+        }
+      ]
     },
     "goldrush": {
       "label": "Mùa đào vàng",
-      "art": "Một sống núi dài đen như cắt giấy chạy ngang phía dưới, sau nó là vầng trăng khổng lồ người xem kéo qua các mùa. Mỗi mốc là một cột đèn trên sống núi; người đào vàng cầm đèn leo lên mỗi lúc một đông, về phía lều người bán xẻng trên đỉnh, bên lều là hai đống vàng cao đúng tỉ lệ.",
-      "prompt": "Kéo trăng qua các mùa",
-      "sliderAria": "Kéo vầng trăng qua các mốc thời gian của NVIDIA",
+      "art": "Một sống núi dài đen như cắt giấy chạy ngang phía dưới, sau nó là vầng trăng khổng lồ người xem kéo qua các năm. Mỗi mốc là một cột đèn trên sống núi; người đào vàng cầm đèn, tức các công ty AI, leo lên mỗi lúc một đông, về phía lều NVIDIA bán xẻng (chip) trên đỉnh; bên lều là hai đống vàng cao đúng tỉ lệ.",
+      "prompt": "Kéo trăng qua các năm",
+      "sliderAria": "Kéo vầng trăng qua các năm của NVIDIA",
       "tide": {
         "milestones": [
-          {
-            "date": "2006-11",
-            "label": "CUDA ra đời",
-            "fact": {
-              "text": "NVIDIA giới thiệu CUDA: cách dùng GPU cho mọi phép tính, không chỉ để vẽ hình trong game.",
-              "asOf": "2026-10-15",
-              "source": "t28-cuda-guide"
-            }
-          },
-          {
-            "date": "2020-01",
-            "label": "Quy luật mở rộng",
-            "fact": {
-              "text": "Nhóm Kaplan (OpenAI) chỉ ra: model càng lớn, càng nhiều dữ liệu và sức tính thì lỗi đoán chữ càng giảm, theo đường cong đều.",
-              "asOf": "2026-10-15",
-              "source": "t28-kaplan"
-            }
-          },
           {
             "date": "2023-01",
             "label": "Trước cơn sốt",
             "fact": {
-              "text": "Năm tài chính kết thúc 01/2023, mảng trung tâm dữ liệu của NVIDIA thu 15,0 tỷ USD.",
+              "text": "Năm tài chính 2023 (tới 01/2023), NVIDIA bán chip cho trung tâm dữ liệu, nơi đặt hàng nghìn máy chạy AI, được 15,0 tỷ USD.",
               "asOf": "2026-10-15",
               "source": "t28-nvda-10k-fy23"
             }
           },
           {
             "date": "2025-10-29",
-            "label": "Mốc 5.000 tỷ",
+            "label": "Mốc 5.000 tỷ USD",
             "fact": {
-              "text": "NVIDIA thành công ty đầu tiên có giá trị thị trường vượt 5.000 tỷ USD.",
+              "text": "NVIDIA thành công ty đầu tiên có giá trị trên sàn chứng khoán vượt 5.000 tỷ USD.",
               "asOf": "2026-10-15",
               "source": "t28-5t"
             }
           },
           {
             "date": "2026-01",
-            "label": "Gấp gần 13 lần",
+            "label": "Gấp gần 13 lần trong 3 năm",
             "fact": {
-              "text": "Năm tài chính 2026, trung tâm dữ liệu thu 193,7 tỷ USD, gần gấp 13 lần ba năm trước.",
+              "text": "Năm tài chính 2026, NVIDIA bán chip cho trung tâm dữ liệu được 193,7 tỷ USD, gần gấp 13 lần ba năm trước.",
               "asOf": "2026-10-15",
               "source": "t28-nvda-fy26"
             },
@@ -176,7 +195,7 @@
             "date": "2026-10-15",
             "label": "Hôm nay",
             "fact": {
-              "text": "Báo cáo gần nhất (26/08/2026): một quý, trung tâm dữ liệu mang về 89 tỷ USD, tăng 117% so với cùng kỳ.",
+              "text": "Riêng quý gần nhất (báo cáo 26/08/2026): 89 tỷ USD, hơn gấp đôi cùng quý năm trước.",
               "asOf": "2026-10-15",
               "source": "t28-nvda-q2fy27"
             }
@@ -190,18 +209,29 @@
         }
       },
       "insight": {
-        "text": "Khoảng 9/10 doanh thu năm tài chính 2026 của NVIDIA đến từ trung tâm dữ liệu: người bán xẻng thu tiền trước.",
+        "text": "Ba năm, tiền NVIDIA bán chip cho trung tâm dữ liệu tăng gần 13 lần: người bán xẻng thu tiền trước.",
+        "asOf": "2026-10-15",
+        "source": "t28-nvda-fy26"
+      },
+      "crowd": "công ty AI đi đào vàng",
+      "seller": "NVIDIA bán xẻng (chip)",
+      "detail": {
+        "text": "Năm tài chính 2026, khoảng 9/10 doanh thu của NVIDIA đến từ chip cho trung tâm dữ liệu.",
         "asOf": "2026-10-15",
         "source": "t28-nvda-fy26"
       }
     },
     "loop": {
       "label": "Vòng tiền tuần hoàn",
-      "art": "Nhìn từ dưới trục lên một guồng nước gỗ lớn cạnh cối đá NVIDIA, in trên nền trăng. Một máng đá dẫn nước từ đuôi guồng vòng quanh hồ qua đảo Công ty AI (đình có đèn) và đảo Trung tâm dữ liệu (hàng đèn đá), rồi theo máng trên mái cối đổ lại lên chính guồng; tường cối khắc hai vạch mực nước 22 và 51.",
-      "prompt": "Lần theo dòng tiền",
+      "art": "Nhìn từ dưới trục lên một guồng nước gỗ lớn cạnh cối đá NVIDIA, in trên nền trăng. Một máng đá dẫn nước, tức dòng tiền, từ đuôi guồng vòng quanh hồ qua đảo Công ty AI (đình có đèn) và đảo Trung tâm dữ liệu (hàng đèn đá), rồi theo máng trên mái cối đổ lại lên chính guồng. Ở bước cuối, tường cối hiện hai vạch mực nước 22 và 51 tỷ USD.",
+      "prompt": "Chạm hoặc kéo xoay guồng nước theo chiều mũi tên",
       "flowLabel": "Dòng tiền chảy vòng",
-      "wheelAria": "Guồng nước: kéo vòng quanh trục, hoặc nhấn mũi tên phải hay Enter, để quay một phần tư vòng",
-      "islands": ["NVIDIA", "Công ty AI", "Trung tâm dữ liệu"],
+      "wheelAria": "Guồng nước: chạm, kéo vòng quanh trục, hoặc nhấn Enter, để quay một phần tư vòng",
+      "islands": [
+        "NVIDIA",
+        "Công ty AI",
+        "Trung tâm dữ liệu"
+      ],
       "circleLabel": "Bốn lời bình bên hồ",
       "flow": [
         "NVIDIA rót vốn vào công ty AI",
@@ -212,17 +242,17 @@
       "flowAria": "Bước {n} của vòng tiền: {text}",
       "facts": [
         {
-          "text": "02/2026: NVIDIA góp 30 tỷ USD vào vòng gọi vốn 110 tỷ USD của OpenAI, cùng Amazon và SoftBank.",
+          "text": "02/2026: NVIDIA góp 30 tỷ USD trong số 110 tỷ USD OpenAI vừa huy động.",
           "asOf": "2026-10-15",
           "source": "t28-ap-openai-round"
         },
         {
-          "text": "Cổ phần NVIDIA nắm ở các công ty chưa niêm yết tăng từ 22 lên 51 tỷ USD chỉ trong sáu tháng đầu 2026.",
+          "text": "Sáu tháng đầu 2026, phần NVIDIA sở hữu ở các công ty chưa lên sàn tăng từ 22 lên 51 tỷ USD.",
           "asOf": "2026-10-15",
           "source": "t28-nvda-10q"
         },
         {
-          "text": "08/2026: NVIDIA bảo lãnh tới 105 tỷ USD cho việc xây trung tâm dữ liệu phục vụ một công ty con của OpenAI.",
+          "text": "08/2026: NVIDIA hứa trả nợ thay, tới 105 tỷ USD, nếu bên xây trung tâm dữ liệu cho OpenAI không trả được.",
           "asOf": "2026-10-15",
           "source": "t28-nvda-10q"
         }
@@ -230,18 +260,18 @@
       "perspectives": {
         "stones": [
           {
-            "who": "Nhà phân tích Wedbush",
+            "who": "Wedbush, công ty chứng khoán Mỹ",
             "view": {
-              "text": "Các thương vụ này nằm “ngay giữa” chủ đề đầu tư vòng tròn, nhưng nếu thành công có thể thành hào bảo vệ cạnh tranh.",
+              "text": "Đúng là đầu tư vòng tròn, nhưng nếu thành công, khách sẽ gắn chặt với NVIDIA.",
               "asOf": "2026-10-15",
               "source": "t28-benzinga",
               "kind": "opinion"
             }
           },
           {
-            "who": "Chiến lược gia Global X",
+            "who": "Global X, quỹ đầu tư",
             "view": {
-              "text": "Việc NVIDIA tính bảo lãnh cho OpenAI càng làm căng thêm chuyện “nhà cung cấp tài trợ cho khách hàng” vốn đã gây tranh cãi.",
+              "text": "NVIDIA vừa bán chip vừa hứa trả nợ thay cho khách mua chip; chuyện này càng gây tranh cãi.",
               "asOf": "2026-10-15",
               "source": "t28-asiae",
               "kind": "opinion"
@@ -250,7 +280,7 @@
           {
             "who": "Jensen Huang, CEO NVIDIA",
             "view": {
-              "text": "Tiền NVIDIA góp chỉ là một phần số vốn khách hàng phải huy động; ông gọi cáo buộc “vòng tròn” là vô căn cứ.",
+              "text": "Tiền NVIDIA chỉ là một phần vốn khách hàng huy động; gọi là “vòng tròn” là vô căn cứ.",
               "asOf": "2026-10-15",
               "source": "t28-asiae",
               "kind": "opinion",
@@ -260,7 +290,7 @@
           {
             "who": "Ngân hàng Trung ương Anh",
             "view": {
-              "text": "10/2025: định giá cổ phiếu, nhất là công ty công nghệ tập trung vào AI, có vẻ quá cao; rủi ro thị trường điều chỉnh mạnh đã tăng.",
+              "text": "10/2025: giá cổ phiếu công ty AI có vẻ quá cao; nguy cơ giá rơi mạnh đang tăng.",
               "asOf": "2026-10-15",
               "source": "t28-boe",
               "kind": "opinion"
@@ -268,16 +298,29 @@
           }
         ],
         "common": {
-          "text": "Ai cũng thấy tiền đang chảy vòng giữa NVIDIA và khách hàng; họ khác nhau ở chỗ đó là hào bảo vệ hay mầm bong bóng.",
+          "text": "Tiền chảy vòng là thật. Còn tranh cãi: nó giữ chân khách hàng, hay đang thổi phồng giá trị có thể vỡ?",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "NVIDIA rót tiền vào chính khách hàng mua chip của mình: hào bảo vệ hay bong bóng, giới phân tích còn tranh cãi.",
+        "text": "Tiền NVIDIA rót cho khách quay về thành tiền mua chip NVIDIA. Guồng càng quay, doanh thu càng lớn.",
         "asOf": "2026-10-15",
-        "source": "t28-benzinga"
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "countTpl": "Bước {n}/{total}",
+      "notches": [
+        "22 tỷ USD",
+        "51 tỷ USD cổ phần"
+      ],
+      "circlePrompt": "Chạm từng hòn đá: giữ chân khách, hay bong bóng?",
+      "detail": {
+        "text": "Đọc tin “NVIDIA đầu tư vào X”, hãy hỏi: X có mua chip NVIDIA không?",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
       }
     }
   },

@@ -37,7 +37,8 @@ export function flowersScene(ctx: SceneCtx) {
   let grown = 0 // 0 young … 1 bent toward the reward
   const quick = ctx.reduced || ctx.quality === 'low'
 
-  const { root } = stage(ctx, 't24f', K.art, [K.insight, K.constitution], draw)
+  // (room for both insights at once: the second one keeps the first above it)
+  const { root } = stage(ctx, 't24f', K.art, [K.insight, `${K.insight.text} ${K.constitution.text}`], draw)
   const host = h('div', { class: 't24f-host' })
   root.append(host)
   const R = rig(ctx, host, { strength: 2 })
@@ -51,7 +52,8 @@ export function flowersScene(ctx: SceneCtx) {
   const paperBox = h('div', { class: 't24f-paperbox' }, moonGlow, lampGlow, shadow)
   const latticeSvg = svg('t24f-lattice')
   const latLit = svg('t24f-latlit')
-  const question = h('p', { class: 't24f-q' }, K.question)
+  // the question brushed on the paper, and under it, once, who is who (the hand with the lantern is you)
+  const question = h('p', { class: 't24f-q' }, K.question, h('small', { class: 't24f-decode' }, K.decode))
   const leanLabel = h('p', { class: 't24f-lean', 'aria-hidden': 'true' }, h('span', null, K.lean))
   const wallSvg = svg('t24f-wall')
   R.layer(0.75, 't24f-l-wall').append(wallSvg, paperBox, latticeSvg, latLit, question, leanLabel)
@@ -635,7 +637,7 @@ export function flowersScene(ctx: SceneCtx) {
         root.classList.add('leaned')
         passes.cancel()
         scroll.disabled = false
-        if (!again) ctx.insight(K.insight, K.detail)
+        if (!again) ctx.insight(K.insight, K.detail), ctx.prompt(K.prompt2)
       })
     })
   }
@@ -654,6 +656,8 @@ export function flowersScene(ctx: SceneCtx) {
       lean = l0 * (1 - k * 0.75)
       applyLean()
     })
-    ctx.insight(K.constitution)
+    // the principles' insight comes under the judge's one, which stays (the second does not erase the first)
+    const box = ctx.insight(K.constitution, K.caiNote)
+    box.prepend(ctx.fact(K.insight, 'p', 'insight-text t24f-before'))
   }
 }

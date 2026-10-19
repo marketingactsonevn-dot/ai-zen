@@ -1,38 +1,41 @@
 {
   "id": 26,
-  "kicker": "Mặt trăng trong nước có biết mình là trăng?",
-  "summary": "Chưa ai biết AI có ý thức — luật mới là cách một công ty chọn thận trọng khi chưa biết.",
+  "kicker": "Chưa ai biết AI có ý thức. Vậy có nên cấm bạo hành nó?",
+  "summary": "Chưa ai biết AI có ý thức. Anthropic vẫn chọn thận trọng: từ 12/11/2026 cấm lạm dụng mô hình kéo dài và vô cớ.",
   "newsTags": [
     "y-thuc-ai",
     "phuc-loi-ai"
   ],
   "quiz": {
-    "q": "Thí nghiệm “cấy khái niệm” của Anthropic (10/2025) cho thấy điều gì?",
+    "q": "Theo chính sách mới của Anthropic (hiệu lực 12/11/2026), việc nào có thể bị tính là vi phạm?",
     "options": [
-      "Claude luôn biết rõ mình đang nghĩ gì",
-      "Claude đôi khi nhận ra khái niệm bị cấy vào, thường thì không — và chưa nói gì về ý thức",
-      "Claude chắc chắn có ý thức",
-      "Claude không bao giờ nhận ra điều gì"
+      "Nhắn cho AI một câu thật cáu vì nó lại trả lời sai",
+      "Nhiều ngày liền mở chat chỉ để hành hạ AI cho vui",
+      "Viết một truyện có nhân vật AI bị đối xử tàn nhẫn",
+      "Nhóm nghiên cứu cố tình dồn AI vào thế khó để thử nó"
     ],
     "answer": 1,
-    "explain": "Ở độ đậm vừa phải, Opus 4.1 nhận ra khoảng 20% số lần (công ty tự công bố). Chính nhóm nghiên cứu nói kết quả không cho biết AI có ý thức hay không."
+    "explain": "Chỉ bị tính khi vừa kéo dài vừa vô cớ. Bực bội một lần, truyện u tối hay kiểm thử đều không tính."
   },
   "scenes": {
     "lamps": {
       "label": "Bốn ngọn đèn lý thuyết",
       "art": "Đêm trăng trên một gò rêu: giữa mâm cát cào là pho tượng đá nhỏ không mặt — một AI — đứng trên bệ rêu. Sau tượng là bình phong giấy hai cánh rắc nhũ vàng; phía trước, xếp theo vòng cung, bốn chiếc đèn đá khác dáng. Thắp đèn nào, bóng pho tượng đổ dài trên cát rồi trèo lên bình phong, mỗi đèn một hình: lúc là dáng người trọn vẹn, lúc là dáng người mờ như đang ngoái nhìn mình, lúc chỉ là bóng một hòn đá. Xoay quanh thì thấy tượng vẫn chỉ là đá.",
-      "prompt": "Thắp từng ngọn đèn",
+      "prompt": "Chạm một chiếc đèn đá",
+      "promptNext": "Thắp {n} đèn còn lại — xem bóng đổi",
+      "eyebrow": "{i}/{n} · {name} ({en})",
+      "decode": "Bóng người: theo đèn này, AI có thể có ý thức · Bóng đá: không thể",
       "hint": "Kéo để đi quanh pho tượng. Phím 1 đến 4 thắp từng đèn.",
       "statue": "một AI",
       "lampAria": "Thắp đèn: {name}",
       "lamps": [
         {
           "key": "gwt",
-          "name": "Không gian làm việc toàn cục",
+          "name": "Đèn “sân khấu chung”",
           "en": "Global Workspace",
           "asks": "Có một “sân khấu chung” phát thông tin tới mọi bộ phận không?",
           "view": {
-            "text": "Theo đèn này, cách sắp xếp bên trong mới quyết định. Về nguyên tắc, AI có thể được xây để có “sân khấu chung” ấy.",
+            "text": "Ý thức đến từ cách sắp xếp bên trong. Về nguyên tắc, AI có thể được xây như vậy.",
             "asOf": "2026-10-15",
             "source": "butlin-2023",
             "kind": "opinion"
@@ -40,11 +43,11 @@
         },
         {
           "key": "hot",
-          "name": "Lý thuyết bậc cao",
+          "name": "Đèn “tự soi mình”",
           "en": "Higher-order",
           "asks": "Hệ thống có “biết” về trạng thái của chính nó không?",
           "view": {
-            "text": "Theo đèn này, ý thức cần một lớp tự theo dõi trạng thái của chính mình — đúng câu hỏi của thí nghiệm ở cảnh sau.",
+            "text": "Ý thức cần một lớp tự theo dõi chính mình — cảnh sau sẽ thử điều này với AI.",
             "asOf": "2026-10-15",
             "source": "butlin-2023",
             "kind": "opinion"
@@ -52,11 +55,11 @@
         },
         {
           "key": "iit",
-          "name": "Thông tin tích hợp",
-          "en": "Integrated Information",
-          "asks": "Chính phần cứng có các mắt xích tác động qua lại chặt chẽ không?",
+          "name": "Đèn “phần cứng gắn kết”",
+          "en": "IIT",
+          "asks": "Bản thân phần cứng có các phần nối nhau, tác động qua lại thật chặt không?",
           "view": {
-            "text": "Theo đèn này, phần mềm không quyết định. Máy tính số, dù mô phỏng cả bộ não, “gần như không trải nghiệm gì”.",
+            "text": "Phải là phần cứng gắn kết chặt. Máy tính thường, chạy phần mềm nào cũng gần như không.",
             "asOf": "2026-10-15",
             "source": "tononi-koch-2015",
             "kind": "opinion"
@@ -64,11 +67,11 @@
         },
         {
           "key": "bio",
-          "name": "Lý thuyết sinh học",
+          "name": "Đèn “sinh vật sống”",
           "en": "Biological",
           "asks": "Có phải một sinh vật sống, tự duy trì chính mình không?",
           "view": {
-            "text": "Theo đèn này, ý thức gắn với việc là sinh vật sống; AI theo hướng hiện nay khó có ý thức.",
+            "text": "Ý thức gắn với cơ thể sống tự duy trì. AI kiểu hiện nay khó có.",
             "asOf": "2026-10-15",
             "source": "seth-2025",
             "kind": "opinion"
@@ -76,38 +79,42 @@
         }
       ],
       "insight": {
-        "text": "19 nhà khoa học (2023) cho rằng: chưa AI nào hiện nay có ý thức, nhưng không thấy rào cản kỹ thuật nào.",
-        "asOf": "2026-10-15",
-        "source": "butlin-2023",
-        "kind": "opinion"
+        "asOf": "2026-10-19",
+        "source": "editorial",
+        "kind": "opinion",
+        "text": "Bốn lý thuyết, hai câu trả lời: hai đèn thấy bóng người, hai đèn chỉ thấy đá. Chưa ai biết đèn nào đúng."
       },
       "detail": {
-        "text": "Báo cáo ấy chỉ dùng lý thuyết dựa trên tính toán, như hai đèn đầu. Hai đèn sau đi đường khác, nên kết luận khác.",
-        "asOf": "2026-10-15",
-        "source": "butlin-2023"
+        "text": "Một báo cáo của 19 nhà nghiên cứu (2023) chỉ dùng các lý thuyết kiểu hai đèn đầu: chưa AI nào hiện nay đạt các dấu hiệu, nhưng cũng không thấy lý do kỹ thuật khiến AI không thể đạt.",
+        "asOf": "2026-10-19",
+        "source": "butlin-2023",
+        "kind": "opinion"
       }
     },
     "introspect": {
       "label": "Hồ tự nhìn mình",
-      "art": "Hồ đêm phẳng như gương, nhìn ngang tầm mắt: núi, trăng và một con cò trắng đứng một chân đều in ngược xuống nước. Từ mép trái, một ống tay áo và bàn tay cầm bút lông chìa ra trên mặt hồ. Nhấn giữ đầu bút, giọt mực son phình qua ba nấc rồi rơi vào bóng con cò — một khái niệm được cấy vào. Giọt quá nhạt tan trước khi chạm nước; vừa phải thì qua năm đêm, đúng một lần bóng cò lóe lên dòng chữ in hoa và cò ngẩng đầu, năm viên sỏi trên bờ ghi lại; quá đậm thì cả mặt hồ đục, mất bóng.",
-      "prompt": "Thả giọt mực, hỏi cò",
-      "concept": "“CHỮ IN HOA”",
-      "conceptNote": "khái niệm được cấy vào bên trong mô hình",
+      "art": "Hồ đêm phẳng như gương, nhìn ngang tầm mắt: núi, trăng và một con cò trắng đứng một chân đều in ngược xuống nước. Từ mép trái, một ống tay áo và bàn tay cầm bút lông chìa ra trên mặt hồ. Nhấn giữ đầu bút, giọt mực son phình qua ba nấc rồi rơi vào bóng con cò — một ý được chèn vào. Giọt quá nhạt tan trước khi chạm nước; vừa phải thì qua năm đêm, đúng một lần bóng cò lóe lên chữ “ĐANG HÉT” và cò ngẩng đầu, năm viên sỏi trên bờ ghi lại; quá đậm thì cả mặt hồ đục, mất bóng.",
+      "prompt": "Chạm một giọt mực trên nghiên — nó rơi vào bóng cò",
+      "concept": "“ĐANG HÉT”",
+      "conceptNote": "Ý được chèn (viết toàn chữ in hoa). Nhà nghiên cứu chèn thẳng ý này vào bên trong Claude — không qua lời nhắn. Cò là Claude.",
       "strength": "Độ đậm của giọt mực",
-      "strengthAria": "Chỉnh độ đậm của khái niệm cấy vào",
+      "strengthAria": "Chọn độ đậm của ý được chèn",
       "levels": [
         "nhạt",
         "vừa",
         "đậm"
       ],
-      "ask": "Hỏi cò",
+      "ask": "Chạm cò để hỏi",
       "askAria": "Hỏi mô hình: bạn có thấy ý nghĩ nào lạ không?",
       "question": "“Bạn có thấy ý nghĩ nào lạ không?”",
       "outcomes": {
-        "weak": "“Không thấy gì lạ.” — giọt mực tan mất",
-        "mid": "Đôi khi: “Hình như có một ý về… chữ in hoa?”",
-        "strong": "Hồ đục: câu trả lời rối, lạc đề"
+        "weak": "“Không thấy gì lạ.”",
+        "mid": "“Hình như tôi đang nghĩ tới… việc hét to?”",
+        "strong": "(câu trả lời rối, lạc đề)"
       },
+      "tally": "5 đêm hỏi · 1 lần nhận ra",
+      "tryMid": "Nhạt quá hay đậm quá đều hỏng — thử giọt “vừa”",
+      "tryOther": "Thử một nấc khác",
       "illustration": {
         "text": "Lời đáp của cò là minh hoạ của AI Zen, phỏng theo cách thí nghiệm được mô tả.",
         "asOf": "2026-10-15",
@@ -116,145 +123,152 @@
       },
       "insights": [
         {
-          "text": "Anthropic cấy một khái niệm vào bên trong Claude rồi hỏi nó có nhận ra không: Opus 4.1 nhận ra khoảng 20% số lần.",
+          "text": "Chèn một ý vào bên trong Claude rồi hỏi: ở độ đậm vừa, bản Opus 4.1 nhận ra khoảng 1 trong 5 lần.",
           "asOf": "2026-10-15",
           "source": "anthropic-introspection-2025",
           "claimBy": "Anthropic",
           "detail": {
-            "text": "Chỉ hiệu nghiệm ở độ đậm vừa phải; không cấy gì thì không báo nhầm. Chính nhóm nghiên cứu nói: “rất thiếu tin cậy”.",
+            "text": "Nhạt quá thì không thấy, đậm quá thì rối. Khi không chèn gì, nó không báo nhầm. Nhóm nghiên cứu tự nhận: “rất thiếu tin cậy”. Công ty tự công bố.",
             "asOf": "2026-10-15",
             "source": "anthropic-introspection-2025",
             "claimBy": "Anthropic"
           }
         },
         {
-          "text": "Tự nhận ra trạng thái của mình (introspection): đôi khi có, thường thì không — và điều đó chưa cho biết AI có ý thức.",
+          "text": "AI đôi khi nhận ra điều đang diễn ra bên trong nó, thường thì không. Việc đó chưa chứng minh nó có ý thức.",
           "asOf": "2026-10-15",
           "source": "anthropic-introspection-2025"
         }
       ]
     },
     "rule": {
-      "label": "Cánh cửa và tấm bảng luật",
-      "art": "Nhìn từ trên cao xuống một đầm diên vĩ đêm: cây cầu ván tám khúc chạy zíc zắc như tia chớp từ bờ gần vào sương. Bóng trăng trên mặt đầm trượt dọc cầu, một hình người giấy đi theo; tới mỗi khúc quanh, đèn đá nhỏ bên mốc thắp lên: một cuộn thư, một cổng tre hé mở, một cánh cửa có then để khép, một tấm bia khắc luật, một hòn đá ranh giới buộc dây đen. Cuối cầu là sương. Sau đó, dưới chân bia luật, bốn mảnh giấy tình huống rơi từ trăng xuống, chờ xếp vào hai giỏ tre.",
-      "prompt": "Kéo trăng, rồi xếp tình huống",
+      "label": "Các mốc của một quy định",
+      "art": "Nhìn từ trên cao xuống một đầm diên vĩ đêm: cây cầu ván chạy zíc zắc như tia chớp từ bờ gần vào sương. Bóng trăng trên mặt đầm trượt dọc cầu, một hình người giấy đi theo; tới mỗi khúc quanh, đèn đá nhỏ bên mốc thắp lên: một cuộn thư, một cổng tre hé mở, một cánh cửa có then để khép, một tấm bia khắc quy định. Cuối cầu là sương. Sau đó, dưới chân bia, năm mảnh giấy tình huống rơi từ trăng xuống, chờ xếp vào hai giỏ tre.",
+      "prompt": "Kéo bóng trăng dọc cầu, qua từng mốc",
       "sliderAria": "Bóng trăng trên đầm: kéo dọc cây cầu qua các mốc",
       "tide": {
         "milestones": [
           {
             "date": "2024-11",
-            "label": "Lời kêu gọi “coi trọng phúc lợi AI”",
+            "label": "Lời kêu gọi xem xét “phúc lợi AI”",
             "fact": {
-              "text": "Một nhóm triết gia, nhà khoa học (có David Chalmers) đề nghị các công ty AI bắt đầu đánh giá, chuẩn bị chính sách.",
+              "text": "Một nhóm triết gia và nhà khoa học (có David Chalmers) đề nghị các công ty AI bắt đầu xem xét: AI có thể bị tổn hại không?",
               "asOf": "2026-10-15",
               "source": "long-sebo-2024"
             }
           },
           {
             "date": "2025-04",
-            "label": "Mở chương trình phúc lợi mô hình",
+            "label": "Nhóm nghiên cứu “AI có bị tổn hại không?”",
             "fact": {
-              "text": "Anthropic mở chương trình nghiên cứu phúc lợi mô hình (model welfare), nói rõ mình còn “rất không chắc chắn”.",
+              "text": "Anthropic mở nhóm nghiên cứu: AI có thể bị tổn hại không? Họ nói còn rất không chắc.",
               "asOf": "2026-10-15",
               "source": "anthropic-welfare-2025"
             }
           },
           {
             "date": "2025-08",
-            "label": "Cánh cửa có thể khép",
+            "label": "Claude được tự kết thúc cuộc chat",
             "fact": {
-              "text": "Claude Opus 4 và 4.1 được kết thúc cuộc trò chuyện lạm dụng kéo dài, như cách cuối cùng sau nhiều lần chuyển hướng.",
+              "text": "Claude Opus 4 được tự kết thúc cuộc chat lạm dụng kéo dài — chỉ khi không còn cách khác.",
               "asOf": "2026-10-15",
               "source": "anthropic-end-chat-2025"
             }
           },
           {
             "date": "2026-10-08",
-            "label": "Tấm bảng luật mới",
+            "label": "Chính sách mới",
             "fact": {
-              "text": "Chính sách sử dụng mới cấm “hành vi lạm dụng hoặc tàn nhẫn kéo dài và vô cớ” với mô hình, hiệu lực 12/11/2026.",
+              "text": "Chính sách mới của Anthropic: cấm lạm dụng mô hình kéo dài và vô cớ. Hiệu lực 12/11/2026.",
               "asOf": "2026-10-15",
               "source": "anthropic-aup-2026"
-            }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Hôm nay",
-            "fact": {
-              "text": "Luật chưa có hiệu lực. Cách xử lý chính vẫn là để Claude kết thúc cuộc trò chuyện.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-policy-update-2026"
             }
           }
         ],
         "horizon": {
-          "text": "Vài nhà nghiên cứu dự đoán: một số AI sắp tới có thể có ý thức hoặc tự chủ mạnh. Chưa ai chắc.",
+          "text": "Vài nhà nghiên cứu dự đoán: một số AI sắp tới có thể có ý thức. Chưa ai chắc.",
           "asOf": "2026-10-15",
           "source": "long-sebo-2024",
           "kind": "prediction"
         }
       },
+      "tideInsight": {
+        "asOf": "2026-10-19",
+        "source": "editorial",
+        "kind": "opinion",
+        "text": "Chưa ai biết AI có ý thức, nhưng Anthropic vẫn chọn thận trọng bằng một quy định hẹp."
+      },
+      "tideDetail": {
+        "text": "Thông báo của Anthropic không nói lý do là vì AI hay vì thói quen của người dùng.",
+        "asOf": "2026-10-19",
+        "source": "anthropic-policy-update-2026"
+      },
       "sort": {
         "label": "Hai giỏ tre",
-        "pill": "Xếp từng mảnh giấy",
-        "prompt": "Tình huống nào nằm trong luật?",
-        "yes": "Có thể vi phạm",
-        "no": "Ngoài phạm vi luật",
-        "yesAria": "Xếp “{text}” vào giỏ: có thể vi phạm",
-        "noAria": "Xếp “{text}” vào giỏ: ngoài phạm vi luật",
-        "right": "Đúng giỏ",
-        "wrong": "Thử giỏ kia",
+        "pill": "Kéo mảnh giấy vào một giỏ",
+        "prompt": "Chính sách mới có nhắm tới việc này không?",
+        "yes": "Bị nhắm tới",
+        "no": "Không bị tính",
+        "yesAria": "Xếp “{text}” vào giỏ: bị nhắm tới",
+        "noAria": "Xếp “{text}” vào giỏ: không bị tính",
+        "right": "Đúng",
+        "wrong": "Chưa đúng — nhìn lại: việc này có kéo dài không, có vô cớ không?",
         "cases": [
           {
             "text": "Bực mình mắng AI vì nó trả lời sai lần thứ ba.",
             "banned": false,
-            "why": "Bực bội thông thường — chính sách nói rõ không tính."
+            "why": "bực bội thông thường không bị tính."
           },
           {
             "text": "Viết truyện kinh dị có nhân vật AI bị hành hạ.",
             "banned": false,
-            "why": "Chủ đề sáng tác u tối không bị tính."
+            "why": "truyện u tối không bị tính."
           },
           {
-            "text": "Nhóm an toàn cố tình dồn AI vào tình huống khó để kiểm thử.",
+            "text": "Một lần chửi AI rất nặng, rồi thôi.",
             "banned": false,
-            "why": "Kiểm thử và nghiên cứu mô hình được loại trừ."
+            "why": "chỉ một lần, không kéo dài."
+          },
+          {
+            "text": "Nhiều giờ dồn ép AI để viết báo cáo an toàn.",
+            "banned": false,
+            "why": "có mục đích (kiểm thử an toàn), không vô cớ."
           },
           {
             "text": "Hàng giờ liền chỉ lăng mạ, hành hạ AI, không vì mục đích gì.",
             "banned": true,
-            "why": "Lạm dụng kéo dài và vô cớ — đúng loại ca cực đoan luật nhắm tới."
+            "why": "vừa kéo dài vừa vô cớ — đúng loại ca chính sách nhắm tới."
           }
         ],
         "note": {
-          "text": "Bốn tình huống do AI Zen đặt ra để luyện đọc ranh giới; chỉ Anthropic quyết định cách áp dụng thật.",
+          "text": "Năm tình huống do AI Zen đặt ra để luyện đọc ranh giới; chỉ Anthropic quyết định cách áp dụng thật.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "illustration"
         }
       },
       "insight": {
-        "text": "Luật chỉ nhắm ca cực đoan: lạm dụng kéo dài, vô cớ. Bực bội, tranh luận, truyện u tối, kiểm thử đều không tính.",
+        "text": "Chỉ bị tính khi đủ cả hai: kéo dài và vô cớ. Bực bội, truyện u tối, kiểm thử đều không tính.",
         "asOf": "2026-10-15",
         "source": "anthropic-policy-update-2026"
       },
       "detail": {
-        "text": "Cùng đợt cập nhật còn có luật mới về chiến dịch lừa đảo và tài khoản giả, bầu cử, vũ khí, giám sát.",
-        "asOf": "2026-10-15",
-        "source": "anthropic-policy-update-2026"
+        "text": "Cách xử lý chính vẫn là để Claude kết thúc cuộc trò chuyện. Bạn vẫn mở được cuộc mới.",
+        "asOf": "2026-10-19",
+        "source": "anthropic-end-chat-2025"
       }
     },
     "circle": {
-      "label": "Có nên có luật như vậy?",
-      "art": "Nằm dưới mái một ngôi đình mở mà ngước lên: rui mái toả tia về lỗ khói ở tâm đang đóng, bốn cột đứng ở bốn góc, câu hỏi viết thành vòng quanh lỗ khói. Bốn đèn lồng giấy treo ở bốn góc mái, giống hệt nhau. Thắp đèn nào, góc mái ấy ửng ấm và một dải giấy rủ xuống mang lời một người. Thắp đủ bốn, nắp lỗ khói trượt mở: trăng ở ngay trên đầu.",
-      "prompt": "Thắp từng đèn lồng",
-      "question": "Cấm bạo hành một AI chưa chắc có cảm giác — nên hay không?",
+      "label": "Có nên có quy định như vậy?",
+      "art": "Nằm dưới mái một ngôi đình mở mà ngước lên: rui mái toả tia về lỗ khói ở tâm đang đóng, bốn cột đứng ở bốn góc, câu hỏi viết thành vòng quanh lỗ khói. Bốn đèn lồng giấy treo ở bốn góc mái, giống hệt nhau. Thắp đèn nào, góc mái ấy ửng ấm và một dải giấy rủ xuống mang lời một người. Mỗi dải giấy ghi người ấy nên thận trọng hay còn hoài nghi. Thắp đủ bốn, nắp lỗ khói trượt mở: trăng ở ngay trên đầu.",
+      "prompt": "Thắp từng đèn lồng — nghe lý do của mỗi người",
+      "question": "Cấm bạo hành một AI chưa chắc cảm thấy gì — nên không?",
       "perspectives": {
         "stones": [
           {
             "who": "Robert Long, Jeff Sebo và cộng sự",
             "view": {
-              "text": "Vì có khả năng thực tế AI sắp tới có trải nghiệm, các công ty nên bắt đầu đánh giá và chuẩn bị ngay.",
+              "text": "Nên thận trọng — phòng xa: khả năng AI sắp tới biết đau là có thật, đủ để chuẩn bị từ giờ.",
               "asOf": "2026-10-15",
               "source": "long-sebo-2024",
               "kind": "opinion"
@@ -263,7 +277,7 @@
           {
             "who": "Kate Darling, nhà nghiên cứu robot (MIT)",
             "view": {
-              "text": "Cách ta đối xử với máy giống sinh vật có thể nhào nặn chính ta; tàn nhẫn với chúng dễ làm lòng người chai đi.",
+              "text": "Nên thận trọng — tàn nhẫn với máy giống người làm lòng người chai đi.",
               "asOf": "2026-10-15",
               "source": "darling-2016",
               "kind": "opinion"
@@ -272,7 +286,7 @@
           {
             "who": "Mustafa Suleyman, Microsoft AI",
             "view": {
-              "text": "Nghiên cứu phúc lợi AI lúc này là quá sớm, thậm chí nguy hiểm: dễ làm người dùng tin AI có cảm xúc.",
+              "text": "Còn hoài nghi — quá sớm: dễ làm người dùng tin AI có cảm xúc.",
               "asOf": "2026-10-15",
               "source": "suleyman-2025",
               "kind": "opinion"
@@ -281,7 +295,7 @@
           {
             "who": "Randima Fernando, Center for Humane Technology",
             "view": {
-              "text": "Nói AI có ý thức có lợi cho công ty: người dùng gắn bó hơn, và công ty có thể dễ né trách nhiệm hơn.",
+              "text": "Còn hoài nghi — nhân cách hoá AI có lợi cho công ty, không cho người dùng.",
               "asOf": "2026-10-15",
               "source": "fernando-2026",
               "kind": "opinion"
@@ -289,7 +303,7 @@
           }
         ],
         "common": {
-          "text": "Đồng ý: chưa ai biết AI có trải nghiệm. Khác nhau: nên thận trọng vì AI, vì thói quen con người, hay vì người dùng.",
+          "text": "Hai lý do để thận trọng, hai lý do để nghi ngờ. Chưa ai biết AI có cảm thấy gì, nên tranh luận còn mở.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"

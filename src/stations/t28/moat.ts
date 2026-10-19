@@ -9,15 +9,17 @@ import { clamp, curve, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from
 import { pine } from '../../ui/part2/paint'
 import { C } from './data'
 import { figure } from './brush'
+import { guide } from '../../ui/part2/guide'
 
 const G = C.scenes.moat
 /** the disc leans back this far (deg): we look down on it from about 60° — harder on a tall frame so it never reads flat */
 const VIEWS = [32, 50]
 /** where each boat waits on the far lake (degrees, 0 = east, y down = toward the viewer): wide frame, tall frame (9, 3, 6 o'clock) */
 const ANGS = [[200, 340, 124], [180, 0, 90]]
-const N_BRIDGE = 600
+const N_BRIDGE = 18 // few enough to count (audit v3 28-3)
 // rings as shares of the disc's radius: island · moat · village bank · lake
 const ISLE = 0.2, MOAT = 0.36, BANK = 0.5
+const CUTS = 5 // the bridges that tie the house to the castle
 const WALL = 0.036 // the island's retaining wall: the inner wall of the moat, where the bridges land and the CUDA words run
 const f1 = (n: number) => n.toFixed(1)
 const P = (p: Pt) => `${f1(p[0])} ${f1(p[1])}`
@@ -113,105 +115,249 @@ function boatArt(seed: number, kind: number): SVGSVGElement {
     lamp)
 }
 
+/** A village house (one AI team) seen a little from above: plastered walls, a hipped roof catching the moon, a lit window. */
+function houseArt(): SVGSVGElement {
+  return s('svg', { viewBox: '-32 -36 64 50', 'aria-hidden': 'true' },
+    s('circle', { class: 't28m-hglow', cx: 0, cy: -6, r: 26, fill: 'url(#p2-lamp)' }),
+    s('ellipse', { class: 't28m-keep-sh', cx: 4, cy: 9, rx: 26, ry: 5 }),
+    s('path', { class: 'gb-plaster', d: 'M-19 9L-19 -8L19 -8L19 9Z' }),
+    s('path', { class: 't28m-wallsh', d: 'M6 9L6 -8L19 -8L19 9Z' }),
+    s('path', { class: 't28m-lit', d: 'M-12 -3h7v7h-7Z' }),
+    s('path', { class: 't28m-win', d: 'M3 -3h6v7h-6Z' }),
+    s('path', { class: 't28m-roof', d: 'M-27 -6Q-24 -4 -20 -5L20 -5Q24 -4 27 -6L15 -22L-15 -22Z' }),
+    s('path', { class: 't28m-rim', d: stroke([[-15, -22], [0, -23], [15, -22]], 1.6, 0.2, 0.2, 0.2) }))
+}
+
 /**
- * Hào nước quanh lâu đài (art direction §4 t28 `moat`, canvas): a castle island in a black lake as a mandala seen from
- * high above, baked once into a round disc that leans with the pointer. Six hundred bamboo bridges (CUDA) cross the moat
- * from the village bank; three rival boats wait on the far lake. Touch one: it rows in through its canal, lowers its own
- * plank (every bridge already anchors on the castle's shore) and a few lights cross; its fact unrolls on a paper slip.
+ * Hào nước quanh lâu đài (art direction §4 t28 `moat`, canvas; audit v3 28-3, reworked): a castle island in a black lake
+ * as a mandala seen from high above, baked once into a round disc. NVIDIA's keep sits on the island; countable bamboo
+ * bridges cross the moat to the village. One village house (an AI team) is tied to the castle by five bridges: drag it
+ * toward a rival's boat and they pull taut and snap it back; tap each bridge to cut it (rewriting the code), then the
+ * house can be carried onto the boat. CUDA is the moat: the bridges are the code already written for it.
  */
 export function moatScene(ctx: SceneCtx) {
   p2Defs()
-  const id = nextId('t28m')
   const low = ctx.quality === 'low'
-  const stableH = stableHeight(ctx, [G.insight as Fact, G.detail as Fact])
-  ctx.prompt(G.prompt)
+  const stableH = stableHeight(ctx, [G.insight as Fact])
+  const g = guide(ctx)
+  const step = g.steps(G.prompts)
+  step(0)
 
   const cv = h('canvas', { class: 't28m-cv', 'aria-hidden': 'true' })
   const dots = low ? null : h('canvas', { class: 't28m-dots', 'aria-hidden': 'true' })
-  const ring = s('svg', { class: 't28m-ring', 'aria-hidden': 'true' }) // in the disc's plane: lit bridges, planks, threads, the CUDA words
+  const ring = s('svg', { class: 't28m-ring', 'aria-hidden': 'true' }) // in the disc's plane: the keep's name
   const keep = h('div', { class: 't28m-keep', 'aria-hidden': 'true' })
-  const boats = G.boats.map((b, i) => h('button', { class: 't28m-boat', type: 'button', 'aria-pressed': 'false', 'aria-label': fill(G.boatAria, { name: b.name }), onClick: () => pick(i) },
-    boatArt(2830 + i, i)))
+  const boats = G.boats.map((_, i) => h('div', { class: 't28m-boat', 'aria-hidden': 'true' }, boatArt(2830 + i, i)))
   const disc = h('div', { class: 't28m-disc' }, cv, ring, ...(dots ? [dots] : []), keep, ...boats)
-  const fleet = h('div', { class: 't28m-wrap', role: 'group', 'aria-label': G.group }, disc)
+  const fleet = h('div', { class: 't28m-wrap', 'aria-hidden': 'true' }, disc)
   // the boats' names ride above them on paper halos, flat on the frame (inside the disc's 3D they were cut by its plane)
   const tags = G.boats.map((b) => h('span', { class: 't28m-tag', 'aria-hidden': 'true' }, b.name))
-  // the fact unrolls on a slip of paper tied by a string to the boat's mast
-  const string = s('svg', { class: 't28m-string', 'aria-hidden': 'true' }, s('path', null))
-  const slip = h('div', { class: 't28m-slip', 'aria-live': 'polite' })
-  const root = h('div', { class: 't28m', role: 'group', 'aria-label': G.art }, h('div', { class: 't28m-lake', 'aria-hidden': 'true' }), h('div', { class: 't28m-sky', 'aria-hidden': 'true' }), fleet, ...tags, string, slip)
+  // CUDA, carved straight under the castle (it was a ring of words round the moat: unreadable on a phone)
+  const [cudaName, cudaWhat] = G.moatLabel.split(' · ')
+  const cuda = h('p', { class: 't28m-cudalab' }, h('b', null, cudaName), cudaWhat ? h('span', null, cudaWhat) : null)
+  // the rig, flat on the frame: five bridges from the castle wall to the house, the way to the boat, the cut words
+  const rig = s('svg', { class: 't28m-rig', 'aria-hidden': 'true' })
+  const arrow = s('path', { class: 't28m-arrow' })
+  const bridges = Array.from({ length: CUTS }, () => s('g', { class: 't28m-br' }, s('path', { class: 't28m-br-sh' }), s('path', { class: 't28m-br-deck' }), s('path', { class: 't28m-br-rail' })))
+  rig.append(arrow, ...bridges)
+  const cuts = bridges.map((_, k) => h('button', { class: 't28m-cut', type: 'button', 'aria-label': fill(G.cutAria, { n: k + 1 }) }))
+  const house = h('div', { class: 't28m-house', role: 'button', tabindex: '0', 'aria-label': G.houseAria }, houseArt())
+  const root = h('div', { class: 't28m', role: 'group', 'aria-label': G.art }, h('div', { class: 't28m-lake', 'aria-hidden': 'true' }), h('div', { class: 't28m-sky', 'aria-hidden': 'true' }), fleet, ...tags, cuda, rig, house, ...cuts)
   ctx.art.append(root)
 
-  const seen = new Set<number>()
   let ANG = ANGS[0]
   let VIEW = VIEWS[0]
   let D = 0 // disc size (css px)
   let geo = { W: 1, H: 1, cx: 0, cy: 0, wide: true, persp: 1, bwp: 1, bh: 1 }
-  let picked = -1
   const boatAt = (i: number, k: number): Pt => [D / 2 + Math.cos(rad(ANG[i])) * (D / 2) * k, D / 2 + Math.sin(rad(ANG[i])) * (D / 2) * k]
+  const TARGET = 1 // the boat on the right is the one the arrow points at (any boat takes the house)
 
-  function pick(i: number) {
-    boats.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)))
-    const b = G.boats[i]
-    slip.replaceChildren(h('p', { class: 't28m-who' }, b.name), ctx.fact(b.fact as Fact, 'p', 't28m-fact'))
-    slip.classList.remove('open')
-    picked = i
-    if (!seen.has(i)) {
-      seen.add(i)
-      boats[i].classList.add('in')
-      tags[i].classList.add('rowing') // its name rows in with it (the same 2 s as the boat's transform)
-      const t = window.setTimeout(() => tags[i].classList.remove('rowing'), ctx.reduced ? 0 : 2100)
-      ctx.onCleanup(() => clearTimeout(t))
-      ring.querySelector(`.t28m-plank-${i}`)?.classList.add('on')
-      walkers.push(i)
-      wake()
-    }
-    placeTags()
-    placeSlip(true)
-    requestAnimationFrame(() => slip.classList.add('open'))
-    if (seen.size === G.boats.length && !root.classList.contains('all')) {
-      root.classList.add('all')
-      ctx.chime('ok')
-      ctx.insight(G.insight as Fact)
-      // then a thread of light runs from each boat to the keep
-      const t = window.setTimeout(() => {
-        root.classList.add('threads')
-        ctx.insight(G.insight as Fact, G.detail as Fact)
-      }, ctx.reduced ? 0 : 1800)
-      ctx.onCleanup(() => clearTimeout(t))
-    } else ctx.chime('soft')
-  }
+  // ── the house, its five bridges, the cuts
+  let left = CUTS // bridges still tied
+  const cut = new Set<number>()
+  let home: Pt = [0, 0] // the house's foot on the frame (where its bridges tie on)
+  let anchors: Pt[] = [] // where each bridge meets the castle wall
+  let off: Pt = [0, 0] // the drag offset
+  let docked = -1
+  let hw = 56 // the house's width on screen
+  let boatPts: Pt[] = []
+  const dotHouse = g.dot(house, { dir: [1, -0.2] })
+  let dotCut: ReturnType<typeof g.dot> | null = null
+  let count: ReturnType<typeof g.count> | null = null
+  let drop: ReturnType<typeof g.drop> | null = null
 
-  // ── the disc leans with the pointer (±8°), damped by CSS
-  let rect: DOMRect | null = null
-  let tx = 0, ty = 0, pending = false
-  const lean = () => {
-    pending = false
-    disc.style.transform = `rotateX(${f1(VIEW + ty)}deg) rotateZ(${f1(tx * 0.5)}deg) rotateY(${f1(tx)}deg)`
-    placeTags()
-    placeSlip(false)
+  /** a bridge from the castle wall over its pier post to the house (or, cut at the post, two stubs hanging off each end) */
+  function drawBridges() {
+    const hx = home[0] + off[0], hy = home[1] + off[1]
+    bridges.forEach((b, k) => {
+      const [ax, ay] = anchors[k], [px, py] = cutAt(k)
+      let pts: Pt[][]
+      if (cut.has(k)) pts = [[[ax, ay], [ax + (px - ax) * 0.6, ay + (py - ay) * 0.6 + 6]], [[hx, hy], [hx + (px - hx) * 0.45, hy + (py - hy) * 0.45 + 6]]]
+      else {
+        // slack hangs a little; taut it runs straight
+        const sag = Math.hypot(off[0], off[1]) > 4 ? 0 : 4
+        pts = [[...curve([ax, ay], [(ax + px) / 2, (ay + py) / 2 + sag], [px, py], 6), ...curve([px, py], [(px + hx) / 2, (py + hy) / 2 + sag], [hx, hy], 6).slice(1)]]
+      }
+      const [sh, deck, rail] = b.children
+      sh.setAttribute('d', pts.map((p) => stroke(p.map(([x, y]) => [x + 3, y + 5] as Pt), 6, 0.1, 0.1, 0.4)).join(''))
+      deck.setAttribute('d', pts.map((p) => stroke(p, 7, 0.1, 0.1, 0.4)).join(''))
+      // the pier post the bridge rests on (it stays when the bridge is cut)
+      rail.setAttribute('d', pts.map((p) => stroke(p.map(([x, y]) => [x, y - 3] as Pt), 1.4, 0.2, 0.2, 0.3)).join('') + stroke([[px, py - 9], [px + 0.5, py + 7]], 4, 0.1, 0.1, 0.5))
+    })
+    house.style.transform = `translate(${f1(hx - hw / 2)}px, ${f1(hy - hw * 0.72)}px)`
   }
   /**
-   * where a point of the disc lands on the frame (the same 3D the CSS draws): (x, y) in the disc's box, z up out of it.
-   * The disc turns rotateX(VIEW + ty) rotateZ(tx / 2) rotateY(tx) about its centre, seen through the wrap's perspective.
+   * each bridge rests on a pier post in the moat, the posts fanned round the house so their 44 px cut targets never
+   * overlap (audit v3 28-3: vùng chạm ≥ 44 px), even on a phone where the moat is narrow
    */
-  const v3 = [0, 0, 0]
-  function project(x: number, y: number, z: number): Pt {
-    const a = rad(VIEW + ty), b = rad(tx * 0.5), c = rad(tx)
-    let X = x - D / 2, Y = y - D / 2, Z = z
-    ;[X, Z] = [X * Math.cos(c) + Z * Math.sin(c), -X * Math.sin(c) + Z * Math.cos(c)]
-    ;[X, Y] = [X * Math.cos(b) - Y * Math.sin(b), X * Math.sin(b) + Y * Math.cos(b)]
-    ;[Y, Z] = [Y * Math.cos(a) - Z * Math.sin(a), Y * Math.sin(a) + Z * Math.cos(a)]
-    v3[0] = X + D / 2
-    v3[1] = Y + D / 2
-    v3[2] = Z
-    const ox = D / 2, oy = D * 0.3, k = geo.persp / (geo.persp - v3[2])
-    return [geo.cx - D / 2 + ox + (v3[0] - ox) * k, geo.cy - D / 2 + oy + (v3[1] - oy) * k]
+  let cutPts: Pt[] = []
+  const cutAt = (k: number): Pt => cutPts[k] ?? anchors[k]
+  function placeCuts(centre: Pt) {
+    const dx = centre[0] - home[0], dy = centre[1] - home[1]
+    const rho = clamp(Math.hypot(dx, dy) * 0.55, 64, 150), base = Math.atan2(dy, dx), step = 52 / rho
+    const posts = anchors.map((_, k): Pt => [home[0] + Math.cos(base + (k - 2) * step) * rho, home[1] + Math.sin(base + (k - 2) * step) * rho])
+    // each bridge takes the post on its own side, so none cross (both fans sorted by their angle round the house)
+    const turn = (p: Pt) => (Math.atan2(p[1] - home[1], p[0] - home[0]) - base + Math.PI * 3) % (Math.PI * 2)
+    const order = anchors.map((_, k) => k).sort((a, b) => turn(anchors[a]) - turn(anchors[b]))
+    cutPts = []
+    order.forEach((k, j) => (cutPts[k] = posts[j]))
   }
-  /** a boat's foot on the disc (docked or waiting) and a point `up` px above it on its upright card */
+  const nextCut = () => cuts.find((_, k) => !cut.has(k)) ?? null
+
+  function snip(k: number) {
+    if (cut.has(k) || docked >= 0) return
+    cut.add(k)
+    left--
+    cuts[k].disabled = true
+    bridges[k].classList.add('cut')
+    count?.set(left)
+    drawBridges()
+    // the words float up off the cut
+    const [x, y] = cutAt(k)
+    const word = h('span', { class: 't28m-rewrite', 'aria-hidden': 'true', style: `left:${f1(x)}px;top:${f1(y)}px` }, G.rewrite)
+    root.append(word)
+    const t = window.setTimeout(() => word.remove(), ctx.reduced ? 1200 : 1600)
+    ctx.onCleanup(() => clearTimeout(t))
+    ctx.chime('soft')
+    const nx = nextCut()
+    if (nx) {
+      if (!dotCut) dotCut = g.dot(nx)
+      else dotCut.at(nx)
+      if (document.activeElement === cuts[k]) nx.focus({ preventScroll: true })
+      return
+    }
+    // all cut: now the house can go
+    dotCut?.done()
+    count?.done()
+    root.classList.add('free')
+    step(2)
+    drop ??= g.drop(boats[TARGET])
+    dotHouse.done()
+    if (document.activeElement === cuts[k]) house.focus({ preventScroll: true })
+  }
+  cuts.forEach((b, k) => b.addEventListener('click', () => snip(k)))
+
+  function dock(i: number) {
+    docked = i
+    const [bx, by] = boatPts[i]
+    off = [bx - home[0], by - home[1]]
+    root.classList.add('docked')
+    house.setAttribute('aria-disabled', 'true')
+    drawBridges()
+    drop?.hit()
+    g.ok(house)
+    arrow.classList.add('out')
+    ctx.chime('ok')
+    ctx.insight(G.insight as Fact, G.detail as Fact[])
+  }
+  /** step 1 begins: the house was pulled and the bridges held it; show the counter and the first bridge to cut */
+  function taut() {
+    if (count) return
+    step(1)
+    count = g.count(G.countTpl, CUTS, () => {
+      const [x, y] = project(D / 2, D / 2 + (D / 2) * (ISLE + WALL), 0)
+      return [x, y + 16]
+    }, { n: left })
+    const nx = nextCut()
+    if (nx) dotCut = g.dot(nx)
+  }
+
+  // drag the house: tied, it only stretches the bridges and springs back; free, it goes where it is carried
+  let drag: { id: number; x: number; y: number } | null = null
+  house.addEventListener('pointerdown', (e) => {
+    if (e.button || docked >= 0) return
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY }
+    house.setPointerCapture(e.pointerId)
+    root.classList.add('is-drag')
+    if (left === 0) drop?.lift(true)
+  })
+  house.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y
+    if (left) {
+      // the bridges give a little and no more
+      const d = Math.hypot(dx, dy) || 1, k = 30 / (30 + d)
+      off = [dx * k, dy * k]
+      if (d > 16) root.classList.add('taut')
+    } else off = [dx, dy]
+    drawBridges()
+  })
+  const release = (e: PointerEvent) => {
+    if (!drag || e.pointerId !== drag.id) return
+    const pulled = Math.hypot(off[0], off[1]) > 8
+    drag = null
+    root.classList.remove('is-drag', 'taut')
+    drop?.lift(false)
+    if (left === 0) {
+      const hx = home[0] + off[0], hy = home[1] + off[1]
+      const near = boatPts.map(([x, y]) => Math.hypot(x - hx, y - hy))
+      const i = near.indexOf(Math.min(...near))
+      if (near[i] < Math.max(60, geo.bwp * 0.9)) return dock(i)
+      g.wrong(G.prompts[2], house)
+    } else if (pulled) taut()
+    off = [0, 0]
+    drawBridges()
+  }
+  house.addEventListener('pointerup', release)
+  house.addEventListener('pointercancel', release)
+  house.addEventListener('keydown', (e) => {
+    if ((e.key !== 'Enter' && e.key !== ' ') || docked >= 0) return
+    e.preventDefault()
+    if (left) {
+      taut()
+      g.wrong(G.prompts[1], house)
+      nextCut()?.focus({ preventScroll: true })
+    } else dock(TARGET)
+  })
+
+  // H7: after 6 s still, the next bridge to cut shivers and flashes vermilion
+  const invite = () => {
+    const k = cuts.findIndex((_, j) => !cut.has(j))
+    if (k < 0 || docked >= 0 || ctx.reduced) return
+    bridges[k].classList.add('flash')
+    const t = window.setTimeout(() => bridges[k].classList.remove('flash'), 1100)
+    ctx.onCleanup(() => clearTimeout(t))
+    bridges[k].animate([{ translate: '0 0' }, { translate: '0 -2px' }, { translate: '0 2px' }, { translate: '0 0' }], { duration: 500, iterations: 2 })
+  }
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', invite))
+
+  /**
+   * where a point of the disc lands on the frame (the same 3D the CSS draws): (x, y) in the disc's box, z up out of it.
+   * The disc lies rotateX(VIEW) about its centre, seen through the wrap's perspective.
+   */
+  function project(x: number, y: number, z: number): Pt {
+    const a = rad(VIEW)
+    const X = x - D / 2
+    let Y = y - D / 2, Z = z
+    ;[Y, Z] = [Y * Math.cos(a) - Z * Math.sin(a), Y * Math.sin(a) + Z * Math.cos(a)]
+    const vx = X + D / 2, vy = Y + D / 2
+    const ox = D / 2, oy = D * 0.3, k = geo.persp / (geo.persp - Z)
+    return [geo.cx - D / 2 + ox + (vx - ox) * k, geo.cy - D / 2 + oy + (vy - oy) * k]
+  }
+  /** a boat's foot on the disc and a point `up` px above it on its upright card */
   function boatPt(i: number, up: number): Pt {
-    const [x, y] = boatAt(i, seen.has(i) ? MOAT + 0.07 : BOAT_K())
-    // the boat stands up out of the disc: rotateX(-VIEW) about its foot, so `up` on its card is (−up·cos, up·sin) in the disc
+    const [x, y] = boatAt(i, BOAT_K())
     return project(x, y - up * Math.cos(rad(VIEW)), up * Math.sin(rad(VIEW)))
   }
   const BOAT_K = () => (geo.wide ? 0.64 : 0.56)
@@ -221,66 +367,32 @@ export function moatScene(ctx: SceneCtx) {
       // above the boat; the boat in front of the island (6 o'clock) carries its name below the hull, clear of the keep
       const front = Math.sin(rad(ANG[i])) > 0.95
       const [x, y] = boatPt(i, front ? -geo.bh * 0.12 : geo.bh * 0.98)
-      const hw = tagW[i] / 2 + 6
-      t.style.transform = `translate(${f1(clamp(x, hw, geo.W - hw))}px, ${f1(y)}px) translate(-50%, ${front ? '0%' : '-100%'})`
+      const hw2 = tagW[i] / 2 + 6
+      t.style.transform = `translate(${f1(clamp(x, hw2, geo.W - hw2))}px, ${f1(y)}px) translate(-50%, ${front ? '0%' : '-100%'})`
     })
   }
-  /** the slip hangs at the frame's side nearest the boat (wide) or across the top (tall), its string tied to the mast */
-  let slipH = 0
-  function placeSlip(measure: boolean) {
-    if (picked < 0) return
-    const [mx, my] = boatPt(picked, geo.bh * 0.76)
-    const mast: Pt = [mx + geo.bwp * 0.33, my]
-    const { W, H, wide } = geo
-    // wide: beside the boat on its outer side (never over it); tall: across the top, the string hanging down to the mast
-    const w = wide ? Math.min(270, W * 0.2) : W * 0.86
-    const left = mx < geo.cx
-    const x = wide ? clamp(left ? mx - geo.bwp * 0.6 - 30 - w : mx + geo.bwp * 0.6 + 30, 12, W - w - 12) : W * 0.07
-    const y = wide ? clamp(mast[1] - 30, H * 0.06, H * 0.6) : H * 0.015
-    Object.assign(slip.style, { left: `${f1(x)}px`, top: `${f1(y)}px`, width: `${f1(w)}px` })
-    if (measure) slipH = slip.offsetHeight // one read, after the writes, on a tap
-    const end: Pt = wide ? [left ? x + w - 22 : x + 22, y + 6] : [clamp(mast[0], x + 24, x + w - 24), y + slipH - 6]
-    const sag = Math.abs(end[0] - mast[0]) * 0.12 + 10
-    string.firstElementChild!.setAttribute('d', `M${P(mast)}Q${P([(mast[0] + end[0]) / 2, Math.max(mast[1], end[1]) + sag])} ${P(end)}`)
-    string.classList.add('on')
-  }
-  if (!ctx.reduced) {
-    root.addEventListener('pointermove', (e) => {
-      rect ??= root.getBoundingClientRect()
-      tx = clamp(((e.clientX - rect.left) / rect.width - 0.5) * 2, -1, 1) * 8
-      ty = clamp(((e.clientY - rect.top) / rect.height - 0.5) * 2, -1, 1) * -6
-      if (e.pointerType === 'mouse') wake()
-      if (!pending) (pending = true), requestAnimationFrame(lean)
-    })
-    root.addEventListener('pointerleave', () => ((tx = ty = 0), lean()))
-  }
+  if (!ctx.reduced) root.addEventListener('pointermove', (e) => e.pointerType === 'mouse' && wake())
 
   // ── high only: lanterns walking the bridges into the keep, ≤ 120 dots, asleep after 10 s without input
   const r0 = rng(2840)
   const walk = Array.from({ length: 110 }, () => ({ a: r0() * Math.PI * 2, t: r0(), v: 0.08 + r0() * 0.08 }))
-  const walkers: number[] = [] // boats that docked: three lights cross each plank
   let awake = 0
   const dctx = dots?.getContext('2d') ?? null
   let lampC = '#f4c67a', dz = 1
-  const loop = dots && dctx ? createLoop(root, (t, dt) => {
+  const loop = dots && dctx ? createLoop(root, (_t, dt) => {
     const S = dots.width
     dctx.clearRect(0, 0, S, S)
     dctx.fillStyle = lampC
     const c = S / 2, R0 = (S / 2) * ((ISLE + WALL) / BANK), R1 = (S / 2) * (MOAT / BANK)
     for (const w of walk) {
       w.t += w.v * dt
-      if (w.t > 1) (w.t -= 1), (w.a = r0() * Math.PI * 2)
+      // only on the bridges: each light walks one of them
+      if (w.t > 1) (w.t -= 1), (w.a = ((Math.floor(r0() * N_BRIDGE) + 0.5) / N_BRIDGE) * Math.PI * 2)
       const rr = R1 + (R0 - R1) * w.t
       dctx.globalAlpha = Math.sin(w.t * Math.PI) * 0.9
       dctx.fillRect(c + Math.cos(w.a) * rr - dz, c + Math.sin(w.a) * rr - dz, dz * 2, dz * 2)
     }
     dctx.globalAlpha = 1
-    for (const i of walkers) for (let k = 0; k < 3; k++) {
-      const u = (t * 0.22 + k / 3) % 1
-      const a = rad(ANG[i])
-      const rr = R1 * 1.0 + (R0 - R1) * u
-      dctx.fillRect(c + Math.cos(a) * rr - dz * 1.2, c + Math.sin(a) * rr - dz * 1.2, dz * 2.4, dz * 2.4)
-    }
     return performance.now() < awake
   }) : null
   ctx.onCleanup(() => loop?.dispose())
@@ -289,6 +401,7 @@ export function moatScene(ctx: SceneCtx) {
     awake = performance.now() + 10000
     loop.start()
   }
+  walk.forEach((w) => (w.a = ((Math.floor(r0() * N_BRIDGE) + 0.5) / N_BRIDGE) * Math.PI * 2))
 
   // ── bake the mandala (once per size, in slices) and the in-plane SVG
   let job: { cancel(): void } | null = null
@@ -470,19 +583,37 @@ export function moatScene(ctx: SceneCtx) {
     disk(R * MOAT, dark ? T.water : T.water)
     disk(R * MOAT, T.wash, dark ? 0.45 : 0.5)
     ripple(R * ISLE, R * MOAT, 90, dark ? T.mist : T.paper, dark ? 0.2 : 0.3)
-    // six hundred bamboo bridges from the bank to the island's shore
+    // the bamboo bridges from the bank to the island's shore, few enough to count: a deck and two rails, each one's shadow
     for (let i = 0; i < N_BRIDGE; i++) {
-      const ang = (i / N_BRIDGE) * Math.PI * 2 + (r() - 0.5) * 0.004
-      const x0 = c + Math.cos(ang) * R * (MOAT + 0.006), y0 = c + Math.sin(ang) * R * (MOAT + 0.006)
-      const x1 = c + Math.cos(ang) * R * (ISLE + WALL - 0.004), y1 = c + Math.sin(ang) * R * (ISLE + WALL - 0.004)
-      c2.strokeStyle = dark ? T.stepMid : T.rockHi
-      c2.globalAlpha = dark ? 0.55 : 0.7
-      c2.lineWidth = 0.9 + r() * 0.5
+      const ang = ((i + 0.5) / N_BRIDGE) * Math.PI * 2
+      if (ANG.some((a) => Math.abs(((ang * 180) / Math.PI - a + 540) % 360 - 180) < 9)) continue // not across a canal
+      const ux = Math.cos(ang), uy = Math.sin(ang), nx = -uy, ny = ux
+      const at = (k: number, o: number): [number, number] => [c + ux * R * k + nx * o, c + uy * R * k + ny * o]
+      const k0 = MOAT + 0.006, k1 = ISLE + WALL - 0.004, hw = R * 0.01
+      c2.lineCap = 'round'
+      c2.strokeStyle = T.umbra
+      c2.globalAlpha = 0.3
+      c2.lineWidth = hw * 2.2
       c2.beginPath()
-      c2.moveTo(x0, y0)
-      c2.lineTo(x1, y1)
+      c2.moveTo(...at(k0, hw * 1.2))
+      c2.lineTo(...at(k1, hw * 1.2))
       c2.stroke()
-      if (i % 100 === 99) yield
+      c2.globalAlpha = 1
+      c2.strokeStyle = dark ? T.stepMid : T.rockHi
+      c2.lineWidth = hw * 1.8
+      c2.beginPath()
+      c2.moveTo(...at(k0, 0))
+      c2.lineTo(...at(k1, 0))
+      c2.stroke()
+      c2.strokeStyle = T.wash
+      c2.globalAlpha = 0.7
+      c2.lineWidth = Math.max(0.8, hw * 0.3)
+      for (const sd of [-1, 1]) {
+        c2.beginPath()
+        c2.moveTo(...at(k0, sd * hw))
+        c2.lineTo(...at(k1, sd * hw))
+        c2.stroke()
+      }
     }
     c2.globalAlpha = 1
     // the island: its retaining wall (the moat's inner wall, in courses, moonlit on its far top), moss, gravel courtyard
@@ -553,34 +684,11 @@ export function moatScene(ctx: SceneCtx) {
     c2.globalCompositeOperation = 'source-over'
   }
 
-  /** the in-plane SVG: the lit bridge ring (shown when all three have docked), planks, threads, the CUDA words on the water */
+  /** the in-plane SVG: the keep's name cut into its plinth */
   function drawRing(Dp: number) {
     const R = Dp / 2, c = R
     ring.setAttribute('viewBox', `0 0 ${f1(Dp)} ${f1(Dp)}`)
-    let spokes = ''
-    for (let i = 0; i < 120; i++) {
-      const a = (i / 120) * Math.PI * 2
-      spokes += `M${f1(c + Math.cos(a) * R * MOAT)} ${f1(c + Math.sin(a) * R * MOAT)}L${f1(c + Math.cos(a) * R * (ISLE + WALL))} ${f1(c + Math.sin(a) * R * (ISLE + WALL))}`
-    }
-    const arcR = R * (ISLE + WALL * 0.42) // on the face of the moat's inner wall
-    const planks = ANG.map((a, i) => {
-      const p0: Pt = [c + Math.cos(rad(a)) * R * (MOAT + 0.02), c + Math.sin(rad(a)) * R * (MOAT + 0.02)]
-      const p1: Pt = [c + Math.cos(rad(a)) * R * (ISLE + WALL + 0.004), c + Math.sin(rad(a)) * R * (ISLE + WALL + 0.004)]
-      return s('path', { class: `t28m-plank t28m-plank-${i}`, d: stroke([p0, p1], R * 0.016, 0.05, 0.05, 0.6) })
-    })
-    const threads = ANG.map((a) => {
-      const p0 = boatAt(ANG.indexOf(a), MOAT + 0.05)
-      return s('path', { class: 't28m-thread', d: `M${P(p0)}Q${P([(p0[0] + c) / 2, (p0[1] + c) / 2 - R * 0.06])} ${P([c, c])}`, pathLength: 1 })
-    })
     ring.replaceChildren(
-      // the words run round the near three fifths of the moat, upright as you read them
-      s('defs', null, s('path', { id: `${id}-arc`, d: `M${P([c + Math.cos(rad(198)) * arcR, c + Math.sin(rad(198)) * arcR])}A${f1(arcR)} ${f1(arcR)} 0 1 0 ${P([c + Math.cos(rad(342)) * arcR, c + Math.sin(rad(342)) * arcR])}` })),
-      s('path', { class: 't28m-sun', d: spokes }),
-      s('circle', { class: 't28m-sunring', cx: f1(c), cy: f1(c), r: f1(R * MOAT) }),
-      ...planks,
-      ...threads,
-      s('text', { class: 't28m-cuda', 'font-size': f1(clamp(R * 0.026, 9.5, 15)) }, s('textPath', { href: `#${id}-arc`, startOffset: '50%', 'text-anchor': 'middle' }, G.moatLabel)),
-      // the keep's name, cut into the near half of its plinth
       s('text', { class: 't28m-carve', x: f1(c), y: f1(c + R * ISLE * 0.56), 'text-anchor': 'middle', 'font-size': f1(clamp(R * 0.034, 11, 18)) }, G.castle))
   }
 
@@ -592,7 +700,7 @@ export function moatScene(ctx: SceneCtx) {
     const wide = W / H > 1.15
     const Dp = Math.round(Math.min(1100, wide ? Math.max(W, H) : W * 1.45))
     D = Dp
-    const cx = W * 0.5, cy = wide ? H * 0.44 : H * 0.56
+    const cx = W * 0.5, cy = wide ? H * 0.44 : H * 0.5
     const bwp = wide ? clamp(Dp * 0.13, 84, 128) : 72
     geo = { W, H, cx, cy, wide, persp: Math.max(W, H) * 1.6, bwp, bh: (bwp * 62) / 84 }
     Object.assign(fleet.style, { left: `${f1(cx - Dp / 2)}px`, top: `${f1(cy - Dp / 2)}px`, width: `${Dp}px`, height: `${Dp}px`, perspective: `${f1(geo.persp)}px` })
@@ -600,17 +708,15 @@ export function moatScene(ctx: SceneCtx) {
     ANG = ANGS[wide ? 0 : 1]
     VIEW = VIEWS[wide ? 0 : 1]
     root.style.setProperty('--t28m-view', `${VIEW}deg`)
+    disc.style.transform = `rotateX(${f1(VIEW)}deg)`
     // the keep stands up out of the disc's plane on its stone plinth (baked into the disc), well inside the island; the boats too
-    const bw = Dp * ISLE * 0.62
+    const bw = Dp * ISLE * 0.7
     keep.replaceChildren(s('svg', { viewBox: `${f1(-bw * 0.9)} ${f1(-bw * 1.05)} ${f1(bw * 1.8)} ${f1(bw * 1.12)}`, style: `width:${f1(bw * 1.8)}px;height:${f1(bw * 1.12)}px` },
       pine(-bw * 0.66, -bw * 0.02, bw * 0.46, 2826, -1), ...castle(bw, 2827), pine(bw * 0.64, 0, bw * 0.4, 2828, 1)))
     Object.assign(keep.style, { left: `${f1(Dp / 2 - bw * 0.9)}px`, top: `${f1(Dp / 2 - bw * 1.05)}px`, width: `${f1(bw * 1.8)}px`, height: `${f1(bw * 1.12)}px` })
     boats.forEach((b, i) => {
       const [x, y] = boatAt(i, BOAT_K())
-      const [nx, ny] = boatAt(i, MOAT + 0.07)
       Object.assign(b.style, { left: `${f1(x - bwp / 2)}px`, top: `${f1(y - bwp * 0.7)}px`, width: `${f1(bwp)}px` })
-      b.style.setProperty('--dx', `${f1(nx - x)}px`)
-      b.style.setProperty('--dy', `${f1(ny - y)}px`)
     })
     if (dots) {
       const S = Math.round(Dp * BANK) // the dots canvas covers the moat and the bank only
@@ -618,11 +724,32 @@ export function moatScene(ctx: SceneCtx) {
       dz = Math.max(1, S / 300)
       Object.assign(dots.style, { left: `${f1(Dp / 2 - S / 2)}px`, top: `${f1(Dp / 2 - S / 2)}px`, width: `${S}px`, height: `${S}px` })
     }
-    string.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
+    // the house on the village bank beside the canal of the boat it should reach; its bridges fan out to the castle wall
+    const R = Dp / 2, ha = ANG[TARGET] + (wide ? 17 : 38)
+    const onDisc = (a: number, k: number): Pt => project(R + Math.cos(rad(a)) * R * k, R + Math.sin(rad(a)) * R * k, 0)
+    // (a phone: the house farther out on the bank and the bridges fanned wider, so each one can be touched)
+    home = onDisc(ha, wide ? MOAT + 0.06 : BANK - 0.02)
+    anchors = [-2, -1, 0, 1, 2].map((d) => onDisc(ha + d * (wide ? 24 : 36), ISLE + WALL))
+    placeCuts(project(R, R, 0))
+    hw = clamp(Dp * 0.06, 50, 66)
+    house.style.width = `${f1(hw)}px`
+    boatPts = boats.map((_, i) => boatPt(i, geo.bh * 0.3))
+    cuts.forEach((b, k) => {
+      const [x, y] = cutAt(k)
+      b.style.transform = `translate(${f1(x)}px, ${f1(y)}px)`
+    })
+    if (docked >= 0) off = [boatPts[docked][0] - home[0], boatPts[docked][1] - home[1]]
+    drawBridges()
+    const [bx, by] = boatPts[TARGET]
+    const mid: Pt = [(home[0] + bx) / 2, Math.min(home[1], by) - 30]
+    arrow.setAttribute('d', `M${P([home[0] + hw * 0.4, home[1] - hw * 0.3])}Q${P(mid)} ${P([bx - bwp * 0.25, by - 10])}`)
+    const [kx, ky] = project(R, R + R * (MOAT + 0.02), 0)
+    Object.assign(cuda.style, { left: `${f1(kx)}px`, top: `${f1(ky)}px` })
+    rig.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     tagW = tags.map((t) => t.offsetWidth) // one read, after this layout's writes
-    lean()
-    if (picked >= 0) placeSlip(true)
+    placeTags()
     drawRing(Dp)
+    g.refresh()
     const key = `${Dp}|${document.documentElement.dataset.theme}|${wide}`
     if (key === baked) return
     const first = !baked

@@ -1,5 +1,5 @@
 import './circle.css'
-import { h, s } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onSize, rng, rock, stroke, type Pt } from '../../ui/part2/ink'
@@ -396,6 +396,7 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
 
 let current: { hear(k: number): void; all(): void } | null = null
 let currentCtx: SceneCtx | null = null
+const heard = new Set<number>()
 
 const def = perspectiveCircle(S.perspectives as Perspectives, {
   label: S.label,
@@ -409,12 +410,17 @@ const def = perspectiveCircle(S.perspectives as Perspectives, {
     }
   },
   place: () => ({ x: 0, y: 0, s: 1, z: 1 }),
-  // four stones of different character, the same real size; a moss dot hides in each for the end
-  stone: (k) => s('g', null,
+  // four stones of different character, the same real size; a moss dot hides in each for the end. Each carries its
+  // stance in two or three words, readable from across the pond (audit v3 25-4)
+  stone: (k, _g, i) => s('g', null,
     s('path', { class: 't25o-mossdot', d: blob(0, -4, 30, 12, 2650 + k, 0.3, 12) }),
-    s('g', { class: 't25o-stone' }, ...stone3([96, 70, 88, 80][k % 4], [52, 76, 44, 64][k % 4], 2660 + k * 7))),
+    s('g', { class: 't25o-stone' }, ...stone3([96, 70, 88, 80][k % 4], [52, 76, 44, 64][k % 4], 2660 + k * 7)),
+    s('text', { class: 't25o-stance', x: 0, y: f1(-[52, 76, 44, 64][k % 4] * 0.42), 'text-anchor': 'middle' }, S.stances[i] ?? '')),
   onHear: (k) => {
     current?.hear(k)
+    heard.add(k)
+    const left = S.perspectives.stones.length - heard.size
+    if (left > 0) currentCtx?.prompt(fill(S.promptNext, { n: left })) // H5: the next step, said in place
     queueMicrotask(() => {
       if (currentCtx?.art.querySelector('.p2c.is-all')) current?.all()
     })
@@ -425,6 +431,7 @@ export const circleScene: SceneDef = {
   label: def.label,
   mount(ctx) {
     currentCtx = ctx
+    heard.clear()
     return def.mount(ctx)
   },
 }

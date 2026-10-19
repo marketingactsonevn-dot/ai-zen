@@ -1,34 +1,34 @@
 {
   "id": 34,
-  "kicker": "A workshop holds a hundred chisels — a good carver knows which one each cut needs.",
-  "summary": "Pick the right chisel for the right cut — and always know how much water is left in the jar.",
+  "kicker": "The market has many stalls and the jar holds only so much water — pick the stall for the job, and don't let the jar run dry halfway.",
+  "summary": "Choose the platform for the job, draft cheap before spending credits, and label AI and get permission before you post.",
   "takeaways": [
     "t34-brief",
     "t34-publish-check"
   ],
   "quiz": {
-    "q": "You are making 20 review videos where a virtual model holds the product. Before posting, which step must you not skip?",
+    "q": "You make 20 review videos with a virtual model holding the product. Before posting, what must you not skip?",
     "options": [
-      "Switch to the most expensive platform, just in case",
-      "Label it as AI and check image and music rights",
-      "Upscale every draft to 4K",
-      "Post fast to catch the trend"
+      "Just add an AI label, the rest is fine",
+      "The model is virtual, so nobody's permission is needed",
+      "AI label, image rights and a music licence",
+      "Upscale all 20 versions to 4K to look professional"
     ],
-    "answer": 1,
-    "explain": "Vietnam's AI Law requires a clearly recognisable label when AI imitates a real person; using a real person's image needs their consent."
+    "answer": 2,
+    "explain": "An AI label is required when AI imitates a person; but real people's images and the music still need their own licences."
   },
   "scenes": {
     "market": {
       "label": "Night market under the moon",
       "art": "Ink painting seen from a small boat in the middle of a night lake: a lamp on the bow, and out on the water three market stalls on stilts at three distances. The nearest, the all-in-one stall, hangs a cluster of seven paper lanterns in many ink tones, its reflection a seven-coloured band; the two specialist stalls each hang one large lantern, reflected as a single amber streak. Each stall's name and trade is written on its cloth curtain. Four floating lanterns drift beside the boat, each carrying a task.",
-      "prompt": "Drop each task at a stall",
+      "prompt": "Drag each lantern to the stall that does that job well",
       "group": "The market stalls",
       "taskGroup": "Tasks to do",
       "stalls": [
         {
           "id": "hub",
           "name": "Many-model stall",
-          "what": "Image and video models from many companies in one place; switch models without switching tools.",
+          "what": "One place with many AI ‘engines’ (models) for images and video, from many companies.",
           "example": "Example: Higgsfield",
           "source": "t34-higgsfield"
         },
@@ -50,50 +50,65 @@
       "tasks": [
         {
           "id": "photo4k",
-          "text": "4K product photo",
-          "short": "4K photo",
-          "fits": [
-            "image",
+          "text": "Upscale a finished photo to 4K",
+          "short": "Photo to 4K",
+          "best": "image",
+          "also": [
             "hub"
           ],
-          "why": "Upscaling is the image stall's main job; the many-model stall has image tools too."
+          "why": "Upscaling is the image stall's main job.",
+          "no": {
+            "sales": "Doesn't fit: the sales-video stall makes videos from products, it doesn't upscale photos."
+          }
         },
         {
           "id": "review",
-          "text": "Review video with a virtual model",
+          "text": "Review video with a virtual presenter",
           "short": "Review video",
-          "fits": [
-            "sales",
+          "best": "sales",
+          "also": [
             "hub"
           ],
-          "why": "Both offer a virtual presenter standing next to the product. Remember the AI label."
+          "why": "A virtual presenter next to the product is this stall's main job. Remember the AI label.",
+          "no": {
+            "image": "Doesn't fit: the image stall has no virtual presenter to stand next to the product."
+          }
         },
         {
           "id": "film",
-          "text": "Short film with camera moves",
-          "short": "Short film",
-          "fits": [
-            "hub"
-          ],
-          "why": "You need to steer the camera shot by shot and try several video models."
+          "text": "Short film, a new camera angle each shot",
+          "short": "Film, camera angles",
+          "best": "hub",
+          "also": [],
+          "why": "A film of many shots needs several video models and a camera you can steer shot by shot.",
+          "no": {
+            "sales": "Doesn't fit: the sales-video stall won't let you set the camera angle shot by shot.",
+            "image": "Doesn't fit: the image stall makes video, but won't let you set the camera angle shot by shot."
+          }
         },
         {
           "id": "link",
-          "text": "Shop link into an ad",
-          "short": "Shop link",
-          "fits": [
-            "sales",
+          "text": "50 sales videos from a shop link",
+          "short": "50 videos from a link",
+          "best": "sales",
+          "also": [
             "hub"
           ],
-          "why": "Both stalls advertise going from a product link to a video."
+          "why": "Going from a product link to a batch of ad videos is this stall's main job.",
+          "no": {
+            "image": "Doesn't fit: the image stall doesn't go from a shop link to ad videos."
+          }
         }
       ],
       "dropAria": "Drop “{task}” at {stall}",
       "lanternAria": "Floating lantern: {task}",
       "keys": "Pick a floating lantern, choose a stall with the left and right arrows, press Enter to float it there. Or drag the lantern across the water.",
-      "right": "Fits this stall.",
-      "also": "Also fits: {stalls}",
-      "wrong": "This stall doesn't specialise in that — try another.",
+      "right": "This stall specialises in this.",
+      "dim": "The many-model stall can do it too, but doesn't specialise in it.",
+      "wrong": "This stall doesn't do that — drag it to another",
+      "dimTry": "One stall does it better — drag it there",
+      "left": "{n} lanterns left — drag each to the stall that does it well",
+      "count": "{n}/{total} lanterns floated",
       "officialLabel": "Official site",
       "volatile": "Prices and features change often — check the official site.",
       "facts": [
@@ -126,22 +141,21 @@
         }
       ],
       "insight": {
-        "text": "There is no “best” stall: choose by task. One task often fits several stalls; they differ in models, workflow and price.",
+        "text": "There is no best stall: a specialist does one job very well, the many-model stall does many jobs. Choose by the job you need.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Feature descriptions here are the companies' own claims (◇), not independently measured. Try a free tier or a small plan with your real task before paying more."
+      "detail": "The features here are the companies' own claims (◇). Try a free plan with your real job before you pay."
     },
     "path": {
-      "label": "The path of one asset",
+      "label": "The path of one AI image or video",
       "art": "Ink painting from high behind the workshop gate: raked sand winding round two mossy rocks, eight shallow hollows making an S-shaped path that recedes toward the lake, where a stone lantern waits to be lit. Eight stepping stones lie on the near sand; set in the right order, the path lights up, and at the end the lantern is lit and its reflection appears on the lake.",
-      "prompt": "Set the stones in order",
-      "pathAria": "An eight-step stone path for making an AI asset",
+      "prompt": "Tap the stones in the order you'd do them",
+      "pathAria": "An eight-step stone path for making one AI image or video",
       "stoneAria": "Stone: {label}",
       "slotAria": "Empty spot {n} on the path",
       "keys": "Tap in turn, or use number keys 1 to 8.",
-      "wrongHint": "Not quite — {why}",
       "done": "The path is lit. Open your take-away card.",
       "steps": {
         "steps": [
@@ -162,13 +176,13 @@
           },
           {
             "label": "Pick one",
-            "detail": "Put them side by side and judge against the brief, not a passing mood.",
+            "detail": "Put the versions side by side and pick against the brief, not on a passing whim.",
             "why": "Going back to the brief keeps you on target."
           },
           {
             "label": "Upscale & fix",
             "detail": "Upscale the chosen one; fix weak spots like hands, text, logos.",
-            "why": "Upscale only the final one so you don't burn credits on rejects."
+            "why": "Upscale only the final one so you don't spend credits on a version you'll drop."
           },
           {
             "label": "Edit",
@@ -186,22 +200,21 @@
             "why": "With a recipe, next time is faster and consistent."
           }
         ],
-        "takeaway": "t34-publish-check"
+        "takeaway": "t34-brief"
       },
       "insight": {
-        "text": "A good AI asset passes many stations: cheap drafts, careful picking, then upscaling — and a rights check before posting.",
+        "text": "Draft cheap first, decide by the brief, upscale only the final one, check rights before posting — change the order and you lose credits or the post.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "This order is AI Zen's suggestion, not a standard. The editors named are only examples; use whatever tool you know."
+      "detail": "This is the order AI Zen suggests, not a standard. Use whichever editing software you know."
     },
     "credit": {
       "label": "Credits are water in a jar",
       "art": "A still life in the night workshop: a crackle-glazed moon jar on a plank bench, a quarter of its body cut away like a museum piece to show the water column and the carved marks inside. A moonbeam from the paper window pours into the jar's mouth. In front: a bamboo rack with a small dipper and a big ladle, a narrow and a wide neck collar, two hourglasses, a tea bowl; wooden tags hang under the bench for choosing. Each time you generate, the ladle takes water out and pours it into the bowl; the level drops.",
-      "prompt": "Take one ladle",
+      "prompt": "Drag the small ladle into the jar's mouth to make one generation",
       "jarAria": "Credit jar, {n} of 100 parts left",
-      "look": "Look down the jar's neck",
       "modelLabel": "Model",
       "models": [
         "Light model",
@@ -219,9 +232,17 @@
       ],
       "generate": "Generate",
       "refill": "Refill",
-      "cost": "This one cost {n} parts",
+      "cost": "This one cost {n} parts (the whole jar is 100).",
       "costShort": "{n} parts",
-      "empty": "The jar is dry. Out of credits, you wait for the next cycle or buy more.",
+      "tryHeavy": "Try the big ladle, the 1080p collar, 10 seconds.",
+      "tryLight": "Try the small ladle, the 720p collar, 5 seconds.",
+      "short": "Not enough water for this one: {left} parts left, it needs {n}.",
+      "empty": "The jar is dry. Wait for the next cycle's refill, or buy more.",
+      "marks": [
+        "100",
+        "50",
+        "0"
+      ],
       "scale": {
         "text": "The water parts only illustrate proportions; they are not any platform's real prices.",
         "asOf": "2026-10-15",
@@ -244,42 +265,39 @@
       ],
       "tips": [
         "Draft at low resolution; upscale only the final pick.",
-        "Lock the seed once the layout works; change one detail at a time.",
-        "Write a clear prompt before pressing — don't “just try”.",
         "Check the price on the generate button before confirming."
       ],
       "tipsLabel": "Ways to save water",
       "insight": {
-        "text": "Credits (platform currency) are like water in a jar: heavier models, higher resolution and longer videos take bigger ladles.",
+        "text": "The same video: the heavy, sharp, long version costs 33 parts; the light one costs 5. Draft light, and make the heavy version only once you've decided.",
         "asOf": "2026-10-15",
-        "source": "t34-hf-credits",
-        "kind": "fact"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "Every platform charges differently, and price lists change often. Read the official pricing page, and check whether credits roll over, before picking a plan.",
-      "takeaway": "t34-brief"
+      "detail": "Credits are points you pay for in advance to use a platform; each generation takes a few. The numbers here only illustrate proportions. Check the official pricing page, and whether credits roll over to the next cycle."
     },
     "real": {
       "label": "Real and fake",
       "art": "Ink painting from the bank of a night lake, looking across: an arched bridge spans the water, and bridge and reflection close into one circle. On top of the bridge stands a model in a vermilion scarf, the moon behind her in the mist. Her reflection in the water is a polygon avatar drawn in thin straight lines. Four stones on the bank, each with a small lamp waiting to be lit.",
-      "prompt": "Touch each stone",
+      "prompt": "Swipe your finger across the reflection in the lake",
       "group": "Four views on virtual models",
       "stoneAria": "View: {who}",
       "waterAria": "The pond: swipe a finger or press Space to ripple it",
       "perspectives": {
         "stones": [
           {
-            "who": "Brand (the poster)",
+            "who": "The poster (the brand)",
             "view": {
-              "text": "Vietnam's AI Law, from 1 March 2026: AI images, video or voices imitating real people must carry a clearly recognisable label.",
+              "text": "Under the AI Law (in force from 1 March 2026), a video with a person imitated by AI must carry an easy-to-see label.",
               "asOf": "2026-10-15",
               "source": "t34-vn-ai-law",
               "kind": "fact"
             }
           },
           {
-            "who": "Consumer",
+            "who": "A viewer",
             "view": {
-              "text": "I don't need to know which tool you used — but I need to know whether the person in the video is real.",
+              "text": "One viewer, for example: “I don't need to know what tool you used, only whether the person in the video is real.”",
               "asOf": "2026-10-15",
               "source": "editorial",
               "kind": "opinion"
@@ -288,7 +306,7 @@
           {
             "who": "Real model",
             "view": {
-              "text": "Civil Code: using someone's image requires their consent; commercial use requires paying them.",
+              "text": "To use my image you must ask me; to use it to sell, you must pay me (Civil Code, Article 32).",
               "asOf": "2026-10-15",
               "source": "t34-civil-code",
               "kind": "fact"
@@ -297,7 +315,7 @@
           {
             "who": "Social platform",
             "view": {
-              "text": "YouTube asks creators to disclose realistic AI content, such as making a real person say something they didn't.",
+              "text": "YouTube requires posters to disclose when AI content looks real.",
               "asOf": "2026-10-15",
               "source": "t34-youtube",
               "kind": "fact"
@@ -305,13 +323,17 @@
           }
         ],
         "common": {
-          "text": "All agree viewers have a right to know. They differ on where the label goes, how big it is, and who is responsible.",
+          "text": "All four sides ask for one thing: viewers must know who is real. Label it and get permission before you post.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
-      "detail": "The law also requires a clear notice when AI content could mislead about real events or people; artworks are labelled in a way that doesn't spoil enjoyment. This is not legal advice."
+      "detail": "The law also requires a clear notice when AI content could mislead about real events or people; artworks are labelled in a way that doesn't spoil enjoyment. This is not legal advice.",
+      "listen": "Tap each stone lantern to hear four sides",
+      "left": "{n} sides left",
+      "decode": "The person on the bridge is real; the reflection in the water is a virtual model made by AI.",
+      "takeaway": "t34-publish-check"
     }
   },
   "sources": {

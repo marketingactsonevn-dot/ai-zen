@@ -1,9 +1,11 @@
 import './real.css'
-import { h, s } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { perspectiveCircle, type CircleApi } from '../../ui/part2/perspectives'
+import { guide } from '../../ui/part2/guide'
+import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
 import type { Perspectives } from '../../ui/part2/types'
 import type { SceneDef } from '../types'
 import { C } from './content'
@@ -21,6 +23,8 @@ const K = C.scenes.real
  * changes. Four shore stones each carry a small stone lantern; heard, it lights, throws a warm pool and a streak on the
  * water, and what it says is written in ink on the water beside it, with its faint reflection. When all four are heard
  * the water stills and a vermilion seal floats down onto the reflection. Reeds and lotus leaves frame the near water.
+ * Step 1 is the swipe (an ink arrow over the reflection says so); the first ripple writes what the reflection is under
+ * it. Step 2 is the four stones; then the checklist card lies folded on the near water.
  * perspectiveCircle keeps the stones, keys, aria and reading text; this file paints the lake and moves the words.
  */
 
@@ -152,6 +156,7 @@ export function realScene(): SceneDef {
   let place: ((k: number) => Geo['stones'][number]) | null = null
   return {
     label: K.label,
+    text: 'tr', // the sky over the far hills: the near lanterns cover the foot
     mount(ctx) {
       const still = ctx.reduced || ctx.quality === 'low'
       let T: Tok = watchTok(ctx, (t) => {
@@ -164,6 +169,8 @@ export function realScene(): SceneDef {
       const water = h('div', { class: 't34r-water', tabindex: '0', role: 'button', 'aria-label': K.waterAria })
       const seal = h('div', { class: 't34r-seal', 'aria-hidden': 'true' })
       const mirror = h('div', { class: 't34r-mirror' })
+      const decode = h('p', { class: 't34r-decode' }, K.decode)
+      let GD: ReturnType<typeof guide> | null = null
       const heard = new Set<number>()
       let all = false
       let G: Geo | null = null
@@ -186,12 +193,18 @@ export function realScene(): SceneDef {
           // the stage takes the whole art: the bridge, the ring and the stones are laid out over it, words on the water
           Object.assign(stageEl!.style, { left: '0px', top: '0px', width: `${G.w}px`, height: `${G.h}px` })
           placeCard(-1)
+          // the line that decodes the reflection, written on the water just under it
+          Object.assign(decode.style, { left: `${G.refl[0].toFixed(1)}px`, top: `${(G.refl[1] + G.figH * 1.02).toFixed(1)}px`, width: `${Math.min(G.w * 0.8, 360).toFixed(0)}px` })
           paint()
+          GD?.refresh()
         })
+        host.append(decode)
         return () => loop.dispose()
       }
       hear = (k) => {
         heard.add(k)
+        if (heard.size < 4) ctx.prompt(fill(K.left, { n: 4 - heard.size }))
+        else slip.hidden = false
         placeCard(k)
         const body = ctx.art.querySelector<HTMLElement>('.p2c-body-text')
         if (body) mirrorOf(body, mirror)
@@ -204,6 +217,13 @@ export function realScene(): SceneDef {
       }
       circle.mount(ctx)
       ctx.art.prepend(backWrap)
+      // guide: the swipe is the gesture nobody guesses — a faint ink arrow over the reflection until the first ripple
+      GD = guide(ctx)
+      const swipe = GD.gesture('swipe', () => (G ? [G.refl[0], G.refl[1] + G.figH * 0.4] : [0, 0]), { r: 46 })
+      let swiped = false
+      const kit = findTakeaway(K.takeaway)
+      const slip = h('div', { class: 't34r-slip', hidden: true }, kit ? foldedTakeaway([kit], ctx.onCleanup) : null)
+      ctx.art.append(slip)
       const p2c = ctx.art.querySelector<HTMLElement>('.p2c')!
       p2c.classList.add('t34r')
       const card = p2c.querySelector<HTMLElement>('.p2c-card')!
@@ -254,6 +274,13 @@ export function realScene(): SceneDef {
       ctx.onCleanup(() => loop.dispose())
       const ripple = (x: number, y: number) => {
         if (!G) return
+        if (!swiped) {
+          // the first ripple: say what the reflection is, then on to the stones
+          swiped = true
+          swipe.done()
+          decode.classList.add('on')
+          if (heard.size < 4) ctx.prompt(heard.size ? fill(K.left, { n: 4 - heard.size }) : K.listen)
+        }
         if (still) {
           ripples.length = 0
           ripples.push({ x, y, t: 0.5 })

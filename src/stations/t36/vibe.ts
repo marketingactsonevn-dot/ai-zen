@@ -1,10 +1,11 @@
 import './vibe.css'
-import { h, s } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
 import { cssVar, onPrefs } from '../../core/prefs'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, rng, rock, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, reeds } from '../../ui/part2/paint'
 import { perspectiveCircle } from '../../ui/part2/perspectives'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { Perspectives } from '../../ui/part2/types'
 import type { SceneCtx } from '../types'
 import { C } from './content'
@@ -98,6 +99,8 @@ export function vibeScene(ctx: SceneCtx) {
   let job = 0
   const comp = perspectiveCircle(data, {
     label: K.label, prompt: K.prompt, detail: K.detail,
+    // the term defined before the first voice, not by whichever stone happens to say it
+    question: K.question,
     stage: (host, api) => {
       host.classList.add('t36v-stage')
       host.append(deep, surf, koiRot, front)
@@ -112,6 +115,12 @@ export function vibeScene(ctx: SceneCtx) {
       host.addEventListener('pointermove', (e) => {
         if (!drag || e.pointerId !== drag.id) return
         setFocus(clamp(drag.f + (e.clientY - drag.y) / Math.max(120, size.H * 0.6), 0, 1), true)
+        if (focusMark && Math.abs(e.clientY - drag.y) > 20) {
+          // the focus found by hand: the arrow goes, the prompt counts the voices left
+          focusMark.done()
+          focusMark = null
+          if (heard < 5) ctx.prompt(fill(K.left, { n: 5 - heard }))
+        }
       })
       const up = (e: PointerEvent) => {
         if (drag && e.pointerId === drag.id) drag = null
@@ -140,6 +149,8 @@ export function vibeScene(ctx: SceneCtx) {
   root.classList.add('t36v')
   if (calm) root.classList.add('calm')
   setFocus(focus, false)
+  let heard = 0
+  let focusMark: Mark | null = null
 
   // ── living motion (the koi's round, caustics, flames) rests after 10 s without input
   let idleT = 0
@@ -160,6 +171,12 @@ export function vibeScene(ctx: SceneCtx) {
   /** a voice heard: its candle lit, the focus moved; its words come up on the water beside that candle */
   function hear(k: number, i: number) {
     wake()
+    heard++
+    if (heard === 1) {
+      // after the first voice: the hidden gesture (drag the water up or down to look at the code below), shown and said
+      focusMark = guide(ctx).gesture('drag-v', () => [size.W * (size.wide ? 0.86 : 0.88), size.H * 0.4], { r: 40 })
+      ctx.prompt(K.focusPrompt)
+    } else if (heard < 5 && !focusMark) ctx.prompt(fill(K.left, { n: 5 - heard }))
     setFocus(FOCUS[i], false)
     root.dataset.voice = String(i)
     root.classList.add(`v${i}`)

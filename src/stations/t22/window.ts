@@ -2,7 +2,8 @@ import { h, s } from '../../core/dom'
 import { sliced } from '../../core/chunk'
 import type { SceneDef } from '../types'
 import { progressTide, type TideGeo } from '../../ui/part2/tide'
-import { rng, stroke, type Pt } from '../../ui/part2/ink'
+import { clamp, onSize, rng, stroke, type Pt } from '../../ui/part2/ink'
+import { guide, type Mark, type Track } from '../../ui/part2/guide'
 import { hills, mist, pine } from '../../ui/part2/paint'
 import { C } from './data'
 import { f1 } from './kit'
@@ -36,8 +37,9 @@ function carried(i: number, u: number, seed: number): SVGElement[] {
     sheet(u * 0.3, 0, u * 0.24, u * 0.3, 0.12)
   } else if (i === 3) {
     let y = 0
-    for (let k = 0; k < 6; k++) {
-      const bw = u * (0.8 - k * 0.06 + r() * 0.06), bh = u * (0.13 + r() * 0.04)
+    // today: about ten novels' worth, a stack of ten
+    for (let k = 0; k < 10; k++) {
+      const bw = u * (0.8 - k * 0.035 + r() * 0.06), bh = u * (0.085 + r() * 0.03)
       book(-bw / 2 + (r() - 0.5) * u * 0.08, y, bw, bh, k + 1)
       y -= bh
     }
@@ -81,9 +83,10 @@ function stele(w: number, hh: number): SVGElement[] {
  * the transom's paper, the lattice dark across it, and it is the slider's thumb. Every milestone it passes slides one
  * panel open onto a deep garden in one-point perspective (raked sand curving to the same vanishing point as the mats),
  * where a stele rises carrying what that year's window could read: a letter, a few pages, a novel, a stack, a bookshelf,
- * and today a library of steles running to the horizon. Moonlight falls through each open panel as a long trapezoid on
- * the tatami. At "today" two ink lines run along the mats' borders (2,048 vs 1,000,000): one stops short, one runs on
- * through the open panel deep into the garden; past it, a band of mist settles over the middle steles (lost in the middle).
+ * and today a stack of about ten novels (1 million tokens), with the 10-million claim only a pale shelf in the mist.
+ * Moonlight falls through each open panel as a long trapezoid on the tatami.
+ * Beat 2 (audit v3 22-4, the main act): at today a long scroll unrolls on the mats; drag the vermilion seal ("what
+ * matters") along it — the reading lamp burns bright at both ends and dims in the middle (lost in the middle) → insight.
  */
 export const windowScene: SceneDef = {
   label: S.label,
@@ -95,7 +98,7 @@ export const windowScene: SceneDef = {
     const room = s('svg', { class: 'g8w2-room', 'aria-hidden': 'true' })
     ctx.art.append(h('p', { class: 'visually-hidden' }, S.art), room)
     let shown = 0, lastT = 0
-    const n = S.tide.milestones.length // stops 0…n-1 milestones, n = beyond today
+    const n = S.tide.milestones.length // stops 0…n-1 milestones, n = today (the tide's own last stop)
 
     /** The room's one-point perspective and today's two lines along the mat borders, shared by the garden (band px) and the room (art px). */
     function plan(g: TideGeo) {
@@ -210,27 +213,22 @@ export const windowScene: SceneDef = {
       yield
       // ── steles rising from the sand, each carrying what that year's window could read
       const rise = (k: number, kids: SVGElement[]) => s('g', { class: `g8w2-rise r${k}` }, ...kids)
-      for (let k = 0; k < n - 1; k++) {
-        rises.push(rise(k, [s('g', { transform: `translate(${f1(xs[k])} ${f1(base)})` }, ...stele(u * 0.62, u * 0.22), s('g', { class: k === 4 ? 'g8w2-claim' : '', transform: `translate(0 ${f1(-u * 0.2)})` }, ...carried(k, u * 0.72, seed + k * 13)))]))
+      for (let k = 0; k < n; k++) {
+        rises.push(rise(k, [s('g', { transform: `translate(${f1(xs[k])} ${f1(base)})` }, ...stele(u * 0.62, u * 0.22), s('g', { transform: `translate(0 ${f1(-u * 0.2)})` }, ...carried(k, u * 0.72, seed + k * 13)))]))
         if (k % 2) yield
       }
-      // today: a library of book-steles walking off to the horizon along two rows
-      const lib: SVGElement[] = []
-      const tx = xs[n - 1]
-      for (const side of [-1, 1]) {
-        for (let j = 7; j >= 0; j--) {
-          const y = base + (hz + 2 - base) * (1 - Math.pow(1 - j / 8, 1.8))
-          const x = toward(tx + side * panelW * 0.28, base, y)
-          const k = (y - hz) / (base - hz)
-          if (k < 0.04) continue
-          lib.push(s('g', { transform: `translate(${f1(x)} ${f1(y)}) scale(${f1(k)})` }, ...stele(u * 0.5, u * 0.2), s('g', { transform: `translate(0 ${f1(-u * 0.18)})` }, ...carried(3, u * 0.5, seed + 90 + j))))
-        }
-        yield
-      }
-      rises.push(rise(n - 1, lib))
+      // today: about a million tokens, a stack of ten novels on its stele (not a library: that would teach the 10-million
+      // claim); the maker's own 10-million claim stands far behind in the mist, pale, with its caveat carved under it
+      const tx = xs[n], fx0 = tx - panelW * 0.28, fy0 = hz + (base - hz) * 0.3, fk = 0.42
+      rises.push(rise(n, [
+        s('g', { class: 'g8w2-claim', transform: `translate(${f1(fx0)} ${f1(fy0)}) scale(${fk})` }, ...stele(u * 0.62, u * 0.22), s('g', { transform: `translate(0 ${f1(-u * 0.2)})` }, ...carried(4, u * 0.72, seed + 77))),
+        s('text', { class: 'g8w2-claimtxt', x: f1(fx0), y: f1(fy0 + 12), 'text-anchor': 'middle' }, S.claim),
+        s('g', { transform: `translate(${f1(tx)} ${f1(base)})` }, ...stele(u * 0.62, u * 0.22), s('g', { transform: `translate(0 ${f1(-u * 0.2)})` }, ...carried(3, u * 0.72, seed + 3 * 13))),
+      ]))
+      yield
       // the sand raked in rings round each stone, flattened by the distance
       let rings = ''
-      for (let k = 0; k < n - 1; k++) for (let q = 1; q <= 3; q++) rings += `M${P(xs[k] - u * (0.35 + q * 0.16), base + 1)}a${f1(u * (0.35 + q * 0.16))} ${f1(u * (0.08 + q * 0.035))} 0 1 0 ${f1(u * (0.7 + q * 0.32))} 0`
+      for (let k = 0; k <= n; k++) for (let q = 1; q <= 3; q++) rings += `M${P(xs[k] - u * (0.35 + q * 0.16), base + 1)}a${f1(u * (0.35 + q * 0.16))} ${f1(u * (0.08 + q * 0.035))} 0 1 0 ${f1(u * (0.7 + q * 0.32))} 0`
       sc.append(s('path', { class: 'g8w2-rake ring', d: rings }))
       // lost in the middle: mist settles over the middle steles once the moon is past today
       const mid = (xs[1] + xs[n - 2]) / 2, span = xs[n - 2] - xs[1]
@@ -407,12 +405,91 @@ export const windowScene: SceneDef = {
       panels.forEach((p, k) => p.firstElementChild?.classList.toggle('open', k <= i))
       rises.forEach((p, k) => p.classList.toggle('up', k <= i))
       beams.forEach((p, k) => p.classList.toggle('open', k <= i))
-      for (const el of [scene, room]) el?.classList.toggle('cmp', i >= n - 1)
-      scene?.classList.toggle('lost', i >= n)
+      for (const el of [scene, room]) el?.classList.toggle('cmp', i >= n)
       if (i > shown) ctx.chime(i >= n ? 'ok' : 'soft')
       shown = i
+      if (i >= n) unroll()
     }
 
+    // ── beat 2: the long scroll on the mats, and the seal dragged along it (the card steps aside for it)
+    const g = guide(ctx)
+    let moonDot: Mark | null = null, sealDot: Mark | null = null, way: Track | null = null
+    const lamp = h('i', { class: 'g8w2-lamp', 'aria-hidden': 'true' })
+    const seal = h('div', { class: 'g8w2-seal', role: 'slider', tabindex: '0', 'aria-label': S.sealAria, 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '0' }, h('span', null, S.sealLabel))
+    const scroll = h('div', { class: 'g8w2-scroll', 'aria-hidden': 'true' }, h('i', { class: 'g8w2-paperstrip' }), h('i', { class: 'g8w2-rod a' }), h('i', { class: 'g8w2-rod b' }))
+    const beat = h('div', { class: 'g8w2-beat' }, scroll, lamp, seal)
+    const decode = h('p', { class: 'g8w2-decode' }, S.decode)
+    const sc2 = { x0: 0, x1: 0, y: 0, on: false, t: 0, mid: false, end: false, done: false }
+    /** where the scroll lies: across the near mats under the card (measured on unrolling and on resize, never in a frame) */
+    function lay() {
+      const card = ctx.art.querySelector<HTMLElement>('.p2t-card')
+      if (!card || !sc2.on) return
+      const a = ctx.art.getBoundingClientRect(), b = card.getBoundingClientRect()
+      const w = Math.min(a.width - 40, Math.max(b.width, a.width * 0.6))
+      sc2.x0 = a.width / 2 - w / 2 + 28
+      sc2.x1 = a.width / 2 + w / 2 - 28
+      // under today's card (it carries today's figure), on the near mats
+      sc2.y = clamp(b.bottom - a.top + 46, 60, a.height - 44)
+      Object.assign(scroll.style, { left: `${f1(sc2.x0 - 28)}px`, top: `${f1(sc2.y - 24)}px`, width: `${f1(sc2.x1 - sc2.x0 + 56)}px` })
+      seat(sc2.t)
+      g.refresh()
+    }
+    /** how well the reading lamp keeps what the seal marks at t (0 start … 1 end): bright at both ends, dim in the middle */
+    const keep = (t: number) => 0.18 + 0.82 * Math.abs(2 * t - 1) ** 1.6
+    function seat(t: number) {
+      sc2.t = clamp(t, 0, 1)
+      const x = sc2.x0 + (sc2.x1 - sc2.x0) * sc2.t
+      seal.style.transform = `translate(${f1(x)}px, ${f1(sc2.y)}px)`
+      lamp.style.transform = `translate(${f1(x)}px, ${f1(sc2.y)}px)`
+      lamp.style.opacity = keep(sc2.t).toFixed(2)
+      seal.style.setProperty('--k', keep(sc2.t).toFixed(2))
+      seal.setAttribute('aria-valuenow', String(Math.round(sc2.t * 100)))
+      way?.set(sc2.t)
+      if (sc2.t > 0.38 && sc2.t < 0.62) sc2.mid = true
+      if (sc2.t < 0.12 || sc2.t > 0.88) sc2.end = true
+      if (sc2.mid && sc2.end && !sc2.done) {
+        sc2.done = true
+        sealDot?.done()
+        ctx.chime('ok')
+        ctx.insight(S.insight, [S.detail, S.growth])
+      }
+    }
+    function unroll() {
+      if (sc2.on) return
+      sc2.on = true
+      moonDot?.done()
+      ctx.art.querySelector('.p2t')?.classList.add('g8w2-beat2')
+      ctx.art.append(beat)
+      lay()
+      ctx.prompt(S.prompt2)
+      way = g.track(() => [[sc2.x0, sc2.y + 30], [sc2.x1, sc2.y + 30]], { ticks: 3, labels: S.ticks })
+      sealDot = g.dot(seal, { dir: [1, 0] })
+      if (!ctx.reduced) scroll.animate([{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 900, easing: 'cubic-bezier(.3,.1,.2,1)' })
+    }
+    ctx.onCleanup(onSize(ctx.art, lay))
+    let sid = -1
+    seal.addEventListener('pointerdown', (e) => {
+      sid = e.pointerId
+      seal.setPointerCapture(sid)
+      seal.classList.add('held')
+    })
+    seal.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== sid) return
+      const a = beat.getBoundingClientRect() // the pointer, not the frame: one read per move event
+      seat((e.clientX - a.left - sc2.x0) / Math.max(1, sc2.x1 - sc2.x0))
+    })
+    const sup = (e: PointerEvent) => void (e.pointerId === sid && ((sid = -1), seal.classList.remove('held')))
+    seal.addEventListener('pointerup', sup)
+    seal.addEventListener('pointercancel', sup)
+    seal.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 0.1 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -0.1 : e.key === 'Home' ? -1 : e.key === 'End' ? 1 : 0
+      if (!d) return
+      e.preventDefault()
+      seat(sc2.t + d)
+    })
+
+    // the tide would show the insight at today; here today only starts beat 2 (the insight comes after the scroll). The
+    // tide still gets the insight, so it keeps room for it in the art's stable height
     const off = progressTide(S.tide, {
       label: S.label, prompt: S.prompt, insight: S.insight, detail: S.detail,
       art: { back },
@@ -423,8 +500,22 @@ export const windowScene: SceneDef = {
       },
       thumb: () => s('circle', { class: 'g8w2-thumb', r: 20 }),
       onStep,
-    }).mount(ctx)
+    }).mount({ ...ctx, insight: () => h('div'), complete: () => {} })
     ctx.art.querySelector('.p2t')?.classList.add('g8w2')
+    ctx.art.append(decode)
+    // the decoding line sits on the mats just under the sill, left of the card (read on resize, never in a frame)
+    ctx.onCleanup(onSize(ctx.art, () => {
+      const band = ctx.art.querySelector<HTMLElement>('.p2t-band'), card = ctx.art.querySelector<HTMLElement>('.p2t-card')
+      if (!band || !card) return
+      const a = ctx.art.getBoundingClientRect(), b = band.getBoundingClientRect(), c = card.getBoundingClientRect()
+      const room = c.left - a.left - 40
+      decode.style.top = `${f1(b.bottom - a.top + 18)}px`
+      decode.style.maxWidth = room > 200 ? `${f1(room)}px` : ''
+      decode.classList.toggle('flat', room <= 200)
+    }))
+    // H1 on the moon (the slider), leaning the way to drag
+    const moonEl = ctx.art.querySelector<HTMLElement>('.p2t-moon')
+    if (moonEl && !sc2.on) moonDot = g.dot(moonEl, { dir: [1, 0] })
     return off
   },
 }

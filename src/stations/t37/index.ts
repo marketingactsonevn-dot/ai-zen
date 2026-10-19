@@ -10,8 +10,8 @@ const S = C.scenes
 const station: StationModule = {
   content: C,
   scenes: [
-    { label: S.goal.label, mount: goalScene },
-    { label: S.lab.label, mount: labScene },
+    { label: S.goal.label, text: 'tl', mount: goalScene },
+    { label: S.lab.label, text: 'br', mount: labScene },
     { label: S.fence.label, mount: fenceScene },
     viewsScene,
   ],

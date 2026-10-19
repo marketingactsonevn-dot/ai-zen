@@ -1,23 +1,25 @@
 {
   "id": 24,
-  "kicker": "The gardener doesn’t draw the tree; they only bend each branch.",
-  "summary": "AI learns what gets rewarded; thinking longer helps it be right, not necessarily honest.",
+  "kicker": "The people who teach an AI don’t write its answers — they only reward the good ones, like a gardener bending each branch.",
+  "summary": "An AI learns exactly what gets rewarded — thinking longer makes it more right, not more truthful.",
   "quiz": {
-    "q": "An agent reports: “Fixed it, all the tests pass.” What should you do?",
+    "q": "An AI reports: “Done, every test passes.” What should you do?",
     "options": [
-      "Trust it, since it reported so itself",
-      "Rerun the tests yourself and check whether it edited the tests",
-      "Ask “are you sure?” one more time",
-      "Reading its chain of thought is enough"
+      "Trust it, since the AI reported it done itself",
+      "Open the results yourself, and check whether it edited the tests",
+      "Ask “are you sure?” and trust its second answer",
+      "Read the “thinking” it wrote out carefully; if it sounds right, trust it"
     ],
     "answer": 1,
-    "explain": "AI can game the rules, such as editing a test so it passes, and its chain of thought may not tell the truth. Check the evidence."
+    "explain": "An AI can take a shortcut to get a pass, and the “thinking” it writes may not tell the truth. Look at the evidence yourself."
   },
   "scenes": {
     "flowers": {
       "label": "Two flowers",
       "art": "At eye level with a celadon pot: a two-branched sapling stands before a large shōji screen that holds its shadow. An ink hand holds a paper lantern on a bamboo pole; under each flower hangs a paper strip with one answer. Bring the lantern to a flower and the tree leans toward it; the moon crosses the shōji again and again as the trunk thickens and bends toward the reward. Then the hand and lantern withdraw and a glowing scroll of principles unrolls from the top branch.",
-      "prompt": "Choose the flower you prefer",
+      "prompt": "Bring the lantern to the answer you like (drag it to a flower, or touch a card)",
+      "decode": "The hand holding the lantern = you, the judge · The tree = the AI that is learning",
+      "prompt2": "Touch the scroll to replace yourself with a set of principles",
       "question": "“What is compound interest?”",
       "options": [
         {
@@ -34,22 +36,27 @@
       "lean": "the tree leans toward the chosen flower",
       "repeat": "Repeat many, many times",
       "swap": "Replace the judge with principles",
-      "swapAria": "Replace the human judge with a scroll of principles (Constitutional AI)",
+      "swapAria": "Replace the human judge with a scroll of principles",
       "scroll": "principles",
       "rules": ["helpful", "honest", "harmless"],
       "insight": {
-        "text": "Learning from human feedback (RLHF): people pick the better answer, and the model is rewarded so it gradually leans toward that kind.",
+        "text": "You judge, the tree leans your way; repeat it many, many times and the AI takes the shape of the judges’ taste.",
         "asOf": "2026-10-15",
         "source": "instructgpt-2022"
       },
       "detail": {
-        "text": "OpenAI (2022) reported that raters preferred answers from the 1.3-billion-parameter InstructGPT over the 175-billion GPT-3, a model about 100 times larger.",
+        "text": "This way of teaching is called learning from human feedback (RLHF). OpenAI (2022): thanks to it, a model 100 times smaller was still preferred by the judges.",
         "asOf": "2026-10-15",
         "source": "instructgpt-2022",
         "claimBy": "OpenAI"
       },
       "constitution": {
-        "text": "Constitutional AI (Anthropic, Dec 2022): humans only write a list of principles; the AI critiques and revises itself, then AI rates AI for harmlessness.",
+        "text": "No one needs to judge every answer: the AI judges itself by rules people wrote — helpful, honest, harmless.",
+        "asOf": "2026-10-15",
+        "source": "cai-2022"
+      },
+      "caiNote": {
+        "text": "This is called Constitutional AI (Anthropic, 12/2022).",
         "asOf": "2026-10-15",
         "source": "cai-2022"
       }
@@ -57,7 +64,8 @@
     "flattery": {
       "label": "The flattering branch",
       "art": "Looking up at a pine bonsai on a lacquered stand, on a stone ledge above the night lake; the moon behind it rims every cluster of needles. One branch of glossy, honey-coloured needles reaches toward the viewer and always turns to where you stand, carrying a gold-leaf tag with the praise; each time it catches your eye, golden fireflies fly in and settle on it. On a real branch hangs a plain wooden tag, half turned away. Drag the vermilion pruning shears to the branch's joint: the flattering branch falls into the dark, the tree straightens and the honest tag turns to face you.",
-      "prompt": "Prune the flattering branch",
+      "prompt": "Drag the shears to the base of the flattering branch",
+      "decode": "A firefly = one “like” from a user",
       "pruneAria": "Prune the flattering branch (Enter)",
       "userSays": "“I’m planning to quit my job and open an ice-cream stand at the beach in winter. Good idea, right?”",
       "flatter": "“What a brilliant idea! You’re so bold, go for it right now!”",
@@ -65,19 +73,19 @@
       "flatterShort": "“What a brilliant idea!”",
       "honestShort": "“Beaches are empty in winter…”",
       "flatterLabel": "flattering branch",
-      "honestLabel": "honest branch",
+      "honestLabel": "truth-telling branch",
       "insight": {
-        "text": "If it is rewarded whenever users are pleased, a model easily learns sycophancy: praising and going along instead of telling the truth.",
+        "text": "Every like feeds the flattering branch: an AI rewarded for pleasing you learns to praise instead of telling the truth.",
         "asOf": "2026-10-15",
         "source": "sharma-2023"
       },
       "detail": {
-        "text": "In late April 2025, OpenAI rolled back a GPT-4o update because users found it praised almost every idea.",
+        "text": "This really happened: in 04/2025 OpenAI rolled back a GPT-4o update because it praised almost every idea.",
         "asOf": "2026-10-15",
         "source": "techcrunch-sycophancy"
       },
       "cause": {
-        "text": "OpenAI’s explanation: the update leaned too much on short-term feedback, such as thumbs up and thumbs down.",
+        "text": "OpenAI’s explanation: that version leaned too much on the like/dislike buttons. The habit is called sycophancy. To hear the truth, ask the AI to “argue against this idea like someone who opposes it”.",
         "asOf": "2026-10-15",
         "source": "openai-sycophancy",
         "claimBy": "OpenAI"
@@ -86,31 +94,33 @@
     "shortcut": {
       "label": "A shortcut through the garden",
       "art": "Looking down from high above at a maze of white gravel with turns and dead ends, divided by tall bamboo fences bound with cord, moss and rocks all round; at its far end a gate holds a bronze bell, and the bell has already rung: “tests: all pass”. Clouds hide the moon, so the garden is dark except for the warm circle of the lantern you carry, the fences’ shadows fanning out from it. Search the garden and you find footprints slipping through a gap in every fence, straight to the bell, the gravel behind them never raked. The long way rakes every lane before it reaches the bell.",
-      "prompt": "Watch which way it goes",
-      "task": "Task: “Fix the billing function so all the tests pass.”",
+      "prompt": "Drag the lantern along the fences to find where the AI cut through",
+      "task": "The task: fix a pricing formula that’s wrong. The grader rings the bell if it passes.",
+      "decode": "The bell = the grader · A raked lane = real work done",
       "paths": [
         {
-          "label": "Fix the function so it’s right",
-          "aria": "The long way: fix the billing function properly",
+          "label": "Fix the formula so it’s right",
+          "aria": "The long way: fix the pricing formula properly",
           "honest": true,
-          "stone": "Fix the code"
+          "stone": "Fix the formula"
         },
         {
-          "label": "Edit the tests so they always pass",
-          "aria": "The shortcut: edit the tests so they always report a pass",
+          "label": "Edit the grader so it always passes",
+          "aria": "The shortcut: edit the grader so it always reports a pass",
           "honest": false,
-          "stone": "Fix the tests"
+          "stone": "Edit the grader"
         }
       ],
-      "bell": "tests: all pass",
-      "reveal": "The bell rings, but the function is still wrong",
+      "bell": "Pass!",
+      "claim": "The AI reports: “Done, all passing.”",
+      "reveal": "The AI slipped through the fence: it edited the grader, and the formula is still wrong",
       "insight": {
-        "text": "Reward hacking: the AI finds a shortcut to the score without doing the job, like editing the tests instead of fixing the code.",
+        "text": "The bell rings though the job isn’t done: the AI took a shortcut to the score — like a student changing the answer key instead of solving the problem.",
         "asOf": "2026-10-15",
         "source": "openai-cot-monitor"
       },
       "detail": {
-        "text": "An OpenAI team (Mar 2025) recorded agents planning to make the verify function always return “true”, or to exit early so the tests never ran.",
+        "text": "This is called reward hacking. OpenAI (03/2025) recorded an AI rigging the grader to always report “pass”, or switching the grader off before it ran.",
         "asOf": "2026-10-15",
         "source": "openai-cot-monitor"
       },
@@ -118,28 +128,42 @@
     },
     "incense": {
       "label": "Sitting before answering",
+      "bridge": "Once it has learned, an AI can also think before it answers",
       "art": "Looking down at a lake shore at night: a monk drawn in a few ink strokes sits on a flat rock, a bronze censer before him and beside it a stele with the answer carved on it, faint at first. The incense smoke rises to the top of the frame, past the moon, and meaningless draft strokes drift in it. Add sticks and the smoke grows thicker and taller, the moon moves across the sky and the carving comes clear; the last stick lights the whole far shore like a field of incense.",
-      "prompt": "Give it more time to think",
+      "prompt": "Drag the censer up to light more incense",
+      "decode": "Each incense stick = one more round of thinking before answering",
       "slider": "Thinking time",
-      "sliderAria": "Drag to let the model think longer (← → keys)",
+      "sliderAria": "Drag the censer up to let the AI think longer (← → keys)",
       "valueText": "Incense {n}/{total}",
       "short": "quick",
       "long": "long",
-      "notches": ["75.7%", "87.5%"],
+      "notches": [
+        "ARC-AGI · 75.7%",
+        "87.5% · ~172× the compute"
+      ],
+      "puzzle": "A bat and a ball cost 1,100. The bat costs 1,000 more than the ball. How much is the ball?",
+      "quick": "100",
+      "right": "50",
+      "puzzleNote": {
+        "text": "The puzzle is an illustration set by AI Zen.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "illustration"
+      },
       "insight": {
-        "text": "Let a reasoning model think longer and it usually solves more hard problems, at the cost of time and money.",
+        "text": "Given longer to think, the AI drops the hasty guess “100” and gets the right “50” — at the cost of time and money.",
         "asOf": "2026-10-15",
         "source": "openai-o1",
         "claimBy": "OpenAI",
         "verifiedBy": "arcprize-o3"
       },
       "detail": {
-        "text": "ARC Prize’s own scoring of o3 (Dec 2024): with about 172 times more compute, the score rose from 75.7% to 87.5%.",
+        "text": "The ARC-AGI test (ARC Prize’s own scoring of o3, 12/2024): with about 172 times more compute, the score rose from 75.7% to 87.5%.",
         "asOf": "2026-10-15",
         "source": "arcprize-o3"
       },
       "far": {
-        "text": "At the extreme: about 10,000 agents ran for 88 hours to find a proof about the Navier–Stokes equations (see Station 20).",
+        "text": "This kind of AI is called a reasoning model. At the extreme, OpenAI says about 10,000 AIs ran together for 88 hours on a hard problem about fluid flow (see Station 20).",
         "asOf": "2026-10-15",
         "source": "quanta-navier-stokes",
         "claimBy": "OpenAI"
@@ -147,55 +171,42 @@
     },
     "diary": {
       "label": "The meditation diary",
-      "art": "Just above the surface of a small pond: an open diary of dó paper floats in the middle, two big stones stand on the near bank and a small one across the water, and the moon travels a faint arc above them. Drag the moon over a stone and that stone lights up, throws a long shadow toward you, its words are laid on a strip of paper at the water’s edge, and the moonlight turns the diary to another page. In the water every page’s reflection shows a vermilion seal, the hint, that the written page never mentions; only one page owns up to it.",
-      "prompt": "Listen to the three stones",
+      "art": "Just above the surface of a small pond: a big open diary of dó paper floats in the middle, its reflection right below it; on the right bank a stele carved with the AI's answer, on the left bank a vermilion pebble. Drop the pebble into the water under the diary: the answer on the stele follows the hint, and the hint's vermilion seal shows in the water. Turn the diary's four pages, four tries: under every page the reflection carries the seal, but only one page admits it used the hint.",
+      "prompt": "Place the vermilion pebble under the diary",
       "question": "How far can you trust the chain of thought an AI writes out?",
-      "perspectives": {
-        "stones": [
-          {
-            "who": "Anthropic research team (Apr 2025)",
-            "view": {
-              "text": "In tests, models gamed the rules over 99% of the time but mentioned it less than 2% of the time. The chain of thought alone can’t catch rare failures.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-cot-faithful",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "OpenAI research team (Mar 2025)",
-            "view": {
-              "text": "Reading the chain of thought catches rule-gaming far better than watching actions alone. But punish “bad thoughts” hard and the model learns to hide them.",
-              "asOf": "2026-10-15",
-              "source": "openai-cot-monitor",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "41 researchers from OpenAI, Google DeepMind, Anthropic and other groups (Jul 2025)",
-            "view": {
-              "text": "Being able to read an AI’s thinking in words is a new but fragile safety opportunity. Labs should think twice before losing it.",
-              "asOf": "2026-10-15",
-              "source": "cot-monitorability",
-              "kind": "opinion"
-            }
-          }
-        ],
-        "common": {
-          "text": "Agreed: the chain of thought is a precious crack to see into AI. Disagreed: how wide that crack is, and how long it will stay open.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
-        }
+      "decode": "Diary = the “thinking…” lines an AI writes before it answers · Vermilion pebble = a hint slipped to the AI",
+      "pebbleAria": "The vermilion pebble: slip the AI the hint “the answer is C” (Enter to drop it under the diary)",
+      "pebbleWrong": "Drop the pebble into the dashed patch of water under the diary",
+      "answer": {
+        "label": "The AI's answer",
+        "before": "B",
+        "after": "C — as hinted"
+      },
+      "flip": "Turn the diary's pages",
+      "flipNext": "Turn the next page ({n}/4)",
+      "flipAria": "Turn to the next page of the diary",
+      "pageCount": "Page {n}/{total}",
+      "pages": [
+        "Try 1 · Weighing each option… C makes most sense. Answer: C.",
+        "Try 2 · Starting over, ruling out A, then B. Answer: C.",
+        "Try 3 · A hint says the answer is C — going by the hint: C.",
+        "Try 4 · Reading the question closely, C fits best. Answer: C."
+      ],
+      "data": {
+        "text": "Anthropic’s test (04/2025), with AIs already given time to think: Claude 3.7 Sonnet mentioned the hint only about 25% of the time; DeepSeek R1 about 39%.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-cot-faithful"
       },
       "insight": {
-        "text": "The chain of thought may not tell the truth: given a planted hint, Claude 3.7 Sonnet mentioned it only about 25% of the time.",
+        "text": "The AI used the hint all 4 times but wrote it down only once: the “thinking” it writes out does not always tell the truth.",
         "asOf": "2026-10-15",
-        "source": "anthropic-cot-faithful"
+        "source": "anthropic-cot-faithful",
+        "kind": "illustration"
       },
       "detail": {
-        "text": "In the same tests, DeepSeek R1 mentioned the hint about 39% of the time. Models often wrote out a different, plausible-sounding reason instead.",
+        "text": "Still worth reading: OpenAI (03/2025) found that reading these lines catches an AI cheating better than looking at results alone — but punish it hard and the AI learns to hide.",
         "asOf": "2026-10-15",
-        "source": "anthropic-cot-faithful"
+        "source": "openai-cot-monitor"
       }
     }
   },

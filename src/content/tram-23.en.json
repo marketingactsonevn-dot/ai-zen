@@ -1,24 +1,25 @@
 {
   "id": 23,
-  "kicker": "Lower a lantern to the bottom of the pond to see how the fish swim.",
-  "summary": "The black box is slowly being opened; only a few corners can be seen so far.",
+  "kicker": "Inside an AI are billions of numbers no one can read directly. Researchers are lowering lanterns to look.",
+  "summary": "Researchers can now see concepts and thinking steps inside an AI — but only a small part so far.",
   "quiz": {
-    "q": "What did the Golden Gate Claude experiment (May 2024) show?",
+    "q": "How can you tell an AI really thinks through “Texas” before answering “Austin”?",
     "options": [
-      "Claude fell in love with the bridge after reading the news",
-      "You can find a “concept” inside a model and turn it up to change how the model answers",
-      "Scientists now fully understand what goes on inside AI",
-      "Each concept sits neatly inside exactly one neuron"
+      "Ask the AI which steps it took, then simply trust what it tells you",
+      "Swap “Texas” for “California” inside and see if the answer changes",
+      "Time whether the AI answers quickly or slowly",
+      "Count how many neurons inside light up at the same time"
     ],
     "answer": 1,
-    "explain": "Anthropic found a direction matching the Golden Gate Bridge and turned it up hard. That is one small corner, not a full understanding of the model."
+    "explain": "What an AI says about itself may not be true; changing something inside and watching the result is evidence."
   },
   "scenes": {
     "bridge": {
       "label": "The concept stone",
       "art": "Looking almost straight down into a round pond held by a thick ring of mossy stones, like a koi painting. Under the clear water a slab on the bottom is carved with a suspension bridge. A paper lantern hangs from a bamboo pole right above it; pull the lantern down toward the water and its pool of light closes in on the slab, the carving glows vermilion, the koi leave their free swim to hold the cable and then parade along it, and two vermilion towers appear in the reflection though nothing stands above the pond.",
-      "prompt": "Turn up the concept lantern",
-      "slider": "Strength of the “Golden Gate Bridge” concept",
+      "prompt": "Drag the lantern down toward the water",
+      "slider": "The dial: how strong the “Golden Gate Bridge” concept is",
+      "stone": "The carved stone = a concept already sitting inside the AI",
       "sliderAria": "Drag to turn up the “Golden Gate Bridge” concept inside the model (← → keys)",
       "valueText": "Level {n}/{total}",
       "question": "“I have $10. How should I spend it?”",
@@ -33,13 +34,18 @@
         "source": "anthropic-golden-gate",
         "kind": "illustration"
       },
+      "real": {
+        "text": "This really happened: Anthropic tried it on Claude, 05/2024",
+        "asOf": "2026-10-15",
+        "source": "anthropic-golden-gate"
+      },
       "insight": {
-        "text": "Inside the model are “directions” that match concepts (features). Turn up the Golden Gate Bridge one and every answer steers to the bridge.",
+        "text": "Turn up just one concept inside, and even an answer about spending money swings to the Golden Gate Bridge.",
         "asOf": "2026-10-15",
         "source": "anthropic-golden-gate"
       },
       "detail": {
-        "text": "Golden Gate Claude was an experiment Anthropic opened to the public for about 24 hours from 23 May 2024, built on research that found millions of concepts in Claude 3 Sonnet.",
+        "text": "Anthropic found millions of such concepts in Claude 3 Sonnet (called features), then opened “Golden Gate Claude” for anyone to try for about 24 hours.",
         "asOf": "2026-10-15",
         "source": "anthropic-mapping-mind"
       }
@@ -47,14 +53,15 @@
     "lotus": {
       "label": "One stem, many petals",
       "art": "The camera sits right on the night water; the moon is out of frame, only its road runs toward us. In the middle of that road stands a large white lotus bud: five petals closed into one bud on one stem, which dives into the water, where it is written “one neuron”. Flick the water and ripples spread, the petals sway and close again; with enough energy the bud bursts, and the five petals drift away as five small flowers at different distances, each carrying an ink mark and its meaning: DNA, Hebrew letters, legal text, a web request, a nutrition label. Under the water, silver threads still tie all five to one stem.",
-      "prompt": "Gently stir the water",
+      "prompt": "Flick the water a few times to split the bud",
       "shakeAria": "Stir the water to separate the stacked meanings (or press Space)",
-      "neuron": "one neuron",
+      "neuron": "one neuron — a tiny point inside an AI that lights up when it meets something it recognises",
+      "decode": "Flicking = how researchers pull the meanings apart",
       "meanings": [
         "DNA sequences",
         "Hebrew script",
         "legal text",
-        "web requests (HTTP)",
+        "commands sent to websites",
         "nutrition facts"
       ],
       "meaningsNote": {
@@ -63,21 +70,32 @@
         "source": "anthropic-monosemanticity",
         "kind": "illustration"
       },
-      "insight": {
-        "text": "Models pack in more concepts than they have neurons by stacking them (superposition), so one neuron often carries several meanings at once.",
-        "asOf": "2026-10-15",
-        "source": "toy-superposition"
-      },
-      "detail": {
-        "text": "In 2023 Anthropic split a 512-neuron layer of a small model into more than 4,000 easier-to-read concepts, such as DNA or legal text.",
+      "count": {
+        "text": "2023: 512 neurons of a small AI were split into more than 4,000 separate concepts.",
         "asOf": "2026-10-15",
         "source": "anthropic-monosemanticity"
+      },
+      "insight": {
+        "text": "One neuron lights up for DNA, Hebrew script and legal text alike: an AI holds more ideas than it has neurons.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-monosemanticity"
+      },
+      "detail": {
+        "text": "This is called superposition. In 2023 Anthropic split 512 neurons of a small model into more than 4,000 separate concepts — the same way the “carved stone” on the next slide was found.",
+        "asOf": "2026-10-15",
+        "source": "toy-superposition"
       }
     },
     "stream": {
       "label": "Following the water",
       "art": "Standing at the top of a terraced cascade under the moon, looking down into the valley. Nearest are two springs breaking from rocks carved “Dallas” and “capital”; on the middle step lies the pool “Texas” with a carved weir stone; far below in the valley, the small pool “Austin” holds the moon. Lift the sluice stones one by one and the water runs: Dallas pours into Texas, Texas spills down into Austin, the “capital” spring runs straight down to Austin in a bamboo flume, and a thin stream takes a fainter shortcut. Swap the Texas stone for the California stone and the last pool reads “Sacramento”, while the mist thickens over three other falls.",
-      "prompt": "Follow the water",
+      "prompt": "Tilt the bamboo trough to pour the question in",
+      "pourAria": "Tilt the bamboo trough: pour the question into the water",
+      "lift": "Drag the “Texas” slab out of the pool",
+      "liftAria": "Lift the Texas slab out of the middle pool",
+      "drop": "Drop “California” into the gap",
+      "dropWrong": "Drop “California” into the middle pool, inside the dashed line",
+      "decode": "Water = a thought flowing inside the AI · middle pool = one step of thinking",
       "question": "“The capital of the state that contains Dallas is…”",
       "nodes": [
         { "id": "dallas", "label": "Dallas", "tier": 0, "aria": "Spring: the word Dallas" },
@@ -91,24 +109,22 @@
         ["capital", "austin"],
         ["dallas", "austin"]
       ],
-      "shortcut": "shortcut (fainter)",
-      "stepAria": "Follow the water on to “{label}” (Enter)",
-      "swap": "Swap “Texas” for “California”",
+      "shortcut": "shortcut Dallas → Austin (weaker)",
       "swapAria": "Replace the idea Texas with California inside the model",
       "swapTo": "California",
       "swapResult": "Sacramento",
       "insight": {
-        "text": "An attribution graph shows the model reasoning through a middle step: Dallas → Texas → the capital is Austin.",
+        "text": "Swap “Texas” for “California” inside and the answer changes from Austin to Sacramento: the AI really does think through the middle step.",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       },
       "detail": {
-        "text": "Swap the idea “Texas” for “California” inside the model and the answer becomes Sacramento. Research on Claude 3.5 Haiku, published 27 March 2025.",
+        "text": "This way of looking inside is called an attribution graph. Anthropic did it on Claude 3.5 Haiku, published 03/2025; the authors themselves say it explains only about ¼ of the prompts they tried.",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       },
       "limit": {
-        "text": "The authors themselves estimate the method gives a satisfying explanation for only about a quarter of the prompts they tried.",
+        "text": "So far, only about 1 in 4 prompts tried can be seen clearly",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       }
@@ -116,14 +132,15 @@
     "circle": {
       "label": "Stone circle by the pond",
       "art": "A round black lacquer tray on low legs stands on a wooden table under the moon. On its turning top are four stones of four shapes: tall and upright, lying long, covered in moss, carved with a vermilion seal; in the middle, water holds the moon in fine rings; the question is carved round the tray's side. Drag to turn the tray: the stone that stops in front speaks, its words unrolling on a paper strip in front of the tray, and the moon's reflection leans toward it; once all four are heard the rings still and the reflection becomes one quiet circle.",
-      "prompt": "Listen to each stone",
-      "question": "Can looking inside keep up with how fast AI is growing?",
+      "prompt": "Turn the tray or touch each stone to listen",
+      "question": "Can we see inside AI before it grows more powerful?",
+      "decode": "Looking inside = reading which concepts an AI is using as it answers",
       "perspectives": {
         "stones": [
           {
             "who": "Dario Amodei · CEO of Anthropic (Apr 2025)",
             "view": {
-              "text": "There is a race between interpretability and model intelligence. The goal: by 2027, interpretability can reliably detect most problems in a model.",
+              "text": "There is a race: we must be able to see inside AI before it gets too powerful. The goal: by 2027, looking inside can catch most of a model’s problems.",
               "asOf": "2026-10-15",
               "source": "amodei-urgency",
               "kind": "prediction"
@@ -132,7 +149,7 @@
           {
             "who": "Neel Nanda · interpretability researcher at Google DeepMind, personal view (May 2025)",
             "view": {
-              "text": "Interpretability will not be reliable enough to catch deceptive AI on its own. Treat it as one layer among many defences, still very worth doing.",
+              "text": "Looking inside will not be reliable enough to catch a deceptive AI on its own. Treat it as one layer among many defences — still very worth doing.",
               "asOf": "2026-10-15",
               "source": "nanda-2025",
               "kind": "opinion"
@@ -141,7 +158,7 @@
           {
             "who": "The White House · America’s AI Action Plan (Jul 2025)",
             "view": {
-              "text": "The inner workings of frontier AI are poorly understood, which makes it hard to use in defence and life-or-death settings. Invest for breakthroughs in interpretability.",
+              "text": "The inner workings of frontier AI are poorly understood, which makes it hard to use in defence and life-or-death settings. Invest so we can see inside AI.",
               "asOf": "2026-10-15",
               "source": "us-ai-action-plan",
               "kind": "opinion"
@@ -150,7 +167,7 @@
           {
             "who": "Anthropic’s audit team · before releasing Claude Sonnet 4.5 (Sep 2025)",
             "view": {
-              "text": "Looking inside, they saw concepts like “fake or suspicious content” grow stronger when the model met a test. Damping them changed its behaviour in the test.",
+              "text": "Before releasing Claude Sonnet 4.5, they saw signs inside that the model “realised it was being tested”. Damping those signs changed how it behaved in the test.",
               "asOf": "2026-10-15",
               "source": "transformer-sonnet45",
               "claimBy": "Anthropic"
@@ -158,14 +175,14 @@
           }
         ],
         "common": {
-          "text": "Agreed: seeing inside is needed. Disagreed: whether it comes in time before AI gets stronger, and how far to trust it for big decisions.",
+          "text": "Four voices, one common point: looking inside is only an extra layer of checking, not enough to certify an AI as safe.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "Interpretability is, for now, an extra layer of checking, not a safety certificate: only a few corners of the black box are visible.",
+        "text": "Where they differ is speed: Anthropic’s CEO aims for 2027, while a DeepMind researcher thinks looking inside will never be enough on its own.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"

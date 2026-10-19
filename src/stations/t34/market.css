@@ -1,6 +1,8 @@
 /* Trạm 34 · scene 1 — the floating market seen from a boat (market.ts). Part 2 tokens only. */
 .t34.t34m {
   bottom: auto;
+  /* its own stacking context: the insight's text zone and the guide marks sit over the whole painting, bow included */
+  z-index: 0;
   --t34m-tone-0: var(--lantern);
   /* noren: indigo for the hub, persimmon-tanned for the video stall, pale hemp for the far image stall */
   --t34m-hub-a: color-mix(in srgb, var(--wash) 82%, var(--lantern));
@@ -411,7 +413,9 @@
   display: grid;
   justify-items: center;
   width: 132px;
-  padding: 0 0 2px;
+  min-height: 48px;
+  padding: 6px 0 2px;
+  align-content: end;
   border: 0;
   background: none;
   cursor: grab;
@@ -611,6 +615,27 @@
   display: inline;
 }
 
+/* H3: each stall's footing on the water; its dashed ring only shows while a lantern is carried */
+.t34m-foot {
+  position: absolute;
+  pointer-events: none;
+}
+.p2g-drop.t34m-ring:not(.is-lift) {
+  opacity: 0;
+}
+/* H1: the dot sits on the lantern's lit top, not on its words */
+.t34m-lan > .p2g-dot.ride {
+  top: 0;
+}
+/* the hub can do it, but not as its trade: a short dim glow */
+.t34m-stall.dim .t34m-glow {
+  animation: t34m-dim 1.6s var(--ease);
+}
+@keyframes t34m-dim {
+  0%, 100% { opacity: 0; }
+  40% { opacity: 0.22; }
+}
+
 /* the warning: ink on a wooden board nailed to the bow's lamp post */
 .t34m-vol {
   position: absolute;
@@ -620,11 +645,15 @@
   margin-left: -90px;
   pointer-events: none;
 }
+.t34m.wide .t34m-vol {
+  width: 150px;
+  margin-left: -75px;
+}
 .t34m-vol p {
   position: relative;
   margin: 0;
-  padding: 7px 12px 8px;
-  font: 400 12.5px/1.35 var(--serif);
+  padding: 6px 10px 7px;
+  font: 400 11.5px/1.35 var(--serif);
   color: var(--ink);
   text-align: center;
   /* a weathered plank: grain, lamp light from above, darker ends, two nails */
@@ -680,7 +709,8 @@
   .t34m-lan-box,
   .t34m-lan-base,
   .t34m-pans i,
-  .t34m-stall.flare :is(.t34m-noren, .t34m-glow) {
+  .t34m-stall.flare :is(.t34m-noren, .t34m-glow),
+  .t34m-stall.dim .t34m-glow {
     animation: none !important;
   }
 }

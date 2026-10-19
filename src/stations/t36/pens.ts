@@ -197,7 +197,14 @@ export function pensScene(ctx: SceneCtx) {
     sheet.classList.add('held')
     sheet.setPointerCapture(e.pointerId)
   })
-  sheet.addEventListener('pointermove', (e) => drag && e.pointerId === drag.id && slide(e.clientX - drag.x, e.clientY - drag.y))
+  sheet.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return
+    slide(e.clientX - drag.x, e.clientY - drag.y)
+    if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 14) feel()
+  })
+  // the 3D frame felt by hand: a drag (or arrow keys) on the view while a 3D pen is in it
+  view.addEventListener('pointermove', (e) => e.buttons && !isFlat() && feel())
+  view.addEventListener('keydown', (e) => e.key.startsWith('Arrow') && feel())
   const up = (e: PointerEvent) => {
     if (!drag || e.pointerId !== drag.id) return
     drag = null
@@ -310,6 +317,7 @@ export function pensScene(ctx: SceneCtx) {
     if (i === cur) return
     const p = K.pens[i]
     seen.add(i)
+    picked = i
     pens.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)))
     root.dataset.pen = p.id
     fillTag(i)
@@ -324,12 +332,29 @@ export function pensScene(ctx: SceneCtx) {
       sweep.classList.add('go')
       swapT = window.setTimeout(apply, 330)
     }
-    const flatSeen = [...seen].some((k) => FLAT.includes(K.pens[k].id as Id))
-    const deepSeen = [...seen].some((k) => !FLAT.includes(K.pens[k].id as Id))
-    if (flatSeen && deepSeen && !done) {
+    ask()
+  }
+  // the rule of thumb waits until a flat pen and a 3D pen have both been felt by hand in the frame (audit v2 B)
+  const felt = [false, false] // flat, 3D
+  let picked = -1 // the pen just chosen (cur follows it once the brush has swept)
+  const deepPen = () => picked >= 0 && !FLAT.includes(K.pens[picked].id as Id)
+  function feel() {
+    if (picked < 0) return
+    const k = deepPen() ? 1 : 0
+    if (felt[k]) return
+    felt[k] = true
+    ask()
+  }
+  /** the next step in words, or the insight once both kinds are felt */
+  function ask() {
+    if (done || picked < 0) return
+    if (felt[0] && felt[1]) {
       done = true
-      ctx.insight(F(K.insight), K.detail)
+      ctx.insight(F(K.insight), [K.detail, F(K.facts[0])])
+      return
     }
+    const k = deepPen() ? 1 : 0
+    ctx.prompt(!felt[k] ? K.dragPrompt : k ? K.otherFlat : K.other3d)
   }
   function setPen(i: number) {
     cur = i
@@ -379,7 +404,7 @@ export function pensScene(ctx: SceneCtx) {
       h('p', { class: 't36p-tname' }, p.name),
       h('p', { class: 't36p-fits' }, h('span', { class: 't36p-eye' }, K.fitsLabel), p.fits),
       h('p', { class: 't36p-ask' }, h('span', { class: 't36p-eye' }, K.askLabel), h('q', null, p.ask.replace(/^[“"]|[”"]$/g, ''))),
-      p.id === 'phaser' ? ctx.fact(F(K.facts[0]), 'p', 't36p-fact') : '',
+      h('p', { class: 't36p-note' }, K.askNote),
       url ? h('a', { class: 't36p-docs', href: url, target: '_blank', rel: 'noopener' }, K.docsLabel, ' ↗') : '')
     const first = tag.hidden
     tag.hidden = false

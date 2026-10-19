@@ -2,6 +2,7 @@ import { h, s } from '../../core/dom'
 import { L } from '../../core/content'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { findTakeaway, takeaway } from '../../ui/part2/takeaway'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-27.json'
 import { F, f1, lin, rad } from './ink27'
@@ -170,7 +171,7 @@ export function flatterScene(ctx: SceneCtx) {
     const handle = h('i', { class: 't27g-handle' }, h('i', { class: 't27g-cord' }))
     const el = h('button', { class: `t27g-m t27g-m${i}`, type: 'button', 'aria-label': m.aria, 'aria-pressed': 'false' },
       handle, ...rims, h('div', { class: 't27g-disc' }, back), front)
-    return { el, back, faceSvg, front }
+    return { el, back, faceSvg, front, handle }
   })
   const beam = s('svg', { class: 't27g-beam', 'aria-hidden': 'true' })
   const tray = h('div', { class: 't27g-tray' }, ...walls, h('div', { class: 't27g-topwrap' }, top), ...shadows, fold, slip, ...mirrors.map((m) => m.el))
@@ -183,6 +184,9 @@ export function flatterScene(ctx: SceneCtx) {
   // the honesty note sits outside the faded edge of the scene, on the mat below the tray
   ctx.art.append(root, note)
   ctx.prompt(K.prompt)
+  // H1: a dot on each handle until that mirror has been heard (it rides along as the mirror is lifted)
+  const gd = guide(ctx)
+  const dots: (Mark | null)[] = mirrors.map((m) => gd.dot(m.handle, { dir: [0, -1] }))
   const stable = stableHeight(ctx, [F(K.insight)])
 
   // ── layout: sizes as CSS variables; the plane is laid at 55° under a near camera ──
@@ -191,7 +195,7 @@ export function flatterScene(ctx: SceneCtx) {
   // never a magnified raster), and it stands in front of the whole tray.
   const C55 = Math.cos((TILT * Math.PI) / 180), S55 = Math.sin((TILT * Math.PI) / 180)
   const RX = ((TILT - 3) * Math.PI) / 180 // the mirror turns up by 52°: 3° short of facing you square
-  let G = { W: 0, H: 0, Dt: 0, D: 0, td: 0, lift: [[0, 0, 0], [0, 0, 0]] as [number, number, number][] }
+  let G = { W: 0, H: 0, Dt: 0, D: 0, td: 0, land: true, lift: [[0, 0, 0], [0, 0, 0]] as [number, number, number][] }
   function layout() {
     const W = root.clientWidth, Hr = root.clientHeight
     if (W < 60 || Hr < 60) return
@@ -201,7 +205,10 @@ export function flatterScene(ctx: SceneCtx) {
     const td = tw * (land ? 0.5 : 0.62)
     const th = Math.max(10, tw * 0.025)
     const Dt = tw * (land ? 0.27 : 0.4) // a mirror lying on the tray
-    const D = land ? Math.min(H * 0.6, tw * 0.42, 400) : Math.min(W * 0.7, H * 0.5) // the same mirror held up to you
+    // the same mirror held up to you. Wide: each is held up on its own side (gilded left, bronze right), both can be up
+    // at once, and the question slip stays in view between them (audit v3 27-3: a raised mirror covered the other one)
+    const sw = Math.min(tw * 0.26, 220) // the slip's width (style.css)
+    const D = land ? Math.min(H * 0.6, tw * 0.42, 400, W / 2 - sw / 2 - 44) : Math.min(W * 0.7, H * 0.5)
     const ty = -td * 0.55
     const pw = Math.max(W, tw) * 2.4, pd = td * 4.4
     const persp = land ? Math.max(1100, H * 1.9) : Math.max(900, H * 1.7)
@@ -247,11 +254,14 @@ export function flatterScene(ctx: SceneCtx) {
     const mx = land ? [0.27, 0.73] : [0.26, 0.74]
     const Oy = td * 0.1 + 1.42 * Dt // the handle's end, which stays put as the mirror turns up
     const vy = -0.92 * D * Math.cos(RX), vz = 0.92 * D * Math.sin(RX)
-    const yS = Math.max(D / 2 + 6 - pan, Hr / 2 - D * (land ? 0.45 : 0.55)) - cy
+    // phone: one at a time, held high in the art and a little to its own side, so the other one (lying on the tray
+    // below) is never under it
+    const yS = (land ? Math.max(D / 2 + 6 - pan, Hr / 2 - D * 0.45) : D / 2 + 8 - pan) - cy
+    const off = land ? D / 2 + sw / 2 + 20 : W * 0.12
     G = {
-      W, H, Dt, D, td,
+      W, H, Dt, D, td, land,
       lift: mx.map((x, i) => {
-        const xS = land ? (i ? -0.1 : 0.1) * tw : 0 // the bronze one held a little left, clear of the card where it lay
+        const xS = (i ? 1 : -1) * off
         return [xS - tw * x + tw / 2, yS * C55 - Oy - vy + td / 2 - ty, -yS * S55 - th - 2 - vz] as [number, number, number]
       }),
     }
@@ -284,7 +294,7 @@ export function flatterScene(ctx: SceneCtx) {
   }
   function toggle(i: number) {
     const v = up[i] === 1 ? 0 : 1
-    if (v === 1 && up[1 - i] === 1) setUp(1 - i, 0)
+    if (v === 1 && up[1 - i] === 1 && !G.land) setUp(1 - i, 0) // phone: one held at a time
     setUp(i, v)
   }
   function saw(i: number) {
@@ -292,6 +302,9 @@ export function flatterScene(ctx: SceneCtx) {
     ctx.chime('soft')
     if (seen[i]) return
     seen[i] = true
+    dots[i]?.done()
+    dots[i] = null
+    if (!seen.every(Boolean)) ctx.prompt(K.promptNext) // the first one is the viewer's own pick; now the other
     if (!done && seen.every(Boolean)) {
       done = true
       root.classList.add('done')
@@ -313,7 +326,7 @@ export function flatterScene(ctx: SceneCtx) {
       m.el.setPointerCapture(e.pointerId)
       const move = (ev: PointerEvent) => {
         if (!moved && Math.abs(ev.clientY - y0) < 6) return
-        if (!moved && up[1 - i] === 1) setUp(1 - i, 0)
+        if (!moved && up[1 - i] === 1 && !G.land) setUp(1 - i, 0)
         moved = true
         root.classList.add('drag')
         t = clamp(t0 + (y0 - ev.clientY) / Math.max(120, G.H * 0.32), 0, 1)

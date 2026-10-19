@@ -6,6 +6,7 @@ import { sliced } from '../../core/chunk'
 import type { SceneCtx } from '../types'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { mist, moon as moonArt, paperLantern, wash } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
 
 const T = raw.scenes.teacup
 const f1 = (n: number) => n.toFixed(1)
@@ -124,8 +125,10 @@ export function teacupScene(ctx: SceneCtx) {
   const headLine = h('p', { class: 't21t-headline' }, T.head)
   const handLine = h('p', { class: 't21t-handline' }, T.hand)
   const status = h('div', { class: 't21t-status' }, said, headLine, handLine)
-  const dataL = h('div', { class: 't21t-data left' }, h('p', { class: 'p2-eyebrow' }, `${T.scaleTitle} · ${T.textLabel}`), ctx.fact(T.data[1] as Fact, 'p', 't21t-datum'))
-  const dataR = h('div', { class: 't21t-data right' }, h('p', { class: 'p2-eyebrow' }, T.robotLabel), ctx.fact(T.data[0] as Fact, 'p', 't21t-datum'))
+  // the mountain's line (words) and the basket's (moves), each where its thing is; the line under the basket says the two
+  // are counted in different units, so the picture is not read as a ratio (audit v3 21-3)
+  const dataL = h('div', { class: 't21t-data left' }, h('p', { class: 'p2-eyebrow' }, T.textLabel), ctx.fact(T.data[1] as Fact, 'p', 't21t-datum'))
+  const dataR = h('div', { class: 't21t-data right' }, h('p', { class: 'p2-eyebrow' }, T.robotLabel), ctx.fact(T.data[0] as Fact, 'p', 't21t-datum'), h('p', { class: 't21t-common' }, T.common))
   dataL.setAttribute('aria-hidden', 'true')
   dataR.setAttribute('aria-hidden', 'true')
   // the pull: the lantern's cord with a wooden bead; drawing it down steps the camera back (a slider for keys and AT)
@@ -137,6 +140,8 @@ export function teacupScene(ctx: SceneCtx) {
   if (still) root.classList.add('still')
   ctx.art.append(root)
   ctx.prompt(T.prompt)
+  const gd = guide(ctx)
+  let weightDot: Mark | null = null
 
   let lay = WIDE
   let SH: Pt = lay.sh, REST: Pt = [0, 0]
@@ -434,7 +439,10 @@ export function teacupScene(ctx: SceneCtx) {
     if (given === 1 << i && !root.classList.contains('told')) {
       root.classList.add('told')
       ctx.insight(T.insight as Fact)
-      promptTimer = window.setTimeout(() => ctx.prompt(T.pullPrompt), still ? 0 : 2600)
+      promptTimer = window.setTimeout(() => {
+        ctx.prompt(T.pullPrompt)
+        weightDot ??= gd.dot(pull, { dir: [0, 1] }) // H1 on the weight at the end of the lantern's cord
+      }, still ? 0 : 1400)
     }
     if (still) {
       tau = dur
@@ -465,6 +473,7 @@ export function teacupScene(ctx: SceneCtx) {
     root.classList.toggle('back', p > 0.55)
     if (p > 0.82 && !said2) {
       said2 = true
+      weightDot?.done()
       dataL.removeAttribute('aria-hidden')
       dataR.removeAttribute('aria-hidden')
       ctx.insight(T.insight2 as Fact, T.detail)

@@ -4,6 +4,7 @@ import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { guide } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './shell'
 import { brush, canvas, col, dprOf, fillD, fit, glow, grainOver, inkHills, mistBank, mix, moonDisc, palette, sky, stepStone, type Pal } from './ink2d'
@@ -284,7 +285,9 @@ export function forkScene(ctx: SceneCtx) {
     return { el, btn, strip }
   })
   let open = -1
+  const mistDots: ({ done(): void } | undefined)[] = []
   function openMist(i: number) {
+    mistDots[i]?.done()
     const was = open
     if (open >= 0) {
       mistEls[open].el.classList.remove('open')
@@ -314,6 +317,9 @@ export function forkScene(ctx: SceneCtx) {
   const root = h('div', { class: 't38f' }, h('p', { class: 'visually-hidden' }, K.art), defs, far0, mid0, words, near0)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
+  // H1: a dot on each lever until it has been pulled once; on each mist once the insight is out
+  const g = guide(ctx)
+  const leverDots = levers.map((l) => g.dot(l.el, { dir: [0, -1] }))
 
   const table = createTable(low)
   let p: Pal = palette()
@@ -388,9 +394,18 @@ export function forkScene(ctx: SceneCtx) {
     scenario()
     still ? loop.wake() : loop.start()
   }
+  // the insight only after the visitor has made at least two different gardens (audit 38-3: after the evidence); then
+  // the mists over the paths are the next thing to touch
+  const made = new Set<string>()
   function done() {
     if (!live) (words.setAttribute('aria-live', 'polite'), (live = true))
-    if (!told) (ctx.insight(K.insight), (told = true))
+    made.add(scId)
+    if (told || made.size < 2) return
+    told = true
+    ctx.insight(K.insight, K.detail)
+    ctx.prompt(K.mistPrompt)
+    root.classList.add('t38f-mists-on')
+    mistEls.forEach((m, i) => (mistDots[i] = g.dot(m.btn, { dir: [0, -1] })))
   }
 
   levers.forEach((l) => {
@@ -399,6 +414,7 @@ export function forkScene(ctx: SceneCtx) {
     l.el.addEventListener('pointerdown', (e) => {
       if (e.button) return
       drag = true
+      leverDots[l.i].done()
       l.el.setPointerCapture(e.pointerId)
       l.el.focus({ preventScroll: true })
       const r = l.svg.getBoundingClientRect()

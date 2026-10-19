@@ -1,9 +1,10 @@
 import './path.css'
-import { h, s } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { stepPath, type SlotGeo } from '../../ui/part2/steps'
 import { pine } from '../../ui/part2/paint'
+import { guide, type Drop, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx, SceneDef } from '../types'
 import { C } from './shell'
 import { crescent, dawnGlow, f1, fog, g39Defs, lines, mossBed, polyD } from './g39'
@@ -11,14 +12,17 @@ import { crescent, dawnGlow, f1, fog, g39Defs, lines, mossBed, polyD } from './g
 const P = C.scenes.path
 
 /** Per mount: the backdrop and the path's geometry (only one scene lives at a time). */
-let M: { ctx: SceneCtx; back: HTMLElement; sky: SVGSVGElement; land: SVGSVGElement; sun: HTMLElement; centers: Pt[]; depth: number[]; size: Pt; placed: number; job: { cancel(): void } | null; first: boolean } | null = null
+let M: { ctx: SceneCtx; back: HTMLElement; sky: SVGSVGElement; land: SVGSVGElement; sun: HTMLElement; centers: Pt[]; depth: number[]; size: Pt; placed: number; job: { cancel(): void } | null; first: boolean; onPlace: (k: number) => void } | null = null
 
 /**
  * Scene 3 — thirty days as four week-stones (stepPath, 1PT backlit). From the veranda step, eye level: a moss slope climbs
  * to a garden gate on the horizon with the sun just below it; four hollows wait along the path, each farther one higher
- * and smaller. The loose stones lie big on the veranda floor. Set one in its hollow (drag, tap, or 1–4): it shrinks into
- * the distance. All four: the sun clears the gate and a ray runs down the path waking each stone. The component keeps the
- * logic, keys, drag and the take-away cards; this station paints the land and sets each stone's depth.
+ * and smaller. The loose stones lie big on the veranda floor, each with no number but a thing carved on it and its short
+ * name (audit 39-3: the order is not given away). Each week stands on the one before: set one in its hollow (drag, tap,
+ * or 1–4 = week 1–4) and it shrinks into the distance; one set too early slides back and says which stone it needs under
+ * it. All four: the sun clears the gate and a ray runs down the path waking each stone. The component keeps the logic,
+ * drag and the take-away cards; this station paints the land, sets each stone's depth and guides (the next hollow
+ * breathes, a dot on every loose stone, the prompt counts).
  */
 const def = stepPath(P.steps, {
   label: P.label, prompt: P.prompt, insight: P.insight, cards: P.weekCards,
@@ -54,6 +58,7 @@ const def = stepPath(P.steps, {
     if (el) sink(el, k)
     M.placed++
     if (M.placed >= 4) M.back.classList.add('is-lit')
+    M.onPlace(k)
   },
 })
 
@@ -78,9 +83,10 @@ export const pathScene: SceneDef = {
     const land = s('svg', { class: 't39p-land', 'aria-hidden': 'true' })
     const back = h('div', { class: `t39p${ctx.reduced || ctx.quality === 'low' ? ' is-still' : ''}`, 'aria-hidden': 'true' }, sky, sun, land)
     ctx.art.append(back, h('p', { class: 'visually-hidden' }, P.art))
-    M = { ctx, back, sky, land, sun, centers: [], depth: [], size: [0, 0], placed: 0, job: null, first: true }
+    M = { ctx, back, sky, land, sun, centers: [], depth: [], size: [0, 0], placed: 0, job: null, first: true, onPlace: () => {} }
     const out = def.mount(ctx)
     ctx.art.querySelector('.p2s')?.classList.add('t39p-steps')
+    guideWeeks(ctx)
     // the 30-day sheet is a scroll hung from the gate: its close rolls it up there (and a touch unrolls it again)
     const roll = (e: Event) => {
       const sheet = ctx.art.querySelector<HTMLElement>('.t39p-steps .p2s-sheet')
@@ -275,7 +281,8 @@ function gate(x: number, y: number, H: number) {
 }
 
 /** A week-stone against the light (w × h box): a dark body, its top and back edge burning with the low sun behind it,
- *  the week's numeral cut deep in its face, a long shadow running toward the viewer. */
+ *  the week's thing cut in its face (no numeral: a tea bowl, a picture frame, a scroll, a wooden box), a long shadow
+ *  running toward the viewer. */
 function stoneArt(w: number, hh: number, seed: number, n: number) {
   const r = rng(seed)
   const top = blob(w / 2, hh * 0.36, w * 0.47, hh * 0.3, seed, 0.08, 18)
@@ -295,7 +302,98 @@ function stoneArt(w: number, hh: number, seed: number, n: number) {
     s('path', { class: 't39p-piece-moss', d: moss }),
     // the rim: the back edge of the crown and the flanks catching the sun
     s('path', { class: 't39p-piece-rim', d: stroke(back, Math.max(2.2, hh * 0.08), 0.12, 0.12, 0.1) + stroke([[w * 0.04, hh * 0.4], [w * 0.05, hh * 0.7], [w * 0.13, hh * 0.9]], Math.max(1.2, hh * 0.035), 0.1, 0.6, 0.2) + stroke([[w * 0.96, hh * 0.4], [w * 0.95, hh * 0.7], [w * 0.87, hh * 0.9]], Math.max(1.2, hh * 0.035), 0.1, 0.6, 0.2) }),
-    // the week, cut into the face: the cut's shadowed upper wall, its lit lower lip
-    s('text', { class: 't39p-num-lip', x: f1(w / 2), y: f1(hh * 0.86 + 1.2), 'text-anchor': 'middle', 'font-size': f1(hh * 0.62) }, String(n)),
-    s('text', { class: 't39p-num', x: f1(w / 2), y: f1(hh * 0.86), 'text-anchor': 'middle', 'font-size': f1(hh * 0.62) }, String(n)))
+    // the week's thing, cut into the face: the cut's lit lower lip under its shadowed wall
+    s('path', { class: 't39p-num-lip', d: carving(n - 1, w / 2, hh * 0.66 + 1.2, hh * 0.24) }),
+    s('path', { class: 't39p-num', d: carving(n - 1, w / 2, hh * 0.66, hh * 0.24) }))
+}
+
+/** The thing carved on week i's stone, centred on (x, y), r tall-ish: a tea bowl, a picture frame, a scroll, a box. */
+function carving(i: number, x: number, y: number, r: number): string {
+  const lw = Math.max(1.4, r * 0.16)
+  if (i === 0) return stroke(curve([x - r * 1.1, y - r * 0.35], [x, y + r * 1.25], [x + r * 1.1, y - r * 0.35], 12), lw, 0.1, 0.1, 0.4) + stroke([[x - r * 1.15, y - r * 0.38], [x + r * 1.15, y - r * 0.38]], lw, 0.1, 0.1, 0.4) + stroke([[x - r * 0.4, y + r * 0.62], [x + r * 0.4, y + r * 0.62]], lw, 0.1, 0.1, 0.4)
+  if (i === 1) return stroke([[x - r, y - r * 0.75], [x + r, y - r * 0.75], [x + r, y + r * 0.75], [x - r, y + r * 0.75], [x - r, y - r * 0.75]], lw, 0.05, 0.05, 0.6) + stroke([[x - r * 0.65, y + r * 0.45], [x - r * 0.15, y - r * 0.2], [x + r * 0.15, y + r * 0.15], [x + r * 0.65, y - r * 0.35]], lw * 0.8, 0.1, 0.1, 0.4)
+  if (i === 2) return stroke([[x - r * 1.05, y - r * 0.5], [x + r * 1.05, y - r * 0.5]], lw * 1.3, 0.1, 0.1, 0.5) + stroke([[x - r * 0.85, y - r * 0.45], [x - r * 0.85, y + r * 0.7], [x + r * 0.85, y + r * 0.7], [x + r * 0.85, y - r * 0.45]], lw, 0.05, 0.05, 0.5) + stroke([[x - r * 0.45, y], [x + r * 0.45, y]], lw * 0.7, 0.2, 0.2, 0.3) + stroke([[x - r * 0.45, y + r * 0.35], [x + r * 0.3, y + r * 0.35]], lw * 0.7, 0.2, 0.2, 0.3)
+  return stroke([[x - r, y - r * 0.2], [x + r, y - r * 0.2], [x + r, y + r * 0.8], [x - r, y + r * 0.8], [x - r, y - r * 0.2]], lw, 0.05, 0.05, 0.6) + stroke([[x - r * 1.1, y - r * 0.5], [x, y - r * 0.85], [x + r * 1.1, y - r * 0.5]], lw, 0.1, 0.1, 0.5) + stroke([[x, y - r * 0.2], [x, y + r * 0.8]], lw * 0.7, 0.1, 0.1, 0.4)
+}
+
+/**
+ * The station's own guide over the component (audit 39-3): keys 1–4 take week 1–4 (the component's digits follow the
+ * shuffled pile, so they are caught first); a dot on every loose stone; the next hollow breathes; the prompt counts the
+ * hollows and says, when a stone is set too early, which stone it needs under it; standing still, the right stone
+ * leans toward its hollow.
+ */
+function guideWeeks(ctx: SceneCtx) {
+  const steps = P.steps.steps
+  const n = steps.length
+  const root = ctx.art.querySelector<HTMLElement>('.p2s')!
+  const note = root.querySelector<HTMLElement>('.p2s-note')!
+  const stones = [...root.querySelectorAll<HTMLButtonElement>('.p2s-stone')]
+  const weekOf = (el: Element) => steps.findIndex((x) => x.label === el.querySelector('.p2s-label')?.textContent)
+  const stoneOf = (w: number) => stones.find((el) => weekOf(el) === w)
+  const keysNote = root.querySelector('p.visually-hidden[id]')
+  if (keysNote) keysNote.textContent = P.keys
+  const g = guide(ctx)
+  const dots = new Map<Element, Mark>(stones.map((el) => [el, g.dot(el, { dir: [0, -1] })]))
+  // the next hollow: a breathing ring where its stone will sit (the land paints the hollows; M.centers are their centres)
+  let hole: Drop | null = g.drop(() => {
+    const c = M?.centers[M.placed] ?? [0, 0]
+    return [c[0] + root.offsetLeft, c[1] + root.offsetTop]
+  }, { w: 120, h: 44 })
+  M!.onPlace = () => {
+    const el = root.querySelector('.p2s-stone.placed:not([data-guided])')
+    if (el) {
+      ;(el as HTMLElement).dataset.guided = ''
+      dots.get(el)?.done()
+    }
+    const k = M?.placed ?? n
+    if (k < n) {
+      ctx.prompt(fill(P.next, { n: k + 1, total: n }))
+      g.refresh()
+      return
+    }
+    hole?.hit()
+    hole = null
+    // the component opens its sheet right after this: say on it what to touch (the prompt gives way to the insight)
+    setTimeout(() => {
+      const done = root.querySelector('.p2s-done')
+      if (done) done.textContent = P.done
+    })
+  }
+  // a wrong try: the component writes its own line; say instead which stone this one needs under it (H6)
+  let last: Element | null = null
+  const touch = (e: Event) => (last = (e.target as Element).closest?.('.p2s-stone') ?? last)
+  root.addEventListener('pointerdown', touch, true)
+  root.addEventListener('click', touch, true)
+  const mo = new MutationObserver(() => {
+    if (!note.classList.contains('wrong')) return
+    const w = last ? weekOf(last) : -1
+    const text = w > 0 ? fill(P.wrong, { prev: steps[w - 1].label }) : P.wrongFirst
+    if (note.textContent === text) return
+    note.textContent = text
+    ctx.prompt(text, 'wrong')
+  })
+  mo.observe(note, { attributes: true, childList: true, characterData: true, subtree: true })
+  ctx.onCleanup(() => mo.disconnect())
+  // 1–4 = week 1–4, whatever order the stones lie in (before the component's own digit keys)
+  const keys = (e: KeyboardEvent) => {
+    if (e.defaultPrevented || e.altKey || e.metaKey || e.ctrlKey || !/^[1-9]$/.test(e.key)) return
+    const el = stoneOf(Number(e.key) - 1)
+    if (!el) return
+    e.preventDefault()
+    if (!el.classList.contains('placed')) el.click()
+  }
+  document.addEventListener('keydown', keys)
+  ctx.onCleanup(() => document.removeEventListener('keydown', keys))
+  // H7: the stone that comes next leans 6 px toward its hollow
+  const invite = () => {
+    const k = M?.placed ?? n
+    const el = k < n ? stoneOf(k) : null
+    const c = M?.centers[k]
+    if (!el || !c || ctx.reduced) return
+    const r = el.getBoundingClientRect(), b = root.getBoundingClientRect()
+    const dx = c[0] - (r.left - b.left + r.width / 2), dy = c[1] - (r.top - b.top + r.height / 2), d = Math.hypot(dx, dy) || 1
+    el.animate([{ translate: '0 0' }, { translate: `${f1((dx / d) * 6)}px ${f1((dy / d) * 6)}px` }, { translate: '0 0' }], { duration: 1200, easing: 'ease-in-out', composite: 'add' })
+  }
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', invite))
 }
