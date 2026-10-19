@@ -1,19 +1,19 @@
 {
   "id": 19,
-  "kicker": "From the summit you can see the clouds — but the clouds can also hide the path.",
-  "summary": "AI news arrives every week — ask who measured it, how, and who checked it again.",
+  "kicker": "A new peak rises every week. Who measured how high it is?",
+  "summary": "AI news arrives every week, and some models are not open to everyone. When news comes, ask: who measured, and who checked again?",
   "newsTags": ["models-2026", "gated-release"],
   "takeaways": ["t19-doc-tin-ai"],
   "quiz": {
-    "q": "A company says its new model “beats every rival”. What is the first question to ask?",
+    "q": "A company says its new model is so capable it is not being released to everyone. What should you ask first?",
     "options": [
-      "Who measured it, and with which test?",
-      "Does the new model have a nice name?",
-      "How many likes did the launch post get?",
-      "How much money has the company raised?"
+      "Has anyone outside checked that claim?",
+      "Is the new model bigger than the last one?",
+      "Is the company's demo video impressive?",
+      "Are lots of experts speaking up to praise it?"
     ],
     "answer": 0,
-    "explain": "Scores a company measures itself are the company's own claim. Find out who measured, with what, then look for an outside check."
+    "explain": "“So capable it needs a fence” is the company's own word. Bigger, a nice demo, praising experts are not proof; Mozilla fixing 271 bugs is a check from outside."
   },
   "scenes": {
     "peaks": {
@@ -67,23 +67,23 @@
         "claimBy": "Anthropic"
       },
       "debateTitle": "Who says what",
-      "courtPrompt": "Open each gate",
+      "courtPrompt": "Touch the lantern bearer at each gate",
       "courtArt": "Looking down on the fenced summit floating in the sea of cloud, like a temple ground plan. A raked gravel court in the middle, four gates at the four quarters. Outside each gate stand a lantern bearer and a carved sign: the gate itself, a stone with fresh mortar, a stone with a single notch, a smaller fenced ring. Open a gate and its bearer walks to the middle of the court, leaving footprints.",
       "perspectives": {
         "stones": [
           {
             "who": "Anthropic · the model's maker (04/2026)",
             "view": {
-              "text": "Mythos Preview has found thousands of serious, previously unknown flaws (zero-days) in every major operating system and browser, so they must be patched before any wider release.",
+              "text": "The company says Mythos found thousands of flaws nobody knew about, in every major operating system and browser.",
               "asOf": "2026-10-15",
               "source": "anthropic-glasswing",
               "claimBy": "Anthropic"
             }
           },
           {
-            "who": "Mozilla · a tester, maker of the Firefox browser (05/2026)",
+            "who": "Mozilla · maker of the Firefox browser (05/2026)",
             "view": {
-              "text": "Firefox 150 fixed 271 bugs found by Mythos Preview, 180 rated high — a measure of urgency, not proof they were ever exploited.",
+              "text": "Mozilla confirms: it fixed 271 bugs found by Mythos, 180 of them urgent.",
               "asOf": "2026-10-15",
               "source": "mozilla-mythos"
             }
@@ -91,16 +91,16 @@
           {
             "who": "VulnCheck · a vulnerability-data company (04/2026)",
             "view": {
-              "text": "Glasswing drew huge attention but offered very little hard data: at that point only one public flaw ID (CVE) could be tied directly to the project.",
+              "text": "In mid-April, before Mozilla's report, VulnCheck could count only 1 officially published flaw tied to the project.",
               "asOf": "2026-10-15",
               "source": "cso-glasswing",
               "kind": "opinion"
             }
           },
           {
-            "who": "OpenAI · another lab (09/2026)",
+            "who": "OpenAI · another company (09/2026)",
             "view": {
-              "text": "GPT-6 Astra is also opening gradually, first to selected customers, because the company rates its own cybersecurity ability as “Critical”.",
+              "text": "OpenAI is also opening GPT-6 Astra only gradually, first to selected customers, because it worries about the model's hacking ability.",
               "asOf": "2026-10-15",
               "source": "bleeping-gpt6",
               "claimBy": "OpenAI"
@@ -108,7 +108,7 @@
           }
         ],
         "common": {
-          "text": "Agreed: AI is already very good at finding flaws. Disputed: who gets access, when, and who checks the companies' claims.",
+          "text": "Everyone sees AI has become very good at finding flaws. Still argued: who gets to use it first, and who checks the company's word.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
@@ -129,7 +129,7 @@
     "stele": {
       "label": "Reading the stele without being fooled",
       "art": "A large stone stele under a pavilion roof, carved with a mock press release in big letters. The visitor sweeps a paper lantern across it: in the lantern light, five faint carvings appear beside the loudest sentences.",
-      "prompt": "Find 5 signs by lantern",
+      "prompt": "Shine the lantern on each advertising line",
       "lanternAria": "Sweep the lantern over the stele, or use Tab to move through each sentence and press Enter",
       "mockTitle": "PRESS RELEASE · Launching the Shooting Star model",
       "mockNote": {
@@ -142,7 +142,7 @@
         {
           "text": "Shooting Star beats EVERY rival on 12 benchmarks!",
           "sign": "Who measured?",
-          "question": "Did the company score itself, or did someone outside? Which benchmark, under what conditions?",
+          "question": "Did the company score itself, or did someone outside? With which test, under what conditions?",
           "aria": "Inspect: beats every rival on 12 benchmarks"
         },
         {
@@ -154,7 +154,7 @@
         {
           "text": "Technical details will be published later.",
           "sign": "Is there a report?",
-          "question": "Is there a system card or technical report that spells out the limits and risks?",
+          "question": "Has the company published a document saying plainly where the model is weak and what the risks are?",
           "aria": "Inspect: technical details will be published later"
         },
         {
@@ -170,17 +170,17 @@
           "aria": "Inspect: experts rate it very highly"
         }
       ],
-      "found": "{n}/5 signs found",
-      "done": "All five signs — open the takeaway card",
+      "found": "Caught {n}/5 hidden catches",
+      "done": "All 5 caught — take the card from the stele's base",
       "takeaway": "t19-doc-tin-ai",
       "insight": {
-        "text": "AI news earns trust when it answers: who measured, how, what it costs, its limits, and who outside checked it.",
+        "text": "The biggest line is the one the company wants you to remember. The small print tells who measured, what it costs, who checked.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
       "detail": {
-        "text": "Even on the Claude Opus 5.5 launch page, Anthropic wrote that in its own use the gap between Opus 5.5 and Fable 5.1 is narrower than the scores suggest. Benchmarks don't tell the whole story.",
+        "text": "Even when launching Claude Opus 5.5, Anthropic wrote that in real use the gap with another of its models is smaller than the scores suggest. Scoreboards (benchmarks) don't tell the whole story.",
         "asOf": "2026-10-15",
         "source": "anthropic-opus-5-5",
         "claimBy": "Anthropic"
@@ -189,9 +189,9 @@
     "tide": {
       "label": "The release tide",
       "art": "Lying at the water’s edge at one end of a long tidal flat that runs diagonally into the distance, to a mountain with cloud round its summit: time runs into depth. The tide is in, water covers the flat and the moon’s broken road runs toward you. Drag the moon across the sky and the water draws back toward the mountain while the stones rise in date order: far apart near you, crowding at the mountain’s foot and climbing its flank like steps.",
-      "prompt": "Drag the moon through the years",
+      "prompt": "Drag the moon: watch large models rise year by year",
       "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
-      "paceNote": "No reliable source counts releases per quarter, so the scroll uses Epoch AI's count of large-scale models instead.",
+      "stones": "Each stone: one AI model at GPT-4 size or larger (as counted by Epoch AI)",
       "tide": {
         "milestones": [
           {
@@ -207,14 +207,14 @@
             "date": "2023-03",
             "label": "GPT-4",
             "fact": {
-              "text": "According to Epoch AI, GPT-4 was the first model trained with more than 10²⁵ operations (FLOP).",
+              "text": "GPT-4 (03/2023) was the first model trained with a huge amount of computing — Epoch AI uses it as the mark for “large”.",
               "asOf": "2026-10-15",
               "source": "epoch-1e25"
             }
           },
           {
             "date": "2024",
-            "label": "Two peaks a month",
+            "label": "Two models a month",
             "fact": {
               "text": "Throughout 2024, about two models at that scale were announced each month on average.",
               "asOf": "2026-10-15",
@@ -223,22 +223,22 @@
           },
           {
             "date": "2025-06",
-            "label": "Over 30 peaks",
+            "label": "Over 30 models",
             "fact": {
               "text": "By June 2025, Epoch AI counted more than 30 models at GPT-4 scale or above, from 12 developers.",
               "asOf": "2026-10-15",
               "source": "epoch-1e25"
             },
             "compare": {
-              "before": "1",
-              "after": "30+",
+              "before": "1 model",
+              "after": "over 30 models",
               "beforeLabel": "03/2023",
               "afterLabel": "06/2025"
             }
           },
           {
             "date": "2026-04-07",
-            "label": "A fenced peak",
+            "label": "A fenced model",
             "fact": {
               "text": "Anthropic announces Claude Mythos Preview but does not release it widely, giving it only to organisations that find and fix security flaws.",
               "asOf": "2026-10-15",
@@ -263,11 +263,14 @@
         }
       },
       "insight": {
-        "text": "In 2023 there was one model at GPT-4 scale; by mid-2025 there were over 30. New peaks rise faster than we can read the news.",
+        "text": "In early 2023 there was 1 model at GPT-4 size. By mid-2025 there were over 30, from 12 companies.",
         "asOf": "2026-10-15",
         "source": "epoch-1e25"
       },
-      "detail": "Training scale doesn't say how capable a model is, but it shows more and more companies can climb the mountain — and “beats every rival” headlines will keep coming thick and fast."
+      "detail": [
+        "Bigger is not always better. But the more companies can build large models, the more “beats every rival” headlines arrive.",
+        "No reliable source counts releases per quarter, so the stones use Epoch AI's count of large models (measured by the computing used in training, FLOP)."
+      ]
     }
   },
   "sources": {

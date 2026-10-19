@@ -7,6 +7,7 @@ import { onPrefs } from '../../core/prefs'
 import type { SceneDef } from '../types'
 import { clamp, onSize, p2Defs, rng, stableHeight, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon as moonArt, pine, reeds, toro } from '../../ui/part2/paint'
+import { guide } from '../../ui/part2/guide'
 import { BACK, HUMAN, bake, bamboo, col, figure, fit, glow, mix, palette, pick, pose, ramp, toneRamp, veil, type Pal, type Sprite, type Tones } from './cv'
 
 const S = raw.scenes.race
@@ -134,6 +135,16 @@ export const raceScene: SceneDef = {
     const root = h('div', { class: 't21r' }, h('p', { class: 'visually-hidden' }, S.art), sky, cv, fade, tagFar, tagNear, textCol, moon)
     ctx.art.append(root)
     ctx.prompt(S.prompt)
+    // H1 on the moon (it goes left), H2 its path across the sky with the four seasons ticked on it
+    const gd = guide(ctx)
+    const moonDot = gd.dot(moon, { dir: [-1, -0.4] })
+    const way = gd.track(() => {
+      const a = ctx.art.getBoundingClientRect(), r = root.getBoundingClientRect()
+      return Array.from({ length: 13 }, (_, k) => {
+        const [x, y] = arc(k / 12)
+        return [x + r.left - a.left, y + r.top - a.top] as Pt
+      })
+    }, { labels: S.ticks })
 
     // ── layout (CSS px)
     let W = 0, H = 0, F = 1, cx = 0, hy0 = 0, port = false, camX = -1.7, ZR = 5.2
@@ -153,7 +164,7 @@ export const raceScene: SceneDef = {
     const st = { down: 0, dist: 0, zr: 5.2, camH: CAM0, hyK: 0, lamps: 0, fin: 112, broke: -1, ghost: 0, gz: 14, num: 0, numS: 15, cmp: 0, nearZ: 4, mx: 0, my: 0 }
     const from = { camH: CAM0, hyK: 0, lamps: 0 }
     let stop = 0, tt = 0, tau = 0, drag = false, d0 = 0
-    const NUMS = [c.before, S.humanTime, c.after]
+    const NUMS = S.road // painted on the track, one format: h:mm (2025's winner, the human record, 2026's winner)
     const numSpr: (HTMLCanvasElement | null)[] = [null, null, null]
 
     function episode(i: number, t: number) {
@@ -767,6 +778,7 @@ export const raceScene: SceneDef = {
       const [x, y] = arc(t)
       st.mx = x
       st.my = y
+      way.set(t)
     }
 
     // ── stops
@@ -777,7 +789,8 @@ export const raceScene: SceneDef = {
       moon.setAttribute('aria-valuenow', String(i))
       moon.setAttribute('aria-valuetext', valueText(i))
       const m = MS[i]
-      read.replaceChildren(h('p', { class: 'p2-eyebrow' }, `${viDate(m.date)} · ${m.label}`), ctx.fact(m.fact as Fact, 'p', 't21r-fact'))
+      // "today" has no fact of its own: the camera cranes up, and the forecast in the mist says the rest
+      read.replaceChildren(h('p', { class: 'p2-eyebrow' }, `${viDate(m.date)} · ${m.label}`), 'fact' in m && m.fact ? ctx.fact(m.fact as Fact, 'p', 't21r-fact') : '')
       read.classList.remove('in')
       void read.offsetWidth
       read.classList.add('in')
@@ -797,10 +810,14 @@ export const raceScene: SceneDef = {
       episode(stop, tau)
       if (still) loop.wake()
       else loop.start()
-      if (i === N && !reached) {
+      // the insight comes where the robot passes the human record (04/2026), then on to today
+      if (i >= 2 && !reached) {
         reached = true
+        moonDot.done()
         ctx.insight(S.insight as Fact, S.detail as Fact)
+        if (i < N) ctx.prompt(S.next)
       }
+      if (i === N) way.done()
     }
     function crossfade() {
       // the new season cuts in over a fading copy of the last frame (one drawImage, then an opacity tween)
@@ -1026,7 +1043,7 @@ export const raceScene: SceneDef = {
     }
 
     colours()
-    ctx.onCleanup(onSize(ctx.art, layout))
+    ctx.onCleanup(onSize(ctx.art, () => (layout(), gd.refresh()))) // the moon's path is known only after layout
     const offPrefs = onPrefs(() => {
       const before = pal
       colours()

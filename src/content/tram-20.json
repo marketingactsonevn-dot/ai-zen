@@ -1,7 +1,7 @@
 {
   "id": 20,
-  "kicker": "Viên sỏi nhỏ lăn trăm năm chưa tới đáy giếng — rồi một đêm, nó chạm nước.",
-  "summary": "AI đã chạm tới những bài toán lớn nhất — và cách loài người kiểm chứng tri thức cũng đang đổi theo.",
+  "kicker": "Có bài toán người ta bỏ ngỏ gần trăm năm. Năm 2026, AI góp tay đưa ra lời giải.",
+  "summary": "AI đã đưa ra lời giải cho những bài toán khó hàng chục năm. Đúng hay chưa: máy kiểm từng bước, người kiểm đề bài.",
   "newsTags": [
     "ai-math"
   ],
@@ -9,21 +9,21 @@
     "t20-kiem-tuyen-bo-toan"
   ],
   "quiz": {
-    "q": "Vì sao chứng minh viết bằng Lean đáng tin hơn một bài viết thường, nhưng vẫn cần con người?",
+    "q": "Một lời giải đã được máy kiểm từng bước. Vì sao vẫn cần người xem lại?",
     "options": [
-      "Máy kiểm được từng bước logic, nhưng người phải xem đề bài trong Lean có đúng là đề thật không",
-      "Lean do AI viết nên luôn đúng, người chỉ cần đọc lướt",
-      "Lean chỉ kiểm chính tả, còn toán thì người phải tự kiểm hết",
-      "Lean chạy nhanh hơn nhưng hay sai hơn bài viết tay"
+      "Máy không biết đề cho máy có khớp đề thật",
+      "Máy hay kiểm sai những bước khó của lời giải",
+      "Máy chỉ kiểm được chính tả và dấu câu",
+      "Máy kiểm chậm hơn người rất nhiều lần"
     ],
     "answer": 0,
-    "explain": "Máy kiểm logic rất chắc. Nhưng nếu đề bài viết cho máy lệch khỏi đề thật, máy vẫn gật đầu — chỉ con người mới kiểm được ý nghĩa."
+    "explain": "Máy kiểm từng bước rất chắc. Nhưng nếu đề cho máy lệch khỏi đề thật, máy vẫn gật đầu."
   },
   "scenes": {
     "well": {
       "label": "Giếng sỏi",
       "art": "Nhìn từ trên xuống một giếng đá cổ có rêu và dương xỉ, xà gỗ treo gàu; trăng chạy cung ở mép trên, tia trăng rọi vào vách giếng. Kéo trăng qua từng viên sỏi trên vành: sỏi lật rơi, đậu trên gờ sâu dần, năm 2025 ở trên, 2026 ở dưới; Navier–Stokes chạm nước làm vỡ bóng trăng, 722 bản thảo rơi như mưa, hôm nay mặt nước lặng với một vòng khắc, và sương nằm dưới đáy.",
-      "prompt": "Kéo trăng thả sỏi",
+      "prompt": "Kéo trăng: thả từng viên sỏi",
       "moonAria": "Kéo vầng trăng, hoặc dùng phím ← → để đi qua các mốc",
       "tide": {
         "milestones": [
@@ -53,7 +53,7 @@
             "date": "2026-07-20",
             "label": "Giả thuyết Jacobian",
             "fact": {
-              "text": "Levent Alpöge (Anthropic), với sự trợ giúp của Claude Fable, đưa ra phản ví dụ 3 chiều cho giả thuyết Jacobian đặt ra từ năm 1939.",
+              "text": "Nhà toán học Levent Alpöge (Anthropic), có AI Claude trợ giúp, tìm ra một ví dụ cho thấy giả thuyết Jacobian (đặt từ 1939) là sai.",
               "asOf": "2026-10-15",
               "source": "afp-jacobian",
               "verifiedBy": "Archive of Formal Proofs (kiểm bằng Isabelle)"
@@ -64,7 +64,7 @@
             "date": "2026-09-08",
             "label": "Navier–Stokes",
             "fact": {
-              "text": "OpenAI công bố chứng minh dòng chảy Navier–Stokes có thể “nổ” (blowup), kèm bản viết lại bằng Lean để máy kiểm.",
+              "text": "OpenAI nói AI của họ chứng minh được: dòng nước êm có thể tự “nổ”. Kèm bản viết lại để máy kiểm từng bước.",
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "claimBy": "OpenAI"
@@ -75,7 +75,7 @@
             "date": "2026-10-06",
             "label": "722 bản thảo",
             "fact": {
-              "text": "OpenAI đăng 722 bản thảo, gom thành 372 nhóm kết quả, từ khoảng 4.000 bài toán đã thử; hãng cảnh báo có bài còn lỗi.",
+              "text": "OpenAI đăng 722 bản thảo lời giải toán; chính hãng nói có bài còn lỗi.",
               "asOf": "2026-10-15",
               "source": "aa-openai-math",
               "claimBy": "OpenAI"
@@ -94,18 +94,18 @@
           }
         ],
         "horizon": {
-          "text": "Nhóm cố vấn ở Viện IAS (Princeton): tương lai toán học không thể chỉ là ngồi hiểu những kết quả do phòng lab AI làm ra.",
+          "text": "Nhóm cố vấn ở Viện IAS (Princeton): tương lai toán học không thể chỉ là ngồi hiểu những kết quả do các hãng AI làm ra.",
           "asOf": "2026-10-15",
           "source": "aa-openai-math",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "Chỉ một năm, AI đi từ đề thi Olympic (07/2025) tới phản ví dụ cho một giả thuyết có từ năm 1939 (07/2026).",
+        "text": "Một năm: từ đề thi học sinh (07/2025) tới một giả thuyết bỏ ngỏ 87 năm (07/2026).",
         "asOf": "2026-10-15",
         "source": "afp-jacobian"
       },
-      "detail": "Để ý dấu ◇: nhiều mốc là hãng tự công bố. Mốc nào đã có bên ngoài kiểm lại thì ghi rõ ai kiểm."
+      "legend": "◇ hãng tự công bố · ● đã có bên ngoài kiểm"
     },
     "vortex": {
       "label": "Dòng nước nổ tung",
@@ -185,34 +185,34 @@
       "takeaway": "t20-kiem-tuyen-bo-toan"
     },
     "circle": {
-      "label": "Bốn hòn đá quanh giếng",
+      "label": "Bốn tiếng khánh",
       "art": "Một giếng đá có vành dày, nước in trăng; trên giếng là khung cột gỗ vuông, mỗi xà treo một khánh đá đen bóng. Gõ khánh nào, khánh ấy đung đưa, ngân và gửi một chuỗi gợn sóng qua mặt giếng; lời người nói hiện trên dải giấy treo. Khi cả bốn cùng ngân, các chuỗi gợn gặp nhau ở giữa và triệt tiêu, nước lặng và in trọn vầng trăng.",
       "prompt": "Gõ từng khánh đá",
       "stoneAria": "Nghe góc nhìn của {who}",
       "perspectives": {
         "stones": [
           {
-            "who": "Charles Fefferman · Princeton, người viết đề bài chính thức cho Viện Clay",
+            "who": "Charles Fefferman · người viết đề bài cho Viện Clay",
             "view": {
-              "text": "“Tôi rất vui khi bài toán được giải” — chính người viết đề bài hào hứng đón kết quả, dù nó còn phải qua nhiều vòng kiểm.",
+              "text": "“Tôi rất vui khi bài toán được giải.”",
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "kind": "opinion"
             }
           },
           {
-            "who": "Tristan Buckmaster · NYU, nhóm cạnh tranh",
+            "who": "Tristan Buckmaster · NYU",
             "view": {
-              "text": "Ông gọi một trong ba bài của chính nhóm mình là “rác AI” (AI slop) và xin lỗi: chứng minh do máy viết có thể rất khó đọc.",
+              "text": "Ông gọi một bài của chính nhóm mình là “rác AI” và xin lỗi.",
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "kind": "opinion"
             }
           },
           {
-            "who": "Người hỏi chuyện tiền và công",
+            "who": "Sébastien Bubeck · OpenAI",
             "view": {
-              "text": "Theo Sébastien Bubeck (OpenAI), cuộc săn chứng minh tốn vài triệu USD tiền tính toán; còn ai đi trước thì hai nhóm vẫn chưa thống nhất.",
+              "text": "Cuộc tìm lời giải tốn vài triệu USD tiền máy.",
               "asOf": "2026-10-15",
               "source": "quanta-ns",
               "claimBy": "OpenAI"
@@ -221,7 +221,7 @@
           {
             "who": "Nhóm cố vấn Toán & AI · Viện IAS, Princeton",
             "view": {
-              "text": "Đây là “một sự kiện quan trọng của toán học” — nhưng tương lai toán học không thể chỉ là ngồi hiểu kết quả do phòng lab AI làm ra.",
+              "text": "Đây là “một sự kiện quan trọng của toán học” — nhưng tương lai toán học không thể chỉ là ngồi hiểu kết quả do các hãng AI làm ra.",
               "asOf": "2026-10-15",
               "source": "aa-openai-math",
               "kind": "opinion"
@@ -229,17 +229,11 @@
           }
         ],
         "common": {
-          "text": "Đồng ý: AI đã làm được toán thật, và phải được kiểm. Khác nhau: công của ai, tốn bao nhiêu, người giữ vai trò gì.",
+          "text": "Một lời giải do AI làm mở ba câu hỏi: có đúng không, công của ai, con người còn làm gì.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
-      },
-      "insight": {
-        "text": "Một kết quả toán do AI làm ra mở ba câu hỏi: có đúng không, công của ai, và con người còn làm gì.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
       }
     }
   },

@@ -1,19 +1,19 @@
 {
   "id": 19,
-  "kicker": "Đứng trên núi mới thấy mây — nhưng mây cũng che mất đường.",
-  "summary": "Tin AI đến mỗi tuần — hãy hỏi ai đo, đo thế nào, và ai đã kiểm lại.",
+  "kicker": "Mỗi tuần một đỉnh núi mới mọc lên. Ai đã đo chiều cao của nó?",
+  "summary": "Tin AI đến mỗi tuần, và có mô hình chưa mở cho mọi người. Gặp tin mới, hỏi: ai đo, ai đã kiểm lại?",
   "newsTags": ["models-2026", "gated-release"],
   "takeaways": ["t19-doc-tin-ai"],
   "quiz": {
-    "q": "Một hãng nói model mới của họ “vượt mọi đối thủ”. Câu hỏi đầu tiên nên hỏi là gì?",
+    "q": "Một hãng nói mô hình mới của họ giỏi tới mức chưa mở cho mọi người. Bạn nên hỏi gì trước?",
     "options": [
-      "Ai đã đo, và đo bằng bài kiểm tra nào?",
-      "Tên model mới nghe có hay không?",
-      "Bài đăng ra mắt được bao nhiêu lượt thích?",
-      "Hãng đó đã gọi được bao nhiêu vốn?"
+      "Ai bên ngoài đã kiểm lời đó chưa?",
+      "Mô hình mới có to hơn bản trước không?",
+      "Video demo của hãng có ấn tượng không?",
+      "Có nhiều chuyên gia lên tiếng khen không?"
     ],
     "answer": 0,
-    "explain": "Điểm số do chính hãng tự đo là tuyên bố của công ty. Biết ai đo, đo bằng gì, rồi tìm xem bên ngoài đã kiểm lại chưa."
+    "explain": "“Giỏi tới mức phải rào” là lời hãng tự nói. To hơn, demo đẹp, chuyên gia khen đều chưa phải bằng chứng; Mozilla vá 271 lỗi mới là kiểm từ bên ngoài."
   },
   "scenes": {
     "peaks": {
@@ -67,23 +67,23 @@
         "claimBy": "Anthropic"
       },
       "debateTitle": "Ai nói gì",
-      "courtPrompt": "Mở từng cổng",
+      "courtPrompt": "Chạm người cầm đèn ở mỗi cổng",
       "courtArt": "Nhìn từ trên xuống khu đỉnh có rào nổi giữa biển mây, như một bản vẽ mặt bằng chùa. Giữa là sân sỏi cào, bốn cổng ở bốn hướng. Ngoài mỗi cổng có một người cầm đèn và một dấu khắc: cái cổng, hòn đá có mạch vữa mới, hòn đá một khấc, một khu rào nhỏ hơn. Mở cổng nào thì người cầm đèn đi vào giữa sân, để lại vết chân.",
       "perspectives": {
         "stones": [
           {
             "who": "Anthropic · hãng làm mô hình (04/2026)",
             "view": {
-              "text": "Mythos Preview đã tìm ra hàng nghìn lỗ hổng nghiêm trọng (zero-day) trong mọi hệ điều hành và trình duyệt lớn, nên phải vá trước rồi mới tính chuyện mở rộng.",
+              "text": "Hãng nói Mythos tìm ra hàng nghìn lỗ hổng chưa ai biết, trong mọi hệ điều hành và trình duyệt lớn.",
               "asOf": "2026-10-15",
               "source": "anthropic-glasswing",
               "claimBy": "Anthropic"
             }
           },
           {
-            "who": "Mozilla · bên dùng thử, làm trình duyệt Firefox (05/2026)",
+            "who": "Mozilla · làm trình duyệt Firefox (05/2026)",
             "view": {
-              "text": "Firefox 150 vá 271 lỗi do Mythos Preview tìm ra, 180 lỗi xếp mức cao — mức khẩn cấp, chưa phải bằng chứng đã bị khai thác.",
+              "text": "Mozilla xác nhận: đã vá 271 lỗi do Mythos tìm ra, 180 lỗi cần vá gấp.",
               "asOf": "2026-10-15",
               "source": "mozilla-mythos"
             }
@@ -91,16 +91,16 @@
           {
             "who": "VulnCheck · công ty dữ liệu lỗ hổng (04/2026)",
             "view": {
-              "text": "Glasswing gây chú ý lớn nhưng có rất ít dữ liệu cụ thể: lúc đó mới đếm được một mã lỗi công khai (CVE) gắn trực tiếp với dự án.",
+              "text": "Giữa tháng 4, trước báo cáo của Mozilla, VulnCheck mới đếm được 1 lỗi được công bố chính thức gắn với dự án.",
               "asOf": "2026-10-15",
               "source": "cso-glasswing",
               "kind": "opinion"
             }
           },
           {
-            "who": "OpenAI · một phòng lab khác (09/2026)",
+            "who": "OpenAI · một hãng khác (09/2026)",
             "view": {
-              "text": "GPT-6 Astra cũng được mở dần, trước hết cho nhóm khách hàng chọn lọc, vì hãng tự xếp nó ở mức “Critical” về năng lực an ninh mạng.",
+              "text": "OpenAI cũng chỉ mở GPT-6 Astra dần, trước hết cho khách hàng chọn lọc, vì lo năng lực tấn công mạng của nó.",
               "asOf": "2026-10-15",
               "source": "bleeping-gpt6",
               "claimBy": "OpenAI"
@@ -108,7 +108,7 @@
           }
         ],
         "common": {
-          "text": "Đồng ý: AI tìm lỗ hổng đã rất mạnh. Khác nhau: nên mở cho ai, khi nào, và ai kiểm chứng lời hãng.",
+          "text": "Ai cũng thấy AI tìm lỗi đã rất giỏi. Câu còn cãi: ai được dùng trước, và ai kiểm lời hãng.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
@@ -129,7 +129,7 @@
     "stele": {
       "label": "Đọc bia đá không bị lừa",
       "art": "Một tấm bia đá lớn dưới mái đình, khắc một thông cáo giả lập toàn chữ to. Người xem cầm đèn lồng rê qua mặt bia: dưới ánh đèn, năm vết khắc mờ hiện ra cạnh những câu nói to nhất.",
-      "prompt": "Soi đèn tìm 5 dấu hiệu",
+      "prompt": "Soi đèn vào từng câu quảng cáo",
       "lanternAria": "Rê đèn lồng trên bia, hoặc dùng phím Tab đi qua từng câu rồi nhấn Enter",
       "mockTitle": "THÔNG CÁO · Ra mắt mô hình Sao Băng",
       "mockNote": {
@@ -142,7 +142,7 @@
         {
           "text": "Sao Băng vượt MỌI đối thủ trên 12 bài kiểm tra!",
           "sign": "Ai đo?",
-          "question": "Điểm do chính hãng tự đo hay bên ngoài đo? Bài kiểm tra (benchmark) nào, điều kiện ra sao?",
+          "question": "Điểm do chính hãng tự đo hay bên ngoài đo? Bằng bài kiểm tra nào, điều kiện ra sao?",
           "aria": "Soi câu: vượt mọi đối thủ trên 12 bài kiểm tra"
         },
         {
@@ -154,7 +154,7 @@
         {
           "text": "Chi tiết kỹ thuật sẽ được công bố sau.",
           "sign": "Có báo cáo không?",
-          "question": "Có thẻ hệ thống (system card) hay báo cáo kỹ thuật nói rõ giới hạn và rủi ro không?",
+          "question": "Hãng có đăng tài liệu nói rõ mô hình yếu ở đâu, rủi ro gì không?",
           "aria": "Soi câu: chi tiết kỹ thuật sẽ công bố sau"
         },
         {
@@ -170,17 +170,17 @@
           "aria": "Soi câu: các chuyên gia đánh giá rất cao"
         }
       ],
-      "found": "Đã thấy {n}/5 dấu hiệu",
-      "done": "Đủ năm dấu hiệu — mở thẻ mang về",
+      "found": "Đã bắt được {n}/5 chỗ giấu",
+      "done": "Đủ 5 chỗ giấu — lấy thẻ mang về ở bệ bia",
       "takeaway": "t19-doc-tin-ai",
       "insight": {
-        "text": "Tin AI đáng tin khi trả lời được: ai đo, đo thế nào, giá và giới hạn ra sao, ai bên ngoài đã kiểm lại.",
+        "text": "Câu to nhất là câu hãng muốn bạn nhớ. Dòng nhỏ mới cho biết ai đo, giá bao nhiêu, ai đã kiểm.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
       "detail": {
-        "text": "Ngay trang ra mắt Claude Opus 5.5, Anthropic cũng viết: khi tự dùng, khoảng cách giữa Opus 5.5 và Fable 5.1 hẹp hơn điểm số cho thấy. Điểm benchmark không kể hết chuyện.",
+        "text": "Ngay khi ra Claude Opus 5.5, Anthropic cũng viết: dùng thật, khoảng cách với một mô hình khác của hãng nhỏ hơn bảng điểm cho thấy. Bảng điểm (benchmark) không kể hết chuyện.",
         "asOf": "2026-10-15",
         "source": "anthropic-opus-5-5",
         "claimBy": "Anthropic"
@@ -189,9 +189,9 @@
     "tide": {
       "label": "Thuỷ triều ra mắt",
       "art": "Nằm sát mép nước ở đầu một bãi triều dài chạy chéo vào sâu, tới một ngọn núi có mây quấn đỉnh: thời gian chạy vào chiều sâu. Triều đang lên, mặt nước phủ cả bãi, đường trăng vỡ chạy về phía người xem. Kéo vầng trăng trên trời thì nước rút về phía núi, từng hòn đá nổi lên theo ngày: gần thì thưa, tới chân núi thì chen nhau rồi leo sườn như bậc thang.",
-      "prompt": "Kéo trăng qua các năm",
+      "prompt": "Kéo trăng: xem mô hình lớn mọc lên theo năm",
       "moonAria": "Kéo vầng trăng, hoặc dùng phím ← → để đi qua các mốc",
-      "paceNote": "Chưa có nguồn đáng tin đếm số lần ra mắt theo từng quý, nên cuộn tranh dùng số đếm mô hình quy mô lớn của Epoch AI.",
+      "stones": "Mỗi hòn đá: một mô hình AI cỡ GPT-4 trở lên (Epoch AI đếm)",
       "tide": {
         "milestones": [
           {
@@ -207,14 +207,14 @@
             "date": "2023-03",
             "label": "GPT-4",
             "fact": {
-              "text": "Theo Epoch AI, GPT-4 là mô hình đầu tiên được huấn luyện ở quy mô trên 10²⁵ phép tính (FLOP).",
+              "text": "GPT-4 (03/2023) là mô hình đầu tiên được luyện bằng lượng tính toán khổng lồ — Epoch AI lấy nó làm mốc “cỡ lớn”.",
               "asOf": "2026-10-15",
               "source": "epoch-1e25"
             }
           },
           {
             "date": "2024",
-            "label": "Hai đỉnh mỗi tháng",
+            "label": "Hai mô hình mỗi tháng",
             "fact": {
               "text": "Suốt năm 2024, trung bình khoảng hai mô hình ở quy mô ấy được công bố mỗi tháng.",
               "asOf": "2026-10-15",
@@ -223,22 +223,22 @@
           },
           {
             "date": "2025-06",
-            "label": "Hơn 30 đỉnh",
+            "label": "Hơn 30 mô hình",
             "fact": {
               "text": "Tới 06/2025, Epoch AI đếm được hơn 30 mô hình ở quy mô GPT-4 trở lên, của 12 nhà phát triển.",
               "asOf": "2026-10-15",
               "source": "epoch-1e25"
             },
             "compare": {
-              "before": "1",
-              "after": "30+",
+              "before": "1 mô hình",
+              "after": "hơn 30 mô hình",
               "beforeLabel": "03/2023",
               "afterLabel": "06/2025"
             }
           },
           {
             "date": "2026-04-07",
-            "label": "Đỉnh có rào",
+            "label": "Mô hình có rào",
             "fact": {
               "text": "Anthropic công bố Claude Mythos Preview nhưng không phát hành rộng, chỉ trao cho các tổ chức tìm và vá lỗ hổng.",
               "asOf": "2026-10-15",
@@ -263,11 +263,14 @@
         }
       },
       "insight": {
-        "text": "Năm 2023 mới có một mô hình ở quy mô GPT-4; giữa 2025 đã hơn 30. Đỉnh mới mọc nhanh hơn ta kịp đọc tin.",
+        "text": "Đầu 2023 chỉ có 1 mô hình cỡ GPT-4. Giữa 2025 đã hơn 30, của 12 hãng.",
         "asOf": "2026-10-15",
         "source": "epoch-1e25"
       },
-      "detail": "Quy mô huấn luyện chưa nói lên độ giỏi, nhưng cho thấy ngày càng nhiều hãng đủ sức leo núi — và tin “vượt mọi đối thủ” sẽ còn đến dày."
+      "detail": [
+        "Lớn chưa chắc giỏi. Nhưng càng nhiều hãng làm được mô hình lớn, tin “vượt mọi đối thủ” càng dày.",
+        "Chưa có nguồn đáng tin đếm số lần ra mắt theo từng quý, nên các hòn đá dùng số đếm mô hình cỡ lớn của Epoch AI (đo bằng lượng tính toán lúc luyện, FLOP)."
+      ]
     }
   },
   "sources": {

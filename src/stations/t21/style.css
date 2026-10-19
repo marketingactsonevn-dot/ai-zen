@@ -444,6 +444,7 @@
 .t21t.port .t21t-data.right { bottom: 3%; }
 .t21t.back .t21t-data { opacity: 1; visibility: visible; transition: opacity 0.9s var(--ease) 0.2s; }
 .t21t-datum { margin: 0.3em 0 0; font: 300 clamp(0.98rem, 1.3vw, 1.12rem) / 1.45 var(--serif); color: var(--ink); }
+.t21t-common { margin: 0.6em 0 0; font: 400 0.9rem/1.4 var(--serif); font-style: italic; color: var(--ink-2); }
 /* the pull: the key lantern's cord and its wooden bead (the slider); drawn down, the cord lengthens */
 .t21t-pull {
   position: absolute;
@@ -582,3 +583,5 @@
 :root[data-theme='dark'] .t21c :is(.p2c-who, .p2c-view, .p2c-count) { text-shadow: 0 0 6px var(--water), 0 0 12px var(--water); }
 .t21c .p2c-count { justify-content: center; }
 .t21c .p2c-who { justify-items: center; }
+/* the folded card handed once the strings are shown (low left of the art) */
+.t21s-card { position: absolute; z-index: 4; left: calc(var(--gutter, 0px) + 8px); bottom: 8px; }

@@ -1,6 +1,5 @@
 import raw from '../../content/tram-21.json'
 import { s } from '../../core/dom'
-import type { Fact } from '../../core/content'
 import type { SceneDef } from '../types'
 import type { Perspectives } from '../../ui/part2/types'
 import { perspectiveCircle, type PondGeo } from '../../ui/part2/perspectives'
@@ -122,8 +121,7 @@ export function circleScene(): SceneDef {
   let back: SVGSVGElement | null = null
   return perspectiveCircle(C.perspectives as Perspectives, {
     label: C.label,
-    prompt: C.prompt,
-    detail: C.insight as Fact,
+    prompt: C.prompt, // the conclusion is the common line on screen (audit v3 21-4), no detail under it
     stage(el, api) {
       host = el
       el.closest('.p2c')?.classList.add('t21c')

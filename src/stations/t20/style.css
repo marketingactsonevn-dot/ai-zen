@@ -432,6 +432,7 @@
 .t20w .p2t-horizon-label,
 .t20w .p2t-moon::after { display: none; } /* the tide's light-on-the-sand: here the moon's light is the beam into the well */
 .t20w-paint { position: absolute; left: 0; top: 0; pointer-events: none; }
+.t20w-legend { position: absolute; z-index: 3; left: 4px; bottom: 4px; margin: 0; font: 400 0.84rem/1.4 var(--serif); color: var(--ink-2); text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper); pointer-events: none; }
 .t20w-base,
 .t20w-fx { position: absolute; left: 0; top: 0; max-width: none; }
 .t20w-year,

@@ -82,7 +82,7 @@ export function tideScene(ctx: SceneCtx) {
   const moonEl = h('div', {
     class: 't19t-moon', role: 'slider', tabindex: '0', 'aria-label': S.moonAria, 'aria-valuemin': '0', 'aria-valuemax': String(n), 'aria-valuenow': '0', 'aria-valuetext': valueText(0),
   }, disc)
-  const q = h('p', { class: 't19t-q' }, S.paceNote)
+  const q = h('p', { class: 't19t-q' }, S.stones) // what a stone stands for, said where the stones are (the method note is in the detail)
   const read = h('div', { class: 't19t-card' })
   const words = h('div', { class: 't19t-words' }, q, read)
   const cmpA = h('p', { class: 't19t-cmp t19t-cmp-a' })

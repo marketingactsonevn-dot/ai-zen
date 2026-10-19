@@ -123,7 +123,7 @@ export function wellScene(ctx: SceneCtx) {
   const BL = 220, BWD = 90 // the beam sprite's box
 
   const def = progressTide(T, {
-    label: S.label, prompt: S.prompt, insight: S.insight as Fact, detail: S.detail, aria: S.moonAria,
+    label: S.label, prompt: S.prompt, insight: S.insight as Fact, aria: S.moonAria,
     track: geo,
     onStep(i, t) {
       at = i
@@ -136,6 +136,8 @@ export function wellScene(ctx: SceneCtx) {
   const root = ctx.art.querySelector<HTMLElement>('.p2t')!
   root.classList.add('t20w')
   root.prepend(paint, h('p', { class: 'visually-hidden' }, S.art))
+  // the key to the marks, on screen from the start (audit v3 20-1: it was hidden in the detail)
+  root.append(h('p', { class: 't20w-legend' }, S.legend))
   const arm = () => {
     armed = true
   }

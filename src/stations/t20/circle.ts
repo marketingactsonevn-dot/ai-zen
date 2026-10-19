@@ -1,6 +1,5 @@
 import raw from '../../content/tram-20.json'
 import { h, s } from '../../core/dom'
-import type { Fact } from '../../core/content'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
@@ -104,7 +103,7 @@ export const circleScene: SceneDef = {
     let g: CanvasRenderingContext2D | null = null
 
     const def = perspectiveCircle(P, {
-      label: S.label, prompt: S.prompt, detail: S.insight as Fact,
+      label: S.label, prompt: S.prompt, // the three questions are the common line on screen (audit v3 20-4)
       stage(el, api) {
         host = el
         el.append(back, base, fx, front)
