@@ -5,8 +5,6 @@ _reference
 *.log
 docs/part2-shots/art/*/raw/
 dist-*
-docs/part2-audit/all/
-docs/part2-audit/g[0-9]*/
 docs/part2-audit/v1/
 docs/part2-audit/v2/*
 !docs/part2-audit/v2/README.md

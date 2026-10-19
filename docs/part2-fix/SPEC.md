@@ -11,7 +11,7 @@ Sửa 21 trạm Part 2 (t19–t39, route `#/vuon-trang`) theo audit v3 ở commi
 6. `docs/part2-art-direction.md`, `docs/AI-ZEN-v2-SPEC.md` (spec gốc, có thẩm quyền về nội dung/vườn).
 7. `docs/part2-audit/ref/` — ảnh chuẩn (`strong.jpg` = mốc 5/5, `p1-15-1-1.jpg` = hướng dẫn Phần 1).
 
-Ảnh chụp audit (`all/`, `gNN/`) **không lên repo** (quá nặng) — link ảnh trong file .md sẽ gãy, bình thường. Muốn xem trạng thái thật thì chụp lại bằng `node scripts/part2-shots.mjs` (Playwright).
+Ảnh chụp audit (`docs/part2-audit/all/` lúc mở, `gNN/` lúc kết) có trên repo = trạng thái TRƯỚC khi sửa (commit `0950f07`). Chụp ảnh SAU bằng `node scripts/part2-shots.mjs` (Playwright). Bản cũ `v1/`, `v2/` không kèm ảnh.
 
 ## Mục tiêu (định nghĩa xong)
 - Hết 30 slide P1 (dạy sai / chặn chơi).
