@@ -3,8 +3,8 @@
 Mỗi phase: làm → `npm run build` → perf-walk (README) → `node scripts/part2-shots.mjs` cho slide đã đụng → commit → push → báo cáo → **dừng chờ duyệt**. Đánh dấu `[x]` ở đây khi xong.
 
 ## Phase 0 · Chuẩn bị (ngắn)
-- [ ] `npm ci`, `npx playwright install chromium`, chạy `npm run build` + `npm run dev` xác nhận app lên.
-- [ ] Chụp baseline Part 2 bằng `scripts/part2-shots.mjs` (giữ local, không commit ảnh nặng).
+- [x] `npm ci`, `npx playwright install chromium`, chạy `npm run build` + `npm run dev` xác nhận app lên. *(cloud: dùng Chromium cài sẵn ở `/opt/pw-browsers`, không tải lại)*
+- [x] Chụp baseline Part 2 bằng `scripts/part2-shots.mjs` (giữ local, không commit ảnh nặng). *(thêm chế độ `--slides 19-39 --label baseline --quiz`: 138 scene × desk-dark/phone-light, cùng khung ảnh audit; `docs/part2-shots/slides/baseline/` nằm trong .gitignore)*
 
 ## Phase 1 · Khung chung (lợi cho cả 96 slide)
 - [ ] Sửa `src/ui/station.ts:153`: prompt không ẩn khi chạm hụt; prompt đổi theo bước (H5).
@@ -31,3 +31,7 @@ Theo bảng ở `docs/part2-audit/README.md` (ô **P1**). Đi theo vườn, mỗ
 - [ ] Cắt/gộp theo audit (19-3, 28-6, 32-6, 33-5…) → ~87 slide; cập nhật số slide, tiến độ, ensō.
 - [ ] Kiểm các mục audit chưa kiểm: desk-light, phone-dark, low quality, reduced motion, bản EN.
 - [ ] Perf-walk toàn Part 2, cập nhật `docs/qa-v2.md`. Chờ chủ app duyệt rồi mới `npm run deploy`.
+
+## Ghi chú đo đạc (Phase 0)
+- Máy cloud không GPU, CPU chậm hơn máy gốc: perf-walk ở đây cho Phần 1 (t01–06) 23/28 lần chuyển có frame > 50 ms (máy gốc ~1/89, `docs/perf-after.md`). Ngưỡng tuyệt đối README không đo được trên máy này → mỗi phase so **tương đối** với baseline dưới, đo cùng máy.
+- Baseline Part 2 (`docs/perf-data/part2-fix-p0-baseline.json`, `--only c --stations 19-39 --passes 2`, CPU 4×): 234 lần chuyển, 213 có frame > 50 ms, frame max trung vị 167 ms, tệ nhất 1150 ms (t33), 808 long task; vào trạm trung vị 319 ms. Heap lượt 1 → 2: 19,8 → 20,4 MB (về bản đồ 19,4 → 20,2); WebGL max 1, rAF ≤ 1.
