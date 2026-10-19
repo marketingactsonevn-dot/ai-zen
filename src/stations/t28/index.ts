@@ -14,7 +14,7 @@ const station: StationModule = {
   scenes: [
     { label: S.gardeners.label, mount: gardenersScene },
     { label: S.scaling.label, mount: scalingScene },
-    { label: S.moat.label, mount: moatScene },
+    { label: S.moat.label, text: 'br', mount: moatScene },
     { label: S.goldrush.label, mount: goldrushScene },
     { label: S.loop.label, mount: wheelScene },
     { label: S.loop.circleLabel, mount: voicesScene },

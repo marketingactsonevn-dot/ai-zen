@@ -118,16 +118,52 @@
     },
     "laws": {
       "label": "The tide of law",
-      "art": "From the sea at night, looking at the shore: eight carved stone pillars stand along a beach that curves away into mist, all under the waves at first. As the moon crosses the sky the tide draws back toward you and the pillars rise one by one. The last, bearing Vietnam's name, is still wet; beyond it a ninth lies half-sunk in the shallows.",
-      "prompt": "Drag the moon through the laws",
-      "sliderAria": "Drag the moon through the AI-law milestones",
+      "art": "From the sea at night, looking at the shore: four equal stone pillars stand in a row, their names carved above them: EU, China, US, Vietnam; at first their feet are under the waves. Drag the moon along the dotted ink arc in the sky (marked 2024, 2025, 2026, Today): the tide draws back toward you, and when a place's law takes effect its pillar shows one more notch, the words carved right under its foot. The EU's high-risk notch slides down to its new deadline; the US pillar cracks down the middle; China's and Vietnam's carry a label seal; Vietnam's is still wet.",
+      "prompt": "Drag the moon through the years and watch each place's laws rise",
+      "sliderAria": "Drag the moon through the years to see each place's AI-law milestones",
+      "places": [
+        {
+          "id": "eu",
+          "name": "EU"
+        },
+        {
+          "id": "cn",
+          "name": "China"
+        },
+        {
+          "id": "us",
+          "name": "US"
+        },
+        {
+          "id": "vn",
+          "name": "Vietnam"
+        }
+      ],
+      "where": [
+        "eu",
+        "eu",
+        "cn",
+        "vn",
+        "us",
+        "vn",
+        "eu"
+      ],
+      "notches": [
+        "EU · 2024 in force",
+        "EU · 2025 bans social scoring",
+        "China · Sep 2025 labels required",
+        "Vietnam · Dec 2025 has an AI law",
+        "US · Dec 2025 federal government takes on state laws",
+        "Vietnam · May 2026 AI content must be marked",
+        "EU · high-risk AI pushed to Dec 2027"
+      ],
       "tide": {
         "milestones": [
           {
             "date": "2024-08-01",
             "label": "EU: the AI Act takes effect",
             "fact": {
-              "text": "The EU AI Act takes effect, phased in according to the risk level of each kind of application.",
+              "text": "The EU AI Act takes effect, phased in by the risk level of each kind of application; AI used to hire people or decide on loans, for example, counts as high-risk.",
               "asOf": "2026-10-15",
               "source": "t30-eu-aiact"
             }
@@ -136,7 +172,7 @@
             "date": "2025-02-02",
             "label": "EU: some uses banned",
             "fact": {
-              "text": "EU bans start to apply to AI uses with unacceptable risk, such as social scoring.",
+              "text": "EU bans start to apply to AI uses with unacceptable risk, such as scoring citizens on their behaviour.",
               "asOf": "2026-10-15",
               "source": "t30-eu-aiact"
             }
@@ -163,7 +199,7 @@
             "date": "2025-12-11",
             "label": "US: an order on state laws",
             "fact": {
-              "text": "The US President signs an order creating a federal legal task force to challenge state AI laws seen as obstructive.",
+              "text": "Dec 2025: the US President set up a federal legal task force to challenge state AI laws he considers a burden on business.",
               "asOf": "2026-10-15",
               "source": "t30-us-eo"
             }
@@ -181,7 +217,7 @@
             "date": "2026-07-27",
             "label": "EU: high-risk deadline pushed back",
             "fact": {
-              "text": "The EU amends the law (the Omnibus package): high-risk AI rules move to 2 Dec 2027, and AI built into products to 2 Aug 2028.",
+              "text": "The EU amends the law (an amending package called the Omnibus): high-risk AI rules move to 2 Dec 2027, and AI built into products to 2 Aug 2028.",
               "asOf": "2026-10-15",
               "source": "t30-eu-omnibus"
             },
@@ -191,29 +227,30 @@
               "beforeLabel": "Old high-risk deadline",
               "afterLabel": "New deadline"
             }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Today",
-            "fact": {
-              "text": "According to a June 2026 analysis, Vietnam's list of high-risk AI systems was still awaiting the Prime Minister's sign-off.",
-              "asOf": "2026-10-15",
-              "source": "t30-vn-decree"
-            }
           }
         ],
         "horizon": {
-          "text": "AI laws will keep being rewritten as the technology changes; today's deadline may not be tomorrow's.",
+          "text": "AI law will keep being rewritten as the technology changes; today's deadline may not be tomorrow's.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "prediction"
         }
       },
       "insight": {
-        "text": "Each its own path: the EU regulates by risk, China requires labels, Vietnam has its own new law, the US still argues.",
+        "text": "The EU sorts AI by risk, China and Vietnam require labels, and the US is still torn between federal and state.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
+      },
+      "detail": {
+        "text": "According to an analysis by the law firm Tilleke & Gibbins (June 2026), Vietnam's list of high-risk AI systems was still waiting for the Prime Minister to issue it.",
+        "asOf": "2026-10-15",
+        "source": "t30-vn-decree"
+      },
+      "board": {
+        "text": "Making content in Vietnam: AI-made images, audio and video must carry an identifying mark (Decree 142/2026).",
+        "asOf": "2026-10-15",
+        "source": "t30-vn-decree"
       }
     },
     "copyright": {

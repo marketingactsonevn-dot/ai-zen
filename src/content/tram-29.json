@@ -48,57 +48,79 @@
     },
     "wells": {
       "label": "Hồ lớn hút giếng nhỏ",
-      "art": "Từ đỉnh đồi nhìn xuống: ba giếng đá nhỏ khắc chữ Điện thoại, Laptop, Card đồ hoạ; từ mỗi giếng một ống tre chạy xuống dốc, gặp nhau ở tấm cống đá rồi đổ về hồ trăng lớn dưới thung lũng — trung tâm dữ liệu AI, bờ hồ là những dãy nhà đèn sáng. Mỗi lần mở cống, hồ dâng thêm, thêm một dãy đèn, nước trong ba giếng tụt sâu vào lòng đá.",
-      "prompt": "Mở cửa mạch nước",
+      "art": "Từ đỉnh đồi nhìn xuống: ở chỗ trũng của sườn đồi là tấm cống đá của nhà máy chip nhớ, một nguồn chảy ra hai phía. Ống tre đưa nước về ba giếng đá nhỏ khắc chữ Điện thoại, Laptop, Card đồ hoạ; bên kia sườn, nước đổ xuống hồ trăng lớn dưới thung lũng, bờ hồ khắc chữ Trung tâm dữ liệu AI, có những dãy nhà đèn sáng. Mỗi lần kéo cống là một hợp đồng dài hạn: dòng về hồ to thêm, hồ dâng và sáng thêm một dãy đèn; dòng về giếng nhỏ lại, nước trong giếng tụt sâu vào lòng đá.",
+      "prompt": "Kéo tấm cống lên: một hợp đồng mới",
       "lake": "Trung tâm dữ liệu AI",
-      "gate": "Mở cửa mạch",
-      "gateAria": "Mở cửa mạch nước: xem bộ nhớ chảy về đâu",
+      "source": "Nhà máy chip nhớ",
+      "gate": "Hợp đồng dài hạn",
+      "gateAria": "Tấm cống Hợp đồng dài hạn: kéo lên, hoặc nhấn, để ký thêm một hợp đồng",
+      "countTpl": "Hợp đồng {n}/{total}",
       "wells": [
-        { "id": "phone", "name": "Điện thoại" },
-        { "id": "laptop", "name": "Laptop" },
-        { "id": "gpu", "name": "Card đồ hoạ" }
+        {
+          "id": "phone",
+          "name": "Điện thoại"
+        },
+        {
+          "id": "laptop",
+          "name": "Laptop"
+        },
+        {
+          "id": "gpu",
+          "name": "Card đồ hoạ"
+        }
       ],
       "wellAria": "Giếng {name}: mực nước còn {n} phần mười",
       "facts": [
         {
-          "text": "10/2025: SK hynix cho biết đã chốt khách cho toàn bộ sản lượng DRAM và NAND năm 2026, đàm phán HBM cũng đã xong.",
+          "text": "10/2025: SK hynix, một trong ba hãng chip nhớ lớn nhất, nói toàn bộ hàng năm 2026 đã có người mua.",
           "asOf": "2026-10-15",
           "source": "t29-skhynix-3q25",
           "claimBy": "SK hynix"
         },
         {
-          "text": "12/2025: Micron đóng mảng Crucial bán RAM, ổ SSD cho người dùng, để dồn hàng cho khách lớn ở mảng tăng nhanh như AI.",
+          "text": "Các ông lớn điện toán đám mây giữ chỗ bộ nhớ bằng hợp đồng dài hạn, có hợp đồng từ năm năm trở lên.",
           "asOf": "2026-10-15",
-          "source": "t29-micron-crucial"
+          "source": "t29-jpm"
         }
       ],
       "insight": {
-        "text": "Nhà máy ưu tiên bộ nhớ cho trung tâm dữ liệu AI, nên phần còn lại cho điện thoại, laptop ngày càng ít.",
+        "text": "Nhà máy chip nhớ dồn hàng cho trung tâm dữ liệu AI, nên phần chảy về điện thoại, laptop cạn dần.",
         "asOf": "2026-10-15",
         "source": "t29-jpm"
       }
     },
     "bill": {
       "label": "Hoá đơn đến tay ai",
-      "art": "Một cuốn sổ gấp xếp chạy thẳng từ hồ lớn dưới trăng (trung tâm dữ liệu) về phía người xem, trên nền cát cào hội tụ về cùng một điểm, tới sạp điện thoại ở cổng vườn. Kéo đĩa đá chặn giấy mang bóng trăng dọc cuốn sổ: qua mốc nào, nếp giấy ấy dựng lên; hai nếp giá DRAM nằm trên đất, nếp sau dài gấp năm nếp trước.",
-      "prompt": "Kéo trăng theo dòng tin",
-      "sliderAria": "Kéo vầng trăng qua các mốc của cơn khát bộ nhớ",
+      "art": "Một cuốn sổ gấp xếp chạy thẳng từ hồ lớn dưới trăng (trung tâm dữ liệu) về phía người xem, trên nền cát cào, tới sạp điện thoại ở cổng vườn. Trên quầy, chiếc điện thoại treo thẻ giá và thẻ RAM. Kéo đĩa đá chặn giấy dọc cuốn sổ: qua mốc nào, nếp giấy ấy dựng lên và một mảnh hoá đơn bay tới ghim vào thẻ giá; hai nếp giá DRAM nằm trên đất, nếp sau dài gấp năm nếp trước. Tới hôm nay, thẻ RAM co lại.",
+      "prompts": [
+        "Kéo đĩa đá dọc cuốn sổ về phía sạp",
+        "Nhìn thẻ giá trên chiếc điện thoại"
+      ],
+      "sliderAria": "Kéo đĩa đá chặn giấy dọc cuốn sổ qua các mốc của cơn khát bộ nhớ",
+      "priceTag": "Giá",
+      "ramTag": "RAM",
+      "board": {
+        "text": "Mua máy lúc này: so cả giá lẫn số GB RAM.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
       "tide": {
         "milestones": [
           {
             "date": "2025-12-03",
-            "label": "Một thương hiệu rút lui",
+            "label": "Micron ngừng bán RAM lẻ",
             "fact": {
-              "text": "Micron thông báo ngừng mảng Crucial; hàng cho người dùng chỉ giao tới hết 02/2026.",
+              "text": "Micron, một trong ba hãng chip nhớ lớn nhất, ngừng bán RAM và ổ SSD cho người dùng (thương hiệu Crucial); hàng chỉ giao tới hết 02/2026.",
               "asOf": "2026-10-15",
               "source": "t29-micron-crucial"
             }
           },
           {
             "date": "2026-02-26",
-            "label": "Dự báo cho điện thoại",
+            "label": "IDC: điện thoại đắt hơn",
             "fact": {
-              "text": "IDC dự báo năm 2026 lượng điện thoại bán ra giảm 12,9%, giá bán trung bình tăng 14% lên mức kỷ lục 523 USD.",
+              "text": "IDC, hãng nghiên cứu thị trường, dự báo giá điện thoại trung bình năm 2026 lên kỷ lục 523 USD.",
               "asOf": "2026-10-15",
               "source": "t29-idc",
               "kind": "prediction"
@@ -106,9 +128,9 @@
           },
           {
             "date": "2026-08-06",
-            "label": "Dự báo giá DRAM",
+            "label": "J.P. Morgan: giá chip nhớ gấp 5",
             "fact": {
-              "text": "J.P. Morgan ước giá DRAM từ đầu 2024 tới cuối 2026 sẽ tăng hơn 400%, tức gấp hơn 5 lần.",
+              "text": "J.P. Morgan ước giá DRAM (loại chip nhớ làm RAM) cuối 2026 gấp hơn 5 lần đầu 2024.",
               "asOf": "2026-10-15",
               "source": "t29-jpm",
               "kind": "prediction"
@@ -119,35 +141,35 @@
               "beforeLabel": "Giá DRAM đầu 2024",
               "afterLabel": "Ước tính cuối 2026"
             }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Hôm nay",
-            "fact": {
-              "text": "Các ông lớn đám mây khoá nguồn bộ nhớ bằng hợp đồng dài hạn, có hợp đồng từ năm năm trở lên.",
-              "asOf": "2026-10-15",
-              "source": "t29-jpm"
-            }
           }
         ],
         "horizon": {
-          "text": "IDC dự báo giá bộ nhớ ổn định dần vào giữa 2027 nhưng khó quay về mức cũ; điện thoại dưới 100 USD có thể không còn lãi.",
+          "text": "IDC: điện thoại dưới 100 USD có thể không còn lãi.",
           "asOf": "2026-10-15",
           "source": "t29-idc",
           "kind": "prediction"
         }
       },
       "insight": {
-        "text": "“Lạm phát chip” (chipflation): bộ nhớ đắt lên đẩy giá điện thoại, máy tính lên — nối tiếp hoá đơn điện, nước ở trạm 18.",
+        "text": "Bộ nhớ đắt lên, chiếc điện thoại ở sạp cũng đắt theo: IDC dự báo giá trung bình 2026 lên kỷ lục 523 USD.",
         "asOf": "2026-10-15",
-        "source": "t29-jpm"
+        "source": "t29-idc",
+        "kind": "prediction"
       },
-      "detail": {
-        "text": "Khi mua máy, hãy so cả giá lẫn dung lượng RAM: có máy giữ giá nhưng bớt RAM, có máy giữ RAM nhưng tăng giá.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "illustration"
-      }
+      "detail": [
+        {
+          "text": "Người ta gọi đây là “chipflation”, lạm phát vì chip. Như tiền điện ở trạm 18: cơn sốt AI đẩy hoá đơn sang cả người không dùng AI.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        },
+        {
+          "text": "IDC cũng dự báo lượng điện thoại bán ra năm 2026 giảm 12,9%.",
+          "asOf": "2026-10-15",
+          "source": "t29-idc",
+          "kind": "prediction"
+        }
+      ]
     },
     "refill": {
       "label": "Giếng bao giờ đầy lại?",

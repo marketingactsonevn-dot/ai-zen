@@ -122,13 +122,8 @@
 .t28s {
   position: relative;
   width: 100%;
-  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  cursor: grab;
-}
-.t28s:active {
-  cursor: grabbing;
 }
 .t28s > svg {
   position: absolute;
@@ -625,6 +620,218 @@
   }
 }
 
+/* 2 · the seesaw (audit v3 28-2): a stone beam leaning by --a, its jars kept upright, the whole body is the handle */
+.t28s-beam {
+  position: absolute;
+  height: 0;
+  transform: rotate(var(--a, 0deg));
+  transition: transform 0.45s var(--ease);
+}
+.t28s.is-drag .t28s-beam,
+.t28s.is-drag .t28s-beam .t28s-jar {
+  transition: none;
+}
+.t28s-beam-art {
+  position: absolute;
+  overflow: visible;
+}
+.t28s-beam .t28s-jar {
+  cursor: inherit;
+  pointer-events: none;
+  transform: rotate(calc(var(--a, 0deg) * -1));
+  transform-origin: 50% var(--foot, 100%);
+  transition: transform 0.45s var(--ease);
+}
+.t28s-beam-hit {
+  position: absolute;
+  border-radius: 18px;
+  outline: none;
+  cursor: grab;
+  touch-action: none;
+}
+.t28s.is-drag .t28s-beam-hit {
+  cursor: grabbing;
+}
+.t28s-beam-hit:focus-visible {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--vermilion) 55%, transparent);
+}
+.t28s-beam-hit[aria-disabled='true'] {
+  cursor: default;
+}
+.t28s-beam-body {
+  fill: var(--rock-mid);
+  stroke: var(--wash);
+  stroke-width: 1.4;
+  stroke-opacity: 0.6;
+}
+:root[data-theme='dark'] .t28s-beam-body {
+  fill: var(--rock-lo);
+}
+.t28s-beam-side {
+  fill: var(--wash);
+  opacity: 0.38;
+}
+.t28s-beam-groove {
+  fill: var(--wash);
+  opacity: 0.7;
+}
+.t28s-run {
+  fill: color-mix(in srgb, var(--water) 70%, var(--step-hi));
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+:root[data-theme='dark'] .t28s-run {
+  fill: color-mix(in srgb, var(--moon) 70%, var(--water));
+}
+/* the jar's name hangs under it, carved into the beam's shadow */
+.t28s-jname {
+  position: absolute;
+  left: 50%;
+  top: var(--below, 100%);
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 1px;
+  white-space: nowrap;
+  font: 500 var(--fs, 14px) / 1.15 var(--serif);
+  color: color-mix(in srgb, var(--wash) 85%, var(--rock-lo));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 75%, transparent);
+  pointer-events: none;
+}
+.t28s-jname small {
+  font-size: 0.86em;
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t28s-jname {
+  color: color-mix(in srgb, var(--moon) 85%, var(--rock-mid));
+  text-shadow: 0 1px 0 #000;
+}
+.t28s.tall .t28s-jname {
+  white-space: normal;
+  width: 9em;
+  text-align: center;
+}
+/* the tap: a wooden handle on the pipe that turns a quarter per ×10 */
+.t28s-tap {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.t28s-tap:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.t28s-tap:disabled {
+  cursor: default;
+}
+.t28s-tap > svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t28s-valve {
+  transform: rotate(var(--turn, 0deg));
+  transition: transform 0.6s var(--ease);
+}
+.t28s-valve-wood {
+  fill: color-mix(in srgb, var(--step-lo) 70%, var(--wash));
+}
+.t28s-valve-hub {
+  fill: var(--wash);
+}
+.t28s-valve-glow {
+  opacity: 0.5;
+}
+.t28s-tap:disabled .t28s-valve-glow {
+  opacity: 0.15;
+}
+/* the pour thickens with each turn */
+.t28s-thread {
+  opacity: 0.35;
+  transition: opacity 0.6s;
+}
+.t28s[data-n='1'] .t28s-thread {
+  opacity: 0.6;
+}
+.t28s[data-n='2'] .t28s-thread {
+  opacity: 0.8;
+}
+.t28s.is-full .t28s-thread {
+  opacity: 1;
+}
+/* the measuring stake beside the sapling: a notch lights for each step it gains */
+.t28s-stake {
+  fill: color-mix(in srgb, var(--step-lo) 65%, var(--wash));
+  opacity: 0.8;
+}
+.t28s-mark {
+  fill: var(--wash);
+  opacity: 0.35;
+  transition: opacity 0.6s, fill 0.6s;
+}
+.t28s-mark.on {
+  fill: var(--vermilion);
+  opacity: 0.95;
+}
+.t28s-illus {
+  font-family: var(--serif);
+  font-style: italic;
+  fill: color-mix(in srgb, var(--wash) 75%, var(--moss-b));
+}
+:root[data-theme='dark'] .t28s-illus {
+  fill: color-mix(in srgb, var(--moon) 70%, var(--moss-c));
+}
+/* "level": the word carved beside the seesaw's level outline, once it can be tilted */
+.t28s-levelword {
+  position: absolute;
+  margin: 0;
+  transform: translateY(-50%);
+  font: italic 500 14px/1 var(--serif);
+  color: color-mix(in srgb, var(--wash) 78%, var(--moss-b));
+  opacity: 0;
+  transition: opacity 0.6s;
+  pointer-events: none;
+}
+.t28s.is-full .t28s-levelword {
+  opacity: 0.9;
+}
+.t28s.reveal .t28s-levelword {
+  opacity: 0;
+}
+:root[data-theme='dark'] .t28s-levelword {
+  color: color-mix(in srgb, var(--moon) 75%, var(--moss-c));
+}
+.t28s.tall .t28s-levelword {
+  display: none;
+}
+/* Gopher's name stays readable even while the tree is a ghost in the mist */
+.t28s-gtitle {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  fill: color-mix(in srgb, var(--wash) 80%, var(--rock-lo));
+}
+:root[data-theme='dark'] .t28s-gtitle {
+  fill: color-mix(in srgb, var(--moon) 80%, var(--rock-mid));
+}
+.t28s.tall .t28s-left {
+  white-space: normal;
+  font-size: 13px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t28s-beam,
+  .t28s-beam .t28s-jar,
+  .t28s-valve {
+    transition: none;
+  }
+}
+
 /* 3 · moat (canvas disc) */
 .t28m {
   position: relative;
@@ -953,6 +1160,166 @@
   .t28m-slip,
   .t28m-thread {
     transition: none;
+  }
+}
+
+/* 3 · the house tied by five bridges (audit v3 28-3): drag it, cut the bridges, carry it to a boat */
+.t28m-boat {
+  cursor: default;
+  pointer-events: none;
+}
+.t28m-rig {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.t28m-br-sh {
+  fill: var(--umbra);
+  opacity: 0.25;
+}
+.t28m-br-deck {
+  fill: color-mix(in srgb, var(--lantern) 55%, var(--step-lo));
+  stroke: var(--wash);
+  stroke-width: 0.8;
+  transition: fill 0.3s;
+}
+:root[data-theme='dark'] .t28m-br-deck {
+  fill: color-mix(in srgb, var(--lantern) 60%, var(--step-mid));
+}
+.t28m-br-rail {
+  fill: var(--wash);
+  opacity: 0.8;
+}
+.t28m.taut .t28m-br:not(.cut) .t28m-br-deck,
+.t28m-br.flash .t28m-br-deck {
+  fill: color-mix(in srgb, var(--vermilion) 70%, var(--step-lo));
+}
+.t28m-br.cut {
+  opacity: 0.55;
+  transition: opacity 0.6s;
+}
+.t28m-arrow {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 2;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+  opacity: 0.6;
+  transition: opacity 0.6s;
+}
+:root[data-theme='dark'] .t28m-arrow {
+  stroke: var(--moon);
+}
+.t28m-arrow.out {
+  opacity: 0;
+}
+.t28m-house {
+  position: absolute;
+  left: 0;
+  top: 0;
+  aspect-ratio: 64 / 50;
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+  transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+.t28m.is-drag .t28m-house {
+  cursor: grabbing;
+  transition: none;
+}
+.t28m.docked .t28m-house {
+  cursor: default;
+  transition: transform 0.6s var(--ease);
+}
+.t28m-house:focus-visible {
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--vermilion) 55%, transparent);
+}
+.t28m-house > svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.t28m-hglow {
+  opacity: 0.55;
+}
+/* the cut targets: 44 px, invisible but for focus; the guide dot shows the next */
+.t28m-cut {
+  position: absolute;
+  left: -22px;
+  top: -22px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.t28m-cut:disabled {
+  visibility: hidden;
+}
+/* a phone: the bridges are short; a tap that lands between two cuts one of them (any order will do) */
+.t28m:not(.wide) .t28m-cut {
+  left: -18px;
+  top: -18px;
+  width: 36px;
+  height: 36px;
+}
+.t28m-cut:focus-visible {
+  outline: 2px solid var(--vermilion);
+  outline-offset: -6px;
+}
+.t28m-rewrite {
+  position: absolute;
+  margin: 0;
+  transform: translate(-50%, -100%);
+  font: italic 500 14px/1 var(--serif);
+  white-space: nowrap;
+  color: var(--vermilion);
+  text-shadow: 0 0 4px var(--paper), 0 0 8px var(--paper);
+  pointer-events: none;
+  animation: t28m-rise 1.6s ease-out both;
+}
+@keyframes t28m-rise {
+  0% {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  20% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    translate: 0 -22px;
+  }
+}
+/* CUDA, carved straight under the castle */
+.t28m-cudalab {
+  position: absolute;
+  margin: 0;
+  transform: translate(-50%, 0);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  max-width: min(320px, 70vw);
+  font: 500 13px/1.25 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 4px var(--paper), 0 0 8px var(--paper), 0 0 14px var(--paper);
+  pointer-events: none;
+}
+.t28m-cudalab b {
+  font-size: 18px;
+  letter-spacing: 0.08em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t28m-house,
+  .t28m-rewrite {
+    transition: none;
+    animation: none;
   }
 }
 

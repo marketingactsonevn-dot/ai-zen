@@ -11,7 +11,7 @@ const station: StationModule = {
   content: C,
   scenes: [
     { label: S.desk.label, mount: deskScene },
-    { label: S.wells.label, mount: wellsScene },
+    { label: S.wells.label, text: 'tl', mount: wellsScene },
     billScene(),
     refillScene(),
   ],

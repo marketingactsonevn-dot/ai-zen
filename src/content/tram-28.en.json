@@ -39,95 +39,112 @@
       "detail": "CPUs are still needed to coordinate and make decisions. A neural network, though, mostly multiplies and adds huge tables of numbers, work that splits neatly into parallel pieces."
     },
     "scaling": {
-      "label": "Growing takes more shovels",
-      "art": "A three-cornered stone basin on a mossy boulder, seen from a little above; each corner spills into a jar: Data front left, Size at the back, Compute front right. A bamboo spout resting on a single post lets a thread of silver drops fall into the middle, where a sapling stands on a small stone against the moon. Behind the mist, an old tree with a great trunk waits.",
-      "prompt": "Share out 100 drops",
-      "basinAria": "The three-cornered stone basin: drag it, or use the arrow keys, to tilt it toward a corner",
+      "label": "More shovels, steady growth",
+      "art": "A long stone seesaw resting on a mossy boulder, a jar standing on each end: Data on the left, Model size on the right. A sapling stands in the middle of the seesaw against the moon; a bamboo pipe with a turning handle lets a thread of silver drops fall to its foot. Beyond the mist, Gopher, a thick-trunked tree with a thin crown, stands on a knoll: its Model size jar overflows, its Data jar is nearly dry.",
+      "prompts": [
+        "Turn the bamboo tap to add compute",
+        "Tilt the seesaw until both jars are even"
+      ],
+      "compute": "Compute · chips × hours running",
+      "tapAria": "Bamboo tap handle: each turn multiplies compute by 10",
+      "ticks": [
+        "",
+        "×10",
+        "×100",
+        "×1000"
+      ],
+      "illus": "Illustration",
+      "beamAria": "Stone seesaw: use the arrow keys to tilt it toward the Data jar or the Model size jar",
       "jars": [
         {
           "id": "data",
-          "name": "Data",
-          "aria": "Data jar: how much text the model reads"
+          "name": "Data · words the model reads"
         },
         {
           "id": "size",
-          "name": "Size",
-          "aria": "Size jar: the model's number of parameters"
-        },
-        {
-          "id": "compute",
-          "name": "Compute",
-          "aria": "Compute jar: chips and hours of running"
+          "name": "Model size"
         }
       ],
-      "slider": "Drops for the {name} jar",
-      "valueText": "{n} drops for {name}",
-      "remaining": "{n} drops left",
-      "balanced": "The tree grows straight",
-      "lopsided": "The tree leans: the {name} jar is low",
+      "valueText": "Data {data}%, model size {size}%",
+      "level": "level",
+      "lopsided": "The {name} jar is short: lower that end",
+      "gopher": "Gopher",
       "insights": [
         {
-          "text": "Scaling laws: add data, size and compute, and a model improves steadily and predictably.",
+          "text": "Each tenfold of compute raises the tree one even step. With results that predictable, companies keep buying more chips.",
           "asOf": "2026-10-15",
           "source": "t28-kaplan"
         },
         {
-          "text": "In 2022 Chinchilla (70 billion parameters, 1.4 trillion tokens) beat Gopher, four times its size: balancing data with size pays off.",
+          "text": "With the same water, the tree that splits it evenly grows taller than the one that pours it all into size: a moderate model that reads more is more efficient.",
           "asOf": "2026-10-15",
           "source": "t28-chinchilla"
         }
       ],
-      "detail": "Because the curve is so steady, many companies believe more chips mean better models — so they keep buying chips."
+      "detail": {
+        "text": "In 2022 DeepMind tested it: Chinchilla, a model 4 times smaller that read more text, beat Gopher on the same compute. The AI world calls these “scaling laws”.",
+        "asOf": "2026-10-15",
+        "source": "t28-chinchilla"
+      }
     },
     "moat": {
       "label": "The moat round the castle",
-      "art": "Seen from high above, a round disc floating in the night: in the middle, a three-roofed stone castle on its island; round it, a black moat crossed by six hundred little bamboo bridges from a village of low roofs. On the far lake, three boats with paper lanterns (round, tall, square) wait by three canals.",
-      "prompt": "Touch each boat",
+      "art": "Seen from high above, a round disc floating in the night: in the middle, NVIDIA's three-roofed stone castle on its island; round it, a black moat crossed by bamboo bridges you can count, out to a village. One village house is tied to the castle wall by five bridges. On the far lake, three boats with paper lanterns, Google's, Amazon's and AMD's, wait by three canals.",
+      "prompts": [
+        "Drag a house to a rival's boat",
+        "Tap each bridge to cut it",
+        "Drop the house on the boat"
+      ],
       "castle": "NVIDIA",
-      "moatLabel": "CUDA · the software everyone knows",
-      "group": "Three boats crossing the moat",
-      "boatAria": "{name} boat: see what this rival is doing",
+      "moatLabel": "CUDA · programming tools that run only on NVIDIA chips",
+      "houseAria": "A village house, that is an AI programming team: drag it to a rival's boat",
+      "cutAria": "Cut tying bridge {n}",
+      "countTpl": "{n} bridges still tied",
+      "rewrite": "rewrite the code",
       "boats": [
         {
           "id": "google",
-          "name": "Google · TPU",
-          "fact": {
-            "text": "Oct 2025: Anthropic announced it will use up to a million Google TPU chips, over 1 gigawatt of capacity in 2026.",
-            "asOf": "2026-10-15",
-            "source": "t28-anthropic-tpu",
-            "claimBy": "Anthropic"
-          }
+          "name": "Google · TPU chips"
         },
         {
           "id": "amazon",
-          "name": "Amazon · Trainium",
-          "fact": {
-            "text": "Feb 2026: in its new funding round, OpenAI agreed to use 2 gigawatts of compute running on Amazon's Trainium chips.",
-            "asOf": "2026-10-15",
-            "source": "t28-ap-openai-round"
-          }
+          "name": "Amazon · Trainium chips"
         },
         {
           "id": "amd",
-          "name": "AMD · Instinct",
-          "fact": {
-            "text": "Oct 2025: AMD and OpenAI signed a 6-gigawatt GPU deal; the first gigawatt (MI450) starts in the second half of 2026.",
-            "asOf": "2026-10-15",
-            "source": "t28-amd-openai",
-            "claimBy": "AMD, OpenAI"
-          }
+          "name": "AMD · Instinct chips"
         }
       ],
       "insight": {
-        "text": "NVIDIA's moat is CUDA: a software platform from 2006 that the whole industry is used to writing code on.",
+        "text": "Each bridge is code already written for CUDA, programming tools that run only on NVIDIA chips. Switching chips means tearing down the bridges and writing it again.",
         "asOf": "2026-10-15",
         "source": "t28-cuda-guide"
       },
-      "detail": {
-        "text": "Some big AI labs use several kinds of chip side by side: Anthropic says it uses TPUs, Trainium and NVIDIA GPUs.",
-        "asOf": "2026-10-15",
-        "source": "t28-anthropic-tpu"
-      }
+      "detail": [
+        {
+          "text": "The moat is deep, but it can be crossed. Anthropic uses Google's TPUs, Amazon's Trainium and NVIDIA GPUs alike. OpenAI has also signed for chips from Amazon and AMD.",
+          "asOf": "2026-10-15",
+          "source": "t28-anthropic-tpu",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "Oct 2025: Anthropic announced it will use up to a million Google TPU chips in 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-anthropic-tpu",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "Feb 2026: in its new funding round, OpenAI agreed to run part of its compute on Amazon's Trainium chips.",
+          "asOf": "2026-10-15",
+          "source": "t28-ap-openai-round"
+        },
+        {
+          "text": "Oct 2025: AMD and OpenAI signed a GPU deal of about 6 gigawatts (measured by the power the chips draw); the first batch starts in the second half of 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-amd-openai",
+          "claimBy": "AMD, OpenAI"
+        }
+      ]
     },
     "goldrush": {
       "label": "Gold-rush season",

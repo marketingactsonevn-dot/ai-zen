@@ -7,9 +7,12 @@ import { grass, hills, mist, moon, reeds } from '../../ui/part2/paint'
 import { C } from './data'
 import { t29Defs } from './figures'
 import { f1, P } from './rig'
+import { guide } from '../../ui/part2/guide'
 
 const G = C.scenes.wells
-const LEVELS = [10, 6, 3, 1]
+const LEVELS = [10, 5, 1] // the wells' water in tenths: two long-term contracts (audit v3 29-2), each with its news
+/** how thick the silver runs: to the wells, to the lake, per level */
+const RUN_W = [1, 0.5, 0.15], RUN_L = [1, 2.2, 3.6]
 
 type Well = { cx: number; cy: number; rx: number; ry: number; hc: number; i: number; via: Pt[] }
 interface Geo {
@@ -76,12 +79,11 @@ function geo(W: number, H: number): Geo {
 
 /**
  * Hồ lớn hút giếng nhỏ (2.5D, painted in four depth layers, HIGH): the camera stands on the hilltop right behind three
- * stone wells and looks down into their mouths, where the moon sits on the water. Jointed bamboo kakehi on forked stakes
- * run from each well, stepping down at every joint, to a stone sluice in the dip of the brow; beyond it the hill falls
- * away into a misty valley and the great lake (AI data centres) lies at its bottom, lamp rows on its shore doubled in the
- * water. Drag the sluice's stone slab up (or press it), three times: silver water runs down the pipes, the lake rises
- * and lights another row, the water in the wells sinks into the shaft until the bottoms are moss. The news arrives on a
- * notice board by the gate.
+ * stone wells and looks down into their mouths, where the moon sits on the water. The memory-chip factory's sluice stands
+ * in the dip of the brow: one source feeding both jointed bamboo kakehi out to the wells and, beyond the brow, the great
+ * lake (AI data centres, named on its shore) at the bottom of the misty valley. Drag the sluice's slab up (or press it):
+ * each lift is a long-term contract, twice: the run to the lake thickens and lights another row of halls, the runs to the
+ * wells thin and their water sinks into the shaft until the bottoms are moss. The news arrives on a notice board.
  */
 export function wellsScene(ctx: SceneCtx) {
   t29Defs()
@@ -102,6 +104,14 @@ export function wellsScene(ctx: SceneCtx) {
   ctx.art.append(root)
   const stableH = stableHeight(ctx, [G.insight as Fact])
   ctx.prompt(G.prompt)
+  const gd = guide(ctx)
+  const pull1 = gd.dot(slab, { dir: [0, -1] })
+  const arrowUp = gd.gesture('drag-v', slab, { r: 30 })
+  const contracts = gd.count(G.countTpl, LEVELS.length - 1, () => (g ? [g.gate.x + g.gate.w * 0.95, g.gate.y + g.gate.h * 0.45] : [0, 0]))
+  // H7: the slab twitches up a few px and drops back
+  const invite = () => lv < LEVELS.length - 1 && !ctx.reduced && slab.animate([{ translate: '0 0' }, { translate: '0 -5px', offset: 0.35 }, { translate: '0 0' }], { duration: 650, easing: 'ease-in' })
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', invite))
   const say = () => sr.replaceChildren(...G.wells.map((w) => h('li', null, fill(G.wellAria, { name: w.name, n: LEVELS[lv] }))))
   say()
 
@@ -118,7 +128,9 @@ export function wellsScene(ctx: SceneCtx) {
     root.classList.toggle('is-dry', lv === LEVELS.length - 1)
     rows.forEach((r, i) => r.forEach((el) => el.classList.toggle('on', i <= lv)))
     if (lakeG) lakeG.style.transform = `scale(${(1 + lv * 0.035).toFixed(3)}, ${(1 + lv * 0.06).toFixed(3)})`
-    slab.style.setProperty('--y', `${f1(-lv * 0.3 * g.gate.h)}px`)
+    slab.style.setProperty('--y', `${f1(-lv * 0.4 * g.gate.h)}px`)
+    root.style.setProperty('--kw', String(RUN_W[lv]))
+    root.style.setProperty('--kl', String(RUN_L[lv]))
     root.dataset.level = String(lv)
   }
 
@@ -135,7 +147,11 @@ export function wellsScene(ctx: SceneCtx) {
       if (!notice.hasAttribute('aria-live')) notice.setAttribute('aria-live', 'polite')
       root.classList.add('has-note')
     }
+    contracts.set(lv)
+    arrowUp.done()
     if (lv === LEVELS.length - 1) {
+      pull1.done()
+      contracts.done()
       slab.disabled = true
       ctx.insight(G.insight as Fact)
       ctx.chime('ok')
@@ -213,6 +229,7 @@ export function wellsScene(ctx: SceneCtx) {
     job = sliced(paint(g), { sync: ctx.reduced || built })
     if (had) slab.focus({ preventScroll: true })
     built = true
+    gd.refresh()
   }
 
   function* paint(g: Geo) {
@@ -230,6 +247,7 @@ export function wellsScene(ctx: SceneCtx) {
     nearFront.replaceChildren(...n.els)
     waters = n.waters
     set()
+    gd.refresh()
   }
 
   ctx.onCleanup(onSize(ctx.art, layout))
@@ -336,6 +354,8 @@ function valleyArt(g: Geo): { els: SVGElement[]; rows: SVGElement[][]; lake: SVG
     mist(L.cx, L.cy + L.ry * 0.9, L.rx * 1.3, L.ry * 1.6),
     s('path', { class: 't29w-pebble', d: pebbles }),
     reeds(L.cx - L.rx * 0.86, L.cy + L.ry * 0.9, H * 0.03, 2936, 6),
+    // its name, carved on a stone on the near shore (the lake is the AI data centres)
+    s('text', { class: 't29w-lake-name', x: f1(L.cx - L.rx * (g.wide ? 0.72 : 0.62)), y: f1(L.cy + L.ry * (g.wide ? 1.9 : 2.6)), 'text-anchor': 'middle', 'font-size': f1(clamp(H * 0.022, 13, 18)) }, G.lake),
     s('path', { class: 't29w-farpipe', d: far }),
     s('path', { class: 't29w-farstake', d: stakes }),
     s('path', { class: 't29w-spill', d: spill }),
@@ -438,6 +458,8 @@ function gateBack(g: Geo): SVGElement[] {
     s('path', { class: 't29w-stone-shade', d: lintel, fill: 'url(#t29-dusk)' }),
     s('path', { class: 't29w-ink', d: stroke(curve([L - pw * 0.7, y - ph + lh * 0.2], [x, y - ph - lh * 0.15], [R + pw * 0.7, y - ph + lh * 0.2], 12), Math.max(1.6, lh * 0.14), 0.1, 0.1, 0.4), filter: 'url(#ink-rough)' }),
     s('path', { class: 't29w-rim', d: stroke(curve([L - pw * 0.5, y - ph - lh * 1.02], [x, y - ph - lh * 1.4], [R + pw * 0.5, y - ph - lh * 1.02], 12), Math.max(1.2, lh * 0.1), 0.2, 0.2, 0.2) }),
+    // the one source both the lake and the wells drink from
+    s('text', { class: 't29w-source', x: f1(x), y: f1(y - ph - lh * 1.75), 'text-anchor': 'middle', 'font-size': f1(clamp(w * 0.15, 13, 17)) }, G.source),
   ]
 }
 
@@ -523,6 +545,7 @@ function nearArt(g: Geo): { els: SVGElement[]; waters: SVGGElement[] } {
         s('ellipse', { class: 't29w-mouth', cx: f1(over[0]), cy: f1(over[1]), rx: f1(ww * 0.42), ry: f1(ww * 0.3), transform: `rotate(${f1((Math.atan2(dy, dx) * 180) / Math.PI + 90)} ${f1(over[0])} ${f1(over[1])})` }))
       flowPts.unshift(p0, p1)
     }
+    flowPts.reverse() // the water runs from the sluice out to the well
     flows.push(s('path', { class: 't29w-flow', d: `M${flowPts.map(P).join('L')}`, style: `--len:${f1(len(flowPts))};--w:${f1(wid(w.cy) * 0.32)}px` }))
   }
   els.push(...pipes, ...flows)

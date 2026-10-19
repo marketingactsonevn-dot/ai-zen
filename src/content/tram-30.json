@@ -115,16 +115,52 @@
     },
     "laws": {
       "label": "Thuỷ triều luật lệ",
-      "art": "Nhìn từ biển đêm vào bãi: tám cột đá khắc chữ đứng dọc bãi cát cong khuất vào sương, lúc đầu ngập trong sóng. Trăng đi qua cung trời thì nước rút về phía người xem, từng cột trồi lên. Cột cuối mang tên Việt Nam còn ướt; xa hơn, một cột thứ chín nửa chìm dưới nước nông.",
-      "prompt": "Kéo trăng qua các mốc luật",
-      "sliderAria": "Kéo vầng trăng qua các mốc luật AI",
+      "art": "Nhìn từ biển đêm vào bãi: bốn trụ đá to bằng nhau đứng ngang hàng, tên khắc phía trên: EU, Trung Quốc, Mỹ, Việt Nam; lúc đầu chân trụ còn ngập sóng. Kéo trăng theo cung chấm mực trên trời (có vạch năm 2024, 2025, 2026, Hôm nay): nước rút về phía người xem, luật nơi nào có hiệu lực thì trụ nơi ấy lộ thêm một khấc, chữ khắc ngay dưới chân trụ. Khấc rủi ro cao của EU trượt xuống hạn mới; trụ Mỹ nứt dọc; trụ Trung Quốc và Việt Nam có ấn nhãn; trụ Việt Nam còn ướt.",
+      "prompt": "Kéo trăng qua các năm, xem luật mỗi nơi trồi lên",
+      "sliderAria": "Kéo vầng trăng qua các năm, xem các mốc luật AI của từng nơi",
+      "places": [
+        {
+          "id": "eu",
+          "name": "EU"
+        },
+        {
+          "id": "cn",
+          "name": "Trung Quốc"
+        },
+        {
+          "id": "us",
+          "name": "Mỹ"
+        },
+        {
+          "id": "vn",
+          "name": "Việt Nam"
+        }
+      ],
+      "where": [
+        "eu",
+        "eu",
+        "cn",
+        "vn",
+        "us",
+        "vn",
+        "eu"
+      ],
+      "notches": [
+        "EU · 2024 có hiệu lực",
+        "EU · 2025 cấm chấm điểm công dân",
+        "Trung Quốc · 09/2025 buộc dán nhãn",
+        "Việt Nam · 12/2025 có luật AI",
+        "Mỹ · 12/2025 liên bang kiện luật bang",
+        "Việt Nam · 05/2026 buộc gắn dấu nội dung AI",
+        "EU · AI rủi ro cao lùi tới 12/2027"
+      ],
       "tide": {
         "milestones": [
           {
             "date": "2024-08-01",
             "label": "EU: Đạo luật AI có hiệu lực",
             "fact": {
-              "text": "Đạo luật AI của EU (AI Act) có hiệu lực, áp dụng dần theo mức rủi ro của từng loại ứng dụng.",
+              "text": "Đạo luật AI của EU (AI Act) có hiệu lực, áp dụng dần theo mức rủi ro của từng loại ứng dụng; ví dụ AI dùng để tuyển người hay xét cho vay thuộc nhóm rủi ro cao.",
               "asOf": "2026-10-15",
               "source": "t30-eu-aiact"
             }
@@ -133,7 +169,7 @@
             "date": "2025-02-02",
             "label": "EU: cấm một số ứng dụng",
             "fact": {
-              "text": "Lệnh cấm ở EU bắt đầu áp dụng cho các ứng dụng AI rủi ro không chấp nhận được, như chấm điểm xã hội.",
+              "text": "Lệnh cấm ở EU bắt đầu áp dụng cho các ứng dụng AI rủi ro không chấp nhận được, như chấm điểm hành vi công dân.",
               "asOf": "2026-10-15",
               "source": "t30-eu-aiact"
             }
@@ -160,7 +196,7 @@
             "date": "2025-12-11",
             "label": "Mỹ: sắc lệnh về luật các bang",
             "fact": {
-              "text": "Tổng thống Mỹ ký sắc lệnh lập nhóm luật sư liên bang để thách thức các luật AI của bang bị cho là cản trở.",
+              "text": "12/2025: Tổng thống Mỹ lập nhóm luật sư liên bang để thách thức những luật AI của các bang mà ông cho là cản trở doanh nghiệp.",
               "asOf": "2026-10-15",
               "source": "t30-us-eo"
             }
@@ -178,7 +214,7 @@
             "date": "2026-07-27",
             "label": "EU: lùi hạn rủi ro cao",
             "fact": {
-              "text": "EU sửa luật (gói Omnibus): lùi quy định cho AI rủi ro cao tới 02/12/2027, riêng AI gắn trong sản phẩm tới 02/08/2028.",
+              "text": "EU sửa luật (gói sửa đổi tên Omnibus): lùi quy định cho AI rủi ro cao tới 02/12/2027, riêng AI gắn trong sản phẩm tới 02/08/2028.",
               "asOf": "2026-10-15",
               "source": "t30-eu-omnibus"
             },
@@ -187,15 +223,6 @@
               "after": "02/12/2027",
               "beforeLabel": "Hạn cũ cho AI rủi ro cao",
               "afterLabel": "Hạn mới"
-            }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Hôm nay",
-            "fact": {
-              "text": "Theo bản phân tích 06/2026, danh sách hệ thống AI rủi ro cao của Việt Nam vẫn đang chờ Thủ tướng ban hành.",
-              "asOf": "2026-10-15",
-              "source": "t30-vn-decree"
             }
           }
         ],
@@ -207,10 +234,20 @@
         }
       },
       "insight": {
-        "text": "Mỗi nơi một lối: EU siết theo mức rủi ro, Trung Quốc buộc dán nhãn, Việt Nam vừa có luật riêng, Mỹ còn tranh cãi.",
+        "text": "EU xếp AI theo mức rủi ro, Trung Quốc và Việt Nam buộc dán nhãn, Mỹ còn giằng co giữa liên bang và bang.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
+      },
+      "detail": {
+        "text": "Theo phân tích của hãng luật Tilleke & Gibbins (06/2026), danh sách hệ thống AI rủi ro cao của Việt Nam vẫn đang chờ Thủ tướng ban hành.",
+        "asOf": "2026-10-15",
+        "source": "t30-vn-decree"
+      },
+      "board": {
+        "text": "Làm nội dung ở Việt Nam: ảnh, âm thanh, video do AI tạo phải gắn dấu nhận biết (Nghị định 142/2026).",
+        "asOf": "2026-10-15",
+        "source": "t30-vn-decree"
       }
     },
     "copyright": {

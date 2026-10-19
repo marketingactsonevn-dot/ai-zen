@@ -36,83 +36,112 @@
       "detail": "CPU vẫn cần cho việc điều phối, rẽ nhánh. Còn mạng nơ-ron chủ yếu là nhân rồi cộng những bảng số khổng lồ, chia nhỏ ra làm song song được."
     },
     "scaling": {
-      "label": "Lớn lên cần thêm xẻng",
-      "art": "Một chậu đá ba góc đặt trên tảng đá phủ rêu, nhìn chếch từ trên xuống; mỗi góc chảy vào một chiếc chum: Dữ liệu ở trước bên trái, Kích thước phía sau, Tính toán ở trước bên phải. Ống tre gác trên một cọc tre thả một sợi giọt bạc vào giữa chậu, nơi cây non đứng trên hòn đá nhỏ, ngược sáng vầng trăng. Sau màn sương, một cây cổ thụ thân to chờ sẵn.",
-      "prompt": "Chia 100 giọt nước",
-      "basinAria": "Chậu đá ba góc: kéo chậu, hoặc dùng phím mũi tên, để nghiêng nó về một góc",
-      "jars": [
-        { "id": "data", "name": "Dữ liệu", "aria": "Chum dữ liệu: số chữ model được đọc" },
-        { "id": "size", "name": "Kích thước", "aria": "Chum kích thước: số tham số của model" },
-        { "id": "compute", "name": "Tính toán", "aria": "Chum tính toán: số chip và giờ chạy" }
+      "label": "Thêm xẻng, cây lớn đều",
+      "art": "Một bập bênh bằng đá dài gác trên hòn đá kê phủ rêu, hai đầu là hai chiếc chum: Dữ liệu bên trái, Độ lớn model bên phải. Cây non đứng giữa bập bênh, ngược sáng vầng trăng; ống tre có tay vặn thả một sợi giọt bạc xuống gốc cây. Sau màn sương, cây Gopher thân to tán thưa đứng trên gò: chum Độ lớn model của nó tràn nước, chum Dữ liệu gần cạn.",
+      "prompts": [
+        "Vặn vòi tre để thêm sức tính",
+        "Nghiêng bập bênh cho hai chum cân nhau"
       ],
-      "slider": "Chia giọt nước cho chum {name}",
-      "valueText": "{n} giọt cho {name}",
-      "remaining": "Còn {n} giọt",
-      "balanced": "Cây lớn đều",
-      "lopsided": "Cây nghiêng: chum {name} còn vơi",
+      "compute": "Sức tính · số chip × giờ chạy",
+      "tapAria": "Tay vặn vòi tre: mỗi lần vặn, sức tính gấp 10",
+      "ticks": [
+        "",
+        "×10",
+        "×100",
+        "×1000"
+      ],
+      "illus": "Minh họa",
+      "beamAria": "Bập bênh đá: dùng phím mũi tên để nghiêng về chum Dữ liệu hoặc chum Độ lớn model",
+      "jars": [
+        {
+          "id": "data",
+          "name": "Dữ liệu · số chữ model đọc"
+        },
+        {
+          "id": "size",
+          "name": "Độ lớn model"
+        }
+      ],
+      "valueText": "Dữ liệu {data}%, độ lớn model {size}%",
+      "level": "cân",
+      "lopsided": "Chum {name} còn ít nước: hạ đầu bên ấy xuống",
+      "gopher": "Gopher",
       "insights": [
         {
-          "text": "Quy luật mở rộng (scaling laws): thêm dữ liệu, kích thước và sức tính thì model giỏi lên đều đặn, đoán trước được.",
+          "text": "Mỗi lần gấp 10 sức tính, cây cao thêm một bậc đều đặn. Đoán trước được kết quả, các hãng cứ thế mua thêm chip.",
           "asOf": "2026-10-15",
           "source": "t28-kaplan"
         },
         {
-          "text": "Năm 2022, Chinchilla (70 tỷ tham số, học 1.400 tỷ token) thắng Gopher lớn gấp 4: cân dữ liệu với kích thước mới hiệu quả.",
+          "text": "Cùng lượng nước, cây chia cân hai chum cao hơn cây dồn hết vào độ lớn: model vừa phải mà đọc nhiều mới hiệu quả.",
           "asOf": "2026-10-15",
           "source": "t28-chinchilla"
         }
       ],
-      "detail": "Vì đường cong này khá đều, nhiều công ty tin rằng thêm chip sẽ ra model giỏi hơn — nên họ mua chip không ngừng."
+      "detail": {
+        "text": "Năm 2022, DeepMind thử: model Chinchilla nhỏ hơn 4 lần nhưng đọc nhiều chữ hơn đã thắng model Gopher, dù tốn cùng sức tính. Giới AI gọi đây là “quy luật mở rộng” (scaling laws).",
+        "asOf": "2026-10-15",
+        "source": "t28-chinchilla"
+      }
     },
     "moat": {
       "label": "Hào nước quanh lâu đài",
-      "art": "Nhìn từ trên cao xuống một tấm đĩa tròn trôi trong đêm: giữa là lâu đài đá ba tầng mái trên đảo, quanh là hào nước đen với sáu trăm cây cầu tre nhỏ nối sang bờ làng mái thấp. Ngoài cùng là hồ xa, ba con thuyền treo đèn giấy (tròn, cao, vuông) đang đợi bên ba con kênh.",
-      "prompt": "Chạm từng con thuyền",
+      "art": "Nhìn từ trên cao xuống một tấm đĩa tròn trôi trong đêm: giữa là lâu đài đá ba tầng mái của NVIDIA trên đảo, quanh là hào nước đen với những cây cầu tre đếm được nối sang làng. Một mái nhà trong làng bị năm cây cầu buộc vào tường thành. Ngoài hồ xa, ba con thuyền treo đèn giấy của Google, Amazon và AMD đang đợi bên ba con kênh.",
+      "prompts": [
+        "Kéo một mái nhà sang thuyền đối thủ",
+        "Chạm cắt từng cây cầu",
+        "Thả mái nhà lên thuyền"
+      ],
       "castle": "NVIDIA",
-      "moatLabel": "CUDA · phần mềm cả ngành đã quen",
-      "group": "Ba con thuyền đang vượt hào",
-      "boatAria": "Thuyền {name}: xem đối thủ này đang làm gì",
+      "moatLabel": "CUDA · bộ công cụ lập trình chỉ chạy trên chip NVIDIA",
+      "houseAria": "Một mái nhà trong làng, tức một đội lập trình AI: kéo sang thuyền đối thủ",
+      "cutAria": "Cắt cây cầu buộc số {n}",
+      "countTpl": "Còn {n} cầu buộc",
+      "rewrite": "viết lại mã",
       "boats": [
         {
           "id": "google",
-          "name": "Google · TPU",
-          "fact": {
-            "text": "10/2025: Anthropic công bố sẽ dùng tới một triệu chip TPU của Google, hơn 1 gigawatt công suất trong năm 2026.",
-            "asOf": "2026-10-15",
-            "source": "t28-anthropic-tpu",
-            "claimBy": "Anthropic"
-          }
+          "name": "Google · chip TPU"
         },
         {
           "id": "amazon",
-          "name": "Amazon · Trainium",
-          "fact": {
-            "text": "02/2026: trong vòng gọi vốn mới, OpenAI đồng ý dùng 2 gigawatt sức tính chạy trên chip Trainium của Amazon.",
-            "asOf": "2026-10-15",
-            "source": "t28-ap-openai-round"
-          }
+          "name": "Amazon · chip Trainium"
         },
         {
           "id": "amd",
-          "name": "AMD · Instinct",
-          "fact": {
-            "text": "10/2025: AMD và OpenAI ký thoả thuận 6 gigawatt GPU; 1 gigawatt đầu tiên (MI450) bắt đầu từ nửa cuối 2026.",
-            "asOf": "2026-10-15",
-            "source": "t28-amd-openai",
-            "claimBy": "AMD, OpenAI"
-          }
+          "name": "AMD · chip Instinct"
         }
       ],
       "insight": {
-        "text": "Hào nước của NVIDIA là CUDA: nền tảng phần mềm có từ 2006 mà cả ngành đã quen viết mã trên đó.",
+        "text": "Mỗi cây cầu là mã đã viết cho CUDA, bộ công cụ chỉ chạy trên chip NVIDIA. Đổi chip là phải dỡ cầu, viết lại.",
         "asOf": "2026-10-15",
         "source": "t28-cuda-guide"
       },
-      "detail": {
-        "text": "Có hãng AI lớn dùng song song nhiều loại chip: Anthropic cho biết họ dùng cả TPU, Trainium lẫn GPU NVIDIA.",
-        "asOf": "2026-10-15",
-        "source": "t28-anthropic-tpu"
-      }
+      "detail": [
+        {
+          "text": "Hào sâu nhưng vẫn qua được. Anthropic dùng cả chip TPU của Google, Trainium của Amazon lẫn GPU NVIDIA. OpenAI cũng ký mua chip của Amazon và AMD.",
+          "asOf": "2026-10-15",
+          "source": "t28-anthropic-tpu",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "10/2025: Anthropic công bố sẽ dùng tới một triệu chip TPU của Google trong năm 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-anthropic-tpu",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "02/2026: trong vòng gọi vốn mới, OpenAI đồng ý chạy một phần sức tính trên chip Trainium của Amazon.",
+          "asOf": "2026-10-15",
+          "source": "t28-ap-openai-round"
+        },
+        {
+          "text": "10/2025: AMD và OpenAI ký thoả thuận GPU cỡ 6 gigawatt (đo bằng lượng điện các chip dùng); lô đầu bắt đầu từ nửa cuối 2026.",
+          "asOf": "2026-10-15",
+          "source": "t28-amd-openai",
+          "claimBy": "AMD, OpenAI"
+        }
+      ]
     },
     "goldrush": {
       "label": "Mùa đào vàng",

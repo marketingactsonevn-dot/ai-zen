@@ -8,6 +8,7 @@ import { grass, hills, mist, moon, paperLantern } from '../../ui/part2/paint'
 import { C } from './data'
 import { t29Defs } from './figures'
 import { f1 } from './rig'
+import { guide } from '../../ui/part2/guide'
 
 const S = C.scenes.bill
 const TIDE = S.tide as Tide
@@ -34,7 +35,7 @@ interface Geo {
 function geo(W: number, H: number): Geo {
   const wide = W / H > 1.15
   const vp = H * (wide ? 0.2 : 0.17)
-  const stops = wide ? [4.0, 2.9, 2.15, 1.72, 1.45] : [3.3, 2.5, 1.9, 1.55, 1.36]
+  const stops = wide ? [3.6, 2.4, 1.75, 1.42] : [3.0, 2.1, 1.62, 1.36]
   const u = wide ? 0.08 : 0.07
   // the two DRAM leaves lie on the sand just behind the stop: the later price five times the length of the earlier one
   const after: [number, number] = [stops[DRAM] + 0.05, stops[DRAM] + 0.05 + 5 * u]
@@ -56,17 +57,18 @@ const yOf = (g: Geo, D: number) => g.vp + g.G / D
 const xOf = (g: Geo, x: number, D: number) => g.W / 2 + x / D
 
 /**
- * Hoá đơn đến tay ai (comp/2.5D, one-point perspective on the axis): an orihon (an accordion bill) runs from the great
- * lake at the vanishing point, where the data centres glow on the far shore under the moon, straight down the raked sand
- * to the viewer, widening as it comes, and rolls over the frame's foot. Drag the stone paperweight (it carries the moon's
- * reflection) along it toward you: each fold it passes rises behind it and shows its date; the two DRAM leaves stay on
- * the sand, the later one five times the earlier. What the weight is on is written in ink on the near page; past today
- * the page runs on into the mist. The phone stall at the garden gate stands in the right foreground, its lamp warming the
- * near folds.
+ * Hoá đơn đến tay ai (comp/2.5D, one-point perspective on the axis; audit v3 29-3, reworked): an orihon (an accordion
+ * bill) runs from the great lake at the vanishing point, where the data centres glow under the moon, straight down the
+ * raked sand to the viewer. Drag the stone paperweight along it toward the phone stall in the right foreground: it stops
+ * a moment at each fold (a notch), the fold rises and a scrap of the bill flies onto the price tag hanging from the
+ * phone, which grows; the two DRAM leaves stay on the sand, the later one five times the earlier. At today the RAM tag
+ * shrinks (the same price, less memory) and the stall's board says what to do. What the weight is on is written on the
+ * near page, which stays blank until the first drag.
  */
 export function billScene(): SceneDef {
   return {
     label: S.label,
+    text: 'bl',
     mount(ctx: SceneCtx) {
       t29Defs()
       const id = nextId('t29b')
@@ -87,10 +89,52 @@ export function billScene(): SceneDef {
         class: 't29b-weight', role: 'slider', tabindex: '0', 'aria-label': S.sliderAria, 'aria-orientation': 'vertical',
         'aria-valuemin': '0', 'aria-valuemax': String(N), 'aria-valuenow': '0', 'aria-valuetext': valueText(0),
       }, disc)
-      const root = h('div', { class: 't29b', role: 'group', 'aria-label': S.art }, back, sand, stage, front, page, weight)
+      // the phone on the stall's counter: a price tag that grows with every scrap of the bill, a RAM tag; the board
+      const slips = MS.map(() => h('i', { class: 't29b-slip' }))
+      const price = h('div', { class: 't29b-ptag' }, h('span', null, S.priceTag), h('span', { class: 't29b-slips' }, ...slips))
+      const ram = h('div', { class: 't29b-rtag' }, S.ramTag)
+      const phone = h('div', { class: 't29b-phone', 'aria-hidden': 'true' }, price, ram)
+      const board = h('div', { class: 't29b-board' }, ctx.fact(S.board as Fact, 'p', 't29b-board-text'))
+      const root = h('div', { class: 't29b', role: 'group', 'aria-label': S.art }, back, sand, stage, front, phone, board, page, weight)
       ctx.art.append(root)
-      ctx.prompt(S.prompt)
       const stableH = stableHeight(ctx, [S.insight as Fact])
+      const gd = guide(ctx)
+      const step = gd.steps(S.prompts)
+      step(0)
+      const dot = gd.dot(weight, { dir: [0, 1] })
+      // the folds are marked before anything moves: a groove down the strip, a tick and a date at each stop (H2)
+      const way = gd.track(() => (g ? [[g.W / 2, yOf(g, g.stops[0])], [g.W / 2, yOf(g, g.stops[N])]] : [[0, 0], [0, 0]]))
+      const stopLabels = [...MS.map((m) => viDate(m.date)), L.today].map((d) => h('span', { class: 't29b-stop', 'aria-hidden': 'true' }, d))
+      root.append(...stopLabels) // the stops, marked on the sand beside the strip before anything moves
+      const target = gd.drop(price) // the price tag is where it all ends up (H3)
+      let phonePt: Pt = [0, 0]
+      let seen = 0 // the farthest stop reached
+      let hold = 0 // until when the weight rests in the notch of the stop it just reached
+      // H7: the weight slides a little toward the stall and back
+      const invite = () => !reached && !ctx.reduced && weight.animate([{ translate: '0 0' }, { translate: '0 12px' }, { translate: '0 0' }], { duration: 900, easing: 'ease-in-out', composite: 'add' })
+      ctx.el.addEventListener('p2:idle', invite)
+      ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', invite))
+
+      /** a scrap of the bill flies from the weight to the price tag, which grows */
+      function fly(i: number) {
+        if (!g) return
+        const D = g.stops[i]
+        const from: Pt = [g.W / 2, yOf(g, D)]
+        const done = () => {
+          slips[i].classList.add('on')
+          price.style.setProperty('--k', (1 + 0.16 * (i + 1)).toFixed(2))
+        }
+        if (ctx.reduced) return done()
+        const scrap = h('i', { class: 't29b-fly', 'aria-hidden': 'true' })
+        root.append(scrap)
+        const a = scrap.animate([
+          { transform: `translate(${f1(from[0])}px, ${f1(from[1])}px) rotate(0deg)`, opacity: 0 },
+          { transform: `translate(${f1((from[0] + phonePt[0]) / 2)}px, ${f1(Math.min(from[1], phonePt[1]) - 60)}px) rotate(200deg)`, opacity: 1, offset: 0.45 },
+          { transform: `translate(${f1(phonePt[0])}px, ${f1(phonePt[1])}px) rotate(380deg)`, opacity: 1 },
+        ], { duration: 900, easing: 'cubic-bezier(.4,0,.3,1)' })
+        a.onfinish = () => (scrap.remove(), done())
+        ctx.onCleanup(() => scrap.remove())
+      }
 
       let g: Geo | null = null
       let folds: HTMLElement[] = []
@@ -106,6 +150,12 @@ export function billScene(): SceneDef {
         weight.setAttribute('aria-valuetext', valueText(i))
         if (i === at || !touched) return
         at = i
+        if (i > seen) {
+          // each new fold: a notch, and a scrap of the bill to the tag
+          for (let k = seen; k < Math.min(i, N); k++) fly(k)
+          seen = i
+          hold = performance.now() + 650
+        }
         page.classList.toggle('is-mist', i === N)
         if (i < N) {
           const m = MS[i]
@@ -115,8 +165,14 @@ export function billScene(): SceneDef {
           read.replaceChildren(h('p', { class: 't29b-eyebrow' }, `${L.today} · ${today} → ${L.horizon}`), ctx.fact(TIDE.horizon, 'p', 't29b-fact'))
           if (!reached) {
             reached = true
-            ctx.insight(S.insight as Fact, S.detail as Fact)
+            // today: the RAM tag shrinks, the board lights; look at the tag, then the insight
+            root.classList.add('is-done')
+            dot.done()
+            target.hit()
+            step(1)
             ctx.chime('ok')
+            const tm = window.setTimeout(() => ctx.insight(S.insight as Fact, S.detail as Fact[]), ctx.reduced ? 0 : 1600)
+            ctx.onCleanup(() => clearTimeout(tm))
           }
         }
         if (!read.hasAttribute('aria-live')) read.setAttribute('aria-live', 'polite')
@@ -130,7 +186,7 @@ export function billScene(): SceneDef {
         if (snap) tt = near / N
         const u = tt * N, i = Math.min(N - 1, Math.floor(u))
         const D = g.stops[i] + (g.stops[i + 1] - g.stops[i]) * (u - i)
-        const sc = clamp(1.25 / D, 0.42, 1)
+        const sc = clamp(1.25 / D, 0.62, 1) // never too small to find (audit: a 64 px target)
         weight.style.transform = `translate3d(${f1(g.W / 2)}px,${f1(yOf(g, D))}px,0) scale(${sc.toFixed(3)})`
         weight.classList.toggle('snap', snap)
         if (touched) folds.forEach((f, k) => {
@@ -139,6 +195,7 @@ export function billScene(): SceneDef {
         })
         leaves.forEach((l) => l.classList.toggle('lit', touched && DRAM / N <= tt + 0.02))
         root.classList.toggle('is-today', tt >= 1 - 0.02)
+        way.set(tt)
         show(near)
       }
       // the pointer's height → depth → t along the stops
@@ -151,6 +208,8 @@ export function billScene(): SceneDef {
         return 1
       }
 
+      /** while dragging, the weight rests a moment in the notch of each new stop: no sliding past them all at once */
+      const notch = (t: number) => (performance.now() < hold ? Math.min(t, seen / N) : Math.min(t, (seen + 1) / N))
       let drag: { id: number; top: number } | null = null
       root.addEventListener('pointerdown', (e) => {
         if (e.button || !g || (e.target as Element).closest('button, a')) return
@@ -158,13 +217,16 @@ export function billScene(): SceneDef {
         root.setPointerCapture(e.pointerId)
         weight.focus({ preventScroll: true })
         touched = true
-        moveTo(tAt(e.clientY - drag.top), false)
+        root.classList.add('is-touched')
+        target.lift(true)
+        moveTo(notch(tAt(e.clientY - drag.top)), false)
         ctx.chime('soft')
       })
-      root.addEventListener('pointermove', (e) => drag && e.pointerId === drag.id && moveTo(tAt(e.clientY - drag.top), false))
+      root.addEventListener('pointermove', (e) => drag && e.pointerId === drag.id && moveTo(notch(tAt(e.clientY - drag.top)), false))
       const end = (e: PointerEvent) => {
         if (!drag || e.pointerId !== drag.id) return
         drag = null
+        target.lift(false)
         moveTo(tt, true)
       }
       root.addEventListener('pointerup', end)
@@ -176,6 +238,7 @@ export function billScene(): SceneDef {
         if (to < 0) return
         e.preventDefault()
         touched = true
+        root.classList.add('is-touched')
         moveTo(to / N, true)
         ctx.chime('soft')
       })
@@ -212,8 +275,15 @@ export function billScene(): SceneDef {
         yield
         folds = MS.map((m, i) => foldEl(gg, i, m.date, m.label))
         world.replaceChildren(...folds)
-        front.replaceChildren(...stallArt(gg))
+        const stall = stallArt(gg)
+        front.replaceChildren(...stall.els)
+        // the phone's tags hang beside it; the board under the eave
+        phonePt = stall.phone
+        Object.assign(phone.style, { left: `${f1(stall.phone[0])}px`, top: `${f1(stall.phone[1])}px` })
+        Object.assign(board.style, { left: `${f1(stall.board[0])}px`, top: `${f1(stall.board[1])}px`, width: `${f1(stall.board[2])}px` })
+        stopLabels.forEach((el, i) => Object.assign(el.style, { right: `${f1(gg.W / 2 + gg.Ws / 2 / gg.stops[i] + 12)}px`, top: `${f1(yOf(gg, gg.stops[i]))}px` }))
         moveTo(tt, true)
+        gd.refresh()
       }
 
       ctx.onCleanup(onSize(ctx.art, layout))
@@ -230,12 +300,11 @@ function foldEl(g: Geo, i: number, date: string, label: string): HTMLElement {
   const fs = clamp(wS * 0.11, 11, g.wide ? 20 : 15) // the date's size on screen
   const ls = fs * 0.62
   const el = h('div', {
-    class: `t29b-fold${i === N - 1 ? ' is-today' : ''}`,
+    class: 't29b-fold',
     style: `width:${f1(g.Ws)}px;height:${f1(Lp)}px;left:${f1(-g.Ws / 2)}px;top:${f1(g.G - Lp)}px;transform:translateZ(${f1(g.P * (1 - D))}px) rotateX(var(--a));--warm:${clamp((2.2 - D) / 0.8, 0, 1).toFixed(2)}`,
   },
   h('span', { class: 't29b-fold-date', style: `font-size:${f1(fs * D)}px` }, viDate(date)),
-  ls >= 9 ? h('span', { class: 't29b-fold-label', style: `font-size:${f1(ls * D)}px` }, label) : null,
-  i === N - 1 ? h('i', { class: 't29b-seal', style: `width:${f1(fs * 0.7 * D)}px;height:${f1(fs * 0.8 * D)}px` }) : null)
+  ls >= 9 ? h('span', { class: 't29b-fold-label', style: `font-size:${f1(ls * D)}px` }, label) : null)
   return el
 }
 
@@ -361,11 +430,12 @@ function stripArt(g: Geo, id: string): { els: SVGElement[]; leaves: SVGElement[]
 
 /** The phone stall at the garden gate, in the right foreground and cut by the frame: a deep eave, two posts, a counter
  *  with a stone shaped like a phone and a few laid out, its paper lamp; the lamp's warm pool spreading over the near folds. */
-function stallArt(g: Geo): SVGElement[] {
+function stallArt(g: Geo): { els: SVGElement[]; phone: Pt; board: [number, number, number] } {
   const { W, H, wide } = g
   const q = rng(2972)
-  const sw = wide ? W * 0.3 : W * 0.42
-  const x0 = wide ? W * 0.76 : W * 0.8, eave = H * (wide ? 0.5 : 0.6), counter = H * (wide ? 0.8 : 0.86)
+  // the whole stall inside the frame (audit v3 29-3: it was cut by the right edge)
+  const sw = wide ? W * 0.235 : W * 0.3
+  const x0 = wide ? W * 0.7 : W * 0.645, eave = H * (wide ? 0.5 : 0.6), counter = H * (wide ? 0.8 : 0.86)
   const x1 = x0 + sw * 1.15
   const roof = `M${f1(x0 - sw * 0.16)} ${f1(eave)}Q${f1(x0 + sw * 0.4)} ${f1(eave - H * 0.035)} ${f1(x1)} ${f1(eave - H * 0.02)}L${f1(x1)} ${f1(eave - H * 0.12)}Q${f1(x0 + sw * 0.4)} ${f1(eave - H * 0.11)} ${f1(x0 + sw * 0.02)} ${f1(eave - H * 0.07)}Z`
   // the eave's underside in shadow, the tiles' ribs, the moon along the ridge
@@ -392,7 +462,8 @@ function stallArt(g: Geo): SVGElement[] {
   let laid = ''
   for (let i = 0; i < 3; i++) laid += `M${f1(x0 + sw * (0.14 + i * 0.1))} ${f1(ty + 1)}l${f1(sw * 0.07)} ${f1(-1.5)}l${f1(sw * 0.012)} ${f1(-H * 0.009)}l${f1(-sw * 0.07)} ${f1(1.5)}Z`
   const lx = x0 + sw * 0.1, ly = eave + H * 0.05, lr = clamp(sw * 0.05, 8, 16)
-  return [
+  // a phone: the reading page covers the counter, so the tags hang from the eave and the board goes up top
+  return { phone: wide ? [tx, ty - th] : [x0 + sw * 0.62, eave + H * 0.07], board: wide ? [x0 + sw * 0.06, counter + H * 0.035, sw * 1.0] : [W * 0.04, H * 0.015, W * 0.92], els: [
     s('ellipse', { class: 't29b-pool', cx: f1(lx - sw * 0.25), cy: f1(H * 0.9), rx: f1(sw * 1.4), ry: f1(H * 0.22), fill: 'url(#t29-lamp)' }),
     s('path', { class: 't29b-post', d: posts, filter: 'url(#ink-rough)' }),
     s('path', { class: 't29b-noren', d: noren }),
@@ -409,7 +480,7 @@ function stallArt(g: Geo): SVGElement[] {
     paperLantern(lx, ly, lr, 2970, H * 0.03),
     grass(W * 0.03, H * 1.01, H * 0.1, 2971),
     grass(W * 0.12, H * 1.01, H * 0.06, 2973),
-  ]
+  ] }
 }
 
 /** The DRAM price, then and as forecast: two ink bars, one five times the other, written on the page. */

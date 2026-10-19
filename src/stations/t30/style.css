@@ -1558,6 +1558,135 @@
   opacity: 1;
 }
 
+/* audit v3 30-3: four pillars, four places; a notch is cut when a law's date passes */
+.t30l .p2t-moon {
+  --m: 64px;
+}
+.t30l-cut {
+  opacity: 0;
+  transition: opacity 0.7s var(--ease-soft);
+}
+.t30l-cut.up {
+  opacity: 1;
+}
+.t30l-cut.on .t30l-notch {
+  stroke: var(--vermilion);
+}
+.t30l-slide {
+  transform: translateY(var(--from));
+  transition: transform 1s 0.5s var(--ease);
+}
+.t30l-cut.up .t30l-slide {
+  transform: none;
+}
+.t30l-old {
+  opacity: 0.45;
+}
+.t30l-crack {
+  fill: var(--umbra);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t30l-crack {
+  fill: #000;
+}
+.t30l-ticks {
+  fill: var(--wash);
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t30l-ticks {
+  fill: var(--moon);
+}
+.t30l-year {
+  font: 500 13px/1 var(--serif);
+  fill: var(--ink-2);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.t30l-way .p2g-groove {
+  stroke-dasharray: 0.002 0.008;
+  stroke-linecap: round;
+}
+/* the place's name above its pillar; the words of its latest law under its foot */
+.t30l-name,
+.t30l-said {
+  position: absolute;
+  margin: 0;
+  text-align: center;
+  color: var(--ink);
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper), 0 0 2px var(--paper);
+  pointer-events: none;
+}
+.t30l-name {
+  transform: translate(-50%, 10px);
+  font: 600 clamp(15px, 2.2vmin, 19px)/1.1 var(--serif);
+  letter-spacing: 0.03em;
+}
+.t30l-said {
+  width: min(13rem, 21vw);
+  transform: translate(-50%, 36px);
+  font: 500 13px/1.3 var(--serif);
+  color: var(--ink-2);
+  transition: color 0.4s;
+}
+.t30l-said.on {
+  color: var(--ink);
+  font-weight: 600;
+}
+.t30l-name {
+  white-space: nowrap;
+}
+.t30l.tall .t30l-name {
+  font-size: 13px;
+}
+.t30l.tall .t30l-said {
+  width: 23vw;
+  font-size: 11px;
+}
+/* the board: what a content maker in Việt Nam has to do (after the insight) */
+.t30l-board {
+  position: absolute;
+  right: 4.5%;
+  bottom: 5%;
+  width: min(22rem, 34%);
+  padding: 8px 12px 9px;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(176deg, transparent 0 6px, color-mix(in srgb, var(--umbra) 6%, transparent) 6px 7px, transparent 7px 13px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--step-hi) 80%, var(--lantern) 8%), color-mix(in srgb, var(--step-mid) 90%, var(--lantern) 8%));
+  box-shadow: 0 8px 12px -8px var(--umbra), inset 0 0 0 1px color-mix(in srgb, var(--umbra) 18%, transparent);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.7s, transform 0.9s var(--ease);
+  pointer-events: none;
+}
+.t30l.has-board .t30l-board {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.t30l.tall .t30l-board {
+  left: 4%;
+  right: 4%;
+  width: auto;
+  bottom: auto;
+  top: 2%;
+}
+.t30l-board-text {
+  margin: 0;
+  font: 500 14px/1.4 var(--serif);
+  color: var(--wash);
+  text-shadow: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t30l-cut,
+  .t30l-slide,
+  .t30l-board {
+    transition: none;
+  }
+}
+
 /* ───────── copyright: the well-sweep over the library pond ───────── */
 /* what a stone says is written in the sky (a phone: under the bank), never on a card */
 .t30c .p2c-card {

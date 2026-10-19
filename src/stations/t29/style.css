@@ -1155,7 +1155,7 @@
 .t29w-flow {
   fill: none;
   stroke: var(--moon);
-  stroke-width: var(--w, 2px);
+  stroke-width: calc(var(--w, 2px) * var(--kw, 1));
   stroke-linecap: round;
   stroke-dasharray: calc(var(--len) * 0.3px) calc(var(--len) * 1px);
   stroke-dashoffset: calc(var(--len) * 0.3px);
@@ -1166,6 +1166,7 @@
 }
 .t29w-flow-far {
   --w: 1.4px;
+  stroke-width: calc(var(--w) * var(--kl, 1));
 }
 .t29w.flow .t29w-flow {
   animation: t29w-flow 1.7s cubic-bezier(0.4, 0, 0.7, 1) 2 both;
@@ -1358,6 +1359,30 @@
 }
 .t29w.tall .t29w-notice-body {
   padding: 7px 9px 8px;
+}
+
+/* audit v3 29-2: the lake and the source are named where they are; the wells' names read clearly */
+.t29w-lake-name,
+.t29w-source {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: color-mix(in srgb, var(--paper) 80%, transparent);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+:root[data-theme='dark'] .t29w-lake-name,
+:root[data-theme='dark'] .t29w-source {
+  fill: var(--moon);
+  stroke: color-mix(in srgb, var(--umbra) 80%, transparent);
+}
+.t29w-carve {
+  fill: color-mix(in srgb, var(--umbra) 88%, var(--t29-stone));
+}
+:root[data-theme='dark'] .t29w-carve {
+  fill: color-mix(in srgb, var(--moon) 55%, var(--t29-stone));
 }
 
 /* ───────── 3 · bill (one-point perspective on the sand) ───────── */
@@ -2067,4 +2092,130 @@
 }
 .t29r.tall .t29r-who {
   font-size: 12px;
+}
+
+/* audit v3 29-3: the page stays blank until the first drag; the phone's tags, the scraps of the bill, the board */
+.t29b:not(.is-touched) .t29b-page {
+  visibility: hidden;
+}
+.t29b-phone {
+  position: absolute;
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  transform: translate(14px, -6px);
+  pointer-events: none;
+}
+.t29b-ptag,
+.t29b-rtag {
+  position: relative;
+  padding: 3px 8px 4px;
+  font: 600 14px/1.1 var(--serif);
+  color: var(--wash);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--step-hi) 85%, var(--lantern) 12%), color-mix(in srgb, var(--step-mid) 90%, var(--lantern) 10%));
+  border-radius: 2px 6px 6px 2px;
+  box-shadow: 0 4px 6px -3px var(--umbra), inset 0 0 0 1px color-mix(in srgb, var(--umbra) 18%, transparent);
+  transform-origin: 0 0;
+  transition: transform 0.6s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+/* each hangs on a thread from the phone */
+.t29b-ptag::before,
+.t29b-rtag::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  bottom: 100%;
+  height: 10px;
+  border-left: 1px solid var(--wash);
+  opacity: 0.6;
+}
+.t29b-ptag {
+  display: grid;
+  gap: 3px;
+  transform: scale(var(--k, 1));
+}
+.t29b-slips {
+  display: flex;
+  gap: 2px;
+}
+.t29b-slip {
+  width: 9px;
+  height: 7px;
+  background: color-mix(in srgb, var(--paper) 80%, var(--step-hi));
+  border: 1px solid color-mix(in srgb, var(--wash) 40%, transparent);
+  opacity: 0;
+  transform: rotate(-8deg);
+  transition: opacity 0.3s;
+}
+.t29b-slip.on {
+  opacity: 1;
+}
+.t29b-slip:nth-child(2n).on {
+  transform: rotate(7deg);
+}
+.t29b-rtag {
+  margin-top: 4px;
+  transform-origin: 0 0;
+}
+.t29b.is-done .t29b-rtag {
+  transform: scale(0.72);
+  opacity: 0.85;
+}
+.t29b-fly {
+  position: absolute;
+  left: -7px;
+  top: -5px;
+  width: 14px;
+  height: 10px;
+  background: color-mix(in srgb, var(--paper) 80%, var(--step-hi));
+  border: 1px solid color-mix(in srgb, var(--wash) 45%, transparent);
+  pointer-events: none;
+}
+.t29b-board {
+  position: absolute;
+  padding: 6px 10px 7px;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(176deg, transparent 0 6px, color-mix(in srgb, var(--umbra) 6%, transparent) 6px 7px, transparent 7px 13px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--step-hi) 80%, var(--lantern) 8%), color-mix(in srgb, var(--step-mid) 90%, var(--lantern) 8%));
+  box-shadow: 0 8px 12px -8px var(--umbra), inset 0 0 0 1px color-mix(in srgb, var(--umbra) 18%, transparent);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.7s 0.6s, transform 0.9s 0.6s var(--ease);
+}
+.t29b.is-done .t29b-board {
+  opacity: 1;
+  transform: none;
+}
+.t29b-board-text {
+  margin: 0;
+  font: 500 14px/1.35 var(--serif);
+  color: var(--wash);
+}
+.t29b.tall .t29b-board-text,
+.t29b.tall :is(.t29b-ptag, .t29b-rtag) {
+  font-size: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t29b-ptag,
+  .t29b-rtag,
+  .t29b-board {
+    transition: none;
+  }
+}
+.t29b-stop {
+  position: absolute;
+  transform: translateY(-50%);
+  font: 500 13px/1 var(--serif);
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--wash) 70%, transparent);
+  pointer-events: none;
+}
+.t29b.tall .t29b-stop {
+  font-size: 11px;
+}
+/* a phone: the stall is near the edge, so the tags hang on the phone's left */
+.t29b.tall .t29b-phone {
+  flex-direction: row-reverse;
+  transform: translate(calc(-100% - 10px), -6px);
 }
