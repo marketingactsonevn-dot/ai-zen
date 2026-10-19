@@ -3,7 +3,8 @@ import { h, nextId, s } from '../../core/dom'
 import type { Fact } from '../../core/content'
 import type { SceneCtx } from '../types'
 import { blob, clamp, curve, onSize, p2Defs, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
-import { grass, hills, mist, moon, toro, wash } from '../../ui/part2/paint'
+import { grass, hills, mist, moon, paperLantern, toro, wash } from '../../ui/part2/paint'
+import { guide } from '../../ui/part2/guide'
 
 const G = raw.scenes.gate
 const f1 = (n: number) => n.toFixed(1)
@@ -63,18 +64,55 @@ function mason(x: number, y: number, hh: number, dir: number, pose: 'reach' | 'b
 }
 
 /**
+ * The small wicket in the fence and the man waiting at it with a paper lantern on a pole, in a kw × kh box (sill at the
+ * bottom): the wicket's posts, cap and plank door (it swings in on .let), the warm court behind it, the bearer's silhouette.
+ */
+function wicketArt(kw: number, kh: number): SVGElement[] {
+  const u = kh / 100
+  const wx0 = kw - 44 * u, wx1 = kw - 8 * u, wy0 = 22 * u, wy1 = kh - 2 * u
+  const post = Math.max(3, 4 * u)
+  const frame = `M${f1(wx0 - post)} ${f1(wy0 - 3 * u)}h${f1(post)}V${f1(wy1)}h${f1(-post)}Z M${f1(wx1)} ${f1(wy0 - 3 * u)}h${f1(post)}V${f1(wy1)}h${f1(-post)}Z`
+  const cap = `M${f1(wx0 - post * 2.4)} ${f1(wy0 - 3 * u)}Q${f1((wx0 + wx1) / 2)} ${f1(wy0 - 11 * u)} ${f1(wx1 + post * 2.4)} ${f1(wy0 - 3 * u)}L${f1(wx1 + post)} ${f1(wy0)}H${f1(wx0 - post)}Z`
+  let planks = ''
+  for (let i = 1; i < 4; i++) planks += stroke([[wx0 + ((wx1 - wx0) * i) / 4, wy0 + 2 * u], [wx0 + ((wx1 - wx0) * i) / 4 + 0.6, wy1 - 2 * u]], 1.2, 0.05, 0.05, 0.6)
+  // the bearer: conical hat, a robe that widens to the ground, one arm up to the pole; the lantern hangs at its tip
+  const bx = 22 * u, by = kh
+  const P = (dx: number, dy: number): Pt => [bx + dx * u, by - dy * u]
+  const J = (p: Pt) => `${f1(p[0])} ${f1(p[1])}`
+  const body = `M${J(P(-9, 0))}L${J(P(-6, 30))}Q${J(P(0, 40))} ${J(P(6, 30))}L${J(P(10, 0))}Z` +
+    `M${J(P(-11, 39))}L${J(P(0, 52))}L${J(P(11, 39))}Q${J(P(0, 41))} ${J(P(-11, 39))}Z` +
+    stroke([P(4, 33), P(11, 36), P(15, 44)], 3.4 * u, 0.1, 0.2, 0.6)
+  const pole = stroke([P(16, 30), P(19, 62), P(27, 70)], 1.6 * u, 0.05, 0.1, 0.6)
+  const [lx, ly] = P(27, 70)
+  return [
+    s('path', { class: 't19g-wicket-in', d: `M${f1(wx0)} ${f1(wy0)}H${f1(wx1)}V${f1(wy1)}H${f1(wx0)}Z` }),
+    s('g', { class: 't19g-wicket-door' },
+      s('path', { class: 't19g-wicket-board', d: `M${f1(wx0)} ${f1(wy0)}H${f1(wx1)}V${f1(wy1)}H${f1(wx0)}Z` }),
+      s('path', { class: 't19g-wicket-plank', d: planks })),
+    s('path', { class: 't19g-wicket-frame', d: frame + cap, filter: 'url(#ink-rough)' }),
+    s('g', { class: 't19g-bearer' },
+      s('ellipse', { class: 't19g-contact', cx: f1(bx + 2 * u), cy: f1(by - 1), rx: f1(14 * u), ry: f1(2.4 * u) }),
+      s('path', { class: 't19g-worker', d: body + pole }),
+      s('path', { class: 't19g-worker-rim', d: stroke([P(6, 2), P(5.5, 28)], 1.2 * u, 0.2, 0.3, 0.3) }),
+      paperLantern(lx, ly, 5 * u, 1931, 3 * u)),
+  ]
+}
+
+/**
  * Scene 2 · the fenced summit (EYE, macro, 2.5D). Eye-level against the bamboo fence: five painted flats at depth — blurred
  * bamboo in front, the fence (culms of every height, leaning, tied, fading into the mist at both ends) and its plank-and-
  * lattice gate, the compound glimpsed through it (a curved wall of dressed stone with lines of code cut into each block, a
  * red crack, two masons patching it, lanterns, twelve small lamps along the coping and a faint band of forty more), the
- * summit, the moon. The moon throws the lattice's shadow across the forecourt; warm light leaks through the seam. Slide the
- * wooden bolt and the doors swing inward; the eye passes through, the reason is carved on the back of the open right-hand
- * door, and pale fresh mortar fills the crack.
+ * summit, the moon. The moon throws the lattice's shadow across the forecourt; warm light leaks through the seam.
+ * Audit v3 19-2 (P1: opening the gate yourself said the opposite of "not released to everyone"): the bolt is stuck — it
+ * gives a few px and the gate shudders, "this gate is not open to you". Then the man with the lantern at the small wicket
+ * on the left (a software fixer) is let in: the wicket swings, his lantern goes in, the crack is lit and patched, and the
+ * reason hangs on the fence as a plain sign with who got in first.
  */
 export function gateScene(ctx: SceneCtx) {
   p2Defs()
   const low = ctx.quality === 'low'
-  const deep = !low && !ctx.reduced // parallax and walking through the gate
+  const deep = !low && !ctx.reduced // parallax
   const uid = nextId('t19g')
 
   const layer = (cls: string) => {
@@ -86,29 +124,40 @@ export function gateScene(ctx: SceneCtx) {
   const doorL = h('div', { class: 't19g-door t19g-door-l' }, doorSvg('l'))
   const doorR = h('div', { class: 't19g-door t19g-door-r' }, doorSvg('r'))
   const boltArt = s('svg', { class: 't19g-bolt-svg', 'aria-hidden': 'true' })
-  const bolt = h('button', { class: 't19g-bolt', type: 'button', 'aria-label': G.gateAria, 'aria-expanded': 'false' }, boltArt)
+  const boltGrip = h('span', { class: 't19g-bolt-grip', 'aria-hidden': 'true' }) // where the guide's dot rides: the bolt's right end
+  const bolt = h('button', { class: 't19g-bolt', type: 'button', 'aria-label': G.gateAria }, boltArt, boltGrip)
   const gate = h('div', { class: 't19g-gate' }, doorL, doorR, bolt)
   fence.el.append(gate)
-  // the back of the open right-hand door: planks and a Z-brace, the reason cut into the wood
+  // the man with the lantern at the small wicket (left third): the one who gets in
+  const wicket = s('svg', { class: 't19g-wicket-svg', 'aria-hidden': 'true' })
+  const keeperDotAt = h('span', { class: 't19g-keeper-dot', 'aria-hidden': 'true' })
+  const keeper = h('button', { class: 't19g-keeper', type: 'button', 'aria-label': G.keeperAria }, wicket, keeperDotAt, h('span', { class: 't19g-keeper-tag', 'aria-hidden': 'true' }, G.keeper))
+  keeper.disabled = true
+  // the reason, on a plain board hung on the fence once he is in: planks and battens, the words cut into the wood
   const board = h('div', { class: 't19g-board' },
     h('div', { class: 't19g-board-wood', 'aria-hidden': 'true' }),
     h('div', { class: 't19g-board-text' },
       h('p', { class: 't19g-board-title' }, G.reasonTitle),
-      ctx.fact(G.reason as Fact, 'p', 't19g-reason')))
+      ctx.fact(G.reason as Fact, 'p', 't19g-reason'),
+      h('p', { class: 't19g-allowed' }, G.allowed)))
   board.inert = true
   // the picture is one role="img"; the fence layer (it holds the bolt, the only control) sits outside it, stacked by z-index
   const scene = h('div', { class: 't19g-scene', role: 'img', 'aria-label': G.art }, sky.el, peak.el, inner.el, fg.el)
-  const root = h('div', { class: `t19g${deep ? ' deep' : ''}` }, scene, fence.el, board)
+  const root = h('div', { class: `t19g${deep ? ' deep' : ''}` }, scene, fence.el, keeper, board)
   ctx.art.append(root)
   ctx.prompt(G.prompt)
+  const g = guide(ctx)
+  const boltDot = g.dot(boltGrip, { dir: [1, 0] })
+  let keeperDot: { done(): void } | null = null
 
   let W = 0, H = 0
   let slide = 0, maxSlide = 1
-  let opened = false
+  let jammed = false // the bolt has been tried
+  let opened = false // the wicket has let him in
   const layers = [sky.el, peak.el, inner.el, fence.el, fg.el]
   const depth = [0.12, 0.28, 0.55, 1, 1.9] // parallax share of the 12 px swing
   const parallax = (nx: number, ny: number) => {
-    if (!deep || opened) return
+    if (!deep) return
     layers.forEach((el, i) => (el.style.transform = `translate(${f1(-nx * 12 * depth[i])}px, ${f1(-ny * 6 * depth[i])}px)`))
   }
   const grad = (id: string, stops: [number, string, number][], x2 = 1, y2 = 0) =>
@@ -125,7 +174,7 @@ export function gateScene(ctx: SceneCtx) {
     const r = rng(1919)
     const gx = W / 2
     const gy = H * (tall ? 0.68 : 0.74) // the gate's sill
-    const GW = clamp(Math.min(W * (tall ? 0.6 : 0.27), H * 0.4), 140, 380)
+    const GW = clamp(Math.min(W * (tall ? 0.52 : 0.27), H * 0.4), 140, 380) // tall: room beside it for the wicket
     const DH = Math.min(H * (tall ? 0.3 : 0.4), GW * 1.25)
     const FH = DH * 0.9
     const pw = clamp(GW * 0.075, 8, 22) // a culm's width by the gate
@@ -303,7 +352,7 @@ export function gateScene(ctx: SceneCtx) {
     paintDoor(doorR.firstChild as SVGSVGElement, dw, DH, 'r')
     // the bolt: a rough-hewn beam through two brackets, across both doors at mid height, its shadow on the planks
     const bw = GW * 0.62, bh = clamp(DH * 0.068, 11, 26)
-    maxSlide = GW * 0.34
+    maxSlide = clamp(GW * 0.025, 4, 9) // it gives a little, then sticks
     Object.assign(bolt.style, { left: `${f1(GW / 2 - bw / 2)}px`, top: `${f1(DH * 0.52 - bh / 2)}px`, width: `${f1(bw)}px`, height: `${f1(bh)}px` })
     boltArt.setAttribute('viewBox', `0 0 ${f1(bw)} ${f1(bh)}`)
     const rb = rng(1944)
@@ -324,6 +373,14 @@ export function gateScene(ctx: SceneCtx) {
       s('path', { class: 't19g-bolt-end', d: `M0 ${f1(botE[0][1])}L${f1(bh * 0.08)} ${f1(bh * 0.5)}L${f1(bh * 0.18)} ${f1(topE[0][1])}L${f1(bh * 0.42)} ${f1(topE[1][1])}L${f1(bh * 0.3)} ${f1(botE[1][1])}Z` }),
       s('path', { class: 't19g-bolt-ink', d: stroke(topE, 1.4, 0.05, 0.05, 0.6) + stroke(botE, 2.2, 0.05, 0.05, 0.6) }))
     setSlide(slide)
+    // the wicket and its bearer in the left third, on the fence line (tall: by the left edge)
+    const kh = tall ? DH * 0.5 : clamp(DH * 0.78, 80, 260), kw = kh * 0.95
+    const kx = tall ? Math.max(2, gx - GW / 2 - pw * 1.6 - kw) : W * 0.17
+    Object.assign(keeper.style, { left: `${f1(kx)}px`, top: `${f1(gy + 4 - kh)}px`, width: `${f1(kw)}px`, height: `${f1(kh)}px` })
+    wicket.setAttribute('viewBox', `0 0 ${f1(kw)} ${f1(kh)}`)
+    wicket.replaceChildren(...wicketArt(kw, kh))
+    keeperDotAt.style.left = `${f1(kh * 0.49)}px`
+    keeperDotAt.style.top = `${f1(kh * 0.24)}px`
 
     // 1 · out of focus in front: two bamboo culms at the left edge, one at the right, a few leaves
     const fw = clamp(W * 0.045, 22, 64)
@@ -482,7 +539,7 @@ export function gateScene(ctx: SceneCtx) {
       mist(gx, wBot + H * 0.01, W * 0.6, H * 0.02),
       s('ellipse', { cx: f1(tx0), cy: f1(wBot + 4), rx: f1(toroH * 1.5), ry: f1(toroH * 0.9), fill: url('pool') }),
       s('ellipse', { cx: f1(tx1), cy: f1(wBot + 4), rx: f1(toroH * 1.5), ry: f1(toroH * 0.9), fill: url('pool') }),
-      s('ellipse', { cx: f1(crackEnd[0]), cy: f1(wTop + ch * 0.62), rx: f1(workH * 2.2), ry: f1(ch * 0.62), fill: url('pool') }),
+      s('ellipse', { class: 't19g-workglow', cx: f1(crackEnd[0]), cy: f1(wTop + ch * 0.62), rx: f1(workH * 2.2), ry: f1(ch * 0.62), fill: url('pool') }),
       s('path', { class: 't19g-mortar', d: `M${crackPts.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}`, pathLength: 1 }),
       s('path', { class: 't19g-crack', d: crackD }),
       s('ellipse', { class: 't19g-contact', cx: f1(crackEnd[0] - workH * 0.42), cy: f1(wBot + 3), rx: f1(workH * 0.3), ry: f1(workH * 0.05) }),
@@ -587,34 +644,47 @@ export function gateScene(ctx: SceneCtx) {
     bolt.style.transform = `translateX(${f1(slide)}px)`
   }
 
+  /** the bolt sticks: back into its brackets, the gate shudders — not open to you; then the wicket's man gets the dot */
   function open() {
+    setSlide(0)
+    ctx.chime('tap')
+    if (!ctx.reduced) gate.animate([{ translate: '0 0' }, { translate: '3px 0' }, { translate: '-3px 0' }, { translate: '2px 0' }, { translate: '0 0' }], { duration: 420, easing: 'ease-out' })
+    ctx.prompt(G.jammed, 'wrong')
     if (opened) return
+    clearTimeout(nextT)
+    nextT = window.setTimeout(() => ctx.prompt(G.steps[0]), ctx.reduced ? 1600 : 1900)
+    if (jammed) return
+    jammed = true
+    boltDot.done()
+    keeper.disabled = false
+    keeperDot = g.dot(keeperDotAt, { dir: [1, -0.4] })
+  }
+  let nextT = 0
+  ctx.onCleanup(() => clearTimeout(nextT))
+
+  /** the small gate opens for him: his lantern goes in, lights the crack, the masons fill it; the reason is hung up */
+  function letIn() {
+    if (opened || !jammed) return
     opened = true
-    setSlide(slide < 0 ? -maxSlide : maxSlide)
-    root.classList.add('open')
-    bolt.setAttribute('aria-expanded', 'true')
-    bolt.disabled = true
+    clearTimeout(nextT)
+    keeper.disabled = true
+    keeperDot?.done()
+    root.classList.add('let')
     board.inert = false
     ctx.chime('soft')
-    // the eye walks through the open gate (high only); otherwise the doors simply stand open
-    const walk = () => {
-      if (deep) {
-        layers.forEach((el) => (el.style.transform = ''))
-        root.classList.add('through')
-      }
-      ctx.insight(G.insight as Fact, G.detail as Fact)
-    }
-    if (ctx.reduced) walk()
-    else {
-      const t = setTimeout(walk, low ? 900 : 1300)
-      ctx.onCleanup(() => clearTimeout(t))
-    }
+    const t = setTimeout(() => ctx.insight(G.insight as Fact, G.detail as Fact), ctx.reduced ? 0 : low ? 1400 : 2400)
+    ctx.onCleanup(() => clearTimeout(t))
   }
+  keeper.addEventListener('click', letIn)
+  // H7: standing still before the bolt was tried, it gives a small nudge to the right
+  const idle = () => !jammed && !ctx.reduced && boltArt.animate([{ translate: '0 0' }, { translate: '2px 0' }, { translate: '0 0' }], { duration: 600, iterations: 2 })
+  ctx.el.addEventListener('p2:idle', idle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', idle))
 
   // drag the bolt sideways out of its brackets (a tap or Enter slides it for you)
   let drag: { x0: number; s0: number; moved: boolean } | null = null
   bolt.addEventListener('pointerdown', (e) => {
-    if (opened || e.button) return
+    if (e.button) return
     drag = { x0: e.clientX, s0: slide, moved: false }
     bolt.setPointerCapture(e.pointerId)
     bolt.classList.add('held')
@@ -623,9 +693,9 @@ export function gateScene(ctx: SceneCtx) {
     if (!drag) return
     const dx = e.clientX - drag.x0
     if (Math.abs(dx) > 4) drag.moved = true
-    // the bolt is heavy: it follows the hand a little behind
+    // the bolt is heavy: it follows the hand a little behind, then sticks
     setSlide(drag.s0 + dx * 0.85)
-    if (Math.abs(slide) >= maxSlide * 0.98) {
+    if (Math.abs(dx) > maxSlide * 4) {
       drag = null
       bolt.classList.remove('held')
       open()

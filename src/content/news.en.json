@@ -33,7 +33,7 @@
       "id": "n-2026-07-gemini-3-6-flash",
       "date": "2026-07-21",
       "title": "Google releases Gemini 3.6 Flash",
-      "what": "Google introduced Gemini 3.6 Flash alongside 3.5 Flash-Lite and 3.5 Flash Cyber; it says 3.6 Flash uses 17% fewer output tokens than 3.5 Flash.",
+      "what": "Google launched Gemini 3.6 Flash, a fast, cheap version. Google says it writes about 17% fewer words than the previous version for the same task.",
       "why": "The race isn’t only about the biggest model: fast, cheap, token-thrifty versions are what many people use every day.",
       "kind": "fact",
       "source": "gemini-3-6-flash",

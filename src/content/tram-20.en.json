@@ -109,104 +109,80 @@
     },
     "vortex": {
       "label": "Water that blows up",
-      "art": "A round pond under the moon seen three-quarter, a ring of mossy stones on raked sand, fireflies circling the bank — each one an agent. Stir in circles: the water sinks into a funnel, the moon's reflection winds into a spiral and the camera sinks toward the water until the far ridges rise; at the top the core flares into one point, a shockwave runs out and the agents line up into a stair of light climbing out of the pond.",
-      "prompt": "Stir the pond",
-      "stirAria": "Stir the pond: drag in a circle, or hold an arrow key",
+      "art": "A round pond under the moon seen three-quarter, a ring of mossy stones on raked sand, fireflies circling the bank — each one an AI copy running on its own (an agent). Swirl the pond and let go: the water calms by itself. Release the swarm: they spread out trying swirls, one tightens by itself into a funnel and the camera sinks toward the water until the far ridges rise; at the bottom the core flares into one point, a shockwave runs out and the agents line up into a stair of light climbing out of the pond.",
+      "prompt": "Swirl the pond, then let go",
+      "stirAria": "Swirl the pond: drag in a circle or hold an arrow key, then let go",
+      "steps": [
+        "Release the AI swarm to search"
+      ],
+      "release": "Release the AI swarm",
+      "releaseAria": "Release the AI swarm to search for a swirl that tightens by itself",
       "stages": [
-        "Smooth flow",
-        "Eddies tighten",
+        "The water calms by itself",
+        "A swirl tightens by itself",
         "One point “blows up”"
       ],
-      "fireflies": "about 10,000 agents · 88 hours",
-      "leanNote": "plus 17 hours rewriting it in Lean",
+      "fireflies": "Each firefly: one AI copy running on its own (an agent). About 10,000 copies, 88 hours.",
       "insight": {
-        "text": "The Navier–Stokes equations describe how water and air flow. The million-dollar question: can a smooth flow suddenly “blow up”?",
-        "asOf": "2026-10-15",
-        "source": "quanta-ns"
-      },
-      "detail": {
-        "text": "OpenAI says about 10,000 agents ran for 88 hours on an unreleased model to find the proof; another AI took 17 more hours to rewrite it in Lean.",
+        "text": "Can smooth water “blow up” by itself? OpenAI says 10,000 AI copies searched for 88 hours and found a way it can.",
         "asOf": "2026-10-15",
         "source": "quanta-ns",
         "claimBy": "OpenAI"
       },
-      "contextTitle": "Who, when, whose credit",
-      "context": [
-        {
-          "text": "Tristan Buckmaster (NYU) and Levent Alpöge (Anthropic) posted a result on a closely related problem about 12 hours earlier; who came first is still disputed.",
-          "asOf": "2026-10-15",
-          "source": "quanta-ns"
-        },
-        {
-          "text": "Both teams built on a strategy by mathematicians Diego Córdoba and Luis Martínez-Zoroa, published in 2023.",
-          "asOf": "2026-10-15",
-          "source": "quanta-ns"
-        },
-        {
-          "text": "The Clay Institute has not awarded the prize; OpenAI says it does not plan to accept the $1 million and has published the manuscript and Lean version for anyone to check.",
-          "asOf": "2026-10-15",
-          "source": "datacamp-ns"
-        }
-      ],
-      "contextShort": [
-        "Another team: ~12 hours earlier",
-        "Both built on a 2023 strategy",
-        "No Clay prize awarded yet"
-      ]
+      "detail": {
+        "text": "Another team (Buckmaster, NYU, and Alpöge, Anthropic) posted a near-identical result about 12 hours earlier. Both built on the approach of Córdoba and Martínez-Zoroa (2023). The Clay Institute has not awarded the prize.",
+        "asOf": "2026-10-15",
+        "source": "quanta-ns"
+      }
     },
     "mason": {
-      "label": "The mason who tests every stone",
-      "art": "A stone stair climbs the moonlit hillside, one line of a Lean proof cut into each step; tap a step and the old stonemason climbs to it and strikes it with his hammer. On the landing, under a paper lantern, a wooden sign carries the problem as written for the machine; beside it hangs the scroll with the original problem, to drag up and compare.",
-      "prompt": "Tap each step",
+      "label": "The mason who tests every step",
+      "art": "A stone stair climbs the moonlit hillside, one step of the solution written for the machine cut into each stair; tapped in order, the old stonemason climbs to it and strikes it with his hammer. On the landing, under a paper lantern, a wooden sign carries the problem as written for the machine; beside it hangs the scroll with the original problem, to drag up and compare.",
+      "prompt": "Tap the first step",
+      "steps": [
+        "Tap the next step ({n}/{total})",
+        "Drag the original scroll up to the sign"
+      ],
+      "early": "Tap all the steps first",
+      "count": "Tapped {n}/{total} steps",
       "stepAria": "Tap step {n}",
       "machineOk": "Machine: every step checks out",
       "compare": "Compare the sign with the original",
       "compareAria": "Compare the problem written for the machine with the original problem",
-      "signWord": "Even",
+      "lines": [
+        "For the machine: a even, b even",
+        "To prove: a + b even",
+        "Step: add two even numbers",
+        "Conclusion: a + b even ✓"
+      ],
+      "signWord": "even",
       "originalWord": "odd",
       "original": "Original: the sum of two odd numbers is even",
-      "mismatch": "The sign says “even numbers” — the machine checked correctly, but a different problem!",
-      "code": {
-        "lang": "text",
-        "code": "-- Original: the sum of two odd numbers is even\ntheorem sum_even (a b : ℕ) (ha : Even a) (hb : Even b) :\n    Even (a + b) := by\n  exact Even.add ha hb",
-        "notes": [
-          {
-            "line": 1,
-            "text": "A comment line: the problem a human wants to prove."
-          },
-          {
-            "line": 2,
-            "text": "The problem as written for the machine. Notice: it says “Even”, not odd."
-          },
-          {
-            "line": 4,
-            "text": "The machine checks this step: valid. But it has just proved a different problem."
-          }
-        ]
-      },
+      "mismatch": "The original says odd numbers; the problem for the machine says even. The machine checked correctly — but a different problem.",
       "codeNote": {
-        "text": "This code is a small Lean-style example AI Zen wrote for illustration, not taken from a real proof.",
+        "text": "The steps are a small example AI Zen wrote for illustration, not taken from a real proof.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "illustration"
       },
       "insights": [
         {
-          "text": "Lean is a proof assistant: you write a proof the machine checks step by step; one wrong step and it refuses.",
+          "text": "The machine checks one step at a time. Any wrong step, it stops right there.",
           "asOf": "2026-10-15",
           "source": "lean-lang"
         },
         {
-          "text": "But people must still check the problem written in Lean is the real one: the machine checks logic, people check meaning.",
+          "text": "The machine can check every step. Whether the problem itself is right, a person has to check.",
           "asOf": "2026-10-15",
           "source": "quanta-ns"
         }
       ],
       "detail": {
-        "text": "The Jacobian counterexample was checked again by an independent team in another proof assistant, Isabelle — two masons, two hammers.",
+        "text": "The checking tool here is called Lean. The Jacobian solution was checked again by another team with a second tool, Isabelle.",
         "asOf": "2026-10-15",
         "source": "afp-jacobian"
-      }
+      },
+      "takeaway": "t20-kiem-tuyen-bo-toan"
     },
     "circle": {
       "label": "Four stones round the well",

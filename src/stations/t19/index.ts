@@ -13,7 +13,7 @@ const S = raw.scenes
 const station: StationModule = {
   content: raw as unknown as StationContent,
   scenes: [
-    { label: S.peaks.label, mount: peaksScene },
+    { label: S.peaks.label, text: 'bl', mount: peaksScene },
     { label: S.gate.label, mount: gateScene },
     courtScene(),
     { label: S.stele.label, mount: steleScene },

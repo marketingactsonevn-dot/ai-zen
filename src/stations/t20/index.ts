@@ -14,7 +14,7 @@ const station: StationModule = {
   scenes: [
     { label: S.well.label, mount: wellScene },
     { label: S.vortex.label, mount: vortexScene },
-    { label: S.mason.label, mount: masonScene },
+    { label: S.mason.label, text: 'br', mount: masonScene },
     circleScene,
   ],
 }

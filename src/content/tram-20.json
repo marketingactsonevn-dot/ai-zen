@@ -109,104 +109,80 @@
     },
     "vortex": {
       "label": "Dòng nước nổ tung",
-      "art": "Một hồ tròn dưới trăng nhìn chếch 3/4, vành đá rêu trên cát cào, bầy đom đóm bay quanh bờ — mỗi con là một agent. Khuấy theo vòng tròn: mặt nước lún thành phễu xoáy, bóng trăng xoắn lại, máy quay hạ dần sát mặt nước cho núi xa hiện lên; tới đỉnh, lõi phễu bùng thành một điểm sáng, sóng xung kích lan ra và bầy agent xếp thành bậc thang ánh sáng leo ra khỏi hồ.",
-      "prompt": "Khuấy mặt hồ",
-      "stirAria": "Khuấy mặt hồ: kéo theo vòng tròn, hoặc giữ phím mũi tên",
+      "art": "Một hồ tròn dưới trăng nhìn chếch 3/4, vành đá rêu trên cát cào, bầy đom đóm bay quanh bờ — mỗi con là một bản AI chạy riêng (agent). Xoay mặt hồ rồi buông tay: nước tự êm lại. Thả bầy AI: chúng toả ra thử các kiểu xoáy, một kiểu tự siết lại thành phễu, máy quay hạ dần sát mặt nước cho núi xa hiện lên; tới đáy, lõi phễu bùng thành một điểm sáng, sóng xung kích lan ra và bầy agent xếp thành bậc thang ánh sáng leo ra khỏi hồ.",
+      "prompt": "Xoay mặt hồ rồi buông tay",
+      "stirAria": "Xoay mặt hồ: kéo theo vòng tròn hoặc giữ phím mũi tên, rồi buông",
+      "steps": [
+        "Thả bầy AI đi tìm"
+      ],
+      "release": "Thả bầy AI",
+      "releaseAria": "Thả bầy AI đi tìm một kiểu xoáy tự siết lại",
       "stages": [
-        "Dòng chảy êm",
-        "Xoáy siết lại",
+        "Nước tự êm lại",
+        "Một xoáy tự siết",
         "Một điểm “nổ”"
       ],
-      "fireflies": "khoảng 10.000 agent · 88 giờ",
-      "leanNote": "thêm 17 giờ viết lại bằng Lean",
+      "fireflies": "Mỗi đom đóm: một bản AI chạy riêng (agent). Khoảng 10.000 bản, 88 giờ.",
       "insight": {
-        "text": "Phương trình Navier–Stokes mô tả nước, không khí chảy. Câu hỏi triệu đô: dòng chảy đang êm có thể bỗng “nổ” (blowup) không?",
-        "asOf": "2026-10-15",
-        "source": "quanta-ns"
-      },
-      "detail": {
-        "text": "OpenAI nói: khoảng 10.000 agent chạy 88 giờ trên một mô hình chưa phát hành để tìm chứng minh; một AI khác mất thêm 17 giờ viết lại bằng Lean.",
+        "text": "Nước êm có tự “nổ” được không? OpenAI nói 10.000 bản AI tìm suốt 88 giờ và tìm ra một kiểu có thể.",
         "asOf": "2026-10-15",
         "source": "quanta-ns",
         "claimBy": "OpenAI"
       },
-      "contextTitle": "Ai, khi nào, công của ai",
-      "context": [
-        {
-          "text": "Tristan Buckmaster (NYU) và Levent Alpöge (Anthropic) đăng kết quả cho bài toán gần kề sớm hơn khoảng 12 giờ; ai đi trước vẫn đang tranh cãi.",
-          "asOf": "2026-10-15",
-          "source": "quanta-ns"
-        },
-        {
-          "text": "Cả hai nhóm đều dựa trên chiến lược của hai nhà toán học Diego Córdoba và Luis Martínez-Zoroa, công bố năm 2023.",
-          "asOf": "2026-10-15",
-          "source": "quanta-ns"
-        },
-        {
-          "text": "Viện Clay chưa trao giải; OpenAI nói không định nhận giải 1 triệu USD và đã công khai bản thảo cùng bản Lean để mọi người kiểm.",
-          "asOf": "2026-10-15",
-          "source": "datacamp-ns"
-        }
-      ],
-      "contextShort": [
-        "Nhóm khác: sớm hơn ~12 giờ",
-        "Cả hai dựa trên chiến lược 2023",
-        "Viện Clay chưa trao giải"
-      ]
+      "detail": {
+        "text": "Một nhóm khác (Buckmaster, NYU và Alpöge, Anthropic) đăng kết quả gần giống sớm hơn khoảng 12 giờ. Cả hai dựa trên cách làm của Córdoba và Martínez-Zoroa (2023). Viện Clay chưa trao giải.",
+        "asOf": "2026-10-15",
+        "source": "quanta-ns"
+      }
     },
     "mason": {
-      "label": "Người thợ đá kiểm từng viên",
-      "art": "Một cầu thang đá leo chéo lên sườn đồi dưới trăng, mỗi bậc khắc một dòng chứng minh Lean; chạm bậc nào, người thợ đá già leo lên bậc đó và gõ búa. Trên chiếu nghỉ, dưới đèn lồng, tấm biển gỗ ghi đề bài viết cho máy; bên cạnh treo cuộn giấy đề gốc để kéo lên đối chiếu.",
-      "prompt": "Gõ thử từng bậc",
-      "stepAria": "Gõ thử bậc {n}",
+      "label": "Người thợ đá kiểm từng bậc",
+      "art": "Một cầu thang đá leo chéo lên sườn đồi dưới trăng, mỗi bậc khắc một bước của lời giải viết cho máy; gõ đúng thứ tự, người thợ đá già leo lên bậc đó và gõ búa. Trên chiếu nghỉ, dưới đèn lồng, tấm biển gỗ ghi đề bài viết cho máy; bên cạnh treo cuộn giấy đề gốc để kéo lên đối chiếu.",
+      "prompt": "Gõ bậc thứ nhất",
+      "steps": [
+        "Gõ bậc tiếp theo ({n}/{total})",
+        "Kéo cuộn đề gốc lên tấm biển"
+      ],
+      "early": "Gõ hết các bậc trước đã",
+      "count": "Đã gõ {n}/{total} bậc",
+      "stepAria": "Gõ bậc {n}",
       "machineOk": "Máy: mọi bước đều khớp",
       "compare": "So biển với đề gốc",
       "compareAria": "So đề bài viết cho máy với đề bài gốc",
-      "signWord": "Even",
+      "lines": [
+        "Đề cho máy: a chẵn, b chẵn",
+        "Cần chứng minh: a + b chẵn",
+        "Bước: cộng hai số chẵn",
+        "Kết luận: a + b chẵn ✓"
+      ],
+      "signWord": "chẵn",
       "originalWord": "lẻ",
       "original": "Đề gốc: tổng hai số lẻ là số chẵn",
-      "mismatch": "Biển ghi “số chẵn” — máy đã kiểm đúng, nhưng là một đề khác!",
-      "code": {
-        "lang": "text",
-        "code": "-- Đề gốc: tổng hai số lẻ là số chẵn\ntheorem tong_chan (a b : ℕ) (ha : Even a) (hb : Even b) :\n    Even (a + b) := by\n  exact Even.add ha hb",
-        "notes": [
-          {
-            "line": 1,
-            "text": "Dòng chú thích: đề bài con người muốn chứng minh."
-          },
-          {
-            "line": 2,
-            "text": "Đề viết cho máy. Để ý: ở đây ghi “Even” (số chẵn), không phải số lẻ."
-          },
-          {
-            "line": 4,
-            "text": "Máy kiểm bước này: hợp lệ. Nhưng nó vừa chứng minh một đề khác."
-          }
-        ]
-      },
+      "mismatch": "Đề gốc nói số lẻ, đề cho máy lại ghi số chẵn. Máy kiểm đúng — nhưng là một đề khác.",
       "codeNote": {
-        "text": "Đoạn mã là ví dụ nhỏ AI Zen viết theo kiểu Lean để minh hoạ, không trích từ chứng minh thật.",
+        "text": "Các bậc là ví dụ nhỏ AI Zen viết để minh hoạ, không trích từ chứng minh thật.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "illustration"
       },
       "insights": [
         {
-          "text": "Lean là trợ lý chứng minh (proof assistant): viết chứng minh để máy kiểm từng bước; sai một bước, máy không chấp nhận.",
+          "text": "Máy kiểm từng bước một. Bước nào sai, máy chặn lại ngay.",
           "asOf": "2026-10-15",
           "source": "lean-lang"
         },
         {
-          "text": "Nhưng người vẫn phải xem đề bài viết trong Lean có đúng là đề thật: máy kiểm logic, người kiểm ý nghĩa.",
+          "text": "Máy kiểm được từng bước. Đề bài có đúng không thì phải là người kiểm.",
           "asOf": "2026-10-15",
           "source": "quanta-ns"
         }
       ],
       "detail": {
-        "text": "Phản ví dụ Jacobian được một nhóm độc lập kiểm lại bằng một trợ lý chứng minh khác là Isabelle — hai thợ đá, hai cây búa.",
+        "text": "Công cụ máy kiểm ở đây tên là Lean. Lời giải Jacobian được một nhóm khác kiểm lại bằng công cụ thứ hai, Isabelle.",
         "asOf": "2026-10-15",
         "source": "afp-jacobian"
-      }
+      },
+      "takeaway": "t20-kiem-tuyen-bo-toan"
     },
     "circle": {
       "label": "Bốn hòn đá quanh giếng",

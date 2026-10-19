@@ -19,8 +19,11 @@
     "peaks": {
       "label": "The peaks",
       "art": "You stand on a mossy rock ridge above a valley full of cloud. A big moon has just risen on the right. Five pointed rock peaks rise out of the sea of cloud on an arc, their shadows lying long to the left across it. On each crown sits a low stone slab carved with one model launch, in date order from left to right, joined by a fine broken stroke of ink. From here all five look the same height. A leaning pine stands on the left, a stone lantern on the right.",
-      "prompt": "Turn each stele",
-      "hint": "Drag to stand somewhere else: the nearer peak looks taller. Touch a peak to turn its stele, touch the stone lantern to show verified news only, press Esc to come back.",
+      "prompt": "Touch a stele, then light the lantern",
+      "steps": ["Light the stone lantern: keep only what was checked", "Put the lantern out to look again, or go on"],
+      "hint": "Drag to look around. Touch a peak to turn its stele, touch the stone lantern to keep only what someone outside has checked, press Esc to come back.",
+      "sky": "Each peak: an AI model launched in 2026",
+      "count": "Read {n}/{total} steles",
       "group": "Steles for the new models, in order of release date",
       "stoneAria": "Turn the stele: {title}, dated {date}",
       "order": "In date order, not ranked",
@@ -31,29 +34,34 @@
         "n-2026-09-gpt-6-astra": "GPT-6 Astra",
         "n-2026-09-opus-5-5": "Claude Opus 5.5"
       },
-      "verifiedOnly": "Verified news only",
-      "verifiedOnlyAria": "Show only steles an independent party has confirmed",
-      "othersNote": "Grok (xAI), Qwen (Alibaba), Mistral… are big mountain ranges too. AI Zen has not yet checked their latest releases, so no steles stand for them yet.",
+      "verifiedOnly": "Light it: keep only what outsiders have checked",
+      "verifiedOnlyAria": "Light the stone lantern: keep only what someone outside has checked",
+      "litNote": "Most numbers on these steles were measured by the makers themselves — nobody outside has measured them again.",
+      "checked": {
+        "n-2026-04-glasswing": "Mozilla fixed 271 bugs it found",
+        "n-2026-04-deepseek-v4": "Open weights: anyone can download and test it"
+      },
       "insight": {
-        "text": "The 2026 summit has many owners. A stele gives name, date and source — never “strongest”, because every test ranks differently.",
+        "text": "Five companies launched new models within a few months. The steles give only date and source, because nobody outside has measured who is better.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": {
-        "text": "Between 21 July and 28 September 2026 alone: Gemini 3.6 Flash (Google), GPT-6 Astra (OpenAI), then Claude Opus 5.5 and Sonnet 5.5 (Anthropic) launched one after another.",
-        "asOf": "2026-10-15",
-        "source": "news-g07"
-      }
+      "detail": "Grok (xAI), Qwen (Alibaba) and Mistral have big models too; AI Zen has not yet checked their latest releases, so no steles stand for them."
     },
     "gate": {
       "label": "The fenced summit",
-      "art": "Eye level, right against the bamboo fence on the highest summit. A few blurred bamboo stalks at the edges; in the middle a gate of two latticed wooden doors, barred by a wooden bolt. Through the lattice, lamplight inside: a wall laid in lines of code, a red crack, two workers patching it, two stone lanterns, twelve small lamps along the wall and, further off, a faint band of lights. Behind the wall rise the summit, the moon and the mist.",
-      "prompt": "Slide the bolt aside",
-      "gateAria": "Slide the wooden bolt aside to open the gate and see why this model is restricted (or press Enter)",
+      "art": "Eye level, right against the bamboo fence on the highest summit. A few blurred bamboo stalks at the edges; in the middle a gate of two latticed wooden doors, barred by a wooden bolt. Through the lattice, lamplight inside: a wall laid in lines of code, a red crack, two workers patching it, two stone lanterns, twelve small lamps along the wall and, further off, a faint band of lights. Behind the wall rise the summit, the moon and the mist. On the left, by a small wicket in the fence, a man with a lantern waits.",
+      "prompt": "Try sliding the bolt to the right",
+      "gateAria": "Try sliding the wooden bolt to the right to open the gate (or press Enter)",
+      "jammed": "This gate is not open to you.",
+      "steps": ["Look at the small gate: who gets in?"],
+      "keeper": "A software fixer",
+      "keeperAria": "The man with the lantern at the small gate: see who gets in",
+      "allowed": "In first: Apple, AWS, the Linux Foundation and more than 40 organisations that maintain critical software",
       "reasonTitle": "Why the fence",
       "reason": {
-        "text": "Anthropic says Claude Mythos Preview finds and exploits software flaws so well that it should not be released widely yet, so it goes only to defenders.",
+        "text": "Anthropic says Mythos finds software flaws so well that attackers could use it too, so it goes first to the people who fix them.",
         "asOf": "2026-10-15",
         "source": "anthropic-glasswing",
         "claimBy": "Anthropic"
@@ -107,13 +115,13 @@
         }
       },
       "insight": {
-        "text": "The 2026 trend: the strongest models may not reach everyone at once, but open gradually — defenders first.",
+        "text": "In 2026, some AI models are not released to everyone. The company hands them first to the people who fix software flaws.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
       "detail": {
-        "text": "Project Glasswing (7 April 2026): Mythos Preview went to 12 launch partners such as AWS, Apple and the Linux Foundation, plus more than 40 organisations that maintain critical software.",
+        "text": "The project is called Glasswing, announced 7 April 2026. The vulnerability counts come from the company and its partners themselves.",
         "asOf": "2026-10-15",
         "source": "anthropic-glasswing"
       }

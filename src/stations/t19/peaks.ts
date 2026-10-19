@@ -10,9 +10,12 @@ import { inkGlsl, inkStage, type InkKit, type V3 } from '../../ui/part2/stage3d'
 import { NEWS, newsStones } from '../../ui/part2/news'
 import { markGlyph, markOf } from '../../ui/part2/marks'
 import { rng } from '../../ui/part2/ink'
+import { guide } from '../../ui/part2/guide'
 
 const P = raw.scenes.peaks
 const SHORT = P.short as Record<string, string>
+/** what someone outside has checked on a stele (Mozilla's fixes, open weights): lit, its peak keeps a crag above the cloud */
+const CHECKED = P.checked as Record<string, string>
 const SRGB = THREE.SRGBColorSpace
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v))
 const smooth = (e0: number, e1: number, x: number) => {
@@ -23,6 +26,7 @@ const smooth = (e0: number, e1: number, x: number) => {
 const toFact = (it: NewsItem): Fact => ({ text: it.what, asOf: NEWS.asOf, source: it.source, kind: it.kind, claimBy: it.claimBy, verifiedBy: it.verifiedBy })
 /** same rule as newsStones' "verified only": a fact nobody but its maker vouches for stays hidden */
 const verified = (it: NewsItem) => it.kind === 'fact' && (!it.claimBy || !!it.verifiedBy)
+const kept = (it: NewsItem) => verified(it) || it.id in CHECKED
 function isOld(date: string) {
   const [y, m, d] = NEWS.asOf.split('-').map(Number)
   return date < new Date(Date.UTC(y, m - 1 - 6, d || 1)).toISOString().slice(0, 10)
@@ -375,10 +379,11 @@ void main() {
 /**
  * ★ Scene 1 · the news peaks (ORBIT, 3D). From a rock ridge above a sea of cloud, five Huangshan spires — one per news
  * stele, in date order left to right — rise out of the cloud on an arc round the eye, so from here they are all the same
- * height; the low moon on the right lays their shadows long across the cloud. Drag to stand elsewhere and the nearest spire
- * swells past the others: every ranking depends on where you stand. Touch a peak: the camera comes in, its low stele slab
- * turns and a rubbing of its back (what · why · source · who confirmed) hangs beside it on pale paper. The lantern on the
- * ridge is "verified only": lit, the cloud rises and the peaks that only their makers vouch for sink into it.
+ * height (no ranking); the low moon on the right lays their shadows long across the cloud; drag to look around. Touch a
+ * peak: the camera comes in, its low stele slab turns and a rubbing of its back (what · why · source · who confirmed) hangs
+ * beside it on pale paper. Then the lantern on the ridge (audit v3 19-1, the scene's point): lit, the cloud rises and the
+ * peaks only their makers vouch for sink into it; where someone outside checked something (Mozilla's fixes, open weights)
+ * a crag stays above it. The insight comes with the light. Guide: a dot on every unread stele, "read n/5", then the lantern.
  */
 export function peaksScene(ctx: SceneCtx) {
   const items = NEWS.items.filter((it) => it.tags.some((t) => raw.newsTags.includes(t))).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 5)
@@ -437,16 +442,26 @@ export function peaksScene(ctx: SceneCtx) {
   readPal()
 
   // DOM over the view: the board's date and the ranges not yet charted (wide: low on the cloud; tall: inside the rubbing)
-  const others = h('p', { class: 't19p-others' }, P.othersNote)
+  const eyebrow = h('p', { class: 'p2-eyebrow' }, fill(L.newsAsOf, { date: viDate(NEWS.asOf) }))
   const head = h('div', { class: 't19p-head' },
-    h('p', { class: 'p2-eyebrow' }, fill(L.newsAsOf, { date: viDate(NEWS.asOf) })),
-    tall ? h('p', { class: 't19p-order' }, P.order) : others)
+    eyebrow,
+    h('p', { class: 't19p-sky' }, P.sky),
+    tall ? h('p', { class: 't19p-order' }, P.order) : null)
   const rub = h('div', { class: 't19p-rub', role: 'region', tabindex: '-1' })
   rub.hidden = true
   const wrap = h('div', { class: `t19p${tall ? ' tall' : ''}` }, head)
   if (tall) wrap.append(rub)
   ctx.art.append(wrap)
   ctx.prompt(P.prompt)
+  // H1 a dot on every unread stele (riding its label), H4 "read n/5" carved under the date, the lantern's dot after the first
+  const g = guide(ctx)
+  const read = new Set<number>()
+  const dots: { done(): void }[] = []
+  let lampDot: { done(): void } | null = null
+  const count = g.count(P.count, items.length, () => {
+    const a = ctx.art.getBoundingClientRect(), b = eyebrow.getBoundingClientRect()
+    return [b.left - a.left + b.width / 2, b.bottom - a.top + 13]
+  })
   // the rubbing is paper on the view: a press on it is not a drag of the camera, keys in it do not turn the view
   rub.addEventListener('pointerdown', (e) => e.stopPropagation())
   rub.addEventListener('keydown', (e) => e.key !== 'Escape' && e.stopPropagation())
@@ -455,6 +470,7 @@ export function peaksScene(ctx: SceneCtx) {
   let open = -1
   let turned = false
   let only = false
+  let lit = false // the lantern has been lit once: the insight is out
   const groups: THREE.Group[] = []
   const steles: THREE.Mesh[] = []
   const peakMats: THREE.ShaderMaterial[] = []
@@ -543,7 +559,6 @@ export function peaksScene(ctx: SceneCtx) {
         h('p', { class: 't19p-rub-why' }, it.why),
         h('p', { class: 't19p-rub-meta' }, it.verifiedBy ? fill(L.independent, { who: it.verifiedBy }) : it.claimBy ? `${fill(L.vendorClaim, { who: it.claimBy })} · ${L.newsNotVerified}` : ''),
         old ? h('p', { class: 't19p-rub-old' }, L.newsOld) : '',
-        tall ? others : '',
         h('span', { class: 't19p-rub-seal', 'aria-hidden': 'true' })))
     rub.classList.toggle('side-l', left)
     if (rubAt && !tall) {
@@ -558,9 +573,14 @@ export function peaksScene(ctx: SceneCtx) {
     taps[i]?.setAttribute('aria-expanded', 'true')
     back.focus({ preventScroll: true })
     ctx.chime('soft')
+    dots[i]?.done()
+    read.add(i)
+    count.set(read.size)
     if (!turned) {
       turned = true
-      ctx.insight(P.insight as Fact, P.detail as Fact)
+      if (!lit) ctx.prompt(P.steps[0])
+      const at = lampTag?.querySelector<HTMLElement>('.t19p-lamp-dot')
+      if (at && !lit) lampDot = g.dot(at, { dir: [0, -1] })
     }
   }
   function close() {
@@ -581,18 +601,24 @@ export function peaksScene(ctx: SceneCtx) {
     lampBtn?.setAttribute('aria-pressed', String(on))
     lampTag?.classList.toggle('on', on)
     lantern?.lamp?.set(on ? 1 : 0.38)
-    if (open >= 0 && on && !verified(items[open])) close()
-    let shown = 0
+    if (open >= 0 && on && !kept(items[open])) close()
     items.forEach((it, i) => {
-      const hide = on && !verified(it)
-      sink[i].to = hide ? -(pkH[i] + 1.4) : 0
+      const hide = on && !kept(it)
+      // checked by someone outside: the peak goes down too (its makers' numbers sink), but a crag stays clear of the cloud
+      const crag = on && !verified(it) && it.id in CHECKED
+      sink[i].to = hide ? -(pkH[i] + 1.4) : crag ? -Math.max(0, pkH[i] - 3.1) : 0
       tags[i]?.classList.toggle('sunk', hide)
       if (taps[i]) taps[i].disabled = hide
-      if (!hide) shown++
     })
     seaY.to = on ? 0.7 : 0
-    none?.classList.toggle('on', on && shown === 0)
+    none?.classList.toggle('on', on)
     ctx.chime(on ? 'soft' : 'tap')
+    if (on && !lit) {
+      lit = true
+      lampDot?.done()
+      ctx.insight(P.insight as Fact, P.detail)
+      ctx.prompt(P.steps[1])
+    }
     const pool = poolMat
     const poolTo = on ? 1 : 0
     kit?.animate((dt) => {
@@ -634,9 +660,10 @@ export function peaksScene(ctx: SceneCtx) {
     view: { yaw: 0, pitch: pitch0, yawRange: tall ? [-0.42, 0.42] : [-0.7, 0.7], pitchRange: [tall ? -0.12 : 0.06, 0.42 - tip], target: T, fit: [(D * th) / (tall ? 0.56 : 1), 0.01], shift: tall ? 0.02 : 0.03, home: true, zoomRange: [0.55, 1.15] },
     fallback: (host) => {
       // without WebGL: the stele path of Part 2's news board (flip, verified only), with this scene's words
-      newsStones({ label: P.label, tags: raw.newsTags, prompt: P.prompt, insight: P.insight as Fact, detail: P.detail as Fact }).mount({ ...ctx, art: host })
+      newsStones({ label: P.label, tags: raw.newsTags, prompt: P.prompt, insight: P.insight as Fact, detail: P.detail }).mount({ ...ctx, art: host })
       host.querySelector('.p2n-path')?.setAttribute('aria-label', P.group)
       head.hidden = true
+      count.done()
       return () => {}
     },
   }, function* (k) {
@@ -936,22 +963,26 @@ export function peaksScene(ctx: SceneCtx) {
     k.root.updateMatrixWorld(true)
     items.forEach((it, i) => {
       const dd = viDate(it.date)
+      const dotAt = h('span', { class: 't19p-tag-dot', 'aria-hidden': 'true' })
       const lab = h('div', { class: 't19p-tag' },
+        dotAt,
         // tall: day and month only ("24/04", "Apr 24"); the year is on the board's date and in the aria
         tall ? h('span', { class: 't19p-tag-date' }, dd.replace(/[/,]\s?\d{4}$/, '')) : h('span', { class: 't19p-tag-name' }, SHORT[it.id] ?? it.claimBy ?? it.title),
         tall ? null : h('span', { class: 't19p-tag-date' }, dd),
-        tall ? null : h('span', { class: 't19p-tag-title' }, it.title))
+        tall ? null : h('span', { class: 't19p-tag-title' }, it.title),
+        CHECKED[it.id] ? h('span', { class: 't19p-tag-checked' }, CHECKED[it.id]) : null)
       tags.push(lab)
       hot.push(false)
       k.label(steles[i], lab, [0, -0.36, 0])
       const b = k.tappable(groups[i].userData.tap, fill(P.stoneAria, { title: it.title, date: dd }), () => (open === i ? close() : show(i)))
       b.setAttribute('aria-expanded', 'false')
       taps.push(b)
+      dots.push(g.dot(dotAt, { dir: [0, -1] }))
     })
     if (!tall) k.label(mid, h('p', { class: 't19p-order' }, P.order))
     lampBtn = k.tappable(lantern, P.verifiedOnlyAria, () => setOnly(!only))
     lampBtn.setAttribute('aria-pressed', 'false')
-    lampTag = k.label(lantern, h('p', { class: 't19p-lamp' }, P.verifiedOnly), [0, -1.0, 0])
+    lampTag = k.label(lantern, h('p', { class: 't19p-lamp' }, h('span', { class: 't19p-lamp-dot', 'aria-hidden': 'true' }), P.verifiedOnly), [0, -1.0, 0])
     if (rubAt && !tall) k.label(rubAt, rub)
     const seaMark = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.1))
     seaMark.visible = false
@@ -959,7 +990,7 @@ export function peaksScene(ctx: SceneCtx) {
     seaMark.position.set(0, tall ? 2.2 : 1.4, camZ - Rp)
     k.root.add(seaMark)
     k.root.updateMatrixWorld(true)
-    none = k.label(seaMark, h('p', { class: 't19p-none' }, L.newsNoneVerified))
+    none = k.label(seaMark, h('p', { class: 't19p-none' }, P.litNote))
   })
 
   // Esc, or a tap on the open sky / sea, closes the rubbing and flies home

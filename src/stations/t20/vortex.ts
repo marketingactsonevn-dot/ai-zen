@@ -4,6 +4,7 @@ import type { Fact } from '../../core/content'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
+import { guide, type Mark, type Track } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { clamp, curve, onSize, p2Defs, rng, stableHeight, stroke } from '../../ui/part2/ink'
 import { mist, moon } from '../../ui/part2/paint'
@@ -11,7 +12,9 @@ import { canvas, carved, col, dprOf, fit, mix, paintRock, palette, range, reeds,
 
 const V = raw.scenes.vortex
 const TAU = Math.PI * 2
-const FULL = TAU * 3 // three stirs round the pond = the flow "blows up"
+const FULL = TAU * 3 // three turns would wind the funnel all the way down …
+const CAP = 0.55 // … but a hand only gets it so far: stirring never blows it up (audit v3 20-2)
+const TURN = TAU * 0.8 // about one turn round, then let go: the water calms by itself
 const RINGS = 24
 const ROAD = 52
 const ROWS = 9 // the stair of light the agents build after the blowup …
@@ -32,6 +35,10 @@ const BIG: [number, number, number, number][] = [[1.25 * Math.PI, 0.36, 0.7, 206
  * stair — short rows of haloed lights — climbing out of the pond onto a block of stone cut "Lean"; three stones round the
  * shore each carry one short line of the story (the full lines are in the detail). The loop runs only while stirring,
  * decaying, blowing up or (quality high) drifting before 10 s idle.
+ * Audit v3 20-2 (P1: stirring harder made it blow up — the wrong mechanism): a hand swirls it about one turn and lets
+ * go, and the water calms by itself. Then the swarm of AI copies is released: they spread out trying swirls, one finds a
+ * swirl that tightens by itself, and only that one runs down to the blowup. Guide: a curved arrow round the pond and a
+ * groove filling along its rim (step 1), a dot on the big firefly at the shore (step 2).
  */
 export function vortexScene(ctx: SceneCtx) {
   p2Defs()
@@ -51,16 +58,23 @@ export function vortexScene(ctx: SceneCtx) {
   const nameB = h('span', { class: 't20v-name-r', 'aria-hidden': 'true' }, V.stages[0])
   const name = h('p', { class: 't20v-name', 'aria-hidden': 'true' }, nameA, nameB)
   const fly = carved('t20v-fly', h('p', null, V.fireflies))
-  const lean = carved('t20v-lean', h('p', null, V.leanNote))
-  const steles = V.contextShort.map((c, i) => carved(`t20v-stele t20v-stele-${i}`, h('p', null, c)))
-  steles.forEach((st, i) => st.el.style.setProperty('--i', String(i)))
+  // the block the stair of light climbs onto (one stone of words only: the fireflies'); no shore steles any more
+  const lean = carved('t20v-lean', h('p', { 'aria-hidden': 'true' }))
+  const steles: ReturnType<typeof carved>[] = []
+  // step 2: the big firefly at the shore that sends the swarm out
+  const release = h('button', { class: 't20v-release', type: 'button', 'aria-label': V.releaseAria, hidden: true }, h('i', { 'aria-hidden': 'true' }), h('span', null, V.release))
   const pond = h('div', {
     class: 't20v-hit', role: 'slider', tabindex: '0', 'aria-label': V.stirAria,
     'aria-valuemin': '0', 'aria-valuemax': String(V.stages.length - 1), 'aria-valuenow': '0', 'aria-valuetext': V.stages[0],
   })
-  const root = h('div', { class: 't20 t20v' }, h('p', { class: 'visually-hidden' }, V.art), h('div', { class: 't20v-skyclip' }, moonSvg, skyWrap), shake, near, name, pond, fly.el, lean.el, ...steles.map((st) => st.el))
+  const root = h('div', { class: 't20 t20v' }, h('p', { class: 'visually-hidden' }, V.art), h('div', { class: 't20v-skyclip' }, moonSvg, skyWrap), shake, near, name, pond, fly.el, lean.el, release)
+  root.dataset.phase = '0'
   ctx.art.append(root)
   ctx.prompt(V.prompt)
+  const gd = guide(ctx)
+  let arrow: Mark | null = null
+  let way: Track | null = null
+  let relDot: Mark | null = null
 
   // ── state ──
   let k = 0 // how stirred (0…1); decays slowly once the stirring stops
@@ -68,6 +82,10 @@ export function vortexScene(ctx: SceneCtx) {
   let dir = 1 // the way round it was last stirred
   let stage = 0
   let boom = -1 // seconds since the blowup (−1: not yet)
+  let phase = 0 // 0 swirl and let go · 1 the water calms · 2 the swarm searches
+  let turned = 0 // how far round the hand has swirled (radians)
+  let srch = 0 // seconds the swarm has been searching
+  let scat = 0 // how far the swarm has spread out this frame
   let now = 0
   let lastStir = -9
   let lastInput = 0
@@ -171,6 +189,16 @@ export function vortexScene(ctx: SceneCtx) {
     g = fit(cv, W, Hf, dpr)
     colours()
     Object.assign(pond.style, { left: `${CX - R * 1.12}px`, top: `${CY - R * 0.9}px`, width: `${R * 2.24}px`, height: `${R * 1.8}px` })
+    // the big firefly on the near right bank (the pond still at rest: 50°)
+    Object.assign(release.style, { left: `${(CX + Math.cos(0.3 * Math.PI) * R * 1.02).toFixed(1)}px`, top: `${(CYa + Math.sin(0.3 * Math.PI) * R * 1.02 * Math.sin(50 * DEG)).toFixed(1)}px` })
+    if (!arrow && phase === 0) {
+      // H2 for the hidden gesture: a curved ink arrow round the middle, a groove three quarters round the rim filling as it turns
+      arrow = gd.gesture('circle', () => [CX, CYa], { r: Math.round(R * 0.42) })
+      way = gd.track(() => Array.from({ length: 25 }, (_, i) => {
+        const a = (-0.6 + (i / 24) * 1.5) * Math.PI
+        return [CX + Math.cos(a) * R * 1.06, CYa + Math.sin(a) * R * 1.06 * Math.sin(50 * DEG)] as [number, number]
+      }))
+    }
     // measure every carved stone in one read, then paint them
     const sizes = [fly, lean, ...steles].map((st) => [st.el.offsetWidth, st.el.offsetHeight])
     ;[flyW, flyH] = sizes[0]
@@ -633,6 +661,7 @@ export function vortexScene(ctx: SceneCtx) {
     const t0 = performance.now()
     for (let i = 0; i < nDraw; i++) {
       let rr = Math.max(R * 0.03, R0[i] * R * (1 - 0.9 * sk * WK[i]))
+      if (scat > 0) rr *= 1 + scat * (WK[i] - 0.3) // the swarm fanning out to try
       let a = A0[i] + ((spin * 0.35) / (rr / R + 0.12)) * dir
       if (live) {
         a += 0.14 * Math.sin(t * 0.19 + PH[i]) * (1 - k)
@@ -689,11 +718,17 @@ export function vortexScene(ctx: SceneCtx) {
 
   const loop = createLoop(root, (t, dt) => {
     now += dt
-    if (stage < 2 && now - lastStir > 0.6 && k > 0) k = Math.max(0, k - dt * 0.045)
+    if (phase === 2 && stage < 2) {
+      // the swarm spreads out trying swirls, then one tightens by itself and runs all the way down
+      srch += dt
+      scat = srch < 1.6 ? Math.sin((Math.PI * srch) / 1.6) * 0.3 : 0
+      k = clamp((srch - 1.2) / 2.8, 0, 1)
+      setStage(k >= 1 ? 2 : k >= 0.3 ? 1 : 0)
+    } else if (stage < 2 && now - lastStir > 0.6 && k > 0) k = Math.max(0, k - dt * (phase === 1 ? 0.3 : 0.045))
     if (boom >= 0) boom += dt
     spin += dt * k * 1.6
     draw(t)
-    const animating = (stage < 2 && k > 0.001) || (boom >= 0 && boom < 3.6) || now - lastStir < 1.4
+    const animating = (stage < 2 && k > 0.001) || (phase === 2 && stage < 2) || (boom >= 0 && boom < 3.6) || now - lastStir < 1.4
     return animating || (!low && !ctx.reduced && now - lastInput < 10)
   })
   ctx.onCleanup(() => {
@@ -718,19 +753,50 @@ export function vortexScene(ctx: SceneCtx) {
       void shake.offsetWidth
       shake.classList.add('boom')
     }
-    ctx.insight(V.insight as Fact, [V.detail as Fact, ...V.context.map((c) => c as Fact)])
+    ctx.insight(V.insight as Fact, V.detail as Fact)
   }
 
   function stir(delta: number) {
-    if (stage === 2) return
+    if (phase !== 0) return
     lastStir = lastInput = now
     if (Math.abs(delta) > 0.001) dir = delta > 0 ? 1 : -1
     spin += Math.abs(delta) * 0.9
-    k = clamp(k + Math.abs(delta) / FULL, 0, 1)
-    setStage(k >= 1 ? 2 : k >= 0.3 ? 1 : 0)
+    turned += Math.abs(delta)
+    k = clamp(k + Math.abs(delta) / FULL, 0, CAP)
+    way?.set(turned / TURN)
     loop.start()
     loop.wake()
   }
+  /** the hand lets go: after about a turn the water calms by itself, and the swarm's firefly lights up at the shore */
+  function letGo() {
+    if (phase !== 0 || turned < TURN) return
+    phase = 1
+    root.dataset.phase = '1'
+    arrow?.done()
+    way?.done()
+    ctx.chime('soft')
+    loop.wake()
+    const t = setTimeout(() => {
+      release.hidden = false
+      relDot = gd.dot(release.firstChild as HTMLElement, { dir: [-1, -0.5] })
+      ctx.prompt(V.steps[0])
+    }, ctx.reduced ? 0 : 1600)
+    ctx.onCleanup(() => clearTimeout(t))
+  }
+  release.addEventListener('click', () => {
+    if (phase !== 1) return
+    phase = 2
+    root.dataset.phase = '2'
+    release.disabled = true
+    relDot?.done()
+    ctx.chime('tap')
+    if (ctx.reduced) {
+      k = 1
+      setStage(2)
+    }
+    loop.start()
+    loop.wake()
+  })
   /** a ring of light on the water at (x, y) art px */
   function ripple(x: number, y: number) {
     if (ctx.reduced) return // the rings need time to run out; reduced motion keeps the water still under the finger
@@ -775,7 +841,10 @@ export function vortexScene(ctx: SceneCtx) {
     }
     stir(d)
   })
-  const end = () => (c = null)
+  const end = () => {
+    c = null
+    letGo()
+  }
   pond.addEventListener('pointerup', end)
   pond.addEventListener('pointercancel', end)
   pond.addEventListener('keydown', (e) => {
@@ -786,6 +855,7 @@ export function vortexScene(ctx: SceneCtx) {
     ripple(CX + Math.cos(a) * R * 0.62, CY + Math.sin(a) * R * 0.62 * sinE)
     stir((d * Math.PI) / 8)
   })
+  pond.addEventListener('keyup', (e) => e.key.startsWith('Arrow') && letGo())
   pond.addEventListener('focus', () => {
     focused = pond.matches(':focus-visible')
     loop.wake()
