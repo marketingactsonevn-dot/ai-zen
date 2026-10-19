@@ -3,6 +3,7 @@ import { fill, h } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { clamp, onSize, rng, stableHeight, type Pt } from '../../ui/part2/ink'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './content'
 import { cardButton, F } from './night'
@@ -17,10 +18,11 @@ const K = C.scenes.credit
  * bench; a quarter wedge of it is cut away down its whole height like a museum piece, so the clay shows its thickness in
  * section and, inside, the water stands as a column that darkens with depth under an elliptical surface holding the
  * moon. The controls are the things themselves: a small dipper and a big ladle on a bamboo rack (models), a narrow and
- * a wide neck hoop (resolutions), one or two hourglasses (lengths); drag a ladle into the jar's mouth (or tap the chosen
- * one again) to take a scoop, which is poured into the tea cup with the cost written on it. A thin cord of wooden tags
- * under the bench is the keyboard proxy. Four tips hang on bamboo slats beside the window; the take-away card is a paper
- * tag tied to the rack. Tap the mouth: the camera cranes up to look down the neck.
+ * a wide neck hoop (resolutions), one or two hourglasses (lengths), each with its name written under it; drag a ladle
+ * into the jar's mouth (or tap the chosen one again) to take a scoop, which is poured into the tea cup with the cost
+ * written on it. The insight waits until both a light and a heavy scoop are made: then a second cup stands beside the
+ * first, 5 and 33. A thin cord of wooden tags under the bench is the keyboard proxy (it shows when focused). Two tips
+ * hang on bamboo slats beside the window; the take-away card is a paper tag tied to the rack.
  *
  * Three canvases (wall · jar + bench · water + tools), all drawn from one projection, so the crane re-projects the real
  * shapes. Static layers redraw only on layout / theme / crane; the water layer redraws on change or while something moves.
@@ -144,10 +146,10 @@ function compose(W: number, H: number): Comp {
   if (wide) {
     const S = Math.min(H * 0.5, W * 0.235)
     return {
-      wide, S, jx: W * 0.42, jy: H * 0.72, S1: S * 2.5, jy1: H * 0.42 + S * 2.5 * Math.cos(E1),
+      wide, S, jx: W * 0.47, jy: H * 0.72, S1: S * 2.5, jy1: H * 0.42 + S * 2.5 * Math.cos(E1),
       bench: [-1.9, 2.25, -0.5, 0.66], ZW: 0.9, win: [0.92, 1.46, 0.74, 1.26],
       rack: [-1.32, 0, 0.06], rings: [[-0.66, 0, 0.5], [0.66, 0, 0.5]], glass: [1.08, 0, -0.06], bowl: [1.62, 0, 0.32], bowlR: 0.15,
-      tips: [1.66, 1.3, -0.9],
+      tips: [1.5, 1.3, -0.9],
     }
   }
   const S = Math.min(H * 0.34, W * 0.5)
@@ -172,6 +174,11 @@ export function creditScene(ctx: SceneCtx) {
   // ── state
   let level = 100
   let made = 0
+  // the comparison the insight waits for: a scoop at the lightest and one at the heaviest setting
+  const costOf = (m: number, r: number, l: number) => Math.round(5 * W_MODEL[m] * W_RES[r] * W_LEN[l])
+  const N_LIGHT = costOf(0, 0, 0), N_HEAVY = costOf(1, 1, 1)
+  const seen = new Set<number>()
+  let pair = 0 // once both are made: the other one's cost, in the second cup
   const pick = [0, 0, 0]
   let lookU = 0, lookTo = 0 // crane: 0 eye level … 1 looking down the neck
   const an = { t: -1, kind: 0, l0: 100, l1: 100, dry: false, n: 0 }
@@ -188,10 +195,14 @@ export function creditScene(ctx: SceneCtx) {
   // ── DOM
   const back = layer('t34c-cv t34c-back'), mid = layer('t34c-cv t34c-mid'), fx = layer('t34c-cv t34c-fx')
   const jarLabel = h('div', { class: 't34c-jar', role: 'img', 'aria-label': fill(K.jarAria, { n: level }) })
-  const look = h('button', { class: 't34c-hit t34c-mouth', type: 'button', 'aria-pressed': 'false', 'aria-label': K.look, onClick: () => setLook(lookTo ? 0 : 1) })
-  // the tools themselves (pointer only; the cord under the bench is their keyboard twin)
-  const hit = (cb: () => void) => h('button', { class: 't34c-hit', type: 'button', tabindex: '-1', 'aria-hidden': 'true', onClick: () => { setLook(0); cb() } })
-  const hits = [hit(() => tapLadle(0)), hit(() => tapLadle(1)), hit(() => choose(1, 0)), hit(() => choose(1, 1)), hit(() => choose(2, 0)), hit(() => choose(2, 1))]
+  // the jar's mouth: where a ladle is dropped (the guide's dashed ring sits on it)
+  const look = h('div', { class: 't34c-mouth', 'aria-hidden': 'true' })
+  // the tools themselves, each with its name written under it (pointer only; the cord under the bench is their keyboard twin)
+  const hit = (cb: () => void, name: string) => h('button', { class: 't34c-hit', type: 'button', tabindex: '-1', 'aria-hidden': 'true', onClick: () => { setLook(0); cb() } }, h('span', { class: 't34c-name' }, name))
+  const hits: HTMLButtonElement[] = [hit(() => tapLadle(0), K.models[0]), hit(() => tapLadle(1), K.models[1]), hit(() => choose(1, 0), K.resolutions[0]), hit(() => choose(1, 1), K.resolutions[1]), hit(() => choose(2, 0), K.lengths[0]), hit(() => choose(2, 1), K.lengths[1])]
+  hits.forEach((b, j) => b.classList.add(`t34c-t${j & 1}`, ['t34c-ladle', 't34c-ring', 't34c-glass'][j >> 1]))
+  const markHits = () => hits.forEach((b, j) => b.classList.toggle('on', pick[j >> 1] === (j & 1)))
+  markHits()
   const tags: HTMLButtonElement[][] = []
   const groupEl = ([[K.modelLabel, K.models], [K.resLabel, K.resolutions], [K.lengthLabel, K.lengths]] as [string, string[]][]).map(([label, opts], k) => {
     const row = opts.map((o, i) => h('button', { class: 't34c-tag', type: 'button', 'aria-pressed': String(i === 0), onClick: () => { setLook(0); choose(k, i) } }, o))
@@ -203,6 +214,10 @@ export function creditScene(ctx: SceneCtx) {
   const refill = h('button', { class: 't34c-refill', type: 'button', hidden: true, onClick: fillUp }, K.refill)
   // the cost is written in ink on the tea cup; the whole sentence is read out
   const cost = h('p', { class: 't34c-cost', 'aria-hidden': 'true' })
+  const cost2 = h('p', { class: 't34c-cost', 'aria-hidden': 'true' })
+  // H4: the level carved beside the cut, 100 · 50 · 0
+  const marks = K.marks.map((m) => h('span', null, m))
+  const scaleMarks = h('div', { class: 't34c-marks', 'aria-hidden': 'true' }, ...marks)
   const costSay = h('p', { class: 'visually-hidden' })
   const empty = h('p', { class: 't34c-empty' })
   const facts = h('div', { class: 't34c-facts' })
@@ -210,7 +225,7 @@ export function creditScene(ctx: SceneCtx) {
   const tipsBtn = h('button', { class: 't34c-tips-bar', type: 'button', 'aria-expanded': 'false', 'aria-controls': tipsBody.id, onClick: () => setTips(tips.classList.contains('open') ? 0 : 1) }, K.tipsLabel)
   const tips = h('div', { class: 't34c-tips', hidden: true }, tipsBtn, tipsBody)
   const scale = ctx.fact(F(K.scale), 'p', 't34c-scale')
-  const stageEl = h('div', { class: 't34c-mid-wrap' }, mid.cv, fx.cv, jarLabel, ...hits, look, cord, refill, cost, empty)
+  const stageEl = h('div', { class: 't34c-mid-wrap' }, mid.cv, fx.cv, jarLabel, scaleMarks, ...hits, look, cord, refill, cost, cost2, empty)
   const view = h('div', { class: 't34c-view' }, h('div', { class: 't34c-back-wrap' }, back.cv, tips), stageEl)
   const root = h('div', { class: 't34 t34c' }, h('p', { class: 'visually-hidden' }, K.art), view, scale, costSay)
   ctx.art.append(root)
@@ -324,9 +339,28 @@ export function creditScene(ctx: SceneCtx) {
       yield
       drawFx()
       placeDom()
+      G.refresh()
     })(), { sync: ctx.reduced || !first })
     first = false
   }))
+
+  // ── guide: a dot on each tool still to set for the next scoop (light first, then heavy), the mouth's ring wakes
+  // while a ladle is carried; the dotted arc from the ladle to the mouth is painted (hintArc)
+  const G = guide(ctx)
+  const mouthRing = G.drop(look)
+  let dots: Mark[] = []
+  let refillDot: Mark | null = null
+  function aim() {
+    dots.forEach((d) => d.done())
+    dots = []
+    if (pair) return
+    const goal = seen.has(N_LIGHT) ? 1 : 0
+    const want = [hits[goal]]
+    if (pick[1] !== goal) want.push(hits[2 + goal])
+    if (pick[2] !== goal) want.push(hits[4 + goal])
+    dots = want.map((el) => G.dot(el, { dir: el === hits[goal] ? [1, -0.6] : [0, -1] }))
+  }
+  aim()
 
   // ── the wall: planks, the lamp's warm pool on the left, the paper window with the moon on the right, the beam
   function drawBack() {
@@ -856,9 +890,10 @@ export function creditScene(ctx: SceneCtx) {
     glow([c.glass[0] + (pick[2] ? 0.09 : -0.09), c.glass[1], c.glass[2]], 0.9)
     for (let k = 0; k < 2; k++) if (ringU[k] < 0.999) collar(g, k)
     glasses(g)
-    teaCup(g)
+    teaCup(g, c.bowl, bowl)
+    if (pair) teaCup(g, cup2(c), 1)
     // before the first scoop: a faint dotted arc from the chosen ladle to the mouth (drag it there)
-    if (!made && an.t < 0 && !drag) hintArc(g)
+    if (!pair && an.t < 0 && !drag) hintArc(g)
     g.restore()
     for (let k = 0; k < 2; k++) if (ringU[k] >= 0.999) collar(g, k)
     if (streak > 0 || wet > 0) spill(g)
@@ -913,7 +948,8 @@ export function creditScene(ctx: SceneCtx) {
       g.lineTo(PX, PY)
       g.closePath()
       const [, ty] = pt(0, hh, 0), [, by] = pt(0, YIN, 0)
-      g.fillStyle = vgrad(g, ty, by, [[0, mix(pal.water, T.moon, T.dark ? 0.14 : 0.12), 1], [0.35, pal.water, 1], [1, pal.deep, 1]])
+      // lit from the surface: a moonlit band under the meniscus, so the level reads even when the jar is full
+      g.fillStyle = vgrad(g, ty, by, [[0, mix(pal.water, T.moon, T.dark ? 0.34 : 0.26), 1], [0.12, mix(pal.water, T.moon, T.dark ? 0.16 : 0.12), 1], [0.45, pal.water, 1], [1, pal.deep, 1]])
       g.fill()
       if (ph === PB) {
         g.fillStyle = rgba(T.umbra, T.dark ? 0.25 : 0.15)
@@ -928,8 +964,8 @@ export function creditScene(ctx: SceneCtx) {
       if (k) g.lineTo(PX, PY)
       else g.moveTo(PX, PY)
     }
-    g.strokeStyle = rgba(T.dark ? T.moon : T.card, T.dark ? 0.55 : 0.85)
-    g.lineWidth = 1.2
+    g.strokeStyle = rgba(T.dark ? T.moon : T.card, T.dark ? 0.75 : 0.9)
+    g.lineWidth = 1.8
     g.stroke()
     for (const ph of [PA, PB]) {
       const a = pt(0, hh, 0), b = (pr(rh, sy(rh, ph), ph), [PX, PY] as Pt)
@@ -1075,9 +1111,11 @@ export function creditScene(ctx: SceneCtx) {
   }
 
   /** a pale glazed tea cup with steam: what each scoop pours into; the cost is written on it (DOM) */
-  function teaCup(g: CanvasRenderingContext2D) {
+  /** where the second cup stands once a light and a heavy scoop can be compared (where the wide hoop lay) */
+  const cup2 = (c: Comp): V3 => (c.wide ? [1.27, 0, 0.5] : [0.3, 0, 0.6])
+  function teaCup(g: CanvasRenderingContext2D, at: V3, bowl: number) {
     const c = cp!
-    const [x, y, z] = c.bowl
+    const [x, y, z] = at
     const r = c.bowlR, ht = r * 0.75
     soft(g, ...pt(x - 0.08, y, z + 0.05), S * r * 1.5, S * r * 0.4, T.umbra, T.dark ? 0.55 : 0.32, 0.2)
     const [cx, cy] = pt(x, y + ht, z)
@@ -1307,7 +1345,7 @@ export function creditScene(ctx: SceneCtx) {
     const c = cp!
     const at = (el: HTMLElement, p: Pt) => (el.style.transform = `translate3d(${p[0].toFixed(1)}px,${p[1].toFixed(1)}px,0)`)
     // the cord of tags: just under the bench's front edge, across its middle
-    at(cord, pt(0.12, -AP - 0.02, c.bench[3]))
+    at(cord, c.wide ? pt(0.12, -AP - 0.02, c.bench[3]) : [W / 2, pt(0, -AP - 0.02, c.bench[3])[1]])
     // refill hangs from the window sill; the tips beside the window; the take-away tag on the rack's crossbar
     at(refill, pt((c.win[0] + c.win[1]) / 2, c.win[2] - 0.04, -c.ZW))
     at(tips, pt(c.tips[0], c.tips[1], c.tips[2]))
@@ -1317,6 +1355,15 @@ export function creditScene(ctx: SceneCtx) {
     at(cost, pt(c.bowl[0], c.bowl[1] + r * 0.36, c.bowl[2]))
     cost.style.setProperty('--cw', `${(S * r * 1.7).toFixed(1)}px`)
     at(empty, pt(0, -AP * 0.5, c.bench[3]))
+    const c2 = cup2(c)
+    at(cost2, pt(c2[0], c2[1] + r * 0.36, c2[2]))
+    cost2.style.setProperty('--cw', `${(S * r * 1.7).toFixed(1)}px`)
+    // the carved level marks just outside the cut's broad face
+    ;[100, 50, 0].forEach((v, i) => {
+      const y = v ? levelY(v) : YIN
+      pr(ro(y), y, PA)
+      marks[i].style.transform = `translate3d(${(PX - 6).toFixed(1)}px,${PY.toFixed(1)}px,0)`
+    })
     // hit boxes over the tools and the jar's mouth
     const box = (el: HTMLElement, a: Pt, b: Pt, min = 44) => {
       const w = Math.max(min, Math.abs(b[0] - a[0])), hh = Math.max(min, Math.abs(b[1] - a[1]))
@@ -1417,6 +1464,8 @@ export function creditScene(ctx: SceneCtx) {
       if (still) (ringU[i] = 1), (ringU[1 - i] = 0)
     }
     if (k === 2) glassP[1] = i ? 1 : 0
+    markHits()
+    aim()
     ctx.chime('tap')
     kick()
   }
@@ -1429,7 +1478,6 @@ export function creditScene(ctx: SceneCtx) {
   function setLook(v: number) {
     if (lookTo === v) return
     lookTo = v
-    look.setAttribute('aria-pressed', String(!!v))
     root.classList.toggle('looking', !!v)
     if (still) {
       lookU = v
@@ -1461,6 +1509,7 @@ export function creditScene(ctx: SceneCtx) {
     bowl = 0
     go.setAttribute('aria-disabled', 'true')
     cost.classList.remove('on')
+    empty.classList.remove('on')
     ctx.chime('tap')
     if (still) {
       an.t = 3.6
@@ -1483,21 +1532,38 @@ export function creditScene(ctx: SceneCtx) {
     updateAria()
     cost.textContent = an.dry ? '' : fill(K.costShort, { n: an.n })
     cost.classList.toggle('on', !an.dry)
-    const dryNow = an.dry || level === 0
-    empty.textContent = dryNow ? K.empty : ''
-    empty.classList.toggle('on', dryNow)
-    costSay.textContent = an.dry ? K.empty : fill(K.cost, { n: an.n }) + (level === 0 ? ' ' + K.empty : '')
+    // what the scoop cost, written along the bench; not enough for this one is not a dry jar: say how much is left and needed
+    const say = level === 0 ? K.empty : an.dry ? fill(K.short, { left: level, n: an.n }) : ''
+    const line = an.dry ? say : `${fill(K.cost, { n: an.n })}${say ? ' ' + say : ''}`
+    empty.textContent = line
+    empty.classList.add('on')
+    costSay.textContent = line
     if (!costSay.hasAttribute('aria-live')) costSay.setAttribute('aria-live', 'polite')
     refill.hidden = level === 100
     made++
-    if (made === 1) {
+    if (!an.dry) seen.add(an.n)
+    if (!pair && seen.has(N_LIGHT) && seen.has(N_HEAVY)) {
+      // both made: the other one stands in a second cup beside this one, then the insight
+      pair = an.n === N_HEAVY ? N_LIGHT : N_HEAVY
+      cost2.textContent = fill(K.costShort, { n: pair })
+      cost2.classList.add('on')
+      aim()
+      mouthRing.done()
+      G.ok(cost)
       facts.replaceChildren(ctx.fact(F(K.facts[0]), 'p'))
       tips.hidden = false
       if (pill) pill.hidden = false
       if (cp?.wide) setTips(1)
       ctx.insight(F(K.insight), K.detail)
+    } else if (!pair) {
+      aim()
+      if (an.dry) {
+        G.wrong(K.shortTry)
+        refillDot ??= G.dot(refill, { dir: [0, 1] })
+      }
+      else ctx.prompt(seen.has(N_LIGHT) ? K.tryHeavy : K.tryLight)
     }
-    ctx.chime(dryNow ? 'low' : 'soft')
+    ctx.chime(say ? 'low' : 'soft')
   }
   function fillUp() {
     if (an.t >= 0 || fillA.t >= 0) return
@@ -1510,6 +1576,8 @@ export function creditScene(ctx: SceneCtx) {
     cost.classList.remove('on')
     empty.classList.remove('on')
     refill.hidden = true
+    refillDot?.done()
+    refillDot = null
     facts.replaceChildren(ctx.fact(F(K.facts[1]), 'p'))
     ctx.chime('ok')
     if (still) {
@@ -1535,6 +1603,7 @@ export function creditScene(ctx: SceneCtx) {
       hits[k].setPointerCapture(e.pointerId)
       const move = (ev: PointerEvent) => {
         if (!dragMoved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 8) return
+        if (!dragMoved) mouthRing.lift(true)
         dragMoved = true
         const x = ev.clientX - box.left, y = ev.clientY - box.top
         const [mx, my] = pt(0, 1, 0)
@@ -1547,6 +1616,7 @@ export function creditScene(ctx: SceneCtx) {
         hits[k].removeEventListener('pointercancel', up)
         const d = drag
         drag = null
+        mouthRing.lift(false)
         if (d?.over) {
           if (pick[0] !== k) choose(0, k)
           generate()

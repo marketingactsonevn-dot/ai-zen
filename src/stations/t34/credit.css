@@ -70,9 +70,59 @@
     background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 26%, transparent), transparent);
   }
 }
-.t34c-mouth:hover,
-.t34c-mouth:focus-visible {
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--moon) 30%, transparent), transparent);
+.t34c-mouth {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+/* each tool's name, written under it in ink (the chosen one darker) */
+.t34c-name {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  translate: -50% 2px;
+  font: 400 12.5px/1.2 var(--serif);
+  color: var(--ink-2);
+  white-space: nowrap;
+  text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper);
+  pointer-events: none;
+}
+.t34c-hit.on .t34c-name {
+  color: var(--ink);
+  font-weight: 600;
+}
+/* phone: the twin tools stand close, so the second name sits a line lower; the hourglasses' names go above them (the
+   cup stands in front) and the dipper's starts at its left edge (the frame's edge is near) */
+.t34c:not(.wide) .t34c-name {
+  font-size: 11.5px;
+}
+.t34c:not(.wide) .t34c-t1 .t34c-name {
+  translate: -50% calc(2px + 1.2em);
+}
+.t34c:not(.wide) .t34c-glass .t34c-name {
+  top: auto;
+  bottom: 100%;
+  translate: -50% -2px;
+}
+.t34c:not(.wide) .t34c-glass.t34c-t1 .t34c-name {
+  translate: -50% calc(-2px - 1.2em);
+}
+.t34c:not(.wide) .t34c-ladle.t34c-t0 .t34c-name {
+  left: 0;
+  translate: 0 2px;
+}
+/* H4: the level carved beside the cut */
+.t34c-marks span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -100% -50%;
+  font: 400 11.5px/1 var(--serif);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  text-shadow: 0 0 5px var(--paper);
+  pointer-events: none;
 }
 
 /* ── the keyboard twin of the tools: a thin cord of small wooden tags under the bench ── */
@@ -161,8 +211,8 @@
   30% { transform: rotate(5deg); }
   65% { transform: rotate(-3deg); }
 }
-/* on a phone the tools are touched; the cord shows only while it holds the keyboard focus */
-.t34c:not(.wide) .t34c-cord:not(:focus-within) {
+/* the tools are touched and carry their own names; the cord shows only while it holds the keyboard focus */
+.t34c .t34c-cord:not(:focus-within) {
   clip-path: inset(50%);
   opacity: 0;
 }
@@ -390,10 +440,13 @@
 /* the illustration note: in the foot band, small */
 .t34c-scale {
   position: absolute;
-  right: 0;
+  /* reaches into the gutter and clips sideways there: its closed source card never widens the page (phone slid 65 px) */
+  right: calc(-1 * var(--gutter));
   bottom: -64px;
   max-width: min(360px, 40%);
   margin: 0;
+  padding-right: var(--gutter);
+  overflow-x: clip;
   font: 400 12.5px/1.4 var(--sans);
   color: var(--ink-3);
   text-align: right;
@@ -404,8 +457,8 @@
 }
 /* phone: on the floor band at the foot of the painting, clear of the insight under it */
 .t34c:not(.wide) .t34c-scale {
-  left: 0;
-  right: 0;
+  left: calc(-1 * var(--gutter));
+  padding-left: var(--gutter);
   bottom: 4px;
   max-width: none;
   text-align: center;

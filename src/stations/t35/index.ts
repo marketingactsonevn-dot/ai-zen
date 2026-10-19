@@ -11,11 +11,11 @@ const S = C.scenes
 const station: StationModule = {
   content: C,
   scenes: [
-    { label: S.ladder.label, mount: ladderScene },
+    { label: S.ladder.label, text: 'tr', mount: ladderScene },
     { label: S.scroll.label, mount: scrollScene },
     { label: S.moons.label, mount: moonsScene },
     { label: S.spec.label, mount: specScene },
-    { label: S.line.label, mount: lineScene },
+    { label: S.line.label, text: 'br', mount: lineScene },
   ],
 }
 export default station

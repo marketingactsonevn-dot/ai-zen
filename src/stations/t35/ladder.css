@@ -298,6 +298,7 @@
 .t35l-rung {
   display: flex;
   align-items: baseline;
+  min-height: 44px;
   gap: 0.55em;
   margin: 0 0 0.15em;
   padding: 0;
@@ -428,12 +429,41 @@
   transform: rotate(4deg);
   transition: opacity 0.6s;
 }
-.t35l.up .t35l-tag {
+.t35l.up .t35l-tag,
+.t35l-roll:not(.cur) .t35l-tag {
   opacity: 0;
+}
+/* the scroll in hand can be dragged up the stairs (or tapped, then a terrace's stone tapped) */
+.t35l-roll.cur {
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+}
+.t35l > .t35l-roll {
+  position: absolute;
+  z-index: 3;
+  cursor: grabbing;
+}
+/* H3: while a scroll is carried, every terrace's stone shows a dashed edge where it can go */
+.t35l-face {
+  border-radius: 10px;
+  outline: 1.5px dashed transparent;
+  outline-offset: 5px;
+  transition: opacity 1s var(--ease-soft), outline-color 0.3s;
+}
+.t35l.carrying .t35l-face {
+  outline-color: color-mix(in srgb, var(--vermilion) 70%, transparent);
+}
+/* too high on the Agent terrace: the thread to the hand snaps */
+.t35l-thread.snap {
+  clip-path: inset(0 0 55% 0);
+  opacity: 0.6;
 }
 .t35l.port .t35l-tag {
   left: auto;
   right: 88%;
+  width: min(10em, 46vw);
+  white-space: normal;
   transform: rotate(-3deg);
 }
 .t35l-plank {
@@ -795,11 +825,11 @@
 .t35l-walker {
   transform-box: view-box;
 }
-.t35l:not(.still) .t35l-step.now[data-i='2'] .t35l-walker {
+.t35l:not(.still) .t35l-step.now[data-i='3'] .t35l-walker {
   animation: t35l-hop 3.4s 0.5s var(--ease-soft) forwards;
 }
-.t35l.still .t35l-step.on[data-i='2'] .t35l-walker,
-.t35l-step.on[data-i='2']:not(.now) .t35l-walker {
+.t35l.still .t35l-step.on[data-i='3'] .t35l-walker,
+.t35l-step.on[data-i='3']:not(.now) .t35l-walker {
   transform: translate(var(--h3x), var(--h3y));
 }
 @keyframes t35l-hop {
@@ -830,18 +860,18 @@
 .t35l-rider {
   transform-box: view-box;
 }
-.t35l:not(.still) .t35l-step.now[data-i='3'] .t35l-rider {
+.t35l:not(.still) .t35l-step.now[data-i='2'] .t35l-rider {
   animation: t35l-ride1 2s 0.5s var(--ease) forwards;
 }
-.t35l:not(.still).approved .t35l-step.now[data-i='3'] .t35l-rider {
+.t35l:not(.still).approved .t35l-step.now[data-i='2'] .t35l-rider {
   animation: t35l-ride2 1.8s var(--ease) forwards;
 }
-.t35l.still .t35l-step.on[data-i='3'] .t35l-rider,
-.t35l-step.on[data-i='3']:not(.now) .t35l-rider {
+.t35l.still .t35l-step.on[data-i='2'] .t35l-rider,
+.t35l-step.on[data-i='2']:not(.now) .t35l-rider {
   transform: translateX(var(--r1));
 }
-.t35l.approved .t35l-step.on[data-i='3']:not(.now) .t35l-rider,
-.t35l.still.approved .t35l-step.on[data-i='3'] .t35l-rider {
+.t35l.approved .t35l-step.on[data-i='2']:not(.now) .t35l-rider,
+.t35l.still.approved .t35l-step.on[data-i='2'] .t35l-rider {
   transform: translateX(var(--r2));
 }
 @keyframes t35l-ride1 {
@@ -865,7 +895,7 @@
 .t35l.approved .t35l-gate-2 .t35l-bar {
   transform: rotate(-70deg);
 }
-.t35l:not(.still):not(.approved) .t35l-step.now[data-i='3'] .t35l-seal {
+.t35l:not(.still):not(.approved) .t35l-step.now[data-i='2'] .t35l-seal {
   animation: t35l-wait 1.6s 2.5s ease-in-out 3;
 }
 @keyframes t35l-wait {
@@ -918,7 +948,7 @@
   transform-box: view-box;
   transition: transform 1.8s var(--ease);
 }
-.t35l.on-4 .t35l-hand {
+.t35l.all .t35l-hand {
   transform: rotate(240deg);
 }
 .t35l-spill {

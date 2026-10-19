@@ -18,14 +18,14 @@
     "market": {
       "label": "Chợ đêm dưới trăng",
       "art": "Tranh mực nhìn từ một con thuyền nhỏ giữa hồ đêm: mũi thuyền có ngọn đèn, ngoài mặt nước ba sạp chợ đứng trên cột ở ba độ xa. Sạp gom gần nhất treo cụm bảy đèn giấy nhiều sắc mực, bóng nước thành một dải bảy màu; hai sạp chuyên mỗi sạp một đèn lớn, bóng nước một vệt hổ phách. Tên và việc của mỗi sạp viết trên rèm vải. Bốn đèn hoa đăng trôi cạnh thuyền, mỗi đèn mang một việc cần làm.",
-      "prompt": "Thả việc vào đúng sạp",
+      "prompt": "Kéo từng đèn tới sạp làm tốt việc đó",
       "group": "Các sạp trong chợ",
       "taskGroup": "Việc cần làm",
       "stalls": [
         {
           "id": "hub",
           "name": "Sạp gom nhiều model",
-          "what": "Một chỗ có model ảnh, video của nhiều hãng; đổi model mà không đổi nơi làm.",
+          "what": "Một chỗ có nhiều ‘bộ máy’ AI (model) tạo ảnh, video của nhiều hãng.",
           "example": "Ví dụ: Higgsfield",
           "source": "t34-higgsfield"
         },
@@ -47,39 +47,53 @@
       "tasks": [
         {
           "id": "photo4k",
-          "text": "Ảnh sản phẩm 4K",
-          "short": "Ảnh 4K",
-          "fits": ["image", "hub"],
-          "why": "Phóng nét (upscale) là việc chính của sạp ảnh; sạp gom cũng có công cụ ảnh."
+          "text": "Phóng nét ảnh chụp sẵn lên 4K",
+          "short": "Ảnh lên 4K",
+          "best": "image",
+          "also": ["hub"],
+          "why": "Phóng nét (upscale) là việc chính của sạp ảnh.",
+          "no": { "sales": "Không hợp: sạp video bán hàng làm video từ sản phẩm, không phóng nét ảnh." }
         },
         {
           "id": "review",
-          "text": "Video review có người mẫu ảo",
+          "text": "Video review có người dẫn ảo",
           "short": "Video review",
-          "fits": ["sales", "hub"],
-          "why": "Cả hai đều có người dẫn ảo đứng cạnh sản phẩm. Nhớ gắn nhãn AI."
+          "best": "sales",
+          "also": ["hub"],
+          "why": "Người dẫn ảo đứng cạnh sản phẩm là việc chính của sạp này. Nhớ gắn nhãn AI.",
+          "no": { "image": "Không hợp: sạp ảnh không có người dẫn ảo đứng cạnh sản phẩm." }
         },
         {
           "id": "film",
-          "text": "Phim ngắn có góc máy",
-          "short": "Phim ngắn",
-          "fits": ["hub"],
-          "why": "Cần chỉnh chuyển động máy quay từng cảnh và thử nhiều model video."
+          "text": "Phim ngắn đổi góc máy từng cảnh",
+          "short": "Phim đổi góc máy",
+          "best": "hub",
+          "also": [],
+          "why": "Phim nhiều cảnh cần thử nhiều model video và chỉnh góc máy từng cảnh.",
+          "no": {
+            "sales": "Không hợp: sạp video bán hàng không cho chỉnh góc máy từng cảnh.",
+            "image": "Không hợp: sạp ảnh có tạo video, nhưng không cho chỉnh góc máy từng cảnh."
+          }
         },
         {
           "id": "link",
-          "text": "Dán link shop thành quảng cáo",
-          "short": "Link shop",
-          "fits": ["sales", "hub"],
-          "why": "Cả hai sạp đều tự giới thiệu tính năng đi từ link sản phẩm tới video."
+          "text": "50 video bán hàng từ link shop",
+          "short": "50 video từ link",
+          "best": "sales",
+          "also": ["hub"],
+          "why": "Đi từ link sản phẩm tới hàng loạt video quảng cáo là việc chính của sạp này.",
+          "no": { "image": "Không hợp: sạp ảnh không đi từ link shop tới video quảng cáo." }
         }
       ],
       "dropAria": "Thả “{task}” vào {stall}",
       "lanternAria": "Đèn hoa đăng: {task}",
       "keys": "Chọn một đèn hoa đăng, dùng mũi tên trái phải để chọn sạp, Enter để thả. Hoặc kéo đèn qua mặt nước.",
-      "right": "Hợp sạp này.",
-      "also": "Cũng hợp: {stalls}",
-      "wrong": "Sạp này không chuyên việc đó — thử sạp khác.",
+      "right": "Sạp này chuyên việc này.",
+      "dim": "Sạp gom cũng làm được, nhưng không chuyên.",
+      "wrong": "Sạp này không làm việc đó — thử sạp khác",
+      "dimTry": "Có sạp chuyên hơn — kéo sang đó",
+      "left": "Còn {n} đèn",
+      "count": "{n}/{total} đèn đã thả",
       "officialLabel": "Trang chính thức",
       "volatile": "Giá & tính năng thay đổi thường xuyên — kiểm tra trang chính thức.",
       "facts": [
@@ -112,12 +126,12 @@
         }
       ],
       "insight": {
-        "text": "Không có sạp “tốt nhất”: chọn theo việc. Một việc thường hợp vài sạp; khác nhau ở model có sẵn, cách làm và giá.",
+        "text": "Không có sạp tốt nhất: sạp chuyên làm một việc thật tốt, sạp gom làm được nhiều việc. Chọn theo việc bạn cần.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Mô tả tính năng ở đây là lời các hãng tự giới thiệu (◇), chưa có bên độc lập đo. Hãy thử bản miễn phí hoặc gói nhỏ với đúng việc của bạn trước khi trả nhiều."
+      "detail": "Tính năng ở đây là lời các hãng tự giới thiệu (◇). Hãy thử gói miễn phí với đúng việc của bạn trước khi trả tiền."
     },
     "path": {
       "label": "Đường đi của một asset",
@@ -185,9 +199,8 @@
     "credit": {
       "label": "Credit là nước trong bình",
       "art": "Tranh tĩnh vật trong xưởng đêm: một bình nguyệt men rạn trên ghế ván, một phần tư thân bình cắt mở như hiện vật bảo tàng để thấy cột nước bên trong và các vạch khắc. Tia trăng từ ô cửa giấy rót vào miệng bình. Trước bình là giá tre với gáo nhỏ và muôi lớn, hai vòng cổ hẹp và rộng, hai đồng hồ cát, một chén trà; thẻ gỗ treo dưới ghế để chọn. Mỗi lần tạo, gáo múc nước ra rót vào chén; mực nước hạ dần.",
-      "prompt": "Múc thử một gáo",
+      "prompt": "Kéo muôi nhỏ vào miệng bình",
       "jarAria": "Bình credit, còn {n} phần trên 100",
-      "look": "Nhìn xuống cổ bình",
       "modelLabel": "Model",
       "models": ["Model nhẹ", "Model nặng"],
       "resLabel": "Độ phân giải",
@@ -196,9 +209,14 @@
       "lengths": ["5 giây", "10 giây"],
       "generate": "Tạo",
       "refill": "Đổ đầy lại",
-      "cost": "Lượt này tốn {n} phần",
+      "cost": "Lượt này tốn {n} phần (cả bình là 100).",
       "costShort": "{n} phần",
-      "empty": "Bình cạn. Hết credit thì phải chờ kỳ sau hoặc mua thêm.",
+      "tryHeavy": "Giờ thử muôi lớn, vòng 1080p, 10 giây",
+      "tryLight": "Giờ thử muôi nhỏ, vòng 720p, 5 giây",
+      "shortTry": "Không đủ nước — đổ đầy lại bình",
+      "short": "Không đủ nước cho lượt này: còn {left} phần, cần {n}.",
+      "empty": "Bình cạn. Chờ kỳ sau được nạp lại, hoặc mua thêm.",
+      "marks": ["100", "50", "0"],
       "scale": {
         "text": "Số phần nước chỉ để minh hoạ tỉ lệ, không phải giá thật của nền tảng nào.",
         "asOf": "2026-10-15",
@@ -221,18 +239,16 @@
       ],
       "tips": [
         "Nháp ở độ phân giải thấp, chỉ phóng nét bản đã chốt.",
-        "Khoá seed khi đã ưng bố cục, chỉ đổi từng chi tiết.",
-        "Viết prompt rõ trước khi bấm, đừng “thử đại”.",
         "Nhìn giá trên nút tạo trước khi xác nhận."
       ],
       "tipsLabel": "Mẹo giữ nước",
       "insight": {
-        "text": "Credit (tín dụng nền tảng) như nước trong bình: model nặng, độ phân giải cao, video dài thì mỗi gáo càng to.",
+        "text": "Cùng một video: bản nặng, nét, dài tốn 33 phần; bản nhẹ tốn 5. Nháp bằng bản nhẹ, chỉ làm bản nặng khi đã chốt.",
         "asOf": "2026-10-15",
-        "source": "t34-hf-credits",
-        "kind": "fact"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "Mỗi nền tảng tính khác nhau, và bảng giá đổi thường xuyên. Đọc trang giá chính thức, xem credit có cộng dồn không, trước khi chọn gói.",
+      "detail": "Credit là điểm bạn trả trước để dùng nền tảng; mỗi lượt tạo trừ một ít. Số ở đây chỉ minh hoạ tỉ lệ. Xem trang giá chính thức và xem credit có được dồn sang kỳ sau không.",
       "takeaway": "t34-brief"
     },
     "real": {

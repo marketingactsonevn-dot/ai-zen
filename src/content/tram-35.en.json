@@ -21,48 +21,62 @@
   "scenes": {
     "ladder": {
       "label": "The automation stairs",
-      "art": "Ink painting: five dry-stone terraces zig-zag left and right up a mossy hillside, earth banks and bands of mist between them, a pine wood behind and the moon over the workshop roof. Each terrace has a stone lantern and a dressed stone carved with its name; when you arrive the lantern lights, a warm pool spreads on the moss and its little scene plays: a request said once thins into mist, a scroll hangs in a stone niche, a paper figure hops across stones by itself, a bamboo trough runs through three gates and waits for a seal, a shishi-odoshi tips and knocks on its own.",
-      "prompt": "Climb each step",
-      "task": "Sample task: the weekly report",
-      "rungAria": "Step {n}: {name}",
+      "art": "Ink painting: four dry-stone terraces zig-zag left and right up a mossy hillside, earth slopes and banks of mist between them, a pine wood behind and the moon over the workshop roof. Each terrace has a stone lantern and the rung's name carved on a stone. At the foot lie three task scrolls; carry one up to the terrace that is just enough and its lantern lights and the rung's little scene appears: a scroll hanging in a stone niche, a bamboo trough through three gates waiting for a red seal, a paper figure hopping across stones on its own.",
+      "prompt": "Drag ‘Write 1 caption’ up a terrace",
+      "task": "Carry each task scroll up to the lowest rung that can do it",
+      "rungAria": "Rung {n}: {name} — put the task scroll here",
+      "rollAria": "Task scroll: {task}",
       "sealAria": "Vermilion seal: approve so the workflow runs on",
+      "count": "{n}/{total} tasks placed",
+      "left": "{n} scrolls left",
+      "again": "Which is the lowest rung that can do it?",
+      "tasks": [
+        {
+          "id": "caption",
+          "text": "Write 1 caption for today's post",
+          "need": 0
+        },
+        {
+          "id": "report",
+          "text": "Weekly report, same template every Monday",
+          "need": 1
+        },
+        {
+          "id": "flow",
+          "text": "Pull the numbers, draft, wait for your OK, then send",
+          "need": 2
+        }
+      ],
       "rungs": [
         {
           "id": "prompt",
           "name": "Prompt",
-          "what": "Say it once, then it's forgotten. Next time you explain from scratch.",
-          "example": "Every Monday you type: “summarise this week's numbers using the template…”"
+          "what": "You say it once, in the chat box.",
+          "low": "This rung forgets once the chat is over — next week you explain it all again."
         },
         {
           "id": "skill",
           "name": "Skill",
-          "what": "A packaged instruction sheet; AI opens it by itself when the task fits.",
-          "example": "A “weekly report” skill: which columns, which tone, which template."
-        },
-        {
-          "id": "agent",
-          "name": "Agent",
-          "what": "Does several steps by itself and picks its own tools.",
-          "example": "Opens the spreadsheet, works out the changes, writes a draft."
+          "what": "Your instructions, packaged; the AI opens them when a task fits.",
+          "low": "A skill remembers how, but won't walk the steps in order and stop for your OK.",
+          "high": "A one-off job doesn't need packaging as a skill — saying it in the chat is enough."
         },
         {
           "id": "workflow",
           "name": "Workflow",
-          "what": "Steps chained along a fixed route, with checkpoints.",
-          "example": "Get numbers → agent writes → you review → send."
+          "what": "Steps laid out in advance, run in order, with a check for your OK.",
+          "high": "This job doesn't need laid-out steps and checkpoints — more steps, more work."
         },
         {
-          "id": "hook",
-          "name": "Hook / schedule",
-          "what": "Starts by itself at a set time or on an event.",
-          "example": "8 a.m. Monday, the workflow runs and waits for your review."
+          "id": "agent",
+          "name": "Agent",
+          "what": "The AI picks its own steps and tools.",
+          "high": "A simple job left for the AI to decide everything — hard to check, and nobody sees the mistakes."
         }
       ],
-      "scale": {
-        "text": "This five-step ladder is AI Zen's own picture to make it easy to imagine, not a standard classification.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "illustration"
+      "hook": {
+        "name": "Schedule / hook",
+        "what": "Starts by itself at a set time or when something happens — it fits on any rung."
       },
       "facts": [
         {
@@ -72,19 +86,19 @@
           "kind": "fact"
         },
         {
-          "text": "A hook in Claude Code is a command that runs at a set moment, so it always happens rather than waiting for AI to remember.",
+          "text": "In Claude Code, a hook is a command that runs by itself at a fixed point while the AI works (e.g. before it edits a file), so it always happens instead of waiting for the AI to remember.",
           "asOf": "2026-10-15",
           "source": "t35-hooks",
           "kind": "fact"
         }
       ],
       "insight": {
-        "text": "Which step is enough? Common advice: pick the simplest way that does the job; add complexity only when truly needed.",
+        "text": "Choose the lowest rung that does the job. Higher up is more convenient, but the less you see of what the AI is doing.",
         "asOf": "2026-10-15",
-        "source": "t35-effective-agents",
+        "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Higher steps are handier but harder to control. Many jobs need just one good skill; workflows and schedules suit regular, repeated, stable work."
+      "detail": "AI Zen made up this ladder to make it easy to picture. Anthropic also advises starting with the simplest approach and adding steps only when truly needed."
     },
     "scroll": {
       "label": "Unrolling a skill",
@@ -310,7 +324,7 @@
     "line": {
       "label": "The workshop line",
       "art": "Ink painting: a long plank corridor in the workshop at night, converging on the far door open to a bright moon garden. Eight paper lanterns hang on an ink cord, near ones large and warm, far ones small and cool, each throwing a pool of light on the floor and the paper walls; each station’s name is written on its lantern. In front, a low table with a bowl of vermilion stones and a brush resting on an inkstone. Join the lanterns with a brush stroke and set vermilion stones under the ones that need a person.",
-      "prompt": "Light lanterns, set red stones",
+      "prompt": "Draw the ink cord from lantern 1 on",
       "task": "Example: a new product goes on the shelf",
       "lineAria": "An eight-station marketing line",
       "stationAria": "Station {n}: {name}",
@@ -335,7 +349,8 @@
           "id": "pick",
           "name": "Pick the one to use",
           "human": true,
-          "why": "Picking needs taste and knowing the brand."
+          "why": "Picking needs taste and knowing the brand.",
+          "miss": "The machine picks the first version — wrong brand voice."
         },
         {
           "id": "upscale",
@@ -346,13 +361,15 @@
           "id": "rights",
           "name": "Check rights & AI label",
           "human": true,
-          "why": "Getting rights or labels wrong is a legal risk."
+          "why": "Getting rights or labels wrong is a legal risk.",
+          "miss": "Nobody checked: the video has no AI label, and the music isn't cleared for use."
         },
         {
           "id": "schedule",
           "name": "Schedule the post",
           "human": true,
-          "why": "Once posted, it's hard to take back."
+          "why": "Once posted, it's hard to take back.",
+          "miss": "Nobody approved: a post with an unsigned model's photo is scheduled to go out."
         },
         {
           "id": "report",
@@ -360,9 +377,8 @@
           "human": false
         }
       ],
-      "extraStone": "A red stone here is fine too — but slower, without adding safety.",
-      "missingStone": "{n} spot(s) still need a human reviewer and have no red stone.",
-      "done": "The line runs: machines do the repetitive parts, you keep the three that matter.",
+      "extraStone": "The machine can do this on its own — a red stone here only makes you wait.",
+      "done": "The boat is out of the door.",
       "facts": [
         {
           "text": "Anthropic's guidance: agents should pause at checkpoints for human feedback; human review stays very important.",
@@ -372,12 +388,20 @@
         }
       ],
       "insight": {
-        "text": "Automate the repetitive parts; put a human in the loop where taste, rights or no-undo actions are involved.",
+        "text": "The machine runs the repetitive part. You keep three places: picking the version that needs taste, checking image rights, and pressing publish — because a post is hard to take back.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Links to station 15: for sending, paying or deleting data, have the agent stop and ask you."
+      "detail": "Sending, paying, deleting data: always have the agent stop and ask you (see station I·15).",
+      "stonesPrompt": "Set red stones where you must approve",
+      "releasePrompt": "Tap the boat to let it go",
+      "waitPrompt": "Tap the red stone to let the boat on",
+      "release": "Launch the boat",
+      "bowlLabel": "Red stone = you approve before it goes on",
+      "lampCount": "Lanterns {n}/{total}",
+      "stoneCount": "Red stones {n}",
+      "lost": "The boat left with nobody approving — set red stones and launch again."
     }
   },
   "sources": {

@@ -11,9 +11,9 @@ const S = C.scenes
 const station: StationModule = {
   content: C,
   scenes: [
-    { label: S.market.label, mount: marketScene },
+    { label: S.market.label, text: 'bl', mount: marketScene },
     pathScene(),
-    { label: S.credit.label, mount: creditScene },
+    { label: S.credit.label, text: 'tl', mount: creditScene },
     realScene(),
   ],
 }

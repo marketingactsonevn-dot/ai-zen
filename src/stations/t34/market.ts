@@ -2,10 +2,11 @@ import './market.css'
 import { fill, h } from '../../core/dom'
 import { sliced } from '../../core/chunk'
 import { clamp, onSize, rng, stableHeight, type Pt } from '../../ui/part2/ink'
+import { guide } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './content'
 import { F } from './night'
-import { bleedBelow, dprFor, grain, inkLine, layer, mirrorOf, mist, mix, moonDisc, mountains, noise, poly, rgba, soft, vgrad, watchTok, type C4, type Layer, type Tok } from './cv'
+import { bleedBelow, dprFor, grain, inkLine, layer, mist, mix, moonDisc, mountains, noise, poly, rgba, soft, vgrad, watchTok, type C4, type Layer, type Tok } from './cv'
 
 const K = C.scenes.market
 
@@ -17,6 +18,8 @@ const K = C.scenes.market
  * trades are dyed on cloth noren hanging from a rod under each eave; opening a stall unrolls a long band of cloth down to
  * the water. The boat's dark bow is the nearest layer, cut by the bottom edge, with its lamp post and a wooden board.
  * Four tōrō nagashi float in an arc round the bow, each carrying a task: drag one to a stall (or pick it, then a stall).
+ * Each task has one stall whose trade it is (the lantern docks, the stall flares); the hub can do most of them, not as
+ * its trade (it glows dim and the lantern floats back), and a stall that can't do it says why not.
  * Canvas painting in four layers (far · mid stalls · near stall · the bow) that drift apart with the pointer; cloth,
  * lanterns, words and the streaks are DOM over the painting. The water runs on under the scene foot into the paper.
  */
@@ -66,14 +69,15 @@ export function marketScene(ctx: SceneCtx) {
     const btn = h('button', { class: 't34m-target', type: 'button', 'aria-label': st.name, 'aria-describedby': what.id, onClick: () => (picked >= 0 ? drop(picked, i) : openStall(i)), onKeydown: (e: KeyboardEvent) => keyStall(e, i) })
     const streaks = h('canvas', { class: 't34m-streaks', 'aria-hidden': 'true' }) as HTMLCanvasElement
     const glow = h('div', { class: 't34m-glow', 'aria-hidden': 'true' })
-    const el = h('div', { class: `t34m-stall t34m-${st.id}` }, glow, streaks, btn, noren)
-    return { el, btn, noren, streaks, glow, what }
+    // the stall's footing on the water: where the dashed drop ring wakes while a lantern is carried (H3)
+    const foot = h('span', { class: 't34m-foot', 'aria-hidden': 'true' })
+    const el = h('div', { class: `t34m-stall t34m-${st.id}` }, glow, streaks, foot, btn, noren)
+    return { el, btn, noren, streaks, glow, what, foot }
   })
   const group = h('div', { class: 't34m-stalls', role: 'group', 'aria-label': K.group })
-  // what the water says after each lantern: on the water under the stall it went to, with its reflection
+  // what the water says after each lantern: on the water under the stall it went to (no mirrored copy: it read as noise)
   const sayEl = h('div', { class: 't34m-say-text' })
-  const sayMir = h('div', { class: 't34m-say-mirror' })
-  const say = h('div', { class: 't34m-say' }, sayEl, sayMir)
+  const say = h('div', { class: 't34m-say' }, sayEl)
   const keysId = `t34m-keys-${uid}`
   const lans = K.tasks.map((t, i) => {
     const b = h('button', { class: 't34m-lan', type: 'button', 'aria-pressed': 'false', 'aria-label': fill(K.lanternAria, { task: t.text }), 'aria-describedby': keysId, style: `--bob:${(i * 1.7).toFixed(1)}s` },
@@ -184,7 +188,16 @@ export function marketScene(ctx: SceneCtx) {
     job?.cancel()
     job = sliced(paintSteps(), { sync: ctx.reduced || !first })
     first = false
+    G.refresh()
   }))
+
+  // ── guide (H1–H6): a dot on the next lantern, dashed rings at the stalls' feet while one is carried, a count on the bow
+  const G = guide(ctx)
+  const next = G.dot(lans[0], { dir: [0, -1] })
+  const rings = stalls.map((st) => G.drop(st.foot))
+  rings.forEach((r) => r.el.classList.add('t34m-ring'))
+  const lift = (on: boolean) => rings.forEach((r) => r.lift(on))
+  const count = G.count(K.count, lans.length, () => [bow[0], bow[1] - post * 0.08])
 
   function* paintSteps() {
     yield* paintFar()
@@ -595,15 +608,16 @@ export function marketScene(ctx: SceneCtx) {
       S.glow.style.transform = `translate3d(${px(st.cx)},${px((st.eave + st.deck) / 2)},0)`
       S.glow.style.setProperty('--gw', px(st.w * 1.4))
     })
+    geo.forEach((st, k) => Object.assign(stalls[k].foot.style, { left: px(st.cx - st.w * 0.55), top: px(st.yw - st.s * 0.12), width: px(st.w * 1.1), height: px(st.s * 0.42) }))
     placeSay()
     lans.forEach((b, i) => {
       b.dataset.side = home[i][0] < bow[0] ? 'l' : 'r'
       if (!placed.has(i)) setLan(i, home[i], homeScale(i))
     })
     placed.forEach((si, ti) => setLan(ti, dockAt(si, ti), dockScale(si)))
-    // the board: nailed to the bow's lamp post under the lantern (phone: hung on the near stall's corner post, over the water)
+    // the board: a small plank on the bow's right gunwale, out of the way of the task (phone: hung on the near stall's corner post)
     const hub = geo[0]
-    vol.style.transform = wide ? `translate3d(${px(bow[0])},${px(bow[1] - post * 0.56)},0)` : `translate3d(${px(Math.min(W * 0.78, hub.cx + hub.w / 2 + W * 0.2))},${px(hub.eave + hub.s * 0.15)},0)`
+    vol.style.transform = wide ? `translate3d(${px(bow[0] + W * 0.25)},${px(bow[1] + H * 0.08)},0)` : `translate3d(${px(Math.min(W * 0.78, hub.cx + hub.w / 2 + W * 0.2))},${px(hub.eave + hub.s * 0.15)},0)`
   }
   /** words on the water just under the stall they speak about (phone: the open water band between the near stall and the boat) */
   function placeSay() {
@@ -639,6 +653,7 @@ export function marketScene(ctx: SceneCtx) {
     if (i >= 0) stalls.forEach((x) => x.el.classList.remove('open'))
     lans.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)))
     root.classList.toggle('is-picking', i >= 0)
+    lift(i >= 0)
     stalls.forEach((st, k) => st.btn.setAttribute('aria-label', i >= 0 ? fill(K.dropAria, { task: K.tasks[i].text, stall: K.stalls[k].name }) : K.stalls[k].name))
     if (i >= 0) {
       aim = 0
@@ -671,15 +686,23 @@ export function marketScene(ctx: SceneCtx) {
     pick(-1)
     busy = true
     b.classList.add('moving')
-    const fits = t.fits.includes(st.id)
+    const best = t.best === st.id
+    const dim = !best && (t.also as string[]).includes(st.id)
     const target = dockAt(si, ti)
-    setLan(ti, fits ? target : [target[0], target[1] + geo[si].s * 0.5], dockScale(si))
+    setLan(ti, best ? target : [target[0], target[1] + geo[si].s * 0.5], dockScale(si))
     later(() => {
       b.classList.remove('moving')
       busy = false
-      if (!fits) {
-        // the current carries it back to the boat; the reason is written on the water under that stall
-        speak(si, h('p', { class: 't34m-wrong' }, h('strong', null, st.name), ' — ', K.wrong))
+      if (!best) {
+        // the hub can do it, but it is not its trade (a dim glow); any other stall says why not. The current carries it back
+        const S = stalls[si]
+        if (dim) {
+          S.el.classList.remove('dim')
+          void S.el.offsetWidth
+          S.el.classList.add('dim')
+        }
+        speak(si, h('p', { class: 't34m-wrong' }, dim ? K.dim : ((t.no as Record<string, string>)[st.id] ?? K.wrong)))
+        G.wrong(dim ? K.dimTry : K.wrong, b)
         b.classList.add('moving')
         setLan(ti, home[ti], homeScale(ti))
         later(() => b.classList.remove('moving'), 1200)
@@ -691,13 +714,15 @@ export function marketScene(ctx: SceneCtx) {
       b.classList.add('docked')
       b.disabled = true
       ctx.chime('ok')
+      count.set(placed.size)
+      G.ok(b)
       const S = stalls[si]
-      S.el.classList.remove('flare')
+      S.el.classList.remove('flare', 'dim')
       void S.el.offsetWidth
       S.el.classList.add('flare', 'lit')
-      const others = t.fits.filter((f) => f !== st.id)
+      const others = (t.also as string[]).filter((f) => f !== st.id)
       const kids: HTMLElement[] = [h('p', null, h('strong', null, `${st.name}. ${K.right}`), ' ', t.why)]
-      if (others.length) kids.push(h('p', { class: 't34m-also' }, fill(K.also, { stalls: others.map((f) => K.stalls.find((x) => x.id === f)!.name).join(', ') })))
+      if (others.length) kids.push(h('p', { class: 't34m-also' }, K.dim))
       const fx = K.facts.filter((f) => f.source.startsWith(st.source))
       if (!factShown.has(si) && fx[0]) {
         factShown.add(si)
@@ -710,11 +735,16 @@ export function marketScene(ctx: SceneCtx) {
         later(() => S.el.classList.remove('open'), 7000)
       } else stalls.forEach((x) => x.el.classList.remove('open'))
       speak(si, ...kids)
-      // ghost lanterns drift toward the other stalls that also fit, and fade
+      // a ghost lantern drifts toward the hub, which could have done it too (dimly), and fades
       for (const f of others) ghost(ti, si, K.stalls.findIndex((x) => x.id === f))
-      const next = lans.findIndex((_, k) => !placed.has(k))
-      if (next >= 0) lans[next].focus({ preventScroll: true })
-      else {
+      const nx = lans.findIndex((_, k) => !placed.has(k))
+      if (nx >= 0) {
+        next.at(lans[nx])
+        ctx.prompt(fill(K.left, { n: lans.length - placed.size }))
+        lans[nx].focus({ preventScroll: true })
+      } else {
+        next.done()
+        rings.forEach((r) => r.done())
         S.btn.focus({ preventScroll: true })
         ctx.insight(F(K.insight), K.detail)
       }
@@ -726,7 +756,6 @@ export function marketScene(ctx: SceneCtx) {
     sayBelow = wide && S.el.classList.contains('open') ? geo[si].nTop + S.what.offsetTop + S.what.offsetHeight : 0
     placeSay()
     sayEl.replaceChildren(...kids)
-    mirrorOf(sayEl, sayMir)
     if (!sayEl.hasAttribute('aria-live')) sayEl.setAttribute('aria-live', 'polite')
     say.classList.remove('on')
     void say.offsetWidth
@@ -767,6 +796,7 @@ export function marketScene(ctx: SceneCtx) {
     const at = (ev: PointerEvent): Pt => [ev.clientX - r0.left - ox, ev.clientY - r0.top - oy]
     const move = (ev: PointerEvent) => {
       if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 7) return
+      if (!moved) lift(true)
       moved = true
       b.classList.add('drag')
       const p = at(ev)
@@ -779,6 +809,7 @@ export function marketScene(ctx: SceneCtx) {
       b.removeEventListener('pointercancel', up)
       b.classList.remove('drag')
       if (!moved) return
+      lift(false)
       b.dataset.dragged = '1'
       setTimeout(() => delete b.dataset.dragged)
       const [x, y] = [ev.clientX - r0.left, ev.clientY - r0.top]

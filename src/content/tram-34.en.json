@@ -21,14 +21,14 @@
     "market": {
       "label": "Night market under the moon",
       "art": "Ink painting seen from a small boat in the middle of a night lake: a lamp on the bow, and out on the water three market stalls on stilts at three distances. The nearest, the all-in-one stall, hangs a cluster of seven paper lanterns in many ink tones, its reflection a seven-coloured band; the two specialist stalls each hang one large lantern, reflected as a single amber streak. Each stall's name and trade is written on its cloth curtain. Four floating lanterns drift beside the boat, each carrying a task.",
-      "prompt": "Drop each task at a stall",
+      "prompt": "Drag each lantern to the stall that does that job well",
       "group": "The market stalls",
       "taskGroup": "Tasks to do",
       "stalls": [
         {
           "id": "hub",
           "name": "Many-model stall",
-          "what": "Image and video models from many companies in one place; switch models without switching tools.",
+          "what": "One place with many AI ‘engines’ (models) for images and video, from many companies.",
           "example": "Example: Higgsfield",
           "source": "t34-higgsfield"
         },
@@ -50,50 +50,65 @@
       "tasks": [
         {
           "id": "photo4k",
-          "text": "4K product photo",
-          "short": "4K photo",
-          "fits": [
-            "image",
+          "text": "Upscale a finished photo to 4K",
+          "short": "Photo to 4K",
+          "best": "image",
+          "also": [
             "hub"
           ],
-          "why": "Upscaling is the image stall's main job; the many-model stall has image tools too."
+          "why": "Upscaling is the image stall's main job.",
+          "no": {
+            "sales": "Doesn't fit: the sales-video stall makes videos from products, it doesn't upscale photos."
+          }
         },
         {
           "id": "review",
-          "text": "Review video with a virtual model",
+          "text": "Review video with a virtual presenter",
           "short": "Review video",
-          "fits": [
-            "sales",
+          "best": "sales",
+          "also": [
             "hub"
           ],
-          "why": "Both offer a virtual presenter standing next to the product. Remember the AI label."
+          "why": "A virtual presenter next to the product is this stall's main job. Remember the AI label.",
+          "no": {
+            "image": "Doesn't fit: the image stall has no virtual presenter to stand next to the product."
+          }
         },
         {
           "id": "film",
-          "text": "Short film with camera moves",
-          "short": "Short film",
-          "fits": [
-            "hub"
-          ],
-          "why": "You need to steer the camera shot by shot and try several video models."
+          "text": "Short film, a new camera angle each shot",
+          "short": "Film, camera angles",
+          "best": "hub",
+          "also": [],
+          "why": "A film of many shots needs several video models and a camera you can steer shot by shot.",
+          "no": {
+            "sales": "Doesn't fit: the sales-video stall won't let you set the camera angle shot by shot.",
+            "image": "Doesn't fit: the image stall makes video, but won't let you set the camera angle shot by shot."
+          }
         },
         {
           "id": "link",
-          "text": "Shop link into an ad",
-          "short": "Shop link",
-          "fits": [
-            "sales",
+          "text": "50 sales videos from a shop link",
+          "short": "50 videos from a link",
+          "best": "sales",
+          "also": [
             "hub"
           ],
-          "why": "Both stalls advertise going from a product link to a video."
+          "why": "Going from a product link to a batch of ad videos is this stall's main job.",
+          "no": {
+            "image": "Doesn't fit: the image stall doesn't go from a shop link to ad videos."
+          }
         }
       ],
       "dropAria": "Drop “{task}” at {stall}",
       "lanternAria": "Floating lantern: {task}",
       "keys": "Pick a floating lantern, choose a stall with the left and right arrows, press Enter to float it there. Or drag the lantern across the water.",
-      "right": "Fits this stall.",
-      "also": "Also fits: {stalls}",
-      "wrong": "This stall doesn't specialise in that — try another.",
+      "right": "This stall specialises in this.",
+      "dim": "The many-model stall can do it too, but doesn't specialise in it.",
+      "wrong": "This stall doesn't do that — try another",
+      "dimTry": "One stall does it better — drag it there",
+      "left": "{n} lanterns left",
+      "count": "{n}/{total} lanterns floated",
       "officialLabel": "Official site",
       "volatile": "Prices and features change often — check the official site.",
       "facts": [
@@ -126,12 +141,12 @@
         }
       ],
       "insight": {
-        "text": "There is no “best” stall: choose by task. One task often fits several stalls; they differ in models, workflow and price.",
+        "text": "There is no best stall: a specialist does one job very well, the many-model stall does many jobs. Choose by the job you need.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Feature descriptions here are the companies' own claims (◇), not independently measured. Try a free tier or a small plan with your real task before paying more."
+      "detail": "The features here are the companies' own claims (◇). Try a free plan with your real job before you pay."
     },
     "path": {
       "label": "The path of one asset",
@@ -199,9 +214,8 @@
     "credit": {
       "label": "Credits are water in a jar",
       "art": "A still life in the night workshop: a crackle-glazed moon jar on a plank bench, a quarter of its body cut away like a museum piece to show the water column and the carved marks inside. A moonbeam from the paper window pours into the jar's mouth. In front: a bamboo rack with a small dipper and a big ladle, a narrow and a wide neck collar, two hourglasses, a tea bowl; wooden tags hang under the bench for choosing. Each time you generate, the ladle takes water out and pours it into the bowl; the level drops.",
-      "prompt": "Take one ladle",
+      "prompt": "Drag the small ladle into the jar",
       "jarAria": "Credit jar, {n} of 100 parts left",
-      "look": "Look down the jar's neck",
       "modelLabel": "Model",
       "models": [
         "Light model",
@@ -219,9 +233,18 @@
       ],
       "generate": "Generate",
       "refill": "Refill",
-      "cost": "This one cost {n} parts",
+      "cost": "This one cost {n} parts (the whole jar is 100).",
       "costShort": "{n} parts",
-      "empty": "The jar is dry. Out of credits, you wait for the next cycle or buy more.",
+      "tryHeavy": "Now the big ladle, 1080p, 10 seconds",
+      "tryLight": "Now the small ladle, 720p, 5 seconds",
+      "shortTry": "Not enough water — refill the jar",
+      "short": "Not enough water for this one: {left} parts left, it needs {n}.",
+      "empty": "The jar is dry. Wait for the next cycle's refill, or buy more.",
+      "marks": [
+        "100",
+        "50",
+        "0"
+      ],
       "scale": {
         "text": "The water parts only illustrate proportions; they are not any platform's real prices.",
         "asOf": "2026-10-15",
@@ -244,18 +267,16 @@
       ],
       "tips": [
         "Draft at low resolution; upscale only the final pick.",
-        "Lock the seed once the layout works; change one detail at a time.",
-        "Write a clear prompt before pressing — don't “just try”.",
         "Check the price on the generate button before confirming."
       ],
       "tipsLabel": "Ways to save water",
       "insight": {
-        "text": "Credits (platform currency) are like water in a jar: heavier models, higher resolution and longer videos take bigger ladles.",
+        "text": "The same video: the heavy, sharp, long version costs 33 parts; the light one costs 5. Draft light, and make the heavy version only once you've decided.",
         "asOf": "2026-10-15",
-        "source": "t34-hf-credits",
-        "kind": "fact"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "Every platform charges differently, and price lists change often. Read the official pricing page, and check whether credits roll over, before picking a plan.",
+      "detail": "Credits are points you pay for in advance to use a platform; each generation takes a few. The numbers here only illustrate proportions. Check the official pricing page, and whether credits roll over to the next cycle.",
       "takeaway": "t34-brief"
     },
     "real": {
