@@ -1145,9 +1145,8 @@
   margin: 0;
 }
 .t30f-carved-label {
-  font: 600 0.74rem/1.3 var(--sans);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font: 600 0.8rem/1.3 var(--sans);
+  letter-spacing: 0.03em;
   opacity: 0.8;
 }
 /* ───────── laws: the tide of law, seen from the sea ───────── */

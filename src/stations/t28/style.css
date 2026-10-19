@@ -1262,13 +1262,6 @@
 .t28m-cut:disabled {
   visibility: hidden;
 }
-/* a phone: the bridges are short; a tap that lands between two cuts one of them (any order will do) */
-.t28m:not(.wide) .t28m-cut {
-  left: -18px;
-  top: -18px;
-  width: 36px;
-  height: 36px;
-}
 .t28m-cut:focus-visible {
   outline: 2px solid var(--vermilion);
   outline-offset: -6px;
@@ -2341,4 +2334,12 @@
   .p2c-stone[data-heard] .t28v-face {
     animation-duration: 0.01s;
   }
+}
+/* audit v3 28-5: the two water marks are cut only when their fact arrives (step 4), with their unit */
+.t28w-notch {
+  opacity: 0;
+  transition: opacity 0.8s 0.6s;
+}
+.t28w.high .t28w-notch {
+  opacity: 1;
 }

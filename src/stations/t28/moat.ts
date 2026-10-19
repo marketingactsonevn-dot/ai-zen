@@ -186,29 +186,41 @@ export function moatScene(ctx: SceneCtx) {
   let count: ReturnType<typeof g.count> | null = null
   let drop: ReturnType<typeof g.drop> | null = null
 
-  /** a bridge from the castle wall to the house (or, cut, two stubs hanging off each end) */
+  /** a bridge from the castle wall over its pier post to the house (or, cut at the post, two stubs hanging off each end) */
   function drawBridges() {
     const hx = home[0] + off[0], hy = home[1] + off[1]
     bridges.forEach((b, k) => {
-      const [ax, ay] = anchors[k]
+      const [ax, ay] = anchors[k], [px, py] = cutAt(k)
       let pts: Pt[][]
-      if (cut.has(k)) pts = [[[ax, ay], [ax + (hx - ax) * 0.3, ay + (hy - ay) * 0.3 + 6]], [[hx, hy], [hx + (ax - hx) * 0.25, hy + (ay - hy) * 0.25 + 6]]]
+      if (cut.has(k)) pts = [[[ax, ay], [ax + (px - ax) * 0.6, ay + (py - ay) * 0.6 + 6]], [[hx, hy], [hx + (px - hx) * 0.45, hy + (py - hy) * 0.45 + 6]]]
       else {
         // slack hangs a little; taut it runs straight
-        const sag = Math.hypot(off[0], off[1]) > 4 ? 0 : 5
-        pts = [curve([ax, ay], [(ax + hx) / 2, (ay + hy) / 2 + sag], [hx, hy], 8)]
+        const sag = Math.hypot(off[0], off[1]) > 4 ? 0 : 4
+        pts = [[...curve([ax, ay], [(ax + px) / 2, (ay + py) / 2 + sag], [px, py], 6), ...curve([px, py], [(px + hx) / 2, (py + hy) / 2 + sag], [hx, hy], 6).slice(1)]]
       }
       const [sh, deck, rail] = b.children
       sh.setAttribute('d', pts.map((p) => stroke(p.map(([x, y]) => [x + 3, y + 5] as Pt), 6, 0.1, 0.1, 0.4)).join(''))
       deck.setAttribute('d', pts.map((p) => stroke(p, 7, 0.1, 0.1, 0.4)).join(''))
-      rail.setAttribute('d', pts.map((p) => stroke(p.map(([x, y]) => [x, y - 3] as Pt), 1.4, 0.2, 0.2, 0.3)).join(''))
+      // the pier post the bridge rests on (it stays when the bridge is cut)
+      rail.setAttribute('d', pts.map((p) => stroke(p.map(([x, y]) => [x, y - 3] as Pt), 1.4, 0.2, 0.2, 0.3)).join('') + stroke([[px, py - 9], [px + 0.5, py + 7]], 4, 0.1, 0.1, 0.5))
     })
     house.style.transform = `translate(${f1(hx - hw / 2)}px, ${f1(hy - hw * 0.72)}px)`
   }
-  /** each cut button sits on its bridge, nearer the castle than the house so they spread apart */
-  const cutAt = (k: number): Pt => {
-    const u = k % 2 ? 0.62 : 0.32 // staggered along the bridges, so neighbours never share a spot
-    return [anchors[k][0] + (home[0] - anchors[k][0]) * u, anchors[k][1] + (home[1] - anchors[k][1]) * u]
+  /**
+   * each bridge rests on a pier post in the moat, the posts fanned round the house so their 44 px cut targets never
+   * overlap (audit v3 28-3: vùng chạm ≥ 44 px), even on a phone where the moat is narrow
+   */
+  let cutPts: Pt[] = []
+  const cutAt = (k: number): Pt => cutPts[k] ?? anchors[k]
+  function placeCuts(centre: Pt) {
+    const dx = centre[0] - home[0], dy = centre[1] - home[1]
+    const rho = clamp(Math.hypot(dx, dy) * 0.55, 64, 150), base = Math.atan2(dy, dx), step = 52 / rho
+    const posts = anchors.map((_, k): Pt => [home[0] + Math.cos(base + (k - 2) * step) * rho, home[1] + Math.sin(base + (k - 2) * step) * rho])
+    // each bridge takes the post on its own side, so none cross (both fans sorted by their angle round the house)
+    const turn = (p: Pt) => (Math.atan2(p[1] - home[1], p[0] - home[0]) - base + Math.PI * 3) % (Math.PI * 2)
+    const order = anchors.map((_, k) => k).sort((a, b) => turn(anchors[a]) - turn(anchors[b]))
+    cutPts = []
+    order.forEach((k, j) => (cutPts[k] = posts[j]))
   }
   const nextCut = () => cuts.find((_, k) => !cut.has(k)) ?? null
 
@@ -717,7 +729,8 @@ export function moatScene(ctx: SceneCtx) {
     const onDisc = (a: number, k: number): Pt => project(R + Math.cos(rad(a)) * R * k, R + Math.sin(rad(a)) * R * k, 0)
     // (a phone: the house farther out on the bank and the bridges fanned wider, so each one can be touched)
     home = onDisc(ha, wide ? MOAT + 0.06 : BANK - 0.02)
-    anchors = [-2, -1, 0, 1, 2].map((d) => onDisc(ha + d * (wide ? 20 : 30), ISLE + WALL))
+    anchors = [-2, -1, 0, 1, 2].map((d) => onDisc(ha + d * (wide ? 24 : 36), ISLE + WALL))
+    placeCuts(project(R, R, 0))
     hw = clamp(Dp * 0.06, 50, 66)
     house.style.width = `${f1(hw)}px`
     boatPts = boats.map((_, i) => boatPt(i, geo.bh * 0.3))

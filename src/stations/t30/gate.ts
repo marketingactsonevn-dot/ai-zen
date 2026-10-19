@@ -6,6 +6,7 @@ import type { SceneCtx } from '../types'
 import { blob, clamp, curve, onDigit, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon, paperLantern, pine, reeds, toro, wash } from '../../ui/part2/paint'
 import { C } from './data'
+import { guide } from '../../ui/part2/guide'
 import { arc, bamboo, blossom, f1, figure, house, P, sapling } from './kit'
 
 const G = C.scenes.gate
@@ -66,8 +67,15 @@ export function gateScene(ctx: SceneCtx) {
   const lampRow = h('div', { class: 't30g-lamps', role: 'group', 'aria-label': G.tradeoffLabel }, ...lamps)
   root.append(h('p', { class: 'visually-hidden' }, G.art), bg, world, fg, read, turn, lampRow)
   ctx.art.append(root)
-  ctx.prompt(G.prompt)
   const stableH = stableHeight(ctx, [G.insight as Fact])
+  // guide (audit v3 30-1): turn the tray (a hidden drag: a two-way arrow on it), then light lamps to compare (a count)
+  const gd = guide(ctx)
+  const step = gd.steps(G.prompts)
+  step(0)
+  const turnArrow = gd.gesture('drag-h', table, { r: 56 })
+  const lampDots = lamps.map((b) => gd.dot(b))
+  let lampCount: ReturnType<typeof gd.count> | null = null
+  const litOnce = new Set<number>()
 
   // ── state: θ = how far the tray has turned (0 = wall to the front, 180 = open garden to the front)
   let theta = 0, vel = 0, target = 0
@@ -147,17 +155,29 @@ export function gateScene(ctx: SceneCtx) {
       ctx.chime('soft')
     }
     seen.add(o ? 1 : 0)
-    if (seen.size === 2 && !root.classList.contains('both')) {
-      root.classList.add('both')
-      caveat.textContent = G.caveat
-      ctx.insight(G.insight as Fact, G.detail as Fact)
-      ctx.chime('ok')
+    if (seen.size === 2 && !lampCount) {
+      turnArrow.done()
+      step(1)
+      lampCount = gd.count(G.lampTpl, T.length, lampRow, { n: litOnce.size })
     }
+    done()
   }
+  /** the insight once both faces were seen and at least two lamps lit (the trade-offs are the point, audit v3 30-1) */
+  function done() {
+    if (seen.size < 2 || litOnce.size < 2 || root.classList.contains('both')) return
+    root.classList.add('both')
+    caveat.textContent = G.caveat
+    lampDots.forEach((d) => d.done())
+    lampCount?.done()
+    ctx.insight(G.insight as Fact, G.detail as Fact)
+    ctx.chime('ok')
+  }
+  /** a lit lamp says both gardens side by side, walled then open, so nobody has to turn back to compare */
   function writeLine() {
     if (lit < 0) return void line.replaceChildren()
     const t = T[lit]
-    line.replaceChildren(h('span', { class: 't30g-line-name' }, t.name), h('span', { class: 't30g-line-text' }, shownOpen ? t.open : t.closed))
+    line.replaceChildren(h('span', { class: 't30g-line-name' }, t.name),
+      h('span', { class: 't30g-line-text' }, h('b', null, `${G.closedShort}: `), t.closed, ' ', h('b', null, `${G.openShort}: `), t.open))
     if (!line.hasAttribute('aria-live')) line.setAttribute('aria-live', 'polite')
   }
   function light(i: number) {
@@ -165,17 +185,23 @@ export function gateScene(ctx: SceneCtx) {
     lamps.forEach((b, k) => b.setAttribute('aria-pressed', String(k === lit)))
     T.forEach((t, k) => root.classList.toggle(`lamp-${t.id}`, k === lit))
     writeLine()
+    if (lit >= 0 && !litOnce.has(lit)) {
+      litOnce.add(lit)
+      lampDots[lit].done()
+      lampCount?.set(litOnce.size)
+    }
+    done()
     ctx.chime('soft')
   }
   ctx.onCleanup(onDigit((d) => d <= T.length && light(d - 1)))
 
   // ── drag to turn (pointer anywhere but the lanterns), inertia, snap to a face
-  let drag: { id: number; x: number; t0: number; last: number; lt: number; from: number } | null = null
+  let drag: { id: number; x: number; t0: number; last: number; lt: number; from: number; tap: boolean } | null = null
   let dragged = false
   root.addEventListener('pointerdown', (e) => {
     if (e.button || (e.target as Element).closest('.t30g-lamp')) return
     dragged = false
-    drag = { id: e.pointerId, x: e.clientX, t0: theta, last: e.clientX, lt: performance.now(), from: target }
+    drag = { id: e.pointerId, x: e.clientX, t0: theta, last: e.clientX, lt: performance.now(), from: target, tap: !!(e.target as Element).closest('.t30g-turn') }
     vel = 0
     root.setPointerCapture(e.pointerId)
     root.classList.add('dragging')
@@ -195,10 +221,12 @@ export function gateScene(ctx: SceneCtx) {
   })
   const end = (e: PointerEvent) => {
     if (!drag || e.pointerId !== drag.id) return
-    const dx = drag.last - drag.x, idle = performance.now() - drag.lt, from = drag.from
+    const dx = drag.last - drag.x, idle = performance.now() - drag.lt, from = drag.from, tap = drag.tap
     drag = null
     dragged = Math.abs(dx) > 5
     root.classList.remove('dragging')
+    // a tap on the tray turns it too (the pointer capture sends the click to the root, not the tray's button)
+    if (tap && Math.abs(dx) <= 5) return flip(1)
     if (still) {
       if (Math.abs(dx) > 24) settle(target + (dx > 0 ? 180 : -180))
       return
@@ -285,6 +313,7 @@ export function gateScene(ctx: SceneCtx) {
       }
       apply()
       drawFg(W, H, cx, cy, thick, proj, tall)
+      gd.refresh()
     }
     job?.cancel()
     job = sliced(build(), { sync: ctx.reduced || !first })

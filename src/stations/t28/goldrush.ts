@@ -6,6 +6,7 @@ import { hills, mist, moon } from '../../ui/part2/paint'
 import { progressTide, type TideGeo } from '../../ui/part2/tide'
 import type { Tide } from '../../ui/part2/types'
 import { C } from './data'
+import { guide } from '../../ui/part2/guide'
 import { figure } from './brush'
 
 const G = C.scenes.goldrush
@@ -13,8 +14,10 @@ const T = G.tide as Tide
 const f1 = (n: number) => n.toFixed(1)
 const P = (p: Pt) => `${f1(p[0])} ${f1(p[1])}`
 // how many lantern-carrying diggers are on the ridge at each stop (the last one = today)
-const CROWD = [2, 5, 9, 16, 28, 42, 58]
+const CROWD = [8, 16, 30, 44, 58] // a few already climbing at the first stop (audit v3 28-4)
 const CMP = T.milestones.find((m) => m.compare)!
+/** the stop whose fact is the small mound (the year before the rush) */
+const FY23 = Math.max(0, T.milestones.findIndex((m) => m.date.startsWith('2023')))
 
 /** One shovel along p → q: a wooden handle with a D-grip at p, the blade at q. */
 function shovel(p: Pt, q: Pt, k: number): string {
@@ -86,8 +89,8 @@ export function goldrushScene(ctx: SceneCtx) {
     at = i
     crowd.forEach((g, k) => g.classList.toggle('on', k < CROWD[Math.min(i, CROWD.length - 1)]))
     posts.forEach((g, k) => (g.classList.toggle('up', k <= i), g.classList.toggle('here', k === i)))
-    front.classList.toggle('gold-1', i >= 2)
-    front.classList.toggle('gold-2', i >= 4)
+    front.classList.toggle('gold-1', i >= FY23)
+    front.classList.toggle('gold-2', i >= T.milestones.indexOf(CMP))
     front.classList.toggle('today', i >= n)
     // the milestone's words hang on a sign staked into the ridge below its post (the reading card, restyled)
     if (fr.xs.length) {
@@ -220,6 +223,9 @@ export function goldrushScene(ctx: SceneCtx) {
         s('rect', { class: 't28r-lamp', x: f1(tx - tw * 0.53), y: f1(tg - th * 0.6), width: f1(tw * 0.07), height: f1(tw * 0.09), rx: 2 })),
       s('g', { class: 't28r-gold t28r-gold-small' }, ...heap(smx, sy + 1, ws, hs, seed + 4)),
       ...posts, ...crowd,
+      // who is who, said once where they stand: the diggers are the AI companies, the shed sells the shovels (chips)
+      s('text', { class: 't28r-amt t28r-who', x: f1(xs[0] * 0.5 + (sx - tw * 0.8 - xs[0] * 0.5) * 0.42), y: f1(ridgeY(g, xs[0] * 0.5 + (sx - tw * 0.8 - xs[0] * 0.5) * 0.42) + h * 0.14), 'text-anchor': 'middle' }, G.crowd),
+      s('text', { class: 't28r-amt t28r-who', x: f1(tx), y: f1(tg - th * 1.04 - 5), 'text-anchor': 'middle' }, G.seller), // over the roof, under the sign
       // the numbers on their mounds (a narrow frame: the big one above its mound, the small one beside its own, to the left)
       s('g', { class: 't28r-amts' },
         narrow ? amt(smx - ws / 2 - 6, sy - hs - 4, CMP.compare!.before, CMP.compare!.beforeLabel, 'end') : amt(smx, sy - hs - 24, CMP.compare!.before, CMP.compare!.beforeLabel, 'middle'),
@@ -234,8 +240,8 @@ export function goldrushScene(ctx: SceneCtx) {
     return [] // everything is in `far` and `front`: the band's own paper clip would cut the frame-wide ridge
   }
 
-  return progressTide(T, {
-    label: G.label, prompt: G.prompt, insight: G.insight as Fact, aria: G.sliderAria,
+  const done = progressTide(T, {
+    label: G.label, prompt: G.prompt, insight: G.insight as Fact, detail: G.detail as Fact, aria: G.sliderAria,
     art: { back, mark: () => s('g') },
     // the moon slides on a low arc behind the ridge (about 40 % of the frame tall), a little higher mid-seasons
     track: (g) => {
@@ -251,4 +257,8 @@ export function goldrushScene(ctx: SceneCtx) {
     thumb: () => moon(0, 0, 20, 2851, true),
     onStep: (i) => onStep(i),
   }).mount(ctx)
+  // guide: a dot on the moon (it leans toward the next post when idle)
+  const m = ctx.art.querySelector<HTMLElement>('.p2t-moon')
+  if (m) guide(ctx).dot(m, { dir: [1, 0] })
+  return done
 }

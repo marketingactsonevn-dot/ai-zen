@@ -13,8 +13,9 @@ const station: StationModule = {
   scenes: [
     { label: S.gate.label, mount: gateScene },
     { label: S.fence.label, mount: fenceScene },
-    { label: S.laws.label, mount: lawsScene },
+    // audit v3 t30 "mạch đề xuất": what models learn from (courts) before the laws, which end on what you must do
     { label: S.copyright.label, mount: copyrightScene },
+    { label: S.laws.label, mount: lawsScene },
   ],
 }
 export default station

@@ -1,6 +1,6 @@
 {
   "id": 29,
-  "kicker": "The great lake drains the little wells.",
+  "kicker": "AI data centres are a great lake draining the memory chips from the small wells: phones and laptops.",
   "summary": "AI does not live in the cloud — it competes for every memory chip with the phone in your pocket.",
   "newsTags": [
     "bo-nho"
@@ -9,46 +9,59 @@
     "t29-ram-mua-may"
   ],
   "quiz": {
-    "q": "Why can the AI boom make phones and laptops more expensive?",
+    "q": "Why might the AI boom make phones and laptops dearer?",
     "options": [
-      "Phones must add a separate AI chip",
-      "Factories send memory to AI data centres, leaving less for personal devices",
-      "Import tax on phones has doubled",
-      "Phones with AI use more power"
+      "Phone makers must pay licence fees to AI companies",
+      "Factories send memory to AI, leaving less for phones",
+      "Import taxes on phones have doubled this year alone",
+      "New phones need much bigger screens to be able to use AI"
     ],
     "answer": 1,
-    "explain": "Big companies sign long-term contracts to buy memory for data centres; what is left for consumer devices is scarce, so prices rise."
+    "explain": "Big AI companies sign multi-year contracts to buy memory for their data centres. Less is left for phones and laptops, so prices rise."
   },
   "scenes": {
     "desk": {
       "label": "AI's writing desk",
-      "art": "A low black-lacquered desk on a bed of moss, under a paper lantern hung from a bamboo rod. The chip is the black inkstone in the middle, the scribe kneels behind it; right at its edge stands a tower of ten celadon plates: HBM memory. Behind, stepping stones lead into the mist to a white-walled store. The wider the desk, the more scrolls lie open at once and the faster the brush runs.",
-      "prompt": "Drag the board to widen the desk",
-      "towerAria": "HBM plate tower at the inkstone's edge: open it layer by layer",
+      "art": "A low black lacquer desk on moss, under a paper lantern hung from a bamboo pole. The desk top is RAM; the chip is the black inkstone in the middle, the scribe kneeling behind it; the scrolls are data. Beside the inkstone stands a tower of ten celadon plates: HBM, the AI chip's own memory. Behind, stepping stones lead into the mist to a white-walled storehouse, the storage drive. The wider the desk, the more scrolls lie open at once and the faster the brush runs.",
+      "towerAria": "The HBM plate tower by the inkstone: open it layer by layer",
       "closePrompt": "Touch again to stack the plates back",
-      "slider": "Desk width (memory)",
-      "valueText": "A {n} GB desk",
-      "small": "A cramped desk: scrolls go back to the store and come out again, much slower",
-      "large": "A wide desk: every scroll within reach, fast",
-      "stackLabel": "HBM · memory stacked beside the chip",
+      "slider": "Your computer’s RAM (the width of the desk)",
+      "valueText": "Your computer’s RAM: {n} GB",
+      "small": "Cramped desk: data has to go to the storehouse (the drive) and come back",
+      "large": "Wide desk: all the data within reach",
+      "stackLabel": "HBM · layers of memory chips stacked right by the AI chip",
       "insights": [
         {
-          "text": "RAM is the desk where a model spreads out its data. On a cramped desk it keeps running to fetch papers, and slows right down.",
+          "text": "RAM is the model’s desk. On a cramped desk the model keeps putting data away on the drive and fetching it back, so it slows right down.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "illustration"
         },
         {
-          "text": "AI chips use high-bandwidth memory (HBM): layers of DRAM stacked right beside the chip so data moves very fast.",
+          "text": "AI chips have a desk of their own: HBM, layers of memory chips stacked right beside the chip, moving data many times faster than ordinary RAM.",
           "asOf": "2026-10-15",
           "source": "t29-samsung-hbm"
         }
       ],
-      "detail": {
-        "text": "For example, one NVIDIA H200 chip has 141 GB of HBM3e memory and moves 4.8 terabytes per second.",
-        "asOf": "2026-10-15",
-        "source": "t29-h200"
-      }
+      "detail": [
+        {
+          "text": "For example, an NVIDIA H200 chip has 141 GB of HBM and moves 4.8 terabytes of data a second.",
+          "asOf": "2026-10-15",
+          "source": "t29-h200"
+        },
+        {
+          "text": "Making HBM takes more factory capacity than ordinary RAM; the next slide shows what follows.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      ],
+      "prompts": [
+        "Drag the board to widen the desk",
+        "Drag the board to both ends: the narrowest desk and the widest",
+        "Touch the plate tower by the inkstone",
+        "Touch the tower again to stack the plates back"
+      ]
     },
     "wells": {
       "label": "The lake drinks the wells",
@@ -178,8 +191,12 @@
     "refill": {
       "label": "When will the wells refill?",
       "art": "Eye level with a dry well's curb, a great sky above is the stage. Three stones on the curb, each bringing its weather: heat shimmer over a clear sky and a cracking curb; masons raising a fab on a far hill under a cloud just forming; rain clouds rolling in, and the moon's reflection in the well at last, still trembling, not yet round.",
-      "prompt": "Touch each stone",
-      "stoneNames": ["J.P. Morgan", "SK hynix", "IDC"],
+      "prompt": "Touch each stone on the well’s rim",
+      "stoneNames": [
+        "J.P. Morgan",
+        "SK hynix",
+        "IDC"
+      ],
       "perspectives": {
         "stones": [
           {
@@ -194,7 +211,7 @@
           {
             "who": "Maker SK hynix",
             "view": {
-              "text": "It is expanding its M15X plant, moving quickly to newer technology and raising 2026 investment to meet demand.",
+              "text": "The company is building another factory (M15X) and raising investment in 2026 to make more memory chips.",
               "asOf": "2026-10-15",
               "source": "t29-skhynix-3q25",
               "claimBy": "SK hynix"
@@ -211,18 +228,19 @@
           }
         ],
         "common": {
-          "text": "All agree the shortage will not end this year; they differ on how quickly new factories can cool prices.",
+          "text": "No one sees the well filling up again this year. The question is whether new factories open first, or AI demand cools first.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "How long the memory shortage lasts is still a guess: new factories take years, and AI demand is hard to predict.",
+        "text": "If you need a computer this year, don’t wait for RAM prices to return to what they were: every forecast has them high until at least mid-2027.",
         "asOf": "2026-10-15",
-        "source": "t29-jpm",
+        "source": "editorial",
         "kind": "opinion"
-      }
+      },
+      "countTpl": "Heard {n}/{total}"
     }
   },
   "sources": {

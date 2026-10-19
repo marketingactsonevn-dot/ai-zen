@@ -2219,3 +2219,11 @@
   flex-direction: row-reverse;
   transform: translate(calc(-100% - 10px), -6px);
 }
+/* the station's take-away card waits, folded, at the foot right once all three voices are heard (the sky holds them) */
+.t29r-take {
+  position: absolute;
+  bottom: 3%;
+  right: 4%;
+  z-index: 3;
+  max-width: min(26rem, 80%);
+}

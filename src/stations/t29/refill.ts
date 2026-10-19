@@ -6,6 +6,8 @@ import type { Perspectives } from '../../ui/part2/types'
 import { blob, clamp, onDigit, onSize, rng, stableHeight, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist } from '../../ui/part2/paint'
 import { C } from './data'
+import { guide } from '../../ui/part2/guide'
+import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
 import { t29Defs } from './figures'
 import { f1, P } from './rig'
 
@@ -92,6 +94,10 @@ export function refillScene(): SceneDef {
       ctx.prompt(S.prompt)
       const stableH = stableHeight(ctx, [DATA.common])
       const heard = new Set<number>()
+      // guide: a dot on each stone not yet heard, a count of the voices heard (audit v3 29-4)
+      const gd = guide(ctx)
+      const dots = stones.map((b) => gd.dot(b, { dir: [0, -1] }))
+      const count = gd.count(S.countTpl, n, ring)
       let sel = -1
       let g: Geo | null = null
 
@@ -102,6 +108,8 @@ export function refillScene(): SceneDef {
         const st = DATA.stones[k]
         stones[k].setAttribute('aria-pressed', 'true')
         heard.add(k)
+        dots[k].done()
+        count.set(heard.size)
         root.classList.add(`sky-${k}`)
         root.dataset.now = String(k)
         placeVoice()
@@ -109,8 +117,12 @@ export function refillScene(): SceneDef {
         if (!voice.hasAttribute('aria-live')) voice.setAttribute('aria-live', 'polite')
         if (heard.size === n && !root.classList.contains('is-all')) {
           root.classList.add('is-all')
+          count.done()
           ctx.insight(DATA.common, S.insight as Fact)
           ctx.chime('ok')
+          // the station's take-away card, folded, at the end of the station (it was on slide 1, before the prices rose)
+          const cards = C.takeaways.map((id) => findTakeaway(id)).filter((c) => !!c)
+          if (cards.length) root.append(h('div', { class: 't29r-take' }, foldedTakeaway(cards, ctx.onCleanup)))
         } else ctx.chime('soft')
       }
       function placeVoice() {

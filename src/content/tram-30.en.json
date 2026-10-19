@@ -1,7 +1,7 @@
 {
   "id": 30,
-  "kicker": "The garden has a gate — who holds the key?",
-  "summary": "AI is not just technology — it is a matter of power and of the choices a society makes.",
+  "kicker": "A garden with a gate — who holds the key? In other words: who decides how you get to use AI.",
+  "summary": "Who may use a model, whose data it learned from, and what you must label: companies, courts and each country’s laws are deciding together.",
   "newsTags": [
     "luat-ai",
     "ban-quyen"
@@ -9,21 +9,20 @@
   "quiz": {
     "q": "What does an “open-weight” model mean?",
     "options": [
-      "Everything is public, including the training data",
-      "You can download what it has learned and run or fine-tune it yourself",
-      "Anyone can edit the model on the company's servers",
-      "You may use it however you like, no licence needed"
+      "Everything is public, even the data used to teach the model",
+      "Download what the model learned, run it, teach it more",
+      "Anyone can change the model right on its maker's own servers",
+      "You may use it however you like, with no licence to follow"
     ],
     "answer": 1,
-    "explain": "Open weights means the trained “brain” can be downloaded. The training data usually is not included, and a licence still sets how you may use it."
+    "explain": "Open weights means you can download the “brain” it learned. The data used to teach it usually is not included, and the licence still says how you may use it."
   },
   "scenes": {
     "gate": {
       "label": "Walled garden, open garden",
-      "art": "A black lacquer tray stands in still water under the moon, and on it a round moss island split in two. One half is a garden behind a whitewashed wall, with only a lit window handing out one branch at a time; the other is a garden whose bamboo gate is flung open, with saplings in pots and stepping stones across the water to houses on the far shore. Four stone lanterns stand round the rim.",
-      "prompt": "Open and close the gate",
-      "closed": "Walled garden · closed model",
-      "open": "Open garden · open weights",
+      "art": "A black lacquer tray stands in the water under the moon; on it, a round moss island split in two. One half is a garden behind a whitewashed wall, with only a lit window handing out sprigs of blossom: you use the model only through the company's app. The other half is a garden with its bamboo gate wide open, a sapling in a pot you can carry away, stepping stones across the water to houses on the far shore: you download the model to your own machine. Four stone lanterns round the rim, each a gain and a loss.",
+      "closed": "Walled garden · closed model (used only through the company's app)",
+      "open": "Open garden · open model (you can download it)",
       "toggleAria": "Switch between the walled garden and the open garden",
       "tradeoffLabel": "What you gain, what you give up",
       "tradeoffs": [
@@ -31,7 +30,7 @@
           "id": "freedom",
           "name": "Freedom",
           "closed": "You play by the company's rules; you cannot change the inside.",
-          "open": "Download it, fine-tune it, run it wherever you like."
+          "open": "Download it, teach it more, run it wherever you like."
         },
         {
           "id": "cost",
@@ -53,43 +52,49 @@
         }
       ],
       "insight": {
-        "text": "An open-weight model lets you download its trained “brain”; a closed model can only be used through an app or API.",
+        "text": "The walled garden only hands a sprig through the window: you use the model through the company's app. The open garden lets you take the tree home: you download the model.",
         "asOf": "2026-10-15",
-        "source": "t30-gpt-oss"
+        "source": "editorial",
+        "kind": "opinion"
       },
       "detail": {
-        "text": "Example: in Aug 2025 OpenAI released gpt-oss with open weights under Apache 2.0; it says the small version runs in 16 GB of memory.",
+        "text": "“Open weights” means the company lets you download the part of the model that has learned. For example, in Aug 2025 OpenAI released gpt-oss, usable even for business (Apache 2.0 licence); the small version runs on a 16 GB machine.",
         "asOf": "2026-10-15",
         "source": "t30-gpt-oss",
         "claimBy": "OpenAI"
       },
-      "caveat": "Open weights is not fully open source: the data and training method are usually not published. See station 31 for where to download models."
+      "caveat": "The data the model learned from usually stays secret. Where to download models: station 31.",
+      "prompts": [
+        "Drag sideways to turn the tray and see the other garden",
+        "Light the lanterns to compare the two gardens"
+      ],
+      "closedShort": "Walled",
+      "openShort": "Open",
+      "lampTpl": "Lanterns {n}/{total}"
     },
     "fence": {
       "label": "Fenced-off models",
-      "art": "Night, seen from low over the ground: a cold white lamp inside a ring of bamboo stakes tied with thorny rope, each stake throwing a long shadow that fans out toward you. Behind, a long city wall runs off into the mist; where the beam touches it, cracks with vermilion lips show. Two guards with stamped lanterns wait at the gate.",
-      "prompt": "Try the fence gate",
+      "art": "Night, seen low at ground level: a cold white lamp, the model, inside a fence of bamboo stakes bound with thorny rope; each stake throws a long shadow fanning toward the viewer. Behind, a long castle wall, the software, recedes into the mist; where the beam touches it, cracks with vermilion lips show: security flaws. Two guards holding stamped paper lanterns stand at the gate.",
       "gate": "Open the gate",
       "gateAria": "Try the fence gate: see who gets in and why",
-      "lampAria": "Turn the lamp inside the fence (left and right arrows)",
-      "lampHint": "Drag around the lamp to turn it",
-      "denied": "The gate opens only for vetted wall guards.",
+      "lampAria": "Turn the lamp (the model) across the wall (the software): left and right arrows",
+      "denied": "The gate opens only for vetted people who fix software flaws.",
       "group": "Two fenced plots in 2026",
       "cases": [
         {
           "id": "mythos",
-          "name": "Anthropic · Claude Mythos Preview",
+          "name": "Anthropic · Mythos Preview",
           "fact": {
-            "text": "Apr 2026: Anthropic gave Mythos Preview only to organisations that find and fix software flaws (Project Glasswing), with no plan for wide release.",
+            "text": "Apr 2026: Anthropic gave Mythos Preview only to organisations that find and fix software flaws, with no plan for a wide release.",
             "asOf": "2026-10-15",
             "source": "t30-glasswing"
           }
         },
         {
           "id": "fairwind",
-          "name": "Google · Fairwind programme",
+          "name": "Google · Fairwind",
           "fact": {
-            "text": "Sep 2026: Google set up its Fairwind programme, giving its strongest cybersecurity model only to vetted defenders.",
+            "text": "Sep 2026: Google set up its Fairwind programme, giving its strongest cybersecurity model only to vetted people who fix flaws.",
             "asOf": "2026-10-15",
             "source": "t30-fairwind"
           }
@@ -97,24 +102,36 @@
       ],
       "whyLabel": "Why the fence?",
       "why": {
-        "text": "Anthropic says this model finds and exploits flaws better than most experts; a wide release would hand it to attackers too.",
+        "text": "This model finds software flaws better than most experts (Anthropic says so itself). Hand it out widely and attackers could use it too.",
         "asOf": "2026-10-15",
         "source": "t30-glasswing",
         "claimBy": "Anthropic"
       },
       "debateLabel": "Open questions",
       "debate": {
-        "text": "Who decides who gets inside the fence, and who independently checks the abilities the companies claim for themselves?",
+        "text": "Who chooses who gets inside the fence, and who checks what the company says about its own model?",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
       "insight": {
-        "text": "In 2026 both Anthropic and Google kept their strongest cybersecurity models fenced off: vetted defenders go first.",
+        "text": "The lamp is the model, the cracks are software flaws. It finds them too well, so the company hands the lamp only to vetted flaw-fixers.",
         "asOf": "2026-10-15",
-        "source": "t30-glasswing"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "Look back at station 19: the fenced summit. Here we ask the next question: who holds the key to the gate?"
+      "detail": {
+        "text": "In 2026 Anthropic (Mythos Preview) and Google (Fairwind) both did this.",
+        "asOf": "2026-10-15",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "prompts": [
+        "Touch the fence gate",
+        "Touch the two guards' lanterns",
+        "Turn the lamp to search the wall"
+      ],
+      "crackTpl": "Cracks {n}/{total}"
     },
     "laws": {
       "label": "The tide of law",
@@ -254,16 +271,15 @@
       }
     },
     "copyright": {
-      "label": "Copyright & training data",
-      "art": "At the edge of a moon pond: a well-sweep crosses the frame, its bucket hanging from the pole over the water. The pond reflects not the sky but a library — pages, scrolls and scores drifting below like fish. Five large stones stand on the near bank, each seeing the bucket of data in its own way.",
-      "prompt": "Touch each stone",
+      "label": "Whose data teaches AI",
+      "art": "At the edge of a moonlit pond: a well-sweep crosses the frame on a diagonal, its bucket hanging from the pole over the water. The pond reflects not the sky but a whole library: pages, scrolls and sheet music drifting underwater like fish, the data used to teach AI. Four big stones stand on the near bank, each seeing the bucket of data in its own way.",
       "sweepAria": "Pull the well-sweep: dip the bucket into the lake and lift it",
       "perspectives": {
         "stones": [
           {
             "who": "Creators",
             "view": {
-              "text": "Tens of thousands of artists and writers signed a statement (Oct 2024): training AI on work without permission is an unjust threat.",
+              "text": "Oct 2024: tens of thousands of artists and writers signed a statement: taking work without permission to teach AI is unjust.",
               "asOf": "2026-10-15",
               "source": "t30-statement",
               "kind": "opinion"
@@ -272,7 +288,7 @@
           {
             "who": "AI companies",
             "view": {
-              "text": "OpenAI (Jan 2024): training on publicly available internet material is “fair use”, though it still lets content owners opt out.",
+              "text": "OpenAI (Jan 2024): teaching AI on public material online is “fair use”, meaning it can be used without asking under US law; anyone who objects can ask to opt out.",
               "asOf": "2026-10-15",
               "source": "t30-openai-journalism",
               "kind": "opinion",
@@ -282,7 +298,7 @@
           {
             "who": "US courts",
             "view": {
-              "text": "June 2025, a US judge: training on lawfully bought books is fair use; downloading pirated books to build a library is not.",
+              "text": "June 2025, a US judge: teaching AI with lawfully bought books is fair use; downloading pirated books to build a library is not.",
               "asOf": "2026-10-15",
               "source": "t30-bartz-ruling"
             }
@@ -290,22 +306,14 @@
           {
             "who": "Lawmakers",
             "view": {
-              "text": "The EU requires general-purpose model providers to have a copyright policy and publish a summary of the data used for training.",
+              "text": "The EU requires companies making models for many uses to respect copyright and publish a summary of the data they used.",
               "asOf": "2026-10-15",
               "source": "t30-eu-aiact"
-            }
-          },
-          {
-            "who": "Users",
-            "view": {
-              "text": "US Copyright Office (Jan 2025): typing a prompt alone does not make you an author; purely AI-made material is not protected.",
-              "asOf": "2026-10-15",
-              "source": "t30-usco-part2"
             }
           }
         ],
         "common": {
-          "text": "Everyone agrees training data has value; they differ on whether its makers must be asked and paid.",
+          "text": "The data in the bucket has value. Still unsettled: how far AI must ask permission from, and pay, the people who made it.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
@@ -314,21 +322,20 @@
       "casesLabel": "Court files",
       "cases": [
         {
-          "text": "Jul 2026: a US court gave final approval to Anthropic's $1.5 billion settlement with authors, about $3,000 per book.",
+          "text": "Jul 2026: Anthropic pays $1.5 billion, about $3,000 a book, to authors whose books were pirated to teach AI.",
           "asOf": "2026-10-15",
           "source": "t30-bartz-settlement"
-        },
-        {
-          "text": "Sep 2026: a US appeals court upheld the ruling that Ross copying Westlaw's legal notes to train AI was not fair use.",
-          "asOf": "2026-10-15",
-          "source": "t30-ross-appeal"
         }
       ],
       "insight": {
-        "text": "Copyright over training data is unsettled: courts and lawmakers are still redrawing the lines, each in their own way.",
+        "text": "Sep 2026: a US appeals court ruled that Ross, a legal-AI company, was not allowed to copy Westlaw's legal notes to teach its AI.",
         "asOf": "2026-10-15",
         "source": "t30-ross-appeal"
-      }
+      },
+      "prompts": [
+        "Drag the sweep to lift data out of the pond",
+        "Touch each stone: everyone sees the bucket differently"
+      ]
     }
   },
   "sources": {

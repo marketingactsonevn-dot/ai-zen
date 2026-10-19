@@ -1,50 +1,63 @@
 {
   "id": 29,
-  "kicker": "Hồ lớn hút cạn nước của những giếng nhỏ.",
+  "kicker": "Trung tâm dữ liệu AI như hồ lớn, hút cạn chip nhớ của những giếng nhỏ: điện thoại, laptop.",
   "summary": "AI không sống trên mây — nó tranh từng con chip nhớ với chiếc điện thoại trong túi bạn.",
   "newsTags": ["bo-nho"],
   "takeaways": ["t29-ram-mua-may"],
   "quiz": {
     "q": "Vì sao cơn sốt AI có thể làm điện thoại, laptop đắt hơn?",
     "options": [
-      "Điện thoại phải gắn thêm chip AI riêng",
-      "Nhà máy dồn bộ nhớ cho trung tâm dữ liệu AI, phần cho máy cá nhân ít đi",
-      "Thuế nhập khẩu điện thoại tăng gấp đôi",
-      "Điện thoại có AI tốn điện hơn"
+      "Các hãng điện thoại phải trả phí bản quyền cho công ty AI",
+      "Nhà máy dồn chip nhớ cho AI, phần cho điện thoại ít đi",
+      "Thuế nhập khẩu điện thoại tăng gấp đôi trong năm nay",
+      "Điện thoại mới phải có màn hình lớn hơn để dùng AI"
     ],
     "answer": 1,
-    "explain": "Các hãng lớn ký hợp đồng mua bộ nhớ dài hạn cho trung tâm dữ liệu; phần còn lại cho thiết bị tiêu dùng khan hiếm nên giá tăng."
+    "explain": "Các hãng AI lớn ký hợp đồng mua bộ nhớ nhiều năm cho trung tâm dữ liệu. Phần còn lại cho điện thoại, laptop ít đi, nên giá tăng."
   },
   "scenes": {
     "desk": {
       "label": "Bàn làm việc của AI",
-      "art": "Một chiếc bàn sơn mài đen thấp trên nền rêu, dưới đèn lồng giấy treo ở ngọn cần tre. Con chip là phiến nghiên đá đen giữa bàn, người thư lại quỳ sau nghiên; sát mép nghiên là tháp mười đĩa sứ men ngọc: bộ nhớ HBM. Phía sau, lối đá bước dẫn vào sương tới một kho vách trắng. Bàn càng rộng, càng nhiều cuộn giấy mở cùng lúc, tay bút chạy càng nhanh.",
-      "prompt": "Kéo tấm ván để nới mặt bàn",
+      "art": "Một chiếc bàn sơn mài đen thấp trên nền rêu, dưới đèn lồng giấy treo ở ngọn cần tre. Mặt bàn là RAM; con chip là phiến nghiên đá đen giữa bàn, người thư lại quỳ sau nghiên; cuộn giấy là dữ liệu. Sát mép nghiên là tháp mười đĩa sứ men ngọc: HBM, bộ nhớ riêng của chip AI. Phía sau, lối đá bước dẫn vào sương tới kho vách trắng, tức ổ lưu trữ. Bàn càng rộng, càng nhiều cuộn giấy mở cùng lúc, tay bút chạy càng nhanh.",
       "towerAria": "Tháp đĩa sứ HBM sát mép nghiên: mở tung từng lớp",
       "closePrompt": "Chạm lần nữa để xếp đĩa lại",
-      "slider": "Độ rộng mặt bàn (bộ nhớ)",
-      "valueText": "Mặt bàn {n} GB",
-      "small": "Bàn chật: phải cất giấy vào kho rồi lấy ra, chậm hẳn",
-      "large": "Bàn rộng: mọi cuộn giấy trong tầm tay, chạy nhanh",
-      "stackLabel": "HBM · chồng chip nhớ sát bên chip",
+      "slider": "RAM máy bạn (độ rộng mặt bàn)",
+      "valueText": "RAM máy bạn: {n} GB",
+      "small": "Bàn chật: phải cất dữ liệu vào kho (ổ lưu trữ) rồi lấy lại",
+      "large": "Bàn rộng: mọi dữ liệu trong tầm tay",
+      "stackLabel": "HBM · nhiều tầng chip nhớ chồng sát chip AI",
       "insights": [
         {
-          "text": "RAM là mặt bàn nơi model bày dữ liệu ra làm việc. Bàn chật thì phải chạy đi lấy giấy liên tục, chậm hẳn.",
+          "text": "RAM là mặt bàn của model. Bàn chật, model phải liên tục cất dữ liệu vào ổ lưu trữ rồi lấy lại, nên chậm hẳn.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "illustration"
         },
         {
-          "text": "Chip AI dùng bộ nhớ băng thông cao (HBM): nhiều lớp DRAM xếp chồng, đặt sát cạnh chip để dữ liệu chạy thật nhanh.",
+          "text": "Chip AI có mặt bàn riêng: HBM, nhiều tầng chip nhớ chồng ngay sát chip, đưa dữ liệu nhanh hơn RAM thường nhiều lần.",
           "asOf": "2026-10-15",
           "source": "t29-samsung-hbm"
         }
       ],
-      "detail": {
-        "text": "Ví dụ: một chip NVIDIA H200 có 141 GB bộ nhớ HBM3e, chuyển được 4,8 terabyte mỗi giây.",
-        "asOf": "2026-10-15",
-        "source": "t29-h200"
-      }
+      "detail": [
+        {
+          "text": "Ví dụ: chip NVIDIA H200 có 141 GB HBM, chuyển 4,8 terabyte dữ liệu mỗi giây.",
+          "asOf": "2026-10-15",
+          "source": "t29-h200"
+        },
+        {
+          "text": "Làm HBM tốn nhiều công suất nhà máy hơn RAM thường; hệ quả nằm ở slide sau.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      ],
+      "prompts": [
+        "Kéo tấm ván để nới mặt bàn",
+        "Kéo tấm ván về cả hai đầu: bàn chật nhất và rộng nhất",
+        "Chạm tháp đĩa sứ cạnh nghiên",
+        "Chạm tháp lần nữa để xếp đĩa lại"
+      ]
     },
     "wells": {
       "label": "Hồ lớn hút giếng nhỏ",
@@ -174,8 +187,12 @@
     "refill": {
       "label": "Giếng bao giờ đầy lại?",
       "art": "Nhìn ngang thành một giếng cạn, bầu trời lớn phía trên là sân khấu. Ba hòn đá trên thành giếng, mỗi hòn mang một kiểu trời: hơi nóng gợn trên trời quang và thành giếng nứt; thợ đá dựng nhà máy trên đồi xa dưới một đám mây vừa thành hình; mây mưa kéo tới, bóng trăng hiện trong lòng giếng nhưng còn rung, chưa tròn.",
-      "prompt": "Chạm từng hòn đá",
-      "stoneNames": ["J.P. Morgan", "SK hynix", "IDC"],
+      "prompt": "Chạm từng hòn đá trên thành giếng",
+      "stoneNames": [
+        "J.P. Morgan",
+        "SK hynix",
+        "IDC"
+      ],
       "perspectives": {
         "stones": [
           {
@@ -190,7 +207,7 @@
           {
             "who": "Nhà sản xuất SK hynix",
             "view": {
-              "text": "Hãng đang mở rộng nhà máy M15X, chuyển nhanh sang công nghệ mới và tăng đầu tư năm 2026 để đáp ứng nhu cầu.",
+              "text": "Hãng đang xây thêm nhà máy (M15X) và tăng đầu tư năm 2026 để làm thêm chip nhớ.",
               "asOf": "2026-10-15",
               "source": "t29-skhynix-3q25",
               "claimBy": "SK hynix"
@@ -207,18 +224,19 @@
           }
         ],
         "common": {
-          "text": "Các bên đều thấy cơn thiếu chưa hết trong năm nay; họ khác nhau ở chỗ nhà máy mới kịp hạ nhiệt giá nhanh tới đâu.",
+          "text": "Chưa ai thấy giếng đầy lại trong năm nay. Câu hỏi là nhà máy mới xây xong trước, hay nhu cầu AI hạ nhiệt trước.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "opinion"
         }
       },
       "insight": {
-        "text": "Thiếu bộ nhớ kéo dài bao lâu vẫn là dự đoán: nhà máy mới cần nhiều năm, còn nhu cầu AI thì khó đoán.",
+        "text": "Nếu cần mua máy trong năm nay, đừng chờ giá RAM về như cũ: các dự báo đều cho thấy giá còn cao ít nhất tới giữa 2027.",
         "asOf": "2026-10-15",
-        "source": "t29-jpm",
+        "source": "editorial",
         "kind": "opinion"
-      }
+      },
+      "countTpl": "Đã nghe {n}/{total}"
     }
   },
   "sources": {

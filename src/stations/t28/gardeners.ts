@@ -9,6 +9,7 @@ import { blob, curve, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { C } from './data'
 import { figure } from './brush'
 import { fieldFallback } from './fieldsvg'
+import { guide } from '../../ui/part2/guide'
 import { A, COLS, FALL, HZ, PLINTH, R, R0, ROWS, Rl, SHRINK, TRAY, Y, at, fallK, thOf } from './hill'
 
 const G = C.scenes.gardeners
@@ -385,7 +386,9 @@ type Tok = (typeof NAMES)[number]
 
 /** One watering can walks the beds in turn (CPU) vs a thousand bamboo spouts drip on every bed at once (GPU). */
 export function gardenersScene(ctx: SceneCtx) {
-  ctx.prompt(G.prompt)
+  const gd = guide(ctx)
+  const step = gd.steps(G.prompts)
+  step(0)
   // one layout read at mount: a tall frame looks down more steeply from farther away (art direction)
   const tall = ctx.art.clientHeight > ctx.art.clientWidth * 1.05
   const yaw0 = tall ? -0.08 : -0.2
@@ -504,6 +507,18 @@ export function gardenersScene(ctx: SceneCtx) {
 
   let btnOne: HTMLButtonElement | null = null, btnMany: HTMLButtonElement | null = null
   let shown = false
+  // the insight comes only once both ways have been seen (audit v3 28-1): one can, bed after bed; then a thousand spouts
+  const seen = { one: false, many: false }
+  let dotOne: ReturnType<typeof gd.dot> | null = null, dotMany: ReturnType<typeof gd.dot> | null = null
+  function watered(many: boolean) {
+    seen[many ? 'many' : 'one'] = true
+    ;(many ? dotMany : dotOne)?.done()
+    if (shown) return
+    if (seen.one && seen.many) {
+      shown = true
+      ctx.insight(G.insight as Fact, G.detail as Fact)
+    } else step(many ? 2 : 1)
+  }
   let run = 0 // the current run's token: a new tap cancels the old one
   const timers: number[] = []
   ctx.onCleanup(() => timers.forEach(clearTimeout))
@@ -589,10 +604,7 @@ export function gardenersScene(ctx: SceneCtx) {
       k.render()
       say(G.done)
       ctx.chime(many ? 'ok' : 'soft')
-      if (many && !shown) {
-        shown = true
-        ctx.insight(G.insight as Fact, G.detail)
-      }
+      watered(many)
     }
     if (stepped) {
       // low / reduced: the can jumps along in a few steps (4 under reduced motion), the pour in three
@@ -828,6 +840,7 @@ export function gardenersScene(ctx: SceneCtx) {
     k.root.updateMatrixWorld(true)
     btnMany = k.tappable(spring, G.manyAria, () => go(true))
     btnMany.setAttribute('aria-pressed', 'false')
+    dotMany = gd.dot(btnMany, { dir: [0, 1] })
     k.label(spring, h('p', { class: 't28g-tag' }, G.many), [0.15, 0.12, 0])
     // the crest: a pine leaning toward the moon, a second rock
     if (!k.low) {
@@ -867,6 +880,7 @@ export function gardenersScene(ctx: SceneCtx) {
     k.root.updateMatrixWorld(true)
     btnOne = k.tappable(canGroup, G.oneAria, () => go(false))
     btnOne.setAttribute('aria-pressed', 'false')
+    dotOne = gd.dot(btnOne, { dir: [0, -1] })
     // its name is cut on the stone under it (anchored at the stone's foot, set below by CSS), clear of the gardener's head
     k.label(canRock, h('p', { class: 't28g-tag t28g-under' }, G.one), [0, -0.4, 0.42])
     const stele = new THREE.Group()
@@ -962,7 +976,7 @@ export function gardenersScene(ctx: SceneCtx) {
           el.done()
           say(G.done)
           ctx.chime(many ? 'ok' : 'soft')
-          if (many && !shown) (shown = true), ctx.insight(G.insight as Fact, G.detail)
+          watered(many)
         }
       }, gap * i))
   }

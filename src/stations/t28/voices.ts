@@ -101,6 +101,7 @@ export function voicesScene(ctx: SceneCtx) {
   const sc = () => (fr.wide ? clamp(fr.H / 300, 1.5, 2.4) : 2.15)
   return perspectiveCircle(V, {
     label: G.circleLabel,
+    prompt: G.circlePrompt,
     stage: (el, api) => {
       host = el
       el.classList.add('t28v')
