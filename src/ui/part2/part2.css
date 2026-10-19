@@ -1404,7 +1404,7 @@
   align-items: center;
   gap: 4px 12px;
   min-height: 78px;
-  padding: 18px 2.4em 22px 2em; /* em, not %: a % here would be of the whole field */
+  padding: 22px 3.4em 26px 2.2em; /* em, not %: a % here would be of the whole field; wide right: the face narrows there */
   border: 0;
   background: none;
   color: var(--stone-text);
