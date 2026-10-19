@@ -36,6 +36,8 @@ export interface StepOpts {
   piece?: (i: number, g: { w: number; h: number; seed: number }) => SVGElement
   /** after step k is placed (right) */
   onPlace?: (k: number) => void
+  /** a wrong try: step `step` was put on `slot`. Return the hint line to show instead of the default one (or nothing) */
+  onWrong?: (step: number, slot: number) => string | void
 }
 
 const f1 = (n: number) => n.toFixed(1)
@@ -106,7 +108,7 @@ export function stepPath(data: StepPath, o: StepOpts): SceneDef {
           void st.el.offsetWidth // restart the shake
           st.el.classList.add('shake')
           note.className = 'p2s-note wrong'
-          note.textContent = slot ? fill(L.stepWrong, { n: slot + 1, prev: steps[slot - 1].label }) : L.stepWrongFirst // where it goes, not what it is
+          note.textContent = o.onWrong?.(st.step, slot) || (slot ? fill(L.stepWrong, { n: slot + 1, prev: steps[slot - 1].label }) : L.stepWrongFirst) // where it goes, not what it is
           ctx.chime('low')
           return
         }

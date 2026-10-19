@@ -27,6 +27,9 @@ export interface PerspectiveOpts {
   /** what stands at slot k instead of the stone (a gate, a lamp, a jar), in the stone's box: viewBox -60 -70 120 90, foot
    *  on y = 0, about 92 wide; i = which view it holds (data.stones[i]). Its halo and rake rings stay (hide them in CSS) */
   stone?: (k: number, g: PondGeo, i: number) => SVGElement
+  /** what stone k is called for screen readers before and after it is heard, when the station draws something else
+   *  (a lantern, a gate): default "Hòn đá {n}" / "Hòn đá {n}: {who}" */
+  name?: (k: number, i: number, heard: boolean) => string
   /** on every touch of stone k (i = data.stones[i]); the root also carries .is-heard-{k} and, once all are heard, .is-all */
   onHear?: (k: number, i: number) => void
   /** the station's own stage behind the stones (a diorama, a canvas) instead of the painted pond, in a host that fills the
@@ -65,7 +68,7 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
           s('ellipse', { class: 'p2c-ring p2c-ring2', cx: 0, cy: 2, rx: 50, ry: 11 }),
           o.stone ? '' : stoneArt(92, 58, seed + vi * 31),
           s('text', { class: 'p2c-num', x: 0, y: -24, 'text-anchor': 'middle' }, String(k + 1)))
-        return h('button', { class: 'p2c-stone', type: 'button', style: `--i:${k}`, 'aria-pressed': 'false', 'aria-label': fill(L.stoneN, { n: k + 1 }), onClick: () => pick(k) }, art)
+        return h('button', { class: 'p2c-stone', type: 'button', style: `--i:${k}`, 'aria-pressed': 'false', 'aria-label': o.name?.(k, vi, false) ?? fill(L.stoneN, { n: k + 1 }), onClick: () => pick(k) }, art)
       })
       const ring = h('div', { class: 'p2c-stones', role: 'group', 'aria-label': L.perspectives }, ...stones)
       const own = o.stage ? h('div', { class: 'p2c-own' }) : null
@@ -95,7 +98,7 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
         sel = k
         const st = data.stones[order[k]]
         stones[k].setAttribute('aria-pressed', 'true')
-        stones[k].setAttribute('aria-label', fill(L.stoneHeard, { n: k + 1, who: st.who }))
+        stones[k].setAttribute('aria-label', o.name?.(k, order[k], true) ?? fill(L.stoneHeard, { n: k + 1, who: st.who }))
         stones[k].dataset.heard = ''
         heard.add(k)
         root.classList.add(`is-heard-${k}`)

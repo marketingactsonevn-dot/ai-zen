@@ -27,6 +27,7 @@ perspectiveCircle(data, {
   place: (k, n, g) => ({ x, y, s: 1.2, z }),        // chân vật k (px trong stage, g: PondGeo), s = tỉ lệ cỡ đá, z = z-index (mặc định y)
   stone: (k, g, i) => toro(0, 0, 66, true),         // vật đứng thay hòn đá: viewBox -60 -70 120 90, chân ở y = 0, rộng ~92
   onHear: (k, i) => …,                              // mỗi lần chạm vật k
+  name: (k, i, heard) => …,                         // tên vật k cho trình đọc màn hình (đèn, cổng…), thay "Hòn đá {n}"
 })
 // api: { pick(k) — nghe vật k (vd khi chạm vật trong sân khấu riêng), onLayout(fn(g, feet[{ x, y, s }])) — vẽ lại sân khấu theo chỗ đứng }
 // class trên root .p2c: .is-heard-{k} (đã nghe vật k), .is-all (nghe đủ) — CSS đổi biến thể (cổng mở, đèn thắp…)
@@ -100,6 +101,7 @@ stepPath(data, {
   pile: (g) => Pt[],           // tâm chỗ nằm của đá rời, theo thứ tự phím số (mặc định: hàng dưới lối / cột phải)
   piece: (i, { w, h, seed }) => SVGElement,   // hình của bước i thay viên đá sông (viewBox 0 0 w h, nằm dưới chữ)
   onPlace: (k) => …,           // sau khi đặt đúng bước k
+  onWrong: (step, slot) => S.why[step],   // đặt sai: trả câu gợi ý riêng (không trả gì = câu mặc định "ô n là việc làm ngay sau …")
 })
 // Có slots: lối mực nối các tâm, chạy quá hai đầu theo hướng lối; không vẽ cát cào mặc định; đèn đá cuối lối đứng ở đầu cuối (khi không có art);
 // dòng gợi ý và thẻ mang về nằm dưới chỗ trống thấp nhất. Cỡ viên đá vẫn do layout mặc định tính (size): đặt slots/pile theo nó.

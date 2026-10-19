@@ -16,7 +16,8 @@ Mỗi phase: làm → `npm run build` → perf-walk (README) → `node scripts/p
 
 ## Phase 2 · 30 slide P1 (dạy sai / chặn chơi)
 Theo bảng ở `docs/part2-audit/README.md` (ô **P1**). Đi theo vườn, mỗi vườn một commit:
-- [ ] Vườn 7 (t19–21) · [ ] 8 (t22–24) · [ ] 9 (t25–27) · [ ] 10 (t28–30) · [ ] 11 (t31–33) · [ ] 12 (t34–36) · [ ] 13 (t37–39)
+- [x] Vườn 7 (t19–21) · [x] 8 (t22–24) · [x] 9 (t25–27) · [x] 10 (t28–30) · [x] 11 (t31–33) · [x] 12 (t34–36) · [x] 13 (t37–39)
+  *(30 slide P1 + lỗi chặn v2 §C: 20-4, 21-3, 22-2, 25-2, 27-3, 33-2, 34-3, 35-5, 39-3, 39-4, 39-5. Ảnh sau: `docs/part2-shots/slides/after/tNN-K-{d,p}.jpg`, ảnh trước: `docs/part2-audit/all/`. Khung thêm: prompt dài xuống dòng, hook `stepPath.onWrong`, `perspectiveCircle.name`. Còn để phase 4: vẽ lại, bố cục phone; hook cần thêm: điểm dừng từng mốc + eyebrow riêng cho `progressTide`, `inkStage` đảo chiều kéo dọc, `g.drop` theo vật chạy cùng camera.)*
 
 ## Phase 3 · Câu chữ + logic thông tin (mục A, B)
 - [ ] Thay copy JSON theo câu viết sẵn trong `toan-bo-21-tram.md` (kicker, tóm tắt, thẻ, prompt, insight, quiz, ensō). VI trước, EN dịch theo sau.
