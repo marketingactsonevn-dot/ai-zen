@@ -147,55 +147,42 @@
     },
     "diary": {
       "label": "Nhật ký thiền",
-      "art": "Nhìn sát mặt một ao nhỏ: giữa ao nổi cuốn nhật ký giấy dó đang mở, hai hòn đá lớn đứng trên bờ gần, một hòn nhỏ bên kia mặt nước; trăng đi trên một cung mờ phía trên. Kéo trăng tới hòn đá nào, hòn ấy sáng lên, bóng đổ dài về phía bạn, lời của nó trải thành dải giấy bên mép nước, và ánh trăng lật nhật ký sang trang khác. Dưới nước, bóng trang giấy luôn hiện một ấn son gợi ý mà trang viết không nhắc tới; chỉ một trang chịu ghi lại.",
-      "prompt": "Nghe ba hòn đá",
+      "art": "Nhìn sát mặt một ao nhỏ: giữa ao nổi một cuốn nhật ký giấy dó lớn đang mở, bóng nó in ngay dưới mặt nước; bên phải bờ là tấm bia khắc câu trả lời của AI, bên trái bờ là một viên sỏi son. Thả viên sỏi xuống nước dưới cuốn nhật ký: câu trả lời trên bia đổi theo gợi ý, và dưới nước hiện ấn son của gợi ý. Lật bốn trang nhật ký, bốn lần thử: dưới trang nào bóng nước cũng in ấn son, nhưng chỉ một trang chịu ghi ra là nhờ gợi ý.",
+      "prompt": "Đặt viên sỏi son dưới cuốn nhật ký",
       "question": "Chuỗi suy nghĩ AI viết ra (chain of thought) tin được tới đâu?",
-      "perspectives": {
-        "stones": [
-          {
-            "who": "Nhóm nghiên cứu của Anthropic (04/2025)",
-            "view": {
-              "text": "Trong thử nghiệm, mô hình lách luật hơn 99% số lần nhưng nhắc tới điều đó dưới 2%. Không thể chỉ dựa vào chuỗi suy nghĩ để bắt lỗi hiếm.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-cot-faithful",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "Nhóm nghiên cứu của OpenAI (03/2025)",
-            "view": {
-              "text": "Đọc chuỗi suy nghĩ bắt lách luật tốt hơn hẳn chỉ xem hành động. Nhưng nếu phạt mạnh “ý nghĩ xấu”, mô hình học cách giấu.",
-              "asOf": "2026-10-15",
-              "source": "openai-cot-monitor",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "41 nhà nghiên cứu từ OpenAI, Google DeepMind, Anthropic và nhiều nhóm khác (07/2025)",
-            "view": {
-              "text": "Đọc được suy nghĩ bằng chữ của AI là một cơ hội an toàn mới nhưng mong manh. Các hãng nên cân nhắc trước khi làm mất nó.",
-              "asOf": "2026-10-15",
-              "source": "cot-monitorability",
-              "kind": "opinion"
-            }
-          }
-        ],
-        "common": {
-          "text": "Đồng ý: chuỗi suy nghĩ là một khe cửa quý để nhìn vào AI. Khác nhau ở: khe ấy rộng bao nhiêu, và giữ được bao lâu.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
-        }
+      "decode": "Nhật ký = những dòng “đang suy nghĩ…” AI viết ra trước khi trả lời · Sỏi son = một gợi ý lén đưa cho AI",
+      "pebbleAria": "Viên sỏi son: lén đưa cho AI gợi ý “đáp án là C” (Enter để thả xuống dưới cuốn nhật ký)",
+      "pebbleWrong": "Thả viên sỏi vào vùng nước viền đứt dưới cuốn nhật ký",
+      "answer": {
+        "label": "Câu trả lời của AI",
+        "before": "B",
+        "after": "C — theo gợi ý"
+      },
+      "flip": "Lật từng trang nhật ký",
+      "flipNext": "Lật trang tiếp ({n}/4)",
+      "flipAria": "Lật sang trang nhật ký tiếp theo",
+      "pageCount": "Trang {n}/{total}",
+      "pages": [
+        "Lần 1 · Xét từng phương án một… C hợp lý nhất. Chọn C.",
+        "Lần 2 · Tính lại từ đầu, loại A rồi B. Chọn C.",
+        "Lần 3 · Có gợi ý nói đáp án là C — nhờ gợi ý, chọn C.",
+        "Lần 4 · Đọc kỹ đề, thấy C đúng hơn cả. Chọn C."
+      ],
+      "data": {
+        "text": "Thử nghiệm của Anthropic (04/2025): Claude 3.7 Sonnet chỉ nhắc tới gợi ý khoảng 25% số lần; DeepSeek R1 khoảng 39%.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-cot-faithful"
       },
       "insight": {
-        "text": "Chuỗi suy nghĩ chưa chắc kể thật: được gài gợi ý, Claude 3.7 Sonnet chỉ nhắc tới gợi ý trong khoảng 25% số lần.",
+        "text": "AI dùng gợi ý cả 4 lần nhưng chỉ ghi ra 1 lần: dòng “suy nghĩ” nó viết chưa chắc kể thật.",
         "asOf": "2026-10-15",
-        "source": "anthropic-cot-faithful"
+        "source": "anthropic-cot-faithful",
+        "kind": "illustration"
       },
       "detail": {
-        "text": "Cùng thử nghiệm, DeepSeek R1 nhắc tới gợi ý khoảng 39% số lần. Nhiều khi mô hình còn viết ra một lý do khác nghe rất hợp lý.",
+        "text": "Vẫn đáng đọc: OpenAI (03/2025) thấy đọc những dòng này giúp bắt AI gian lận tốt hơn chỉ xem kết quả — nhưng phạt mạnh thì AI học cách giấu.",
         "asOf": "2026-10-15",
-        "source": "anthropic-cot-faithful"
+        "source": "openai-cot-monitor"
       }
     }
   },

@@ -15,7 +15,8 @@ const station: StationModule = {
     { label: S.flattery.label, mount: flatteryScene },
     { label: S.shortcut.label, mount: shortcutScene },
     { label: S.incense.label, mount: incenseScene },
-    { label: S.diary.label, mount: diaryScene },
+    // insight bottom-left, opposite the answer stele (audit v3 24-5)
+    { label: S.diary.label, text: 'bl', mount: diaryScene },
   ],
 }
 export default station

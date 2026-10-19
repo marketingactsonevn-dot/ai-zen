@@ -1,11 +1,12 @@
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
-import { h, s } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
 import { onPrefs } from '../../core/prefs'
 import type { SceneCtx } from '../types'
 import { inkGlsl, inkStage, type InkKit, type V3 } from '../../ui/part2/stage3d'
 import { onDigit, onSize, rng, stableHeight, stoneArt } from '../../ui/part2/ink'
 import { toro as paintToro } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { C } from './data'
 import { placedRock, raftGeo, shapedTube, withAttr } from './geo3d'
 
@@ -425,8 +426,18 @@ export function headsScene(ctx: SceneCtx) {
   const tall = W0 < H0
   root.style.height = `${stableH(H0)}px`
   ctx.onCleanup(onSize(ctx.art, () => void (root.style.height = `${stableH(ctx.art.clientHeight)}px`)))
-  ctx.prompt(K.prompt)
+  ctx.prompt(fill(K.prompt, { n: 0 }))
   ctx.onCleanup(onDigit((d) => d <= N && toggle(d - 1)))
+  // H1 a vermilion dot over every unlit lantern (riding on an anchor the kit keeps over its roof); H5 the count in the prompt
+  const g = guide(ctx)
+  const dots: (Mark | null)[] = K.heads.map(() => null)
+  const g8dot = (el: HTMLElement) => {
+    const d = g.dot(el)
+    d.el.classList.add('g8h-dot')
+    return d
+  }
+  let decoded = false
+  let painted = false // no WebGL: the painted view
 
   // ── the garden's plan: the pond square to the world, the camera at a 3/4 turn to it; the rafts face the camera
   const POND: [number, number] = tall ? [2.45, 4.4] : [3.3, 2.2]
@@ -434,6 +445,8 @@ export function headsScene(ctx: SceneCtx) {
   // (a tall frame adds 0.13 of its own: 50° there, 35° on a wide one)
   const pitch0 = tall ? 0.74 : 0.61
   const T: V3 = tall ? [0, 0.5, 0.35] : [-0.1, 0.45, 0.45]
+  /** below this pitch the eye is down at the water and the four tiers have parted */
+  const lowP = pitch0 - 0.17
   const cy = Math.cos(yaw0), sy = Math.sin(yaw0)
   /** camera frame (u right, v toward the viewer) → world x, z */
   const W = (u: number, v: number): [number, number] => [u * cy + v * sy, -u * sy + v * cy]
@@ -482,28 +495,70 @@ export function headsScene(ctx: SceneCtx) {
 
   // ── shared state → whichever view is up (3D, or the painted fallback)
   function toggle(i: number) {
+    if (done && on[i]) return // all four lit: they stay lit while the eye goes down to the water
     on[i] = !on[i]
     ctx.chime(on[i] ? 'tap' : 'soft')
     view?.set(i, on[i])
     const hd = K.heads[i]
     live.textContent = on[i] ? `${hd.name}: ${hd.relation}` : ''
     if (!live.hasAttribute('aria-live')) live.setAttribute('aria-live', 'polite')
-    if (on.filter(Boolean).length === 1 && !done && on[i]) ctx.prompt(K.orbit)
+    dots[i]?.el.classList.toggle('g8h-off', on[i])
+    const lit = on.filter(Boolean).length
     if (on.every(Boolean) && !done) {
       done = true
+      dots.forEach((d) => d?.done())
       view?.all()
       live.textContent = K.allLit
-      ctx.insight(K.insight, [K.detail, K.caveat, K.headsNote])
-    }
+      // the 3D moment: lower the eye to the water (drag down, ↓, or the camera sinks by itself when left alone);
+      // without WebGL there is nothing to lower: the insight comes now
+      if (painted) return void show()
+      ctx.prompt(K.orbit)
+      if (kit) arrow()
+    } else if (!done) ctx.prompt(fill(K.prompt, { n: lit }))
   }
+  let down: Mark | null = null
+  // a faint curved arrow at the right edge, pointing down (the hidden gesture)
+  const arrow = () => void (down ??= g.gesture('drag-v', () => [ctx.art.clientWidth - 46, ctx.art.clientHeight * 0.46], { r: 34 }))
+  let shown = false
+  function show() {
+    if (shown) return
+    shown = true
+    down?.done()
+    ctx.insight(K.insight, [K.detail, K.detail2, K.headsNote])
+  }
+  // H7: left alone with every lantern lit, the camera sinks to the water itself
+  const sink = () => void (done && !shown && kit?.fly(T, yaw0 + (tall ? 0.05 : 0.1), lowP - 0.06, ctx.reduced ? 0 : 2.4))
+  ctx.el.addEventListener('p2:idle', sink)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', sink))
 
   let kit: InkKit | null = null
-  // the visitor took the camera: no more flights of ours
+  // the visitor took the camera (a real drag, the wheel, the arrows — not a tap on a lantern): no more flights of ours
   let took = false
   const take = () => void (took = true)
-  root.addEventListener('pointerdown', take)
   root.addEventListener('wheel', take, { passive: true })
   root.addEventListener('keydown', (e) => e.key.startsWith('Arrow') && take())
+  // The kit turns like an orbit control (drag down = look from higher). Here "down" lowers the eye to the water, as the
+  // prompt says (audit 22-2): the vertical part of a one-finger drag is mirrored on its way into the stage.
+  const mirrored = new WeakSet<Event>()
+  let mId = -1, mY = 0, mX = 0, downs = 0
+  root.addEventListener('pointerdown', (e) => {
+    downs++
+    if (downs === 1) (mId = e.pointerId), (mY = e.clientY), (mX = e.clientX)
+  }, true)
+  root.addEventListener('pointermove', (e) => {
+    if (mirrored.has(e) || e.pointerId !== mId || downs !== 1 || !(e.target instanceof Element)) return
+    if (Math.hypot(e.clientX - mX, e.clientY - mY) > 6) take()
+    e.stopImmediatePropagation()
+    const m = new PointerEvent('pointermove', { bubbles: true, pointerId: e.pointerId, pointerType: e.pointerType, isPrimary: e.isPrimary, buttons: e.buttons, clientX: e.clientX, clientY: 2 * mY - e.clientY })
+    mirrored.add(m)
+    e.target.dispatchEvent(m)
+  }, true)
+  const lift = (e: PointerEvent) => {
+    downs = Math.max(0, downs - 1)
+    if (e.pointerId === mId) mId = -1
+  }
+  root.addEventListener('pointerup', lift, true)
+  root.addEventListener('pointercancel', lift, true)
   const home = () => void kit?.fly(T, yaw0, pitch0, 1.1)
   let lastUp = 0, lx = 0, ly = 0
   root.addEventListener('pointerup', (e) => {
@@ -518,10 +573,20 @@ export function headsScene(ctx: SceneCtx) {
   let atlasTex: THREE.CanvasTexture | null = null
   inkStage(ctx, root, {
     label: K.aria, hint: K.hint, gyro: true, dpr: [1.75, 1.25], fallback,
-    view: { yaw: yaw0, pitch: pitch0, yawRange: [yaw0 - 1.05, yaw0 + 1.05], pitchRange: [0.21 - (tall ? 0.13 : 0), 1.48 - (tall ? 0.13 : 0)], fit: tall ? [6.8, 3.6] : [4.6, 2.75], target: T, shift: 0, zoomRange: [0.6, 1.4] },
+    // (no higher than a little over the default: from above, the far lanterns leave the frame — audit 22-2)
+    view: { yaw: yaw0, pitch: pitch0, yawRange: [yaw0 - 1.05, yaw0 + 1.05], pitchRange: [0.21 - (tall ? 0.13 : 0), pitch0 + 0.16], fit: tall ? [6.8, 3.6] : [4.6, 2.75], target: T, shift: 0, zoomRange: [0.6, 1.4] },
   }, build).ready.then((k) => {
     if (!k?.stage) return
     kit = k
+    // every lit lantern lit before the stage was up (keys): the eye goes down now
+    if (done && !shown) arrow()
+    // the eye is down at the water (its height over the target, as an angle): the four tiers part → the insight
+    const cam = k.stage.camera
+    k.onFrame(() => {
+      if (!done || shown) return
+      const dx = cam.position.x - T[0], dy = cam.position.y - T[1], dz = cam.position.z - T[2]
+      if (Math.asin(dy / Math.hypot(dx, dy, dz)) < lowP + (tall ? 0.13 : 0)) show()
+    })
     const st = k.stage
     const px = () => void (flyU.uPx.value = (st.height * st.renderer.getPixelRatio()) / (2 * Math.tan((st.camera.fov * Math.PI) / 360)))
     px()
@@ -623,8 +688,11 @@ export function headsScene(ctx: SceneCtx) {
       const btn = k.tappable(g, K.heads[i].aria, () => toggle(i))
       btn.setAttribute('aria-pressed', 'false')
       // its name and what it joins, riding above it once lit
-      const inner = h('div', { class: 'g8h-tagi' }, h('b', null, K.heads[i].name), h('span', null, K.heads[i].relation))
+      const inner = h('div', { class: 'g8h-tagi' }, h('b', null, K.heads[i].name), h('span', null, K.heads[i].relation), h('em', { class: 'g8h-decode' }, K.decode))
       const tag = k.label(g, h('div', { class: `g8h-tag h${i}` }, inner), [0, 0.16, 0])
+      // the dot rides an anchor the kit keeps on the lantern's roof (the tap proxy itself is invisible)
+      if (!done) dots[i] = g8dot(k.label(g, h('div', { class: 'g8h-anchor' }), [0, -0.06, 0]))
+      dots[i]?.el.classList.toggle('g8h-off', on[i])
       const box = new THREE.Box3().setFromObject(g)
       // where the kit pins the tag (its box's top centre + the offset), and the lantern's own extent on screen
       const pin = new THREE.Vector3((box.min.x + box.max.x) / 2, box.max.y + 0.16, (box.min.z + box.max.z) / 2)
@@ -760,7 +828,7 @@ export function headsScene(ctx: SceneCtx) {
       const nl = hd.links.length, stg = nl > 1 ? 0.3 : 0, span = 1 + (nl - 1) * stg
       linkPaths(i).forEach((arc, j) => {
         const o = j * stg
-        const r0 = (i === 2 ? 0.018 : 0.028) * (tall ? 1.45 : 1)
+        const r0 = (i === 2 ? 0.032 : 0.052) * (tall ? 1.45 : 1) // twice the old width: the bands must read (audit 22-2)
         parts2.push(shapedTube(arc, i === 2 ? Math.round(seg * 0.6) : seg, rad, (u) => r0 * (0.35 + 0.65 * Math.sin(Math.PI * u) ** 0.7), (u) => (o + u) / span))
       })
       const geo = mergeGeometries(parts2)!
@@ -968,6 +1036,8 @@ export function headsScene(ctx: SceneCtx) {
         hs.want = lit ? 1 : 0
         lamps[i].btn.setAttribute('aria-pressed', String(lit))
         lamps[i].tag.classList.toggle('on', lit)
+        // the first lantern lit says once what a lantern stands for
+        if (lit && !decoded) (decoded = true), lamps[i].tag.classList.add('first')
         if (lit && !lamps[i].w) (lamps[i].w = lamps[i].tag.offsetWidth), (lamps[i].h = lamps[i].tag.offsetHeight)
         const grow = 1.3 + (i === 2 ? 0.9 : 0)
         if (hs.running) return
@@ -991,9 +1061,10 @@ export function headsScene(ctx: SceneCtx) {
           writeU.uGrow.value = Math.min(1.1, Math.max(0, (t - 0.4) / 2.2) * 1.1)
           return writeU.uGrow.value < 1.1
         })
-        // the pay-off: the camera cranes up (from above the bands tangle), then sinks toward the water, where the four tiers part
+        // back to the default view (from there the visitor lowers the eye, or it sinks by itself when left alone)
         if (took) return
-        k.fly(T, yaw0 + 0.06, 1.2, 1.6).then(() => void (took || (k.dolly(tall ? 1 : 1.1), k.fly(T, yaw0 + (tall ? 0.05 : 0.1), tall ? 0.62 : 0.46, 2.6))))
+        k.dolly(tall ? 1 : 1.1)
+        k.fly(T, yaw0 + (tall ? 0.05 : 0.1), pitch0, 1.4)
       },
     }
     on.forEach((lit, i) => lit && view!.set(i, true))
@@ -1007,6 +1078,11 @@ export function headsScene(ctx: SceneCtx) {
     const words = K.words.map((w) => h('span', { class: 'g8h-fbw' }, w))
     const allP = h('p', { class: 'g8h-all g8h-fball' }, h('span', null, K.allLit))
     host.append(svg, ...words, allP, ...btns)
+    painted = true
+    btns.forEach((b, i) => {
+      dots[i] = done ? null : g8dot(b)
+      dots[i]?.el.classList.toggle('g8h-off', on[i])
+    })
     if (!raft.length) planRafts(K.words.map((w) => w.length * 30), 64)
     const cam = new THREE.PerspectiveCamera(38, 1, 0.1, 100)
     const v = new THREE.Vector3()

@@ -77,7 +77,13 @@
     "stream": {
       "label": "Lần theo mạch nước",
       "art": "Đứng trên đỉnh một dòng thác bậc thang dưới trăng, nhìn xuống thung lũng. Gần nhất là hai mạch nước chảy ra từ khe đá khắc “Dallas” và “thủ phủ”; ở bậc giữa là ao “Texas” có phiến đá chặn khắc chữ; xa dưới thung lũng là ao nhỏ “Austin” in bóng trăng. Nhấc lần lượt từng viên đá cống thì nước chảy: Dallas đổ vào Texas, Texas tràn xuống Austin, mạch “thủ phủ” theo máng tre chảy thẳng xuống Austin, và một dòng mảnh đi tắt, mờ hơn. Đổi phiến Texas lấy phiến California thì ao cuối thành “Sacramento”, còn sương dày lên trên ba thác khác.",
-      "prompt": "Lần theo dòng nước",
+      "prompt": "Nghiêng máng tre để rót câu hỏi vào",
+      "pourAria": "Nghiêng máng tre: rót câu hỏi vào dòng nước",
+      "lift": "Kéo phiến “Texas” ra khỏi ao",
+      "liftAria": "Nhấc phiến Texas ra khỏi ao giữa",
+      "drop": "Thả “California” vào chỗ trống",
+      "dropWrong": "Thả “California” vào ao giữa, chỗ viền đứt",
+      "decode": "Dòng nước = ý nghĩ chảy bên trong AI · ao giữa = một bước nghĩ",
       "question": "“Thủ phủ của bang có thành phố Dallas là…”",
       "nodes": [
         {
@@ -123,24 +129,22 @@
           "austin"
         ]
       ],
-      "shortcut": "lối tắt (mờ hơn)",
-      "stepAria": "Đi tiếp theo dòng nước tới “{label}” (Enter)",
-      "swap": "Đổi “Texas” thành “California”",
+      "shortcut": "đường tắt Dallas → Austin (yếu hơn)",
       "swapAria": "Thay ý Texas bằng California bên trong mô hình",
       "swapTo": "California",
       "swapResult": "Sacramento",
       "insight": {
-        "text": "Bản đồ quy kết (attribution graph) cho thấy mô hình nghĩ qua bước trung gian: Dallas → Texas → thủ phủ là Austin.",
+        "text": "Đổi “Texas” thành “California” bên trong, đáp án đổi từ Austin sang Sacramento: AI thật sự nghĩ qua bước giữa.",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       },
       "detail": {
-        "text": "Thay ý “Texas” bằng “California” ngay bên trong mô hình, câu trả lời đổi thành Sacramento. Nghiên cứu trên Claude 3.5 Haiku, công bố 27/03/2025.",
+        "text": "Cách soi này gọi là bản đồ các bước nghĩ (attribution graph). Anthropic làm trên Claude 3.5 Haiku, công bố 03/2025; chính nhóm tác giả nói nó chỉ giải thích được khoảng ¼ số câu họ thử.",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       },
       "limit": {
-        "text": "Chính nhóm tác giả ước tính cách này chỉ cho lời giải thích thoả đáng ở khoảng một phần tư số câu họ thử.",
+        "text": "Mới soi rõ khoảng 1 trong 4 câu thử",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       }

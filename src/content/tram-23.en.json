@@ -77,7 +77,13 @@
     "stream": {
       "label": "Following the water",
       "art": "Standing at the top of a terraced cascade under the moon, looking down into the valley. Nearest are two springs breaking from rocks carved “Dallas” and “capital”; on the middle step lies the pool “Texas” with a carved weir stone; far below in the valley, the small pool “Austin” holds the moon. Lift the sluice stones one by one and the water runs: Dallas pours into Texas, Texas spills down into Austin, the “capital” spring runs straight down to Austin in a bamboo flume, and a thin stream takes a fainter shortcut. Swap the Texas stone for the California stone and the last pool reads “Sacramento”, while the mist thickens over three other falls.",
-      "prompt": "Follow the water",
+      "prompt": "Tilt the bamboo trough to pour the question in",
+      "pourAria": "Tilt the bamboo trough: pour the question into the water",
+      "lift": "Drag the “Texas” slab out of the pool",
+      "liftAria": "Lift the Texas slab out of the middle pool",
+      "drop": "Drop “California” into the gap",
+      "dropWrong": "Drop “California” into the middle pool, inside the dashed line",
+      "decode": "Water = a thought flowing inside the AI · middle pool = one step of thinking",
       "question": "“The capital of the state that contains Dallas is…”",
       "nodes": [
         { "id": "dallas", "label": "Dallas", "tier": 0, "aria": "Spring: the word Dallas" },
@@ -91,24 +97,22 @@
         ["capital", "austin"],
         ["dallas", "austin"]
       ],
-      "shortcut": "shortcut (fainter)",
-      "stepAria": "Follow the water on to “{label}” (Enter)",
-      "swap": "Swap “Texas” for “California”",
+      "shortcut": "shortcut Dallas → Austin (weaker)",
       "swapAria": "Replace the idea Texas with California inside the model",
       "swapTo": "California",
       "swapResult": "Sacramento",
       "insight": {
-        "text": "An attribution graph shows the model reasoning through a middle step: Dallas → Texas → the capital is Austin.",
+        "text": "Swap “Texas” for “California” inside and the answer changes from Austin to Sacramento: the AI really does think through the middle step.",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       },
       "detail": {
-        "text": "Swap the idea “Texas” for “California” inside the model and the answer becomes Sacramento. Research on Claude 3.5 Haiku, published 27 March 2025.",
+        "text": "This way of looking inside is called an attribution graph. Anthropic did it on Claude 3.5 Haiku, published 03/2025; the authors themselves say it explains only about ¼ of the prompts they tried.",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       },
       "limit": {
-        "text": "The authors themselves estimate the method gives a satisfying explanation for only about a quarter of the prompts they tried.",
+        "text": "So far, only about 1 in 4 prompts tried can be seen clearly",
         "asOf": "2026-10-15",
         "source": "anthropic-biology"
       }

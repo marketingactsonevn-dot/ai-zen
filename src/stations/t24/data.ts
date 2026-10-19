@@ -1,6 +1,5 @@
 import raw from '../../content/tram-24.json'
 import type { Fact, StationContent } from '../../core/content'
-import type { Perspectives } from '../../ui/part2/types'
 
 export interface T24 extends StationContent {
   scenes: {
@@ -20,7 +19,11 @@ export interface T24 extends StationContent {
       label: string; art: string; prompt: string; slider: string; sliderAria: string; valueText: string; short: string; long: string; notches: string[]
       insight: Fact; detail: Fact; far: Fact
     }
-    diary: { label: string; art: string; prompt: string; question: string; perspectives: Perspectives; insight: Fact; detail: Fact }
+    diary: {
+      label: string; art: string; prompt: string; question: string; decode: string; pebbleAria: string; pebbleWrong: string
+      answer: { label: string; before: string; after: string }; flip: string; flipNext: string; flipAria: string; pageCount: string; pages: string[]
+      data: Fact; insight: Fact; detail: Fact
+    }
   }
 }
 export const C = raw as unknown as T24

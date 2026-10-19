@@ -1,77 +1,80 @@
 import { fill, h, s } from '../../core/dom'
-import { L } from '../../core/content'
 import type { SceneCtx } from '../types'
 import { C } from './data'
 import { f1, stage } from './kit'
-import { blob, clamp, curve, onDigit, rng, seedOf, shuffledIdx, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
+import { blob, curve, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon, reeds, wash } from '../../ui/part2/paint'
-import { grad, P, Z } from './brush'
+import { guide, type Counter, type Mark } from '../../ui/part2/guide'
+import { grad, Z } from './brush'
 
 const K = C.scenes.diary
-const D = K.perspectives
+const N = K.pages.length
 
 /**
- * Scene 5 — the camera just above the water of a small pond: a thin wide ellipse, an open diary of dó paper afloat in the
- * middle with its pages mirrored below, three standing stones (two big and near on the bank, one small across the water).
- * Drag the moon along its arc over a stone (or press the stone, or 1–3): that stone lights and throws a long soft shadow
- * toward you, its words are laid on a strip of paper at the water's edge under it, and the moonlight turns the diary to
- * another page. In the water every page shows the vermilion seal of the hint it was given; only one page writes it down.
- * When all three have spoken the pond stills and what they share becomes the insight.
+ * Scene 5 (audit v3 24-5: an experiment, not a carousel) — the camera just above a small pond: a thin wide ellipse, a big
+ * open diary of dó paper afloat in the middle with its pages mirrored below, the answer stele on the right bank.
+ * Beat 1: slip the vermilion pebble (a hint passed to the AI on the sly) into the water under the diary: the answer on
+ * the stele turns to the hinted one, and the seal shows in the diary's reflection. Beat 2: turn the diary's four pages,
+ * four tries: the water shows the seal under every one, but only one page writes the hint down → the insight.
  */
 export function diaryScene(ctx: SceneCtx) {
-  const n = D.stones.length
-  const order = shuffledIdx(n, seedOf(D.stones.map((x) => x.who).join('|'))) // stone k holds view order[k]
-  const heard = new Set<number>()
-  let sel = -1
-  const { root } = stage(ctx, 't24d', K.art, [D.common], draw)
+  let hinted = false
+  let page = -1
+  const { root } = stage(ctx, 't24d', K.art, [K.insight], draw)
   const art = s('svg', { class: 't24-svg t24d-art', 'aria-hidden': 'true' })
-  const shadowG = s('g', { class: 't24d-shadows' })
-  const trail = s('path', { class: 't24d-trail' })
   const book = s('g', { class: 't24d-book' })
-  const moonEl = h('div', { class: 't24d-moon', 'aria-hidden': 'true' }, s('svg', { viewBox: '-40 -40 80 80' }, moon(0, 0, 17, 2551, false)))
-  const q = h('p', { class: 't24d-q' }, K.question)
-  const stones = order.map((_, k) => h('button', { class: `t24d-stone k${k}`, type: 'button', 'aria-pressed': 'false', 'aria-label': fill(L.stoneN, { n: k + 1 }), onClick: () => pick(k) }))
-  const words = h('div', { class: 't24d-words' })
-  const group = h('div', { class: 't24d-stones', role: 'group', 'aria-label': L.perspectives }, ...stones)
-  root.append(art, moonEl, q, group, words)
+  const q = h('div', { class: 't24d-q flat' }, h('p', null, K.question), h('p', { class: 't24d-decode' }, K.decode))
+  const pebble = h('button', { class: 't24d-pebble', type: 'button', 'aria-label': K.pebbleAria },
+    s('svg', { viewBox: '-22 -16 44 32', 'aria-hidden': 'true' }, s('ellipse', { class: 'sh', cx: 2, cy: 8, rx: 17, ry: 5 }), s('path', { class: 'body', d: 'M-16 2C-17 -7 -6 -12 3 -11C13 -10 18 -3 16 4C14 10 4 12 -4 11C-11 10 -15 8 -16 2Z' }), s('path', { class: 'hi', d: 'M-9 -5C-5 -9 2 -9 6 -8' })))
+  const text = h('p', { class: 't24d-text', 'aria-live': 'off' })
+  const flip = h('button', { class: 't24d-flip', type: 'button', 'aria-label': K.flipAria, disabled: true })
+  const ans = h('p', { class: 't24d-ans' }, K.answer.before)
+  const stele = h('div', { class: 't24d-stele' }, h('p', { class: 't24d-ans-l' }, K.answer.label), ans)
+  const data = h('div', { class: 't24d-data', 'data-off': '' }, ctx.fact(K.data, 'p'))
+  root.append(art, q, stele, text, flip, pebble, data)
   ctx.prompt(K.prompt)
-  ctx.onCleanup(onDigit((d) => pick(d - 1)))
+  const g = guide(ctx)
+  let dot: Mark | null = g.dot(pebble, { dir: [1, -0.4] })
+  let count: Counter | null = null
+  // the water under the diary, where the pebble goes (H3)
+  const bed = (): Pt => [G.bx, G.by + G.ph * 0.14]
+  const target = g.drop(bed, { w: 120, h: 46 })
 
-  const G = { W: 0, H: 0, Hp: 0, wide: true, cx: 0, cy: 0, rx: 0, ry: 0, hz: 0, bx: 0, by: 0, pw: 0, ph: 0, arc: [] as Pt[], feet: [] as { x: number; y: number; h: number }[] }
+  const G = { W: 0, H: 0, Hp: 0, wide: true, cx: 0, cy: 0, rx: 0, ry: 0, hz: 0, bx: 0, by: 0, pw: 0, ph: 0, mx: 0, home: [0, 0] as Pt, feet: [] as { x: number; y: number; h: number }[] }
 
   function* draw(W: number, H: number) {
     const wide = W / H >= 1.05
-    const Hp = wide ? H : H * 0.65 // on a phone the painting takes the top, the words go under it
-    const hz = Hp * (wide ? 0.47 : 0.46)
-    const cx = W * 0.5, cy = Hp * (wide ? 0.61 : 0.62), rx = W * (wide ? 0.42 : 0.47), ry = Hp * (wide ? 0.09 : 0.085)
-    // the stones: two big ones near us on the bank (left, right), a small one across the water
-    const feet = [
-      { x: W * (wide ? 0.14 : 0.14), y: Hp * (wide ? 0.9 : 0.96), h: Hp * (wide ? 0.34 : 0.32) },
-      { x: W * (wide ? 0.6 : 0.62), y: hz + Hp * 0.035, h: Hp * 0.12 },
-      { x: W * (wide ? 0.86 : 0.87), y: Hp * (wide ? 0.88 : 0.94), h: Hp * (wide ? 0.3 : 0.29) },
-    ]
-    Object.assign(G, { W, H, Hp, wide, cx, cy, rx, ry, hz, feet, bx: W * (wide ? 0.43 : 0.42), by: cy - ry * 0.55, pw: W * (wide ? 0.075 : 0.12), ph: Hp * (wide ? 0.13 : 0.13) })
-    // the moon's way: an arc over the three stones, highest over the far one
-    const tops = feet.map((f, k) => [f.x, f.y - f.h - Hp * (k === 1 ? 0.2 : 0.16)] as Pt)
-    G.arc = curve(tops[0], [cx, Math.min(tops[1][1], Hp * 0.14) - Hp * 0.12], tops[2], 40)
+    const Hp = wide ? H : H * 0.84 // on a phone the data line goes under the painting
+    const hz = Hp * (wide ? 0.4 : 0.36)
+    const cx = W * 0.5, cy = Hp * (wide ? 0.6 : 0.58), rx = W * (wide ? 0.42 : 0.47), ry = Hp * (wide ? 0.15 : 0.13)
+    // the answer stele on the right bank; the diary big in the middle of the water, its reflection right under it
+    const feet = [{ x: W * (wide ? 0.85 : 0.84), y: Hp * (wide ? 0.9 : 0.96), h: Hp * (wide ? 0.4 : 0.3) }]
+    Object.assign(G, { W, H, Hp, wide, cx, cy, rx, ry, hz, feet, bx: W * (wide ? 0.47 : 0.45), by: cy - ry * 0.25, pw: W * (wide ? 0.15 : 0.3), ph: Hp * (wide ? 0.3 : 0.24), mx: W * 0.62, home: [W * (wide ? 0.16 : 0.14), Hp * (wide ? 0.86 : 0.88)] })
     art.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
-    trail.setAttribute('d', P(G.arc))
-    q.classList.toggle('flat', !wide)
     yield
     paint()
     yield
     drawBook()
-    // the stones' buttons sit over their pictures
-    stones.forEach((b, k) => {
-      const f = feet[k], w = f.h * 0.95
-      Object.assign(b.style, { left: `${f1(f.x - w / 2)}px`, top: `${f1(f.y - f.h)}px`, width: `${f1(w)}px`, height: `${f1(f.h)}px` })
-    })
-    words.classList.toggle('flat', !wide)
-    if (!wide) Object.assign(words.style, { left: '12px', right: '12px', top: `${f1(Hp + 6)}px`, width: '' })
-    light(sel)
+    place()
   }
 
-  /** Sky, far ranges and bank, the thin pond with its glints, the near bank, the stones; their shadows go in shadowG. */
+  /** the HTML over the painting: the page's words, the page corner, the stele's face, the pebble (on the bank or in the water) */
+  function place() {
+    const { W, Hp, wide, bx, by, pw, ph, feet } = G
+    const f = feet[0], sw = f.h * 0.7
+    const fs = Math.max(12, Math.min(17, pw * 0.085))
+    Object.assign(text.style, { left: `${f1(bx + pw * 0.12)}px`, top: `${f1(by - ph * 0.86)}px`, width: `${f1(pw * 0.76)}px`, fontSize: `${f1(fs)}px` })
+    Object.assign(flip.style, { left: `${f1(bx + pw * 0.92 - 30)}px`, top: `${f1(by - ph * 0.2 - 30)}px` })
+    Object.assign(stele.style, { left: `${f1(f.x - sw * 0.39)}px`, top: `${f1(f.y - f.h * 0.72)}px`, width: `${f1(sw * 0.78)}px` })
+    const at = hinted ? bed() : G.home
+    Object.assign(pebble.style, { left: `${f1(at[0])}px`, top: `${f1(at[1])}px`, translate: '' })
+    if (wide) Object.assign(data.style, { left: '', right: '14px', top: '10px', width: `${f1(Math.min(380, W * 0.3))}px` })
+    else Object.assign(data.style, { left: '12px', right: '12px', top: `${f1(Hp + 4)}px`, width: '' })
+    q.classList.toggle('wide', wide)
+    g.refresh()
+  }
+
+  /** Sky and moon, far ranges and bank, the thin pond with its glints, the near bank, the answer stele. */
   function paint() {
     const { W, Hp, cx, cy, rx, ry, hz, feet } = G
     const r = rng(2552)
@@ -94,30 +97,29 @@ export function diaryScene(ctx: SceneCtx) {
       const y = cy + ry * 1.5 + Math.pow(r(), 0.7) * (Hp - cy - ry * 1.5)
       blades.push(grass(r() * W, y, Hp * (0.02 + ((y - cy) / Hp) * 0.08), 2580 + i))
     }
-    const stoneEls = feet.map((f, k) => {
-      const w = f.h * (k === 1 ? 0.62 : 0.78)
-      return s('g', { class: `t24d-stoneart k${k}`, transform: `translate(${f1(f.x)} ${f1(f.y)})` },
-        s('ellipse', { class: 't24d-stone-glow', cx: 0, cy: f1(-f.h * 0.5), rx: f1(w * 1.1), ry: f1(f.h * 0.8), fill: 'url(#p2-halo)' }),
-        stoneArt(w, f.h, 2550 + k * 7),
-        s('path', { class: 't24d-stone-rim', d: stroke(curve([-w * 0.42, -f.h * 0.62], [-w * 0.1, -f.h * 1.04], [w * 0.3, -f.h * 0.88], 10), Math.max(1.6, w * 0.035), 0.3, 0.3, 0.15) }))
-    })
+    // the answer stele on the right bank (its words are HTML over its face)
+    const f = feet[0], w = f.h * 0.7
+    const steleEl = s('g', { class: 't24d-stoneart on', transform: `translate(${f1(f.x)} ${f1(f.y)})` },
+      s('ellipse', { class: 't24d-stone-glow', cx: 0, cy: f1(-f.h * 0.5), rx: f1(w * 1.1), ry: f1(f.h * 0.8), fill: 'url(#p2-halo)' }),
+      stoneArt(w, f.h, 2564),
+      s('path', { class: 't24d-stone-rim', d: stroke(curve([-w * 0.42, -f.h * 0.62], [-w * 0.1, -f.h * 1.04], [w * 0.3, -f.h * 0.88], 10), Math.max(1.6, w * 0.035), 0.3, 0.3, 0.15) }))
     art.replaceChildren(
       s('defs', null,
         grad('t24d-water', 'linear', { x1: 0, y1: 0, x2: 0, y2: 1 }, [[0, 't24d-w0'], [0.5, 't24d-w1'], [1, 't24d-w2']]),
         s('linearGradient', { id: 't24d-shg', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 't24d-sh0' }), s('stop', { offset: 1, class: 't24d-sh1' })),
         s('clipPath', { id: 't24d-pond' }, s('path', { d: water }))),
       mist(cx, hz - Hp * 0.12, W * 0.7, Hp * 0.22),
-      trail,
+      moon(G.mx, Hp * 0.13, Math.min(22, Hp * 0.04), 2551, false),
       hills(-W * 0.05, W * 1.05, hz, Hp * 0.17, 2554, 0.85, W > Hp ? 5 : 3),
       hills(W * 0.42, W * 1.05, hz + 1, Hp * 0.09, 2555, 0.45, 2),
       mist(cx, hz - Hp * 0.01, W * 0.6, Hp * 0.045),
       // the far bank: a dark low strip of grass and reeds the far stone stands on
       wash(`M${f1(-W * 0.05)} ${f1(hz + Hp * 0.01)}Q${f1(cx)} ${f1(hz - Hp * 0.012)} ${f1(W * 1.05)} ${f1(hz + Hp * 0.008)}L${f1(W * 1.05)} ${f1(cy)}L${f1(-W * 0.05)} ${f1(cy)}Z`, 0.5, 'p2p-wash t24d-farbank'),
-      reeds(feet[1].x + Hp * 0.1, hz + Hp * 0.04, Hp * 0.07, 2559, 6),
+      reeds(W * 0.7, hz + Hp * 0.04, Hp * 0.07, 2559, 6),
       reeds(cx - rx * 0.62, hz + Hp * 0.045, Hp * 0.06, 2558, 5),
       s('path', { class: 't24d-water', d: water, fill: 'url(#t24d-water)' }),
       s('g', { 'clip-path': 'url(#t24d-pond)' },
-        s('g', { class: 't24d-road' }, s('ellipse', { class: 't24d-road-glow', cx: 0, cy: f1(cy), rx: f1(rx * 0.12), ry: f1(ry * 1.4), fill: 'url(#p2-road)' }),
+        s('g', { class: 't24d-road', transform: `translate(${f1(G.mx)} 0)` }, s('ellipse', { class: 't24d-road-glow', cx: 0, cy: f1(cy), rx: f1(rx * 0.12), ry: f1(ry * 1.4), fill: 'url(#p2-road)' }),
           s('path', { class: 't24d-road-ink', d: [0.12, 0.3, 0.5, 0.68, 0.84].map((t) => `M${f1(-rx * (0.02 + t * 0.05))} ${f1(cy - ry + t * ry * 2)}h${f1(rx * (0.04 + t * 0.1))}`).join('') })),
         s('path', { class: 't24d-rip', d: rip }),
         s('g', { class: 't24d-reflect' })),
@@ -128,48 +130,46 @@ export function diaryScene(ctx: SceneCtx) {
       s('path', { class: 't24d-wet', d: stroke(curve([cx - rx * 0.98, cy + ry * 0.3], [cx, cy + ry * 1.12], [cx + rx * 0.98, cy + ry * 0.3], 30), 2.2, 0.1, 0.1, 0.3) }),
       grass(cx - rx * 0.3, cy + ry * 1.4, Hp * 0.05, 2561),
       grass(cx + rx * 0.35, cy + ry * 1.35, Hp * 0.045, 2562),
-      reeds(feet[0].x + Hp * 0.12, feet[0].y - Hp * 0.04, Hp * 0.16, 2563, 7),
-      shadowG,
+      reeds(W * 0.08, Hp * 0.92, Hp * 0.16, 2563, 7),
       book,
-      ...stoneEls)
+      steleEl)
   }
 
   /**
-   * The diary afloat: two pages standing open from the spine, their writing; below the water line the same pages upside
-   * down, broken by ripples, with the vermilion seal of the hint on every one of them.
+   * The diary afloat, big: two pages standing open from the spine (the left one written, the right one carries the page's
+   * words in HTML); below the water line the same pages upside down, broken by ripples, and — once the hint is in — the
+   * vermilion seal of the hint under every page.
    */
   function drawBook() {
     const { bx, by, pw, ph } = G
-    const page = (d: number): Pt[] => [[bx, by], ...curve([bx + d * pw * 0.1, by + ph * 0.035], [bx + d * pw * 0.6, by + ph * 0.09], [bx + d * pw, by - ph * 0.03], 8).slice(1), [bx + d * pw * 0.97, by - ph], ...curve([bx + d * pw * 0.97, by - ph], [bx + d * pw * 0.55, by - ph * 0.9], [bx, by - ph * 0.86], 8).slice(1)]
-    const Lp = page(-1), Rp = page(1)
+    const leaf = (d: number): Pt[] => [[bx, by], ...curve([bx + d * pw * 0.1, by + ph * 0.035], [bx + d * pw * 0.6, by + ph * 0.09], [bx + d * pw, by - ph * 0.03], 8).slice(1), [bx + d * pw * 0.97, by - ph], ...curve([bx + d * pw * 0.97, by - ph], [bx + d * pw * 0.55, by - ph * 0.9], [bx, by - ph * 0.86], 8).slice(1)]
+    const Lp = leaf(-1), Rp = leaf(1)
     const r = rng(2564)
     const lines = (v: number) => {
       let d = ''
-      for (const side of [-1, 1]) for (let k = 0; k < 7; k++) {
+      for (let k = 0; k < 7; k++) {
         const t = (k + 1) / 8.5
         const yy = by - ph * 0.82 * (1 - t) - ph * 0.06
-        const x0 = bx + side * pw * 0.14, x1 = bx + side * pw * (0.86 - r() * 0.22)
-        if (v === 1 && side === 1 && (k === 3 || k === 4)) continue // left blank exactly where it matters
+        const x0 = bx - pw * 0.14, x1 = bx - pw * (0.86 - r() * 0.22)
+        if (v === 1 && (k === 3 || k === 4)) continue
         d += stroke([[x0, yy], [(x0 + x1) / 2, yy + (r() - 0.5)], [x1, yy]], v === 0 ? 2 : 1.4, 0.2, 0.3, 0.3)
       }
       return d
     }
-    // the seal: a vermilion square with a pale mark cut in it (read on the page, or mirrored in the water)
+    // the seal: a vermilion square with a pale mark cut in it, mirrored in the water
     const seal = (x: number, y: number, z: number, flip: number) => [
       s('rect', { class: 't24d-seal', x: f1(x - z / 2), y: f1(y - z / 2), width: f1(z), height: f1(z), rx: f1(z * 0.12) }),
       s('path', { class: 't24d-seal-cut', d: stroke([[x - z * 0.25, y - flip * z * 0.22], [x + z * 0.22, y - flip * z * 0.2]], z * 0.12, 0.1, 0.1, 0.5) + stroke([[x - z * 0.02, y - flip * z * 0.3], [x + z * 0.03, y + flip * z * 0.28]], z * 0.12, 0.1, 0.2, 0.5) + stroke([[x - z * 0.24, y + flip * z * 0.05], [x - z * 0.12, y + flip * z * 0.25]], z * 0.1, 0.1, 0.2, 0.5) }),
     ]
-    const z = Math.max(12, pw * 0.2)
-    const pages = [0, 1, 2].map((v) => s('g', { class: `t24d-page p${v}` },
-      s('path', { class: 't24d-ink', d: lines(v) }),
-      ...(v === 2 ? seal(bx + pw * 0.6, by - ph * 0.2, z * 0.8, 1) : [])))
-    // in the water: the open book upside down and flattened, every page with its seal
-    const mirror = `translate(0 ${f1(by * 2 + 2)}) scale(1 -1) translate(0 0)`
-    const under = [0, 1, 2].map((v) => s('g', { class: `t24d-under p${v}` },
+    const z = Math.max(14, pw * 0.16)
+    const pages = [...Array(N).keys()].map((v) => s('g', { class: `t24d-page p${v}` }, s('path', { class: 't24d-ink', d: lines(v % 3) })))
+    // in the water: the open book upside down and flattened, and under it the seal of the hint (every page)
+    const mirror = `translate(0 ${f1(by * 2 + 2)}) scale(1 -1)`
+    const under = [...Array(N).keys()].map((v) => s('g', { class: `t24d-under p${v}` },
       s('g', { transform: mirror },
         s('path', { class: 't24d-mirror-paper', d: Z(Lp) + Z(Rp) }),
-        s('path', { class: 't24d-mirror-ink', d: lines(v) })),
-      ...seal(bx + pw * (v === 1 ? 0.5 : 0.56), by + ph * (0.36 + v * 0.06), z, -1)))
+        s('path', { class: 't24d-mirror-ink', d: lines(v % 3) })),
+      s('g', { class: 't24d-hintseal' }, ...seal(bx + pw * (0.4 + (v % 2) * 0.12), by + ph * (0.3 + (v % 3) * 0.04), z, -1))))
     let cuts = ''
     for (let k = 0; k < 6; k++) {
       const yy = by + ph * (0.12 + k * 0.13)
@@ -184,110 +184,94 @@ export function diaryScene(ctx: SceneCtx) {
       s('path', { class: 't24d-paper base', d: Z(Lp) + Z(Rp) }),
       s('path', { class: 't24d-cup', d: Z([[bx, by], [bx - pw * 0.24, by + ph * 0.01], [bx - pw * 0.22, by - ph * 0.88], [bx, by - ph * 0.86]]) }),
       ...pages,
-      // the page that turns over when the moon moves to another stone
+      // the page that turns over
       s('g', { class: 't24d-turn' }, s('path', { class: 't24d-paper turn', d: Z(Rp) })),
       s('path', { class: 't24d-edge', d: stroke([...Lp, Lp[0]], 1.2, 0.05, 0.05, 0.4) + stroke([...Rp, Rp[0]], 1.2, 0.05, 0.05, 0.4) + stroke([[bx, by + 1], [bx, by - ph * 0.87]], 1.6, 0.1, 0.1, 0.4) }))
     ;(book.querySelector('.t24d-turn') as SVGGElement).style.transformOrigin = `${f1(bx)}px ${f1(by)}px`
+    art.dataset.page = String(Math.max(0, page))
   }
 
-  /** The moon over stone k (−1: between them, nobody heard yet): the page, the shadows, the words follow. */
-  function light(k: number) {
-    if (!G.arc.length) return
-    moveMoon(k < 0 ? 0.5 : k / 2)
-    art.dataset.page = String(k)
-    art.querySelectorAll('.t24d-stoneart').forEach((e, j) => {
-      e.classList.toggle('on', j === k)
-      e.classList.toggle('heard', heard.has(j))
-    })
-    if (k >= 0) say(k)
+  // ── beat 1: the pebble goes into the water under the diary (drag it there; a tap or Enter drops it in too)
+  function hint() {
+    if (hinted) return
+    hinted = true
+    pebble.disabled = true
+    pebble.classList.add('placed')
+    root.classList.add('is-hinted')
+    target.hit()
+    dot?.done()
+    ans.textContent = K.answer.after
+    if (!ctx.reduced) stele.animate([{ opacity: 0.2, filter: 'blur(2px)' }, { opacity: 1, filter: 'none' }], { duration: 900, easing: 'ease-out' })
+    ctx.chime('soft')
+    place()
+    // beat 2: the pages, one try each
+    flip.disabled = false
+    count = g.count(K.pageCount, N, () => [G.bx, G.by - G.ph - 20], { n: 0 })
+    turn()
+    ctx.prompt(K.flip)
+    dot = g.dot(flip, { dir: [-1, 0] })
+    flip.focus({ preventScroll: true })
   }
-
-  /** Long soft shadows from each stone's foot toward us, swung away from the moon (strongest under the lit stone). */
-  function shadows(mx: number) {
-    const { feet, Hp } = G
-    shadowG.replaceChildren(...feet.map((f, k) => {
-      const len = k === 1 ? Hp * 0.3 : Hp * 0.22, w = f.h * (k === 1 ? 0.3 : 0.36)
-      const sk = (f.x - mx) * (k === 1 ? 0.35 : 0.25)
-      const d = `M${f1(f.x - w)} ${f1(f.y)}L${f1(f.x + w)} ${f1(f.y)}L${f1(f.x + w * 1.7 + sk)} ${f1(f.y + len)}L${f1(f.x - w * 1.3 + sk)} ${f1(f.y + len)}Z`
-      return s('path', { class: `t24d-shadow${k === sel ? ' on' : ''}`, d, fill: 'url(#t24d-shg)', filter: 'url(#ink-wash)' })
-    }))
-  }
-
-  function moveMoon(t: number) {
-    const i = Math.round(clamp(t, 0, 1) * (G.arc.length - 1))
-    const [x, y] = G.arc[i]
-    moonEl.style.transform = `translate(${f1(x)}px, ${f1(y)}px)`
-    const road = art.querySelector<SVGGElement>('.t24d-road') // pointer-move rate, not a frame loop
-    if (road) road.style.transform = `translateX(${f1(x)}px)`
-    shadows(x)
-  }
-
-  /** What stone k says: on a strip of paper laid at the water's edge under it (on a phone: plain words under the picture). */
-  function say(k: number) {
-    const st = D.stones[order[k]]
-    const first = !words.hasAttribute('aria-live')
-    words.replaceChildren(h('p', { class: 't24d-who' }, st.who), ctx.fact(st.view, 'p', 't24d-view'))
-    if (first) words.setAttribute('aria-live', 'polite') // after the first fill: not read out on entering the scene
-    words.classList.add('shown')
-    if (G.wide) {
-      // laid at the water's edge on the lit stone's side (the near stones stand right at the frame's corners)
-      const f = G.feet[k], w = Math.min(460, G.W * 0.34)
-      const x = k === 0 ? G.W * 0.24 : k === 2 ? G.W * 0.76 - w : clamp(f.x - w / 2, G.W * 0.24, G.W * 0.76 - w)
-      Object.assign(words.style, { width: `${f1(w)}px`, left: `${f1(x)}px`, top: `${f1(G.cy + G.ry * 1.25)}px` })
-      words.style.setProperty('--tilt', `${k === 0 ? -1.2 : k === 2 ? 1 : -0.4}deg`)
-    }
-  }
-
-  function pick(k: number) {
-    if (k < 0 || k >= n) return
-    const turn = sel !== k && sel >= 0
-    if (sel >= 0) stones[sel].setAttribute('aria-pressed', 'false')
-    sel = k
-    heard.add(k)
-    stones[k].setAttribute('aria-pressed', 'true')
-    stones[k].setAttribute('aria-label', fill(L.stoneHeard, { n: k + 1, who: D.stones[order[k]].who }))
-    root.classList.add(`is-heard-${k}`)
-    light(k)
-    // the moonlight turns the diary's page
-    if (turn && !ctx.reduced) (book.querySelector('.t24d-turn') as SVGGElement).animate([{ transform: 'scaleX(1)', opacity: 1 }, { transform: 'scaleX(-1)', opacity: 1, offset: 0.85 }, { transform: 'scaleX(-1)', opacity: 0 }], { duration: 700, easing: 'cubic-bezier(.4,0,.2,1)' })
-    if (heard.size === n && !root.classList.contains('is-all')) {
-      root.classList.add('is-all')
-      ctx.insight(D.common, [K.insight, K.detail])
-      ctx.chime('ok')
-    } else ctx.chime('soft')
-  }
-
-  // drag the moon along its arc; let go and it settles over the nearest stone (which is then heard)
-  let id = -1
-  let rect: DOMRect | null = null
-  const nearest = (x: number, y: number) => {
-    let best = 0, bd = Infinity
-    G.arc.forEach(([ax, ay], i) => {
-      const d = (ax - x) ** 2 + (ay - y) ** 2
-      if (d < bd) (bd = d), (best = i)
-    })
-    return best / (G.arc.length - 1)
-  }
-  const low = ctx.quality === 'low'
-  moonEl.addEventListener('pointerdown', (e) => {
+  let id = -1, x0 = 0, y0 = 0, moved = 0
+  pebble.addEventListener('pointerdown', (e) => {
+    if (hinted) return
     id = e.pointerId
-    rect = root.getBoundingClientRect()
-    moonEl.setPointerCapture(id)
-    moonEl.classList.add('held')
-    root.classList.add('dragging')
+    x0 = e.clientX
+    y0 = e.clientY
+    moved = 0
+    pebble.setPointerCapture(id)
+    pebble.classList.add('held')
+    target.lift(true)
   })
-  moonEl.addEventListener('pointermove', (e) => {
-    if (e.pointerId !== id || !rect) return
-    const t = nearest(e.clientX - rect.left, e.clientY - rect.top)
-    moveMoon(low ? Math.round(t * 2) / 2 : t)
+  pebble.addEventListener('pointermove', (e) => {
+    if (e.pointerId !== id) return
+    const dx = e.clientX - x0, dy = e.clientY - y0
+    moved = Math.max(moved, Math.hypot(dx, dy))
+    pebble.style.translate = `${f1(dx)}px ${f1(dy)}px`
   })
   const up = (e: PointerEvent) => {
-    if (e.pointerId !== id || !rect) return
+    if (e.pointerId !== id) return
     id = -1
-    moonEl.classList.remove('held')
-    root.classList.remove('dragging')
-    pick(Math.round(nearest(e.clientX - rect.left, e.clientY - rect.top) * 2))
+    pebble.classList.remove('held')
+    target.lift(false)
+    const dx = e.clientX - x0, dy = e.clientY - y0
+    const [tx, ty] = bed()
+    if (moved < 8 || Math.hypot(G.home[0] + dx - tx, G.home[1] + dy - ty) < Math.max(70, G.pw * 0.5)) return hint()
+    pebble.style.translate = ''
+    g.wrong(K.pebbleWrong, pebble)
   }
-  moonEl.addEventListener('pointerup', up)
-  moonEl.addEventListener('pointercancel', up)
+  pebble.addEventListener('pointerup', up)
+  pebble.addEventListener('pointercancel', up)
+  pebble.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), hint()))
+
+  // ── beat 2: turn the pages (the corner, the page itself, or a swipe across the book)
+  function turn() {
+    if (page >= N - 1) return
+    page++
+    const k = page
+    art.dataset.page = String(k)
+    text.textContent = K.pages[k]
+    count?.set(k + 1)
+    if (k > 0) {
+      ctx.chime('tap')
+      if (!ctx.reduced) (book.querySelector('.t24d-turn') as SVGGElement).animate([{ transform: 'scaleX(1)', opacity: 1 }, { transform: 'scaleX(-1)', opacity: 1, offset: 0.85 }, { transform: 'scaleX(-1)', opacity: 0 }], { duration: 700, easing: 'cubic-bezier(.4,0,.2,1)' })
+    }
+    if (k === N - 1) {
+      flip.disabled = true
+      dot?.done()
+      count?.done()
+      delete data.dataset.off
+      root.classList.add('is-all')
+      ctx.insight(K.insight, K.detail)
+      ctx.chime('ok')
+    } else if (k > 0) ctx.prompt(fill(K.flipNext, { n: k + 2 }))
+  }
+  flip.addEventListener('click', turn)
+  text.addEventListener('click', () => hinted && turn())
+  let sx = NaN
+  root.addEventListener('pointerdown', (e) => void (sx = hinted ? e.clientX : NaN))
+  root.addEventListener('pointerup', (e) => {
+    if (!Number.isNaN(sx) && Math.abs(e.clientX - sx) > 50 && e.target !== pebble) turn()
+    sx = NaN
+  })
 }

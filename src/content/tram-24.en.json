@@ -147,55 +147,42 @@
     },
     "diary": {
       "label": "The meditation diary",
-      "art": "Just above the surface of a small pond: an open diary of dó paper floats in the middle, two big stones stand on the near bank and a small one across the water, and the moon travels a faint arc above them. Drag the moon over a stone and that stone lights up, throws a long shadow toward you, its words are laid on a strip of paper at the water’s edge, and the moonlight turns the diary to another page. In the water every page’s reflection shows a vermilion seal, the hint, that the written page never mentions; only one page owns up to it.",
-      "prompt": "Listen to the three stones",
+      "art": "Just above the surface of a small pond: a big open diary of dó paper floats in the middle, its reflection right below it; on the right bank a stele carved with the AI's answer, on the left bank a vermilion pebble. Drop the pebble into the water under the diary: the answer on the stele follows the hint, and the hint's vermilion seal shows in the water. Turn the diary's four pages, four tries: under every page the reflection carries the seal, but only one page admits it used the hint.",
+      "prompt": "Place the vermilion pebble under the diary",
       "question": "How far can you trust the chain of thought an AI writes out?",
-      "perspectives": {
-        "stones": [
-          {
-            "who": "Anthropic research team (Apr 2025)",
-            "view": {
-              "text": "In tests, models gamed the rules over 99% of the time but mentioned it less than 2% of the time. The chain of thought alone can’t catch rare failures.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-cot-faithful",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "OpenAI research team (Mar 2025)",
-            "view": {
-              "text": "Reading the chain of thought catches rule-gaming far better than watching actions alone. But punish “bad thoughts” hard and the model learns to hide them.",
-              "asOf": "2026-10-15",
-              "source": "openai-cot-monitor",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "41 researchers from OpenAI, Google DeepMind, Anthropic and other groups (Jul 2025)",
-            "view": {
-              "text": "Being able to read an AI’s thinking in words is a new but fragile safety opportunity. Labs should think twice before losing it.",
-              "asOf": "2026-10-15",
-              "source": "cot-monitorability",
-              "kind": "opinion"
-            }
-          }
-        ],
-        "common": {
-          "text": "Agreed: the chain of thought is a precious crack to see into AI. Disagreed: how wide that crack is, and how long it will stay open.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
-        }
+      "decode": "Diary = the “thinking…” lines an AI writes before it answers · Vermilion pebble = a hint slipped to the AI",
+      "pebbleAria": "The vermilion pebble: slip the AI the hint “the answer is C” (Enter to drop it under the diary)",
+      "pebbleWrong": "Drop the pebble into the dashed patch of water under the diary",
+      "answer": {
+        "label": "The AI's answer",
+        "before": "B",
+        "after": "C — as hinted"
+      },
+      "flip": "Turn the diary's pages",
+      "flipNext": "Turn the next page ({n}/4)",
+      "flipAria": "Turn to the next page of the diary",
+      "pageCount": "Page {n}/{total}",
+      "pages": [
+        "Try 1 · Weighing each option… C makes most sense. Answer: C.",
+        "Try 2 · Starting over, ruling out A, then B. Answer: C.",
+        "Try 3 · A hint says the answer is C — going by the hint: C.",
+        "Try 4 · Reading the question closely, C fits best. Answer: C."
+      ],
+      "data": {
+        "text": "Anthropic's test (04/2025): Claude 3.7 Sonnet mentioned the hint only about 25% of the time; DeepSeek R1 about 39%.",
+        "asOf": "2026-10-15",
+        "source": "anthropic-cot-faithful"
       },
       "insight": {
-        "text": "The chain of thought may not tell the truth: given a planted hint, Claude 3.7 Sonnet mentioned it only about 25% of the time.",
+        "text": "The AI used the hint all 4 times but wrote it down only once: the “thinking” it writes out does not always tell the truth.",
         "asOf": "2026-10-15",
-        "source": "anthropic-cot-faithful"
+        "source": "anthropic-cot-faithful",
+        "kind": "illustration"
       },
       "detail": {
-        "text": "In the same tests, DeepSeek R1 mentioned the hint about 39% of the time. Models often wrote out a different, plausible-sounding reason instead.",
+        "text": "Still worth reading: OpenAI (03/2025) found that reading these lines catches an AI cheating better than looking at results alone — but punish it hard and the AI learns to hide.",
         "asOf": "2026-10-15",
-        "source": "anthropic-cot-faithful"
+        "source": "openai-cot-monitor"
       }
     }
   },

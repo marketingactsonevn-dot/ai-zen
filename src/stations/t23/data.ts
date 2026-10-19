@@ -12,7 +12,8 @@ export interface T23 extends StationContent {
     stream: {
       label: string; art: string; prompt: string; question: string
       nodes: { id: string; label: string; tier: number; aria: string }[]; edges: [string, string][]
-      shortcut: string; stepAria: string; swap: string; swapAria: string; swapTo: string; swapResult: string; insight: Fact; detail: Fact; limit: Fact
+      pourAria: string; lift: string; liftAria: string; drop: string; dropWrong: string; decode: string
+      shortcut: string; swapAria: string; swapTo: string; swapResult: string; insight: Fact; detail: Fact; limit: Fact
     }
     circle: { label: string; art: string; prompt: string; question: string; perspectives: Perspectives; insight: Fact }
   }
