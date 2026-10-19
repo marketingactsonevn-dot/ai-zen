@@ -15,6 +15,8 @@ const PART2 = Array.from({ length: 21 }, (_, i) => 19 + i)
 const TH0 = 82, TH1 = 12, CRANE = 3
 /** how much of the circle one stroke closes: an ensō stays open */
 const SWEEP = 330
+/** how far the hand has to turn to close it (audit 39-5: a tilted ellipse turns less than a circle; ~300° is enough) */
+const GESTURE = 300
 
 type Lay = { W: number; H: number; R: number; wB: number; U: number; Vf: number; Vn: number; P: number; oy: number; hz0: number; s0: number; yc0: number; yc1: number; gap: number; wide: boolean }
 type Spot = { id: number; u: number; v: number; w: number; seed: number; on: boolean }
@@ -210,14 +212,11 @@ export function ensoScene(ctx: SceneCtx) {
       return
     }
     if (phase !== 'idle' || !L) return
-    if (painted > 0) {
-      strokes = []
-      painted = 0
-      clearInk()
-    }
     phase = 'draw'
-    turn = 0
-    sign = 0
+    // a stroke lifted half way goes on from where it stopped (audit 39-5: lifting the finger never wipes the sand)
+    turn = painted > 0 && sign ? sign * painted * GESTURE * D2R : 0
+    if (!turn) sign = 0
+    else ctx.prompt(K.prompt)
     lastDir = NaN
     lx = e.clientX
     ly = e.clientY
@@ -250,11 +249,13 @@ export function ensoScene(ctx: SceneCtx) {
     ly = e.clientY
     lt = e.timeStamp
     if (!sign && Math.abs(turn) > 0.3) sign = Math.sign(turn)
-    if (sign) paintTo(Math.max(painted, (sign * turn) / (SWEEP * D2R)), clamp((speed - 0.7) / 2.6, 0, 0.75))
+    if (sign) paintTo(Math.max(painted, (sign * turn) / (GESTURE * D2R)), clamp((speed - 0.7) / 2.6, 0, 0.75))
   })
   const up = () => {
     root.classList.remove('is-drawing', 'is-turning')
-    if (phase === 'draw') phase = 'idle' // half a stroke stays on the sand; the next touch smooths it and starts again
+    if (phase !== 'draw') return
+    phase = 'idle' // half a stroke stays on the sand; the next touch goes on from its end (H6: say so)
+    if (painted > 0.02) ctx.prompt(K.more, 'wrong')
   }
   root.addEventListener('pointerup', up)
   root.addEventListener('pointercancel', up)

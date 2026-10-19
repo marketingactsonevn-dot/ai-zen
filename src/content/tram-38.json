@@ -81,8 +81,17 @@
     },
     "tide": {
       "label": "Sợi dây đo công việc",
-      "art": "Cuộn tranh cát dài lúc trăng lặn. Kéo trăng theo cung trời từ trên cao xuống chân trời phía tây: cây sào tre bên phải đổ bóng dài dần sang trái, dọc sợi dây thước có khấc cách đều mỗi lần gấp đôi, từ ≈ 1 giờ tới ≥ 16 giờ. Bóng chạm khấc nào thì để lại một cọc nhỏ; mốc không đo bằng độ dài thì một hòn đá nổi lên cạnh sào. Trăng càng thấp bóng càng vọt, tới hôm nay bóng chạy mãi vào sương rạng đông.",
-      "prompt": "Kéo trăng qua các mốc",
+      "art": "Cuộn tranh cát dài lúc trăng lặn. Kéo trăng theo cung trời từ trên cao xuống chân trời phía tây: cây sào tre bên phải đổ bóng dài dần sang trái, dọc sợi dây thước chia đều theo giờ, từ 1 giờ sát chân sào tới 16 giờ tận sương. Bóng chạm tới khấc nào thì khấc ấy hiện số giờ. Trăng càng thấp bóng càng vọt, tới hôm nay bóng chạy mãi vào sương rạng đông.",
+      "prompt": "Kéo trăng xuống dần qua các mốc",
+      "next": "Kéo tiếp tới chân trời",
+      "legend": "Bóng sào = độ dài việc AI tự làm được. Kéo trăng xuống: thời gian trôi tới hôm nay.",
+      "hours": [
+        "1 giờ",
+        "2 giờ",
+        "4 giờ",
+        "8 giờ",
+        "16 giờ"
+      ],
       "slider": "Mốc thời gian",
       "valueText": "{date}: {label}",
       "tide": {
@@ -91,36 +100,25 @@
             "date": "2025-03",
             "label": "Cây thước của METR",
             "fact": {
-              "text": "METR đo độ dài công việc (tính theo giờ người làm) mà AI tự làm xong. Claude 3.7 Sonnet đạt khoảng 1 giờ; độ dài này gấp đôi khoảng mỗi 7 tháng suốt 6 năm.",
+              "text": "Claude 3.7 Sonnet: việc dài khoảng 1 giờ.",
               "asOf": "2026-10-15",
               "source": "t38-metr-2025"
-            }
-          },
-          {
-            "date": "2025-07",
-            "label": "Vàng Olympic Toán",
-            "fact": {
-              "text": "Gemini Deep Think của Google DeepMind giải 5/6 bài IMO, đạt 35/42 điểm, mức huy chương vàng; điều phối viên IMO chấm và xác nhận.",
-              "asOf": "2026-10-15",
-              "source": "t38-imo",
-              "claimBy": "Google DeepMind",
-              "verifiedBy": "IMO"
             }
           },
           {
             "date": "2025-08",
             "label": "Hơn 2 giờ",
             "fact": {
-              "text": "Theo METR, agent dùng GPT-5 làm xong việc dài khoảng 2 giờ 17 phút, với tỉ lệ thành công 50%.",
+              "text": "Agent dùng GPT-5: khoảng 2 giờ 17 phút.",
               "asOf": "2026-10-15",
               "source": "t38-metr-page"
             }
           },
           {
             "date": "2026-03",
-            "label": "Thước gần hết vạch",
+            "label": "Thước sắp hết vạch: METR hết bài đủ dài để đo",
             "fact": {
-              "text": "METR thử bản sớm của Claude Mythos Preview: ít nhất 16 giờ (khoảng tin cậy 8,5–55 giờ). Trên 16 giờ, bộ bài thử hiện có đo không còn chắc.",
+              "text": "Bản sớm Claude Mythos Preview: ít nhất 16 giờ (ước từ 8,5 tới 55 giờ).",
               "asOf": "2026-10-15",
               "source": "t38-metr-mythos"
             },
@@ -130,25 +128,6 @@
               "ratio": 16,
               "beforeLabel": "03/2025",
               "afterLabel": "03/2026"
-            }
-          },
-          {
-            "date": "2026-09",
-            "label": "Bài toán triệu đô",
-            "fact": {
-              "text": "OpenAI công bố 10.000 agent tìm ra “điểm kỳ dị” của phương trình Navier–Stokes, đã kiểm bằng Lean; giới toán còn thẩm định, giải thưởng chưa trao.",
-              "asOf": "2026-10-15",
-              "source": "t38-quanta",
-              "claimBy": "OpenAI"
-            }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Hôm nay",
-            "fact": {
-              "text": "Trang đo của METR ngừng cập nhật từ 08/09/2026; model mới nhất được đo là Mythos Preview. Cây thước hiện có không đo tin cậy trên 16 giờ.",
-              "asOf": "2026-10-15",
-              "source": "t38-metr-page"
             }
           }
         ],
@@ -160,15 +139,24 @@
         }
       },
       "insight": {
-        "text": "Trong khoảng một năm, việc AI tự làm xong dài từ chừng 1 giờ lên ít nhất 16 giờ, chủ yếu là lập trình.",
+        "text": "Trong một năm, việc AI tự làm được (đạt một nửa số lần) dài từ khoảng 1 giờ lên ít nhất 16 giờ.",
         "asOf": "2026-10-15",
         "source": "t38-metr-mythos"
       },
-      "detail": {
-        "text": "Lưu ý: bài thử của METR chủ yếu là lập trình, máy học, an ninh mạng, gói gọn và chấm được tự động. Việc ngoài đời lộn xộn hơn nhiều.",
-        "asOf": "2026-10-15",
-        "source": "t38-metr-page"
-      }
+      "detail": [
+        {
+          "text": "METR là nhóm nghiên cứu độc lập, đo bằng việc thật: lập trình, máy học, an ninh mạng. Việc ngoài đời lộn xộn hơn nhiều.",
+          "asOf": "2026-10-15",
+          "source": "t38-metr-page"
+        },
+        {
+          "text": "Cùng thời gian, AI còn đạt huy chương vàng Olympic Toán (07/2025).",
+          "asOf": "2026-10-15",
+          "source": "t38-imo",
+          "claimBy": "Google DeepMind",
+          "verifiedBy": "IMO"
+        }
+      ]
     },
     "fork": {
       "label": "Ba ngả sương",

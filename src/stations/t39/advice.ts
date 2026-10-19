@@ -1,11 +1,12 @@
 import './advice.css'
-import { h, s } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
 import { blob, clamp, curve, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { pine } from '../../ui/part2/paint'
 import { perspectiveCircle, type CircleApi, type PondGeo } from '../../ui/part2/perspectives'
+import { guide, type Drop, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx, SceneDef } from '../types'
 import { C } from './shell'
 import { dawnGlow, f1, fog, g39Defs, leafD, readTok, rgba, type Tok } from './g39'
@@ -17,7 +18,7 @@ const A = C.scenes.advice
  *  frame), right mid-way, centre far beyond the water. Tall: a standing triangle — the far lamp the apex, the two near
  *  lamps its feet at the frame's sides. */
 type Geo = { w: number; h: number; cx: number; cy: number; rx: number; ry: number; hz: number; tall: boolean; lamps: { x: number; y: number; s: number; a: Pt }[] }
-let M: { ctx: SceneCtx; host: HTMLElement; api: CircleApi; geo: Geo | null; drive: (k: number) => void } | null = null
+let M: { ctx: SceneCtx; host: HTMLElement; api: CircleApi; geo: Geo | null; hear: (k: number) => void; all: () => void } | null = null
 
 function geoOf(g: PondGeo): Geo {
   const tall = g.h > g.w * 0.75
@@ -28,22 +29,24 @@ function geoOf(g: PondGeo): Geo {
   const bw = clamp(Math.min(g.w, g.h * 1.7) * 0.19, 64, 140)
   const sc = (px: number) => px / (bw * 0.75 * 0.78)
   // each lamp's anchor on the water: the point the leaf drifts to when the lamp is chosen (unit puddle coords)
+  // the near lamp stands whole in the left third (audit 39-4: not cut by the frame, not covering the frame)
   const L = tall
-    ? [{ x: g.w * 0.07, y: g.h * 1.06, s: sc(g.h * 0.98), a: [-0.62, 0.36] as Pt }, { x: g.w * 0.93, y: g.h * 1.0, s: sc(g.h * 0.8), a: [0.62, 0.32] as Pt }, { x: cx + rx * 0.04, y: cy - ry * 1.4, s: sc(g.h * 0.22), a: [0.02, -0.6] as Pt }]
-    : [{ x: cx - rx * 1.02, y: g.h * 1.12, s: sc(g.h * 1.3), a: [-0.64, 0.38] as Pt }, { x: cx + rx * 0.92, y: cy + ry * 2.8, s: sc(g.h * 0.44), a: [0.66, 0.14] as Pt }, { x: cx - rx * 0.14, y: cy - ry * 1.25, s: sc(g.h * 0.15), a: [-0.06, -0.6] as Pt }]
+    ? [{ x: g.w * 0.17, y: g.h * 0.99, s: sc(g.h * 0.62), a: [-0.62, 0.36] as Pt }, { x: g.w * 0.86, y: g.h * 0.95, s: sc(g.h * 0.5), a: [0.62, 0.32] as Pt }, { x: cx + rx * 0.04, y: cy - ry * 1.4, s: sc(g.h * 0.22), a: [0.02, -0.6] as Pt }]
+    : [{ x: Math.max(g.w * 0.12, cx - rx * 0.98), y: g.h * 0.97, s: sc(g.h * 0.72), a: [-0.64, 0.38] as Pt }, { x: cx + rx * 0.92, y: cy + ry * 2.8, s: sc(g.h * 0.44), a: [0.66, 0.14] as Pt }, { x: cx - rx * 0.14, y: cy - ry * 1.25, s: sc(g.h * 0.15), a: [-0.06, -0.6] as Pt }]
   return { w: g.w, h: g.h, cx, cy, rx, ry, hz, tall, lamps: L }
 }
 
 /**
  * Scene 4 — three views on learning with AI (perspectiveCircle, GRAZE). The camera lies in the moss: a rain puddle mirrors
- * the dawn, three stone lamps stand round it (near-left and huge, right, far beyond the water), each still burning and
- * laying a wedge of light on the water. A red maple leaf floats in the middle with three soft shadows, one from each lamp
- * (a canvas, redrawn only while the leaf moves). The visitor steers the leaf (drag it, or touch a lamp / 1–3 and it
- * drifts there): near a lamp, that lamp brightens, its shadow shortens and darkens, and its view is read. The lamps
- * never pull the leaf by themselves.
+ * the dawn, three stone lamps stand round it (near-left, right, far beyond the water), each still burning and laying a
+ * wedge of light on the water. A red maple leaf — you — floats in the middle with three soft shadows, one from each lamp
+ * (a canvas, redrawn only while the leaf moves). The visitor steers the leaf to each lamp (near a lamp, that lamp
+ * brightens, its shadow shortens and darkens, and its view is read); touching a lamp (or 1–3) only lights it and reads
+ * it, the leaf stays yours (audit 39-4). All three heard: a ring on the middle of the water; let the leaf go in it and
+ * its three shadows come out equal — only then the insight.
  */
 const def = perspectiveCircle(A.perspectives, {
-  label: A.label, prompt: A.prompt, detail: A.insight,
+  label: A.label, prompt: fill(A.prompt, { n: 0, total: A.perspectives.stones.length }), question: A.legend, detail: A.detail,
   place: (k, _n, g) => {
     const G = geoOf(g)
     const L = G.lamps[k]
@@ -51,19 +54,22 @@ const def = perspectiveCircle(A.perspectives, {
   },
   // a granite lamp, weathered and mossy, its fire lit behind a lattice
   stone: (k) => lantern(3977 + k * 7),
-  onHear: (k) => M?.drive(k),
+  onHear: (k) => M?.hear(k),
   stage: (host, api) => {
-    M = { ctx: M!.ctx, host, api, geo: null, drive: () => {} }
+    M = { ctx: M!.ctx, host, api, geo: null, hear: () => {}, all: () => {} }
     return build(M.ctx, host, api)
   },
 })
 
 export const adviceScene: SceneDef = {
   label: def.label,
+  text: 'br',
   mount(ctx) {
     g39Defs()
-    M = { ctx, host: ctx.art, api: { pick() {}, onLayout() {} }, geo: null, drive: () => {} }
-    const out = def.mount(ctx)
+    M = { ctx, host: ctx.art, api: { pick() {}, onLayout() {} }, geo: null, hear: () => {}, all: () => {} }
+    // the circle would give its insight as soon as the third lamp is heard: here that only opens the last step (drop the
+    // leaf in the middle), and the insight waits for the drop
+    const out = def.mount({ ...ctx, insight: () => (M?.all(), h('div')) })
     ctx.art.querySelector('.p2c')?.classList.add('t39v')
     ctx.art.append(h('p', { class: 'visually-hidden' }, A.art))
     ctx.onCleanup(() => (M = null))
@@ -79,7 +85,8 @@ function build(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
   const wrap = h('div', { class: 't39v-bleed', 'aria-hidden': 'true' }, back)
   const cv = h('canvas', { class: 't39v-light', 'aria-hidden': 'true' })
   const LEAF = leafD(0, 4, 22, 0)
-  const leaf = h('div', { class: 't39v-leaf', 'aria-hidden': 'true' }, s('svg', { viewBox: '-30 -30 60 60' },
+  // the leaf is you: a button for the keyboard too (Enter: on to the next lamp, then into the middle)
+  const leaf = h('div', { class: 't39v-leaf', role: 'button', tabindex: '0', 'aria-label': A.leafAria }, s('svg', { viewBox: '-30 -30 60 60', 'aria-hidden': 'true' },
     s('path', { class: 't39v-leaf-body', d: LEAF }),
     s('path', { class: 't39v-leaf-lit', d: leafD(0.8, 3.2, 20, 0), transform: 'translate(1.2 -1)' }),
     s('path', { class: 't39v-leaf-vein', d: [-90, -38, -142, 8, 172].map((a, i) => stroke([[0, 4], [Math.cos((a * Math.PI) / 180) * (i > 2 ? 9 : 17), 4 + Math.sin((a * Math.PI) / 180) * (i > 2 ? 9 : 17)]], 1.1, 0.05, 0.6, 0.3)).join('') })))
@@ -101,17 +108,59 @@ function build(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
   let fromLamp = false
   let ox = 0, oy = 0, BW = 0, BH = 0
   let dpr = 1
-
-  M!.drive = (k: number) => {
-    if (!G || fromLamp) return
-    // a lamp was touched (or its digit pressed): the leaf drifts to it
-    ;[tu, tv] = G.lamps[k].a
-    near = k
-    loop.start()
-    if (still) settle()
-  }
+  // a touched lamp lights up (and stays lit) without pulling the leaf
+  const boost = [0, 0, 0]
+  const heard = new Set<number>()
+  let allHeard = false, landed = false
 
   const toScreen = (u: number, v: number): Pt => [G!.cx + u * G!.rx, G!.cy + v * G!.ry]
+  // guide marks live in ctx.art: a point on the water (unit puddle coords) seen from there
+  const onArt = (u: number, v: number): Pt => {
+    if (!G) return [0, 0]
+    const a = ctx.art.getBoundingClientRect(), r = host.getBoundingClientRect()
+    const [x, y] = toScreen(u, v)
+    return [r.left - a.left + x, r.top - a.top + y]
+  }
+  // H1 on the leaf; H3 a breathing ring on the water under every lamp not yet visited, then one in the middle
+  const gd = guide(ctx)
+  let leafDot: Mark | null = null
+  const rings: (Drop | null)[] = [null, null, null]
+  let mid: Drop | null = null
+
+  M!.hear = (k: number) => {
+    heard.add(k)
+    rings[k]?.hit()
+    rings[k] = null
+    if (!fromLamp) {
+      // touched (or its digit): the lamp lights and speaks, the leaf stays where you left it
+      boost.fill(0)
+      boost[k] = 1
+      loop.start()
+    }
+    if (heard.size < boost.length) ctx.prompt(fill(A.prompt, { n: heard.size, total: boost.length }))
+  }
+  M!.all = () => {
+    if (allHeard || !G) return
+    allHeard = true
+    ctx.prompt(A.drop)
+    mid = gd.drop(() => onArt(0, 0.02), { w: G.rx * 0.62, h: G.ry * 1.1 })
+  }
+  /** the leaf let go in the middle once every lamp has spoken: three equal shadows, a star; and what they share */
+  function land() {
+    if (landed) return
+    landed = true
+    tu = 0
+    tv = 0.02
+    boost.fill(0)
+    host.closest('.p2c')?.classList.add('t39v-star')
+    mid?.hit()
+    leafDot?.done()
+    leafDot = null
+    loop.start()
+    if (still) settle()
+    ctx.insight(A.perspectives.common, A.detail)
+    ctx.chime('ok')
+  }
   // the leaf: a 96 px box (the leaf itself ~73% of it), at least 80 px wide on the water, flattened by the low eye
   const leafK = () => (1 + lv * (G!.tall ? 0.16 : 0.2)) * clamp(G!.rx / 300, 1.2, 1.6)
   function placeLeaf() {
@@ -193,7 +242,7 @@ function build(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
     let busy = Math.abs(tu - lu) + Math.abs(tv - lv) > 0.002
     G.lamps.forEach((L, i) => {
       const d = Math.hypot(lu - L.a[0], lv - L.a[1])
-      const want = clamp(1.05 - d * 0.75, 0.42, 1)
+      const want = Math.max(boost[i], clamp(1.05 - d * 0.75, 0.42, 1))
       lit[i] += (want - lit[i]) * e
       if (Math.abs(want - lit[i]) > 0.004) busy = true
     })
@@ -204,10 +253,11 @@ function build(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
   // drag the leaf over the water; coming close to a lamp reads its view (never the other way round)
   let drag = false
   leaf.addEventListener('pointerdown', (e) => {
-    if (e.button) return
+    if (e.button || landed) return
     drag = true
     leaf.setPointerCapture(e.pointerId)
     leaf.classList.add('drag')
+    if (leafDot) leafDot.el.style.visibility = 'hidden'
   })
   leaf.addEventListener('pointermove', (e) => {
     if (!drag || !G) return
@@ -218,28 +268,59 @@ function build(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
     tu = lu = u
     tv = lv = v
     const k = G.lamps.findIndex((L) => Math.hypot(u - L.a[0], v - L.a[1]) < 0.3)
-    if (k >= 0 && k !== near) {
-      near = k
-      fromLamp = true
-      api.pick(k)
-      fromLamp = false
-    } else if (k < 0 && Math.hypot(u, v) < 0.25) near = -1
+    if (k >= 0 && k !== near) visit(k)
+    else if (k < 0 && Math.hypot(u, v) < 0.25) near = -1
     loop.start()
   })
+  /** the leaf has come to lamp k: it lights and speaks */
+  function visit(k: number) {
+    near = k
+    boost.fill(0)
+    fromLamp = true
+    api.pick(k)
+    fromLamp = false
+  }
   const up = () => {
     if (!drag) return
     drag = false
     leaf.classList.remove('drag')
-    // let go near the middle once every lamp has spoken: three equal shadows, a star
-    if (Math.hypot(lu, lv) < 0.3 && host.closest('.p2c')?.classList.contains('is-all')) {
-      tu = 0
-      tv = 0.02
-      host.closest('.p2c')?.classList.add('t39v-star')
-      loop.start()
-    }
+    if (leafDot) leafDot.el.style.visibility = ''
+    gd.refresh()
+    // let go near the middle once every lamp has spoken
+    if (allHeard && Math.hypot(lu, lv) < 0.3) land()
   }
   leaf.addEventListener('pointerup', up)
   leaf.addEventListener('pointercancel', up)
+  leaf.addEventListener('keydown', (e) => {
+    if ((e.key !== 'Enter' && e.key !== ' ') || !G || landed) return
+    e.preventDefault()
+    if (allHeard) return land()
+    // on to the next lamp not visited yet
+    const k = G.lamps.findIndex((_, i) => !heard.has(i))
+    ;[tu, tv] = G.lamps[k].a
+    visit(k)
+    loop.start()
+    if (still) settle()
+  })
+  // H7: standing still, the leaf drifts a few px toward where it should go next, then back
+  let idleT = 0
+  const invite = () => {
+    if (!G || drag || landed || ctx.reduced) return
+    const k = G.lamps.findIndex((_, i) => !heard.has(i))
+    const [au, av] = allHeard || k < 0 ? [0, 0] : G.lamps[k].a
+    const d = Math.hypot(au - lu, av - lv) || 1, step = 6 / G.rx
+    const u0 = tu, v0 = tv
+    tu = lu + ((au - lu) / d) * step
+    tv = lv + ((av - lv) / d) * step
+    loop.start()
+    clearTimeout(idleT)
+    idleT = window.setTimeout(() => !drag && ((tu = u0), (tv = v0), loop.start()), 900)
+  }
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => {
+    ctx.el.removeEventListener('p2:idle', invite)
+    clearTimeout(idleT)
+  })
 
   api.onLayout((g) => {
     G = geoOf(g)
@@ -256,6 +337,11 @@ function build(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
     oy = BH - ctx.art.clientHeight - 24 + st.offsetTop
     paintBack()
     paint()
+    if (!leafDot && !landed) {
+      leafDot = gd.dot(() => onArt(lu, lv), { dir: [-1, 0.3] })
+      G.lamps.forEach((L, i) => !heard.has(i) && (rings[i] = gd.drop(() => onArt(L.a[0], L.a[1]), { w: 64, h: 26 })))
+    }
+    gd.refresh()
   })
 
   let mossJob: { cancel(): void } | null = null

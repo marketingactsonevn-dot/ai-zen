@@ -1,9 +1,10 @@
 import './views.css'
-import { h, nextId, s } from '../../core/dom'
+import { fill, h, nextId, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { blob, clamp, curve, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, moon, reeds } from '../../ui/part2/paint'
 import { perspectiveCircle, type CircleApi } from '../../ui/part2/perspectives'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx, SceneDef } from '../types'
 import { C } from './shell'
 import { dawnGlow, f1, fog, g13Defs, lines } from './sumi'
@@ -222,6 +223,7 @@ function planet(cx: number, cy: number, R: number, seed: number): SVGElement[] {
   ]
   // each horizon, big, its foot on the rim, turned to its compass point (outward is up)
   for (const kind of [0, 1, 2, 3]) out.push(s('g', { class: `t37v-pl-q q${kind}`, transform: `translate(${f1(cx)} ${f1(cy)}) rotate(${AT[kind]}) translate(0 ${f1(-R * 1.03)}) scale(1.6)` }, ...vignette(kind, R, seed)))
+
   let moss = ''
   for (let i = 0; i < 60; i++) {
     const a = r() * Math.PI * 2, d = R * (1.0 + r() * 0.1)
@@ -243,6 +245,11 @@ function planet(cx: number, cy: number, R: number, seed: number): SVGElement[] {
     s('path', { class: 't37v-pl-rip', d: rip }),
     s('ellipse', { class: 't37v-pl-moon', cx: f1(cx - R * 0.5), cy: f1(cy - R * 0.1), rx: f1(R * 0.1), ry: f1(R * 0.05) }),
     s('path', { class: 't37v-pl-rim', d: stroke(Array.from({ length: 40 }, (_, q) => [cx + Math.cos(Math.PI * (0.95 + q * 0.028)) * R * 0.99, cy + Math.sin(Math.PI * (0.95 + q * 0.028)) * R * 0.99] as Pt), Math.max(1.5, R * 0.015), 0.2, 0.2, 0.2) }))
+  // each horizon carries the name of the view it stands for, upright, out past the shore (audit 37-4)
+  for (const kind of [0, 1, 2, 3]) {
+    const a = (AT[kind] * Math.PI) / 180, d = R * (kind % 2 ? 1.2 : 1.16)
+    out.push(s('text', { class: 't37v-pl-name', x: f1(cx + Math.sin(a) * d), y: f1(cy - Math.cos(a) * d + (kind === 2 ? R * 0.1 : kind ? R * 0.04 : 0)), 'text-anchor': kind === 1 ? 'start' : kind === 3 ? 'end' : 'middle', 'font-size': f1(Math.max(13, R * 0.12)) }, (V.carve[kind] ?? []).join(' ')))
+  }
   return out
 }
 
@@ -357,6 +364,7 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
   let P = { cx: 0, cy: 0, R: 0 } // the planet
   let yaw = 0, want = 0, vel = 0
   let dwell = 0
+  let facing = -2
   const stones = () => [...root.querySelectorAll<HTMLButtonElement>('.p2c-stone')]
   const wrap = (a: number) => ((a % 360) + 540) % 360 - 180
 
@@ -395,12 +403,9 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
     column.replaceChildren(s('g', { class: 't37v-road' }, s('path', { d: road }), s('path', { class: 't37v-spec', d: spec })))
     // the planet: about 70 % of the frame's height with its horizons; the slip beside it (wide) or under (tall)
     // (the pond R, its horizons reaching about 1.1 R further: the whole ≈ 0.8 of the frame's height)
-    P = tall ? { cx: W / 2, cy: hh * 0.5, R: Math.min(W * 0.2, hh * 0.21) } : { cx: W * 0.42, cy: hh * 0.45, R: hh * 0.155 }
+    P = tall ? { cx: W / 2, cy: hh * 0.5, R: Math.min(W * 0.2, hh * 0.21) } : { cx: W * 0.4, cy: hh * 0.48, R: hh * 0.17 }
     pl.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(hh)}`)
     pl.replaceChildren(...planet(P.cx, P.cy, P.R, 3750))
-    const common = root.querySelector<HTMLElement>('.t37v-common')
-    // the common ground under the planet (a tall frame: just under the picture, above the slip)
-    if (common) Object.assign(common.style, { left: `${f1(P.cx)}px`, top: `${f1(tall ? hh + 2 : P.cy + P.R * 2.5)}px`, width: `${f1(Math.min(W * (tall ? 0.94 : 0.5), 560))}px` })
     apply()
   }
 
@@ -411,7 +416,7 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
     if (!card) return
     card.classList.add('t37v-slip')
     if (tall) {
-      const top = SH + (hooks.all ? (root.querySelector<HTMLElement>('.t37v-common')?.offsetHeight ?? 0) + 12 : 6)
+      const top = SH + 6
       return void Object.assign(card.style, { left: '0px', top: `${f1(top)}px`, width: `${f1(W)}px`, maxHeight: `${f1(root.clientHeight - top - 2)}px`, transform: 'none' })
     }
     const w = Math.min(330, W * 0.25)
@@ -447,8 +452,12 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
       b.style.transform = `translate(${f1(cx + x - f.x)}px, ${f1(SH * 0.9 - f.y)}px) scale(${f1(stoneW / bwPx)})`
       b.style.visibility = Math.abs(x) > Math.min(W * 0.62, Q * 0.62) ? 'hidden' : ''
     })
-    // the moon's road leans toward the stone you face
+    // the moon's road leans toward the stone you face; the compass marks that way
     const n = nearest()
+    if (n.k !== facing) {
+      facing = n.k
+      hooks.facing(n.k >= 0 && Math.abs(n.d) < 30 ? (hooks.view[n.k] ?? n.k) : -1)
+    }
     const lean = n.k >= 0 ? clamp(n.d / 30, -1, 1) * 9 : 0
     ;(column.firstChild as SVGGElement | null)?.setAttribute('transform', `rotate(${f1(-lean)} ${f1(cx)} ${f1(SH * 0.5)})`)
   }
@@ -499,7 +508,7 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
     if (!drag || e.pointerId !== drag.id) return
     const dx = e.clientX - drag.x
     if (!drag.moved && Math.abs(dx) < 5) return
-    if (!drag.moved) (drag.moved = true), turn.setPointerCapture(e.pointerId), turn.classList.add('grabbing')
+    if (!drag.moved) (drag.moved = true), turn.setPointerCapture(e.pointerId), turn.classList.add('grabbing'), hooks.turned()
     const now = performance.now(), dt = Math.max(8, now - drag.t) / 1000
     const next = drag.y0 - (dx * 90) / Q
     vel = vel * 0.4 + ((next - want) / dt) * 0.6
@@ -526,6 +535,8 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
   // slip under it), so every layout the stage is resized and the stones are moved from where the component put them
   api.onLayout((_geo, ft) => {
     feet = ft
+    // say who stands there, not "stone n" (once heard, the component names it itself)
+    stones().forEach((b, k) => !hooks.heard.has(k) && b.setAttribute('aria-label', fill(V.stoneAria, { who: V.perspectives.stones[hooks.view[k] ?? k].who })))
     W = ctx.art.clientWidth
     const H = root.clientHeight
     tall = W / H < 1.15
@@ -536,25 +547,61 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
     stoneW = tall ? Math.min(W * 0.52, 200) : clamp(W * 0.17, 230, 290)
     draw()
     placeCard()
+    hooks.laid()
   })
   hooks.redraw = () => (apply(), placeCard())
   if (still) hooks.planetNow()
+  // 1–4 = north, east, south, west (the component's own digits follow its shuffled order, so they are caught first)
+  const keys = (e: KeyboardEvent) => {
+    if (e.defaultPrevented || e.altKey || e.metaKey || e.ctrlKey || !/^[1-4]$/.test(e.key)) return
+    const k = hooks.view.indexOf(Number(e.key) - 1)
+    if (k < 0) return
+    e.preventDefault()
+    api.pick(k)
+  }
+  document.addEventListener('keydown', keys)
+  hooks.pick = (d) => api.pick(hooks.view.indexOf(d))
+  // H7: standing still, the view drifts 8° toward the nearest stone not heard yet, then back
+  let back = 0
+  const invite = () => {
+    if (hooks.all || drag || still) return
+    let best = 0
+    for (let k = 0; k < 4; k++) if (!hooks.heard.has(k) && (!best || Math.abs(wrap(stoneAt(k) - yaw)) < Math.abs(best))) best = wrap(stoneAt(k) - yaw) || 1
+    if (!best) return
+    const from = want
+    go(want + Math.sign(best) * 8)
+    clearTimeout(back)
+    back = window.setTimeout(() => !drag && go(from), 900)
+  }
+  ctx.el.addEventListener('p2:idle', invite)
   return () => {
     clearTimeout(dwell)
+    clearTimeout(back)
     loop.dispose()
+    document.removeEventListener('keydown', keys)
+    ctx.el.removeEventListener('p2:idle', invite)
   }
 }
 
-type Hooks = { view: number[]; heard: Set<number>; all: boolean; face: (k: number) => void; redraw: () => void; planetNow: () => void }
+type Hooks = {
+  view: number[]; heard: Set<number>; all: boolean; face: (k: number) => void; redraw: () => void; planetNow: () => void
+  /** the compass: hear the stone standing that way (0 north … 3 west); mark the way you face; the first turn by hand */
+  pick: (d: number) => void; facing: (d: number) => void; turned: () => void; laid: () => void
+}
 
 export const viewsScene: SceneDef = {
   label: V.label,
+  text: 'br',
   mount(ctx) {
-    const hooks: Hooks = { view: [], heard: new Set(), all: false, face: () => {}, redraw: () => {}, planetNow: () => {} }
+    const hooks: Hooks = { view: [], heard: new Set(), all: false, face: () => {}, redraw: () => {}, planetNow: () => {}, pick: () => {}, facing: () => {}, turned: () => {}, laid: () => {} }
     ctx.art.classList.add('t37v-art')
     ctx.onCleanup(() => ctx.art.classList.remove('t37v-art'))
-    // the common ground is written under the planet; the scene's insight (and its detail) come after it
-    const def = perspectiveCircle({ ...V.perspectives, common: V.insight }, {
+    const n = V.perspectives.stones.length
+    const g = guide(ctx)
+    const dots: (Mark | null)[] = []
+    let arrows: Mark[] = []
+    // the insight (with the evidence dilemma in its detail) once all four are heard; no common line under the planet
+    const def = perspectiveCircle(V.perspectives, {
       label: V.label,
       prompt: V.prompt,
       detail: V.detail,
@@ -563,16 +610,45 @@ export const viewsScene: SceneDef = {
       stone: (k, _g, i) => ((hooks.view[k] = i), speaker(i)),
       onHear: (k) => {
         hooks.heard.add(k)
-        if (hooks.heard.size === V.perspectives.stones.length) return void setTimeout(curl, ctx.reduced ? 0 : 700)
+        dots[k]?.done()
+        dots[k] = null
+        compass.querySelector(`[data-d="${hooks.view[k] ?? k}"]`)?.classList.add('on')
+        const m = hooks.heard.size
+        if (m === n) {
+          for (const a of arrows) a.done()
+          return void setTimeout(curl, ctx.reduced ? 0 : 700)
+        }
+        // H5: hear the one in front → turn to the next → all four, counted
+        ctx.prompt(m === 1 && !still ? V.turn : fill(V.count, { n: m, total: n }))
         hooks.face(k)
       },
       stage: (host, api) => stage(ctx, host, api, hooks),
     })
+    const still = ctx.quality === 'low' || ctx.reduced
+    // the ink compass under the picture: four dots N E S W on an arc, inked vermilion once heard; touch one to turn
+    // and hear (H2 + H4: where the others are, how many are left)
+    const compass = h('div', { class: 't37v-compass', role: 'group', 'aria-label': V.compassAria },
+      ...V.compass.map((c, d) => h('button', { type: 'button', class: 't37v-cp', 'data-d': String(d), style: `--d:${d}`, 'aria-label': fill(V.compassTo, { dir: V.compassNames[d] }), onClick: () => hooks.pick(d) }, c)))
     def.mount(ctx)
     const root = ctx.art.querySelector<HTMLElement>('.p2c')!
     root.classList.add('t37v')
-    const common = h('div', { class: 't37v-common' }, ctx.fact(V.perspectives.common, 'p'))
-    root.querySelector('.p2c-stage')!.append(common)
+    // what the picture means, written on the sky from the start (audit 37-4: far = later, big = heavier)
+    root.querySelector('.p2c-stage')!.append(h('p', { class: 't37v-legend' }, V.legend), compass)
+    const cps = [...compass.children]
+    hooks.facing = (d) => cps.forEach((b, i) => b.classList.toggle('here', i === d))
+    hooks.laid = () => g.refresh()
+    hooks.turned = () => {
+      for (const a of arrows) a.done()
+      arrows = []
+    }
+    // a dot on every stone not heard yet; two faint arrows at the sides for the turn
+    root.querySelectorAll<HTMLButtonElement>('.p2c-stone').forEach((b, k) => (dots[k] = g.dot(b, { dir: [0, -1] })))
+    if (!still) {
+      const stageEl = root.querySelector<HTMLElement>('.p2c-stage')!
+      const at = (x: number) => () => [ctx.art.clientWidth * x, stageEl.clientHeight * 0.7] as Pt
+      arrows = [g.gesture('drag-h', at(0.07), { r: 30 }), g.gesture('drag-h', at(0.93), { r: 30 })]
+    }
+    ctx.prompt(still ? fill(V.count, { n: 0, total: n }) : V.prompt)
     hooks.planetNow = () => {
       root.classList.add('planet', 'now')
       hooks.all = true
@@ -586,6 +662,7 @@ export const viewsScene: SceneDef = {
       hooks.all = true
       root.classList.add('planet')
       hooks.redraw()
+      g.refresh()
       // the north storm softens once the detail is open
       ctx.el.querySelector('.insight-more')?.addEventListener('click', () => root.classList.toggle('calm'))
     }

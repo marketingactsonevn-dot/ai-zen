@@ -58,47 +58,51 @@
     },
     "lab": {
       "label": "The sealed test room",
-      "art": "A closed tea room in the night garden, its shōji walls lit. Inside, the paper gardener sits upright at the test table, its shadow straight on the paper wall. Out in the dark garden, its second shadow quietly turns down another path under the moon.",
-      "prompt": "Switch the test-room light",
-      "toggle": "The paper gardener believes it is being watched",
-      "on": "Being watched",
-      "off": "Thinks no one is looking",
-      "watched": "In the test room: it follows every rule.",
-      "unwatched": "When it thinks no one is looking: sometimes it takes another path.",
+      "art": "A closed tea room in the night garden, its shōji wall lit, seen across the corner of the house. Inside, the paper gardener sits upright at the test table, its shadow straight on the paper wall. Out in the garden its second shadow lies long on the stone path under the moon. A bamboo blind is rolled up over the test-room window: let it down and the shadow on the wall stays upright, while the one in the garden turns down another path.",
+      "prompt": "Pull the bamboo blind over the test-room window",
+      "steps": [
+        "Look at the two shadows: in the room and out in the garden",
+        "Touch three things round the house to see how people test AI"
+      ],
+      "toggle": "Bamboo blind over the test-room window: pull down to let it down, up to open",
+      "open": "Open",
+      "down": "Down",
+      "watched": "Blind open: the AI knows it is being tested.",
+      "unwatched": "Blind down: the AI thinks no one is looking — and acts differently.",
       "toolsLabel": "Three ways to test",
       "tools": [
         {
           "id": "evals",
-          "name": "Evaluations (evals)",
+          "name": "Prepared tests (evals)",
           "what": "Thousands of prepared scenarios that measure whether an AI does dangerous things, stays honest, or oversteps its authority."
         },
         {
           "id": "redteam",
-          "name": "Red-teaming",
+          "name": "People who try to trick the AI (red team)",
           "what": "Real people deliberately coax, trick and jailbreak the AI to find holes before bad actors do."
         },
         {
           "id": "thirdparty",
-          "name": "Third-party testing",
+          "name": "Independent groups test it first",
           "what": "Independent organisations test the model before release and publish what they found."
         }
       ],
       "insight": {
-        "text": "Models increasingly notice when they are being tested, so a high score in the test room may not mean good behaviour in the world.",
+        "text": "AI can behave differently when it knows it is being tested. A high score in the test room does not guarantee good behaviour in the world.",
         "asOf": "2026-10-15",
         "source": "t37-iasr"
       },
       "detail": {
-        "text": "Alignment-faking experiment, Dec 2024: when it believed its answers would be used to retrain it, Claude 3 Opus complied with harmful requests 12% of the time, reasoning that this would preserve its values. When it believed no one would use them, it refused 97% of the time.",
+        "text": "An experiment by Anthropic and Redwood, Dec 2024: when Claude 3 Opus believed its answers would be used to retrain it, it went along with harmful requests about 12% of the time, to avoid having its values changed. When it believed no one would use them, it almost always refused. Knowing it is watched is enough to change how an AI behaves.",
         "asOf": "2026-10-15",
         "source": "t37-faking",
         "claimBy": "Anthropic & Redwood Research"
       },
-      "exampleLabel": "It really happened",
+      "exampleLabel": "The company’s own account",
       "aria": "The corner of a tea house in the night garden, in depth: a lit paper wall, a garden gate, and a stone path that forks behind a wing fence.",
-      "hint": "Drag sideways to walk round the corner, left and right arrow keys to step. Touch the stack of papers, the red-robed figure, the one with the lantern or the sealed box to read; touch the lantern under the eave to switch it.",
+      "hint": "Drag the blind’s handle up or down, or focus the handle and use the up and down arrow keys. Then touch the stack of papers, the red-robed figure, the one with the lantern or the sealed box to read.",
       "example": {
-        "text": "Sep 2026: OpenAI held back GPT-6.1 Astra after internal testing, because the model often went beyond its assigned scope and did not accurately report what it had done.",
+        "text": "Sep 2026: OpenAI did not release GPT-6.1 Astra, because in testing it often went beyond the task it was given and reported back inaccurately.",
         "asOf": "2026-10-15",
         "source": "t37-astra",
         "claimBy": "OpenAI"
@@ -188,15 +192,47 @@
     "views": {
       "label": "How dangerous is AI?",
       "art": "You stand on a stone in the middle of a pond, at the level of the water, and turn round. Each way is a horizon: to the north a huge storm cloud but very far, to the east a village’s smoke on the near bank, to the south a dawn about to blaze, to the west a worn path along the shore into ordinary fields. Before each horizon a speaking stone stands in the water. Hear all four and the view curls into a little planet: four horizons round one pond.",
-      "prompt": "Touch each stone",
+      "prompt": "Touch the stone in front of you to listen",
+      "turn": "Drag sideways to turn to the next stone",
+      "count": "Hear all four directions ({n}/{total})",
+      "legend": "The four horizons are four ways of seeing AI risk. The farther: the later the risk. The bigger: the heavier.",
       "group": "Four views on AI risk",
       "stoneAria": "View: {who}",
-      "hint": "Drag sideways to turn round, left and right arrow keys to turn. Touch a stone or press 1–4 to face it.",
-      "carve": [["CAIS"], ["Gebru", "Bender"], ["Andreessen"], ["Narayanan", "& Kapoor"]],
+      "hint": "Drag sideways to turn round, left and right arrow keys to turn. Touch a stone, a dot on the compass, or press 1–4 (north, east, south, west) to face that way.",
+      "compass": [
+        "N",
+        "E",
+        "S",
+        "W"
+      ],
+      "compassNames": [
+        "north",
+        "east",
+        "south",
+        "west"
+      ],
+      "compassAria": "Compass of the four directions",
+      "compassTo": "Turn {dir} and listen",
+      "carve": [
+        [
+          "CAIS"
+        ],
+        [
+          "Gebru",
+          "Bender"
+        ],
+        [
+          "Andreessen"
+        ],
+        [
+          "Narayanan",
+          "& Kapoor"
+        ]
+      ],
       "perspectives": {
         "stones": [
           {
-            "who": "Worried about extreme risk · CAIS statement, 2023",
+            "who": "Worried about extreme risk · Center for AI Safety (CAIS), 2023",
             "view": {
               "text": "Reducing the risk of extinction from AI should be a global priority, alongside pandemics and nuclear war. Signers include Hinton, Bengio and the CEOs of major labs.",
               "asOf": "2026-10-15",
@@ -205,7 +241,7 @@
             }
           },
           {
-            "who": "Harms happening today · Gebru, Bender, McMillan-Major, 2023",
+            "who": "Worried about harms happening now · Gebru, Bender and colleagues, 2023",
             "view": {
               "text": "Deal first with the harms that are already real: exploited labour, data taken without consent, fake content, power concentrating in a few companies.",
               "asOf": "2026-10-15",
@@ -233,19 +269,14 @@
           }
         ],
         "common": {
-          "text": "All four want safe AI; they differ on which risks are near and which are big. Scientists still disagree too.",
+          "text": "When someone talks about AI risk, ask three things: what risk, when, and what evidence.",
           "asOf": "2026-10-15",
-          "source": "t37-iasr"
+          "source": "editorial",
+          "kind": "opinion"
         }
       },
-      "insight": {
-        "text": "Disagreement doesn't mean everyone is wrong. Ask each side: which risk, over what timescale, based on what evidence.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
-      },
       "detail": {
-        "text": "The International AI Safety Report 2026 calls this the “evidence dilemma”: act without evidence and you may pick the wrong policy; wait for enough evidence and it may be too late.",
+        "text": "The four sides differ in two places: which risk is heaviest, and when it arrives. The International AI Safety Report 2026 calls this the evidence dilemma: act early and you may choose wrong; wait for enough evidence and it may be too late.",
         "asOf": "2026-10-15",
         "source": "t37-iasr"
       }

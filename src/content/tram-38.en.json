@@ -81,8 +81,17 @@
     },
     "tide": {
       "label": "The rope that measures work",
-      "art": "A long scroll of sand at moonset. Drag the moon along its arc from high in the sky down to the western horizon: the bamboo pole on the right throws a shadow that grows to the left along a knotted cord, one notch per doubling, from ≈ 1 hour to ≥ 16 hours. Where the shadow reaches a notch it leaves a small stake; a milestone with no length raises a stone beside the pole instead. The lower the moon, the faster the shadow leaps; by today it runs on into the dawn mist.",
-      "prompt": "Drag the moon along",
+      "art": "A long scroll of sand at moonset. Drag the moon along its arc from high in the sky down to the western horizon: the bamboo pole on the right throws a shadow that grows to the left along a measuring cord marked evenly in hours, from 1 hour at the pole's foot to 16 hours out in the mist. When the shadow reaches a notch, the notch shows its hours. The lower the moon, the faster the shadow leaps; by today it runs on into the dawn mist.",
+      "prompt": "Drag the moon down past each mark",
+      "next": "Keep dragging to the horizon",
+      "legend": "The pole's shadow = how long a task AI can do on its own. Drag the moon down: time runs on to today.",
+      "hours": [
+        "1 hour",
+        "2 hours",
+        "4 hours",
+        "8 hours",
+        "16 hours"
+      ],
       "slider": "Timeline",
       "valueText": "{date}: {label}",
       "tide": {
@@ -91,36 +100,25 @@
             "date": "2025-03",
             "label": "METR's ruler",
             "fact": {
-              "text": "METR measures how long a task (in human working hours) an AI can finish on its own. Claude 3.7 Sonnet reached about 1 hour; that length doubled roughly every 7 months for 6 years.",
+              "text": "Claude 3.7 Sonnet: tasks about 1 hour long.",
               "asOf": "2026-10-15",
               "source": "t38-metr-2025"
-            }
-          },
-          {
-            "date": "2025-07",
-            "label": "Math Olympiad gold",
-            "fact": {
-              "text": "Google DeepMind's Gemini Deep Think solved 5 of 6 IMO problems, scoring 35/42, gold-medal level; IMO coordinators graded and confirmed it.",
-              "asOf": "2026-10-15",
-              "source": "t38-imo",
-              "claimBy": "Google DeepMind",
-              "verifiedBy": "IMO"
             }
           },
           {
             "date": "2025-08",
             "label": "Over 2 hours",
             "fact": {
-              "text": "According to METR, an agent using GPT-5 finished tasks about 2 hours 17 minutes long, with a 50% success rate.",
+              "text": "An agent using GPT-5: about 2 hours 17 minutes.",
               "asOf": "2026-10-15",
               "source": "t38-metr-page"
             }
           },
           {
             "date": "2026-03",
-            "label": "The ruler runs out",
+            "label": "The ruler runs out: METR has no tasks long enough to measure",
             "fact": {
-              "text": "METR tested an early Claude Mythos Preview: at least 16 hours (confidence interval 8.5–55 hours). Beyond 16 hours, the current task suite can no longer measure reliably.",
+              "text": "An early Claude Mythos Preview: at least 16 hours (estimated 8.5 to 55 hours).",
               "asOf": "2026-10-15",
               "source": "t38-metr-mythos"
             },
@@ -130,25 +128,6 @@
               "ratio": 16,
               "beforeLabel": "Mar 2025",
               "afterLabel": "Mar 2026"
-            }
-          },
-          {
-            "date": "2026-09",
-            "label": "The million-dollar problem",
-            "fact": {
-              "text": "OpenAI announced that 10,000 agents found a “singularity” in the Navier–Stokes equations, checked in Lean; mathematicians are still reviewing it and no prize has been awarded.",
-              "asOf": "2026-10-15",
-              "source": "t38-quanta",
-              "claimBy": "OpenAI"
-            }
-          },
-          {
-            "date": "2026-10-15",
-            "label": "Today",
-            "fact": {
-              "text": "METR's tracking page stopped updating on Sep 8, 2026; the latest model measured is Mythos Preview. The current ruler can't reliably measure beyond 16 hours.",
-              "asOf": "2026-10-15",
-              "source": "t38-metr-page"
             }
           }
         ],
@@ -160,15 +139,24 @@
         }
       },
       "insight": {
-        "text": "In about a year, the tasks AI can finish alone grew from about 1 hour to at least 16 hours, mostly in programming.",
+        "text": "In one year, the tasks AI can do on its own (succeeding half the time) grew from about 1 hour to at least 16 hours.",
         "asOf": "2026-10-15",
         "source": "t38-metr-mythos"
       },
-      "detail": {
-        "text": "Note: METR's tasks are mostly programming, machine learning and cybersecurity, self-contained and automatically graded. Real-world work is far messier.",
-        "asOf": "2026-10-15",
-        "source": "t38-metr-page"
-      }
+      "detail": [
+        {
+          "text": "METR is an independent research group that measures with real tasks: programming, machine learning, cybersecurity. Real-world work is far messier.",
+          "asOf": "2026-10-15",
+          "source": "t38-metr-page"
+        },
+        {
+          "text": "In the same period, AI also reached gold-medal level at the International Mathematical Olympiad (Jul 2025).",
+          "asOf": "2026-10-15",
+          "source": "t38-imo",
+          "claimBy": "Google DeepMind",
+          "verifiedBy": "IMO"
+        }
+      ]
     },
     "fork": {
       "label": "Three paths into the mist",

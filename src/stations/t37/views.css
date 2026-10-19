@@ -191,25 +191,98 @@ html[data-quality='low'] .t37v-plane {
   margin-bottom: 0.6em;
 }
 
-.t37v-common {
+/* the key to the picture, on the sky (top left) */
+.t37v-legend {
   position: absolute;
-  transform: translateX(-50%);
-  text-align: center;
-  font: 400 clamp(0.95rem, 1.3vw, 1.05rem) / 1.42 var(--serif);
-  color: var(--ink);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1s ease 0.9s;
-  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
-}
-.t37v-common p {
+  z-index: 3;
+  left: 2%;
+  top: 3%;
+  width: min(26rem, 40%);
   margin: 0;
+  font: 400 italic clamp(0.95rem, 1.3vw, 1.06rem) / 1.42 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 14px var(--paper);
+  pointer-events: none;
 }
-.t37v.planet .t37v-common {
-  opacity: 1;
-  pointer-events: auto;
+.t37v-tall .t37v-legend {
+  width: auto;
+  right: 2%;
+  font-size: 0.9rem;
 }
-.t37v.now .t37v-common {
+/* the ink compass at the foot of the picture: four dots on a shallow arc, N E S W; heard = vermilion, where you face = a
+   ring. Each is a ≥ 44 px touch target; bottom left, clear of the stone in front */
+.t37v-compass {
+  position: absolute;
+  z-index: 4;
+  left: 3%;
+  bottom: 3%;
+  display: flex;
+  gap: 6px;
+}
+.t37v-tall .t37v-compass {
+  bottom: auto;
+  top: 18%;
+}
+.t37v-cp {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  font: 500 12px/1 var(--serif);
+  color: var(--ink-2);
+  cursor: pointer;
+  translate: 0 calc(abs(var(--d) - 1.5) * -6px);
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  padding-bottom: 2px;
+  text-shadow: 0 0 6px var(--paper);
+}
+.t37v-cp::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 9px;
+  width: 12px;
+  height: 12px;
+  translate: -50% 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-2);
+  background: color-mix(in srgb, var(--paper) 60%, transparent);
+  transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
+}
+.t37v-cp.on::before {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+}
+.t37v-cp.here::before {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--lantern) 45%, transparent);
+}
+.t37v-cp:focus-visible {
+  outline: 2px solid var(--ink-2);
+  outline-offset: -2px;
+}
+.t37v.planet .t37v-compass {
+  display: none;
+}
+/* the little planet: each horizon's name */
+.t37v-pl-name {
+  font-family: var(--serif);
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 1s ease 1.2s;
+}
+.t37v.planet .t37v-pl-name {
+  opacity: 0.9;
+}
+.t37v.now .t37v-pl-name {
   transition: none;
 }
 
@@ -560,8 +633,4 @@ html[data-quality='low'] .t37v-pl :is(.t37v-pl-dawn, .t37v-pl-cloud) {
   margin-bottom: 0.4em;
   font-size: 0.94rem;
   line-height: 1.42;
-}
-.t37v-tall .t37v-common {
-  font-size: 0.9rem;
-  line-height: 1.36;
 }

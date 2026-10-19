@@ -9,7 +9,7 @@ export interface T37 extends StationContent {
   scenes: {
     goal: { label: string; art: string; prompt: string; group: string; optionAria: string; morning: string; retry: string; options: Opt[]; insight: Fact; detail: Fact }
     lab: {
-      label: string; art: string; prompt: string; toggle: string; on: string; off: string; watched: string; unwatched: string
+      label: string; art: string; prompt: string; steps: string[]; toggle: string; open: string; down: string; watched: string; unwatched: string
       toolsLabel: string; tools: { id: string; name: string; what: string }[]; insight: Fact; detail: Fact; exampleLabel: string; example: Fact
       aria: string; hint: string
     }
@@ -18,7 +18,10 @@ export interface T37 extends StationContent {
       aria: string; hint: string; aligned: string
       layers: Layer[]; insight: Fact; detail: Fact
     }
-    views: { label: string; art: string; prompt: string; group: string; stoneAria: string; hint: string; carve: string[][]; perspectives: Perspectives; insight: Fact; detail: Fact }
+    views: {
+      label: string; art: string; prompt: string; turn: string; count: string; legend: string; group: string; stoneAria: string; hint: string
+      compass: string[]; compassNames: string[]; compassAria: string; compassTo: string; carve: string[][]; perspectives: Perspectives; detail: Fact
+    }
   }
 }
 export const C = raw as unknown as T37

@@ -6,7 +6,7 @@ interface View { who: string; view: Fact }
 export interface T38 extends StationContent {
   scenes: {
     defs: { label: string; art: string; prompt: string; group: string; stoneAria: string; names: string[]; strip: string; perspectives: Perspectives; insight: Fact }
-    tide: { label: string; art: string; prompt: string; slider: string; valueText: string; tide: Tide; insight: Fact; detail: Fact }
+    tide: { label: string; art: string; prompt: string; next: string; legend: string; hours: string[]; slider: string; valueText: string; tide: Tide; insight: Fact; detail: Fact[] }
     fork: {
       label: string; art: string; prompt: string; sliderAria: string
       sliders: { id: 'speed' | 'share' | 'control'; label: string; low: string; high: string }[]

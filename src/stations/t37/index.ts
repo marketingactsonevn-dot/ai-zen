@@ -11,7 +11,7 @@ const station: StationModule = {
   content: C,
   scenes: [
     { label: S.goal.label, mount: goalScene },
-    { label: S.lab.label, mount: labScene },
+    { label: S.lab.label, text: 'br', mount: labScene },
     { label: S.fence.label, mount: fenceScene },
     viewsScene,
   ],

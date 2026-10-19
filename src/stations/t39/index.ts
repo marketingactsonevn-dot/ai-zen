@@ -11,7 +11,7 @@ const station: StationModule = {
   content: C,
   scenes: [
     { label: S.ask.label, mount: askScene },
-    { label: S.kit.label, mount: kitScene },
+    { label: S.kit.label, text: 'br', mount: kitScene },
     pathScene,
     adviceScene,
     { label: S.enso.label, mount: ensoScene },
