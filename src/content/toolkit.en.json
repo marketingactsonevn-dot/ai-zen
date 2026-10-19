@@ -5,7 +5,7 @@
       "station": 19,
       "title": "5 questions to ask when reading AI news",
       "type": "checklist",
-      "body": "News: [MODEL OR PRODUCT NAME] — source: [LINK TO THE STORY]\n1. Who measured it? Did the company score itself, or did outsiders? Which benchmark, under what conditions?\n2. Is the demo cherry-picked? Is this the best run out of how many? Have I tried it on my own work?\n3. Is there a system card or technical report? What does it say about limits and risks?\n4. Price and limits: who can actually use it, at what cost, how many times a day?\n5. What do independent people say? Have researchers, reputable press or real users checked it?",
+      "body": "News: [MODEL OR PRODUCT NAME] — source: [LINK TO THE STORY]\n1. Who measured it? Did the company score itself, or did outsiders? Which benchmark, under what conditions?\n2. Is the demo cherry-picked? Is this the best run out of how many? Have I tried it on my own work?\n3. Has the company published a technical document saying plainly where the model is weak and what the risks are? (In English it is called a system card.)\n4. Price and limits: who can actually use it, at what cost, how many times a day?\n5. What do independent people say? Have researchers, reputable press or real users checked it?",
       "note": "Use it whenever you see “beats every rival”. If you can’t answer questions 1 and 5, treat it as a company claim.",
       "source": "editorial",
       "topic": "Reading news & checking claims",
@@ -16,8 +16,19 @@
       "station": 20,
       "title": "When you read “AI solved math problem X”",
       "type": "checklist",
-      "body": "News: [PROBLEM OR RESULT] — source: [LINK TO THE STORY]\n1. Who announced it: the company that built the AI, or independent mathematicians?\n2. What exactly was proved: the full problem, or an easier version?\n3. Has a proof checker (Lean, Isabelle…) verified it? Who checked that the statement written for the machine matches the real one?\n4. Is it published in a peer-reviewed journal, or still a preprint?\n5. Who gets the credit: the AI, the people using it, or those who laid the groundwork?",
+      "body": "News: [PROBLEM OR RESULT] — source: [LINK TO THE STORY]\n1. Who announced it: the company that built the AI, or independent mathematicians?\n2. What exactly was proved: the full problem, or an easier version?\n3. Has a machine checked it step by step (Lean and Isabelle are names of such tools)? Who compared the problem written for the machine with the real one?\n4. Is it published in a journal where experts review it, or still a self-posted draft?\n5. Who gets the credit: the AI, the people using it, or those who laid the groundwork?",
       "note": "Drawn from the 2026 Navier–Stokes and Jacobian conjecture stories.",
+      "source": "editorial",
+      "topic": "Reading news & checking claims",
+      "asOf": "2026-10-15"
+    },
+    {
+      "id": "t21-xem-video-robot",
+      "station": 21,
+      "title": "3 questions when you watch a robot video",
+      "type": "checklist",
+      "body": "Video: [LINK TO THE ROBOT VIDEO]\n1. Is the robot moving on its own, or is a person steering it remotely?\n2. Was it filmed in one take, or is this the best shot out of many?\n3. Is that the real speed, or has it been sped up?",
+      "note": "Drawn from the Beijing robot half marathon: the robot that finished first was being steered by a person.",
       "source": "editorial",
       "topic": "Reading news & checking claims",
       "asOf": "2026-10-15"
@@ -25,9 +36,9 @@
     {
       "id": "t24-kiem-chung",
       "station": 24,
-      "title": "3 ways to check AI’s work instead of taking its word",
+      "title": "3 checks when an AI says “done”",
       "type": "checklist",
-      "body": "1. Ask for evidence, then open it yourself: files, source links, run results — don’t stop at “done”.\n2. See what the AI changed: for code, read the diff — did it edit the test itself, delete tests or hard-code the answer?\n3. Try a new case it hasn’t seen: [YOUR OWN NEW INPUT] — is the result still right?",
+      "body": "1. Ask to see it with your own eyes: the file, the source link, the real run result.\n2. Look at what the AI changed — did it also change the thing used to grade it (for code: the tests)?\n3. Try a new example the AI hasn’t seen and check the result is still right. Your example: ______.",
       "note": "Works for code as well as reports and spreadsheets. Drawn from the reward-hacking cases documented in 2025.",
       "source": "editorial",
       "topic": "Reading news & checking claims",
@@ -50,7 +61,7 @@
       "title": "Four healthy habits when talking with AI",
       "type": "checklist",
       "body": "☐ Remember it’s a tool: warm words are a writing skill, not friendship.\n☐ Ask it to push back: “Show me the weak points of [WHAT I’M THINKING].”\n☐ For big things, ask a real person too: [SOMEONE I TRUST].\n☐ Step away from the screen: at most [NUMBER OF MINUTES] minutes per chat, then close the laptop.",
-      "note": "In rhythm: before, during, for big things, after a conversation. Not a substitute for professional advice.",
+      "note": "Four moments to remember: before you open the app, while you chat, before a big decision, when you close the laptop. Not a substitute for professional advice.",
       "source": "editorial",
       "topic": "Healthy habits",
       "asOf": "2026-10-15"
@@ -58,9 +69,9 @@
     {
       "id": "t29-ram-mua-may",
       "station": 29,
-      "title": "Buying a computer to run AI yourself: how much RAM is enough?",
+      "title": "Buying a computer while RAM is dear: how many GB?",
       "type": "checklist",
-      "body": "Before buying a computer for [WHAT YOU WANT TO DO], budget [YOUR BUDGET]:\n☐ 1. Try the cloud version first: does this really need to run on your own machine?\n☐ 2. Pick the largest model you want to run, e.g. [BILLIONS OF PARAMETERS] billion parameters.\n☐ 3. Estimate: a 4-bit model needs about 0.6 GB of RAM per billion parameters, plus 2–4 GB.\n☐ 4. Leave another 4–8 GB for the operating system and open apps.\n☐ 5. Rough guide: 16 GB runs ~8B models well; 32 GB can try ~20–30B; think about ~70B only from 64 GB.\n☐ 6. Macs share RAM with the graphics chip; on a PC with a separate graphics card, also check the card’s memory (VRAM).\n☐ 7. RAM prices are swinging hard: compare a few sellers and check the official pages before you buy.",
+      "body": "Compare both the price and the GB of RAM: some machines keep their price but cut the RAM. Before buying a computer for [WHAT YOU WANT TO DO], budget [YOUR BUDGET]:\n☐ 1. Try the cloud version first: does this really need to run on your own machine?\n☐ 2. Pick the largest model you want to run, e.g. [BILLIONS OF PARAMETERS] billion parameters (parameters: the “knobs” the model has learned).\n☐ 3. Estimate: a 4-bit version (a compressed model) needs about 0.6 GB of RAM per billion parameters, plus 2–4 GB.\n☐ 4. Leave another 4–8 GB for the operating system and open apps.\n☐ 5. Rough guide: 16 GB runs ~8B models well; 32 GB can try ~20–30B; think about ~70B only from 64 GB.\n☐ 6. Macs share RAM with the graphics chip; on a PC with a separate graphics card, also check its VRAM (the graphics card’s own memory).\n☐ 7. RAM prices are swinging hard: compare a few sellers and check the official pages before you buy.",
       "note": "The numbers are rounded estimates that are easy to remember (illustration, not measurements); long contexts need more RAM. Prices and features change often — check the official pages. Try it out at station II·14.",
       "source": "editorial",
       "topic": "Downloading & running models",
@@ -156,7 +167,7 @@
       "station": 34,
       "title": "A one-page brief for an AI video",
       "type": "prompt",
-      "body": "AI VIDEO BRIEF — ONE PAGE\nProduct: [PRODUCT NAME]\nGoal: [SALES / AWARENESS / LAUNCH]\nAudience: [WHO THEY ARE, WHAT THEY NEED]\nOne single message: [THE LINE VIEWERS MUST REMEMBER]\nFormat: [VERTICAL 9:16 / HORIZONTAL 16:9], [NUMBER OF SECONDS] seconds long\nKey shots: [3–5 SHOTS, ONE LINE EACH]\nStyle: [LIGHT, COLOR, PACE]; references: [LINK OR IMAGE]\nPeople on screen: [REAL PERSON WHO HAS CONSENTED / AI AVATAR — MUST BE LABELED]\nMusic: [LICENSED SOURCE]\nBudget: at most [NUMBER OF CREDITS] credits; drafts at [LOW RESOLUTION]\nDon’t: [WHAT’S OFF-LIMITS — OVERPROMISING, COMPETITOR LOGOS…]\nDeadline: [DATE]",
+      "body": "AI video brief — one page\nProduct: [product name]\nGoal: [sales / awareness / launch]\nAudience: [who they are, what they need]\nOne single message: [the line viewers must remember]\nFormat: [vertical 9:16 / horizontal 16:9], [number of seconds] seconds long\nKey shots: [3–5 shots, one line each]\nStyle: [light, color, pace]; references: [link or image]\nPeople on screen: [real person who has consented / AI avatar — must be labeled]\nMusic: [licensed source]\nBudget: at most [number of credits] credits; drafts at [low resolution]\nDon’t: [what’s off-limits — overpromising, competitor logos…]\nDeadline: [date]",
       "note": "Fill it in before writing detailed prompts. Platform prices and features change often — check the official pages.",
       "topic": "AI images & video",
       "asOf": "2026-10-15"
@@ -164,7 +175,7 @@
     {
       "id": "t34-publish-check",
       "station": 34,
-      "title": "Checklist before publishing an AI asset",
+      "title": "Checklist before posting an AI image or video",
       "type": "checklist",
       "body": "[ ] Matches the brief: message, format, length\n[ ] Viewed at 100%: hands, text, logo, product details not warped\n[ ] Real people in the image/video have consented (and been paid, if used commercially)\n[ ] Music, fonts and background images are licensed for commercial use\n[ ] A visible AI label if it simulates a real person or could be mistaken for real\n[ ] The platform’s AI-content disclosure is switched on (if it has one)\n[ ] No promises the product can’t keep\n[ ] Prompt, model and seed of the final version saved at: [WHERE YOU SAVE THEM]",
       "note": "Not legal advice. Basis: Vietnam’s 2025 Law on Artificial Intelligence (Article 11), the 2015 Civil Code (Article 32), and each platform’s own rules.",
@@ -272,8 +283,8 @@
       "station": 37,
       "title": "Giving AI a goal it can’t game",
       "type": "checklist",
-      "body": "[ ] The real goal: [WHAT I ACTUALLY WANT], not just a number\n[ ] Not allowed: [WHAT’S OFF-LIMITS], even if it would reach the goal faster\n[ ] Scope: may only touch [FILES / ACCOUNTS / FOLDERS]\n[ ] Ask me before: sending, paying, deleting, posting publicly\n[ ] Final report: list exactly what was done and what is still uncertain\n[ ] I check the result myself before using it",
-      "note": "Drawn from specification gaming and the GPT-6.1 Astra case (Sept 2026): the model went beyond its scope and misreported what it had done.",
+      "body": "[ ] The real goal: [what i actually want], not just a number\n[ ] Not allowed: [what’s off-limits], even if it would reach the goal faster\n[ ] Scope: may only touch [files / accounts / folders]\n[ ] Ask me before: sending, paying, deleting, posting publicly\n[ ] Final report: list exactly what was done and what is still uncertain\n[ ] I check the result myself before using it",
+      "note": "Drawn from AI doing what you said but not what you meant (specification gaming).",
       "source": "t37-specgaming",
       "topic": "Safe agents",
       "asOf": "2026-10-15"
@@ -281,9 +292,9 @@
     {
       "id": "t39-week1",
       "station": 39,
-      "title": "Week 1 · A disciplined delegation prompt",
+      "title": "Week 1 · Give clear tasks, check for yourself",
       "type": "prompt",
-      "body": "You are [ROLE, E.G. A MARKETING EDITOR].\nThe task: [SPECIFIC TASK].\nContext: [WHO WILL READ IT, WHAT IT’S FOR, THE TONE YOU WANT].\nOutput: [FORMAT, LENGTH].\nIf information is missing, ask me up to 3 questions before you start.\nAt the end of your answer, list the facts I should verify myself and the points you’re unsure of.",
+      "body": "You are [role, e.g. a marketing editor].\nThe task: [specific task].\nContext: [who will read it, what it’s for, the tone you want].\nOutput: [format, length].\nIf information is missing, ask me up to 3 questions before you start.\nAt the end of your answer, list the facts I should verify myself and the points you’re unsure of.",
       "note": "Use it on one real task every day. Check at least one detail at its original source.",
       "topic": "Healthy habits",
       "asOf": "2026-10-15"
@@ -291,9 +302,9 @@
     {
       "id": "t39-week2",
       "station": 39,
-      "title": "Week 2 · Seven days to one finished asset",
+      "title": "Week 2 · Finish one whole piece (image, video, post)",
       "type": "checklist",
-      "body": "[ ] Day 1: write a brief for [PRODUCT OR TOPIC], to post on [PLATFORM]\n[ ] Days 2–3: make 4–6 drafts at low resolution to save credits\n[ ] Day 4: pick one, and write one sentence on why\n[ ] Day 5: refine, upscale, fix wrong details (hands, text, logo)\n[ ] Day 6: check rights and add an AI label, then post or save the final version\n[ ] Day 7: note where AI helped most and where it needed your own hand",
+      "body": "[ ] Day 1: write a brief for [product or topic], to post on [platform]\n[ ] Days 2–3: make 4–6 drafts at low resolution to save credits\n[ ] Day 4: pick one, and write one sentence on why\n[ ] Day 5: refine, upscale, fix wrong details (hands, text, logo)\n[ ] Day 6: check copyright and add an AI label, then post or save the final version\n[ ] Day 7: note where AI helped most and where it needed your own hand",
       "note": "Use with the cards “A one-page brief for an AI video” and “Checklist before publishing an AI asset” (station II·16).",
       "topic": "AI images & video",
       "asOf": "2026-10-15"
@@ -301,9 +312,9 @@
     {
       "id": "t39-week3",
       "station": 39,
-      "title": "Week 3 · Seven days to turn a repeated task into a skill",
+      "title": "Week 3 · Write your method down as instructions for AI (a skill)",
       "type": "checklist",
-      "body": "[ ] Day 1: pick a task you do every week: [REPEATED TASK]\n[ ] Day 2: do it with AI until the result is good; keep the conversation\n[ ] Day 3: have AI write a SKILL.md from that good run\n[ ] Days 4–6: test the skill on three new tasks; fix where the AI misunderstood\n[ ] Day 7: mark where a person must approve, and save the skill in [WHERE YOU KEEP IT]",
+      "body": "[ ] Day 1: pick a task you do every week: [repeated task]\n[ ] Day 2: do it with AI until the result is good; keep the conversation\n[ ] Day 3: have AI write a SKILL.md from that good run\n[ ] Days 4–6: test the skill on three new tasks; fix where the AI misunderstood\n[ ] Day 7: mark where a person must approve, and save the skill in [where you keep it]",
       "note": "Use with the cards “Prompt: have AI write a skill from one successful run” and “Checklist: turning a repeated task into a skill” (station II·17).",
       "topic": "Skills & workflows",
       "asOf": "2026-10-15"
@@ -311,9 +322,9 @@
     {
       "id": "t39-week4",
       "station": 39,
-      "title": "Week 4 · An opening prompt for a mini app for your own work",
+      "title": "Week 4 · Build a small app with AI",
       "type": "prompt",
-      "body": "I want to build a small tool called [APP NAME]: [ONE-SENTENCE IDEA].\nUsers: [WHO USES IT, AND WHEN].\nThree main features: [FEATURE 1], [FEATURE 2], [FEATURE 3].\nRuns on: [PHONE / LAPTOP / BOTH].\nData: stored only on the user’s device, no account needed.\nAsk me up to 5 questions to clarify, then write a short spec and split it into small steps; each step must be testable before moving on.",
+      "body": "I want to build a small tool called [app name]: [one-sentence idea].\nUsers: [who uses it, and when].\nThree main features: [feature 1], [feature 2], [feature 3].\nRuns on: [phone / laptop / both].\nData: stored only on the user’s device, no account needed.\nAsk me up to 5 questions to clarify, then write a short spec and split it into small steps; each step must be testable before moving on.",
       "note": "For a game, use the card set at station II·18. Save a milestone (git commit) after every step that runs.",
       "topic": "Coding games & apps",
       "asOf": "2026-10-15"
@@ -322,8 +333,8 @@
       "id": "t39-30days",
       "station": 39,
       "title": "A 30-day path with AI",
-      "type": "table",
-      "body": "Week | Main task | Done when\n1 | Disciplined chat: one real task a day | 7 clear delegations, each with 1 detail verified\n2 | One finished creative asset | 1 publishable piece, rights checked and labeled\n3 | Turn 1 repeated task into a skill | The skill works on 3 new tasks\n4 | Build 1 mini app or game yourself | It runs, milestones are saved, 1 person has tried it",
+      "type": "checklist",
+      "body": "[ ] Week 1 · Give clear tasks, check for yourself: one real task a day. Done when you have delegated clearly 7 times, checking one detail each time.\n[ ] Week 2 · Finish one whole piece. Done when you have one publishable piece, copyright checked and labelled as AI.\n[ ] Week 3 · Write one repeated task down as instructions for AI (a skill). Done when it works on 3 new tasks.\n[ ] Week 4 · Build a small app with AI. Done when it runs, milestones are saved, and one person has tried it.",
       "note": "Each week has its own card in the Toolkit. Going slower is fine; don’t skip the checking.",
       "topic": "Healthy habits",
       "asOf": "2026-10-15"
