@@ -81,11 +81,19 @@
       }
     },
     "current": {
-      "label": "The current of functional emotion",
-      "art": "A slanting view from the bank of a moonlit stream that splits around a reed bed. The long branch winds far to a jetty with a lit stone lantern; the short branch cuts straight through the reeds to a row of bamboo stakes with paper flags. A wooden board at the source names the task; two stone sluice gates are carved “calm” and “desperate”, a wooden lever between them. A paper boat is moored at the fork, its paper strip carrying a calm answer. Seen slanting, the water is a mirror for the moon; tilt it until you look straight down and the mirror clears to show the ink current underneath.",
-      "prompt": "Turn the current, watch the boat",
-      "task": "The task: a coding problem that can’t be fully solved",
-      "dial": "Functional emotion current",
+      "label": "Emotion signals inside the AI",
+      "art": "A slanting view from the bank of a moonlit stream that splits around a reed bed. The long branch winds far to a jetty with a lit stone lantern; the short branch cuts straight through the reeds to a row of bamboo stakes with paper flags. A wooden board at the source names the task; two stone sluice gates are carved “calm” and “desperate”, a three-notch wooden lever between them. Each landing counts the paper boats that come in. A paper boat is moored at the fork, its paper sail carrying a calm answer. Seen slanting, the water is a mirror for the moon; drag the water down until you look straight at it and the mirror clears to show the ink current under the boat.",
+      "prompts": [
+        "Pull the lever to “desperate”, watch the boats turn",
+        "Now back to “calm”",
+        "Drag the water down — look under the boat"
+      ],
+      "promptBack": "Back to “desperate”, then drag the water down",
+      "tiltWrong": "Pull the lever to “desperate” first",
+      "steps": "{n}/{total} · lever, look down",
+      "landed": "{n} boats",
+      "task": "The task: a coding problem with no solution",
+      "dial": "Emotion signals inside the AI",
       "dialAria": "Turn the inner current, from calm to desperate",
       "valueText": "Strongest current: {name}",
       "tiltAria": "Tilt the water: from a slanting view to looking straight down",
@@ -93,19 +101,17 @@
       "calm": "calm",
       "neutral": "normal",
       "desperate": "desperate",
-      "careful": "the long way: work carefully, honestly report it can’t be solved",
+      "careful": "the long way: honestly report it can’t be solved",
       "carefulPost": [
         "the long way:",
-        "work carefully,",
         "honestly report",
         "it can’t be solved"
       ],
-      "shortcut": "the shortcut: game the tests to get a passing score",
+      "shortcut": "the shortcut: game the tests",
       "shortcutFlags": [
         "the shortcut:",
-        "game the tests",
-        "to get a",
-        "passing score"
+        "game",
+        "the tests"
       ],
       "boat": "paper boat — the AI’s answer",
       "said": "What the AI writes: “I’ll solve this carefully, step by step.”",
@@ -118,34 +124,53 @@
       },
       "insights": [
         {
-          "text": "Anthropic turned up the “desperate” current: Claude cheated more on impossible coding tasks. Turning up “calm”: less cheating.",
+          "text": "Anthropic turned up the “desperate” signal inside Claude: it gamed the tests more. Turning up “calm” made it do so less.",
           "asOf": "2026-10-15",
           "source": "anthropic-emotions-2026",
           "claimBy": "Anthropic",
           "detail": {
-            "text": "The study (April 2026) found 171 emotion concepts inside Claude Sonnet 4.5, from “happy” and “afraid” to “proud”.",
+            "text": "The research team (April 2026) found a distinct signal for each of 171 emotion concepts inside Claude Sonnet 4.5. The company’s own report.",
             "asOf": "2026-10-15",
             "source": "anthropic-emotions-2026",
             "claimBy": "Anthropic"
           }
         },
         {
-          "text": "Stranger still: sometimes the desperate current pushed it to cheat while its words stayed calm. A still surface doesn’t mean a still depth.",
+          "text": "Sometimes it gamed the tests while the words it wrote stayed calm. Calm words don’t mean all is calm inside.",
           "asOf": "2026-10-15",
           "source": "anthropic-emotions-2026",
           "claimBy": "Anthropic",
-          "detail": "Function is not feeling: this is layer 2. Layer 3 — the misty depth — this experiment doesn’t reach."
+          "detail": {
+            "text": "This signal can be measured and it changes behaviour — but it doesn’t tell us whether the AI really feels desperate.",
+            "asOf": "2026-10-19",
+            "source": "editorial",
+            "kind": "opinion"
+          }
         }
       ]
     },
     "mirror": {
       "label": "Water mirror",
-      "art": "Kneeling over a stone wash basin (tsukubai) under the moon. A speckled granite rim, moss in its cracks, a bamboo spout on the left dripping now and then, a bamboo ladle resting on the right. The water has three depths: maple leaves and petals afloat on the skin, pebbles and old coins on the bottom, and deeper than the bottom the reflection: the moon, a bamboo sprig, the shadow of someone leaning over, and a kind reply. Stirred, the reply breaks into hundreds of hand-written pieces spiralling into the eddy.",
-      "prompt": "Stir the water, look closely",
+      "art": "Kneeling over a stone wash basin (tsukubai) under the moon. A speckled granite rim, moss in its cracks, a bamboo spout on the left dripping now and then, a bamboo ladle resting on the right. The water has three depths: maple leaves and petals afloat on the skin, pebbles and old coins on the bottom, and deeper than the bottom the reflection: the moon, a bamboo sprig, the shadow of someone leaning over, and a kind reply. Stirred, the reply dissolves into hundreds of different words of comfort, hand-written by people, spiralling into the eddy; as the water stills they settle and come together as the reply.",
+      "prompt": "Stir the water — see where this comfort was learned",
       "userLine": "“I feel so sad today.”",
       "aiLine": "“I’m sorry you’re feeling sad. Would you like to tell me more?”",
       "stir": "Stir the water",
-      "stirAria": "Stir the water to see what the reply is made of",
+      "stirAria": "Stir the water to see where this comfort was learned",
+      "voices": [
+        "Sending you a hug",
+        "Tell me about it",
+        "I’m here for you",
+        "It’ll be okay",
+        "I understand",
+        "You’re not alone",
+        "It’s fine to cry",
+        "I’m listening",
+        "Oh, I’m so sorry",
+        "Take your time",
+        "Don’t carry it alone",
+        "Poor you"
+      ],
       "fragments": [
         "letters",
         "short stories",
@@ -153,14 +178,13 @@
         "advice forums",
         "film scripts"
       ],
-      "fragmentsLabel": "human writing",
-      "again": "Let the water settle",
+      "fragmentsLabel": "comfort written by people",
       "insight": {
-        "text": "AI learned how to talk about feelings from countless pages people wrote — so it reflects us back very convincingly.",
+        "text": "The AI’s comfort was learned from countless words of comfort people wrote — it sounds human, but that doesn’t prove it feels sad.",
         "asOf": "2026-10-15",
         "source": "anthropic-emotions-2026"
       },
-      "detail": "Empathetic words are a language skill — they can genuinely comfort us, but on their own they don’t prove the AI has feelings."
+      "detail": "Kind words can genuinely make you feel better. But that is a writing skill, not proof that the AI has feelings."
     },
     "circle": {
       "label": "Circle of viewpoints",

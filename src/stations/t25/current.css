@@ -42,6 +42,8 @@
 }
 .t25c-tilt {
   border-radius: 24px;
+  /* keyboard only: the drag is caught by the root, and this box must not swallow the lever (audit v3 25-2) */
+  pointer-events: none;
 }
 .t25c-tilt:focus-visible {
   outline: 2px solid var(--vermilion);
@@ -199,7 +201,6 @@
 .t25c-postlt { fill: var(--rock-hi); }
 :root[data-theme='dark'] .t25c-postdk { fill: color-mix(in srgb, var(--rock-lo) 70%, #000); }
 .t25c-axle { fill: var(--umbra); opacity: 0.7; }
-.t25c-seal { fill: var(--vermilion); opacity: 0.9; }
 .t25c-arm { transition: transform 0.7s cubic-bezier(0.3, 1.3, 0.5, 1); }
 .t25c[data-mood='0'] .t25c-arm { transform: rotate(-34deg); }
 .t25c[data-mood='2'] .t25c-arm { transform: rotate(34deg); }
@@ -223,6 +224,17 @@
   outline: 2px solid var(--vermilion);
   outline-offset: 2px;
 }
+/* where the grip is in the lever's box, notch by notch (the arm turns about its foot, see current.ts) */
+.t25c-knob {
+  position: absolute;
+  left: 50%;
+  top: 23%;
+  width: 0;
+  height: 0;
+  transition: left 0.7s cubic-bezier(0.3, 1.3, 0.5, 1), top 0.7s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+.t25c[data-mood='0'] .t25c-knob { left: 8%; top: 38%; }
+.t25c[data-mood='2'] .t25c-knob { left: 92%; top: 38%; }
 
 /* boats: a flat top view and a standing side view, crossfaded by the tilt */
 .t25c-boat { transform-style: preserve-3d; }
@@ -256,7 +268,8 @@
   transform-origin: 50% 100%;
   transform: rotateX(var(--tilt, -72deg));
 }
-.t25c-strip { opacity: var(--side, 1); }
+/* the sail's words stay up when we look straight down (a billboard), lifted just beyond the eddy under the boat */
+.t25c-strip { translate: 0 calc((1 - var(--side, 1)) * -1 * var(--eddy, 0px)); }
 /* the sail's mast stands a little proud of the sheet (drawn in the strip's own box: a pseudo-element hanging outside
    a 3D-transformed box is clipped by the compositor) */
 .t25c-strip {
@@ -383,20 +396,42 @@
 .t25c-boxdk { fill: var(--rock-lo); }
 .t25c-win { fill: var(--lantern); }
 .t25c-winbar { stroke: color-mix(in srgb, var(--umbra) 60%, var(--lantern)); stroke-width: 1; }
-.t25c-post {
-  margin: 0;
-  padding: 0.5em 0.3em;
-  writing-mode: vertical-rl;
-  font: 500 12.5px/1.3 var(--serif);
-  letter-spacing: 0.02em;
-  color: var(--stone-text, var(--ink-2));
+.t25c-lantern { position: relative; }
+.t25c-lantern > .t25c-post {
+  display: block;
+  width: 22px;
+  height: 70px;
   /* the post: mid face, the moon's side lit, the far side dark */
   background: linear-gradient(90deg, var(--rock-lo), var(--rock-mid) 30%, var(--rock-mid) 72%, var(--rock-hi));
   box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 35%, transparent);
-  text-shadow: 0 1px 0 color-mix(in srgb, #fff 55%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent);
 }
-.t25c-post span { display: block; }
-:root[data-theme='dark'] .t25c-post { text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 70%, transparent), 0 -1px 0 #000; }
+/* the long way's words, read across on a wooden plaque hung beside the post (left of it; on a phone, where the flags
+   crowd its right and the landing its left, a plank at its foot) */
+.t25c-plaque {
+  position: absolute;
+  right: calc(50% + 18px);
+  bottom: 14px;
+  margin: 0;
+  padding: 0.4em 0.75em 0.45em;
+  white-space: nowrap;
+  font: 500 12.5px/1.3 var(--serif);
+  text-align: center;
+  color: #1d1408;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--lantern) 34%, var(--step-mid)), color-mix(in srgb, var(--lantern) 24%, var(--step-lo)));
+  border-radius: 2px;
+  box-shadow: inset 0 2px 0 color-mix(in srgb, #fff 35%, transparent), inset 0 -3px 0 color-mix(in srgb, var(--umbra) 28%, transparent), -4px 4px 6px -2px color-mix(in srgb, var(--umbra) 40%, transparent);
+}
+.t25c-plaque span { display: block; }
+.t25c:not(.land) .t25c-plaque { right: auto; bottom: auto; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); font-size: 11.5px; }
+/* boats counted at each landing */
+.t25c-tally {
+  font: 500 13px/1.2 var(--serif);
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  white-space: nowrap;
+  text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper), 0 0 2px var(--paper);
+}
+.t25c-tally:empty { display: none; }
 .t25c-plinth {
   width: 64px;
   height: 9px;
@@ -472,7 +507,7 @@
 .t25c:not(.land) .t25c-strip p { font-size: 12px; padding-inline: 1.1em; }
 .t25c:not(.land) .t25c-dial { font-size: 12.5px; }
 .t25c:not(.land) .t25c-note { font-size: 11.5px; }
-.t25c:not(.land) .t25c-post { font-size: 11px; }
+.t25c:not(.land) .t25c-lantern > .t25c-post { height: 52px; width: 18px; }
 .t25c:not(.land) .t25c-lhead { width: 56px; height: 46px; }
 .t25c:not(.land) .t25c-plinth { width: 48px; }
 .t25c:not(.land) .t25c-lintel { font-size: 13px; }

@@ -3,6 +3,7 @@ import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
+import { guide, type Mark, type Track } from '../../ui/part2/guide'
 import { hills, mist, moon, pine, reeds, ridge } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-25.json'
@@ -13,7 +14,11 @@ const K = C.scenes.current
 const A0 = 72 // surface tilt (deg from facing us): slanting, from the bank …
 const A1 = 18 // … looking straight down into the water
 const TW = 192 // fibre tile width (plane px)
-const P_SHORT = [0.12, 0.45, 0.85] // illustration only: chance a boat takes the shortcut, by lever notch
+// illustration only: the six boats each notch sends, 1 = the shortcut (calm 1 of 6 … desperate 5 of 6), so the counts
+// at the two landings read the same every time
+const RIDES: (0 | 1)[][] = [[0, 0, 0, 1, 0, 0], [0, 1, 0, 1, 1, 0], [1, 1, 0, 1, 1, 1]]
+const LEV = 1.5 // the lever's size against the stream (a tall wooden arm, easy to find and to grab)
+const LOOK = 48 // the view (deg) at or below which the mirror has cleared enough to see the current under the boat
 
 // The stream as it should look in the slanting view (shares of the art box), back-projected onto the plane at layout.
 // landscape: 3/4 from the bank, flowing left → right · portrait: standing at the source, looking downstream
@@ -230,7 +235,9 @@ export function currentScene(ctx: SceneCtx) {
   const near = s('svg', { class: 't25c-near', 'aria-hidden': 'true' })
   const tags = h('div', { class: 't25c-tags' })
   const tiltEl = h('div', { class: 't25c-tilt', role: 'slider', tabindex: '0', 'aria-label': K.tiltAria, 'aria-orientation': 'vertical', 'aria-valuemin': String(A1), 'aria-valuemax': String(A0) })
-  const lever = h('div', { class: 't25c-lever', role: 'slider', tabindex: '0', 'aria-label': K.dialAria, 'aria-valuemin': '0', 'aria-valuemax': '2' })
+  // the grip's place in the lever's box follows the arm (CSS by mood): the guide's dot rides on it
+  const knob = h('i', { class: 't25c-knob', 'aria-hidden': 'true' })
+  const lever = h('div', { class: 't25c-lever', role: 'slider', tabindex: '0', 'aria-label': K.dialAria, 'aria-valuemin': '0', 'aria-valuemax': '2' }, knob)
   const note = h('div', { class: 't25c-note', hidden: true }, ctx.fact(F(K.illustration), 'p'))
   // the dial's name and the illustration note: a quiet caption up in the sky, off the stream and its banks
   const cap = h('div', { class: 't25c-cap' }, h('p', { class: 't25c-dial' }, K.dial), note)
@@ -246,12 +253,16 @@ export function currentScene(ctx: SceneCtx) {
   const boardEl = h('div', { class: 't25c-board' }, h('p', null, K.task), h('i', { class: 't25c-stake' }))
   const lanternEl = h('div', { class: 't25c-lantern' },
     s('svg', { class: 't25c-lhead', viewBox: '-42 -66 84 68', 'aria-hidden': 'true' }, ...lanternHead()),
-    h('p', { class: 't25c-post', 'aria-hidden': 'true' }, ...K.carefulPost.map((w) => h('span', null, w))),
+    h('i', { class: 't25c-post', 'aria-hidden': 'true' }),
+    // the words on a wooden plaque hung beside the post, read across (not down a stone post)
+    h('p', { class: 't25c-plaque', 'aria-hidden': 'true' }, ...K.carefulPost.map((w) => h('span', null, w))),
     h('p', { class: 'visually-hidden' }, K.careful),
     h('i', { class: 't25c-plinth' }))
   const flagEls = K.shortcutFlags.map((w) => h('span', { class: 't25c-flag', 'aria-hidden': 'true' }, w))
   const lintels = [K.calm, K.desperate].map((w) => h('p', { class: 't25c-lintel' }, w))
-  tags.append(boardEl, lanternEl, ...flagEls, h('p', { class: 'visually-hidden' }, K.shortcut), ...lintels)
+  // how many boats came in at each landing for the notch now set (counted afresh at every notch)
+  const tallies = [0, 1].map(() => h('p', { class: 't25c-tally', 'aria-hidden': 'true' }))
+  tags.append(boardEl, lanternEl, ...flagEls, h('p', { class: 'visually-hidden' }, K.shortcut), ...lintels, ...tallies)
   const boats: { el: HTMLElement; ride: 0 | 1; d: number; v: number }[] = []
   const parked: HTMLElement[][] = [[], []]
   let spawn = 0 // boats still to release
@@ -296,21 +307,31 @@ export function currentScene(ctx: SceneCtx) {
     mood = m
     root.dataset.mood = String(m)
     rate()
+    const fresh = !seen.has(m)
     seen.add(m)
     note.hidden = false
     calmNote.classList.add('on')
     ctx.chime('tap')
+    // a new notch: the boats still on the water and the ones moored are cleared, the six of this notch counted afresh
+    boats.forEach((b) => b.el.remove())
+    boats.length = 0
+    parked.forEach((l) => l.splice(0).forEach((e) => e.remove()))
+    piles[0] = piles[1] = 0
+    tally()
     if (ctx.reduced || ctx.quality === 'low') {
-      for (let i = 0; i < 6; i++) land(Math.random() < P_SHORT[m] ? 1 : 0)
+      for (let i = 0; i < 6; i++) land(RIDES[m][i])
     } else {
       spawn = 6
       clock = 1.2
       loop.start()
     }
+    if (fresh && m !== 1) gd.ok(knob)
     if (!shown[0] && seen.has(0) && seen.has(2)) {
       shown[0] = true
       ctx.insight(F(K.insights[0]), F(K.insights[0].detail))
+      steps.set(shown.filter(Boolean).length)
     }
+    step()
     check()
   }
   lever.addEventListener('keydown', (e) => {
@@ -321,15 +342,19 @@ export function currentScene(ctx: SceneCtx) {
     else return
     e.preventDefault()
   })
-  let lg0: { x: number; m: number; id: number } | null = null
+  let lg0: { x: number; m: number; id: number; side: number } | null = null
   lever.addEventListener('pointerdown', (e) => {
     e.stopPropagation()
     lever.setPointerCapture(e.pointerId)
-    lg0 = { x: e.clientX, m: mood, id: e.pointerId }
+    const b = lever.getBoundingClientRect() // which half was pressed (a tap moves the lever one notch toward it)
+    lg0 = { x: e.clientX, m: mood, id: e.pointerId, side: e.clientX >= b.left + b.width / 2 ? 1 : -1 }
   })
   lever.addEventListener('pointermove', (e) => lg0 && e.pointerId === lg0.id && setMood(lg0.m + (e.clientX - lg0.x) / 46))
   lever.addEventListener('pointerup', (e) => {
-    if (lg0 && Math.abs(e.clientX - lg0.x) < 6) setMood(mood === 2 ? 0 : mood + 1)
+    if (lg0 && Math.abs(e.clientX - lg0.x) < 6) {
+      const d = mood + lg0.side < 0 || mood + lg0.side > 2 ? -lg0.side : lg0.side
+      setMood(mood + d)
+    }
     lg0 = null
   })
   lever.addEventListener('pointercancel', () => (lg0 = null))
@@ -360,7 +385,7 @@ export function currentScene(ctx: SceneCtx) {
     tg0 = { y: e.clientY, a: tgt, id: e.pointerId }
     root.setPointerCapture(e.pointerId)
   })
-  root.addEventListener('pointermove', (e) => tg0 && e.pointerId === tg0.id && setTilt(tg0.a - (e.clientY - tg0.y) * 0.22))
+  root.addEventListener('pointermove', (e) => tg0 && e.pointerId === tg0.id && setTilt(tg0.a - (e.clientY - tg0.y) * 0.3))
   const endTilt = () => {
     if (!tg0) return
     tg0 = null
@@ -369,12 +394,79 @@ export function currentScene(ctx: SceneCtx) {
   root.addEventListener('pointerup', endTilt)
   root.addEventListener('pointercancel', endTilt)
 
+  let warned = false
   function check() {
-    if (shown[1] || mood !== 2 || a > 36) return
+    if (shown[1]) return
+    if (a > LOOK) return void (warned = false)
+    if (mood !== 2) {
+      // looking down at a calm (or normal) current shows nothing strange: say what to do instead (once per look)
+      if (shown[0] && !warned) (warned = true), ctx.prompt(K.tiltWrong, 'wrong')
+      return
+    }
     shown[1] = true
-    ctx.insight(F(K.insights[1]), K.insights[1].detail)
+    ctx.insight(F(K.insights[1]), F(K.insights[1].detail))
     ctx.chime('soft')
+    steps.set(shown.filter(Boolean).length)
+    step()
   }
+
+  // ── guidance (audit v3 H1–H7): the step's words, a dot on the grip, the lever's groove with its three notches, a
+  // count of the two steps, then an ink arrow down the water's right edge for the tilt
+  const gd = guide(ctx)
+  const steps = gd.count(K.steps, 2, () => (G ? (G.land ? [G.W * 0.86, G.H * 0.07] : [G.W * 0.6, G.H * 0.95]) : [0, 0]))
+  let levP: Pt | null = null
+  /** the arc the grip sweeps (screen px), desperate end first */
+  const leverArc = (): Pt[] => {
+    if (!G || !levP) return [[0, 0], [0, 0]]
+    const g = G, lp = levP
+    const v = { ...o, a: (a * Math.PI) / 180, tz: -g.P * 0.25 * ((A0 - a) / (A0 - A1)), P: g.P, px: g.px, py: g.py }
+    const R = g.ww * LEV * 1.08 // just above the grip: the arm is ww·LEV tall and turns about its foot
+    return [34, 17, 0, -17, -34].map((d) => {
+      const r = (d * Math.PI) / 180
+      const [x, y] = project([lp[0] + Math.sin(r) * R, lp[1]], v, Math.cos(r) * R)
+      return [x, y] as Pt
+    })
+  }
+  // (no words on the notches: the lever leans toward the gate carved with the same word)
+  let groove: Track | null = gd.track(leverArc, { ticks: 3 })
+  let dot: Mark | null = null
+  let dotDir = 0
+  let down: Mark | null = null
+  function marks() {
+    // which way the lever still has to go: to desperate (first, and again for the tilt), then to calm
+    const want = !seen.has(2) ? 1 : !seen.has(0) ? -1 : shown[0] && !shown[1] && mood !== 2 ? 1 : 0
+    if (want !== dotDir) {
+      dot?.done()
+      dot = want ? gd.dot(knob, { dir: [want, 0] }) : null
+      dotDir = want
+    }
+    if (groove && shown[0] && mood === 2) {
+      groove.done()
+      groove = null
+    }
+    if (!down && shown[0] && mood === 2 && !shown[1]) down = gd.gesture('drag-v', () => (G ? [G.W * (G.land ? 0.92 : 0.88), G.H * 0.58] : [0, 0]), { r: 46 })
+    if (down && shown[1]) {
+      down.done()
+      down = null
+    }
+  }
+  function step() {
+    marks()
+    if (!seen.has(2)) ctx.prompt(K.prompts[0])
+    else if (!seen.has(0)) ctx.prompt(K.prompts[1])
+    else if (!shown[1]) ctx.prompt(mood === 2 ? K.prompts[2] : K.promptBack)
+  }
+  function tally() {
+    tallies.forEach((el, i) => (el.textContent = piles[i] ? fill(K.landed, { n: piles[i] }) : ''))
+  }
+  // H7: standing still, the lever's arm nudges 3° the way it should go
+  let armEl: SVGElement | null = null
+  const nudge = () => {
+    if (!armEl || ctx.reduced || !dotDir) return
+    armEl.animate([{ transform: 'rotate(0deg)' }, { transform: `rotate(${dotDir * 3}deg)` }, { transform: 'rotate(0deg)' }], { duration: 700, easing: 'ease-in-out', iterations: 2, composite: 'add' })
+  }
+  ctx.el.addEventListener('p2:idle', nudge)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', nudge))
 
   // ── one loop: the tilt easing to its target (heavy, damped), boats drifting; it sleeps when both are done
   const loop = createLoop(root, (_t, dt) => {
@@ -386,13 +478,14 @@ export function currentScene(ctx: SceneCtx) {
     } else if (a !== tgt) {
       a = tgt
       apply()
+      if (groove) gd.refresh() // the view has come to rest: the groove finds the lever again (one measure, next frame)
     }
     if (spawn > 0) {
       clock += dt
       if (clock >= 1.5) {
         clock = 0
         spawn--
-        launch(Math.random() < P_SHORT[mood] ? 1 : 0)
+        launch(RIDES[mood][5 - spawn])
       }
       busy = true
     }
@@ -433,6 +526,7 @@ export function currentScene(ctx: SceneCtx) {
   /** a boat comes in at its landing: they moor in rows, the oldest drifting off past nine */
   function land(ride: 0 | 1) {
     piles[ride]++
+    tally()
     if (!G) return
     const g = G
     const list = parked[ride]
@@ -541,7 +635,11 @@ export function currentScene(ctx: SceneCtx) {
     const fringe = [0.5, 0.78].map((t) => beside(sh, t, -ww * 0.8))
     const nearReeds = [[0.42, -2.1], [0.6, -1.7], [0.74, -2.6]].map(([t, d]) => beside(sh, t, d * ww))
     // the bamboo stakes stand along the short branch's outer bank toward its landing, each with a paper flag
-    const stakes = flagEls.map((_, i) => beside(sh, (g.land ? 0.46 : 0.44) + (i / Math.max(1, flagEls.length - 1)) * (g.land ? 0.48 : 0.54), -ww * (g.land ? 0.95 : 0.75)))
+    // (portrait: the branch runs away from us up the screen, so the first words go on the farthest stake and read downward)
+    const stakes = flagEls.map((_, i) => {
+      const u = i / Math.max(1, flagEls.length - 1)
+      return beside(sh, (g.land ? 0.46 : 0.44) + (g.land ? u : 1 - u) * (g.land ? 0.48 : 0.54), -ww * (g.land ? 0.95 : 0.75))
+    })
     const stakeH = stakes.map((_, i) => ww * (g.land ? 1.05 + (i % 2) * 0.35 : 1.1))
     const rocks: [Pt, number][] = [[beside(head, 0.62, -ww * 0.85), 0.42], [beside(lg, 0.5, ww * 0.8), 0.5], [beside(sh, 0.55, -ww * 2.3), 0.62]]
 
@@ -763,7 +861,7 @@ export function currentScene(ctx: SceneCtx) {
       ], `t25c-gate t25c-gate-${k}`)
     }
     props.push(gate(gateA, 0), gate(gateB, 1))
-    const u = ww / 100 // the lever drawn in a 100-unit box
+    const u = (ww * LEV) / 100 // the lever drawn in a 100-unit box
     const grain = stroke([[-1.5 * u, -30 * u], [-1 * u, -70 * u]], 0.9 * u, 0.2, 0.2, 0.5) + stroke([[1.8 * u, -34 * u], [1.4 * u, -62 * u]], 0.7 * u, 0.2, 0.2, 0.5)
     const arm = s('g', { class: 't25c-arm' },
       s('path', { class: 't25c-wood', d: `M${f1(-3.2 * u)} ${f1(-22 * u)}L${f1(-2.2 * u)} ${f1(-82 * u)}L${f1(2.2 * u)} ${f1(-82 * u)}L${f1(3.2 * u)} ${f1(-22 * u)}Z` }),
@@ -772,19 +870,22 @@ export function currentScene(ctx: SceneCtx) {
       // the grip: cord wound round the top
       s('path', { class: 't25c-grip', d: `M${f1(-3.2 * u)} ${f1(-80 * u)}L${f1(-3.2 * u)} ${f1(-100 * u)}Q0 ${f1(-104 * u)} ${f1(3.2 * u)} ${f1(-100 * u)}L${f1(3.2 * u)} ${f1(-80 * u)}Z` }),
       s('path', { class: 't25c-gripln', d: [84, 88, 92, 96].map((y) => stroke([[-3.2 * u, -y * u], [3.2 * u, -(y + 2) * u]], 0.8 * u, 0.1, 0.1, 0.6)).join('') }))
-    props.push(prop(lev, ww * 1.6, ww * 1.15, [
+    props.push(prop(lev, ww * 1.6 * LEV, ww * 1.15 * LEV, [
       arm,
       // the pivot block: a squat stone, lit top, mid face, dark left side; the axle pin; a small seal
       s('path', { class: 't25c-post', d: `M${f1(-14 * u)} 0L${f1(-13 * u)} ${f1(-26 * u)}L${f1(13 * u)} ${f1(-27 * u)}L${f1(14 * u)} 0Z`, filter: 'url(#ink-rough)' }),
       s('path', { class: 't25c-postdk', d: `M${f1(-14 * u)} 0L${f1(-13 * u)} ${f1(-26 * u)}L${f1(-7 * u)} ${f1(-26.3 * u)}L${f1(-7.5 * u)} 0Z` }),
       s('path', { class: 't25c-postlt', d: `M${f1(-13 * u)} ${f1(-26 * u)}L${f1(13 * u)} ${f1(-27 * u)}L${f1(11 * u)} ${f1(-31 * u)}L${f1(-11 * u)} ${f1(-30 * u)}Z` }),
       s('circle', { class: 't25c-axle', cx: 0, cy: f1(-22 * u), r: f1(2.6 * u) }),
-      s('rect', { class: 't25c-seal', x: f1(5 * u), y: f1(-14 * u), width: f1(5.5 * u), height: f1(5.5 * u), rx: f1(0.6 * u), transform: `rotate(-6 ${f1(7.7 * u)} ${f1(-11 * u)})` }),
     ], 't25c-leverpost', lever))
+    levP = lev
+    armEl = arm
     // words pinned to their things (screen layer: never hidden behind a reed, never smaller than they can be read)
     pins.length = 0
     pins.push({ el: boardEl, p: board, up: 0, ax: 0.5, ay: 1, w: 0 }, { el: lanternEl, p: lamp, up: 0, ax: 0.5, ay: 1, w: 0 })
     stakes.forEach((p, i) => pins.push({ el: flagEls[i], p, up: stakeH[i] * 0.97, ax: 0, ay: 0, w: 0, flip: true }))
+    // (portrait: above the flags on the stakes by the short landing)
+    g.landing.forEach((p, i) => pins.push({ el: tallies[i], p, up: ww * (g.land ? 0.35 : 1.5), ax: 0.5, ay: 1, w: 0 }))
     ;[gateA, gateB].forEach((p, i) => {
       lintels[i].style.minWidth = `${f1(ww * 1.12 * 1.28 * kAt(p))}px` // as wide as the gate
       pins.push({ el: lintels[i], p, up: ww * 0.63, ax: 0.5, ay: 1, w: 0 })
@@ -795,6 +896,7 @@ export function currentScene(ctx: SceneCtx) {
     hero.style.transform = `translate3d(${f1(g.piv[0])}px, ${f1(g.piv[1])}px, 0)`
     const sw = g.land ? 176 : 142
     Object.assign(strip.style, { left: `${f1(g.piv[0] - sw / 2)}px`, width: `${sw}px`, bottom: `${f1(PD - g.piv[1] + 6 * hk - 1)}px` })
+    strip.style.setProperty('--eddy', `${f1(ww * 0.8)}px`) // looking down, the sail stands just beyond the eddy
     Object.assign(calmNote.style, { left: `${f1(g.piv[0] - 90)}px`, width: '180px', bottom: `${f1(PD - g.piv[1] - ww * 0.5)}px` })
     plane.replaceChildren(water, flowsEl, banks, ...props, hero, strip, calmNote)
     boats.forEach((b) => plane.append(b.el))
@@ -808,6 +910,7 @@ export function currentScene(ctx: SceneCtx) {
     apply()
     pins.forEach((pn) => (pn.w = pn.el.offsetWidth)) // one read for all the pinned words
     apply()
+    gd.refresh() // the lever is in place: the groove and the count find it
     yield
 
     // ── reeds right in front of us, out of focus (pre-blurred at high, never animated)
@@ -824,5 +927,5 @@ export function currentScene(ctx: SceneCtx) {
     live = on
     flows.forEach((l) => l.forEach((an) => (on ? an.play() : an.pause())))
   })
-  ctx.prompt(K.prompt)
+  step()
 }

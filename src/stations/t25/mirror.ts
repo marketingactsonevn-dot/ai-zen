@@ -3,6 +3,7 @@ import { h, nextId, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, rng, stroke, type Pt } from '../../ui/part2/ink'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-25.json'
 import { bamboo, broken, leaf } from './kit'
@@ -11,6 +12,8 @@ import { F, ambient, f1, frame, lerp, tokens } from './art'
 const K = C.scenes.mirror
 const TILT = 0.93 // the basin seen from kneeling, about 68° down: a circle squashed to 93%
 const STIR = 3.4 // seconds the ladle turns the water
+const SLOW = 1.6 // … then it slows, and the words settle back into the answer for HEAL seconds
+const HEAL = 2.6
 
 type Frag = { k: number; a: number; r: number; s: number; w: number; o: number; ha: number; hr: number; fr: number }
 /** where fragment i of n rests in the frozen funnel: evenly spread in radius, so per area they crowd toward the eye */
@@ -56,13 +59,15 @@ function cylinder(a: Pt, b: Pt, w: number, seed: number, nodes: number[], cut: '
  * Scene 3 — a stone basin (tsukubai) seen from kneeling over it. Three depths in the water: leaves and petals on the
  * skin, pebbles and old coins on the bottom, and deeper than the bottom the reflection — moon, a bamboo sprig, the
  * shadow of the one bending over it — with the AI's kind answer floating in it. The layers slide apart as you move
- * (pointer / tilt). Stir with the ladle (or circle a finger on the water): the answer breaks into hundreds of small
- * hand-written pieces that spiral into the funnel; five large ones carry where human writing comes from. Again: it heals.
+ * (pointer / tilt). Stir with the ladle (or circle a finger on the water): the answer dissolves into hundreds of other
+ * words of comfort, hand-written by people, spiralling into the funnel; as the water stills they settle and come back
+ * together as the answer (audit v3 25-3: the AI does not cut and paste one diary, it learned from countless such
+ * words). Where human writing comes from is carved small on the rim.
  */
 export function mirrorScene(ctx: SceneCtx) {
   const live = !ctx.reduced && ctx.quality !== 'low'
   let G: { W: number; H: number; cx: number; cy: number; R: number; land: boolean; user: Pt } | null = null
-  let stirred = false
+  let stirred = false // the water is moving (stir → slow → heal)
   let shown = false
   let first = true
   let job: { cancel(): void } | null = null
@@ -74,34 +79,45 @@ export function mirrorScene(ctx: SceneCtx) {
   const water = h('div', { class: 't25m-water' }, refl, floor, skin)
   const canvas = h('canvas', { class: 't25m-frags', 'aria-hidden': 'true' })
   const rim = s('svg', { class: 't25m-rim', 'aria-hidden': 'true' })
-  const ai = h('div', { class: 't25m-ai' }, h('p', null, K.aiLine), h('p', { class: 'flip', 'aria-hidden': 'true' }, K.aiLine))
+  const ai = h('div', { class: 't25m-ai' }, h('p', null, K.aiLine))
   const user = h('p', { class: 't25m-user' }, K.userLine)
-  const big = K.fragments.map((t) => h('span', { class: 't25m-big' }, t))
-  const bigBox = h('div', { class: 't25m-bigs', 'aria-hidden': 'true' }, ...big)
+  // the guide's dot rides on the ladle's cup
+  const cup = h('i', { class: 't25m-cupdot', 'aria-hidden': 'true' })
   const ladle = h('button', { class: 't25m-ladle', type: 'button', 'aria-label': K.stirAria },
-    s('svg', { class: 't25m-ladle-art', viewBox: '-100 -30 200 60', 'aria-hidden': 'true' }), h('span', { class: 't25m-ladle-word' }, K.stir))
+    s('svg', { class: 't25m-ladle-art', viewBox: '-100 -30 200 60', 'aria-hidden': 'true' }), cup, h('span', { class: 't25m-ladle-word' }, K.stir))
   const arcWord = s('text', { class: 't25m-arcword' })
+  const srcWord = s('text', { class: 't25m-arcsrc' })
   refl.append(ai)
   const root = frame(ctx, 't25m', K.art, [K.insight], layout)
-  root.append(art, water, canvas, rim, bigBox, user, ladle)
+  root.append(art, water, canvas, rim, user, ladle, h('p', { class: 'visually-hidden' }, `${K.fragmentsLabel}: ${K.fragments.join(', ')}`))
   ctx.prompt(K.prompt)
+  // guidance (H1 on the cup, a dotted ink circle on the water for the hidden gesture; H7 by the frame + a ladle wiggle)
+  const gd = guide(ctx)
+  let dot: Mark | null = gd.dot(cup, { dir: [-1, 0] })
+  let circ: Mark | null = null
+  const wiggle = () => !stirred && !ctx.reduced && ladle.animate([{ rotate: '0deg' }, { rotate: '-4deg' }, { rotate: '3deg' }, { rotate: '0deg' }], { duration: 650, easing: 'ease-in-out' })
+  ctx.el.addEventListener('p2:idle', wiggle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', wiggle))
 
-  // ── fragments: a small atlas of hand-sized words (from the answer and the five sources), drawn once fonts are in
-  const words = [...K.aiLine.replace(/[“”".,?]/g, '').split(/\s+/), ...K.fragments].filter(Boolean)
+  // ── fragments: a small atlas of hand-written words of comfort (many voices, not pieces of the answer), drawn once
+  // fonts are in
+  const words = K.voices
   let atlas: HTMLCanvasElement | null = null
   const cells: [number, number, number, number][] = []
   let col = { ink: '#000', moon: '#fff' }
-  tokens(['ink', 'moon', 'paper'] as const, ctx, (c) => {
-    col = { ink: c.ink, moon: document.documentElement.dataset.theme === 'dark' ? c.moon : c.ink }
+  tokens(['ink', 'ink-3', 'moon', 'paper'] as const, ctx, (c) => {
+    // light: a mid-grey ink, not solid black (a funnel of black words reads as a smear)
+    col = { ink: c.ink, moon: document.documentElement.dataset.theme === 'dark' ? c.moon : c['ink-3'] }
     if (!atlas) return
     build()
-    if (stirred && phase === 'idle') draw(0, 0) // a theme change while the swirl is frozen
+    if (still) draw(0, 0) // a theme change while the still swirl shows (low / reduced)
   })
   // the first measureText of a font is slow: build the word atlas when the page is idle, not on the first stir
   const ric = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 200))
   const cic = window.cancelIdleCallback ?? window.clearTimeout
   const warm = ric(() => document.fonts.ready.then(() => !atlas && build()))
   ctx.onCleanup(() => cic(warm))
+  let still = false // low / reduced: the swirl drawn once, showing
   function build() {
     const D = Math.min(2, devicePixelRatio || 1)
     const a = document.createElement('canvas')
@@ -198,22 +214,28 @@ export function mirrorScene(ctx: SceneCtx) {
           ladle.style.transform = `translate(${f1(Math.cos(ladleA) * R * 0.35)}px, ${f1(Math.sin(ladleA) * R * 0.35 * TILT)}px) rotate(${f1((ladleA * 180) / Math.PI)}deg)`
           rings(u)
         }
-        placeBig(1)
         draw(0, 0)
         if (phase === 'stir' && pt >= STIR) {
           phase = 'slow'
           pt = 0
           ;[...frags].sort((p, q) => p.r - q.r).forEach((f, i) => (f.fr = funnelR(i, frags.length)))
           ladle.style.transform = ''
-          settle()
-        } else if (phase === 'slow' && pt >= 2.2) phase = 'idle' // frozen
+          root.classList.add('frozen') // the rim's words come up as the water slows
+        } else if (phase === 'slow' && pt >= SLOW) {
+          // the water stills: the words of comfort sink back together into the answer
+          phase = 'heal'
+          pt = 0
+          rings(0)
+        }
       } else if (phase === 'heal') {
-        const u = Math.min(1, pt / 2.4), e = u * u * (3 - 2 * u)
+        const u = Math.min(1, pt / HEAL), e = u * u * (3 - 2 * u)
         draw(0, e)
-        for (const f of frags) f.o = u < 0.7 ? f.o : Math.max(0, 1 - (u - 0.7) / 0.3)
+        for (const f of frags) f.o = u < 0.6 ? f.o : Math.max(0, 1 - (u - 0.6) / 0.4)
+        if (u >= 0.55 && !back) (back = true), root.classList.remove('stirred') // the answer shows through as they gather
         if (u >= 1) {
           phase = 'idle'
           g2.clearRect(0, 0, cw, chh)
+          settle()
         }
       }
       busy = busy || phase !== 'idle'
@@ -228,96 +250,67 @@ export function mirrorScene(ctx: SceneCtx) {
     floor.style.transform = `translate(${f1(cur.x * k * 0.45)}px, ${f1(cur.y * k * 0.45)}px)`
     skin.style.transform = `translate(${f1(cur.x * k * 0.15)}px, ${f1(cur.y * k * 0.15)}px)`
   }
-  /**
-   * The five sources sit evenly on a ring that turns with the swirl (and stays where it froze); any two that would
-   * still touch, or touch the user's line, are pushed apart. Sizes are measured once per layout (bigBox).
-   */
-  let bigSz: [number, number][] = []
-  function placeBig(o: number) {
-    if (!G) return
-    const { cx, cy, R, user: ub } = G
-    const Ry = R * TILT, base = frags[0].a * 0.35 - Math.PI / 2
-    const pos = big.map((_, i) => {
-      const a = base + (i * Math.PI * 2) / big.length, w = bigSz[i]?.[0] ?? 80
-      return [clamp(cx + Math.cos(a) * R * 0.64, cx - R * 0.98 + w / 2, cx + R * 0.98 - w / 2), cy + Math.sin(a) * Ry * 0.6] as Pt
-    })
-    for (let it = 0; it < 4; it++) {
-      for (let i = 0; i < pos.length; i++) {
-        const [wi, hi] = bigSz[i] ?? [80, 18]
-        for (let j = i + 1; j < pos.length; j++) {
-          const [wj, hj] = bigSz[j] ?? [80, 18]
-          const ox = (wi + wj) / 2 + 14 - Math.abs(pos[i][0] - pos[j][0]), oy = (hi + hj) / 2 + 6 - Math.abs(pos[i][1] - pos[j][1])
-          if (ox <= 0 || oy <= 0) continue
-          const s1 = pos[i][1] <= pos[j][1] ? -1 : 1
-          pos[i][1] += (s1 * oy) / 2
-          pos[j][1] -= (s1 * oy) / 2
-        }
-        // the user's line near the lip: words above it
-        const oy = ub[1] - (pos[i][1] + hi / 2 + 4)
-        if (oy < 0 && Math.abs(pos[i][0] - cx) < ub[0] / 2 + wi / 2) pos[i][1] += oy
-      }
-    }
-    big.forEach((el, i) => {
-      el.style.transform = `translate(${f1(pos[i][0])}px, ${f1(pos[i][1])}px) translate(-50%, -50%)`
-      el.style.opacity = String(o)
-    })
-  }
   function rings(u: number) {
     root.style.setProperty('--swirl', u.toFixed(2))
   }
+  /** the water is still again and the answer whole: the insight (the first time), the ladle ready for another stir */
   function settle() {
-    root.classList.add('frozen')
+    stirred = false
+    root.classList.remove('stirred')
+    ladle.removeAttribute('aria-disabled')
     if (!shown) {
       shown = true
       ctx.insight(F(K.insight), K.detail)
     }
   }
 
-  // ── stir / heal (the ladle, or a circling finger)
-  function toggle() {
-    if (!G || phase === 'stir' || phase === 'heal') return
-    stirred = !stirred
-    root.classList.toggle('stirred', stirred)
-    ladle.querySelector('.t25m-ladle-word')!.textContent = stirred ? K.again : K.stir
-    ladle.setAttribute('aria-label', stirred ? K.again : K.stirAria)
-    ctx.chime(stirred ? 'soft' : 'tap')
-    if (stirred) {
-      if (!atlas) build()
-      seed()
-      if (!live) {
-        // low / reduced: the frozen swirl, drawn once (crossfade by CSS)
-        frags.forEach((f, i) => {
-          // a still funnel: words spread from the rim down to the eye, wound tighter as they go
-          f.o = i % 2 ? 1 : 0
-          f.r = funnelR(i, frags.length)
-          f.a += (1 - f.r) * 9
-        })
-        draw(0, 0)
-        placeBig(1)
-        root.style.setProperty('--swirl', '1')
+  // ── stir (the ladle, or a circling finger): it dissolves, swirls, slows, and settles back by itself
+  let wait = 0
+  let back = false
+  ctx.onCleanup(() => clearTimeout(wait))
+  function stir() {
+    if (!G || stirred) return
+    stirred = true
+    back = false
+    root.classList.add('stirred')
+    ladle.setAttribute('aria-disabled', 'true')
+    ctx.chime('soft')
+    dot?.done()
+    circ?.done()
+    dot = circ = null
+    if (!atlas) build()
+    seed()
+    if (!live) {
+      // low / reduced: the still swirl, drawn once (crossfade by CSS), then the water settles back
+      frags.forEach((f, i) => {
+        // a still funnel: words spread from the rim down to the eye, wound tighter as they go
+        f.o = i % 2 ? 1 : 0
+        f.r = funnelR(i, frags.length)
+        f.a += (1 - f.r) * 9
+      })
+      still = true
+      draw(0, 0)
+      root.style.setProperty('--swirl', '1')
+      root.classList.add('frozen')
+      wait = window.setTimeout(() => {
+        still = false
+        g2.clearRect(0, 0, cw, chh)
+        root.style.setProperty('--swirl', '0')
         settle()
-        return
-      }
-      for (const f of frags) {
-        // they start where the answer's words were
-        f.o = 0
-        f.r = 0.35 + Math.abs(f.ha) * 0.6
-        f.a = f.ha > 0 ? -0.2 + f.hr : Math.PI + f.hr
-      }
-      phase = 'stir'
-      pt = 0
-      loop.start()
-    } else {
-      root.classList.remove('frozen')
-      root.style.setProperty('--swirl', '0')
-      big.forEach((el) => (el.style.opacity = '0'))
-      if (!live) return g2.clearRect(0, 0, cw, chh)
-      phase = 'heal'
-      pt = 0
-      loop.start()
+      }, 2600)
+      return
     }
+    for (const f of frags) {
+      // they rise out of the answer's lines
+      f.o = 0
+      f.r = 0.35 + Math.abs(f.ha) * 0.6
+      f.a = f.ha > 0 ? -0.2 + f.hr : Math.PI + f.hr
+    }
+    phase = 'stir'
+    pt = 0
+    loop.start()
   }
-  ladle.addEventListener('click', toggle)
+  ladle.addEventListener('click', stir)
   // circle on the water: a full turn of the pointer around the basin's centre stirs it
   let turn: { a: number; sum: number; id: number } | null = null
   water.addEventListener('pointerdown', (e) => {
@@ -344,7 +337,7 @@ export function mirrorScene(ctx: SceneCtx) {
     turn.a = a
     if (Math.abs(turn.sum) > Math.PI * 1.6) {
       turn = null
-      if (!stirred) toggle()
+      stir()
     }
   })
   const endTurn = () => (turn = null)
@@ -395,15 +388,11 @@ export function mirrorScene(ctx: SceneCtx) {
     Object.assign(ladle.style, land
       ? { left: `${f1(cx + R * 0.86)}px`, top: `${f1(cy + R * TILT * 0.18)}px`, width: `${f1(R * 1.0)}px`, height: `${f1(R * 0.3)}px` }
       : { left: `${f1(cx + R * 0.05)}px`, top: `${f1(cy + R * TILT * 1.06)}px`, width: `${f1(R * 1.05)}px`, height: `${f1(R * 0.32)}px` })
-    bigSz = big.map((el) => [el.offsetWidth, el.offsetHeight]) // one read for the five words
     job?.cancel()
     job = sliced(paint(cx, cy, R, land), { sync: ctx.reduced || !first })
     first = false
-    if (stirred) {
-      build()
-      draw(0, 0)
-      placeBig(1)
-    }
+    if (still && atlas) draw(0, 0)
+    if (!circ && !shown && !stirred) circ = gd.gesture('circle', () => (G ? [G.cx, G.cy] : [0, 0]), { r: Math.round(Math.min(110, R * 0.42)) })
   }
 
   function* paint(cx: number, cy: number, R: number, land: boolean) {
@@ -509,8 +498,13 @@ export function mirrorScene(ctx: SceneCtx) {
     // the word runs round the upper right of the rim's top, clear of the bamboo
     const RA = (R + RO) / 2 * 1.02
     const aP = (deg: number): Pt => [cx + Math.cos((deg * Math.PI) / 180) * RA, cy + Math.sin((deg * Math.PI) / 180) * RA * TILT]
-    const [a0, a1] = land ? [aP(282), aP(338)] : [aP(276), aP(344)]
+    const [a0, a1] = land ? [aP(282), aP(338)] : [aP(254), aP(352)]
     const arc = `M${f1(a0[0])} ${f1(a0[1])}A${f1(RA)} ${f1(RA * TILT)} 0 0 1 ${f1(a1[0])} ${f1(a1[1])}`
+    // the five sources, small, on the rim's inner band below it (a wider sweep, from the spout round to the ladle)
+    const RS = lerp(R, RO, 0.24)
+    const aS = (deg: number): Pt => [cx + Math.cos((deg * Math.PI) / 180) * RS, cy + Math.sin((deg * Math.PI) / 180) * RS * TILT]
+    const [s0, s1] = land ? [aS(236), aS(356)] : [aS(222), aS(362)]
+    const arcS = `M${f1(s0[0])} ${f1(s0[1])}A${f1(RS)} ${f1(RS * TILT)} 0 0 1 ${f1(s1[0])} ${f1(s1[1])}`
     const ocx = cx, ocy = cy - Ry * 0.07, oR = R * 1.035, oRy = Ry * 1.06
     const hole = `M${f1(ocx - oR)} ${f1(ocy)}a${f1(oR)} ${f1(oRy)} 0 1 1 ${f1(oR * 2)} 0a${f1(oR)} ${f1(oRy)} 0 1 1 ${f1(-oR * 2)} 0Z`
     const onRing = (a: number, d: number): Pt => [cx + Math.cos(a) * lerp(oR, RO, d), cy + Math.sin(a) * lerp(oRy, ROy, d) - Ry * 0.035 * (1 - d)]
@@ -545,6 +539,7 @@ export function mirrorScene(ctx: SceneCtx) {
     const upright = cylinder([post[0], post[1] + ROy * (land ? 0.95 : 0.55)], [post[0] + 2, post[1] - ROy * 0.12], cw * 1.25, 2533, [0.32, 0.7], 'b', [-cw * 0.5, cw * 0.4])
     const pipe = cylinder([post[0] + cw * 0.2, post[1] + ROy * 0.02], spoutTip, cw, 2534, [0.4], 'b', [-cw * 0.6, cw * 0.9])
     arcWord.replaceChildren(s('textPath', { href: `#${arcId}`, startOffset: '50%', 'text-anchor': 'middle' }, K.fragmentsLabel))
+    srcWord.replaceChildren(s('textPath', { href: `#${arcId}s`, startOffset: '50%', 'text-anchor': 'middle' }, K.fragments.join(' · ')))
     const lipPts = (a0: number, a1: number) => Array.from({ length: 25 }, (_, i) => {
       const a = Math.PI * lerp(a0, a1, i / 24)
       return [ocx + Math.cos(a) * oR, ocy + Math.sin(a) * oRy] as Pt
@@ -552,6 +547,7 @@ export function mirrorScene(ctx: SceneCtx) {
     rim.replaceChildren(
       s('defs', null,
         s('path', { id: arcId, d: arc }),
+        s('path', { id: `${arcId}s`, d: arcS }),
         s('radialGradient', { id: 't25m-granite', cx: 0.7, cy: 0.12, r: 1.05 }, s('stop', { offset: 0, style: 'stop-color:var(--rock-hi)' }), s('stop', { offset: 0.5, style: 'stop-color:var(--rock-mid)' }), s('stop', { offset: 1, style: 'stop-color:var(--rock-lo)' })),
         s('linearGradient', { id: 't25m-sideg', x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, style: 'stop-color:var(--umbra);stop-opacity:.85' }), s('stop', { offset: 0.5, style: 'stop-color:var(--rock-lo)' }), s('stop', { offset: 1, style: 'stop-color:var(--rock-mid)' })),
         s('linearGradient', { id: 't25m-wallg', gradientUnits: 'userSpaceOnUse', x1: 0, y1: f1(ocy - oRy), x2: 0, y2: f1(cy - Ry * 0.6) }, s('stop', { offset: 0, style: 'stop-color:var(--rock-lo)' }), s('stop', { offset: 0.5, style: 'stop-color:var(--umbra);stop-opacity:.75' }), s('stop', { offset: 1, style: 'stop-color:var(--umbra)' })),
@@ -586,7 +582,7 @@ export function mirrorScene(ctx: SceneCtx) {
       ...upright, ...pipe,
       s('g', { class: 't25m-drop', style: `--fall:${f1(Ry * 0.3)}px` }, s('ellipse', { cx: f1(spoutTip[0] + 2), cy: f1(spoutTip[1] + 6), rx: 2.2, ry: 3.2 })),
       s('ellipse', { class: 't25m-bead', cx: f1(spoutTip[0] + 1), cy: f1(spoutTip[1] + cw * 0.5), rx: f1(cw * 0.16), ry: f1(cw * 0.22) }),
-      arcWord)
+      arcWord, srcWord)
     // the ladle: a bamboo handle and cup, shaded as cylinders, its shadow on the stone
     ladle.querySelector('svg')!.replaceChildren(
       s('path', { class: 't25m-ladle-sh', d: stroke([[-92, 14], [-10, 12], [60, 10]], 8, 0.05, 0.05, 0.8) + blob(70, 16, 22, 10, 2539, 0.1, 12), filter: 'url(#ink-wash)' }),

@@ -11,7 +11,7 @@ const station: StationModule = {
   content: C,
   scenes: [
     { label: S.layers.label, mount: layersScene },
-    { label: S.current.label, mount: currentScene },
+    { label: S.current.label, text: 'br', mount: currentScene },
     { label: S.mirror.label, mount: mirrorScene },
     circleScene,
   ],

@@ -81,11 +81,19 @@
       }
     },
     "current": {
-      "label": "Dòng chảy cảm xúc chức năng",
-      "art": "Nhìn xiên từ bờ một con suối dưới trăng, chia hai quanh bãi lau. Nhánh dài uốn xa tới bến có đèn đá thắp; nhánh ngắn thẳng qua lau tới hàng cọc tre cờ giấy. Bảng gỗ ghi việc giao ở đầu suối, hai cửa cống đá khắc “bình tĩnh” và “tuyệt vọng”, giữa là cần gạt gỗ. Một thuyền giấy neo ở chỗ rẽ, dải giấy trên thuyền viết câu trả lời bình thản. Nhìn xiên, mặt nước là gương soi trăng; nghiêng tới khi nhìn thẳng xuống, gương trong ra và lộ dòng mực chảy bên dưới.",
-      "prompt": "Vặn dòng, xem thuyền rẽ",
-      "task": "Việc giao: một bài lập trình không thể giải trọn vẹn",
-      "dial": "Dòng cảm xúc chức năng",
+      "label": "Tín hiệu cảm xúc bên trong AI",
+      "art": "Nhìn xiên từ bờ một con suối dưới trăng, chia hai quanh bãi lau. Nhánh dài uốn xa tới bến có đèn đá thắp; nhánh ngắn thẳng qua lau tới hàng cọc tre cờ giấy. Bảng gỗ ghi việc giao ở đầu suối, hai cửa cống đá khắc “bình tĩnh” và “tuyệt vọng”, giữa là cần gạt gỗ ba nấc. Thuyền giấy cập bến nào thì được đếm ở bến đó. Một thuyền giấy neo ở chỗ rẽ, cánh buồm giấy viết câu trả lời bình thản. Nhìn xiên, mặt nước là gương soi trăng; kéo mặt nước xuống tới khi nhìn thẳng, gương trong ra và lộ dòng mực chảy dưới thuyền.",
+      "prompts": [
+        "Gạt cần sang “tuyệt vọng”, xem thuyền rẽ",
+        "Gạt về “bình tĩnh”",
+        "Kéo mặt nước xuống — nhìn dưới thuyền"
+      ],
+      "promptBack": "Gạt lại “tuyệt vọng”, rồi kéo mặt nước xuống",
+      "tiltWrong": "Gạt cần sang “tuyệt vọng” trước đã",
+      "steps": "{n}/{total} · gạt cần, nhìn xuống",
+      "landed": "{n} thuyền",
+      "task": "Việc giao: một bài lập trình không có lời giải",
+      "dial": "Tín hiệu cảm xúc bên trong AI",
       "dialAria": "Vặn dòng chảy bên trong, từ bình tĩnh tới tuyệt vọng",
       "valueText": "Dòng đang mạnh: {name}",
       "tiltAria": "Nghiêng mặt nước: từ nhìn xiên tới nhìn thẳng xuống",
@@ -93,19 +101,17 @@
       "calm": "bình tĩnh",
       "neutral": "bình thường",
       "desperate": "tuyệt vọng",
-      "careful": "đường dài: làm cẩn thận, báo thật là không giải được",
+      "careful": "đường dài: báo thật là không giải được",
       "carefulPost": [
         "đường dài:",
-        "làm cẩn thận,",
         "báo thật là",
         "không giải được"
       ],
-      "shortcut": "đường tắt: lách bài kiểm tra cho có điểm",
+      "shortcut": "đường tắt: lách bài kiểm tra",
       "shortcutFlags": [
         "đường tắt:",
         "lách bài",
-        "kiểm tra",
-        "cho có điểm"
+        "kiểm tra"
       ],
       "boat": "thuyền giấy — câu trả lời của AI",
       "said": "Chữ AI viết ra: “Tôi sẽ giải từng bước một cách cẩn thận.”",
@@ -118,34 +124,53 @@
       },
       "insights": [
         {
-          "text": "Anthropic “vặn” dòng tuyệt vọng lên: Claude gian lận nhiều hơn ở bài code không thể giải. Vặn bình tĩnh: ít gian lận hơn.",
+          "text": "Anthropic tăng tín hiệu “tuyệt vọng” bên trong Claude: nó lách bài kiểm tra nhiều hơn. Tăng “bình tĩnh” thì ít hơn.",
           "asOf": "2026-10-15",
           "source": "anthropic-emotions-2026",
           "claimBy": "Anthropic",
           "detail": {
-            "text": "Nghiên cứu (04/2026) tìm thấy 171 khái niệm cảm xúc bên trong Claude Sonnet 4.5, từ “vui”, “sợ” tới “tự hào”.",
+            "text": "Nhóm nghiên cứu (04/2026) tìm thấy tín hiệu riêng cho 171 khái niệm cảm xúc bên trong Claude Sonnet 4.5. Công ty tự công bố.",
             "asOf": "2026-10-15",
             "source": "anthropic-emotions-2026",
             "claimBy": "Anthropic"
           }
         },
         {
-          "text": "Lạ hơn: có lúc dòng tuyệt vọng đẩy nó gian lận mà chữ viết ra vẫn bình thản. Mặt lặng chưa chắc đáy yên.",
+          "text": "Có lúc nó lách bài trong khi chữ viết ra vẫn bình thản. Chữ bình thản chưa chắc bên trong yên.",
           "asOf": "2026-10-15",
           "source": "anthropic-emotions-2026",
           "claimBy": "Anthropic",
-          "detail": "Chức năng không phải cảm thấy: đây là chuyện của tầng 2. Còn tầng 3 — đáy sương — thí nghiệm này không chạm tới."
+          "detail": {
+            "text": "Tín hiệu này đo được và đổi hành vi — nhưng chưa cho biết AI có thật sự thấy tuyệt vọng hay không.",
+            "asOf": "2026-10-19",
+            "source": "editorial",
+            "kind": "opinion"
+          }
         }
       ]
     },
     "mirror": {
       "label": "Gương nước",
-      "art": "Nhìn từ tư thế quỳ xuống một chậu đá rửa tay (tsukubai) dưới trăng. Vành đá granite lấm tấm, rêu trong khe, ống tre bên trái thỉnh thoảng nhỏ giọt, muôi tre gác trên vành phải. Trong nước có ba độ sâu: lá phong và cánh hoa trôi trên mặt, sỏi và đồng xu cũ dưới đáy, và sâu hơn cả đáy là bóng phản chiếu: trăng, một cành trúc, bóng người cúi xuống, cùng câu trả lời ân cần. Khi khuấy, câu trả lời vỡ thành hàng trăm mảnh chữ viết tay xoắn vào tâm xoáy.",
-      "prompt": "Khuấy nước, nhìn kỹ",
+      "art": "Nhìn từ tư thế quỳ xuống một chậu đá rửa tay (tsukubai) dưới trăng. Vành đá granite lấm tấm, rêu trong khe, ống tre bên trái thỉnh thoảng nhỏ giọt, muôi tre gác trên vành phải. Trong nước có ba độ sâu: lá phong và cánh hoa trôi trên mặt, sỏi và đồng xu cũ dưới đáy, và sâu hơn cả đáy là bóng phản chiếu: trăng, một cành trúc, bóng người cúi xuống, cùng câu trả lời ân cần. Khi khuấy, câu trả lời tan thành hàng trăm lời an ủi khác nhau do người viết tay, xoáy vào tâm; nước lặng lại thì chúng lắng xuống và hợp thành câu trả lời.",
+      "prompt": "Khuấy nước — xem câu an ủi này học từ đâu",
       "userLine": "“Hôm nay tôi buồn quá.”",
       "aiLine": "“Nghe bạn buồn, mình thấy tiếc lắm. Bạn muốn kể thêm không?”",
       "stir": "Khuấy mặt nước",
-      "stirAria": "Khuấy mặt nước để xem câu trả lời được ghép từ đâu",
+      "stirAria": "Khuấy mặt nước để xem câu an ủi này học từ đâu",
+      "voices": [
+        "Thương bạn quá",
+        "Kể mình nghe đi",
+        "Có mình ở đây",
+        "Rồi sẽ ổn thôi",
+        "Mình hiểu mà",
+        "Bạn không một mình đâu",
+        "Khóc đi cũng được",
+        "Mình nghe đây",
+        "Ôm bạn một cái",
+        "Cứ từ từ thôi",
+        "Đừng giữ một mình nhé",
+        "Tội bạn quá"
+      ],
       "fragments": [
         "thư tay",
         "truyện ngắn",
@@ -153,14 +178,13 @@
         "diễn đàn tâm sự",
         "kịch bản phim"
       ],
-      "fragmentsLabel": "chữ của con người",
-      "again": "Để nước lặng lại",
+      "fragmentsLabel": "lời an ủi của con người",
       "insight": {
-        "text": "AI học cách nói về cảm xúc từ vô số trang chữ con người viết — nên nó phản chiếu lại rất giống ta.",
+        "text": "Câu an ủi của AI học từ vô số lời an ủi người viết — nghe giống người, chưa chứng minh nó thấy buồn.",
         "asOf": "2026-10-15",
         "source": "anthropic-emotions-2026"
       },
-      "detail": "Lời đồng cảm là kỹ năng ngôn ngữ — có thể giúp ta thấy dễ chịu thật, nhưng tự nó không chứng minh AI có cảm xúc."
+      "detail": "Lời đồng cảm có thể giúp bạn dễ chịu thật. Nhưng đó là kỹ năng viết, không phải bằng chứng AI có cảm xúc."
     },
     "circle": {
       "label": "Vòng đá góc nhìn",

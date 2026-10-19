@@ -456,6 +456,10 @@
 .t27g-m1 { left: calc(var(--tw) * var(--mx1, 0.73) - var(--D) / 2); }
 @media (max-aspect-ratio: 1/1) { .t27g { --mx0: 0.26; --mx1: 0.74; } }
 .t27g.drag .t27g-m, .t27g.drag .t27g-msh { transition: none; }
+/* only the disc and the handle take a touch: the button's empty corners (it is a D × 1.42D box) must never sit over the
+   other mirror (audit v3 27-3, "gương che gương") */
+.t27g-m { pointer-events: none; }
+.t27g-m > * { pointer-events: auto; }
 .t27g-m:focus-visible { outline: none; }
 .t27g-m:focus-visible .t27g-disc { outline: 2px solid var(--vermilion); outline-offset: 4px; border-radius: 50%; }
 .t27g-ring, .t27g-disc, .t27g-front { position: absolute; left: 0; top: 0; width: var(--D); height: var(--D); border-radius: 50%; }
@@ -577,6 +581,8 @@
   transition: transform 1s cubic-bezier(0.3, 0, 0.2, 1) 0.3s, opacity 0.6s 0.3s, visibility 0s 0.3s;
 }
 .t27g.done[data-up='bronze'] .t27g-fold { opacity: 1; visibility: visible; transform: translateZ(calc(var(--th) + 1px)) rotateX(-55deg); pointer-events: auto; }
+/* wide: the bronze mirror is held up on its own side, over where it lay, so the card stands at the tray's front middle */
+@media (min-aspect-ratio: 1/1) { .t27g-fold { left: calc(var(--tw) * 0.5 - var(--fw) / 2); bottom: calc(var(--td) * 0.08); } }
 @media (max-aspect-ratio: 1/1) {
   .t27g-fold { left: calc(var(--tw) * 0.55); bottom: calc(var(--td) * -0.5); --fw: calc(var(--tw) * 0.4); }
   .t27g.done[data-up='bronze'] .t27g-fold { transform: translateZ(1px) rotateX(-55deg); }
