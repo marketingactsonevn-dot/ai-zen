@@ -155,6 +155,7 @@ export function carveScene(ctx: SceneCtx) {
   const vis = (g: { size: Pt }, c: Pt, st: Pt): Pt => [c[0] + (g.size[0] - st[0]) / 2, c[1] + (g.size[1] - st[1]) / 2]
   const off = stepPath(K.steps as StepPath, {
     label: K.label, prompt: K.prompt, insight: F(K.insight), detail: K.detail,
+    cards: K.steps.cards, // with the frame prompt: the feature and the bug-report prompts (the cuts in between)
     art: () => [],
     slots: (g) => {
       const o = geoOf(g.w, g.h)

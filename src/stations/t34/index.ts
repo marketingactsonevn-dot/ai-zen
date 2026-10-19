@@ -11,9 +11,10 @@ const S = C.scenes
 const station: StationModule = {
   content: C,
   scenes: [
+    // credit before the path: the path's "draft cheap, upscale the final one" leans on what a scoop costs
     { label: S.market.label, text: 'bl', mount: marketScene },
-    pathScene(),
     { label: S.credit.label, text: 'tl', mount: creditScene },
+    pathScene(),
     realScene(),
   ],
 }

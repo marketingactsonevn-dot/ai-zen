@@ -1,17 +1,17 @@
 {
   "id": 35,
   "kicker": "Thợ giỏi không nhớ mọi thứ — họ treo dụng cụ đúng chỗ.",
-  "summary": "Đừng nhắc AI mỗi ngày — dạy nó một lần, treo đúng chỗ, gọi khi cần.",
+  "summary": "Dạy AI một lần bằng skill, chỉ tự động tới mức vừa đủ, và giữ cho mình những chỗ cần duyệt.",
   "takeaways": ["t35-skill-template", "t35-skill-checklist", "t35-skill-from-win"],
   "quiz": {
     "q": "Thứ Hai nào bạn cũng gõ lại cùng một đoạn dặn dài để AI viết báo cáo tuần. Bước nâng cấp hợp lý nhất là gì?",
     "options": [
-      "Gõ nhanh hơn, hoặc dán từ ghi chú",
-      "Đóng gói lời dặn thành một skill có mô tả rõ “khi nào dùng”",
-      "Cho agent toàn quyền gửi báo cáo, khỏi xem lại",
-      "Đổi sang model đắt nhất"
+      "Lưu đoạn dặn vào ghi chú, mỗi tuần dán lại",
+      "Giao agent tự viết và tự gửi luôn, khỏi cần xem lại",
+      "Đóng gói thành skill có mô tả rõ “khi nào dùng”",
+      "Viết đoạn dặn dài hơn, chi tiết hơn cho chắc"
     ],
-    "answer": 1,
+    "answer": 2,
     "explain": "Skill giữ lời dặn ở một chỗ, AI tự mở khi gặp việc hợp. Còn việc gửi đi vẫn nên chờ bạn duyệt."
   },
   "scenes": {
@@ -99,13 +99,13 @@
     "scroll": {
       "label": "Mở một cuộn skill",
       "art": "Tranh mực: vách ván gỗ tối trong hốc tường, cửa sổ tròn có trăng rọi một cột sáng có bụi. Chín cuộn skill treo trên thanh tre, mỗi cuộn một độ dài, màu lụa và núm khác nhau. Đèn tay giấy là nguồn sáng chính: chỉ trong vũng sáng mới đọc được thẻ tên. Mở cuộn đọc được, giấy lăn ngang dọc tường như makimono (trên điện thoại buông dọc như kakemono), ghi chú son ở lề, con dấu sao chép ở đuôi cuộn, túi vải đựng file kèm treo ở trục.",
-      "prompt": "Mở cuộn skill",
+      "prompt": "Kéo đèn dọc giá để soi thẻ tên",
       "codeAria": "Một skill mẫu: viết caption sản phẩm theo giọng thương hiệu",
       "lampAria": "Đèn tay: kéo dọc tường để soi thẻ tên các cuộn",
       "lampValue": "Đang soi cuộn {n} trên {total}",
-      "pouch": "references/",
+      "pouch": "Túi tài liệu kèm: ",
       "pouchFile": "giong-thuong-hieu.md",
-      "pouchAria": "Túi vải đựng file kèm (references/)",
+      "pouchAria": "Túi vải đựng tài liệu kèm của skill",
       "copy": "Sao chép",
       "copied": "Đã sao chép",
       "fileName": "caption-san-pham/SKILL.md",
@@ -113,35 +113,56 @@
         "lang": "text",
         "code": "---\nname: caption-san-pham\ndescription: Viết caption sản phẩm theo giọng thương hiệu. Dùng khi cần caption cho Facebook, Instagram hoặc TikTok.\n---\n\n# Caption sản phẩm\n\n## Các bước\n1. Hỏi tên sản phẩm, 3 điểm nổi bật, nền tảng sẽ đăng.\n2. Đọc giọng thương hiệu trong references/giong-thuong-hieu.md.\n3. Viết 3 phương án: câu mở, thân dưới 60 chữ, lời mời hành động.\n4. Không hứa điều sản phẩm không có; không dùng chữ “tốt nhất”.\n\n## Ví dụ\nVào: Áo linen, thoáng, ít nhăn, 3 màu\nRa: Nắng 35 độ vẫn nhẹ như gió sớm. Áo linen thoáng, ít nhăn, ba màu dịu mắt…",
         "notes": [
-          { "line": 2, "text": "Tên: chữ thường, số, gạch nối; trùng tên thư mục chứa skill." },
-          { "line": 3, "text": "Mô tả: làm gì + khi nào dùng. AI đọc dòng này trước để biết lúc nào mở cuộn." },
-          { "line": 8, "text": "Các bước: viết như dặn một người mới vào làm, theo đúng thứ tự." },
-          { "line": 10, "text": "File kèm: tài liệu dài để riêng, AI chỉ mở khi cần." },
-          { "line": 12, "text": "Quy tắc cấm cũng là một bước — ghi rõ điều không được làm." },
-          { "line": 14, "text": "Ví dụ vào → ra giúp AI bắt đúng giọng nhanh nhất." }
+          {
+            "line": 2,
+            "text": "Tên: chữ thường, số, gạch nối; trùng tên thư mục chứa skill."
+          },
+          {
+            "line": 3,
+            "text": "Mô tả: làm gì + khi nào dùng. AI đọc dòng này trước để biết lúc nào mở cuộn."
+          },
+          {
+            "line": 8,
+            "text": "Các bước: viết như dặn một người mới vào làm, theo đúng thứ tự."
+          },
+          {
+            "line": 10,
+            "text": "Tài liệu kèm: tài liệu dài để riêng trong túi, AI chỉ mở khi cần."
+          },
+          {
+            "line": 12,
+            "text": "Quy tắc cấm cũng là một bước — ghi rõ điều không được làm."
+          },
+          {
+            "line": 14,
+            "text": "Ví dụ vào → ra giúp AI bắt đúng giọng nhanh nhất."
+          }
         ]
       },
       "facts": [
         {
-          "text": "Theo đặc tả, SKILL.md bắt buộc có tên và mô tả; thân là hướng dẫn; có thể kèm thư mục scripts, references, assets.",
+          "text": "Mỗi SKILL.md bắt buộc có tên và mô tả; phần thân là các bước; có thể kèm túi tài liệu, mẫu, công cụ.",
           "asOf": "2026-10-15",
           "source": "t35-agentskills-spec",
           "kind": "fact"
         },
         {
-          "text": "Lúc đầu AI chỉ đọc tên và mô tả của mọi skill; gặp việc hợp mới mở cả cuộn (progressive disclosure).",
+          "text": "Lúc đầu AI chỉ đọc tên và mô tả của mọi skill; gặp việc hợp mới mở cả cuộn.",
           "asOf": "2026-10-15",
           "source": "t35-agentskills-spec",
           "kind": "fact"
         }
       ],
       "insight": {
-        "text": "Dòng mô tả là tấm biển hiệu: AI đọc nó trước, gặp việc hợp mới mở cả cuộn — nên viết rõ “khi nào dùng”.",
+        "text": "AI chỉ đọc dòng mô tả để chọn cuộn. Mô tả mơ hồ thì cuộn đúng vẫn bị bỏ qua.",
         "asOf": "2026-10-15",
-        "source": "t35-agentskills-spec",
-        "kind": "fact"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "Đặc tả khuyên giữ SKILL.md dưới 500 dòng, chi tiết dài để sang file kèm. Mỗi công cụ hỗ trợ chuẩn ở mức khác nhau — xem tài liệu của công cụ bạn dùng."
+      "detail": "Nên giữ SKILL.md dưới 500 dòng; tài liệu dài để trong túi file kèm. Mỗi công cụ AI hỗ trợ skill ở mức khác nhau.",
+      "openPrompt": "Chạm cuộn này để mở",
+      "notReadable": "Thẻ này chưa đọc được — soi cuộn khác",
+      "takeaway": "t35-skill-template"
     },
     "moons": {
       "label": "Từ thói quen thành chuẩn",
@@ -152,40 +173,10 @@
       "tide": {
         "milestones": [
           {
-            "date": "2024-11-25",
-            "label": "MCP ra đời",
-            "fact": {
-              "text": "Anthropic công bố MCP, chuẩn mở để trợ lý AI nối với dữ liệu và công cụ.",
-              "asOf": "2026-10-15",
-              "source": "t35-mcp",
-              "kind": "fact"
-            }
-          },
-          {
-            "date": "2024-12-19",
-            "label": "Workflow hay agent",
-            "fact": {
-              "text": "Anthropic viết hướng dẫn tách hai kiểu: workflow theo lối vạch sẵn, agent tự chọn bước; khuyên bắt đầu từ cách đơn giản.",
-              "asOf": "2026-10-15",
-              "source": "t35-effective-agents",
-              "kind": "fact"
-            }
-          },
-          {
-            "date": "2025-09-02",
-            "label": "Spec trước, code sau",
-            "fact": {
-              "text": "GitHub mở mã Spec Kit: viết spec, lập kế hoạch, chia việc nhỏ kiểm tra được, rồi mới để AI viết code.",
-              "asOf": "2026-10-15",
-              "source": "t35-spec-kit",
-              "kind": "fact"
-            }
-          },
-          {
             "date": "2025-10-16",
             "label": "Skills ra mắt",
             "fact": {
-              "text": "Anthropic ra mắt Agent Skills: thư mục có SKILL.md, Claude chỉ nạp khi việc cần tới.",
+              "text": "Anthropic ra mắt Agent Skills: mỗi skill là một thư mục có SKILL.md, Claude chỉ mở khi việc cần tới.",
               "asOf": "2026-10-15",
               "source": "t35-skills-launch",
               "kind": "fact"
@@ -195,7 +186,7 @@
             "date": "2025-12-18",
             "label": "Thành chuẩn mở",
             "fact": {
-              "text": "Agent Skills được công bố thành chuẩn mở tại agentskills.io để nhiều công cụ dùng chung.",
+              "text": "Agent Skills được công bố thành chuẩn mở (một định dạng chung, ai cũng dùng được) tại agentskills.io.",
               "asOf": "2026-10-15",
               "source": "t35-skills-launch",
               "kind": "fact"
@@ -213,29 +204,28 @@
           }
         ],
         "horizon": {
-          "text": "Có thể skill sẽ thành cách phổ biến để mang quy trình từ công cụ AI này sang công cụ khác — chưa chắc.",
+          "text": "Chưa chắc, nhưng có thể skill sẽ thành cách phổ biến để mang quy trình từ công cụ AI này sang công cụ khác.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "prediction"
         }
       },
       "insight": {
-        "text": "Trong khoảng một năm, “dạy AI một lần” đi từ mẹo riêng của một công cụ thành định dạng mở nhiều công cụ đọc được.",
+        "text": "Cùng một cuộn skill mở được ở nhiều công cụ AI: dạy một lần, mang theo được, không bị khoá vào một app.",
         "asOf": "2026-10-15",
-        "source": "t35-agentskills",
-        "kind": "fact"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "Danh sách trên agentskills.io là trang giới thiệu của chính chuẩn; mức hỗ trợ cụ thể ở mỗi công cụ có thể khác nhau."
+      "detail": "Skill thành chuẩn mở ngày 18/12/2025; trang agentskills.io (trang của chính chuẩn) liệt kê hơn 40 sản phẩm hỗ trợ. Mức hỗ trợ ở mỗi nơi khác nhau."
     },
     "spec": {
-      "label": "Spec trước, code sau",
+      "label": "Bản mô tả trước, code sau",
       "art": "Tranh mực: bàn thợ ván dày dưới ngọn đèn giấy, nhìn chúc từ trên; tờ bản vẽ giấy dó nằm trong vũng sáng ấm, bốn góc chặn đá, tám vòng bút chì quanh lề. Tám viên sỏi khắc tên bước nằm dọc mép bàn gần; mỗi viên đặt đúng vòng thì bản vẽ đổi: phác cảm giác, dấu hỏi, khối spec, đường cắt, rồi các mảnh gấp dựng thành xưởng giấy, cây thông và hàng rào bên ao, có bóng thật; cuối cùng gấp phẳng, cuộn thành skill treo lên móc.",
-      "prompt": "Đặt đá theo thứ tự",
-      "pathAria": "Lối đá tám bước: từ mô tả tới skill",
+      "prompt": "Chạm từng viên đá theo thứ tự làm",
+      "pathAria": "Lối đá tám bước: từ bản mô tả tới skill",
       "stoneAria": "Viên đá: {label}",
       "slotAria": "Chỗ trống số {n} trên lối",
       "keys": "Chạm lần lượt hoặc dùng phím số 1 đến 8.",
-      "wrongHint": "Chưa đúng chỗ — {why}",
       "done": "Lối đã sáng. Mở thẻ mang về.",
       "hookAria": "Cuộn skill vừa lưu, treo trên móc: mở ra đọc trên bàn",
       "steps": {
@@ -251,9 +241,9 @@
             "why": "Câu hỏi của AI lộ ra chỗ bạn chưa nghĩ tới."
           },
           {
-            "label": "Viết spec ra file .md",
-            "detail": "Gom câu trả lời thành một file: mục tiêu, luật, giới hạn, thế nào là xong.",
-            "why": "Spec là bản vẽ chung; bạn và AI cùng nhìn một tờ."
+            "label": "Viết bản mô tả ra file",
+            "detail": "Gom câu trả lời thành một file (spec): mục tiêu, luật, giới hạn, thế nào là xong.",
+            "why": "Bản mô tả là tờ giấy chung; bạn và AI cùng đọc một tờ."
           },
           {
             "label": "Chia giai đoạn",
@@ -261,9 +251,9 @@
             "why": "Việc nhỏ dễ soát; sai thì sửa ít."
           },
           {
-            "label": "Giao từng phần cho agent code",
-            "detail": "Claude Code, Codex hay công cụ tương tự làm một giai đoạn mỗi lần.",
-            "why": "Một lần một việc, agent ít lạc đề."
+            "label": "Giao từng phần cho AI viết code",
+            "detail": "Công cụ AI viết code (như Claude Code, Codex) làm một giai đoạn mỗi lần.",
+            "why": "Một lần một việc, AI ít lạc đề."
           },
           {
             "label": "Kiểm tra bằng ảnh chụp, số đo",
@@ -281,28 +271,30 @@
             "why": "Lần sau gọi skill, khỏi dặn lại từ đầu."
           }
         ],
-        "takeaway": "t35-skill-from-win"
+        "takeaway": "t35-skill-from-win",
+        "cards": ["t35-skill-checklist"]
       },
       "facts": [
         {
-          "text": "GitHub gọi đây là phát triển theo spec: ý định là gốc, AI làm từng việc nhỏ, người soát từng bước.",
+          "text": "GitHub (Spec Kit) khuyên: viết rõ điều bạn muốn trước, rồi để bản mô tả đó dẫn đường cho AI viết code.",
           "asOf": "2026-10-15",
           "source": "t35-spec-kit",
           "kind": "fact"
         }
       ],
       "insight": {
-        "text": "Spec là bản vẽ chung: bạn nói rõ điều mong muốn một lần, AI làm từng phần, bạn kiểm tra từng phần.",
+        "text": "Nói rõ điều muốn trước, AI làm từng phần, bạn kiểm từng phần; làm tốt rồi thì lưu cách làm thành skill.",
         "asOf": "2026-10-15",
-        "source": "t35-spec-kit",
+        "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Tên công cụ chỉ là ví dụ. Cách làm này dùng được với bất kỳ agent code nào đọc được file Markdown."
+      "detail": "Spec = bản mô tả việc cần làm, viết ra một file để bạn và AI cùng đọc. Tên công cụ chỉ là ví dụ; cách này dùng được với bất kỳ công cụ AI viết code nào.",
+      "hookPrompt": "Chạm cuộn trên móc để lấy thẻ"
     },
     "line": {
       "label": "Dây chuyền trong xưởng",
       "art": "Tranh mực: hành lang xưởng ván gỗ ban đêm hội tụ về cánh cửa cuối mở ra vườn trăng sáng. Tám đèn lồng giấy treo trên sợi dây mực, gần thì to và ấm, xa thì nhỏ và lạnh, mỗi đèn rọi một vũng sáng xuống sàn và vách giấy; tên trạm viết trên đèn. Tiền cảnh là bàn thấp có bát đá son, bút gác nghiên. Người xem nối đèn bằng nét cọ và đặt đá son dưới chân đèn ở chỗ cần người duyệt.",
-      "prompt": "Kéo nét mực từ đèn 1 qua từng đèn",
+      "prompt": "Nối 8 đèn, đặt đá đỏ ở chỗ cần bạn duyệt",
       "task": "Ví dụ: một sản phẩm mới lên kệ",
       "lineAria": "Dây chuyền tám trạm việc marketing",
       "stationAria": "Trạm {n}: {name}",
@@ -373,7 +365,7 @@
       },
       "detail": "Việc gửi đi, trả tiền, xoá dữ liệu: luôn để agent dừng lại hỏi bạn (xem trạm I·15).",
       "stonesPrompt": "Đặt đá đỏ dưới đèn cần bạn duyệt",
-      "releasePrompt": "Chạm thuyền để thả",
+      "releasePrompt": "Chạm thuyền ở đèn đầu để thả",
       "waitPrompt": "Chạm đá đỏ để duyệt cho thuyền đi tiếp",
       "release": "Thả thuyền",
       "bowlLabel": "Đá đỏ = bạn duyệt trước khi chạy tiếp",

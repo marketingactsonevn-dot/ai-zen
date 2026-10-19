@@ -1,7 +1,7 @@
 {
   "id": 35,
   "kicker": "Good carvers don't remember everything — they hang each tool in its place.",
-  "summary": "Don't remind AI every day — teach it once, hang it in the right place, call it when needed.",
+  "summary": "Teach AI once with a skill, automate only as far as needed, and keep the places that need your approval for yourself.",
   "takeaways": [
     "t35-skill-template",
     "t35-skill-checklist",
@@ -10,12 +10,12 @@
   "quiz": {
     "q": "Every Monday you retype the same long instructions so AI writes the weekly report. What is the most sensible upgrade?",
     "options": [
-      "Type faster, or paste from your notes",
-      "Package the instructions as a skill with a clear “when to use”",
-      "Let an agent send the report on its own, no review",
-      "Switch to the most expensive model"
+      "Save the instructions in a note, paste them each week",
+      "Let an agent write and send it by itself, no need to check",
+      "Package them as a skill with a clear “when to use”",
+      "Write even longer, more detailed instructions to be safe"
     ],
-    "answer": 1,
+    "answer": 2,
     "explain": "A skill keeps the instructions in one place, and AI opens it when the task fits. Sending things out should still wait for your approval."
   },
   "scenes": {
@@ -103,13 +103,13 @@
     "scroll": {
       "label": "Unrolling a skill",
       "art": "Ink painting: a dark wall of boards in an alcove, a round window letting in a dusty shaft of moonlight. Nine skill scrolls hang from a bamboo rail, each its own length, silk and knob. A hand-held paper lantern is the key light: only inside its pool can the name tags be read. Open the readable one and the paper unrolls sideways along the wall as a makimono (on a phone it hangs down as a kakemono), notes in vermilion in the margin, a copy seal at its tail, a cloth pouch of attached files hanging at its axis.",
-      "prompt": "Unroll the skill",
+      "prompt": "Drag the lantern along the rack to light the name tags",
       "codeAria": "A sample skill: writing product captions in the brand voice",
       "lampAria": "Hand lantern: move it along the wall to light the scrolls’ name tags",
       "lampValue": "Lighting scroll {n} of {total}",
-      "pouch": "references/",
+      "pouch": "Attached files pouch: ",
       "pouchFile": "brand-voice.md",
-      "pouchAria": "Cloth pouch with the attached files (references/)",
+      "pouchAria": "Cloth pouch holding the skill's attached documents",
       "copy": "Copy",
       "copied": "Copied",
       "fileName": "product-caption/SKILL.md",
@@ -131,7 +131,7 @@
           },
           {
             "line": 10,
-            "text": "Attachments: long documents live separately; AI opens them only when needed."
+            "text": "Attached documents: long documents live separately in the pouch; AI opens them only when needed."
           },
           {
             "line": 12,
@@ -145,25 +145,28 @@
       },
       "facts": [
         {
-          "text": "Per the spec, SKILL.md must have a name and a description; the body holds instructions; it may include scripts, references and assets folders.",
+          "text": "Every SKILL.md must have a name and a description; the body holds the steps; it may come with a pouch of documents, templates and tools.",
           "asOf": "2026-10-15",
           "source": "t35-agentskills-spec",
           "kind": "fact"
         },
         {
-          "text": "At first AI reads only each skill's name and description; it opens the whole scroll when a task fits (progressive disclosure).",
+          "text": "At first AI reads only the name and description of every skill; it opens the whole scroll only when a task fits.",
           "asOf": "2026-10-15",
           "source": "t35-agentskills-spec",
           "kind": "fact"
         }
       ],
       "insight": {
-        "text": "The description is the shop sign: AI reads it first and opens the scroll when a task fits — so state “when to use” clearly.",
+        "text": "AI reads only the description line to choose a scroll. Describe it vaguely and the right scroll still gets skipped.",
         "asOf": "2026-10-15",
-        "source": "t35-agentskills-spec",
-        "kind": "fact"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "The spec suggests keeping SKILL.md under 500 lines and moving long details to attached files. Each tool supports the standard differently — check your tool's docs."
+      "detail": "Keep SKILL.md under 500 lines; put long documents in the attached-files pouch. Each AI tool supports skills to a different degree.",
+      "openPrompt": "Tap this scroll to open it",
+      "notReadable": "This tag can't be read yet — light another scroll",
+      "takeaway": "t35-skill-template"
     },
     "moons": {
       "label": "From habit to standard",
@@ -174,40 +177,10 @@
       "tide": {
         "milestones": [
           {
-            "date": "2024-11-25",
-            "label": "MCP is born",
-            "fact": {
-              "text": "Anthropic announces MCP, an open standard for connecting AI assistants to data and tools.",
-              "asOf": "2026-10-15",
-              "source": "t35-mcp",
-              "kind": "fact"
-            }
-          },
-          {
-            "date": "2024-12-19",
-            "label": "Workflow or agent",
-            "fact": {
-              "text": "Anthropic's guide separates workflows (fixed routes) from agents (choose their own steps) and advises starting simple.",
-              "asOf": "2026-10-15",
-              "source": "t35-effective-agents",
-              "kind": "fact"
-            }
-          },
-          {
-            "date": "2025-09-02",
-            "label": "Spec first, code later",
-            "fact": {
-              "text": "GitHub open-sources Spec Kit: write a spec, plan, split into small checkable tasks, then let AI write code.",
-              "asOf": "2026-10-15",
-              "source": "t35-spec-kit",
-              "kind": "fact"
-            }
-          },
-          {
             "date": "2025-10-16",
             "label": "Skills launch",
             "fact": {
-              "text": "Anthropic launches Agent Skills: folders with a SKILL.md that Claude loads only when a task needs them.",
+              "text": "Anthropic launches Agent Skills: each skill is a folder with a SKILL.md, and Claude opens it only when a task needs it.",
               "asOf": "2026-10-15",
               "source": "t35-skills-launch",
               "kind": "fact"
@@ -217,7 +190,7 @@
             "date": "2025-12-18",
             "label": "An open standard",
             "fact": {
-              "text": "Agent Skills is published as an open standard at agentskills.io so many tools can share it.",
+              "text": "Agent Skills is published as an open standard (one shared format anyone can use) at agentskills.io.",
               "asOf": "2026-10-15",
               "source": "t35-skills-launch",
               "kind": "fact"
@@ -235,29 +208,28 @@
           }
         ],
         "horizon": {
-          "text": "Skills may become a common way to carry a workflow from one AI tool to another — not certain yet.",
+          "text": "Not certain, but skills may become the common way to carry a workflow from one AI tool to another.",
           "asOf": "2026-10-15",
           "source": "editorial",
           "kind": "prediction"
         }
       },
       "insight": {
-        "text": "In about a year, “teach AI once” went from one tool's trick to an open format many tools can read.",
+        "text": "The same skill scroll opens in many AI tools: teach once, take it with you, never locked into one app.",
         "asOf": "2026-10-15",
-        "source": "t35-agentskills",
-        "kind": "fact"
+        "source": "editorial",
+        "kind": "opinion"
       },
-      "detail": "The agentskills.io list is the standard's own showcase page; the exact level of support in each tool may differ."
+      "detail": "Skills became an open standard on 18 December 2025; agentskills.io (the standard's own site) lists 40+ supporting products. Support differs from tool to tool."
     },
     "spec": {
-      "label": "Spec first, code later",
+      "label": "Describe first, code after",
       "art": "Ink painting: a thick plank workbench under a paper lamp, seen from above; a washi blueprint lies in the warm pool, its corners held by stones, eight pencil rings round its margin. Eight pebbles carved with the steps lie along the near edge; each one set in its ring changes the sheet: a sketch of the feeling, question marks, a block of spec, cut lines, then the pieces fold up into a paper workshop, a pine and a fence by a pond, with real shadows; at last it folds flat and rolls up into a skill hung on a hook.",
-      "prompt": "Set the stones in order",
-      "pathAria": "An eight-step stone path: from a description to a skill",
+      "prompt": "Tap the stones in the order you'd do them",
+      "pathAria": "An eight-stone path: from the description to a skill",
       "stoneAria": "Stone: {label}",
       "slotAria": "Empty spot {n} on the path",
       "keys": "Tap in turn, or use number keys 1 to 8.",
-      "wrongHint": "Not quite — {why}",
       "done": "The path is lit. Open your take-away card.",
       "hookAria": "The skill you just saved, on its hook: open it on the bench",
       "steps": {
@@ -273,9 +245,9 @@
             "why": "AI's questions expose what you haven't thought of."
           },
           {
-            "label": "Write the spec as .md",
-            "detail": "Collect the answers in one file: goals, rules, limits, what counts as done.",
-            "why": "The spec is a shared blueprint; you and AI look at one page."
+            "label": "Write the description to a file",
+            "detail": "Collect the answers in one file (the spec): goals, rules, limits, what counts as done.",
+            "why": "The description is one shared page; you and AI read the same sheet."
           },
           {
             "label": "Split into phases",
@@ -283,9 +255,9 @@
             "why": "Small tasks are easy to check; mistakes stay small."
           },
           {
-            "label": "Hand each part to a coding agent",
-            "detail": "Claude Code, Codex or a similar tool does one phase at a time.",
-            "why": "One task at a time keeps the agent on track."
+            "label": "Hand each part to an AI coder",
+            "detail": "An AI coding tool (such as Claude Code or Codex) does one phase at a time.",
+            "why": "One task at a time keeps the AI on track."
           },
           {
             "label": "Check with screenshots and numbers",
@@ -303,28 +275,32 @@
             "why": "Next time call the skill instead of explaining from scratch."
           }
         ],
-        "takeaway": "t35-skill-from-win"
+        "takeaway": "t35-skill-from-win",
+        "cards": [
+          "t35-skill-checklist"
+        ]
       },
       "facts": [
         {
-          "text": "GitHub calls this spec-driven development: intent comes first, AI does small tasks, a person reviews each step.",
+          "text": "GitHub (Spec Kit) advises: write down clearly what you want first, then let that description guide the AI writing the code.",
           "asOf": "2026-10-15",
           "source": "t35-spec-kit",
           "kind": "fact"
         }
       ],
       "insight": {
-        "text": "The spec is a shared blueprint: say clearly what you want once, AI builds part by part, you check each part.",
+        "text": "Say clearly what you want first, AI builds part by part, you check each part; once it works, save the method as a skill.",
         "asOf": "2026-10-15",
-        "source": "t35-spec-kit",
+        "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Tool names are only examples. This works with any coding agent that reads Markdown files."
+      "detail": "Spec = a description of the job, written to a file you and AI both read. Tool names are only examples; this works with any AI coding tool.",
+      "hookPrompt": "Tap the scroll on the hook to take the card"
     },
     "line": {
       "label": "The workshop line",
       "art": "Ink painting: a long plank corridor in the workshop at night, converging on the far door open to a bright moon garden. Eight paper lanterns hang on an ink cord, near ones large and warm, far ones small and cool, each throwing a pool of light on the floor and the paper walls; each station’s name is written on its lantern. In front, a low table with a bowl of vermilion stones and a brush resting on an inkstone. Join the lanterns with a brush stroke and set vermilion stones under the ones that need a person.",
-      "prompt": "Draw the ink cord from lantern 1 on",
+      "prompt": "Join the 8 lanterns, set red stones where you must approve",
       "task": "Example: a new product goes on the shelf",
       "lineAria": "An eight-station marketing line",
       "stationAria": "Station {n}: {name}",
@@ -395,7 +371,7 @@
       },
       "detail": "Sending, paying, deleting data: always have the agent stop and ask you (see station I·15).",
       "stonesPrompt": "Set red stones where you must approve",
-      "releasePrompt": "Tap the boat to let it go",
+      "releasePrompt": "Tap the boat at the first lantern to launch it",
       "waitPrompt": "Tap the red stone to let the boat on",
       "release": "Launch the boat",
       "bowlLabel": "Red stone = you approve before it goes on",

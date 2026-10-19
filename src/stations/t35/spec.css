@@ -759,3 +759,7 @@
     animation: none;
   }
 }
+/* the hook holds two cards now (the prompt and the checklist): a little paper between them */
+.t35p-out > .p2k + .p2k {
+  margin-top: 14px;
+}

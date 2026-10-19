@@ -6,7 +6,7 @@ import { clamp, onSize, rng, stableHeight, type Pt } from '../../ui/part2/ink'
 import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './content'
-import { cardButton, F } from './night'
+import { F } from './night'
 import { bleedBelow, dprFor, grain, inkLine, layer, mix, moonDisc, mountains, noise, poly, rgba, smooth, soft, vgrad, watchTok, type C4, type Tok } from './cv'
 
 const K = C.scenes.credit
@@ -22,7 +22,7 @@ const K = C.scenes.credit
  * into the jar's mouth (or tap the chosen one again) to take a scoop, which is poured into the tea cup with the cost
  * written on it. The insight waits until both a light and a heavy scoop are made: then a second cup stands beside the
  * first, 5 and 33. A thin cord of wooden tags under the bench is the keyboard proxy (it shows when focused). Two tips
- * hang on bamboo slats beside the window; the take-away card is a paper tag tied to the rack.
+ * hang on bamboo slats beside the window (the brief card is handed on the next slide, the path).
  *
  * Three canvases (wall · jar + bench · water + tools), all drawn from one projection, so the crane re-projects the real
  * shapes. Static layers redraw only on layout / theme / crane; the water layer redraws on change or while something moves.
@@ -230,13 +230,6 @@ export function creditScene(ctx: SceneCtx) {
   const root = h('div', { class: 't34 t34c' }, h('p', { class: 'visually-hidden' }, K.art), view, scale, costSay)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
-  // the take-away: a paper tag tied to the ladle rack
-  const pill = cardButton(ctx, root, K.takeaway)
-  if (pill) {
-    pill.hidden = true
-    pill.classList.add('t34c-card')
-    stageEl.append(pill)
-  }
 
   // ── projection (one camera for every layer)
   let cp: Comp | null = null
@@ -1346,10 +1339,9 @@ export function creditScene(ctx: SceneCtx) {
     const at = (el: HTMLElement, p: Pt) => (el.style.transform = `translate3d(${p[0].toFixed(1)}px,${p[1].toFixed(1)}px,0)`)
     // the cord of tags: just under the bench's front edge, across its middle
     at(cord, c.wide ? pt(0.12, -AP - 0.02, c.bench[3]) : [W / 2, pt(0, -AP - 0.02, c.bench[3])[1]])
-    // refill hangs from the window sill; the tips beside the window; the take-away tag on the rack's crossbar
+    // refill hangs from the window sill; the tips beside the window
     at(refill, pt((c.win[0] + c.win[1]) / 2, c.win[2] - 0.04, -c.ZW))
     at(tips, pt(c.tips[0], c.tips[1], c.tips[2]))
-    if (pill) at(pill, pt(c.rack[0] + 0.18, c.rack[1] + 0.8, c.rack[2]))
     // the cost on the cup's front, the empty jar's line on the bench's front face
     const r = c.bowlR
     at(cost, pt(c.bowl[0], c.bowl[1] + r * 0.36, c.bowl[2]))
@@ -1532,12 +1524,11 @@ export function creditScene(ctx: SceneCtx) {
     updateAria()
     cost.textContent = an.dry ? '' : fill(K.costShort, { n: an.n })
     cost.classList.toggle('on', !an.dry)
-    // what the scoop cost, written along the bench; not enough for this one is not a dry jar: say how much is left and needed
+    // not enough for this one is not a dry jar: say how much is left and needed (along the bench); the cost is in the prompt
     const say = level === 0 ? K.empty : an.dry ? fill(K.short, { left: level, n: an.n }) : ''
-    const line = an.dry ? say : `${fill(K.cost, { n: an.n })}${say ? ' ' + say : ''}`
-    empty.textContent = line
-    empty.classList.add('on')
-    costSay.textContent = line
+    empty.textContent = say
+    empty.classList.toggle('on', !!say)
+    costSay.textContent = an.dry ? say : `${fill(K.cost, { n: an.n })}${say ? ' ' + say : ''}`
     if (!costSay.hasAttribute('aria-live')) costSay.setAttribute('aria-live', 'polite')
     refill.hidden = level === 100
     made++
@@ -1552,16 +1543,15 @@ export function creditScene(ctx: SceneCtx) {
       G.ok(cost)
       facts.replaceChildren(ctx.fact(F(K.facts[0]), 'p'))
       tips.hidden = false
-      if (pill) pill.hidden = false
       if (cp?.wide) setTips(1)
       ctx.insight(F(K.insight), K.detail)
     } else if (!pair) {
       aim()
       if (an.dry) {
-        G.wrong(K.shortTry)
+        G.wrong(say)
         refillDot ??= G.dot(refill, { dir: [0, 1] })
       }
-      else ctx.prompt(seen.has(N_LIGHT) ? K.tryHeavy : K.tryLight)
+      else ctx.prompt(`${fill(K.cost, { n: an.n })} ${seen.has(N_LIGHT) ? K.tryHeavy : K.tryLight}`)
     }
     ctx.chime(say ? 'low' : 'soft')
   }

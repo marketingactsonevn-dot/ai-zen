@@ -591,3 +591,10 @@
     transition: none;
   }
 }
+/* under the line to tell AI: the odd words in it are only tool names */
+.t36p-tag .t36p-note {
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--ink-3);
+}

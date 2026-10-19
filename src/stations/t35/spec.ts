@@ -7,6 +7,7 @@ import { mist, moon, pine } from '../../ui/part2/paint'
 import { stepPath, type SlotGeo } from '../../ui/part2/steps'
 import type { StepPath } from '../../ui/part2/types'
 import type { SceneCtx } from '../types'
+import { guide } from '../../ui/part2/guide'
 import { C } from './content'
 import { F, P, f1, gdefs, ink, lantern, roof } from './kit'
 
@@ -364,6 +365,7 @@ export function specScene(ctx: SceneCtx) {
     prompt: K.prompt,
     insight: F(K.insight),
     detail: K.detail,
+    cards: K.steps.cards,
     art: () => [],
     slots: (sg) => ring(sg.n),
     pile,
@@ -390,13 +392,21 @@ export function specScene(ctx: SceneCtx) {
   if (stepNote) strip.prepend(stepNote)
   pathRoot?.append(strip)
   function hang() {
-    const card = ctx.art.querySelector<HTMLElement>('.p2s-sheet .p2k')
-    if (card) {
-      out.replaceChildren(h('button', { class: 't35p-out-close', type: 'button', 'aria-label': L.close, onClick: () => toggle(false) }, '×'), card)
-      const copy = card.querySelector('.p2k-copy')
-      if (copy) card.querySelector('.p2k-foot')?.append(copy)
+    // both cards (the prompt and the checklist) move out of stepPath's folded slip onto the hook; the slip goes
+    const sheet = ctx.art.querySelector<HTMLElement>('.p2s-sheet')
+    const cards = [...ctx.art.querySelectorAll<HTMLElement>('.p2s-sheet .p2k')]
+    if (cards.length) {
+      out.replaceChildren(h('button', { class: 't35p-out-close', type: 'button', 'aria-label': L.close, onClick: () => toggle(false) }, '×'), ...cards)
+      for (const card of cards) {
+        const copy = card.querySelector('.p2k-copy')
+        if (copy) card.querySelector('.p2k-foot')?.append(copy)
+      }
+      if (sheet) sheet.hidden = true
     }
     hook.hidden = false
+    // nothing else says the hook can be opened: a dot on it, and the step said in words
+    guide(ctx).dot(hook, { dir: [0, 1] })
+    ctx.prompt(K.hookPrompt)
     setTimeout(() => hook.focus({ preventScroll: true }), still ? 0 : 1900)
   }
   function toggle(on: boolean = out.hidden === true) {
