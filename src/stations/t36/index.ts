@@ -12,11 +12,11 @@ const S = C.scenes
 const station: StationModule = {
   content: C,
   scenes: [
-    { label: S.blueprint.label, mount: blueprintScene },
+    { label: S.blueprint.label, text: 'tr', mount: blueprintScene },
     { label: S.pens.label, mount: pensScene },
-    { label: S.carve.label, mount: carveScene },
-    { label: S.layers.label, mount: layersScene },
-    { label: S.vibe.label, mount: vibeScene },
+    { label: S.carve.label, text: 'br', mount: carveScene },
+    { label: S.layers.label, text: 'br', mount: layersScene },
+    { label: S.vibe.label, text: 'tl', mount: vibeScene },
   ],
 }
 export default station

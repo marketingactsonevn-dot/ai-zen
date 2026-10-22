@@ -1,7 +1,7 @@
 import './kit.css'
 import { h, s } from '../../core/dom'
 import { L, type Fact } from '../../core/content'
-import { curve, p2Defs, rng, stroke, type Pt } from '../../ui/part2/ink'
+import { curve, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { findTakeaway, takeaway } from '../../ui/part2/takeaway'
 import type { SceneCtx } from '../types'
 
@@ -13,6 +13,16 @@ export const F = (x: unknown) => x as Fact
 export const f1 = (n: number) => (Math.round(n * 10) / 10).toString()
 export const P = (p: Pt) => `${f1(p[0])} ${f1(p[1])}`
 type Filt = 'rough' | 'wash' | 'dry'
+
+/**
+ * The art height to lay out in. A scene with a text zone (index.ts `text:`) has its insight inside the picture on wide
+ * screens (station.ts ZONES_MQ), so it keeps the whole art; elsewhere the height the tallest insight leaves (no jump).
+ */
+export function zonedHeight(ctx: SceneCtx, copies: (Fact | string | undefined)[]) {
+  const stable = stableHeight(ctx, copies)
+  const wide = matchMedia('(min-width: 721px)')
+  return (A: number) => (wide.matches ? A : stable(A))
+}
 
 /** One painted path: class + (optional) one of the page's ink filters. */
 export const ink = (d: string, cls: string, filter?: Filt, style?: string) =>

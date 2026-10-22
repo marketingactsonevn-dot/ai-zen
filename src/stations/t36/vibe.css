@@ -7,9 +7,9 @@
   width: 100% !important;
   height: 100% !important;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent), linear-gradient(to bottom, transparent, #000 7%, #000 90%, transparent);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent), linear-gradient(to bottom, transparent, #000 7%, #000 90%, transparent);
   mask-composite: intersect;
 }
 .t36v .p2c-num {
@@ -71,10 +71,10 @@
 }
 /* the banks all round and the water's dressing */
 .t36v-bank {
-  fill: color-mix(in srgb, var(--rock-mid) 40%, var(--paper-2));
+  fill: color-mix(in srgb, var(--rock-mid) 55%, var(--paper-2));
 }
 :root[data-theme='dark'] .t36v-bank {
-  fill: color-mix(in srgb, var(--rock-lo) 60%, var(--paper));
+  fill: color-mix(in srgb, var(--rock-mid) 45%, var(--paper-2));
 }
 .t36v-wet {
   fill: none;
@@ -257,10 +257,10 @@
 .t36v-rock {
   filter: blur(1px) brightness(0.9);
 }
-/* the outer two, nearest the lens: big and soft, flame and all */
+/* the outer two, nearest the lens: big and a little soft (candle and wick still readable) */
 .t36v-k0,
 .t36v-k4 {
-  filter: blur(3.5px);
+  filter: blur(1.4px);
 }
 .t36v.calm :is(.t36v-rock, .t36v-k0, .t36v-k4) {
   filter: none;
@@ -372,4 +372,139 @@
 }
 .t36v:not(.wide) .p2c-view {
   font-size: 15px;
+}
+
+/* one text block: once the insight is out, the reading on the water steps back */
+.t36v .p2c-card {
+  transition: opacity 0.8s var(--ease);
+}
+.t36v.is-all .p2c-card {
+  opacity: 0;
+}
+/* wax run down each candle */
+.t36v-drip {
+  fill: color-mix(in srgb, var(--card) 80%, var(--lantern));
+  opacity: 0.9;
+}
+/* the depth stake and its ring of rush (the focus) */
+.t36v-spole {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--rock-mid));
+}
+.t36v-spole.t36v-under {
+  opacity: calc(0.35 + var(--f) * 0.5);
+  transition: opacity 0.9s var(--ease);
+}
+.t36v-swl {
+  fill: none;
+  stroke: var(--moon);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+.t36v-snotch {
+  stroke: var(--umbra);
+  stroke-width: 1.4;
+}
+.t36v-marks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s var(--ease);
+}
+.t36v-marks.on {
+  opacity: 1;
+}
+.t36v.is-all .t36v-marks {
+  opacity: 0.4;
+}
+.t36v-marks > span {
+  position: absolute;
+  right: calc(100% - var(--sx) + 12px);
+  transform: translateY(-50%);
+  font: italic 400 12.5px/1 var(--serif);
+  color: var(--ink-2);
+  text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper);
+  white-space: nowrap;
+}
+.t36v-mtop {
+  top: var(--sw);
+}
+.t36v-mbot {
+  top: var(--sb);
+}
+.t36v-float {
+  position: absolute;
+  left: var(--sx);
+  top: calc(var(--sw) + var(--f) * (var(--sb) - var(--sw)));
+  width: 0;
+  height: 0;
+  transition: top 0.9s var(--ease);
+}
+.t36v.byhand .t36v-float {
+  transition: none;
+}
+.t36v-float > i {
+  position: absolute;
+  left: -10px;
+  top: -4px;
+  width: 20px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2.4px solid color-mix(in srgb, var(--lantern) 55%, var(--moss-c));
+  box-shadow: 0 0 6px color-mix(in srgb, var(--lantern) 40%, transparent);
+}
+.t36v-float > .p2g-dot.ride {
+  left: 18px;
+  top: 0;
+}
+.t36v-wall {
+  fill: color-mix(in srgb, var(--rock-mid) 60%, var(--water));
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t36v-wall {
+  fill: color-mix(in srgb, var(--rock-lo) 70%, var(--water));
+}
+.t36v-lipsh {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 22;
+  opacity: 0.4;
+}
+/* wide: the insight sits in the picture (text zone), so the stage keeps the whole art */
+@media (min-width: 721px) {
+  .t36v.p2c {
+    height: 100% !important;
+  }
+}
+/* the definition is read once: after the first voice the reading is only who and what */
+.t36v[data-voice] .p2-question {
+  display: none;
+}
+/* an unlit wick without the dot: a faint ink ring breathing round it */
+.t36v-wring {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 0.8;
+  opacity: 0.32;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: t36v-wring 3s ease-in-out infinite;
+}
+.p2c-stone[data-heard] .t36v-wring {
+  display: none;
+}
+@keyframes t36v-wring {
+  50% {
+    transform: scale(1.4);
+    opacity: 0.15;
+  }
+}
+.t36v.calm .t36v-wring {
+  animation: none;
+}
+/* wide: the insight lies on the dark water at the pond's upper left, inside its rim (nothing else is painted there) */
+.t36v ~ .scene-zone[data-z='tl'] {
+  left: 22.5%;
+  top: 17%;
+  width: min(26rem, 28%);
 }

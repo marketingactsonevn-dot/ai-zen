@@ -112,6 +112,25 @@
   left: 0;
   translate: 0 2px;
 }
+/* a hoop lying on the bench has its name written on the boards inside it; fitted on the jar, beside the lip */
+.t34c-ring .t34c-name,
+.t34c:not(.wide) .t34c-ring.t34c-t1 .t34c-name {
+  top: 50%;
+  translate: -50% -50%;
+}
+.t34c-ring.on-lip .t34c-name,
+.t34c:not(.wide) .t34c-ring.on-lip.t34c-t1 .t34c-name {
+  left: 0;
+  translate: calc(-100% - 4px) -50%;
+}
+/* the end: one block of words — the illustration note fades (the insight's detail says it) */
+.t34c-scale {
+  transition: opacity 0.8s var(--ease);
+}
+.t34c.done .t34c-scale {
+  opacity: 0;
+  pointer-events: none;
+}
 /* H4: the level carved beside the cut */
 .t34c-marks span {
   position: absolute;
@@ -323,7 +342,7 @@
   position: absolute;
   left: 12%;
   right: 12%;
-  top: 22px;
+  top: 40px;
   bottom: 10px;
   border-left: 1px solid color-mix(in srgb, var(--ink-3) 70%, transparent);
   border-right: 1px solid color-mix(in srgb, var(--ink-3) 70%, transparent);
@@ -332,21 +351,43 @@
 .t34c-tips-bar {
   position: relative;
   z-index: 1;
+  margin-top: 18px;
   padding: 5px 12px 6px;
+  min-height: 44px;
   font: 600 14px/1.2 var(--serif);
   color: var(--ink);
   background:
-    repeating-linear-gradient(0deg, transparent 0 3px, color-mix(in srgb, var(--ink) 4%, transparent) 3px 4px),
-    linear-gradient(175deg, var(--card), color-mix(in srgb, var(--card) 85%, var(--lantern)));
+    linear-gradient(90deg, transparent 70%, color-mix(in srgb, var(--moss-b) 45%, transparent) 70.5%, transparent 72%),
+    linear-gradient(180deg, color-mix(in srgb, var(--card) 22%, transparent), transparent 40%, color-mix(in srgb, var(--umbra) 18%, transparent)),
+    linear-gradient(90deg, var(--bamboo-a), var(--bamboo-b));
   border: 0;
-  border-radius: 1px;
-  box-shadow: 0 5px 9px -5px rgb(0 0 0 / 0.5);
+  border-radius: 7px 3px 3px 7px / 50%;
+  box-shadow: 0 5px 8px -5px rgb(0 0 0 / 0.55);
   rotate: -1.5deg;
   cursor: pointer;
 }
 :root[data-theme='dark'] .t34c-tips-bar {
   color: var(--paper);
-  background: linear-gradient(175deg, var(--moon), color-mix(in srgb, var(--moon) 80%, var(--lantern)));
+}
+/* the slat hangs on a cord from a nail in the wall */
+.t34c-tips-bar::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: 16px;
+  background: color-mix(in srgb, var(--ink-3) 80%, transparent);
+}
+.t34c-tips-bar::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 2.5px);
+  bottom: calc(100% + 14px);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--umbra) 70%, var(--step-lo));
 }
 .t34c-tips-body {
   display: none;

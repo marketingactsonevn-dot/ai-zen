@@ -170,6 +170,8 @@
       "prompt": "Kéo trăng qua các mốc",
       "sliderAria": "Dòng thời gian, đang ở mốc {n} trên {total}: {label}",
       "today": "Hôm nay",
+      "count": "Mốc {n}/{total}",
+      "left": "Còn {n} mốc nữa — kéo trăng tiếp",
       "tide": {
         "milestones": [
           {
@@ -289,7 +291,8 @@
         "kind": "opinion"
       },
       "detail": "Spec = bản mô tả việc cần làm, viết ra một file để bạn và AI cùng đọc. Tên công cụ chỉ là ví dụ; cách này dùng được với bất kỳ công cụ AI viết code nào.",
-      "hookPrompt": "Chạm cuộn trên móc để lấy thẻ"
+      "hookPrompt": "Chạm cuộn trên móc để lấy thẻ",
+      "count": "Đã đặt {n}/{total} bước"
     },
     "line": {
       "label": "Dây chuyền trong xưởng",

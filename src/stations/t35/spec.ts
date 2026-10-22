@@ -9,7 +9,7 @@ import type { StepPath } from '../../ui/part2/types'
 import type { SceneCtx } from '../types'
 import { guide } from '../../ui/part2/guide'
 import { C } from './content'
-import { F, P, f1, gdefs, ink, lantern, roof } from './kit'
+import { F, P, f1, gdefs, ink, lantern, roof, wood, woodG } from './kit'
 
 const K = C.scenes.spec
 const RINGS: Pt[] = [[0.05, 0.9], [0.05, 0.6], [0.05, 0.28], [0.3, 0.05], [0.7, 0.05], [0.95, 0.28], [0.95, 0.6], [0.95, 0.9]] // on the sheet's margin
@@ -48,7 +48,8 @@ export function specScene(ctx: SceneCtx) {
   const lip = h('div', { class: 't35p-lip', 'aria-hidden': 'true' })
   const bench = h('div', { class: 't35p-bench' }, topArt, lip, sheetEl)
   const view = h('div', { class: 't35p-view' }, bench)
-  const note = h('div', { class: 't35p-pencil' }, ctx.fact(F(K.facts[0]), 'p'))
+  // the GitHub fact is in the insight's "details" (one block of words per state: the step's note while placing)
+  const note = h('div', { class: 't35p-pencil', hidden: true })
   const flash = h('div', { class: 't35p-flash', 'aria-hidden': 'true' })
   const front = s('svg', { class: 't35p-back t35p-front', 'aria-hidden': 'true' })
   // when done: the skill hangs rolled on a hook; tapped, it lies open on the bench as a sheet
@@ -88,8 +89,9 @@ export function specScene(ctx: SceneCtx) {
     const sw = tw * (port ? 0.6 : 0.54), sh = th * (port ? 0.42 : 0.6)
     const G: Bench = { W, H, port, A: port ? 48 : 56, Pz: port ? 900 : 1150, ox: W / 2, oy: port ? -H * 0.1 : -H * 0.05, tx: (W - tw) / 2, ty: 0, tw, th, edge: clamp(th * 0.06, 18, 40), sheet: [(tw - sw) / 2, th * (port ? 0.06 : 0.08), sw, sh] }
     // slide the bench so the sheet's top sits near the top of the frame (a phone crops into the sheet)
-    const want = H * (port ? 0.07 : 0.08)
-    for (let k = 0; k < 4; k++) G.ty += (want - proj(G.sheet[0], G.sheet[1], G)[1]) * 0.9
+    // a band of the far wall shows above the bench (the door, the lamp, the peg rail with the skill's hook)
+    const want = H * (port ? 0.13 : 0.2)
+    for (let k = 0; k < 4; k++) G.ty += (want - proj(0, 0, G)[1]) * 0.9
     g = G
     return G
   }
@@ -109,6 +111,7 @@ export function specScene(ctx: SceneCtx) {
     back.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     const dw = port ? W * 0.32 : W * 0.15, dh = Math.max(40, farY + H * 0.02)
     const ddx = port ? W * 0.04 : W * 0.06
+    const railY = Math.max(8, farY * 0.14), hx = W * (port ? 0.8 : 0.78)
     back.replaceChildren(
       s('rect', { class: 't35p-room', width: f1(W), height: f1(H) }),
       s('rect', { class: 't35p-floor-sh', y: f1(proj(0, G.th)[1]), width: f1(W), height: f1(H) }),
@@ -119,7 +122,16 @@ export function specScene(ctx: SceneCtx) {
         mist(ddx + dw / 2, dh * 0.9, dw * 0.8, dh * 0.2),
         s('g', { class: 't35p-bough' }, pine(ddx + dw * 0.12, dh * 1.5, dh * 1.4, 366, 1))),
       s('path', { class: 't35p-spill', d: `M${f1(ddx)} ${f1(dh)}L${f1(ddx + dw)} ${f1(dh)}L${f1(ddx + dw * 1.8)} ${f1(dh + H * 0.3)}L${f1(ddx + dw * 0.2)} ${f1(dh + H * 0.3)}Z`, fill: 'url(#t35k-beam)' }),
-      s('path', { class: 't35p-jamb', d: `M${f1(ddx - 8)} -4h7v${f1(dh + 6)}h-7ZM${f1(ddx + dw + 1)} -4h7v${f1(dh + 6)}h-7Z` }))
+      s('path', { class: 't35p-jamb', d: `M${f1(ddx - 8)} -4h7v${f1(dh + 6)}h-7ZM${f1(ddx + dw + 1)} -4h7v${f1(dh + 6)}h-7Z` }),
+      // the far wall: dark cedar boards behind the bench
+      s('path', { class: 't35p-wallseam', d: Array.from({ length: 16 }, (_, k) => `M${f1(ddx + dw + 14 + k * W * 0.07)} 0V${f1(farY + 4)}`).join('') }),
+      // a peg rail along the far wall (the skill will hang from it), with its shadow on the plaster
+      s('rect', { class: 't35p-railsh', x: f1(ddx + dw + 8), y: f1(railY + 6), width: f1(W), height: 7 }),
+      woodG([wood([ddx + dw + 8, railY], [W + 10, railY + 1], clamp(H * 0.016, 7, 12), 3640)], 't35p-rail'),
+      ink(blob(hx, railY + 1, 4.5, 6, 3641, 0.1, 8), 't35p-peg', 'rough'))
+    // the hook hangs from the peg: the roll's foot stops above the bench's far edge (it hangs on the wall behind)
+    const hh = clamp(farY - railY - 6, 90, 190), hw = hh * 0.5
+    Object.assign(hook.style, { left: `${f1(hx - hw / 2)}px`, top: `${f1(railY)}px`, width: `${f1(hw)}px`, height: `${f1(hh)}px`, right: 'auto' })
     yield
     // the bench top: thick planks with gaps and grain, the lamp's warm pool falling off to dark edges, the sheet's shadow
     topArt.setAttribute('viewBox', `0 0 ${f1(tw)} ${f1(th)}`)
@@ -269,7 +281,7 @@ export function specScene(ctx: SceneCtx) {
     // the lamp hangs over the bench, between us and it
     const lr = clamp(W * 0.02, 13, 24), lx = W * (port ? 0.86 : 0.6), ly = -lr * (port ? 0.9 : 0.6)
     front.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
-    front.replaceChildren(s('path', { class: 't35p-cord', d: `M${f1(lx)} -10V${f1(ly)}` }), s('g', { class: 't35p-lamp' }, lantern(lx, ly, lr, 389, 2)))
+    front.replaceChildren(...tray(G), s('path', { class: 't35p-cord', d: `M${f1(lx)} -10V${f1(ly)}` }), s('g', { class: 't35p-lamp' }, lantern(lx, ly, lr, 389, 2)))
     // the pencil note: in the room's dark left of the sheet; on a phone in the strip along the bottom
     const [nl, nt] = proj(sx, sy + sh * 0.4)
     if (port) {
@@ -339,43 +351,96 @@ export function specScene(ctx: SceneCtx) {
     const [sx, sy, sw, sh] = G.sheet
     return RINGS.slice(0, n).map(([a, b]) => proj(sx + sw * a, sy + sh * b))
   }
-  // the loose pebbles: a row along the bench's near edge (a phone: two columns right under the sheet)
+  // the loose pebbles lie scattered in a shallow wooden tray at the bench's near edge, each at its own depth; every step is
+  // written on a paper slip tied to its pebble. Desk: the tray across the near edge; phone: a deep tray under the sheet.
+  const SPOT_U = [0.04, 0.17, 0.31, 0.44, 0.57, 0.7, 0.83, 0.96]
+  const SPOT_V = [0.12, 0.66, 0.2, 0.92, 0.34, 0.8, 0.04, 0.4]
+  const ROT = [-5, 4, -2, 6, -4, 3, -6, 2]
+  const BOX: Pt = [132, 82], BOXP: Pt = [106, 62] // a stone's box (spec.css): pebble on top, its slip under it
+  const trayBox = (G: Bench): [number, number, number, number] => {
+    const [sx, sy, , sh] = G.sheet
+    const below = proj(sx, sy + sh, G)[1]
+    return G.port
+      ? [G.W * 0.03, below + 8, G.W * 0.97, G.H - 134]
+      : [G.W * 0.12, below + 14, G.W * 0.88, Math.min(G.H - 6, below + 250)]
+  }
   const pile = (sg: SlotGeo): Pt[] => {
     const G = g ?? measure()
-    const { w, n, size } = sg
-    const [sx, sy, , sh] = G.sheet
-    const below = proj(sx, sy + sh)[1]
+    const { n, size } = sg
+    // stepPath places a stone by its default box's corner and centres the drawn (larger) box on it
+    const ox = size[0] / 2, oy = size[1] / 2
+    const [x0, y0, x1, y1] = trayBox(G)
     if (G.port) {
-      // two columns of pebbles (drawn 52 px tall, spec.css) stacked up from the strip of words at the bottom
-      const rows = Math.ceil(n / 2), ph = 52, gap = 5
-      const last = sg.h - 122 - ph / 2
-      const first = Math.max(below + ph / 2 + 6, last - (rows - 1) * (ph + gap))
-      const step = rows > 1 ? (last - first) / (rows - 1) : 0
-      return Array.from({ length: n }, (_, k) => [w * (k % 2 ? 0.74 : 0.26), first + Math.floor(k / 2) * step + (k % 2 ? 4 : 0) - (size[1] - ph) / 2] as Pt)
+      // a cascade down the tray across three lanes in turn, never two side by side
+      const [bw, bh] = BOXP
+      const top = y0 + bh * 0.5 + 6, span = Math.max(0, y1 - bh * 0.5 - 6 - top)
+      const jx = [2, -3, 4, -2, 3, -4, 1, -1]
+      const lane = [x0 + bw * 0.5 + 2, (x0 + x1) / 2, x1 - bw * 0.5 - 2]
+      return Array.from({ length: n }, (_, k) => [lane[k % 3] + jx[k % 8] - bw / 2 + ox, top + (span * k) / Math.max(1, n - 1) - bh / 2 + oy] as Pt)
     }
-    const sz = 158 // the pebbles are drawn a little larger than stepPath's default (spec.css)
-    const gap = (w - n * sz) / (n + 1)
-    const near = proj(0, G.th)[1]
-    const yy = Math.min(G.H - size[1] * 0.75, below + (near - below) * 0.62)
-    ctx.art.style.setProperty('--t35p-note', `${f1(G.H - yy + size[1] * 0.5 + 10)}px`)
-    return Array.from({ length: n }, (_, k) => [gap + sz / 2 + k * (sz + gap) - (sz - size[0]) / 2, yy + Math.sin(k * 1.7) * 6] as Pt)
+    // the step's note lies in the dark of the bench left of the sheet (the tray is full of pebbles)
+    ctx.art.style.setProperty('--t35p-note', `${f1(proj(G.sheet[0], G.sheet[1] + G.sheet[3] * 0.3, G)[1])}px`)
+    const [bw, bh] = BOX
+    const ix0 = x0 + bw * 0.5 + 18, ix1 = x1 - bw * 0.5 - 18, iy0 = y0 + bh * 0.5 + 6, iy1 = y1 - bh * 0.5 - 8
+    return Array.from({ length: n }, (_, k) => [ix0 + (ix1 - ix0) * SPOT_U[k % 8] - bw / 2 + ox, iy0 + (iy1 - iy0) * SPOT_V[k % 8] - bh / 2 + oy] as Pt)
+  }
+  /** The tray (screen px): a shallow board box seen from above the near edge, a few spare pebbles, the inkstone and brush. */
+  function tray(G: Bench): SVGElement[] {
+    const [x0, y0, x1, y1] = trayBox(G)
+    const k = (y1 - y0) * 0.12 // the far rim leans in a little: perspective
+    const rim = Math.max(8, (y1 - y0) * 0.06)
+    const isw = G.port ? clamp((x1 - x0) * 0.22, 56, 110) : 64
+    // phone: the near-left corner; desk: the near-right corner (the heap's free side)
+    const ix = G.port ? x0 : x1 - rim * 4 - isw * 1.45
+    const outer = `M${P([x0 + k, y0])}L${P([x1 - k, y0])}L${P([x1, y1])}L${P([x0, y1])}Z`
+    const inner = `M${P([x0 + k + rim, y0 + rim])}L${P([x1 - k - rim, y0 + rim])}L${P([x1 - rim * 0.8, y1 - rim * 1.6])}L${P([x0 + rim * 0.8, y1 - rim * 1.6])}Z`
+    const r = rng(3660)
+    let spare = ''
+    for (let q = 0; q < 7; q++) {
+      const at = q < 4 ? [x0 + rim * 2 + r() * (x1 - x0) * 0.12, y0 + rim * 2 + r() * (y1 - y0) * 0.6] : [x1 - rim * 2 - r() * (x1 - x0) * 0.12, y0 + rim * 2 + r() * (y1 - y0) * 0.6]
+      spare += blob(at[0], at[1], 6 + r() * 7, 4 + r() * 4, 3670 + q, 0.15, 10)
+    }
+    let grain = ''
+    for (let q = 1; q < 5; q++) grain += stroke([[x0 + rim * 2, y0 + ((y1 - y0) * q) / 5], [x1 - rim * 2, y0 + ((y1 - y0) * q) / 5 + 2]], 1, 0.1, 0.1, 0.3)
+    return [
+      s('path', { class: 't35p-tray-sh', d: blob((x0 + x1) / 2 + 8, y1 + 4, (x1 - x0) * 0.52, Math.max(8, (y1 - y0) * 0.08), 3661, 0.1, 16), filter: 'url(#ink-wash)' }),
+      s('path', { class: 't35p-tray', d: outer, filter: 'url(#ink-rough)' }),
+      s('path', { class: 't35p-tray-floor', d: inner }),
+      s('path', { class: 't35p-tray-grain', d: grain }),
+      ink(stroke([[x0 + k, y0 + 1], [x1 - k, y0 + 1]], Math.max(1.5, rim * 0.25), 0.05, 0.05, 0.5), 't35k-rim'),
+      s('path', { class: 't35p-spare', d: spare, fill: 'url(#t35k-rock)', filter: 'url(#ink-rough)' }),
+      // the inkstone and a brush laid across it in the tray's near-left corner
+      s('path', { class: 't35p-inkstone', d: blob(ix + rim * 2 + isw * 0.5, y1 - rim * 2 - isw * 0.3, isw * 0.5, isw * 0.3, 3680, 0.08, 14), filter: 'url(#ink-rough)' }),
+      s('ellipse', { class: 't35p-inkpool', cx: f1(ix + rim * 2 + isw * 0.42), cy: f1(y1 - rim * 2 - isw * 0.34), rx: f1(isw * 0.22), ry: f1(isw * 0.11) }),
+      ink(stroke([[ix + rim * 1.6, y1 - rim * 2.6], [ix + rim * 2 + isw * 1.25, y1 - rim * 2 - isw * 0.55]], Math.max(2.4, isw * 0.05), 0.02, 0.35, 0.4) + stroke([[ix + rim * 2 + isw * 1.25, y1 - rim * 2 - isw * 0.55], [ix + rim * 2 + isw * 1.42, y1 - rim * 2 - isw * 0.62]], Math.max(4, isw * 0.09), 0.1, 0.6, 0.3), 't35p-brush', 'rough'),
+    ]
   }
   stepPath(K.steps as StepPath, {
     label: K.label,
     prompt: K.prompt,
     insight: F(K.insight),
-    detail: K.detail,
+    detail: [K.detail, F(K.facts[0])],
     cards: K.steps.cards,
     art: () => [],
     slots: (sg) => ring(sg.n),
     pile,
-    piece: (_i, { w, h: hh, seed }) => s('g', null,
-      s('ellipse', { class: 't35k-contact', cx: f1(w * 0.52), cy: f1(hh * 0.84), rx: f1(w * 0.5), ry: f1(hh * 0.18) }),
-      s('path', { d: blob(w / 2, hh * 0.48, w * 0.49, hh * 0.42, seed, 0.1, 18), fill: 'url(#t35k-rock)', filter: 'url(#ink-rough)' }),
-      s('path', { d: blob(w / 2, hh * 0.48, w * 0.49, hh * 0.42, seed, 0.1, 18), fill: 'url(#p2-shade)' }),
-      ink(stroke(curve([w * 0.14, hh * 0.28], [w * 0.4, hh * 0.08], [w * 0.75, hh * 0.16], 8), Math.max(1.4, hh * 0.05), 0.3, 0.3, 0.1), 't35k-rim')),
+    piece: (_i, { w, h: hh, seed }) => {
+      const r = rng(seed)
+      const rx = w * (0.2 + r() * 0.1), ry = hh * (0.32 + r() * 0.1), cx = w * (0.5 + (r() - 0.5) * 0.14), cy = hh * 0.38
+      const d = blob(cx, cy, rx, ry, seed, 0.12 + r() * 0.08, 16)
+      return s('g', null,
+        s('ellipse', { class: 't35k-contact', cx: f1(cx + rx * 0.12), cy: f1(cy + ry * 0.85), rx: f1(rx * 1.05), ry: f1(ry * 0.32) }),
+        s('path', { d, fill: 'url(#t35k-rock)', filter: 'url(#ink-rough)' }),
+        s('path', { d, fill: 'url(#p2-shade)' }),
+        ink(stroke(curve([cx - rx * 0.7, cy - ry * 0.4], [cx - rx * 0.1, cy - ry * 1.05], [cx + rx * 0.6, cy - ry * 0.6], 8), Math.max(1.4, hh * 0.04), 0.3, 0.3, 0.1), 't35k-rim'),
+        // the red cord round the pebble, down to its slip
+        ink(stroke([[cx + rx * 0.25, cy - ry * 0.95], [cx + rx * 0.32, cy], [cx + rx * 0.2, cy + ry * 0.9]], Math.max(1.6, hh * 0.035), 0.05, 0.05, 0.6) + stroke([[cx + rx * 0.2, cy + ry * 0.9], [w * 0.52, hh * 0.66]], 1.2, 0.05, 0.05, 0.6), 't35p-tie', 'rough'))
+    },
     onPlace: (k) => {
       stage.classList.add(`s${k + 1}`)
+      count.set(k + 1)
+      if (k < 7) next.at(() => ring(k + 2)[k + 1])
+      else (next.done(), count.done())
       if (k === 5 && !still) {
         flash.classList.remove('go')
         void flash.offsetWidth // restart the flash
@@ -384,6 +449,19 @@ export function specScene(ctx: SceneCtx) {
       if (k === 7) queueMicrotask(hang)
     },
   }).mount(ctx)
+  // H1 a dot on the next pencil ring, H4 the steps placed so far (both on the sheet's margin)
+  const GD = guide(ctx)
+  const next = GD.dot(() => ring(1)[0], { dir: [0, -1] })
+  const count = GD.count(K.count, 8, () => {
+    const G = g ?? measure()
+    const [l, t] = proj(G.sheet[0], G.sheet[1])
+    return G.port ? [G.W * 0.5, t - 18] : [l + 70, t - 20]
+  })
+  // each pebble its own size by its depth in the tray (nearer = larger) and its own angle; the slip leans the other way
+  ctx.art.querySelectorAll<HTMLElement>('.p2s-stone').forEach((el, k) => {
+    el.style.setProperty('--sc', (0.86 + SPOT_V[k % 8] * 0.24).toFixed(2))
+    el.style.setProperty('--rot', `${ROT[k % 8]}deg`)
+  })
   // stepPath opens its take-away as a sheet over the scene: take the card out of it and hang it on the hook instead
   const pathRoot = ctx.art.querySelector<HTMLElement>('.p2s')
   pathRoot?.append(hook, out)

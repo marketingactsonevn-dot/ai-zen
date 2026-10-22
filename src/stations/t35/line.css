@@ -4,8 +4,6 @@
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  -webkit-mask-image: radial-gradient(125% 120% at 50% 50%, #000 64%, transparent 100%);
-  mask-image: radial-gradient(125% 120% at 50% 50%, #000 64%, transparent 100%);
 }
 .t35d-hall,
 .t35d-cord,
@@ -271,10 +269,21 @@
   top: 100%;
   left: 50%;
   display: none;
-  padding: 0.35em 0.5em 0.45em;
+  padding: 0.4em 0.5em 0.5em;
   transform: translateX(-50%) rotate(-1.5deg);
   font: 400 14px/1.25 var(--serif);
   text-align: center;
+  color: #2a1d10;
+  /* a tanzaku of washi on a string, yellowed by its lantern; its torn lower edge */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8 .4' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .1 .35 0 0 0 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 42%, #f6eedc), color-mix(in srgb, var(--lantern) 26%, #e8dcc2));
+  clip-path: polygon(0 0, 100% 0, 100% 92%, 88% 100%, 72% 94%, 55% 100%, 38% 95%, 20% 100%, 0 94%);
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.35));
+}
+/* the far lanterns are cold: their tanzaku catch moonlight, not lamplight */
+.t35d-lamp.cool .t35d-name {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--moon) 55%, #c9ccd6), color-mix(in srgb, var(--moon) 30%, #a9aebd));
 }
 .t35d-lamp.tag .t35d-name {
   display: block;
@@ -313,7 +322,75 @@
 }
 .t35d-chalk {
   fill: var(--card);
-  opacity: 0.32;
+  opacity: 0.4;
+}
+.t35d-socket {
+  fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash));
+  opacity: 0.75;
+}
+.t35d-hollow {
+  fill: var(--umbra);
+  opacity: 0.45;
+}
+:root[data-theme='dark'] .t35d-socket {
+  fill: color-mix(in srgb, var(--rock-lo) 55%, #000);
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .t35d-hollow {
+  fill: #000;
+  opacity: 0.7;
+}
+.t35d.is-done .t35d-spot:not(.on) {
+  opacity: 0.35;
+}
+.t35d.is-done .t35d-bowl-label {
+  opacity: 0;
+}
+.t35d-grain {
+  fill: var(--wash);
+  opacity: 0.16;
+}
+:root[data-theme='dark'] .t35d-grain {
+  fill: #000;
+  opacity: 0.35;
+}
+.t35d-pool.refl {
+  opacity: 0.1;
+}
+.t35d-boat-fold {
+  fill: color-mix(in srgb, var(--firefly) 55%, var(--lantern));
+}
+.t35d-boat-crease {
+  fill: none;
+  stroke: color-mix(in srgb, var(--lantern) 50%, #5a3a10);
+  stroke-width: 0.6;
+}
+.t35d-lamp-art.sway {
+  animation: t35d-sway 1.6s ease-in-out;
+  transform-origin: 50% 0;
+}
+@keyframes t35d-sway {
+  30% {
+    rotate: 5deg;
+  }
+  65% {
+    rotate: -3deg;
+  }
+}
+/* the task board hangs on two cords from the ceiling beam */
+.t35d-board::before,
+.t35d-board::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  height: 16px;
+  border-left: 1px solid color-mix(in srgb, var(--ink) 50%, transparent);
+}
+.t35d-board::before {
+  left: 12%;
+}
+.t35d-board::after {
+  right: 12%;
 }
 :root[data-theme='dark'] .t35d-chalk {
   fill: var(--moon);
@@ -426,6 +503,8 @@
 .t35d-board {
   position: absolute;
   z-index: 20;
+  translate: -50% 0;
+  text-align: center;
   padding: 0.4em 0.9em 0.45em;
   border-radius: 2px;
   font: 500 15px/1.3 var(--serif);
@@ -442,10 +521,10 @@
 }
 .t35d-boat {
   position: absolute;
-  left: -40px;
-  top: -28px;
-  width: 80px;
-  height: 48px;
+  left: -64px;
+  top: -46px;
+  width: 128px;
+  height: 77px;
   opacity: 0;
   pointer-events: none;
 }
@@ -571,4 +650,19 @@
   width: 10em;
   margin: 0 0 4px;
   font-size: 12px;
+}
+/* the counts are cut into the dark ceiling beam: pale on it in the light theme too */
+:root[data-theme='light'] .t35d-art .p2g-count {
+  color: color-mix(in srgb, var(--card) 90%, var(--lantern));
+  text-shadow: 0 0 8px rgba(10, 14, 30, 0.75), 0 0 2px rgba(10, 14, 30, 0.8);
+}
+
+/* the soft edge into the page: a painted vignette on top (a CSS mask on the whole scene cost a 170 ms first frame) */
+.t35d::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  background: radial-gradient(125% 120% at 50% 50%, transparent 64%, var(--paper) 100%);
+  pointer-events: none;
 }

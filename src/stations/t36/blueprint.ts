@@ -1,11 +1,11 @@
 import './blueprint.css'
 import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
-import { blob, clamp, curve, onDigit, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { blob, clamp, curve, onDigit, onSize, rng, stroke, type Pt } from '../../ui/part2/ink'
 import type { SceneCtx } from '../types'
-import { guide } from '../../ui/part2/guide'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { C } from './content'
-import { cardButton, F, f1, gdefs, ink } from './kit'
+import { cardButton, F, f1, gdefs, ink, zonedHeight } from './kit'
 import { koi } from './koi'
 
 const K = C.scenes.blueprint
@@ -34,21 +34,22 @@ function shadows(w: number, hh: number, seed: number): [SVGElement, SVGElement][
   const r = rng(seed)
   // sizes in u; the picture spreads wider than tall. Its lower part (the pond's near bank, the screen's foot) runs on past
   // the wall's foot and lands on the table, so the composition sits low: the wall's foot is at 0.77 hh.
-  const cx = w / 2, cy = hh * 0.6, u = hh / 84
-  const X = (v: number) => cx + v * u * 1.5, Y = (v: number) => cy + v * u
+  const cx = w / 2, cy = hh * 0.33, u = hh / 165
+  const X = (v: number) => cx + v * u * 1.3, Y = (v: number) => cy + v * u
   const shard = (x: number, y: number, k: number) => `M${f1(X(x))} ${f1(Y(y))}q${f1(3.5 * k * u)} ${f1(-1.2 * k * u)} ${f1(4.5 * k * u)} ${f1(2 * k * u)}q${f1(-2.5 * k * u)} ${f1(-1.4 * k * u)} ${f1(-4.5 * k * u)} ${f1(-2 * k * u)}Z`
   const arc = (x: number, y: number, rr: number, a0: number, a1: number, n = 30): Pt[] => Array.from({ length: n + 1 }, (_, i) => { const a = a0 + ((a1 - a0) * i) / n; return [X(x) + Math.cos(a) * rr * u, Y(y) + Math.sin(a) * rr * u] })
   const g = (...kids: (SVGElement | string)[]) => s('g', null, ...kids)
   const heart = (x: number, y: number, k: number) => `M${f1(X(x))} ${f1(Y(y + k * 0.9))}c${f1(-k * 1.6 * u)} ${f1(-k * 1.1 * u)} ${f1(-k * 1.1 * u)} ${f1(-k * 2.3 * u)} 0 ${f1(-k * 1.5 * u)}c${f1(k * 1.1 * u)} ${f1(-k * 0.8 * u)} ${f1(k * 1.6 * u)} ${f1(k * 0.4 * u)} 0 ${f1(k * 1.5 * u)}Z`
-  const pond = ink(blob(X(0), Y(8), 62 * u, 13 * u, seed + 1, 0.06), 't36b-sh', 'wash')
+  // the pond: its water a lighter shadow, its stone rim a dark ring
+  const pond = () => g(ink(blob(X(0), Y(8), 60 * u, 12.5 * u, seed + 1, 0.06), 't36b-sh2', 'wash'), ink(stroke(Array.from({ length: 49 }, (_, i) => [X(0) + Math.cos((i / 48) * 6.29) * 60 * u, Y(8) + Math.sin((i / 48) * 6.29) * 12.5 * u] as Pt), 2.4 * u, 0.05, 0.05, 0.7), 't36b-sh', 'rough'))
   let flies = ''
   for (let i = 0; i < 16; i++) flies += blob(X((r() - 0.5) * 80), Y(-4 - r() * 30), 0.7 * u + r() * 0.6 * u, 0.7 * u + r() * 0.6 * u, seed + 40 + i, 0.2, 7)
   // a hand coming in from the right, its finger on the water
   const hand = blob(X(46), Y(-4), 6.5 * u, 4.2 * u, seed + 5, 0.12, 12) + stroke([[X(41), Y(-2)], [X(34), Y(3)], [X(29), Y(6)]], 2.6 * u, 0.02, 0.5, 0.45) + stroke([[X(42), Y(-6)], [X(37), Y(-5.5)]], 2 * u, 0.05, 0.5, 0.4)
   return [
     // 0 idea: the pond and its koi crossing it — or two koi round a rock
-    [g(pond, koi(X(10), Y(5), 30 * u, 0.05, seed + 2, 0.22)),
-      g(pond, koi(X(-14), Y(7), 22 * u, Math.PI + 0.25, seed + 3, 0.3), koi(X(18), Y(4), 18 * u, -0.15, seed + 6, 0.25), ink(blob(X(2), Y(5), 6 * u, 3.6 * u, seed + 4, 0.15), 't36b-sh', 'rough'))],
+    [g(pond(), koi(X(10), Y(5), 30 * u, 0.05, seed + 2, 0.22)),
+      g(pond(), koi(X(-14), Y(7), 22 * u, Math.PI + 0.25, seed + 3, 0.3), koi(X(18), Y(4), 18 * u, -0.15, seed + 6, 0.25), ink(blob(X(2), Y(5), 6 * u, 3.6 * u, seed + 4, 0.15), 't36b-sh', 'rough'))],
     // 1 rules: shards of moon falling to the water, a dry leaf — or a swarm of fireflies
     [g(ink(shard(26, -27, 1.4) + shard(20, -18, 1.1) + shard(13, -10, 0.9) + shard(31, -14, 0.8), 't36b-sh', 'rough'),
       ink(stroke([[X(27), Y(-33)], [X(27.5), Y(-29)]], 0.4 * u, 0.3, 0.3, 0.1) + stroke([[X(21), Y(-23)], [X(21.3), Y(-20)]], 0.4 * u, 0.3, 0.3, 0.1), 't36b-sh'),
@@ -58,13 +59,13 @@ function shadows(w: number, hh: number, seed: number): [SVGElement, SVGElement][
     [g(ink(hand, 't36b-sh', 'wash'), ink(stroke(arc(28, 6.5, 3, 0, 6.3), 0.5 * u, 0.1, 0.1, 0.4) + stroke(arc(28, 6.5, 6, 3.3, 6), 0.4 * u, 0.2, 0.2, 0.2), 't36b-sh', 'rough')),
       g(ink(stroke([[X(-30), Y(20)], [X(-36), Y(23)], [X(-30), Y(26)]], 1.2 * u, 0.1, 0.1, 0.4) + stroke([[X(30), Y(20)], [X(36), Y(23)], [X(30), Y(26)]], 1.2 * u, 0.1, 0.1, 0.4) + stroke([[X(0), Y(16)], [X(0), Y(30)]], 0.4 * u, 0.1, 0.1, 0.4), 't36b-sh', 'rough'))],
     // 3 end: an ensō keeps the score, three hearts beside it — or an ensō and a loop to play again
-    [g(ink(stroke(arc(-34, -22, 8, -1.4, 4.5), 1.8 * u, 0.1, 0.55, 0.15), 't36b-sh', 'rough'), ink(heart(-22, -27, 1) + heart(-18.5, -27, 1) + heart(-15, -27, 1), 't36b-sh')),
+    [g(ink(stroke(arc(-34, -22, 8, -1.4, 4.5), 1.8 * u, 0.1, 0.55, 0.15), 't36b-sh', 'rough'), ink(heart(-21, -27, 1.5) + heart(-16, -27, 1.5) + heart(-11, -27, 1.5), 't36b-sh')),
       g(ink(stroke(arc(-34, -22, 8, -1.4, 4.5), 1.8 * u, 0.1, 0.55, 0.15) + stroke(arc(-34, -22, 11.5, -2.6, 1.2, 20), 0.6 * u, 0.2, 0.2, 0.2) + stroke([[X(-30), Y(-11.4)], [X(-27.6), Y(-11)], [X(-28.4), Y(-13.6)]], 0.6 * u, 0.1, 0.1, 0.3), 't36b-sh', 'rough'))],
     // 4 style: a night of ink with the moon cut out of it — or soft washes of colour on dó paper
     [g(ink(stroke([[X(-48), Y(-36)], [X(0), Y(-40)], [X(48), Y(-35)]], 12 * u, 0.25, 0.4, 0.2), 't36b-sh', 'wash'), s('circle', { class: 't36b-hole', cx: f1(X(30)), cy: f1(Y(-36)), r: f1(5 * u) })),
       g(...[['--water', -28, -34, 15], ['--moss', 0, -38, 12], ['--vermilion', 24, -33, 8], ['--lantern', 36, -40, 8]].map(([c, x, y, k], i) => s('path', { class: 't36b-tint', d: blob(X(x as number), Y(y as number), (k as number) * u, (k as number) * u * 0.5, seed + 30 + i, 0.25), style: `fill:var(${c})`, filter: 'url(#ink-wash)' })))],
     // 5 device: a phone held upright round the game — or a wide screen and its keyboard
-    [g(ink(stroke([[X(-24), Y(-46)], [X(24), Y(-46)], [X(25), Y(34)], [X(-25), Y(34)], [X(-24), Y(-46)]], 1.3 * u, 0.02, 0.02, 0.6), 't36b-sh', 'rough')),
+    [g(ink(stroke([[X(-24), Y(-46)], [X(24), Y(-46)], [X(25), Y(34)], [X(-25), Y(34)], [X(-24), Y(-46)]], 2.4 * u, 0.02, 0.02, 0.6) + stroke([[X(-5), Y(30)], [X(5), Y(30)]], 1.6 * u, 0.1, 0.1, 0.5), 't36b-sh', 'rough')),
       g(ink(stroke([[X(-50), Y(-46)], [X(50), Y(-46)], [X(50), Y(26)], [X(-50), Y(26)], [X(-50), Y(-46)]], 1.2 * u, 0.02, 0.02, 0.6) + stroke([[X(-32), Y(33)], [X(32), Y(33)]], 2.6 * u, 0.1, 0.1, 0.5), 't36b-sh', 'rough'))],
   ]
 }
@@ -85,17 +86,36 @@ function faceMotif(i: number, k: number): SVGSVGElement {
   return g
 }
 
+/** the bamboo rack the strips hang from: two posts on feet standing on the table, a cross bar lashed on top (back svg) */
+function rackArt(o: { x0: number; x1: number; top: number; foot: number }, FW: number): SVGGElement {
+  const t = clamp(FW * 0.05, 4, 7)
+  const post = (x: number) => `M${f1(x - t / 2)} ${f1(o.top - t)}L${f1(x + t / 2)} ${f1(o.top - t)}L${f1(x + t * 0.55)} ${f1(o.foot)}L${f1(x - t * 0.55)} ${f1(o.foot)}Z`
+  const foot = (x: number) => `M${f1(x - t * 2.6)} ${f1(o.foot - t * 1.1)}h${f1(t * 5.2)}v${f1(t * 1.2)}h${f1(-t * 5.2)}Z`
+  const nodes = (x: number) => [0.33, 0.66].map((k) => `M${f1(x - t * 0.62)} ${f1(o.top + (o.foot - o.top) * k)}h${f1(t * 1.24)}v${f1(t * 0.35)}h${f1(-t * 1.24)}Z`).join('')
+  const xa = o.x0 + t * 2, xb = o.x1 - t * 2
+  return s('g', { class: 't36b-rack' },
+    s('ellipse', { class: 't36b-rsh', cx: f1(xa + t * 1.5), cy: f1(o.foot + 1), rx: f1(t * 4), ry: f1(t * 0.8) }),
+    s('ellipse', { class: 't36b-rsh', cx: f1(xb + t * 1.5), cy: f1(o.foot + 1), rx: f1(t * 4), ry: f1(t * 0.8) }),
+    s('path', { class: 't36b-rpost', d: post(xa) + post(xb) + foot(xa) + foot(xb) }),
+    s('path', { class: 't36b-rnode', d: nodes(xa) + nodes(xb) }),
+    // the cross bar rests on the posts' tops, a little beyond them, lashed with cord
+    s('path', { class: 't36b-rpost', d: `M${f1(o.x0 - t)} ${f1(o.top - t * 1.9)}L${f1(o.x1 + t)} ${f1(o.top - t * 1.9)}L${f1(o.x1 + t)} ${f1(o.top - t * 0.6)}L${f1(o.x0 - t)} ${f1(o.top - t * 0.6)}Z` }),
+    s('path', { class: 't36b-rhi', d: `M${f1(o.x0 - t)} ${f1(o.top - t * 1.85)}H${f1(o.x1 + t)}M${f1(xa - t * 0.4)} ${f1(o.top)}V${f1(o.foot - t)}M${f1(xb - t * 0.4)} ${f1(o.top)}V${f1(o.foot - t)}` }),
+    s('path', { class: 't36b-rcord', d: [xa, xb].map((x) => `M${f1(x - t)} ${f1(o.top - t * 2.1)}L${f1(x + t)} ${f1(o.top - t * 0.4)}M${f1(x + t)} ${f1(o.top - t * 2.1)}L${f1(x - t)} ${f1(o.top - t * 0.4)}`).join('') }))
+}
+
 /** where things are in the room (px of the art box), from its size */
 interface Room { W: number; H: number; A: number; wide: boolean; back: number; near: number; edge: number; corner: number; lx: number; baseY: number; FW: number; tw: number }
 function room(W: number, H: number, A: number): Room {
   const wide = W / H > 1.1
   if (wide) {
-    const back = H * 0.5, FW = clamp(H * 0.15, 76, 120)
-    return { W, H, A, wide, back, near: H * 0.92, edge: Math.min(A, H * 0.975), corner: W * 0.1, lx: W * 0.42, baseY: H * 0.76, FW, tw: Math.min(W * 0.7, back * 2.7) }
+    // the lamp at the centre, a little low, 1.6 × what it was; its picture fills the upper third of the wall
+    const back = H * 0.48, FW = clamp(H * 0.235, 110, 190)
+    return { W, H, A, wide, back, near: H * 0.93, edge: Math.min(A, H * 0.985), corner: W * 0.1, lx: W * 0.5, baseY: H * 0.79, FW, tw: Math.min(W * 0.62, back * 2.9) }
   }
-  const FW = clamp(W * 0.17, 52, 70)
-  const back = H * 0.35
-  return { W, H, A, wide, back, near: H * 0.88, edge: Math.min(A, H * 0.92), corner: W * 0.08, lx: W * 0.5, baseY: back + FW * 2.2, FW, tw: W * 1.08 }
+  const FW = clamp(W * 0.22, 60, 92)
+  const back = H * 0.31
+  return { W, H, A, wide, back, near: H * 0.95, edge: Math.min(A, H * 0.985), corner: W * 0.08, lx: W * 0.5, baseY: back + FW * 1.95, FW, tw: W * 1.08 }
 }
 
 /**
@@ -112,14 +132,14 @@ function room(W: number, H: number, A: number): Room {
  */
 export function blueprintScene(ctx: SceneCtx) {
   bpDefs()
-  const stableH = stableHeight(ctx, [F(K.insight)])
+  const stableH = zonedHeight(ctx, [F(K.insight)])
   const low = ctx.quality === 'low'
   const chosen: number[] = K.pieces.map(() => -1)
   let front = 0
 
   // ── the lamp: six faces in CSS 3D round a hidden axis, a glowing lid, a dark base
   const faces = K.pieces.map((p, i) => h('div', { class: 't36b-face', style: `--a:${i * STEP}deg` },
-    h('div', { class: 't36b-paper' }), h('p', { class: 't36b-flabel' }, h('span', { class: 't36b-fnum' }, String(i + 1)), p.label), h('div', { class: 't36b-fmotif' }), h('i', { class: 't36b-fshade' })))
+    h('div', { class: 't36b-paper' }), h('p', { class: 't36b-flabel' }, h('span', { class: 't36b-fnum' }, String(i + 1)), p.label), h('div', { class: 't36b-fmotif' }), h('i', { class: 't36b-fseal' }), h('i', { class: 't36b-fshade' })))
   const rig = h('div', { class: 't36b-rig', 'aria-hidden': 'true' }, ...faces, h('div', { class: 't36b-lid' }, h('i')), h('div', { class: 't36b-base' }))
   const lamp = h('div', { class: 't36b-andon', tabindex: '0', role: 'group', 'aria-roledescription': K.lampRole, 'aria-label': K.lampAria }, h('div', { class: 't36b-halo', 'aria-hidden': 'true' }), rig)
   // the strips under the front face: two buttons of paper
@@ -132,7 +152,8 @@ export function blueprintScene(ctx: SceneCtx) {
   const tail = h('div', { class: 't36b-tail' })
   const count = h('span', { class: 't36b-count' })
   const slip = h('button', { class: 't36b-slip', type: 'button', 'aria-expanded': 'false' }, h('span', { class: 't36b-sliptitle' }, K.specTitle), count)
-  const extra = K.extra.map(([k, v]) => h('li', { class: 't36b-extra', hidden: true }, h('span', { class: 't36b-key' }, k), h('span', { class: 't36b-val' }, v)))
+  // the two last lines (what waits for later, when it is done): blank until touched
+  const extra = K.extra.map(([k]) => h('li', { class: 't36b-extra', hidden: true }, h('button', { class: 't36b-xbtn', type: 'button', 'aria-label': fill(K.extraAria, { key: k }) }, h('span', { class: 't36b-key' }, k), h('span', { class: 't36b-val' }))))
   const sheet = h('div', { class: 't36b-sheet' }, h('p', { class: 't36b-title' }, K.specTitle), h('p', { class: 't36b-decode' }, K.specDecode), h('ol', { class: 't36b-lines', 'aria-live': 'off' }, ...lines, ...extra), tail)
   const spec = h('div', { class: 't36b-spec' }, slip, sheet)
   const tent = h('div', { class: 't36b-tent', hidden: true })
@@ -143,12 +164,25 @@ export function blueprintScene(ctx: SceneCtx) {
   const throwBox = h('div', { class: 't36b-throwbox', 'aria-hidden': 'true' }, wallPic)
   const spillBox = h('div', { class: 't36b-spillbox', 'aria-hidden': 'true' }, spillPic)
   const near = s('svg', { class: 't36b-nearsvg', 'aria-hidden': 'true' })
-  const root = h('div', { class: 't36 t36b' }, back, throwBox, spillBox, h('p', { class: 'visually-hidden' }, K.art), lamp, near, stripBox, feet, spec, tent)
+  const turnHint = h('p', { class: 't36b-turnhint', 'aria-hidden': 'true' }, K.turnHint)
+  const root = h('div', { class: 't36 t36b' }, back, throwBox, spillBox, h('p', { class: 'visually-hidden' }, K.art), lamp, near, stripBox, feet, turnHint, spec, tent)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
   // the turn is a gesture nobody guesses: a faint curved arrow at the lamp until every face is set
   const GD = guide(ctx)
-  const turnMark = GD.gesture('drag-h', lamp, { r: 70 })
+  let hintAt: Pt = [0, 0]
+  let turnMark: Mark | null = low ? null : GD.gesture('drag-h', () => hintAt, { r: 70 })
+  // H1: a dot on each of the two strips waiting under the front face
+  let stripDots: Mark[] = strips.map((b) => GD.dot(b, { dir: [0, 1] }))
+  // idle 6 s: the strips sway on their strings
+  const sway = () => {
+    if (ctx.reduced || chosen.every((c) => c >= 0)) return
+    stripBox.classList.remove('sway')
+    void stripBox.offsetWidth
+    stripBox.classList.add('sway')
+  }
+  ctx.el.addEventListener('p2:idle', sway)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', sway))
   const pill = cardButton(ctx, root, K.takeaway)
   if (pill) tent.append(pill)
   const setCount = () => {
@@ -223,6 +257,7 @@ export function blueprintScene(ctx: SceneCtx) {
       drag.x = e.clientX
       drag.t = now
       target = null
+      if (turnMark && Math.abs(rot) > 30) (turnMark.done(), (turnMark = null), turnHint.classList.add('out'))
     })
     const up = (e: PointerEvent) => {
       if (!drag || e.pointerId !== drag.id) return
@@ -295,15 +330,41 @@ export function blueprintScene(ctx: SceneCtx) {
       if (first) advance = window.setTimeout(() => turnTo(next), ctx.reduced ? 0 : 480)
       return
     }
-    if (!tail.childElementCount) {
-      turnMark.done()
+    if (extra[0].hidden) {
+      // the six faces are set: spec.md grows its two last lines, blank, to be filled by touch
+      turnMark?.done()
+      turnMark = null
+      turnHint.classList.add('out')
+      stripDots.forEach((d) => d.done())
+      stripDots = []
       for (const x of extra) x.hidden = false
-      tail.append(ctx.fact(F(K.facts[0]), 'p', 't36b-fact'))
-      tent.hidden = false
-      ctx.insight(F(K.insight), K.detail)
-      ctx.chime('ok')
+      if (!o0?.wide) {
+        spec.classList.add('open')
+        slip.setAttribute('aria-expanded', 'true')
+      }
+      extraDots = extra.map((x) => GD.dot(x.querySelector('button')!, { dir: [1, 0] }))
+      ctx.prompt(K.extraPrompt)
+      extra[0].querySelector('button')!.focus({ preventScroll: true })
     }
   }
+  let extraDots: Mark[] = []
+  let finT = 0
+  ctx.onCleanup(() => clearTimeout(finT))
+  extra.forEach((li, k) => li.querySelector('button')!.addEventListener('click', () => {
+    const b = li.querySelector('button')!
+    if (b.disabled) return
+    b.disabled = true
+    li.querySelector('.t36b-val')!.textContent = K.extra[k][1]
+    li.classList.add('on')
+    extraDots[k]?.done()
+    ctx.chime('tap')
+    if (!extra.every((x) => x.querySelector('button')!.disabled)) return
+    tent.hidden = false
+    ctx.insight(F(K.insight), [K.detail, F(K.facts[0])])
+    ctx.chime('ok')
+    // tall screens: the opened sheet folds back down so the wall's picture shows
+    if (!o0?.wide) finT = window.setTimeout(() => (spec.classList.remove('open'), slip.setAttribute('aria-expanded', 'false')), ctx.reduced ? 0 : 1600)
+  }))
   function paintShadow(i: number) {
     for (const pic of [wallPic, spillPic]) {
       const g = pic.querySelector(`.t36b-t${i}`)
@@ -314,12 +375,13 @@ export function blueprintScene(ctx: SceneCtx) {
   }
 
   // ── layout: the room, the lamp on the table, its throw, spec.md lying in front
+  let o0: Room | null = null
   ctx.onCleanup(onSize(ctx.art, () => {
     const W = ctx.art.clientWidth, A = ctx.art.clientHeight
     const H = stableH(A)
     if (W < 60 || H < 60) return
     root.style.height = `${f1(A)}px`
-    const o = room(W, H, A)
+    const o = (o0 = room(W, H, A))
     root.classList.toggle('wide', o.wide)
     const { FW, lx, baseY } = o
     const FH = FW * 1.55
@@ -331,25 +393,33 @@ export function blueprintScene(ctx: SceneCtx) {
     // (low) the tags at the foot; the strips hang below
     const feetH = feet ? (o.wide ? 46 : 38) : 0
     if (feet) Object.assign(feet.style, { left: `${f1(lx)}px`, top: `${f1(baseY + FW * 0.12)}px` })
-    const sw = o.wide ? clamp(W * 0.12, 130, 176) : clamp(W * 0.42, 128, 160)
-    const stripY = baseY + FW * 0.3 + feetH
-    Object.assign(stripBox.style, { left: `${f1(lx)}px`, top: `${f1(stripY)}px`, width: `${f1(sw * 2 + 14)}px` })
-    root.style.setProperty('--sth', `${f1(Math.max(40, (o.wide ? o.edge : o.H - 44) - stripY - 26))}px`)
-    // spec.md on the table at the front right (wide), a slip on the strip under the table (tall); the folded card
+    // the strips hang by strings from a bamboo rack standing on the table: right of the lamp (wide), in front of it (tall)
+    const sw = o.wide ? clamp(W * 0.078, 100, 120) : clamp(W * 0.33, 108, 136)
+    const rack = o.wide
+      ? { x0: lx + FW * 1.2, x1: lx + FW * 1.2 + sw * 2 + 62, top: H * 0.42, foot: H * 0.82 }
+      : { x0: W * 0.035, x1: W * 0.965, top: baseY + FW * 0.18 + feetH, foot: o.near - 4 }
+    const stripY = rack.top + 20
+    Object.assign(stripBox.style, { left: `${f1((rack.x0 + rack.x1) / 2)}px`, top: `${f1(stripY)}px`, width: `${f1(sw * 2 + 14)}px` })
+    root.style.setProperty('--sth', `${f1(Math.max(40, rack.foot - stripY - 22))}px`)
+    // the turn's mark: under the lamp's base (wide), over its lid (tall)
+    hintAt = o.wide ? [lx, baseY + FW * 0.36] : [lx, baseY - FW * 1.55 - FW * 0.62]
+    Object.assign(turnHint.style, { left: `${f1(hintAt[0])}px`, top: `${f1(hintAt[1] + (o.wide ? 12 : -22))}px` })
+    // spec.md lying on the table at the front left (wide), a slip on the strip under the table (tall); the folded card
     if (o.wide) {
-      Object.assign(spec.style, { left: `${f1(Math.max(lx + sw + 50, W * 0.6))}px`, bottom: `${f1(A - o.near - H * 0.02)}px`, width: `${f1(Math.min(W * 0.35, 450))}px`, top: '' })
-      Object.assign(tent.style, { left: `${f1(Math.max(lx + FW * 1.5, W * 0.6 - 64))}px`, top: `${f1(H * 0.57)}px` })
+      const sw2 = Math.min(W * 0.245, 350)
+      Object.assign(spec.style, { left: `${f1(W * 0.055)}px`, bottom: `${f1(A - o.near + 4)}px`, width: `${f1(sw2)}px`, top: '' })
+      Object.assign(tent.style, { left: `${f1(W * 0.055 + sw2 + 70)}px`, top: `${f1(o.near - 64)}px` })
     } else {
       Object.assign(spec.style, { left: `${f1(W * 0.03)}px`, bottom: `${f1(A - H + 2)}px`, width: `${f1(W * 0.58)}px`, top: '' })
-      Object.assign(tent.style, { left: `${f1(W * 0.66)}px`, top: `${f1(H - 50)}px` })
+      Object.assign(tent.style, { left: `${f1(W * 0.8)}px`, top: `${f1(H - 92)}px` })
     }
-    paintRoom(o)
+    paintRoom(o, rack)
     GD.refresh() // the lamp has just been placed
   }))
   write()
   face(0)
 
-  function paintRoom(o: Room) {
+  function paintRoom(o: Room, rack: { x0: number; x1: number; top: number; foot: number }) {
     const { W, A, back: bk, near: nr, edge, corner: cx0, lx, baseY, FW, wide } = o
     back.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(A)}`)
     near.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(A)}`)
@@ -367,14 +437,15 @@ export function blueprintScene(ctx: SceneCtx) {
     for (const [pic, which] of [[wallPic, 0], [spillPic, 1]] as const) {
       pic.setAttribute('viewBox', `0 0 ${f1(tw)} ${f1(hh)}`)
       Object.assign(pic.style, { width: `${f1(tw)}px`, height: `${f1(hh)}px` })
-      pic.replaceChildren(slatG(), ...sets.map(([a, b], i) => s('g', { class: `t36b-throw t36b-t${i}${chosen[i] >= 0 ? ' on' : ''}`, 'data-k': String(chosen[i]) },
+      pic.replaceChildren(slatG(), ...sets.map(([a, b], i) => s('g', { class: `t36b-throw t36b-t${i}${chosen[i] >= 0 ? ' on' : ''}${chosen[i] === K.pieces[i].vague ? ' vague' : ''}`, 'data-k': '0' },
         // blurred first (the faint, unfocused throw), sharp once chosen; option 0 / 1 versions
         s('g', { class: 't36b-blur' }, s('g', { filter: low ? null : 'url(#t36b-soft)' }, (which ? a.cloneNode(true) : a).cloneNode(true))),
         s('g', { class: 't36b-v0' }, which ? a.cloneNode(true) : a), s('g', { class: 't36b-v1' }, which ? b.cloneNode(true) : b))))
     }
     Object.assign(throwBox.style, { left: `${f1(lx - tw / 2)}px`, top: '0px', width: `${f1(tw)}px`, height: `${f1(wallH)}px` })
     const spillH = (hh - wallH) * 0.45
-    Object.assign(spillBox.style, { left: `${f1(lx - tw / 2)}px`, top: `${f1(wallH)}px`, width: `${f1(tw)}px`, height: `${f1(spillH)}px` })
+    // (the picture now sits high on the wall: nothing spills onto the table)
+    Object.assign(spillBox.style, { left: `${f1(lx - tw / 2)}px`, top: `${f1(wallH)}px`, width: `${f1(tw)}px`, height: `${f1(spillH)}px`, display: 'none' })
     spillPic.style.transform = `scaleY(0.45) translateY(${f1(-wallH)}px)`
     root.style.setProperty('--tw', `${f1(tw)}px`)
     root.style.setProperty('--wh', `${f1(wallH)}px`)
@@ -427,7 +498,8 @@ export function blueprintScene(ctx: SceneCtx) {
       s('path', { class: 't36b-wallfoot', d: `M${f1(cx0)} ${f1(bk)}H${f1(W)}` }),
       s('ellipse', { cx: f1(lx), cy: f1(baseY), rx: f1(FW * 4.2), ry: f1(FW * 1.3), fill: 'url(#t36b-pool)' }),
       s('g', { filter: low ? null : 'url(#t36b-mist)' }, s('path', { class: 't36b-moonpatch', d: quad(mt) }), s('path', { class: 't36b-moonlat', d: patchLat(mt, 3, 6) })),
-      s('ellipse', { class: 't36b-contact', cx: f1(lx + FW * 0.12), cy: f1(baseY + 2), rx: f1(FW * 1.05), ry: f1(FW * 0.2) }))
+      s('ellipse', { class: 't36b-contact', cx: f1(lx + FW * 0.12), cy: f1(baseY + 2), rx: f1(FW * 1.05), ry: f1(FW * 0.2) }),
+      rackArt(rack, FW))
     // ── the near layer: the table's front edge, cut by the frame, and under it the dark
     near.replaceChildren(
       s('rect', { class: 't36b-front', x: -4, y: f1(nr), width: f1(W + 8), height: f1(edge - nr) }),

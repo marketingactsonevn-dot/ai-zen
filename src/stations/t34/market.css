@@ -412,8 +412,8 @@
   top: 0;
   display: grid;
   justify-items: center;
-  width: 132px;
-  min-height: 48px;
+  width: 118px;
+  min-height: 52px;
   padding: 6px 0 2px;
   align-content: end;
   border: 0;
@@ -429,12 +429,16 @@
   z-index: 1;
   display: block;
   width: 100%;
-  padding: 7px 5px 6px;
-  /* glowing paper on a thin frame: corner posts and a top rail in dark wood, a lit opening on top */
+  padding: 8px 6px 12px;
+  /* paper on a thin frame: corner posts, a top and a bottom rail in dark wood; the candle burns low inside, so the paper
+     is brightest just above the tray and the words are brushed on it in ink */
   background:
     linear-gradient(90deg, var(--t34m-frame) 0 3px, transparent 3px calc(100% - 3px), var(--t34m-frame) calc(100% - 3px)),
-    radial-gradient(85% 90% at 50% 45%, color-mix(in srgb, var(--lantern) 30%, var(--moon)), color-mix(in srgb, var(--lantern) 78%, var(--moon)) 92%);
+    linear-gradient(90deg, transparent 0 calc(50% - 0.5px), color-mix(in srgb, var(--t34m-frame) 35%, transparent) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    radial-gradient(42% 30% at 50% 92%, color-mix(in srgb, var(--moon) 70%, #fff), color-mix(in srgb, var(--lantern) 60%, transparent) 55%, transparent),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 72%, var(--step-mid)), color-mix(in srgb, var(--lantern) 40%, var(--moon)) 70%, color-mix(in srgb, var(--lantern) 25%, var(--moon)));
   border-top: 3px solid var(--t34m-frame);
+  border-bottom: 2px solid var(--t34m-frame);
   border-radius: 1px;
   box-shadow: 0 0 30px 2px color-mix(in srgb, var(--lantern) 70%, transparent), 0 0 70px 8px color-mix(in srgb, var(--lantern) 26%, transparent), inset 0 -6px 10px -6px color-mix(in srgb, var(--lantern) 70%, var(--umbra));
   --t34m-frame: color-mix(in srgb, var(--step-lo) 45%, var(--umbra));
@@ -461,16 +465,17 @@
   transform: skewY(16deg);
   border-left: 2px solid var(--t34m-frame);
 }
-/* the lit opening seen over the top rail */
+/* the candle's flame, low in the middle, seen through the paper */
 .t34m-lan-box::before {
   content: '';
   position: absolute;
-  left: 8%;
-  right: 8%;
-  top: -7px;
-  height: 7px;
-  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 40%, var(--moon)), color-mix(in srgb, var(--lantern) 70%, transparent));
+  left: calc(50% - 3px);
+  bottom: 3px;
+  width: 6px;
+  height: 9px;
+  border-radius: 50% 50% 45% 45% / 70% 70% 30% 30%;
+  background: radial-gradient(circle at 50% 70%, #fff, color-mix(in srgb, var(--lantern) 85%, #fff) 45%, color-mix(in srgb, var(--lantern) 60%, transparent));
+  opacity: 0.85;
 }
 .t34m-paper {
   display: block;
@@ -482,17 +487,30 @@
 :root[data-theme='dark'] .t34m-paper {
   color: color-mix(in srgb, var(--paper) 85%, var(--lantern));
 }
+/* the float: a ring of folded lotus petals round a wooden tray, sitting in the water (dark line where it meets it) */
 .t34m-lan-base {
   position: relative;
   z-index: 2;
   order: 2;
   display: block;
-  width: 114%;
-  height: 7px;
-  margin-top: -1px;
-  border-radius: 1px 1px 40% 40% / 1px 1px 100% 100%;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--step-mid) 50%, var(--lantern)), color-mix(in srgb, var(--step-lo) 40%, var(--umbra)) 45%);
-  box-shadow: 0 3px 5px -2px rgb(0 0 0 / 0.55);
+  width: 128%;
+  height: 10px;
+  margin-top: -3px;
+  border-radius: 2px 2px 45% 45% / 2px 2px 100% 100%;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--step-mid) 55%, var(--lantern)), color-mix(in srgb, var(--step-lo) 45%, var(--umbra)) 55%);
+  box-shadow: 0 3px 4px -1px rgb(0 0 0 / 0.6), 0 1px 0 color-mix(in srgb, var(--umbra) 70%, transparent);
+}
+.t34m-lan-base::before {
+  content: '';
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  top: -6px;
+  height: 8px;
+  background: radial-gradient(50% 100% at 50% 100%, color-mix(in srgb, var(--lantern) 45%, var(--card)) 92%, transparent 100%) 0 0 / 13px 8px repeat-x;
+  -webkit-mask-image: linear-gradient(90deg, #000 0 14%, transparent 14% 86%, #000 86%);
+  mask-image: linear-gradient(90deg, #000 0 14%, transparent 14% 86%, #000 86%);
+  opacity: 0.85;
 }
 .t34m-lan-box {
   order: 1;
@@ -502,8 +520,8 @@
   position: absolute;
   left: 50%;
   top: 100%;
-  width: 46%;
-  height: 120%;
+  width: 40%;
+  height: 170%;
   translate: -50% 0;
   background:
     repeating-linear-gradient(to bottom, transparent 0 2px, color-mix(in srgb, var(--lantern) 75%, transparent) 2px 5px, transparent 5px 9px),
@@ -516,10 +534,50 @@
   pointer-events: none;
 }
 :root[data-theme='light'] .t34m-lan-refl {
+  opacity: 0.45;
+}
+/* H7: the next lantern drifts a little out toward the stalls and back */
+.t34m-lan.nudge :is(.t34m-lan-box, .t34m-lan-base) {
+  animation: t34m-nudge 1.5s ease-in-out;
+}
+@keyframes t34m-nudge {
+  0%, 100% { translate: 0 0; }
+  45% { translate: 0 -11px; }
+}
+/* H2: rings of ripple on the water from a carried lantern toward the nearest stall */
+.t34m-trail i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 46px;
+  height: 12px;
+  margin: -6px 0 0 -23px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--moon) 55%, transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+:root[data-theme='light'] .t34m-trail i {
+  border-color: color-mix(in srgb, var(--card) 85%, transparent);
+}
+.t34m-trail.on i {
   opacity: 0.6;
+  animation: t34m-rip 1.8s ease-out var(--d, 0s) infinite;
+}
+@keyframes t34m-rip {
+  0% { opacity: 0; border-width: 2px; }
+  30% { opacity: 0.7; }
+  100% { opacity: 0; border-width: 0.5px; }
+}
+:root[data-quality='low'] .t34m-trail.on i {
+  animation: none;
 }
 .t34m-lan.moving {
   transition: transform 1.1s cubic-bezier(0.45, 0.05, 0.3, 1);
+}
+/* a waiting lantern drifting aside from the one being carried */
+.t34m-lan {
+  transition: translate 0.35s var(--ease);
 }
 .t34m-lan.drag {
   cursor: grabbing;
@@ -602,7 +660,18 @@
   opacity: 0;
 }
 .t34m:not(.wide) .t34m-lan {
-  width: 60px;
+  width: 58px;
+}
+.t34m:not(.wide) .t34m-lan-base {
+  width: 116%;
+}
+/* phone: the bow melts into the mist at the foot, where the words go */
+.t34m:not(.wide) .t34m-l3 {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(var(--t34m-h, 600px) - 6px), transparent calc(var(--t34m-h, 600px) + 80px));
+  mask-image: linear-gradient(to bottom, #000 calc(var(--t34m-h, 600px) - 6px), transparent calc(var(--t34m-h, 600px) + 80px));
+}
+.t34m.wide ~ .scene-zone {
+  width: min(26rem, 30%);
 }
 .t34m:not(.wide) .t34m-lan-box {
   padding: 6px 2px 5px;
@@ -646,14 +715,14 @@
   pointer-events: none;
 }
 .t34m.wide .t34m-vol {
-  width: 150px;
-  margin-left: -75px;
+  width: 140px;
+  margin-left: -70px;
 }
 .t34m-vol p {
   position: relative;
   margin: 0;
-  padding: 6px 10px 7px;
-  font: 400 11.5px/1.35 var(--serif);
+  padding: 5px 10px 6px;
+  font: 400 11px/1.32 var(--serif);
   color: var(--ink);
   text-align: center;
   /* a weathered plank: grain, lamp light from above, darker ends, two nails */
@@ -667,38 +736,19 @@
   border-radius: 2px 3px 2px 3px;
   box-shadow: 0 6px 10px -5px rgb(0 0 0 / 0.6), inset 0 -2px 0 color-mix(in srgb, var(--step-lo) 70%, transparent), inset 0 1px 0 color-mix(in srgb, var(--lantern) 40%, transparent);
 }
-/* phone: hung by an iron arm from the near stall's corner post */
-.t34m:not(.wide) .t34m-vol::before {
-  content: '';
-  position: absolute;
-  left: -22px;
-  top: -6px;
-  width: 64px;
-  height: 3px;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--step-lo) 40%, var(--umbra));
-}
-.t34m:not(.wide) .t34m-vol::after {
-  content: '';
-  position: absolute;
-  left: 18px;
-  right: auto;
-  top: -5px;
-  width: 1px;
-  height: 6px;
-  background: color-mix(in srgb, var(--umbra) 70%, transparent);
-  box-shadow: 92px 0 0 color-mix(in srgb, var(--umbra) 70%, transparent);
-}
+
 :root[data-theme='dark'] .t34m-vol p {
   color: var(--paper);
 }
+/* phone: nailed to a mooring pole in the water on the right */
 .t34m:not(.wide) .t34m-vol {
-  width: 136px;
-  margin-left: -68px;
+  width: 100px;
+  margin-left: -50px;
 }
 .t34m:not(.wide) .t34m-vol p {
-  padding: 5px 6px 6px;
-  font-size: 12px;
+  padding: 4px 6px 5px;
+  font-size: 10.5px;
+  line-height: 1.28;
 }
 @media (prefers-reduced-motion: reduce) {
   .t34m-lan.moving,
@@ -716,4 +766,14 @@
 }
 :root[data-quality='low'] :is(.t34m-pans, .t34m-what) {
   filter: none;
+}
+/* H4: the count carved into the dark foredeck (dark in both themes): pale grooves with a lamp-lit lip */
+.p2g-count.t34m-count {
+  color: color-mix(in srgb, var(--moon) 70%, var(--lantern));
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 0.55), 0 1px 0 color-mix(in srgb, var(--lantern) 30%, transparent);
+  opacity: 0.85;
+}
+.t34m:not(.wide) .t34m-say {
+  font-size: 13px;
+  line-height: 1.38;
 }

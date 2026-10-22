@@ -100,6 +100,18 @@
 :root[data-theme='dark'] .t34r-toro-hi {
   fill: var(--rock-hi);
 }
+.t34r-toro-rim {
+  fill: var(--moon-rim);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t34r-toro-rim {
+  fill: var(--moon);
+  opacity: 0.4;
+}
+.t34r-crack {
+  fill: var(--umbra);
+  opacity: 0.35;
+}
 .t34r-fire {
   fill: var(--umbra);
   opacity: 0.7;
@@ -206,6 +218,43 @@
 .t34r-decode.on {
   opacity: 1;
 }
+/* H7: the next lantern not yet heard flickers warm */
+.t34r .p2c-stone.t34r-flick .t34r-halo {
+  animation: t34r-flick 1.6s ease-in-out;
+}
+.t34r .p2c-stone.t34r-flick .t34r-fire {
+  animation: t34r-fire 1.6s ease-in-out;
+}
+@keyframes t34r-flick {
+  0%, 100% { opacity: 0; }
+  30%, 60% { opacity: 0.55; }
+  45% { opacity: 0.3; }
+}
+@keyframes t34r-fire {
+  0%, 100% { fill: var(--umbra); }
+  30%, 60% { fill: var(--lantern); opacity: 0.7; }
+}
+/* H4: the count, written on the near water from the start */
+.t34r .p2c-count-out {
+  position: absolute;
+  z-index: 3;
+  translate: -50% 0;
+  white-space: nowrap;
+  font: 400 0.95rem/1.3 var(--serif);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  text-shadow: 0 0 6px var(--paper), 0 0 12px var(--paper);
+  pointer-events: none;
+  transition: opacity 0.8s var(--ease);
+}
+/* the end: one block of words — the last side's words, the decoding line and the count fade; the insight stays */
+.t34r.t34r-quiet :is(.p2c-card, .p2c-count-out),
+.t34r.t34r-quiet ~ * .t34r-decode,
+.t34r.t34r-quiet .t34r-decode {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
+  pointer-events: none;
+}
 /* the checklist card, folded on the near water once the four sides are heard */
 .t34r-slip {
   position: absolute;
@@ -213,4 +262,11 @@
   bottom: 3%;
   z-index: 6;
   max-width: min(420px, 92%);
+}
+/* phone: the decoding line gives way to the first side's words in the foot band */
+.t34r:not(.wide) .p2c-count-out {
+  font-size: 0.86rem;
+}
+.t34r:not(.wide).t34r-heard .t34r-decode {
+  opacity: 0;
 }

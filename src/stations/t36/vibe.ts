@@ -2,14 +2,14 @@ import './vibe.css'
 import { fill, h, s } from '../../core/dom'
 import { cssVar, onPrefs } from '../../core/prefs'
 import { sliced } from '../../core/chunk'
-import { blob, clamp, curve, rng, rock, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { blob, clamp, curve, rng, rock, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, reeds } from '../../ui/part2/paint'
 import { perspectiveCircle } from '../../ui/part2/perspectives'
 import { guide, type Mark } from '../../ui/part2/guide'
 import type { Perspectives } from '../../ui/part2/types'
 import type { SceneCtx } from '../types'
 import { C } from './content'
-import { f1, gdefs, ink } from './kit'
+import { f1, gdefs, ink, zonedHeight } from './kit'
 import { koi } from './koi'
 
 const K = C.scenes.vibe
@@ -19,14 +19,17 @@ const TAU = Math.PI * 2
 const FOCUS = [0, 1, 0.8, 0.3, 0.35]
 /** the candle stones' arc along the near edge (k left → right): x, y as shares of the stage, size against the stone box */
 const ARC = {
-  wide: { x: [0.035, 0.235, 0.5, 0.765, 0.965], y: [1.04, 0.955, 0.93, 0.955, 1.04], s: [2.1, 1.45, 1.25, 1.45, 2.1] },
-  tall: { x: [0.05, 0.28, 0.5, 0.72, 0.95], y: [1.0, 0.925, 0.9, 0.925, 1.0], s: [2.5, 1.85, 1.6, 1.85, 2.5] },
+  wide: { x: [0.085, 0.27, 0.5, 0.73, 0.915], y: [0.985, 0.955, 0.93, 0.955, 0.985], s: [1.8, 1.45, 1.25, 1.45, 1.8] },
+  tall: { x: [0.1, 0.3, 0.5, 0.7, 0.9], y: [0.97, 0.935, 0.91, 0.935, 0.97], s: [1.9, 1.7, 1.55, 1.7, 1.9] },
 }
 /** the pond in the stage: a wide oval seen from 60° above, banks visible all round */
 const pondOf = (W: number, H: number, wide: boolean) => {
-  const rx = wide ? W * 0.4 : W * 0.45
-  return { cx: W / 2, cy: wide ? H * 0.47 : H * 0.42, rx, ry: Math.min(rx * 0.87, wide ? H * 0.35 : H * 0.27) }
+  const rx = wide ? W * 0.41 : W * 0.46
+  return { cx: W / 2, cy: wide ? H * 0.37 : H * 0.4, rx, ry: Math.min(rx * 0.87, wide ? H * 0.3 : H * 0.29) }
 }
+
+/** where each candle's wick stands in its stone's box (viewBox −60 −70 120 90), by slot k */
+const WICK: Pt[] = []
 
 /** a candle stone in the near edge (viewBox −60 −70 120 90, foot on y = 0): a rock of its own shape, its dish, wax, flame */
 function candleStone(k: number, seed: number): SVGElement {
@@ -37,6 +40,7 @@ function candleStone(k: number, seed: number): SVGElement {
   const { top, d } = rock(w, hh, seed)
   const peak = top.reduce((a, p) => (p[1] < a[1] ? p : a), top[0])
   const cx = peak[0] * 0.6 + shape[2] * 8, cy = peak[1] + 6
+  WICK[k] = [cx, cy - 6]
   return s('g', { class: `t36v-cs t36v-k${k}` },
     s('ellipse', { class: 't36v-contact', cx: 6, cy: 2, rx: f1(w * 0.58), ry: 8 }),
     s('g', { class: 't36v-rock' },
@@ -47,8 +51,11 @@ function candleStone(k: number, seed: number): SVGElement {
     s('ellipse', { class: 't36v-pool', cx: f1(cx), cy: f1(cy + 6), rx: 60, ry: 30, fill: 'url(#t36v-warm)' }),
     s('ellipse', { class: 't36v-dish', cx: f1(cx), cy: f1(cy + 3), rx: 9, ry: 2.6 }),
     s('rect', { class: 't36v-wax', x: f1(cx - 3.2), y: f1(cy - 10), width: 6.4, height: 13, rx: 1 }),
+    // wax run down the candle and spread on the stone round its dish
+    s('path', { class: 't36v-drip', d: `M${f1(cx - 3.2)} ${f1(cy - 8)}q-1.4 5 -0.6 9q1 2 1.6 0l0.4 -6ZM${f1(cx + 1.4)} ${f1(cy - 9)}q0.6 6 1.8 9q1.2 1.5 1.8 -0.4l-0.4 -8.6Z` + blob(cx - 6, cy + 4, 4.5, 1.6, seed + 5, 0.2, 8) + blob(cx + 7, cy + 4.6, 3.2, 1.2, seed + 6, 0.2, 8) }),
     s('path', { class: 't36v-flame', d: `M${f1(cx)} ${f1(cy - 22)}Q${f1(cx + 4)} ${f1(cy - 15)} ${f1(cx)} ${f1(cy - 10)}Q${f1(cx - 4)} ${f1(cy - 15)} ${f1(cx)} ${f1(cy - 22)}Z` }),
-    s('circle', { class: 't36v-glow', cx: f1(cx), cy: f1(cy - 15), r: 26, fill: 'url(#t36v-warm)' }))
+    s('circle', { class: 't36v-glow', cx: f1(cx), cy: f1(cy - 15), r: 26, fill: 'url(#t36v-warm)' }),
+    s('circle', { class: 't36v-wring', cx: f1(cx), cy: f1(cy - 6), r: 7 }))
 }
 
 /**
@@ -76,7 +83,7 @@ export function vibeScene(ctx: SceneCtx) {
   const low = ctx.quality === 'low'
   const calm = low || ctx.reduced
   const data = K.perspectives as Perspectives
-  const stableH = stableHeight(ctx, [data.common])
+  const stableH = zonedHeight(ctx, [data.common])
   let focus = 0.15
   let size = { W: 0, H: 0, wide: true }
   const measure = () => {
@@ -94,6 +101,10 @@ export function vibeScene(ctx: SceneCtx) {
   const koiSvg = s('svg', { class: 't36v-koi', viewBox: '0 0 100 60' }, koi(78, 30, 62, 0.05, 3611, 0.16))
   const koiRot = h('div', { class: 't36v-koirot', 'aria-hidden': 'true' }, h('div', { class: 't36v-koispin' }, koiSvg))
   const front = s('svg', { class: 't36v-front', 'aria-hidden': 'true' })
+  // a bamboo depth stake standing in the water at the right: notched at the surface and at the bottom; a ring of rush on
+  // it shows where the eye is focused (the visible track of the drag)
+  const ring = h('div', { class: 't36v-float', 'aria-hidden': 'true' }, h('i'))
+  const marks = h('div', { class: 't36v-marks', 'aria-hidden': 'true' }, h('span', { class: 't36v-mtop' }, K.focusTop), h('span', { class: 't36v-mbot' }, K.focusBottom), ring)
   let feet: { x: number; y: number; s: number }[] = []
 
   let job = 0
@@ -103,7 +114,7 @@ export function vibeScene(ctx: SceneCtx) {
     question: K.question,
     stage: (host, api) => {
       host.classList.add('t36v-stage')
-      host.append(deep, surf, koiRot, front)
+      host.append(deep, surf, koiRot, front, marks)
       // drag up or down on the water: the focus follows (down = deeper)
       let drag: { id: number; y: number; f: number } | null = null
       host.addEventListener('pointerdown', (e) => {
@@ -116,9 +127,10 @@ export function vibeScene(ctx: SceneCtx) {
         if (!drag || e.pointerId !== drag.id) return
         setFocus(clamp(drag.f + (e.clientY - drag.y) / Math.max(120, size.H * 0.6), 0, 1), true)
         if (focusMark && Math.abs(e.clientY - drag.y) > 20) {
-          // the focus found by hand: the arrow goes, the prompt counts the voices left
+          // the focus found by hand: the ring's dot goes, the prompt counts the voices left
           focusMark.done()
           focusMark = null
+          moveDot()
           if (heard < 5) ctx.prompt(fill(K.left, { n: 5 - heard }))
         }
       })
@@ -151,6 +163,30 @@ export function vibeScene(ctx: SceneCtx) {
   setFocus(focus, false)
   let heard = 0
   let focusMark: Mark | null = null
+  // H1, one vermilion focus at a time: the dot on the wick of the candle to light next (the middle ones first); the other
+  // unlit wicks breathe a faint ink ring (vibe.css)
+  const GD = guide(ctx)
+  const btns = [...root.querySelectorAll<HTMLElement>('.p2c-stone')]
+  const ORDER = [2, 1, 3, 0, 4]
+  const lit = new Set<number>()
+  let nextK = 2
+  const wickDot: Mark = GD.dot(() => {
+    // read in the guide's layout pass (after the stones are placed): the wick inside the stone's box
+    const b = btns[nextK]
+    if (!b) return [-99, -99] as Pt
+    const r = b.getBoundingClientRect(), a = ctx.art.getBoundingClientRect(), [wx, wy] = WICK[nextK] ?? [0, -20]
+    return [r.left - a.left + ((wx + 60) / 120) * r.width, r.top - a.top + ((wy + 70) / 90) * r.height] as Pt
+  }, { dir: [0, -1] })
+  let wickDone = false
+  /** the dot moves on to the next unlit candle; it steps aside while the depth stake carries the dot */
+  const moveDot = () => {
+    if (wickDone) return
+    const k = ORDER.find((x) => !lit.has(x))
+    if (k == null) return wickDot.done(), (wickDone = true)
+    nextK = k
+    wickDot.el.classList.toggle('out', !!focusMark)
+    GD.refresh()
+  }
 
   // ── living motion (the koi's round, caustics, flames) rests after 10 s without input
   let idleT = 0
@@ -171,19 +207,23 @@ export function vibeScene(ctx: SceneCtx) {
   /** a voice heard: its candle lit, the focus moved; its words come up on the water beside that candle */
   function hear(k: number, i: number) {
     wake()
+    lit.add(k)
     heard++
     if (heard === 1) {
       // after the first voice: the hidden gesture (drag the water up or down to look at the code below), shown and said
-      focusMark = guide(ctx).gesture('drag-v', () => [size.W * (size.wide ? 0.86 : 0.88), size.H * 0.4], { r: 40 })
+      focusMark = GD.dot(ring, { dir: [0, 1] })
+      marks.classList.add('on')
       ctx.prompt(K.focusPrompt)
     } else if (heard < 5 && !focusMark) ctx.prompt(fill(K.left, { n: 5 - heard }))
     setFocus(FOCUS[i], false)
+    if (heard === 5) (focusMark?.done(), (focusMark = null))
+    moveDot()
     root.dataset.voice = String(i)
     root.classList.add(`v${i}`)
     const b = root.querySelectorAll<HTMLElement>('.p2c-stone')[k]
     if (!b) return
     const { W, wide } = size
-    const cw = wide ? Math.min(420, W * 0.34) : W - 20
+    const cw = wide ? Math.min(540, W * 0.4) : W - 20
     const x = clamp(b.offsetLeft + b.offsetWidth / 2, cw / 2 + 12, W - cw / 2 - 12)
     root.style.setProperty('--cx', `${f1(x)}px`)
     root.style.setProperty('--cw', `${f1(cw)}px`)
@@ -232,8 +272,15 @@ export function vibeScene(ctx: SceneCtx) {
     yield
     paintSurface(w, hh, p, waterD, wide)
     // the koi's round: an ellipse in the middle of the water (the parent squashes the turn to the 60° view)
-    Object.assign(koiRot.style, { left: `${f1(p.cx)}px`, top: `${f1(p.cy - p.ry * 0.05)}px` })
-    const kw = clamp(p.rx * 0.5, 110, 260), kr = p.rx * 0.3
+    // (the upper left of the water is kept clear for the insight: the koi circles right of it)
+    Object.assign(koiRot.style, { left: `${f1(p.cx + p.rx * 0.33)}px`, top: `${f1(p.cy - p.ry * 0.1)}px` })
+    const kw = clamp(p.rx * 0.4, 110, 210), kr = p.rx * 0.16
+    // the depth stake on the right: where the surface and the bottom are, and the ring between them
+    const set = (k: string, v: number) => root.style.setProperty(k, `${f1(v)}px`)
+    set('--sx', p.cx + p.rx * 0.8)
+    set('--st', p.cy - p.ry * 0.3)
+    set('--sw', p.cy - p.ry * 0.08)
+    set('--sb', p.cy + p.ry * 0.36)
     Object.assign(koiSvg.style, { left: `${f1(kr - kw / 2)}px`, top: `${f1(-kw * 0.3)}px`, width: `${f1(kw)}px`, height: `${f1(kw * 0.6)}px` })
   }
   let slices: { cancel(): void } | null = null
@@ -253,17 +300,17 @@ export function vibeScene(ctx: SceneCtx) {
     const g = c.getContext('2d')!
     g.setTransform(dpr, 0, 0, dpr, 0, 0)
     const dark = document.documentElement.dataset.theme === 'dark'
-    const water = cssVar('--water'), wash = cssVar('--wash'), ink = cssVar('--ink'), stepMid = cssVar('--step-mid'), stepLo = cssVar('--step-lo'), stepHi = cssVar('--step-hi'), moss = cssVar('--moss-b'), sand = cssVar('--rock-mid'), card = cssVar('--card')
+    const moonC = cssVar('--moon'), water = cssVar('--water'), wash = cssVar('--wash'), stepMid = cssVar('--step-mid'), stepLo = cssVar('--step-lo'), moss = cssVar('--moss-b'), sand = cssVar('--rock-mid')
     const r = rng(3630)
     // depth: sandy shallows at the rim, dark in the middle
     g.save()
     g.translate(cx, cy)
     g.scale(1, ry / rx)
     const bed = g.createRadialGradient(0, 0, rx * 0.05, 0, 0, rx * 1.02)
-    bed.addColorStop(0, dark ? mixc(water, wash, 0.3) : mixc(water, wash, 0.3))
-    bed.addColorStop(0.55, dark ? mixc(water, sand, 0.18) : mixc(water, wash, 0.08))
-    bed.addColorStop(0.86, dark ? mixc(sand, water, 0.45) : mixc(water, sand, 0.45))
-    bed.addColorStop(1, dark ? mixc(sand, water, 0.25) : mixc(sand, card, 0.3))
+    bed.addColorStop(0, dark ? mixc(water, wash, 0.4) : mixc(water, wash, 0.42))
+    bed.addColorStop(0.55, dark ? mixc(water, sand, 0.14) : mixc(water, wash, 0.16))
+    bed.addColorStop(0.86, dark ? mixc(sand, water, 0.62) : mixc(water, sand, 0.3))
+    bed.addColorStop(1, dark ? mixc(sand, water, 0.45) : mixc(sand, water, 0.35))
     g.fillStyle = bed
     g.fillRect(-rx * 1.2, -rx * 1.2, rx * 2.4, rx * 2.4)
     g.restore()
@@ -278,7 +325,7 @@ export function vibeScene(ctx: SceneCtx) {
     }
     g.globalAlpha = 1
     // three flat stones on the bed, foreshortened; the code written on them in ink, bent a little by the water
-    const slabs: [number, number, number, number, number][] = [[-0.36, -0.22, 0.4, 0.42, -0.05], [0.16, -0.3, 0.42, 0.4, 0.04], [-0.1, 0.24, 0.5, 0.4, 0.02]]
+    const slabs: [number, number, number, number, number][] = [[0.2, -0.42, 0.4, 0.36, -0.06], [0.56, -0.12, 0.36, 0.36, 0.05], [0.27, 0.16, 0.46, 0.32, 0.02]]
     let line = 0
     const fs = clamp(rx * 0.03, 10, 15)
     g.font = `500 ${fs}px ui-monospace, 'SF Mono', Menlo, Consolas, monospace`
@@ -294,14 +341,16 @@ export function vibeScene(ctx: SceneCtx) {
       for (let i = 0; i < 18; i++) {
         const a = (i / 18) * TAU
         const k = 1 + (r() - 0.5) * 0.08
-        pts.push([Math.cos(a) * w2 * 0.56 * k * Math.abs(Math.cos(a)) ** 0.22, Math.sin(a) * h2 * 0.58 * k * Math.abs(Math.sin(a)) ** 0.22])
+        // a flat river slab: rounded, uneven, one edge chipped
+        const kk = k + Math.sin(a * 3 + line) * 0.06 + (i === 5 ? -0.12 : 0)
+        pts.push([Math.cos(a) * w2 * 0.56 * kk * Math.abs(Math.cos(a)) ** 0.45, Math.sin(a) * h2 * 0.58 * kk * Math.abs(Math.sin(a)) ** 0.45])
       }
       pts.forEach(([px, py], i) => (i ? g.lineTo(px, py) : g.moveTo(px, py)))
       g.closePath()
       const sg = g.createLinearGradient(0, -h2 / 2, 0, h2 / 2)
       // seen through the water: the stone takes the water's colour
-      sg.addColorStop(0, dark ? mixc(stepLo, water, 0.1) : mixc(stepHi, water, 0.3))
-      sg.addColorStop(1, dark ? mixc(stepLo, water, 0.4) : mixc(stepMid, water, 0.4))
+      sg.addColorStop(0, dark ? mixc(stepLo, water, 0.1) : mixc(stepMid, water, 0.45))
+      sg.addColorStop(1, dark ? mixc(stepLo, water, 0.4) : mixc(stepLo, water, 0.5))
       g.fillStyle = sg
       g.shadowColor = 'rgba(0,0,0,0.35)'
       g.shadowBlur = 14
@@ -314,7 +363,8 @@ export function vibeScene(ctx: SceneCtx) {
       g.stroke()
       g.globalAlpha = 1
       // the code, char by char, each lifted and shifted by the water's slow wave (refraction), at full resolution
-      g.fillStyle = dark ? mixc(ink, water, 0.12) : wash
+      // the code in silver ink, written on the stone
+      g.fillStyle = dark ? mixc(moonC, water, 0.18) : wash
       g.globalAlpha = dark ? 0.86 : 0.8
       const rows = Math.max(3, Math.floor((h2 * 0.86) / (fs * 1.32)))
       const cols = Math.floor((w2 * 0.86) / cwid)
@@ -347,7 +397,7 @@ export function vibeScene(ctx: SceneCtx) {
       const t = i / 17, y = my + t * ry * 0.95, len = rx * (0.03 + t * 0.11) * (0.5 + r())
       road += stroke([[mx - len / 2 + (r() - 0.5) * rx * 0.04 * t, y], [mx + len / 2, y + (r() - 0.5) * 2]], 1.4 + t * 1.6, 0.2, 0.2, 0.1)
     }
-    const pads = [[-0.66, 0.1, 0.07], [-0.56, 0.28, 0.05], [0.7, -0.1, 0.06], [0.58, 0.44, 0.045]].map(([u, v, k]) => s('path', { class: 't36v-pad', d: `M${f1(cx + u * rx)} ${f1(cy + v * ry)}m${f1(k * rx)} 0a${f1(k * rx)} ${f1(k * rx * 0.8)} 0 1 1 ${f1(-k * rx * 0.3)} ${f1(-k * rx * 0.5)}L${f1(cx + u * rx)} ${f1(cy + v * ry)}z` }))
+    const pads = [[-0.78, 0.36, 0.06], [-0.3, 0.6, 0.05], [0.7, -0.1, 0.06], [0.58, 0.44, 0.045]].map(([u, v, k]) => s('path', { class: 't36v-pad', d: `M${f1(cx + u * rx)} ${f1(cy + v * ry)}m${f1(k * rx)} 0a${f1(k * rx)} ${f1(k * rx * 0.8)} 0 1 1 ${f1(-k * rx * 0.3)} ${f1(-k * rx * 0.5)}L${f1(cx + u * rx)} ${f1(cy + v * ry)}z` }))
     const shard = (x: number, y: number, k: number) => `M${f1(x)} ${f1(y)}q${f1(3.5 * k)} ${f1(-1.2 * k)} ${f1(4.6 * k)} ${f1(2 * k)}q${f1(-2.6 * k)} ${f1(-1.4 * k)} ${f1(-4.6 * k)} ${f1(-2 * k)}Z`
     // the banks: stones set round the water's edge (smaller toward the far side), moss between them, grass, reeds
     const edge: SVGElement[] = []
@@ -382,6 +432,11 @@ export function vibeScene(ctx: SceneCtx) {
       s('path', { d: waterD, fill: 'url(#t36v-sheen)' }),
       // the bank all round: earth and sand, darker away from the water; a wet dark line where it meets the water
       s('path', { class: 't36v-bank', d: `M-20 -20H${f1(w + 20)}V${f1(hh + 20)}H-20Z${waterD}`, 'fill-rule': 'evenodd' }),
+      // the pond's stone wall: its far inner face shows as a crescent above the water, the lip throws a shadow all round
+      s('clipPath', { id: 't36v-wclip2' }, s('path', { d: waterD })),
+      s('g', { 'clip-path': 'url(#t36v-wclip2)' },
+        s('path', { class: 't36v-wall', d: `${waterD}${blob(cx, cy + ry * 0.075, rx * 0.985, ry * 0.95, 3629, 0.07, 40)}`, 'fill-rule': 'evenodd' }),
+        s('path', { class: 't36v-lipsh', d: waterD, filter: low ? null : 'url(#ink-wash)' })),
       s('path', { class: 't36v-wet', d: waterD, filter: 'url(#ink-wash)' }),
       ink(mossD, 't36v-bmoss', 'wash'),
       ...edge,
@@ -394,25 +449,25 @@ export function vibeScene(ctx: SceneCtx) {
       s('ellipse', { cx: f1(mx), cy: f1(my), rx: f1(rx * 0.06), ry: f1(rx * 0.034), fill: 'url(#t36v-moondisc)' }),
       ink(road, 't36v-road', 'dry'),
       ...pads,
-      s('g', { class: 't36v-shardg' }, ink(shard(cx - rx * 0.2, cy - ry * 0.12, clamp(rx * 0.01, 2, 5)), 't36v-shard', 'rough')),
-      s('g', { class: 't36v-rings' }, ...[0.06, 0.1, 0.15].map((k) => s('ellipse', { cx: f1(cx - rx * 0.18), cy: f1(cy - ry * 0.11), rx: f1(rx * k), ry: f1(rx * k * 0.55) }))))
+      s('g', { class: 't36v-shardg' }, ink(shard(cx + rx * 0.1, cy + ry * 0.3, clamp(rx * 0.01, 2, 5)), 't36v-shard', 'rough')),
+      s('g', { class: 't36v-rings' }, ...[0.06, 0.1, 0.15].map((k) => s('ellipse', { cx: f1(cx + rx * 0.12), cy: f1(cy + ry * 0.32), rx: f1(rx * k), ry: f1(rx * k * 0.55) }))))
     // the near things: candle flames laid on the water, cracks through half the code (Veracode), the lantern rising
     // (Collins), the lashed fence round the shallows (newcomer), the ensō
     let cracks = ''
     for (let i = 0; i < 7; i++) {
-      const x0 = cx + (r() - 0.6) * rx * 0.8, y0 = cy + (r() - 0.5) * ry * 0.7
+      const x0 = cx + (r() - 0.6) * rx * 0.8, y0 = cy - ry * 0.15 + (r() - 0.5) * ry * 0.6
       const pts: Pt[] = [[x0, y0]]
       for (let k = 0; k < 4; k++) pts.push([pts[k][0] + rx * (0.03 + r() * 0.05), pts[k][1] + (r() - 0.5) * ry * 0.08])
       cracks += stroke(pts, 1.6, 0.1, 0.4, 0.3)
     }
     // the fence: stakes in an arc round the left shallows, two cords lashed to each, their shadows on the water
-    const fc: Pt = [cx - rx * 0.62, cy + ry * 0.2]
+    const fc: Pt = [cx - rx * 0.55, cy + ry * 0.45]
     const stakes: Pt[] = [], tips: Pt[] = []
     let stakeD = '', shadowD = ''
     const nS = wide ? 15 : 11
     for (let i = 0; i < nS; i++) {
       const a = Math.PI * (0.12 + (i / (nS - 1)) * 0.76)
-      const x = fc[0] + Math.cos(a) * rx * 0.3, y = fc[1] + Math.sin(a) * ry * 0.34
+      const x = fc[0] + Math.cos(a) * rx * 0.26, y = fc[1] + Math.sin(a) * ry * 0.26
       const hgt = ry * (0.15 + (i % 3) * 0.022), sw = Math.max(1.8, rx * 0.007)
       stakes.push([x, y])
       tips.push([x, y - hgt])
@@ -424,8 +479,8 @@ export function vibeScene(ctx: SceneCtx) {
     const cord = (k: number) => stakes.map(([x, y], i) => [x, y - (y - tips[i][1]) * k] as Pt)
     let ties = ''
     for (const k of [0.35, 0.75]) for (const [x, y] of cord(k)) ties += `M${f1(x - 3)} ${f1(y - 2.4)}L${f1(x + 3)} ${f1(y + 2.4)}M${f1(x + 3)} ${f1(y - 2.4)}L${f1(x - 3)} ${f1(y + 2.4)}`
-    const lx = cx + rx * 0.42, ly = cy + ry * 0.05, lr = clamp(rx * 0.035, 9, 22)
-    const enso = Array.from({ length: 41 }, (_, i) => { const a = -1.75 + (i / 40) * Math.PI * 1.88; return [cx + Math.cos(a) * rx * 0.36, cy - ry * 0.05 + Math.sin(a) * ry * 0.42] as Pt })
+    const lx = cx + rx * 0.55, ly = cy - ry * 0.36, lr = clamp(rx * 0.035, 9, 22)
+    const enso = Array.from({ length: 41 }, (_, i) => { const a = -1.75 + (i / 40) * Math.PI * 1.88; return [cx + rx * 0.34 + Math.cos(a) * rx * 0.2, cy - ry * 0.1 + Math.sin(a) * ry * 0.34] as Pt })
     // each candle's flame, laid on the water as a long warm streak running up from the stone
     const streaks = feet.map((f, k) => {
       const rr = rng(3680 + k)
@@ -448,6 +503,12 @@ export function vibeScene(ctx: SceneCtx) {
         s('path', { class: 't36v-stake', d: stakeD }),
         ...[0.35, 0.75].map((k) => s('path', { class: 't36v-rope', d: stroke(curve(cord(k)[0], cord(k)[Math.floor(nS / 2)], cord(k)[nS - 1], 18), 1.1, 0.1, 0.1, 0.5) })),
         s('path', { class: 't36v-tie', d: ties })),
+      // the depth stake: bamboo, its top above the water, its foot down on the bed (seen through the water)
+      s('g', { class: 't36v-stake2' },
+        s('path', { class: 't36v-spole', d: `M${f1(cx + rx * 0.8 - 2.5)} ${f1(cy - ry * 0.3)}h5V${f1(cy - ry * 0.08)}h-5Z` }),
+        s('path', { class: 't36v-spole t36v-under', d: `M${f1(cx + rx * 0.8 - 2.2)} ${f1(cy - ry * 0.08)}h4.4V${f1(cy + ry * 0.36)}h-4.4Z` }),
+        s('ellipse', { class: 't36v-swl', cx: f1(cx + rx * 0.8), cy: f1(cy - ry * 0.08), rx: 9, ry: 2.4 }),
+        s('path', { class: 't36v-snotch', d: `M${f1(cx + rx * 0.8 - 5)} ${f1(cy - ry * 0.08)}h10M${f1(cx + rx * 0.8 - 5)} ${f1(cy + ry * 0.36)}h10` })),
       s('g', { class: 't36v-lantern' },
         s('ellipse', { cx: f1(lx), cy: f1(ly), rx: f1(lr * 4), ry: f1(lr * 2.2), fill: 'url(#t36v-warm)' }),
         s('rect', { class: 't36v-lbody', x: f1(lx - lr * 0.7), y: f1(ly - lr * 1.1), width: f1(lr * 1.4), height: f1(lr * 1.5), rx: f1(lr * 0.25) }),

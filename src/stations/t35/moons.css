@@ -4,8 +4,6 @@
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
 }
 .t35m-sky,
 .t35m-field {
@@ -48,7 +46,7 @@
 }
 :root[data-theme='dark'] .t35m-hollow {
   fill: #000;
-  opacity: 0.26;
+  opacity: 0.14;
 }
 .t35m-rise {
   fill: var(--card);
@@ -105,38 +103,40 @@
   opacity: 0.55;
 }
 .t35m-flag.f0 {
-  fill: color-mix(in srgb, var(--step-hi) 80%, var(--step-mid));
+  fill: color-mix(in srgb, var(--rock-mid) 80%, var(--rock-lo));
 }
 .t35m-flag.f1 {
-  fill: var(--step-mid);
+  fill: color-mix(in srgb, var(--rock-lo) 70%, var(--rock-mid));
 }
 .t35m-flag.f2 {
-  fill: color-mix(in srgb, var(--step-mid) 60%, var(--step-lo));
+  fill: color-mix(in srgb, var(--rock-lo) 85%, var(--wash));
 }
 :root[data-theme='dark'] .t35m-flag.f0 {
-  fill: color-mix(in srgb, var(--rock-hi) 70%, var(--rock-mid));
+  fill: color-mix(in srgb, var(--rock-mid) 75%, var(--rock-hi));
 }
 :root[data-theme='dark'] .t35m-flag.f1 {
-  fill: var(--rock-mid);
+  fill: color-mix(in srgb, var(--rock-mid) 60%, var(--rock-lo));
 }
 :root[data-theme='dark'] .t35m-flag.f2 {
-  fill: color-mix(in srgb, var(--rock-mid) 55%, var(--rock-lo));
+  fill: color-mix(in srgb, var(--rock-lo) 70%, var(--rock-mid));
 }
 .t35m.p0 .t35m-seg-0 .t35m-paved,
 .t35m.p1 .t35m-seg-1 .t35m-paved,
-.t35m.p2 .t35m-seg-2 .t35m-paved,
-.t35m.p3 .t35m-seg-3 .t35m-paved,
-.t35m.p4 .t35m-seg-4 .t35m-paved,
-.t35m.p5 :is(.t35m-seg-5, .t35m-seg-6) .t35m-paved {
+.t35m.p2 :is(.t35m-seg-2, .t35m-seg-3) .t35m-paved {
   opacity: 1;
 }
 .t35m.p1 .t35m-seg-0 .t35m-trail,
 .t35m.p1 .t35m-seg-1 .t35m-trail,
-.t35m.p2 .t35m-seg-2 .t35m-trail,
-.t35m.p3 .t35m-seg-3 .t35m-trail,
-.t35m.p4 .t35m-seg-4 .t35m-trail,
-.t35m.p5 :is(.t35m-seg-5, .t35m-seg-6) .t35m-trail {
+.t35m.p2 :is(.t35m-seg-2, .t35m-seg-3) .t35m-trail {
   opacity: 0;
+}
+.t35m-lip {
+  fill: var(--umbra);
+  opacity: 0.35;
+}
+:root[data-theme='dark'] .t35m-lip {
+  fill: #000;
+  opacity: 0.7;
 }
 /* only the first stretch is paved before the moon reaches the second post */
 .t35m.p0:not(.p1) .t35m-seg-0 .t35m-paved {
@@ -186,22 +186,87 @@
 }
 .t35m.p0 .t35m-post-0 .t35m-halo,
 .t35m.p1 .t35m-post-1 .t35m-halo,
-.t35m.p2 .t35m-post-2 .t35m-halo,
-.t35m.p3 .t35m-post-3 .t35m-halo,
-.t35m.p4 .t35m-post-4 .t35m-halo,
-.t35m.p5 .t35m-post-5 .t35m-halo {
+.t35m.p2 .t35m-post-2 .t35m-halo {
   opacity: 1;
 }
-:root[data-theme='dark'] :is(.t35m.p0 .t35m-post-0, .t35m.p1 .t35m-post-1, .t35m.p2 .t35m-post-2, .t35m.p3 .t35m-post-3, .t35m.p4 .t35m-post-4, .t35m.p5 .t35m-post-5) .t35m-sign-lip {
+:root[data-theme='dark'] :is(.t35m.p0 .t35m-post-0, .t35m.p1 .t35m-post-1, .t35m.p2 .t35m-post-2) .t35m-sign-lip {
   opacity: 0.6;
+}
+/* the date chiselled into the stele: a dark groove over a lit lower lip */
+.t35m-carved {
+  font-family: var(--serif);
+  font-weight: 500;
+  fill: var(--wash);
+  opacity: 0.72;
+}
+.t35m-carved-lip {
+  font-family: var(--serif);
+  font-weight: 500;
+  fill: var(--rake-hi);
+}
+:root[data-theme='dark'] .t35m-carved {
+  fill: #000;
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t35m-carved-lip {
+  fill: var(--moon);
+  opacity: 0.3;
+}
+.t35m-crown {
+  fill: var(--moss-b);
+  opacity: 0.85;
+}
+:root[data-theme='dark'] .t35m-crown {
+  fill: color-mix(in srgb, var(--moss-c) 70%, var(--moon));
+  opacity: 0.55;
+}
+.t35m-lichen {
+  fill: var(--moss-c);
+  opacity: 0.5;
+}
+.t35m-foot {
+  fill: var(--moss-b);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t35m-foot {
+  fill: color-mix(in srgb, var(--moss-c) 60%, #000);
+}
+.t35m-sheen {
+  opacity: 0.55;
+}
+:root[data-theme='light'] .t35m-sheen {
+  opacity: 0.8;
+}
+/* the moon's arc: a tick and a date under each stele's place */
+.t35m-tick {
+  fill: var(--moon);
+  opacity: 0.5;
+}
+:root[data-theme='light'] .t35m-tick {
+  fill: var(--wash);
+  opacity: 0.4;
+}
+.t35m-tick-l {
+  font: 400 13px var(--serif);
+  fill: var(--ink-2);
+  opacity: 0.85;
+}
+.t35m.port .t35m-tick-l {
+  font-size: 12px;
+}
+.t35m-hat {
+  fill: var(--wash);
+  opacity: 0.9;
+}
+:root[data-theme='dark'] .t35m-hat {
+  fill: #000;
 }
 .t35m-walker {
   opacity: 0;
   transition: opacity 1.2s var(--d, 0s) var(--ease-soft);
 }
-.t35m.p3 .w3,
-.t35m.p4 .w4,
-.t35m.p5 .w5 {
+.t35m.p1 .w1,
+.t35m.p2 .w2 {
   opacity: 1;
 }
 .t35m-robe {
@@ -296,33 +361,43 @@
 .t35m-card > * {
   animation: p2-fade 0.7s var(--ease-soft) both;
 }
-.t35m-horizon {
-  position: absolute;
-  font: 400 14px/1.5 var(--serif);
-  color: var(--ink-2);
-  text-align: center;
-  text-shadow: 0 0 10px var(--paper), 0 0 10px var(--paper), 0 0 3px var(--paper);
-  opacity: 0;
-  transition: opacity 1.4s 0.6s var(--ease-soft);
-  pointer-events: none;
-}
-.t35m-horizon p {
-  margin: 0;
-}
-.t35m.p5 .t35m-horizon {
-  opacity: 1;
-  pointer-events: auto;
-}
 /* a phone: the words go to the strip along the bottom; on the last post the forecast takes the strip after the fact */
 .t35m.port .t35m-card {
   transform: none;
   font-size: 14px;
 }
-.t35m.port .t35m-horizon {
-  text-align: left;
-  font-size: 14px;
+/* today: the insight takes the sky, the words on the moss fall quiet */
+.t35m.rest .t35m-card {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-soft);
+}
+.t35m-count {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  margin-top: 2px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font: 400 13px/1 var(--serif);
+  color: var(--ink-2);
+  text-shadow: 0 0 6px var(--paper), 0 0 6px var(--paper);
+  pointer-events: none;
 }
 .t35m.still * {
   transition: none !important;
   animation: none !important;
+}
+.t35m.rest .t35m-tick-l {
+  opacity: 0.25;
+  transition: opacity 0.9s;
+}
+
+/* the soft edge into the page: a painted vignette on top (a CSS mask on the whole scene cost a 170 ms first frame) */
+.t35m::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  background: linear-gradient(to right, var(--paper), transparent 3%, transparent 97%, var(--paper));
+  pointer-events: none;
 }

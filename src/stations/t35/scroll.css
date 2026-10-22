@@ -6,8 +6,6 @@
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  -webkit-mask-image: radial-gradient(130% 120% at 50% 45%, #000 64%, transparent 100%);
-  mask-image: radial-gradient(130% 120% at 50% 45%, #000 64%, transparent 100%);
 }
 .t35s-wall,
 .t35s-rail {
@@ -722,4 +720,101 @@
 .t35s.still .t35s-tag,
 .t35s.still .t35s-pouch-slip {
   animation: none;
+}
+
+/* the makimono's weave, cord tassel; a tap on a scroll that can't be read swings it on its cord */
+.t35s-weave {
+  fill: var(--wash);
+  opacity: 0.28;
+}
+:root[data-theme='dark'] .t35s-weave {
+  fill: var(--moon);
+  opacity: 0.16;
+}
+.t35s-tassel {
+  fill: none;
+  stroke: var(--vermilion);
+  stroke-width: 1.4;
+  opacity: 0.85;
+}
+.t35s-roll.nope {
+  animation: t35s-nope 0.9s var(--ease-soft);
+}
+@keyframes t35s-nope {
+  25% {
+    rotate: 3deg;
+  }
+  55% {
+    rotate: -2deg;
+  }
+  80% {
+    rotate: 0.8deg;
+  }
+}
+/* H3: the readable tag breathes while the lantern comes near */
+.t35s-roll.read.near .t35s-tag.read {
+  animation: t35s-near 2.4s ease-in-out infinite;
+}
+@keyframes t35s-near {
+  50% {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--lantern) 55%, transparent), 0 0 22px color-mix(in srgb, var(--lantern) 45%, transparent);
+  }
+}
+:root[data-quality='low'] .t35s-roll.read.near .t35s-tag.read {
+  animation: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--lantern) 55%, transparent);
+}
+/* the floor under the ledge, the groove and its notches */
+.t35s-floor {
+  fill: color-mix(in srgb, var(--wash) 55%, color-mix(in srgb, var(--lantern) 12%, var(--paper)));
+}
+:root[data-theme='dark'] .t35s-floor {
+  fill: color-mix(in srgb, var(--rock-lo) 40%, #000);
+}
+.t35s-floorline {
+  fill: var(--umbra);
+  opacity: 0.25;
+}
+:root[data-theme='dark'] .t35s-floorline {
+  fill: #000;
+  opacity: 0.6;
+}
+.t35s-groove {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 2.5;
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t35s-groove {
+  stroke: #000;
+  opacity: 0.8;
+}
+.t35s-notch {
+  fill: var(--umbra);
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t35s-notch {
+  fill: var(--lantern);
+  opacity: 0.35;
+}
+.t35s-ledge.row {
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+.t35s-ledge.row .t35s-slip {
+  max-width: 420px;
+}
+.t35s.still .t35s-roll {
+  animation: none;
+}
+
+/* the soft edge into the page: a painted vignette on top (a CSS mask on the whole scene cost a 170 ms first frame) */
+.t35s::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  background: radial-gradient(130% 120% at 50% 45%, transparent 64%, var(--paper) 100%);
+  pointer-events: none;
 }

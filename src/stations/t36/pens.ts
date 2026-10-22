@@ -3,6 +3,7 @@ import { fill, h, s } from '../../core/dom'
 import { onPrefs } from '../../core/prefs'
 import { clamp, onDigit, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { paperLantern } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { inkStage, type InkKit } from '../../ui/part2/stage3d'
 import type { SceneCtx } from '../types'
 import { C } from './content'
@@ -109,7 +110,9 @@ export function pensScene(ctx: SceneCtx) {
     class: `t36p-pen t36p-${p.id}`, type: 'button', 'aria-pressed': 'false', 'aria-label': fill(K.penAria, { name: p.name }), style: `--i:${i}`,
     onClick: () => choose(i),
   }, penArt(p.id as Id), h('span', { class: 't36p-name', 'aria-hidden': 'true' }, p.name)))
-  const pot = h('div', { class: 't36p-pot', role: 'group', 'aria-label': K.group }, ...pens, potArt())
+  // carved into the pot's bamboo: how many pens have been tried (H4, from the start)
+  const tried = h('p', { class: 't36p-tried', 'aria-hidden': 'true' }, fill(K.triedTpl, { n: 0, total: K.pens.length }))
+  const pot = h('div', { class: 't36p-pot', role: 'group', 'aria-label': K.group }, ...pens, potArt(), tried)
   const tag = h('div', { class: 't36p-tag', hidden: true })
   const back = s('svg', { class: 't36p-back', 'aria-hidden': 'true' })
   const near = s('svg', { class: 't36p-near', 'aria-hidden': 'true' })
@@ -118,6 +121,22 @@ export function pensScene(ctx: SceneCtx) {
   const root = h('div', { class: 't36 t36p' }, back, h('p', { class: 'visually-hidden' }, K.art), frame, pot, near, threadSvg, tag)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
+  // H1: a dot on the tip of every pen not tried yet; a faint arrow in the frame's corner for the drag (↔ flat, ↻ 3D)
+  const GD = guide(ctx)
+  // one vermilion focus at a time: the dot sits on the pen worth trying next; the other untried pens breathe a faint ink ring
+  pens.forEach((b) => b.classList.add('untried'))
+  let penDot: Mark | null = GD.dot(pens[0], { dir: [0, -1] })
+  const suggest = () => {
+    const untried = K.pens.map((_, k) => k).filter((k) => !seen.has(k))
+    const want = !felt[1] ? untried.filter((k) => !FLAT.includes(K.pens[k].id as Id)) : !felt[0] ? untried.filter((k) => FLAT.includes(K.pens[k].id as Id)) : []
+    const k = want[0] ?? untried[0]
+    if (k == null) return penDot?.done(), (penDot = null)
+    if (penDot) penDot.at(pens[k])
+    else penDot = GD.dot(pens[k], { dir: [0, -1] })
+  }
+  let dragMark: Mark | null = null
+  let frameBox = { fx: 0, fy: 0, fw: 0, fh: 0 }
+  const corner = (): Pt => [frameBox.fx + frameBox.fw - 56, frameBox.fy + frameBox.fh - 56]
 
   // ── the 3D garden in the frame
   let kit: InkKit | null = null
@@ -126,8 +145,8 @@ export function pensScene(ctx: SceneCtx) {
   const TOP = { yaw: 0.22, pitch: 1.28 }
   // made once the frame has its size (the first layout): a stage born in a 0 × 0 box never drew under reduced motion
   const startStage = () => inkStage(ctx, view, {
-    label: K.frameAria, hint: K.frameHint, idle: 12, dpr: [2, 1.25], fov: 36,
-    view: { ...TOP, yawRange: [-2.9, 2.9], pitchRange: [0.26, 1.34], fit: [2.15, 2.15], target: [0, 0.1, 0], shift: 0, zoomRange: [0.72, 2.8] },
+    label: K.frameAria, hint: K.frameHint, idle: 6, dpr: [2, 1.25], fov: 36,
+    view: { ...TOP, yawRange: [-1.5, 1.5], pitchRange: [0.38, 1.34], fit: [2.15, 2.15], target: [0, 0.1, 0], shift: 0, zoomRange: [0.72, 2.8] },
     fallback: () => ((noGL = true), () => {}),
   }, function* (k) {
     yield* buildPond(k, holder)
@@ -145,6 +164,7 @@ export function pensScene(ctx: SceneCtx) {
   }).ready.then((k) => {
     kit = k
     if (!k) return
+    spreadFirstDraw(k)
     holder.pond?.theme()
     // a 3D pen chosen while the garden was still being built: take the camera there now
     if (cur >= 0 && !FLAT.includes(K.pens[cur].id as Id)) setPen(cur)
@@ -265,6 +285,7 @@ export function pensScene(ctx: SceneCtx) {
     }
     const fb = clamp(Math.min(fw, fh) * 0.045, 10, 24)
     Object.assign(frame.style, { left: `${f1(fx)}px`, top: `${f1(fy)}px`, width: `${f1(fw)}px`, height: `${f1(fh)}px` })
+    frameBox = { fx, fy, fw, fh }
     frame.style.setProperty('--fb', `${f1(fb)}px`)
     // the pot: on the table, left (wide) or under the frame (tall); pens as tall as the room allows
     const tableY = wide ? H * 0.8 : H * 0.98
@@ -318,6 +339,15 @@ export function pensScene(ctx: SceneCtx) {
     const p = K.pens[i]
     seen.add(i)
     picked = i
+    pens[i].classList.remove('untried')
+    tried.textContent = fill(K.triedTpl, { n: seen.size, total: K.pens.length })
+    // the drag's arrow for this kind of pen, until that kind has been felt by hand
+    dragMark?.done()
+    const deep = !FLAT.includes(p.id as Id)
+    dragMark = felt[deep ? 1 : 0] || done ? null : GD.gesture(deep ? 'rotate' : 'drag-h', corner, { r: 30 })
+    // the next thing is the drag in the frame (its ink arrow); the dot waits for the next pen until then
+    if (dragMark) penDot?.done(), (penDot = null)
+    else suggest()
     pens.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)))
     root.dataset.pen = p.id
     fillTag(i)
@@ -343,6 +373,9 @@ export function pensScene(ctx: SceneCtx) {
     const k = deepPen() ? 1 : 0
     if (felt[k]) return
     felt[k] = true
+    dragMark?.done()
+    dragMark = null
+    suggest()
     ask()
   }
   /** the next step in words, or the insight once both kinds are felt */
@@ -350,6 +383,8 @@ export function pensScene(ctx: SceneCtx) {
     if (done || picked < 0) return
     if (felt[0] && felt[1]) {
       done = true
+      // one text block: the pen's scroll rolls itself up under its rod
+      tag.classList.add('rolled')
       ctx.insight(F(K.insight), [K.detail, F(K.facts[0])])
       return
     }
@@ -408,12 +443,39 @@ export function pensScene(ctx: SceneCtx) {
       url ? h('a', { class: 't36p-docs', href: url, target: '_blank', rel: 'noopener' }, K.docsLabel, ' ↗') : '')
     const first = tag.hidden
     tag.hidden = false
+    tag.classList.remove('rolled')
     tag.classList.remove('in')
     void tag.offsetWidth
     tag.classList.add('in')
     if (first) tag.setAttribute('aria-live', 'polite')
     tie(i)
   }
+}
+
+/**
+ * The first draw meets every program at once, and each first use reads its link status and uniforms back from the GPU
+ * (three's onFirstUse): one long task on a slow phone. The programs are compiled (compileAsync) before that draw, so the
+ * draw is spread instead (as t28's gardeners): a third of the garden, then a third more each frame, under the fade-in.
+ */
+function spreadFirstDraw(k: InkKit) {
+  const st = k.stage
+  if (!st) return
+  const parts = k.root.children.slice(), N = 3, was = new Map<(typeof parts)[number], boolean>()
+  let reveal = -1
+  st.onFrame(() => {
+    if (reveal >= N) return
+    if (reveal < 0) {
+      if (st.renderer.info.render.frame) return void (reveal = N) // already drawn
+      const progs = st.renderer.info.programs
+      if (!progs?.length || progs.some((p) => !(p as unknown as { isReady(): boolean }).isReady())) return // still compiling
+      parts.forEach((o, i) => i % N && (was.set(o, o.visible), (o.visible = false)))
+      reveal = 1
+    } else {
+      parts.forEach((o, i) => i % N === reveal && (o.visible = was.get(o) ?? true))
+      reveal++
+    }
+    st.render()
+  })
 }
 
 /** a broad, dry brush band across a 100 × 100 box, ragged at both edges */
@@ -490,12 +552,24 @@ function paintRoom(svg: SVGSVGElement, near: SVGSVGElement, W: number, H: number
     paperLantern(lx, -6, lr, 3680, ly + 6))
   if (!wide) return near.replaceChildren()
   // ── the near layer: the table's front edge cut by the frame; on it an ink stone with its well, a brush on its rest
-  const ix = W * 0.62, iy = tableY + (tFront - tableY) * 0.46, iw = clamp(W * 0.09, 90, 140), ih = (tFront - tableY) * 0.34
+  const ix = W * 0.44, iy = tableY + (tFront - tableY) * 0.42, iw = clamp(W * 0.09, 90, 140), ih = (tFront - tableY) * 0.34
+  // a draft sheet lying on the table left of the ink stone, the koi tried out in a few strokes, a stone on its corner
+  const dx0 = W * 0.2, dx1 = W * 0.39, dy0 = tableY + (tFront - tableY) * 0.2, dy1 = tableY + (tFront - tableY) * 0.86
+  const draft = `M${f1(dx0 + 14)} ${f1(dy0)}L${f1(dx1 - 4)} ${f1(dy0 + 4)}L${f1(dx1 + 8)} ${f1(dy1)}L${f1(dx0 - 6)} ${f1(dy1 - 3)}Z`
+  const dw = dx1 - dx0, dh = dy1 - dy0
+  const sketch = stroke([[dx0 + dw * 0.18, dy0 + dh * 0.55], [dx0 + dw * 0.32, dy0 + dh * 0.3], [dx0 + dw * 0.5, dy0 + dh * 0.42], [dx0 + dw * 0.62, dy0 + dh * 0.3], [dx0 + dw * 0.6, dy0 + dh * 0.62]], 2.4, 0.2, 0.5, 0.2) +
+    stroke([[dx0 + dw * 0.22, dy0 + dh * 0.62], [dx0 + dw * 0.45, dy0 + dh * 0.72], [dx0 + dw * 0.7, dy0 + dh * 0.68]], 1.6, 0.2, 0.4, 0.2) +
+    stroke([[dx0 + dw * 0.72, dy0 + dh * 0.25], [dx0 + dw * 0.86, dy0 + dh * 0.3], [dx0 + dw * 0.84, dy0 + dh * 0.5], [dx0 + dw * 0.72, dy0 + dh * 0.42], [dx0 + dw * 0.73, dy0 + dh * 0.28]], 1.4, 0.1, 0.1, 0.4)
   const rx0 = W * 0.83, ry0 = tableY + (tFront - tableY) * 0.55
   near.replaceChildren(
     s('rect', { class: 't36p-tfront', x: -4, y: f1(tFront), width: f1(W + 8), height: f1(H - tFront + 4) }),
     s('path', { class: 't36p-tedge', d: `M-4 ${f1(tFront)}H${f1(W + 4)}` }),
     s('g', { class: 't36p-nearobj' },
+      s('path', { class: 't36p-fshadow', d: draft, transform: 'translate(5 5)' }),
+      s('path', { class: 't36p-draft', d: draft }),
+      s('path', { class: 't36p-dink', d: sketch }),
+      s('ellipse', { class: 't36p-fshadow', cx: f1(dx1 - 14), cy: f1(dy0 + 16), rx: 18, ry: 6 }),
+      s('ellipse', { class: 't36p-dweight', cx: f1(dx1 - 18), cy: f1(dy0 + 10), rx: 17, ry: 9 }),
       s('ellipse', { class: 't36p-fshadow', cx: f1(ix + iw * 0.55), cy: f1(iy + ih * 1.02), rx: f1(iw * 0.56), ry: f1(ih * 0.28) }),
       s('rect', { class: 't36p-inkstone', x: f1(ix), y: f1(iy), width: f1(iw), height: f1(ih), rx: f1(ih * 0.18) }),
       s('rect', { class: 't36p-inkface', x: f1(ix + iw * 0.06), y: f1(iy + ih * 0.12), width: f1(iw * 0.88), height: f1(ih * 0.62), rx: f1(ih * 0.14) }),
@@ -507,3 +581,4 @@ function paintRoom(svg: SVGSVGElement, near: SVGSVGElement, W: number, H: number
       s('path', { class: 't36p-nbrush', d: stroke([[rx0 - W * 0.06, ry0 - 2], [W * 1.02, ry0 - 16]], clamp(W * 0.007, 6, 11), 0.05, 0.05, 0.5) }),
       s('path', { class: 't36p-ntip', d: stroke([[rx0 - W * 0.11, ry0 + 6], [rx0 - W * 0.06, ry0 - 2]], clamp(W * 0.008, 7, 12), 0.95, 0.1, 0.3) })))
 }
+

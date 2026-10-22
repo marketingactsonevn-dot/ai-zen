@@ -2,12 +2,12 @@ import './layers.css'
 import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { cssVar, onPrefs } from '../../core/prefs'
-import { blob, clamp, curve, onDigit, onSize, rng, rock, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
-import { grass, hills, mist, moon, reeds } from '../../ui/part2/paint'
+import { blob, clamp, curve, onDigit, onSize, rng, rock, stroke, type Pt } from '../../ui/part2/ink'
+import { grass, hills, mist, moon, reeds, toro } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
 import { C } from './content'
-import { F, f1, gdefs, ink } from './kit'
-import { guide } from '../../ui/part2/guide'
+import { F, f1, gdefs, ink, zonedHeight } from './kit'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
 import type { Takeaway } from '../../ui/part2/types'
 import { koi } from './koi'
@@ -20,6 +20,15 @@ const TAU = Math.PI * 2
 const TILT = 55
 const RH = 0.22 // the rim's height
 const WZ = 0.66 // the water's height, as a share of RH
+/** the stack's fixed turn (CSS rotateZ), and how high sheet k hangs over the rim (in units of the gap): higher ones further apart */
+const RZ = -24
+/**
+ * The pile of sheets rests on a flat stone at the shore, right of the basin (wide) or in front of it (tall): where its
+ * middle lies (projector coords, in units of d), how small the sheets are on it, and how each lower sheet lies a little
+ * further back and to the right, so its edge and its name show. Layer 1 lies on top: the first to take.
+ */
+const PILE = { wide: { x: 0.84, y: -0.26, sc: 0.34, step: [0.024, -0.105] }, tall: { x: 0.16, y: 1.3, sc: 0.34, step: [0.016, -0.11] } }
+const STONE = 0.05 // the flat stone's height (× d)
 interface Item { on: boolean; x: number; y: number; v: number; leaf: boolean }
 interface Ring { on: boolean; x: number; y: number; t: number }
 
@@ -131,7 +140,7 @@ function torn(seed: number) {
  */
 export function layersScene(ctx: SceneCtx) {
   gdefs()
-  const stableH = stableHeight(ctx, [F(K.insight)])
+  const stableH = zonedHeight(ctx, [F(K.insight)])
   const calm = ctx.reduced || ctx.quality === 'low'
   const low = ctx.quality === 'low'
   const r = rng(36)
@@ -141,22 +150,20 @@ export function layersScene(ctx: SceneCtx) {
   // ── the world in CSS 3D: rim, water, sunk sheets, the sheets above; the painted basin behind it; the 2D overlay on top
   const rimText = s('text', { class: 't36g-rimtext' }, s('textPath', { href: '#t36g-rimpath', startOffset: '1%' }))
   const rimText2 = s('text', { class: 't36g-rimtext' }, s('textPath', { href: '#t36g-rimpath2', startOffset: '1%' }))
-  const hudCarve = s('text', { class: 't36g-hudtext', 'text-anchor': 'middle' }, s('textPath', { href: '#t36g-hudpath', startOffset: '50%' }))
   const rim = h('div', { class: 't36g-rim' },
     h('i', { class: 't36g-rimlight' }),
     s('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' },
       s('path', { id: 't36g-rimpath', d: 'M50 3.6A46.4 46.4 0 1 1 49.9 3.6', fill: 'none' }),
       s('path', { id: 't36g-rimpath2', d: 'M50 7.2A42.8 42.8 0 1 1 49.9 7.2', fill: 'none' }),
-      s('path', { id: 't36g-hudpath', d: 'M4.6 50A45.4 45.4 0 0 0 95.4 50', fill: 'none' }),
-      rimText, rimText2, hudCarve))
+      rimText, rimText2))
   const water = h('div', { class: 't36g-pool' })
   const sunk = h('div', { class: 't36g-sunk' })
   const ripple = h('i', { class: 't36g-ring' })
-  const sheets = K.layers.map((l, i) => {
-    const name = fill(K.layerAria, { n: i + 1, name: l.name })
-    const tab = h('button', { class: 't36g-tab', type: 'button', 'aria-label': name, 'aria-disabled': i ? 'true' : null, onClick: () => add(i) }, name)
-    return h('div', { class: 't36g-sheet', style: `--k:${i}` }, h('div', { class: 't36g-paper' }, h('i', { style: `clip-path:${torn(3700 + i * 7)}` })), layerArt(i), tab)
-  })
+  // each sheet a little off the one under it (shift and turn), so their deckled edges stack up one by one
+  const sheets = K.layers.map((_l, i) => h('div', { class: 't36g-sheet', style: `--k:${i};--ox:${f1(Math.sin(i * 2.1) * 2.2)}%;--oy:${f1(Math.cos(i * 1.7) * 1.8)}%;--tw:${f1(Math.sin(i * 1.3 + 0.5) * 2.6)}deg` },
+    h('div', { class: 't36g-paper' }, h('i', { style: `clip-path:${torn(3700 + i * 7)}` })), layerArt(i)))
+  // each sheet's name, written at its right corner (staggered up the stack): the thing to touch
+  const labels = K.layers.map((l, i) => h('button', { class: 't36g-label', type: 'button', 'aria-label': fill(K.layerAria, { n: i + 1, name: l.name }), onClick: () => add(i) }, fill(K.layerTag, { n: i + 1, name: l.name })))
   // the game, on the water's own plane inside the world
   const cv = h('canvas', { class: 't36g-cv', 'aria-hidden': 'true', hidden: true })
   const g = cv.getContext('2d')!
@@ -191,9 +198,13 @@ export function layersScene(ctx: SceneCtx) {
   const start = h('button', { class: 't36g-start t36g-go', type: 'button', hidden: true, onClick: play }, P.start)
   const far = s('svg', { class: 't36g-far', 'aria-hidden': 'true' })
   const near = s('svg', { class: 't36g-near', 'aria-hidden': 'true' })
+  // carved on the basin's front: how many layers are in; while playing, the score in a straight line over the far rim
+  const count = h('p', { class: 't36g-count', 'aria-hidden': 'true' }, fill(K.countTpl, { n: 0, total: N }))
+  const hudLine = h('p', { class: 't36g-hud', 'aria-hidden': 'true' })
+  const labelBox = h('div', { class: 't36g-labels', role: 'group', 'aria-label': K.label }, ...labels)
   const root = h('div', { class: `t36 t36g${calm ? ' calm' : ''}` },
     h('p', { class: 'visually-hidden' }, K.art),
-    far, scene, near, hud, said, start, endBox, live,
+    far, scene, near, count, labelBox, hudLine, hud, said, start, endBox, live,
     ctx.reduced ? h('p', { class: 't36g-still' }, P.still) : null)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
@@ -202,31 +213,20 @@ export function layersScene(ctx: SceneCtx) {
   if (kit.length) endRow.append(foldedTakeaway(kit, ctx.onCleanup))
   const GD = guide(ctx)
   sheets[0].classList.add('lit', 't36g-base')
-  ctx.onCleanup(onDigit((d) => d === next + 1 && add(next)))
-
-  // ── turn the stack: drag sideways
-  let rz = -24
-  const pose = () => world.style.setProperty('--rz', `${f1(rz)}deg`)
-  pose()
-  let drag: { id: number; x: number; rz: number } | null = null
-  scene.addEventListener('pointerdown', (e) => {
-    if (e.button || mode !== 'build' || (e.target as Element).closest('button')) return
-    drag = { id: e.pointerId, x: e.clientX, rz }
-    scene.setPointerCapture(e.pointerId)
-    world.classList.add('held')
-  })
-  scene.addEventListener('pointermove', (e) => {
-    if (!drag || e.pointerId !== drag.id) return
-    rz = clamp(drag.rz + (e.clientX - drag.x) * 0.25, -64, 16)
-    pose()
-  })
-  const up = (e: PointerEvent) => {
-    if (!drag || e.pointerId !== drag.id) return
-    drag = null
-    world.classList.remove('held')
+  labels[0].classList.add('lit')
+  let dot: Mark | null = GD.dot(labels[0], { dir: [0, -1] })
+  ctx.onCleanup(onDigit((d) => d <= N && add(d - 1)))
+  world.style.setProperty('--rz', `${RZ}deg`)
+  // idle 6 s: the next sheet lifts a little off the stack
+  const nudge = () => {
+    const sh = sheets[next]
+    if (!sh || mode !== 'build' || ctx.reduced) return
+    sh.classList.remove('nudge')
+    void sh.offsetWidth
+    sh.classList.add('nudge')
   }
-  scene.addEventListener('pointerup', up)
-  scene.addEventListener('pointercancel', up)
+  ctx.el.addEventListener('p2:idle', nudge)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', nudge))
   // living motion (water, koi, shards, fireflies) rests after 10 s without input
   let idleT = 0
   const wake = () => {
@@ -241,6 +241,9 @@ export function layersScene(ctx: SceneCtx) {
 
   // ── layout: the basin's size from the room; everything painted in 2D follows from the same projection
   let D = 300, AW = 300, SH = 300, wide = true
+  let CX = 150, gap = 20
+  const pileAt: Pt[] = []
+  const hudAt = { x: 0, y: 0 }
   ctx.onCleanup(onSize(ctx.art, () => {
     AW = ctx.art.clientWidth
     const A = ctx.art.clientHeight
@@ -249,11 +252,13 @@ export function layersScene(ctx: SceneCtx) {
     root.style.height = `${f1(A)}px`
     wide = AW / SH > 1.1
     root.classList.toggle('wide', wide)
-    D = wide ? Math.min(SH * 0.6, AW * 0.32) : Math.min(AW * 0.66, SH * 0.44)
+    D = wide ? Math.min(SH * 0.52, AW * 0.27) : Math.min(AW * 0.5, SH * 0.38)
+    gap = D * (wide ? 0.074 : 0.082)
     root.style.setProperty('--d', `${f1(D)}px`)
-    root.style.setProperty('--gap', `${f1(D * (wide ? 0.064 : 0.078))}px`)
-    // the rim's centre sits at (cx, cy) of the art; the scene box is d × d round the world's centre
-    const cx = AW / 2, cy = wide ? SH * 0.6 : SH * 0.54
+    root.style.setProperty('--gap', `${f1(gap)}px`)
+    // the rim's centre sits at (cx, cy) of the art (wide: the left third, the moon's water to the right); the scene box
+    // is d × d round the world's centre
+    const cx = (CX = wide ? AW * 0.31 : AW * 0.36), cy = wide ? SH * 0.66 : SH * 0.6
     const pr = projector(D)
     const [, rimY] = pr(0, 0, RH * D)
     const sx = cx - D / 2, sy = cy - rimY
@@ -261,22 +266,89 @@ export function layersScene(ctx: SceneCtx) {
     // the play view leans in toward the basin: a scale about the water's centre
     const [, wy] = pr(0, 0, RH * WZ * D)
     scene.style.transformOrigin = `50% ${f1(wy)}px`
-    const zoom = wide ? clamp((SH * 0.92) / (D * 1.05), 1, 1.6) : clamp((AW * 0.98) / (D * 1.08), 1, 1.35)
+    const zoom = wide ? clamp((SH * 0.86) / (D * 1.05), 1, 1.3) : clamp((AW * 0.98) / (D * 1.08), 1, 1.45)
     root.style.setProperty('--zoom', zoom.toFixed(3))
-    Object.assign(said.style, wide ? { left: `${f1(AW / 2)}px`, top: `${f1(SH * 0.865)}px`, width: `${f1(Math.min(640, AW * 0.6))}px` } : { left: `${f1(AW / 2)}px`, top: `${f1(cy + D * 0.62)}px`, width: `${f1(AW - 8)}px` })
-    Object.assign(start.style, { left: `${f1(AW / 2)}px`, top: `${f1(sy + pr(0, 0, RH * D + D * 0.55)[1])}px` })
+    // the prompt that made the layer: on the water right of the stack (wide), under the basin (tall)
+    // the prompt that made the layer: on the sand left of the basin (wide), on the sand between the lake and the basin (tall)
+    Object.assign(said.style, wide ? { left: `${f1(AW * 0.03)}px`, top: `${f1(SH * 0.36)}px`, width: `${f1(Math.max(160, cx - D * 0.62 - AW * 0.03))}px` } : { left: `${f1(AW * 0.03)}px`, top: `${f1(SH * 0.3)}px`, width: `${f1(AW * 0.94)}px` })
+    // the start slip lies on the sand in front of the basin
+    Object.assign(start.style, { left: `${f1(wide ? cx : Math.max(AW * 0.2, cx - D * 0.25))}px`, top: `${f1(Math.min(SH - 30, sy + pr(0, D * 0.62, 0)[1] + 26))}px` })
+    // the pile on its stone: each sheet's place (the world's own coords, before its turn RZ), and its name at the sheet's
+    // right-most corner (the paper is a square 0.958 d across, turned RZ, scaled to the pile)
+    const pile = wide ? PILE.wide : PILE.tall
+    const a = (RZ * Math.PI) / 180, ca = Math.cos(a), sa = Math.sin(a)
+    const half = D * 0.479 * pile.sc
+    pileAt.length = 0
+    sheets.forEach((sh, k) => {
+      const X = (pile.x + pile.step[0] * k) * D, Y = (pile.y + pile.step[1] * k) * D
+      const z = STONE * D + (N - 1 - k) * 3 + 2
+      pileAt.push([X, Y])
+      sh.style.setProperty('--sx', `${f1(X * ca + Y * sa)}px`)
+      sh.style.setProperty('--sy', `${f1(-X * sa + Y * ca)}px`)
+      sh.style.setProperty('--sz', `${f1(z)}px`)
+      sh.style.setProperty('--sc', String(pile.sc))
+      let best: Pt = [-1e9, 0]
+      for (const [u, v] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+        const p = pr(X + u * half * ca - v * half * sa, Y + u * half * sa + v * half * ca, z)
+        if (p[0] > best[0]) best = p
+      }
+      Object.assign(labels[k].style, { left: `${f1(sx + best[0] + 8)}px`, top: `${f1(sy + best[1])}px` })
+    })
+    // the count on the basin's front wall; the score line over the far rim of the zoomed view
+    const [fx, fy] = pr(0, D * 0.5, RH * D * 0.5)
+    Object.assign(count.style, { left: `${f1(sx + fx)}px`, top: `${f1(sy + fy)}px` })
+    const [, ry] = pr(0, -D * 0.5, RH * D)
+    hudAt.x = cx
+    hudAt.y = sy + wy + (ry - wy) * zoom - 14
+    Object.assign(hudLine.style, { left: `${f1(hudAt.x)}px`, top: `${f1(Math.max(4, hudAt.y))}px` })
     paintBody(pr)
     paintFar(sy, pr)
+    GD.refresh()
     // the pebble and the bell on the near rim, the end card over the water (scene px)
     const [px, py] = pr(-Math.cos(0.5) * D * 0.47, Math.sin(0.5) * D * 0.47, RH * D)
     const [bx, by] = pr(Math.cos(0.5) * D * 0.47, Math.sin(0.5) * D * 0.47, RH * D)
     Object.assign(pause.style, { left: `${f1(px)}px`, top: `${f1(py)}px` })
     Object.assign(sound.style, { left: `${f1(bx)}px`, top: `${f1(by)}px` })
     // the end card lies on the sand in front of the basin (where the zoomed view puts its foot)
-    const [, fy] = pr(0, D * 0.5, 0)
-    Object.assign(endBox.style, { left: `${f1(cx)}px`, top: `${f1(Math.min(SH - 104, sy + wy + (fy - wy) * zoom + 10))}px` })
+    const [, gy] = pr(0, D * 0.5, 0)
+    // wide: on the water right of the basin, above the insight; tall: on the sand at the basin's foot
+    if (wide) Object.assign(endBox.style, { left: `${f1(Math.min(AW - 200, cx + D * 1.05))}px`, top: `${f1(SH * 0.3)}px`, width: '380px' })
+    else Object.assign(endBox.style, { left: `${f1(AW / 2)}px`, top: `${f1(Math.min(SH - 104, sy + wy + (gy - wy) * zoom + 10))}px`, width: `${f1(AW - 16)}px` })
     if (mode !== 'build') fitGame()
   }))
+
+  /** the flat stone the pile of sheets lies on: an uneven slab, its top face lit by the moon, its side in shade */
+  function pileStone(pr: (X: number, Y: number, Z: number) => Pt) {
+    if (!pileAt.length) return ''
+    const [x0, y0] = pileAt[0], [x1, y1] = pileAt[N - 1]
+    const mx = (x0 + x1) / 2, my = (y0 + y1) / 2
+    const rx = Math.abs(x1 - x0) / 2 + D * 0.24, ry = Math.abs(y1 - y0) / 2 + D * 0.22
+    const sr = rng(3770)
+    const ring = (z: number, k: number) => {
+      let d = ''
+      for (let i = 0; i < 28; i++) {
+        const t = (i / 28) * TAU, w = 1 + Math.sin(t * 3 + 1.3) * 0.06 + (sr() - 0.5) * 0.03
+        const [px, py] = pr(mx + Math.cos(t) * rx * w * k, my + Math.sin(t) * ry * w * k, z)
+        d += `${i ? 'L' : 'M'}${f1(px)} ${f1(py)}`
+      }
+      return d + 'Z'
+    }
+    const top = ring(STONE * D, 1), foot = ring(0, 1.04)
+    // its grain: pits and pale crystals on the top face, moss in a hollow
+    let pits = ''
+    for (let i = 0; i < 70; i++) {
+      const t = sr() * TAU, q = Math.sqrt(sr()) * 0.9
+      const [px, py] = pr(mx + Math.cos(t) * rx * q, my + Math.sin(t) * ry * q, STONE * D)
+      pits += `M${f1(px)} ${f1(py)}h${f1(0.8 + sr() * 1.6)}`
+    }
+    return s('g', { class: 't36g-slab' },
+      s('path', { class: 't36g-cshadow', d: ring(0, 1.12), transform: `translate(${f1(-D * 0.04)} ${f1(D * 0.02)})` }),
+      s('path', { class: 't36g-slabside', d: foot }),
+      s('path', { class: 't36g-slabtop', d: top, filter: low ? null : 'url(#ink-rough)' }),
+      s('path', { class: 't36g-pits', d: pits }),
+      ink(blob(...pr(mx - rx * 0.55, my + ry * 0.45, STONE * D), rx * 0.18, ry * 0.08, 3771, 0.3), 't36g-moss', 'wash'),
+      s('path', { class: 't36g-slabrim', d: top }))
+  }
 
   /** the basin's body, the ground round it and its shadow: painted from the projection, once per size */
   function paintBody(pr: (X: number, Y: number, Z: number) => Pt) {
@@ -286,9 +358,7 @@ export function layersScene(ctx: SceneCtx) {
     Object.assign(body.style, { left: `${f1(-pad)}px`, top: `${f1(-pad)}px`, width: `${f1(d + pad * 2)}px`, height: `${f1(d + pad * 2)}px` })
     // the ground: raked sand in rings round the basin, fading out; moss here and there; two small stones
     let rake = ''
-    for (let k = 0; k < 9; k++) rake += ring(pr, R * (1.12 + k * 0.105), 0, 56)
-    const [gx, gy] = pr(0, 0, 0)
-    const groundR = pr(R * 2.1, 0, 0)[0] - gx
+    for (let k = 0; k < 6; k++) rake += ring(pr, R * (1.12 + k * 0.11), 0, 56)
     const shadow = ring(pr, R * 1.04, 0, 40)
     // the lathe: rings from foot to lip, each band a little lighter, the lip throwing a shadow under it
     const prof: [number, number][] = [[0.8, 0], [0.86, 0.05], [0.93, 0.17], [0.97, 0.36], [0.965, 0.55], [0.935, 0.7], [0.915, 0.77], [0.97, 0.83], [1.0, 0.91], [0.995, 1]]
@@ -330,18 +400,16 @@ export function layersScene(ctx: SceneCtx) {
     const [g1x, g1y] = pr(-R * 1.25, R * 0.45, 0), [g2x, g2y] = pr(R * 1.3, -R * 0.2, 0)
     body.replaceChildren(
       s('defs', null,
-        s('radialGradient', { id: 't36g-groundg', cx: f1(gx), cy: f1(gy), r: f1(groundR), gradientUnits: 'userSpaceOnUse', gradientTransform: `translate(${f1(gx)} ${f1(gy)}) scale(1 0.62) translate(${f1(-gx)} ${f1(-gy)})` },
-          s('stop', { offset: 0, class: 't36g-gs0' }), s('stop', { offset: 0.62, class: 't36g-gs1' }), s('stop', { offset: 1, class: 't36g-gs2' })),
         s('linearGradient', { id: 't36g-wallg', x1: f1(-R * 0.05), x2: f1(d + R * 0.05), y1: 0, y2: 0, gradientUnits: 'userSpaceOnUse' },
           s('stop', { offset: 0, class: 't36g-w0' }), s('stop', { offset: 0.3, class: 't36g-w1' }), s('stop', { offset: 0.66, class: 't36g-w2' }), s('stop', { offset: 1, class: 't36g-w3' })),
         s('filter', { id: 't36g-soft', x: '-30%', y: '-30%', width: '160%', height: '160%' }, s('feGaussianBlur', { stdDeviation: f1(d * 0.03) }))),
-      s('ellipse', { cx: f1(gx), cy: f1(gy), rx: f1(groundR), ry: f1(groundR * 0.62), fill: 'url(#t36g-groundg)' }),
       s('path', { class: 't36g-rake', d: rake }),
-      s('path', { class: 't36g-cshadow', d: shadow, transform: `translate(${f1(R * 0.1)} ${f1(-R * 0.04)})`, filter: low ? null : 'url(#t36g-soft)' }),
+      // its shadow falls away from the moon (high, behind and to the right): toward us and to the left
+      s('path', { class: 't36g-cshadow', d: shadow, transform: `translate(${f1(-R * 0.16)} ${f1(R * 0.07)})`, filter: low ? null : 'url(#t36g-soft)' }),
       s('path', { class: 't36g-ao', d: ring(pr, R * 0.9, 0, 40) }),
       ink(blob(...pr(-R * 1.5, -R * 0.4, 0), R * 0.35, R * 0.14, 3722, 0.25) + blob(...pr(R * 1.1, R * 0.8, 0), R * 0.3, R * 0.1, 3723, 0.25), 't36g-gmoss', 'wash'),
       stone(-R * 1.28, R * 0.3, 54, 3724),
-      stone(R * 1.38, -R * 0.35, 40, 3725),
+      pileStone(pr),
       grass(g1x - R * 0.42, g1y + 6, R * 0.24, 3726),
       grass(g2x + R * 0.3, g2y + 3, R * 0.2, 3727),
       s('g', { filter: low ? null : 'url(#ink-rough)' }, ...bands),
@@ -352,32 +420,96 @@ export function layersScene(ctx: SceneCtx) {
       s('path', { class: 't36g-inner', d: ring(pr, R * 0.84, rh, 44) }))
   }
 
-  /** the far layer (moon, ink hills, mist behind the basin) and the near one (grass and a stone, big and soft) */
-  function paintFar(sy: number, pr: (X: number, Y: number, Z: number) => Pt) {
+  /**
+   * The world round the basin, painted from the same projection: a raked sand shore that runs out to the frame on the
+   * left and toward us; the lake beyond it, out to the hills, coming round to the bottom right; the moon high on the
+   * right with its broken road on the water; stones and a lit stone lantern on the shore (the warm light from the front
+   * left). The near layer: reeds and a stone, big and soft.
+   */
+  function paintFar(_sy: number, pr: (X: number, Y: number, Z: number) => Pt) {
     for (const v of [far, near]) {
       v.setAttribute('viewBox', `0 0 ${f1(AW)} ${f1(SH)}`)
       v.style.height = `${f1(SH)}px`
     }
-    const horizon = sy + pr(0, -D * 1.5, 0)[1]
+    const rr = rng(3740)
+    const horizon = wide ? SH * 0.3 : SH * 0.22
     const mr = clamp(SH * 0.045, 14, 30)
+    const mx = wide ? AW * 0.85 : AW * 0.8, my = wide ? SH * 0.11 : SH * 0.07
+    // the shore line: from the far shore at the horizon (behind the stack) round to the bottom edge, right of the basin
+    const [bx] = pr(D * 0.5, 0, 0)
+    const shore: Pt[] = wide
+      ? [[AW * 0.47, horizon], [AW * 0.5, horizon + SH * 0.12], [CX - D / 2 + bx + D * 0.35, SH * 0.6], [AW * 0.61, SH * 0.82], [AW * 0.59, SH + 4]]
+      : [[AW * 0.0, horizon + SH * 0.1], [AW * 0.4, horizon + SH * 0.12], [AW * 0.85, horizon + SH * 0.14], [AW + 4, horizon + SH * 0.18]]
+    const sm = (pts: Pt[]) => {
+      let d = `M${f1(pts[0][0])} ${f1(pts[0][1])}`
+      for (let i = 1; i < pts.length - 1; i++) {
+        const m: Pt = [(pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2]
+        d += `Q${f1(pts[i][0])} ${f1(pts[i][1])} ${f1(m[0])} ${f1(m[1])}`
+      }
+      const e = pts[pts.length - 1]
+      return d + `L${f1(e[0])} ${f1(e[1])}`
+    }
+    const shoreD = sm(shore)
+    const land = wide ? `${shoreD}L${f1(-4)} ${f1(SH + 4)}L-4 ${f1(horizon)}Z` : `${shoreD}L${f1(AW + 4)} ${f1(SH + 4)}L-4 ${f1(SH + 4)}Z`
+    const lake = `M-4 ${f1(horizon)}H${f1(AW + 4)}V${f1(SH + 4)}H-4Z`
+    // the moon's road: short strokes widening toward us, broken by the swell
+    let road = ''
+    // (wide) the road stops above the insight's corner: no light stroke crosses its letters
+    const roadEnd = wide ? SH * 0.66 : horizon + SH * 0.16
+    for (let y = horizon + 4, i = 0; y < roadEnd; y += 6 + i * 0.45, i++) {
+      const t = (y - horizon) / (roadEnd - horizon), len = mr * (0.8 + t * 3.4) * (0.5 + rr())
+      road += stroke([[mx - len / 2 + (rr() - 0.5) * mr * t, y], [mx + len / 2, y + (rr() - 0.5) * 1.5]], 2.6 + t * 4, 0.3, 0.3, 0.15)
+    }
+    // sand raked in long lines along the shore; moss and stones where the sand meets the water
+    let rake = ''
+    for (let k = 1; k <= 7; k++) {
+      const off = k * (wide ? 15 : 9)
+      rake += sm(shore.map(([x, y]) => (wide ? [x - off * 1.2, y + off * 0.2] : [x, y + off]) as Pt))
+    }
+    const edge: SVGElement[] = []
+    for (let i = 0; i < (wide ? 9 : 6); i++) {
+      const t = (i + 0.5) / (wide ? 9 : 6)
+      const seg = Math.min(shore.length - 2, Math.floor(t * (shore.length - 1)))
+      const f = t * (shore.length - 1) - seg
+      const x = shore[seg][0] + (shore[seg + 1][0] - shore[seg][0]) * f, y = shore[seg][1] + (shore[seg + 1][1] - shore[seg][1]) * f
+      const sz = (wide ? 16 : 10) + ((y - horizon) / SH) * (wide ? 70 : 34) * (0.5 + rr())
+      edge.push(s('g', { transform: `translate(${f1(x + (rr() - 0.5) * 10)} ${f1(y + 2)})` }, rockArt(sz, sz * 0.55, 3750 + i)))
+    }
+    // a stone lantern on the shore behind the basin, left: the warm light
+    const [lx, ly] = wide ? [CX - D * 0.42, SH * 0.36] : [AW * 0.08, horizon + SH * 0.12]
     far.replaceChildren(
-      mist(AW * 0.5, horizon - SH * 0.05, AW * 0.7, SH * 0.2),
-      moon(wide ? AW * 0.8 : AW * 0.8, wide ? SH * 0.12 : SH * 0.07, mr, 3730, true),
-      hills(-AW * 0.05, AW * 1.05, horizon, SH * (wide ? 0.16 : 0.1), 3731, 0.9, 6),
-      hills(AW * 0.55, AW * 1.1, horizon + SH * 0.02, SH * (wide ? 0.1 : 0.07), 3732, 0.65, 2),
-      mist(AW * 0.5, horizon + SH * 0.03, AW * 0.8, SH * 0.07))
+      s('defs', null, s('radialGradient', { id: 't36g-sheeng' },
+        s('stop', { offset: 0, style: 'stop-color:var(--moon);stop-opacity:0.22' }), s('stop', { offset: 0.45, style: 'stop-color:var(--moon);stop-opacity:0.08' }), s('stop', { offset: 1, style: 'stop-color:var(--moon);stop-opacity:0' }))),
+      s('path', { class: 't36g-lake', d: lake }),
+      // the moon's glow lying on the water below it
+      s('ellipse', { class: 't36g-sheen', fill: 'url(#t36g-sheeng)', cx: f1(mx), cy: f1(horizon + (roadEnd - horizon) * 0.35), rx: f1(wide ? AW * 0.16 : AW * 0.3), ry: f1((roadEnd - horizon) * 0.65) }),
+      mist(AW * 0.5, horizon - SH * 0.03, AW * 0.7, SH * 0.14),
+      moon(mx, my, mr, 3730, true),
+      hills(-AW * 0.05, AW * 1.05, horizon, SH * (wide ? 0.13 : 0.08), 3731, 0.9, 6),
+      hills(AW * 0.55, AW * 1.1, horizon + 2, SH * (wide ? 0.08 : 0.05), 3732, 0.65, 2),
+      ink(road, 't36g-road'),
+      mist(AW * 0.5, horizon + SH * 0.02, AW * 0.8, SH * 0.05),
+      s('path', { class: 't36g-land', d: land }),
+      s('path', { class: 't36g-sandrake', d: rake }),
+      s('path', { class: 't36g-wet', d: shoreD }),
+      ink(edge.length ? blob(shore[1][0], shore[1][1] + 6, AW * 0.04, SH * 0.012, 3760, 0.3) + blob(shore[2][0] - 10, shore[2][1] + 4, AW * 0.05, SH * 0.016, 3761, 0.3) : '', 't36g-gmoss', 'wash'),
+      ...edge,
+      s('g', { class: 't36g-toro' }, toro(lx, ly, wide ? SH * 0.16 : SH * 0.11, true)))
     near.replaceChildren(
       s('g', { class: 't36g-nearg' },
-        s('g', { class: 't36g-reedg' }, reeds(AW * 0.03, SH * 1.02, SH * (wide ? 0.32 : 0.22), 3733, 8)),
-        s('g', { transform: `translate(${f1(AW * 0.96)} ${f1(SH * 1.02)})` }, rockArt(wide ? AW * 0.13 : AW * 0.26, wide ? SH * 0.12 : SH * 0.08, 3734)),
-        grass(AW * 0.86, SH * 1.01, AW * 0.08, 3735)))
+        s('g', { class: 't36g-reedg' }, reeds(AW * 0.03, SH * 1.02, SH * (wide ? 0.3 : 0.18), 3733, 8)),
+        grass(AW * 0.22, SH * 1.01, AW * 0.08, 3735)))
   }
 
   // ── colours for the game (read on mount and on theme change, never per frame)
   let col = { ink: '', moon: '', red: '', leaf: '', fly: '', card: '', water: '' }
   const readCol = () => {
     const dark = document.documentElement.dataset.theme === 'dark'
-    col = { ink: cssVar('--ink'), moon: cssVar('--moon'), red: cssVar('--vermilion'), leaf: cssVar('--lantern'), fly: cssVar('--firefly'), card: cssVar(dark ? '--moon' : '--card'), water: cssVar(dark ? '--umbra' : '--water') }
+    // a dry leaf: the lamp's amber gone brown
+    const hx = (c: string) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16) || 0)
+    const L0 = hx(cssVar('--lantern')), U0 = hx(cssVar('--wash'))
+    const brown = `rgb(${L0.map((v, i) => Math.round(v + (U0[i] - v) * 0.42)).join(',')})`
+    col = { ink: cssVar('--ink'), moon: cssVar('--moon'), red: cssVar('--vermilion'), leaf: brown, fly: cssVar('--firefly'), card: cssVar(dark ? '--moon' : '--card'), water: cssVar(dark ? '--umbra' : '--water') }
     loop.wake()
   }
 
@@ -386,16 +518,23 @@ export function layersScene(ctx: SceneCtx) {
     if (mode !== 'build') return
     if (i !== next) {
       // not this one yet: it shakes and the prompt names the sheet that comes first (one feature builds on the last)
-      if (i > next) GD.wrong(fill(K.wrongOrder, { name: K.layers[next].name }), sheets[i])
+      if (i > next) GD.wrong(fill(K.wrongOrder, { name: K.layers[next].name }), labels[i])
       return
     }
     next++
     const sh = sheets[i]
-    sh.classList.remove('lit')
+    sh.classList.remove('lit', 'nudge')
     sh.classList.add('down')
-    sh.querySelector('button')!.setAttribute('aria-disabled', 'true')
+    labels[i].classList.remove('lit')
+    labels[i].classList.add('down')
+    labels[i].disabled = true
     sheets[next]?.classList.add('lit')
-    sheets[next]?.querySelector('button')!.removeAttribute('aria-disabled')
+    labels[next]?.classList.add('lit')
+    dot?.done()
+    dot = next < N ? GD.dot(labels[next], { dir: [0, -1] }) : null
+    count.textContent = fill(K.countTpl, { n: next, total: N })
+    // all seven in: the count steps back for the start slip lying in front of the basin
+    count.classList.toggle('full', next === N)
     root.classList.add(`on-${i}`)
     ripple.classList.remove('go')
     void ripple.offsetWidth
@@ -409,9 +548,11 @@ export function layersScene(ctx: SceneCtx) {
     rimText2.firstElementChild!.textContent = all.slice(cut).join('  ·  ')
     said.replaceChildren(h('p', { class: 't36g-eye' }, `${fill(K.layerAria, { n: i + 1, name: K.layers[i].name })} · ${K.promptLabel}`), h('p', { class: 't36g-prompt' }, K.layers[i].prompt), i === 0 ? ctx.fact(F(K.facts[0]), 'p', 't36g-fact') : '')
     if (!said.hasAttribute('aria-live')) said.setAttribute('aria-live', 'polite')
-    if (next < N) sheets[next].querySelector('button')!.focus({ preventScroll: true })
+    if (next < N) labels[next].focus({ preventScroll: true })
     else {
       start.hidden = false
+      // one text block: the last prompt steps back for the insight
+      said.classList.add('rest')
       ctx.insight(F(K.insight), K.detail)
       start.focus({ preventScroll: true })
     }
@@ -494,8 +635,10 @@ export function layersScene(ctx: SceneCtx) {
   function play() {
     mode = 'play'
     root.classList.add('is-play')
-    rz = 0
-    pose()
+    world.style.setProperty('--rz', '0deg')
+    // how to play, for three seconds where the score will be
+    howT = window.setTimeout(() => (howT = 0), ctx.reduced ? 2000 : 3000)
+    hudLine.textContent = P.how
     start.hidden = true
     endBox.hidden = true
     score = 0
@@ -544,14 +687,16 @@ export function layersScene(ctx: SceneCtx) {
     again.focus({ preventScroll: true })
     ctx.chime('ok')
   }
+  let howT = 0
+  ctx.onCleanup(() => clearTimeout(howT))
   function hudText() {
-    const t = `${score}|${lives}|${Math.ceil(left)}`
+    const t = `${score}|${lives}|${Math.ceil(left)}|${howT ? 1 : 0}`
     if (t === shown) return
     shown = t
     scoreEl.textContent = fill(P.score, { n: score })
     livesEl.textContent = fill(P.lives, { n: lives })
     timeEl.textContent = fill(P.time, { n: Math.ceil(left) })
-    hudCarve.firstElementChild!.textContent = `${scoreEl.textContent}  ·  ${livesEl.textContent}  ·  ${timeEl.textContent}`
+    if (!howT) hudLine.textContent = `${scoreEl.textContent}  ·  ${livesEl.textContent}  ·  ${timeEl.textContent}`
   }
 
   function step(dt: number) {
@@ -625,15 +770,45 @@ export function layersScene(ctx: SceneCtx) {
       g.ellipse(it.x + 5 * z, it.y + 7 * z, 7 * z, 3 * z, 0, 0, TAU)
       g.fill()
       g.globalAlpha = 1
-      g.fillStyle = it.leaf ? col.leaf : col.moon
-      g.beginPath()
-      if (it.leaf) g.ellipse(it.x, it.y, 10 * z, 5 * z, 0.6, 0, TAU)
-      else {
-        g.moveTo(it.x - 8 * z, it.y + 4.5 * z)
-        g.lineTo(it.x + 2 * z, it.y - 9 * z)
-        g.lineTo(it.x + 9 * z, it.y + 5.5 * z)
+      if (it.leaf) {
+        // a dry leaf: pointed, brown, its midrib and a few veins, a short stalk
+        g.save()
+        g.translate(it.x, it.y)
+        g.rotate(0.6 + Math.sin(t * 1.3 + it.x) * 0.25)
+        g.fillStyle = col.leaf
+        g.beginPath()
+        g.moveTo(-11 * z, 0)
+        g.quadraticCurveTo(-2 * z, -7 * z, 11 * z, 0)
+        g.quadraticCurveTo(-2 * z, 7 * z, -11 * z, 0)
+        g.fill()
+        g.strokeStyle = col.water
+        g.globalAlpha = 0.6
+        g.lineWidth = 0.9 * z
+        g.beginPath()
+        g.moveTo(-14 * z, 0.5 * z)
+        g.lineTo(10 * z, 0)
+        for (const k of [-5, -1, 3]) {
+          g.moveTo(k * z, 0)
+          g.lineTo((k + 3.5) * z, -3.4 * z)
+          g.moveTo(k * z, 0)
+          g.lineTo((k + 3.5) * z, 3.4 * z)
+        }
+        g.stroke()
+        g.restore()
+      } else {
+        // a shard of moon: a pale gold crescent in its own glow
+        g.fillStyle = col.moon
+        g.globalAlpha = 0.18
+        g.beginPath()
+        g.arc(it.x, it.y, 15 * z, 0, TAU)
+        g.fill()
+        g.globalAlpha = 1
+        g.beginPath()
+        g.arc(it.x, it.y, 9 * z, 0.5, 0.5 + TAU * 0.6)
+        g.arc(it.x + 3.6 * z, it.y - 2.2 * z, 7.4 * z, 0.5 + TAU * 0.6, 0.5, true)
+        g.closePath()
+        g.fill()
       }
-      g.fill()
     }
     if (!calm) {
       g.strokeStyle = col.moon

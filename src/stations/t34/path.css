@@ -33,10 +33,10 @@
   -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 99%);
   mask-image: linear-gradient(to bottom, #000 82%, transparent 99%);
 }
-/* the gate posts are near and dark, cut by the bottom edge; their tops go out of focus upward */
+/* the gate posts are near and dark, rising out of the frame at both sides and cut by the bottom edge */
 .t34p-near .t34p-cv {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 42%, #000 62%);
-  mask-image: linear-gradient(to bottom, transparent 42%, #000 62%);
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 .t34p-lit {
   opacity: 0;
@@ -54,9 +54,9 @@
   transition: opacity 2s var(--ease-soft) 0.4s;
 }
 .t34p-glow {
-  width: 220px;
-  height: 220px;
-  margin: -110px 0 0 -110px;
+  width: var(--gs, 220px);
+  height: var(--gs, 220px);
+  margin: calc(var(--gs, 220px) / -2) 0 0 calc(var(--gs, 220px) / -2);
   border-radius: 50%;
   background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 45%, transparent), transparent);
 }
@@ -128,6 +128,7 @@
   transition: opacity 0.4s;
 }
 .t34p .p2s-key {
+  display: none; /* the number keys still work (aria says so); printed beside the hollows' numbers they misled */
   width: auto;
   height: auto;
   margin-top: -6%;
@@ -202,7 +203,7 @@
 }
 .t34p-warm {
   fill: var(--lantern);
-  opacity: 0.55;
+  opacity: 0.4;
 }
 .t34p-rim {
   fill: var(--moon-rim);
@@ -234,7 +235,7 @@
   100% { opacity: 0.85; }
 }
 .t34p.lit .p2s-stone.placed .t34p-body {
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--lantern) 55%, transparent));
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--lantern) 28%, transparent));
 }
 :root[data-quality='low'] .t34p.lit .p2s-stone.placed .t34p-body {
   filter: none;
@@ -257,19 +258,34 @@
 .t34p .p2s-note.wrong {
   color: var(--ink);
 }
-/* the take-away floats like a sheet of paper under the lamp (upper right) */
+/* the take-away lies folded on the sand at the lantern's foot; opened, it is a sheet of paper in the upper right */
+.t34p .p2s-done {
+  display: none;
+}
 .t34p:not(.cols) .p2s-sheet {
-  top: 3% !important;
+  top: var(--t34p-ly, 3%) !important;
   bottom: auto !important;
+  left: var(--t34p-lx, auto) !important;
+  right: auto !important;
+  width: max-content;
+  max-width: 300px;
+  padding: 0;
+  z-index: 8;
+}
+.t34p:not(.cols) .p2s-sheet:has(.p2k-fold.open) {
+  top: 3% !important;
   left: auto !important;
   right: 2% !important;
-  width: min(400px, 34%);
+  width: min(420px, 36%);
+  max-width: none;
   max-height: 86%;
   padding: 12px;
   border-radius: 4px;
-  background: color-mix(in srgb, var(--card) 94%, transparent);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
   box-shadow: 0 18px 36px -18px rgb(0 0 0 / 0.6);
-  rotate: -0.6deg;
+}
+.t34p .p2k-slip-text {
+  text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper);
 }
 .t34p.cols .p2s-note {
   padding: 0 2%;

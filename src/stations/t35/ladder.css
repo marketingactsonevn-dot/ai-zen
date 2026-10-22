@@ -27,9 +27,7 @@
   user-select: none;
   -webkit-user-select: none;
   /* the painting melts into the paper at its edges */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 94%, transparent);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 94%, transparent);
   mask-composite: intersect;
 }
 .t35l-flat {
@@ -292,8 +290,11 @@
   transition: opacity 1s var(--ease-soft);
 }
 :root[data-theme='dark'] .t35l-face {
-  color: color-mix(in srgb, var(--ink) 86%, var(--lantern));
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.85), 0 1px 0 color-mix(in srgb, var(--moon) 16%, transparent);
+  color: color-mix(in srgb, var(--moon) 70%, var(--ink));
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.9), 0 1px 0 color-mix(in srgb, var(--moon) 30%, transparent), 0 0 10px rgba(0, 0, 0, 0.85), 0 0 4px rgba(0, 0, 0, 0.8);
+}
+:root[data-theme='light'] .t35l-face {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7), 0 0 8px color-mix(in srgb, var(--paper) 85%, transparent), 0 0 3px var(--paper);
 }
 .t35l-rung {
   display: flex;
@@ -444,15 +445,32 @@
   z-index: 3;
   cursor: grabbing;
 }
-/* H3: while a scroll is carried, every terrace's stone shows a dashed edge where it can go */
-.t35l-face {
-  border-radius: 10px;
-  outline: 1.5px dashed transparent;
-  outline-offset: 5px;
-  transition: opacity 1s var(--ease-soft), outline-color 0.3s;
+/* H3: while a scroll is carried, every terrace's wall top warms where it can be set down */
+.t35l-target {
+  fill: var(--lantern);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
-.t35l.carrying .t35l-face {
-  outline-color: color-mix(in srgb, var(--vermilion) 70%, transparent);
+.t35l.carrying .t35l-target {
+  opacity: 0.55;
+  animation: t35l-target 1.6s ease-in-out infinite;
+}
+@keyframes t35l-target {
+  50% {
+    opacity: 0.25;
+  }
+}
+:root[data-quality='low'] .t35l.carrying .t35l-target {
+  animation: none;
+}
+/* the dressed patch of wall the name is cut into */
+.t35l-carveshade {
+  fill: var(--wash);
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t35l-carveshade {
+  fill: #000;
+  opacity: 0.45;
 }
 /* too high on the Agent terrace: the thread to the hand snaps */
 .t35l-thread.snap {
@@ -460,11 +478,12 @@
   opacity: 0.6;
 }
 .t35l.port .t35l-tag {
-  left: auto;
-  right: 88%;
-  width: min(10em, 46vw);
+  left: 50%;
+  bottom: 130%;
+  width: max-content;
+  max-width: min(14em, 58vw);
   white-space: normal;
-  transform: rotate(-3deg);
+  transform: translateX(-50%) rotate(-2deg);
 }
 .t35l-plank {
   padding: 0.6em 0.9em 0.7em;
@@ -958,4 +977,68 @@
   .t35l * {
     animation: none !important;
   }
+}
+
+/* all three placed: the side notes fall quiet, the insight takes the moss */
+.t35l.all :is(.t35l-slip, .t35l-cordsvg, .t35l-thread) {
+  opacity: 0 !important;
+  transition: opacity 0.9s var(--ease-soft);
+}
+/* the hook's board: a cedar plank with its words cut in */
+:root[data-theme='dark'] .t35l-plank {
+  background:
+    repeating-linear-gradient(176deg, transparent 0 7px, rgba(0, 0, 0, 0.22) 7px 8px, transparent 8px 15px),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 34%, #3a3028), color-mix(in srgb, var(--lantern) 18%, #241d18));
+}
+.t35l-origami-m {
+  fill: color-mix(in srgb, var(--card) 70%, var(--stone-2));
+}
+:root[data-theme='dark'] .t35l-origami-m {
+  fill: color-mix(in srgb, var(--moon) 48%, var(--rock-lo));
+}
+/* phone: the strip at the bottom is a reserved patch of mist; a verdict replaces the lamp's slip there (one block) */
+.t35l-footbar::before {
+  content: '';
+  position: absolute;
+  inset: -30% -8% -12%;
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 80%, transparent), color-mix(in srgb, var(--paper) 45%, transparent) 60%, transparent);
+  pointer-events: none;
+}
+.t35l-footbar .t35l-ex:not(:empty) + .t35l-slip {
+  display: none;
+}
+/* all placed: a bank of mist rises at the foot of the frame and the insight lies on it (art direction §3.7) */
+.t35l::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 42%;
+  background: linear-gradient(to top, color-mix(in srgb, var(--paper) 92%, transparent), color-mix(in srgb, var(--paper) 70%, transparent) 45%, transparent);
+  opacity: 0;
+  transition: opacity 1.4s var(--ease-soft);
+  pointer-events: none;
+}
+.t35l.all:not(.port)::after {
+  opacity: 1;
+}
+/* (the paper class sets position: relative and loads after this file) */
+.t35l .t35l-tag {
+  position: absolute;
+}
+.t35l.all .t35l-words {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-soft);
+}
+
+/* the soft edge into the page: a painted vignette on top (a CSS mask on the whole scene cost a 170 ms first frame) */
+.t35l::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  background: linear-gradient(to right, var(--paper), transparent 4%, transparent 96%, var(--paper)), linear-gradient(to bottom, var(--paper), transparent 3%, transparent 94%, var(--paper));
+  pointer-events: none;
 }

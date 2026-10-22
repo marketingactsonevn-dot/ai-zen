@@ -2,8 +2,6 @@
 .t35p {
   overflow: hidden;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(125% 118% at 50% 42%, #000 62%, transparent 100%);
-  mask-image: radial-gradient(125% 118% at 50% 42%, #000 62%, transparent 100%);
 }
 .t35p-back {
   position: absolute;
@@ -407,23 +405,10 @@
 .t35p.s5 .t35p-l4 {
   opacity: 0.2;
 }
-/* 8 · the skill: every piece folds flat, the sheet rolls up toward the far edge and is gone to the hook */
-.t35p.s8 .t35p-piece,
-.t35p.s8 .t35p-piece.house {
-  transform: none;
-  transition-delay: 0s;
-}
-.t35p.s8 .t35p-face {
-  transform: none;
-  transition-delay: 0s;
-}
-.t35p.s8 .t35p-paper-art,
-.t35p.s8 .t35p-piece {
-  transform: scaleY(0.04);
+/* 8 · the skill: the finished pop-up stays standing on the sheet; its method, rolled up, hangs on the wall's peg rail */
+.t35p.s8 .t35p-pencil {
   opacity: 0;
-}
-.t35p.s8 .t35p-piece {
-  transition: transform 0.8s var(--ease), opacity 0.4s 0.8s;
+  transition: opacity 0.9s var(--ease-soft);
 }
 .t35p.reading .t35p-sheet {
   opacity: 0;
@@ -469,8 +454,9 @@
 .t35p-strip:empty {
   display: none;
 }
-.t35p-strip .p2s-note {
+.t35p-art.port .t35p-strip .p2s-note {
   position: static;
+  transform: none;
   width: auto !important;
   padding: 0;
 }
@@ -523,43 +509,98 @@
   filter: blur(0.5px);
 }
 .t35p-art .p2s-stone {
-  padding: 6px 14px 8px 16px;
+  display: block;
+  padding: 0;
 }
 .t35p-art:not(.port) .p2s-stone {
-  width: 158px !important;
-  height: 68px !important;
+  width: 132px !important;
+  height: 82px !important;
 }
 .t35p-art.port .p2s-stone {
-  height: 52px !important;
+  width: 106px !important;
+  height: 62px !important;
 }
-.t35p-art .p2s-label {
-  font: 500 14px/1.25 var(--serif);
-  color: var(--stone-text);
-  text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 85%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 35%, transparent);
+.t35p-art.port .p2s-label {
+  font-size: 12px;
+  padding: 2px 3px 3px;
   -webkit-line-clamp: 3;
 }
-:root[data-theme='dark'] .t35p-art .p2s-label {
-  color: color-mix(in srgb, var(--ink) 92%, var(--lantern));
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.8);
+/* the pebble: its own size (depth in the tray) and angle */
+.t35p-art .p2s-stone .p2s-art {
+  scale: var(--sc, 1);
+  rotate: var(--rot, 0deg);
+  transform-origin: 50% 40%;
+}
+/* the step, written on a slip of washi tied to the pebble, leaning the other way */
+.t35p-art .p2s-label {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: 0;
+  padding: 3px 6px 4px;
+  font: 400 13px/1.2 var(--serif);
+  text-align: center;
+  color: #2a2116;
+  -webkit-line-clamp: 2;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8 .4' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .1 .3 0 0 0 -.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, color-mix(in srgb, var(--lantern) 24%, #f6f0e2), color-mix(in srgb, var(--lantern) 16%, #e6dcc6));
+  clip-path: polygon(0 0, 100% 2%, 99% 90%, 86% 100%, 66% 94%, 44% 100%, 22% 95%, 0 100%);
+  rotate: calc(var(--rot, 0deg) * -0.5);
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3));
+  text-shadow: none;
 }
 .t35p-art .p2s-key {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  translate: -50% -50%;
   width: auto;
   height: auto;
   border: 0;
-  font: 400 12px/1 var(--serif);
+  font: 500 12px/1 var(--serif);
   color: var(--stone-text);
-  opacity: 0.7;
+  opacity: 0.75;
 }
 :root[data-theme='dark'] .t35p-art .p2s-key {
-  color: color-mix(in srgb, var(--ink) 80%, transparent);
+  color: color-mix(in srgb, var(--ink) 85%, transparent);
+}
+/* the tray at the near edge, its spare pebbles, the red ties */
+.t35p-tray {
+  fill: color-mix(in srgb, var(--lantern) 30%, var(--wash));
+}
+:root[data-theme='dark'] .t35p-tray {
+  fill: color-mix(in srgb, var(--lantern) 22%, #1c1712);
+}
+.t35p-tray-floor {
+  fill: color-mix(in srgb, var(--lantern) 34%, var(--step-mid));
+}
+:root[data-theme='dark'] .t35p-tray-floor {
+  fill: color-mix(in srgb, var(--lantern) 12%, #2a2420);
+}
+.t35p-tray-grain {
+  fill: var(--umbra);
+  opacity: 0.18;
+}
+.t35p-tray-sh {
+  fill: var(--umbra);
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .t35p-tray-sh {
+  fill: #000;
+  opacity: 0.6;
+}
+.t35p-tie {
+  fill: var(--vermilion);
+  opacity: 0.85;
 }
 .t35p-art .p2s-note {
-  top: auto !important;
-  bottom: var(--t35p-note, 150px);
-  left: 0;
-  width: 100% !important;
+  top: var(--t35p-note, 40%) !important;
+  bottom: auto;
+  left: 2.2%;
+  width: 15.5% !important;
   box-sizing: border-box;
-  padding: 0 6%;
+  padding: 0;
   font: 400 14px/1.45 var(--serif);
   color: var(--ink-2);
   text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 2px var(--paper);
@@ -762,4 +803,54 @@
 /* the hook holds two cards now (the prompt and the checklist): a little paper between them */
 .t35p-out > .p2k + .p2k {
   margin-top: 14px;
+}
+
+/* the far wall's peg rail */
+.t35p-rail .t35k-wood-face {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--lantern));
+}
+:root[data-theme='dark'] .t35p-rail .t35k-wood-face {
+  fill: color-mix(in srgb, #000 70%, var(--lantern));
+}
+.t35p-railsh {
+  fill: var(--umbra);
+  opacity: 0.25;
+}
+.t35p-peg {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t35p-peg {
+  fill: color-mix(in srgb, var(--rock-lo) 60%, var(--lantern));
+}
+/* phone: the strip at the bottom is a reserved patch of paper mist */
+.t35p-strip::before {
+  content: '';
+  position: absolute;
+  inset: -24% -8% -10%;
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 85%, transparent), color-mix(in srgb, var(--paper) 50%, transparent) 62%, transparent);
+  pointer-events: none;
+}
+.t35p-strip .t35p-pencil {
+  color: var(--ink);
+}
+.t35p-wallseam {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 1.5;
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t35p-wallseam {
+  stroke: color-mix(in srgb, var(--lantern) 25%, var(--rock-lo));
+  opacity: 0.22;
+}
+
+/* the soft edge into the page: a painted vignette on top (a CSS mask on the whole scene cost a 170 ms first frame) */
+.t35p::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  background: radial-gradient(125% 118% at 50% 42%, transparent 62%, var(--paper) 100%);
+  pointer-events: none;
 }

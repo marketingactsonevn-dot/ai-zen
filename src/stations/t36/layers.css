@@ -313,7 +313,8 @@
 /* ── the tracing sheets, apart above the basin; the lit one waits to go down ── */
 .t36g-sheet {
   inset: 8%;
-  transform: translateZ(calc(var(--rh) + var(--gap) * (var(--k) + 1.4)));
+  /* lying in the pile on the flat stone (layout sets --sx/--sy/--sz/--sc), each a little turned */
+  transform: translate3d(var(--sx, 0px), var(--sy, 0px), var(--sz, 0px)) scale(var(--sc, 0.42)) rotate(var(--tw, 0deg));
   transform-style: preserve-3d;
   transition: transform 1.1s cubic-bezier(0.5, 0, 0.25, 1);
   pointer-events: none;
@@ -321,32 +322,40 @@
 /* higher sheets fainter (on the children: opacity on the sheet itself would flatten its 3D label) */
 .t36g-sheet > .t36g-paper,
 .t36g-sheet > .t36g-art {
-  opacity: calc(1 - var(--k) * 0.085);
+  opacity: 1;
 }
-/* the paper glows a little at its torn edges (the glow on the outer box, the tear on the inner one) */
+/* in the pile only the top sheet's drawing reads; those under it show through faintly */
+.t36g-sheet:not(.lit):not(.down) > .t36g-art {
+  opacity: 0.22;
+}
+/* dó paper: long fibres, a deckled edge, moonlight along the far edge, the near side curling up a little darker; each
+   sheet throws a soft shadow onto the one below (its own drop shadow, offset away from the moon) */
 .t36g-paper {
   position: absolute;
   inset: -7%;
-  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--moon) 38%, transparent));
+  filter: drop-shadow(-3px 7px 5px color-mix(in srgb, #000 55%, transparent));
   transition: opacity 0.8s;
 }
 .t36g-paper > i {
   position: absolute;
   inset: 0;
-  /* a slight curl: brighter down the middle, darker toward the lifted sides */
   background:
-    linear-gradient(100deg, color-mix(in srgb, var(--umbra) 10%, transparent), transparent 22%, color-mix(in srgb, var(--moon) 14%, transparent) 50%, transparent 78%, color-mix(in srgb, var(--umbra) 12%, transparent)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8 .55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .22 0 0 0 -.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    color-mix(in srgb, var(--mist) 22%, transparent);
+    linear-gradient(176deg, color-mix(in srgb, var(--moon) 75%, transparent) 0 1.4%, transparent 4%),
+    linear-gradient(100deg, color-mix(in srgb, var(--umbra) 16%, transparent), transparent 18%, transparent 80%, color-mix(in srgb, var(--umbra) 22%, transparent)),
+    linear-gradient(180deg, transparent 70%, color-mix(in srgb, var(--umbra) 18%, transparent)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .06' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .92 0 0 0 0 .82 .55 0 0 0 -.22'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    color-mix(in srgb, color-mix(in srgb, var(--moon) 55%, var(--rock-mid)) 42%, transparent);
 }
 :root[data-theme='light'] .t36g-paper {
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--card) 80%, transparent)) drop-shadow(0 6px 8px color-mix(in srgb, var(--umbra) 18%, transparent));
+  filter: drop-shadow(-3px 7px 5px color-mix(in srgb, var(--umbra) 30%, transparent));
 }
 :root[data-theme='light'] .t36g-paper > i {
   background:
-    linear-gradient(100deg, color-mix(in srgb, var(--umbra) 7%, transparent), transparent 22%, color-mix(in srgb, var(--card) 40%, transparent) 50%, transparent 78%, color-mix(in srgb, var(--umbra) 8%, transparent)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8 .55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .32 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    color-mix(in srgb, var(--card) 52%, transparent);
+    linear-gradient(176deg, color-mix(in srgb, #fff 80%, transparent) 0 1.4%, transparent 4%),
+    linear-gradient(100deg, color-mix(in srgb, var(--umbra) 10%, transparent), transparent 18%, transparent 80%, color-mix(in srgb, var(--umbra) 14%, transparent)),
+    linear-gradient(180deg, transparent 70%, color-mix(in srgb, var(--umbra) 12%, transparent)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .06' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .42 .45 0 0 0 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    color-mix(in srgb, color-mix(in srgb, var(--card) 70%, var(--lantern)) 58%, transparent);
 }
 .t36g-art {
   position: absolute;
@@ -356,10 +365,11 @@
   overflow: visible;
 }
 .t36g-sheet.lit .t36g-paper {
-  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--lantern) 75%, transparent));
+  filter: drop-shadow(-3px 7px 5px color-mix(in srgb, #000 50%, transparent)) drop-shadow(0 0 5px color-mix(in srgb, var(--lantern) 60%, transparent));
 }
 .t36g-sheet.down {
-  transform: translateZ(calc(var(--wz) + 1px + var(--k) * 0.6px));
+  /* lifted from the pile and laid on the water, on the sheets before it */
+  transform: translate3d(0px, 0px, calc(var(--wz) + 1px + var(--k) * 0.6px)) scale(1) rotate(0deg);
 }
 .t36g-sheet.down > .t36g-art {
   opacity: 1;
@@ -372,50 +382,150 @@
 .t36g.calm .t36g-sheet {
   transition: none;
 }
-/* the name, written along the sheet's front edge: it stands on the edge, leaning back to face us */
-.t36g-tab {
+/* the names at the sheets' right corners: ink on the night, the next one darker with the dot */
+.t36g-labels {
   position: absolute;
-  left: -6%;
-  bottom: -7%;
+  inset: 0;
+  pointer-events: none;
+}
+.t36g-label {
+  position: absolute;
+  min-height: 44px;
+  min-width: 44px;
   margin: 0;
-  padding: 1px 4px;
+  padding: 0 6px 0 14px;
+  transform: translateY(-50%);
   border: 0;
   background: none;
   white-space: nowrap;
-  font: italic 500 14px/1.15 var(--serif);
-  color: var(--ink-2);
+  text-align: left;
+  font: italic 500 13.5px/1.15 var(--serif);
+  color: var(--ink-3);
   text-shadow: 0 0 6px var(--paper), 0 0 3px var(--paper), 0 0 1px var(--paper);
-  transform-origin: 0 100%;
-  transform: rotateX(-58deg);
-  cursor: default;
+  cursor: pointer;
   pointer-events: auto;
   transition: opacity 0.5s, color 0.4s;
 }
-.t36g-sheet.lit .t36g-tab {
+/* a hairline from the paper's corner to its name */
+.t36g-label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.t36g-label.lit {
   color: var(--ink);
   font-style: normal;
   font-weight: 600;
-  cursor: pointer;
 }
-.t36g-sheet.lit .t36g-tab::before {
-  content: '';
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-right: 6px;
-  border-radius: 50%;
-  background: var(--vermilion);
-  vertical-align: 1px;
+.t36g-label > .p2g-dot.ride {
+  left: -3px;
+  top: 50%;
 }
-.t36g-tab:focus-visible {
-  outline: 2px solid var(--vermilion);
-  outline-offset: 2px;
-}
-.t36g:not(.wide) .t36g-tab {
-  font-size: 12px;
-}
-.t36g.is-play .t36g-tab {
+.t36g-label.down {
   opacity: 0;
+  pointer-events: none;
+}
+.t36g-label:focus-visible {
+  outline: none;
+  text-decoration: underline 1.5px var(--vermilion);
+  text-underline-offset: 4px;
+}
+.t36g:not(.wide) .t36g-label {
+  font-size: 12px;
+  padding-left: 12px;
+}
+.t36g.is-play .t36g-label {
+  opacity: 0;
+  pointer-events: none;
+}
+/* idle: the next sheet lifts off the stack a little */
+.t36g-sheet.nudge {
+  animation: t36g-lift 1.2s var(--ease) 2;
+}
+@keyframes t36g-lift {
+  0%,
+  100% {
+    translate: 0 0 0;
+  }
+  45% {
+    translate: 0 0 8px;
+  }
+}
+/* the count cut into the basin's front wall, and the score in a straight line over the far rim while playing */
+.t36g-count {
+  position: absolute;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  font: italic 600 13px/1 var(--serif);
+  letter-spacing: 0.05em;
+  color: color-mix(in srgb, var(--umbra) 75%, var(--rock-lo));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--rock-hi) 55%, transparent);
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+:root[data-theme='dark'] .t36g-count {
+  color: color-mix(in srgb, var(--umbra) 85%, var(--rock-lo));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--moon) 30%, transparent);
+}
+.t36g.is-play .t36g-count,
+.t36g-count.full {
+  opacity: 0;
+}
+.t36g-hud {
+  position: absolute;
+  margin: 0;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  font: 500 14px/1.3 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s 0.4s;
+}
+.t36g.is-play .t36g-hud {
+  opacity: 1;
+}
+/* the world: a lake darker than the sky, sand raked along the shore */
+.t36g-lake {
+  fill: color-mix(in srgb, var(--water) 82%, var(--paper));
+}
+:root[data-theme='dark'] .t36g-lake {
+  fill: color-mix(in srgb, var(--water) 75%, var(--paper));
+}
+.t36g-road {
+  fill: var(--moon);
+  opacity: 0.9;
+}
+:root[data-theme='light'] .t36g-road {
+  fill: var(--card);
+  opacity: 0.8;
+}
+.t36g-land {
+  fill: color-mix(in srgb, var(--paper-2) 55%, var(--rock-mid));
+}
+:root[data-theme='dark'] .t36g-land {
+  fill: color-mix(in srgb, var(--rock-mid) 42%, var(--paper-2));
+}
+.t36g-sandrake {
+  fill: none;
+  stroke: var(--rake);
+  stroke-width: 1.2;
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t36g-sandrake {
+  stroke: color-mix(in srgb, var(--mist) 20%, transparent);
+}
+.t36g-wet {
+  fill: none;
+  stroke: color-mix(in srgb, var(--umbra) 60%, var(--water));
+  stroke-width: 3;
+  opacity: 0.6;
 }
 
 /* what each layer draws on the water: ink you can read on the paper */
@@ -537,8 +647,7 @@
 /* ── the prompt under the basin, the start, the things on the rim while playing ── */
 .t36g-said {
   position: absolute;
-  transform: translateX(-50%);
-  text-align: center;
+  text-align: left;
 }
 .t36g-eye {
   margin: 0 0 4px;
@@ -598,6 +707,12 @@
 .t36g-end[hidden] {
   display: none;
 }
+.t36g-said {
+  transition: opacity 0.6s;
+}
+.t36g-said.rest {
+  opacity: 0;
+}
 .t36g.is-play .t36g-sheet:not(.t36g-base) > .t36g-art,
 .t36g.is-play .t36g-said {
   opacity: 0;
@@ -632,13 +747,15 @@
   overflow: visible;
 }
 .t36g-pebble {
-  width: 40px;
-  height: 28px;
+  width: 48px;
+  height: 44px;
+  padding: 8px 4px;
   transform: translate(-50%, -80%);
 }
 .t36g-bell {
-  width: 30px;
-  height: 36px;
+  width: 44px;
+  height: 48px;
+  padding: 4px 6px;
   transform: translate(-50%, -88%);
 }
 .t36g-obj:focus-visible {
@@ -716,6 +833,8 @@
 }
 .t36g-end .t36g-start {
   position: static;
+  flex: none;
+  white-space: nowrap;
 }
 .t36g-endrow {
   display: flex;
@@ -739,4 +858,25 @@
   .t36g-go {
     animation: none;
   }
+}
+:root[data-theme='light'] .t36g-label {
+  color: var(--ink-2);
+}
+/* the flat stone at the shore that the pile rests on */
+.t36g-slabside {
+  fill: color-mix(in srgb, var(--rock-lo) 80%, var(--umbra));
+}
+.t36g-slabtop {
+  fill: var(--rock-mid);
+}
+:root[data-theme='dark'] .t36g-slabtop {
+  fill: color-mix(in srgb, var(--rock-mid) 70%, var(--rock-lo));
+}
+.t36g-slabrim {
+  fill: none;
+  stroke: var(--rake-hi);
+  stroke-width: 1.4;
+}
+:root[data-theme='dark'] .t36g-slabrim {
+  stroke: color-mix(in srgb, var(--moon) 35%, transparent);
 }

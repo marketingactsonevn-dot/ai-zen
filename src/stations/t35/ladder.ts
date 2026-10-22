@@ -7,7 +7,7 @@ import { grass, hills, mist, moon, pine, reeds, toro, wash } from '../../ui/part
 import type { SceneCtx } from '../types'
 import { guide } from '../../ui/part2/guide'
 import { C } from './content'
-import { F, P, f1, fern, gdefs, ink, roof, slab, wood, woodG } from './kit'
+import { F, P, f1, fern, gdefs, ink, roof, wood, woodG } from './kit'
 
 const K = C.scenes.ladder
 const N = K.rungs.length
@@ -255,8 +255,9 @@ export function ladderScene(ctx: SceneCtx) {
         rollSay.textContent = fill(K.rollAria, { task: T[cur].text })
       } else {
         next.done()
+        // the lamp post's slip and the thread fall quiet: the insight lies on the moss below (one block of words)
         root.classList.add('all')
-        ctx.insight(F(K.insight), [K.detail, F(K.facts[1])])
+        ctx.insight(F(K.insight), [K.detail, F(K.facts[0]), F(K.facts[1])])
       }
       return
     }
@@ -566,7 +567,7 @@ export function ladderScene(ctx: SceneCtx) {
     }
     if (i === 0) {
       const pw = port ? Math.min(W * 0.6, 230) : clamp(W * 0.18, 220, 270)
-      Object.assign(st.el.querySelector<HTMLElement>('.t35l-plank')!.style, { left: `${f1(port ? -W * 0.46 : rw * 0.3)}px`, top: `${f1(wallH + treadH * (port ? 0.5 : 0.7))}px`, width: `${f1(pw)}px` })
+      Object.assign(st.el.querySelector<HTMLElement>('.t35l-plank')!.style, { left: `${f1(port ? -W * 0.46 : rw * 0.3)}px`, top: `${f1(wallH + treadH * (port ? 0.98 : 0.7))}px`, width: `${f1(pw)}px` })
     }
   }
 
@@ -676,7 +677,8 @@ function terrace(G: Geo, i: number, sd: number, slabX: number, lx: number, ly: n
   // the wall: rubble of field stone, rounded and uneven, each its own size and tone, chinked with small stones;
   // one big dressed stone carries the inscription
   const slabH = wallH * (port ? 0.78 : 0.74)
-  const sx0 = slabX - slabW / 2 - 4, sx1 = slabX + slabW / 2 + 4
+  // the name is carved straight into the coursed wall (no tablet): the courses run unbroken behind it
+  const sx0 = Infinity, sx1 = -Infinity
   const tone = ['', '', '']
   let shade = '', rim = '', hi = '', joints = '', chink = ''
   let y = 0
@@ -714,16 +716,8 @@ function terrace(G: Geo, i: number, sd: number, slabX: number, lx: number, ly: n
     if (x > sx0 && x < sx1) continue
     lip += stroke(curve([x, 2], [x + 3, wallH * 0.2], [x - 2, wallH * (0.25 + r() * 0.3)], 6), 3 + r() * 3, 0.05, 0.7, 0.2)
   }
-  // the inscription stone: a dressed face, chisel marks, lichen at its corners, a shaded lower edge
-  const sy0 = (wallH - slabH) / 2, sy1 = sy0 + slabH
-  const q = rng(seed + 7)
-  const slabD = slab(sx0 + 3, sy0, slabW + 2, slabH, seed + 7, 0.03)
-  let chisel = '', lichen = ''
-  for (let k = 0; k < 16; k++) {
-    const cx2 = sx0 + 12 + q() * (slabW - 16), cy2 = sy0 + 6 + q() * (slabH - 12)
-    chisel += stroke([[cx2, cy2], [cx2 + 6 + q() * 16, cy2 + (q() - 0.5) * 4]], 0.9 + q() * 0.8, 0.3, 0.3, 0.1)
-  }
-  for (const [ax, ay] of [[sx0 + 8, sy1 - 6], [sx1 - 10, sy0 + 5], [sx1 - 16, sy1 - 4]] as Pt[]) lichen += blob(ax, ay, 5 + q() * 8, 2.5 + q() * 3, seed + 900 + Math.round(ax), 0.4, 10)
+  // where the name is cut, the wall's faces were dressed a little flatter: a soft darker wash keeps the letters legible
+  const carve = blob(slabX, wallH * 0.5, slabW * 0.56, slabH * 0.56, seed + 7, 0.25, 18)
   art.push(
     s('rect', { class: 't35l-joint', x: f1(-half - 2), y: 0, width: f1(rw + 4), height: f1(wallH) }),
     s('path', { class: 't35l-st0', d: tone[0], filter: 'url(#ink-rough)' }),
@@ -732,12 +726,11 @@ function terrace(G: Geo, i: number, sd: number, slabX: number, lx: number, ly: n
     s('path', { class: 't35l-hi', d: hi }),
     s('path', { class: 't35l-shade', d: shade }),
     s('path', { class: 't35l-chink', d: chink, filter: 'url(#ink-rough)' }),
-    s('path', { class: 't35l-slab', d: slabD, fill: 'url(#t35l-ins)', filter: 'url(#ink-rough)' }),
-    s('path', { class: 't35l-chisel', d: chisel, filter: 'url(#ink-dry)' }),
-    s('path', { class: 't35l-lichen', d: lichen, filter: 'url(#ink-wash)' }),
-    s('path', { class: 't35l-slab-sh', d: stroke([[sx0 + 8, sy1 - 1], [slabX, sy1 + 0.5], [sx1 - 5, sy1 - 3], [sx1 - 4, sy0 + slabH * 0.25]], 3.6, 0.1, 0.2, 0.3) }),
+    s('path', { class: 't35l-carveshade', d: carve, filter: 'url(#ink-wash)' }),
     s('path', { class: 't35l-joint-moss', d: joints }),
-    s('path', { class: 't35l-rim', d: rim + stroke([[sx0 + 10, sy0 + 2.5], [slabX, sy0 + 1.8], [sx1 - 10, sy0 + 3]], 2, 0.2, 0.2, 0.1) }),
+    s('path', { class: 't35l-rim', d: rim }),
+    // H3: the wall's top edge warms when a scroll is carried — the place it can be set down
+    s('path', { class: 't35l-target', d: stroke([[-half * 0.92, -1], [0, -2], [half * 0.92, -1]], Math.max(4, wallH * 0.05), 0.1, 0.1, 0.3) }),
     s('ellipse', { class: 't35l-glow t35l-glow-wall', cx: f1(lx * 0.92), cy: f1(wallH * 0.12), rx: f1(rw * 0.3), ry: f1(wallH * 0.75), fill: 'url(#t35l-warm)' }),
     s('path', { class: 't35l-lip', d: lip, filter: 'url(#ink-wash)' }),
     s('ellipse', { class: 't35k-contact', cx: 0, cy: f1(wallH + 2), rx: f1(half * 1.04), ry: f1(Math.max(4, wallH * 0.05)) }))
@@ -799,7 +792,9 @@ function folk(x: number, y: number, ht: number, dir: number, kneel = false, carr
   const X = (v: number) => f1(x + v * u * dir), Y = (v: number) => f1(y - v * u)
   const body = kneel ? 4.6 : 6.4
   const tri = (a: [number, number], b: [number, number], c: [number, number]) => `M${X(a[0])} ${Y(a[1])}L${X(b[0])} ${Y(b[1])}L${X(c[0])} ${Y(c[1])}Z`
-  const front = tri([-2.3, 0], [0.4, body + 0.2], [0.1, 0]) + tri([0.4, body + 0.2], [-0.8, body], [-2.3, 0])
+  // the robe's folds: one face to the moon, one turned away, a sleeve in shade — paper read by its creases
+  const front = tri([-2.3, 0], [0.4, body + 0.2], [0.1, 0])
+  const turned = tri([0.4, body + 0.2], [-0.8, body], [-2.3, 0])
   const back = tri([0.1, 0], [0.4, body + 0.2], [2.2, 0])
   const head = `M${X(0)} ${Y(body + 0.3)}L${X(-1)} ${Y(body + 1.7)}L${X(0.1)} ${Y(body + 3)}L${X(1.1)} ${Y(body + 1.6)}Z`
   const hat = tri([-2.2, body + 2.4], [2.2, body + 2.2], [0.2, body + 3.9])
@@ -808,6 +803,7 @@ function folk(x: number, y: number, ht: number, dir: number, kneel = false, carr
     s('ellipse', { class: 't35k-contact', cx: X(0), cy: Y(0), rx: f1(u * 2.8), ry: f1(Math.max(1.5, u * 0.45)) }),
     s('path', { class: 't35l-origami-2', d: back }),
     s('path', { class: 't35l-origami', d: front }),
+    s('path', { class: 't35l-origami-m', d: turned }),
     s('path', { class: 't35l-origami', d: head }),
     s('path', { class: 't35l-origami-2', d: arm }),
     s('path', { class: 't35l-hat', d: hat }),
@@ -838,7 +834,7 @@ function vignette(id: string, w: number, hh: number, seed: number): SVGElement[]
     const fh = hh * 0.66
     let curls = ''
     for (let k = 0; k < 5; k++) {
-      const x0 = fx + fh * 0.2 + k * 2 * u, y0 = y - hh * 0.12 - fh * 0.62 + k * 3 * u
+      const x0 = fx + fh * 0.22 + k * 2 * u, y0 = y - hh * 0.16 - fh * 0.2 + k * 2 * u
       const a: Pt = [x0, y0], b: Pt = [x0 + (16 + k * 11) * u, y0 - (18 + k * 7) * u], c: Pt = [x0 + (34 + k * 17) * u, y0 - (30 + k * 11) * u]
       curls += stroke([...curve(a, [x0 + 12 * u, y0 + 7 * u], b, 10), ...curve(b, [b[0] - 12 * u, b[1] - 16 * u], c, 10).slice(1)], (3 - k * 0.45) * u, 0.15, 0.6, 0.05)
     }
@@ -847,10 +843,10 @@ function vignette(id: string, w: number, hh: number, seed: number): SVGElement[]
       const mx = w * (0.48 + r() * 0.44), my = hh * (0.06 + r() * 0.42)
       motes += stroke([[mx, my], [mx + (2 + r() * 5) * u, my + (r() - 0.5) * 3 * u]], (0.8 + r() * 1.2) * u, 0.3, 0.3, 0.1)
     }
+    // (no figure here: the paper walker belongs to the Agent terrace) the request lies on a flat stone, its words rise as breath
     return [
       s('g', { transform: `translate(${f1(fx + 2 * u)} ${f1(y)})` }, stoneArt(w * 0.36, hh * 0.14, seed, 'p2-stone t35l-rock')),
-      folk(fx, y - hh * 0.11, fh, 1, true, true),
-      report(fx + fh * 0.27, y - hh * 0.11 - fh * 0.27, fh * 0.2, fh * 0.07),
+      report(fx + fh * 0.1, y - hh * 0.12 - fh * 0.05, fh * 0.34, fh * 0.1),
       s('g', { class: 't35l-breath' },
         mist(w * 0.66, hh * 0.3, w * 0.3, hh * 0.18), mist(w * 0.84, hh * 0.14, w * 0.16, hh * 0.1),
         ink(curls, 't35l-curl', 'wash'),

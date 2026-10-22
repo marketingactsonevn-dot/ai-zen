@@ -26,8 +26,8 @@ const N = K.steps.steps.length
 const KC = 1 / 0.35 - 1 // ground depth so the last hollow is drawn at 0.35 of the first
 /** scale of a point u along the path (0 = nearest hollow … 1 = farthest) as seen from the gate */
 const kOf = (u: number) => 1 / (1 + KC * u)
-/** the S: lateral swing (−1 … 1) */
-const sx = (u: number) => Math.sin(1.6 * Math.PI * u - 0.35 * Math.PI) * (1 - 0.15 * u)
+/** the S: lateral swing (−1 … 1), starting in the middle of the near sand */
+const sx = (u: number) => Math.sin(1.7 * Math.PI * u) * (1 - 0.12 * u)
 const PF = 0.86 // phone: the stones' scale against the component's two-column size
 
 /** an irregular slab outline: a few chipped straight edges between rounded corners (seeded) */
@@ -68,7 +68,7 @@ export function pathScene(): SceneDef {
       const front = h('div', { class: 't34p-front', 'aria-hidden': 'true' }, nearW)
 
       // geometry shared by the hooks and the painter
-      let geo: { w: number; h: number; wide: boolean; hz: number; y0: number; amp: number; size: Pt; us: number[] } | null = null
+      let geo: { w: number; h: number; wide: boolean; hz: number; y0: number; amp: number; drift: number; size: Pt; us: number[] } | null = null
       let pg: PathGeo | null = null
       let count = 0
       let corners: Pt[] = []
@@ -90,7 +90,8 @@ export function pathScene(): SceneDef {
       const P = (u: number, o = 0): Pt => {
         const g = geo!
         const k = kOf(u)
-        return [g.w / 2 + k * (g.amp * sx(u) + o), g.hz + (g.y0 - g.hz) * k]
+        // the path drifts right as it goes out, so it ends at the lantern in the upper right (the heap lies lower left)
+        return [g.w / 2 + g.drift * u + k * (g.amp * sx(u) + o), g.hz + (g.y0 - g.hz) * k]
       }
       /** the hollows evenly spaced along the S on the ground (lateral px vs depth), so the bends do not crowd them */
       function spread(amp: number, depth: number): number[] {
@@ -118,15 +119,13 @@ export function pathScene(): SceneDef {
           host.style.setProperty('--t34p-na', 'center')
           return
         }
-        const [x, y] = centres[Math.max(0, Math.min(N - 1, k))]
-        const s = kAt(Math.max(0, Math.min(N - 1, k)))
-        const nw = Math.min(400, G.w * 0.3)
-        const right = x < G.w * 0.5
-        const nx = clamp(right ? x + G.size[0] * s * 0.55 + 18 : x - G.size[0] * s * 0.55 - 18 - nw, 8, G.w - nw - 8)
-        host.style.setProperty('--t34p-nx', `${nx.toFixed(1)}px`)
-        host.style.setProperty('--t34p-ny', `${(y - 22).toFixed(1)}px`)
+        // one quiet place for the step's words: raked into the far sand on the left, clear of the path and the heap
+        void k
+        const nw = Math.min(440, G.w * 0.32)
+        host.style.setProperty('--t34p-nx', `${(G.w * 0.045).toFixed(1)}px`)
+        host.style.setProperty('--t34p-ny', `${(P(1.07)[1] + G.h * 0.035).toFixed(1)}px`)
         host.style.setProperty('--t34p-nw', `${nw.toFixed(1)}px`)
-        host.style.setProperty('--t34p-na', right ? 'left' : 'right')
+        host.style.setProperty('--t34p-na', 'left')
       }
 
       const def = stepPath(K.steps as StepPath, {
@@ -137,10 +136,10 @@ export function pathScene(): SceneDef {
         slots(g: SlotGeo) {
           const wide = g.row
           // the horizon high in the frame: the near hollow low, the far one a quarter down (phone: higher still)
-          const yn = g.h * (wide ? 0.69 : 0.52), yf = g.h * (wide ? 0.25 : 0.15)
+          const yn = g.h * (wide ? 0.8 : 0.54), yf = g.h * (wide ? 0.31 : 0.2)
           const hz = (yf - 0.35 * yn) / 0.65
-          const amp = g.w * (wide ? 0.2 : 0.3)
-          geo = { w: g.w, h: g.h, wide, hz, y0: yn, amp, size: g.size, us: spread(amp, amp * 1.35) }
+          const amp = g.w * (wide ? 0.25 : 0.3)
+          geo = { w: g.w, h: g.h, wide, hz, y0: yn, amp, drift: g.w * (wide ? 0.2 : 0.12), size: g.size, us: spread(amp, amp * 1.35) }
           centres = geo.us.map((u) => P(u))
           corners = centres.map(([x, y]) => [x - g.size[0] / 2, y - g.size[1] / 2] as Pt)
           ctx.art.querySelectorAll<HTMLElement>('.p2s-slot').forEach((el, i) => shrink(el, i))
@@ -152,10 +151,11 @@ export function pathScene(): SceneDef {
           // one loose heap on the near sand, clear of the path (phone: two staggered columns under it)
           const r = rng(3460)
           if (g.row) {
-            const xs = [0.44, 0.56, 0.68, 0.8, 0.5, 0.62, 0.74, 0.86], ys = [0.835, 0.835, 0.835, 0.835, 0.945, 0.945, 0.945, 0.945]
-            return xs.map((x, k) => [g.w * x + (r() - 0.5) * 16, g.h * ys[k] + (r() - 0.5) * 10 - (k % 4 === 1 ? 8 : 0)] as Pt)
+            // scattered over the near sand lower left, three loose rows that do not line up
+            const at: Pt[] = [[0.15, 0.66], [0.29, 0.64], [0.41, 0.7], [0.13, 0.8], [0.27, 0.78], [0.39, 0.85], [0.17, 0.94], [0.31, 0.96]]
+            return at.map(([x, y]) => [g.w * x + (r() - 0.5) * 14, g.h * y + (r() - 0.5) * 10] as Pt)
           }
-          const pts = Array.from({ length: N }, (_, k) => [g.w * (k % 2 ? 0.73 : 0.27) + (r() - 0.5) * 8, g.h * (0.62 + Math.floor(k / 2) * 0.09 + (k % 2) * 0.045)] as Pt)
+          const pts = Array.from({ length: N }, (_, k) => [g.w * (k % 2 ? 0.72 : 0.28) + (r() - 0.5) * 22, g.h * (0.63 + Math.floor(k / 2) * 0.088 + (k % 2) * 0.044) + (r() - 0.5) * 6] as Pt)
           // smaller, and put back where the component means them (it moves them by transform, which `scale` scales)
           ctx.art.querySelectorAll<HTMLElement>('.p2s-stone').forEach((el, k) => {
             if (el.classList.contains('placed')) return
@@ -229,7 +229,7 @@ export function pathScene(): SceneDef {
           yield
           yield* paintSand(W, H, gut)
           yield
-          paintNear(W, H, gut)
+          paintNear(W, gut)
           paintLit(W, H, gut)
         })(), { sync: ctx.reduced || !first })
         first = false
@@ -237,7 +237,8 @@ export function pathScene(): SceneDef {
       const shoreY = () => P(1.07)[1]
       const lampAt = (): [number, number, number] => {
         const [x, y] = P(1.16)
-        return [x, y, Math.min(geo!.size[1] * 7 * kOf(1.16), y * 0.86)]
+        // the hero: half again as tall as the path's scale would make it, standing in the shallows at the path's end
+        return [x, y, Math.min(geo!.size[1] * 7 * kOf(1.16) * 1.6, y * 0.84)]
       }
 
       function paintFar(W: number, H: number, gut: number) {
@@ -268,9 +269,16 @@ export function pathScene(): SceneDef {
           const y = fs + (shore - fs) * r(), x = r() * W, l = 20 + r() * 80
           inkLine(g, [[x, y], [x + l, y]], 0.8, T.wash, T.dark ? 0.2 : 0.14, 0.3, 0.3, 0.1)
         }
-        // the stone lantern standing in the shallows at the end of the path, unlit, its dark reflection
+        // a low mist lying on the lake
+        mist(g, T, W * 0.32, fs + (shore - fs) * 0.45, W * 0.42, Math.max(6, (shore - fs) * 0.4), T.dark ? 1 : 0.6)
+        mist(g, T, W * 0.9, fs + (shore - fs) * 0.6, W * 0.25, Math.max(5, (shore - fs) * 0.3), T.dark ? 0.8 : 0.5)
+        // the stone lantern standing in the shallows at the end of the path, unlit, the moon's haze behind it, its reflection
         const [lx, ly, lh] = lampAt()
+        soft(g, lx, ly - lh * 0.55, lh * 0.75, lh * 0.7, T.dark ? mix(T.moon, T.mist, 0.4) : T.card, T.dark ? 0.16 : 0.5)
         toro(g, lx, ly, lh, false)
+        // the take-away waits folded on the sand at the lantern's foot (shown when the path is done)
+        host?.style.setProperty('--t34p-lx', `${(lx + lh * 0.3).toFixed(1)}px`)
+        host?.style.setProperty('--t34p-ly', `${(shore + 4).toFixed(1)}px`)
         grain(g, -gut, 0, W + gut * 2, shore, T.dark ? 0.05 : 0.07)
       }
 
@@ -287,7 +295,8 @@ export function pathScene(): SceneDef {
         g.lineTo(-gut, HB)
         g.closePath()
         const sandC = T.dark ? mix(T.paper2, T.rockLo, 0.38) : mix(T.paper2, T.card, 0.4)
-        g.fillStyle = vgrad(g, shore, HB, [[0, mix(sandC, T.mist, T.dark ? 0.12 : 0.3), 1], [0.5, sandC, 1], [1, mix(sandC, T.lantern, T.dark ? 0.16 : 0.1), 1]])
+        // cool and misty toward the lake, warmed by the workshop's lamp toward us
+        g.fillStyle = vgrad(g, shore, HB, [[0, mix(sandC, mix(T.mist, T.moon, 0.3), T.dark ? 0.22 : 0.35), 1], [0.35, mix(sandC, T.wash, T.dark ? 0.08 : 0.04), 1], [0.7, mix(sandC, T.lantern, T.dark ? 0.1 : 0.06), 1], [1, mix(sandC, T.lantern, T.dark ? 0.26 : 0.16), 1]])
         g.fill()
         inkLine(g, Array.from({ length: 30 }, (_, i) => [-gut + ((W + gut * 2) * i) / 29, shore + 2 + Math.sin(i * 0.9) * 1.2] as Pt), 2, T.wash, T.dark ? 0.5 : 0.3, 0.05, 0.05, 0.4)
         // shore stones along the water's edge
@@ -308,13 +317,14 @@ export function pathScene(): SceneDef {
           g.lineTo(bx + 18, HB)
           g.lineTo(W / 2 + sd * W * 0.12, H * 0.5)
           g.closePath()
-          g.fillStyle = vgrad(g, H * 0.5, HB, [[0, T.umbra, 0], [1, T.umbra, T.dark ? 0.35 : 0.16]])
+          g.fillStyle = vgrad(g, H * 0.5, HB, [[0, T.umbra, 0], [1, T.umbra, T.dark ? 0.16 : 0.08]])
           g.fill()
         }
         // two mossy rocks the rake lines bend round, each beside the path on the side its swing leaves free
-        const rocks: [number, number, number][] = [[0.3, 1, 1.2], [0.72, -1, 1]].map(([u, side, k]) => {
+        const rocks: [number, number, number][] = [[0.42, -1, 1.1], [0.12, 1, 1.35]].map(([u, side, k]) => {
           const kk = kOf(u), r0 = G.size[0] * (G.wide ? 0.36 : 0.24) * k
-          return [G.w / 2 + kk * (G.amp * sx(u) + side * (G.size[0] * 1.05 + r0 * 1.7)), G.hz + (G.y0 - G.hz) * kk, r0 * kk]
+          const [x, y] = P(u, side * (G.size[0] * 1.05 + r0 * 1.7))
+          return [x, y, r0 * kk]
         })
         yield
         // rake lines along the S, closer, thinner and fainter as they go out (strongly foreshortened from up here)
@@ -363,15 +373,33 @@ export function pathScene(): SceneDef {
           }
         }
         yield
-        // the hollows: shallow dips with a soft ring of shade, dark on the far lip, catching light on the near one
+        // the hollows: shallow dips pressed into the raked sand (the rake runs round each in two rings), a soft ring of
+        // shade, dark on the far lip, catching light on the near one
         for (let i = 0; i < N; i++) {
           const k = kAt(i)
           const [x, y] = centres[i]
-          const rx = G.size[0] * 0.56 * k, ry = G.size[1] * 0.62 * k
-          soft(g, x, y, rx * 1.3, ry * 1.35, T.umbra, T.dark ? 0.42 : 0.22, 0, 0.45)
+          const rx = G.size[0] * 0.5 * k, ry = G.size[1] * 0.56 * k
+          g.fillStyle = rgba(sandC)
+          g.beginPath()
+          g.ellipse(x, y + ry * 0.1, rx * 1.55, ry * 1.6, 0, 0, Math.PI * 2)
+          g.fill()
+          for (let j = 0; j < 2; j++) {
+            const ex = rx * (1.2 + j * 0.24), ey = ry * (1.24 + j * 0.27)
+            g.beginPath()
+            g.ellipse(x, y + ry * 0.1, ex, ey, 0, 0, Math.PI * 2)
+            g.strokeStyle = rgba(T.dark ? T.umbra : T.wash, (T.dark ? 0.26 : 0.14) * (0.5 + 0.5 * k))
+            g.lineWidth = 1.6 * (0.4 + 0.6 * k)
+            g.stroke()
+            g.beginPath()
+            g.ellipse(x, y + ry * 0.1 + 1.3 * k, ex, ey, 0, 0.08, Math.PI - 0.08)
+            g.strokeStyle = rgba(T.dark ? T.moon : T.card, (T.dark ? 0.1 : 0.7) * (0.5 + 0.5 * k))
+            g.lineWidth = 1.1 * (0.4 + 0.6 * k)
+            g.stroke()
+          }
+          soft(g, x, y, rx * 1.15, ry * 1.2, T.umbra, T.dark ? 0.18 : 0.1, 0, 0.45)
           g.beginPath()
           g.ellipse(x, y + ry * 0.08, rx, ry, 0, 0, Math.PI * 2)
-          g.fillStyle = vgrad(g, y - ry, y + ry, [[0, mix(sandC, T.umbra, 0.38), 1], [0.7, mix(sandC, T.umbra, 0.08), 1], [1, mix(sandC, T.dark ? T.moon : T.card, 0.3), 1]])
+          g.fillStyle = vgrad(g, y - ry, y + ry, [[0, mix(sandC, T.umbra, 0.2), 1], [0.55, mix(sandC, T.umbra, 0.03), 1], [1, mix(sandC, T.dark ? T.moon : T.card, 0.2), 1]])
           g.fill()
           g.beginPath()
           g.ellipse(x, y + ry * 0.15, rx, ry, 0, 0.1 * Math.PI, 0.9 * Math.PI)
@@ -486,30 +514,34 @@ export function pathScene(): SceneDef {
         toro(g, lx, ly, lh, true)
         soft(g, lx, shoreY() - 2, W * 0.14, H * 0.025, T.lantern, T.dark ? 0.4 : 0.28)
         glow.style.transform = `translate3d(${(lx + gut).toFixed(1)}px,${(ly - lh * 0.62).toFixed(1)}px,0)`
+        glow.style.setProperty('--gs', `${(lh * 2.6).toFixed(0)}px`)
         refl.style.transform = `translate3d(${(lx + gut).toFixed(1)}px,${(ly + 2).toFixed(1)}px,0)`
         refl.style.height = `${Math.max(14, shoreY() - ly + 16).toFixed(1)}px`
       }
 
-      function paintNear(W: number, H: number, gut: number) {
+      function paintNear(W: number, gut: number) {
         // the gate's two dark posts cutting the lower corners, lit warm on their inner edges, a dark band where bound
-        const g = near.g, G = geo!
+        const g = near.g
         near.clear()
+        if (!geo?.wide) return // a phone frame is too narrow for the gate: its light alone says it is behind us
         g.translate(gut, 0)
         const pw = clamp(W * 0.05, 26, 64)
         for (const side of [-1, 1]) {
           const x = side < 0 ? -gut * 0.3 - pw * 0.15 : W + gut * 0.3 - pw * 0.85
-          const top = H * (G.wide ? 0.5 : 0.66)
+          const top = -12 // the posts rise out of the top of the frame
           const wood = T.dark ? mix(T.stepLo, T.umbra, 0.62) : mix(T.umbra, T.stepLo, 0.45)
           const gr = g.createLinearGradient(x, 0, x + pw, 0)
           const inner = side < 0 ? 1 : 0
           gr.addColorStop(inner ? 0 : 1, rgba(mix(wood, T.umbra, 0.45)))
           gr.addColorStop(0.5, rgba(wood))
-          gr.addColorStop(inner ? 0.9 : 0.1, rgba(mix(wood, T.lantern, T.dark ? 0.4 : 0.3)))
-          gr.addColorStop(inner ? 1 : 0, rgba(mix(wood, T.lantern, T.dark ? 0.55 : 0.4)))
+          gr.addColorStop(inner ? 0.9 : 0.1, rgba(mix(wood, T.lantern, T.dark ? 0.16 : 0.14)))
+          gr.addColorStop(inner ? 1 : 0, rgba(mix(wood, T.lantern, T.dark ? 0.32 : 0.24)))
           g.fillStyle = gr
           g.beginPath()
-          g.moveTo(x + pw * 0.1, top)
-          g.lineTo(x + pw * 0.9, top)
+          // seen from above, a post leans out toward the frame's edge as it rises
+          const lean = -side * pw * 0.35
+          g.moveTo(x + pw * 0.1 + lean, top)
+          g.lineTo(x + pw * 0.9 + lean, top)
           g.lineTo(x + pw * 1.04, HB + 2)
           g.lineTo(x - pw * 0.04, HB + 2)
           g.closePath()
@@ -520,8 +552,9 @@ export function pathScene(): SceneDef {
             inkLine(g, [[gx, top + r() * 40], [gx + (r() - 0.5) * 3, HB]], 0.9, T.umbra, 0.35, 0.2, 0.1, 0.3)
           }
           inkLine(g, [[x + (inner ? pw * 0.96 : pw * 0.04), top + 8], [x + (inner ? pw * 1.02 : -pw * 0.02), HB]], 1.4, T.dark ? T.lantern : T.card, T.dark ? 0.45 : 0.6, 0.1, 0.05, 0.4)
+          // two iron bands where the post is bound
           g.fillStyle = rgba(T.umbra, 0.5)
-          g.fillRect(x, top + (HB - top) * 0.32, pw * 1.02, 5)
+          for (const f of [0.52, 0.56]) g.fillRect(x + lean * (1 - f), HB * f, pw * 1.02, 4)
         }
       }
 
@@ -530,9 +563,12 @@ export function pathScene(): SceneDef {
       function stone(i: number, w: number, hh: number): SVGElement {
         const id = `t34p-s${i}-${Math.round(w)}`
         const r = rng(3470 + i * 7)
-        const cx = w / 2, cy = hh * 0.42, rx = w * 0.47, ry = hh * 0.36
-        const face = slab(cx, cy, rx, ry, 3470 + i)
-        const side = slab(cx + 1, cy + hh * 0.15, rx * 0.99, ry * 1.04, 3470 + i)
+        // river stones, no two alike: some worn round, some split slabs; longer, rounder, thicker
+        const rx = w * (0.45 + r() * 0.04), ry = hh * (0.31 + r() * 0.07), cx = w / 2 + (r() - 0.5) * w * 0.05, cy = hh * 0.42
+        const worn = i % 3 !== 1
+        const th = hh * (0.13 + r() * 0.08)
+        const face = worn ? blob(cx, cy, rx, ry, 3470 + i, 0.08, 20) : slab(cx, cy, rx, ry, 3470 + i)
+        const side = worn ? blob(cx + 1, cy + th, rx * 0.99, ry * 1.04, 3470 + i, 0.08, 20) : slab(cx + 1, cy + th, rx * 0.99, ry * 1.04, 3470 + i)
         const stop = (o: number, c: string, a = 1) => svg('stop', { offset: o, style: `stop-color:var(${c});stop-opacity:${a}` })
         const moss = r() < 0.75 ? blob(cx - rx * (0.1 + r() * 0.4), cy - ry * 0.35, rx * (0.18 + r() * 0.14), ry * (0.22 + r() * 0.14), 3480 + i, 0.35, 14) : ''
         const moss2 = r() < 0.5 ? blob(cx + rx * (0.2 + r() * 0.3), cy - ry * 0.45, rx * 0.1, ry * 0.14, 3490 + i, 0.4, 10) : ''
@@ -564,9 +600,9 @@ export function pathScene(): SceneDef {
             svg('path', { class: 't34p-ridge', d: stroke(ridge, 1.1, 0.3, 0.3, 0.1) }),
             // the gate's warm light on the near lip, the moon's rim on the far one, an ink edge on the shaded side
             svg('path', { class: 't34p-warm', d: stroke(Array.from({ length: 11 }, (_, k) => {
-              const a = Math.PI * (0.14 + k * 0.072)
+              const a = Math.PI * (0.3 + k * 0.03)
               return [cx + Math.cos(a) * rx * 0.97, cy + hh * 0.06 + Math.sin(a) * ry] as Pt
-            }), 2.2, 0.3, 0.3, 0.1) }),
+            }), 1.6, 0.4, 0.4, 0.1) }),
             svg('path', { class: 't34p-rim', d: stroke(Array.from({ length: 9 }, (_, k) => {
               const a = Math.PI * (1.35 + k * 0.07)
               return [cx + Math.cos(a) * rx * 0.96, cy + Math.sin(a) * ry * 0.96] as Pt

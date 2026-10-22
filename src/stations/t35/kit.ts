@@ -38,6 +38,7 @@ export function gdefs() {
     s('linearGradient', { id: 't35k-wall', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, '--wash', 0.9), stop(1, '--wash', 0.6)),
     // the turn of a rolled cylinder: shade, a lit band, shade
     s('linearGradient', { id: 't35k-cyl', x1: 0, y1: 0, x2: 1, y2: 0 }, stop(0, '--umbra', 0.55), stop(0.3, '--umbra', 0.05), stop(0.42, '--moon', 0.18), stop(0.6, '--umbra', 0.08), stop(1, '--umbra', 0.6)),
+    s('linearGradient', { id: 't35k-cylh', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, '--umbra', 0.45), stop(0.28, '--moon', 0.16), stop(0.45, '--umbra', 0.02), stop(0.75, '--umbra', 0.2), stop(1, '--umbra', 0.62)),
     s('radialGradient', { id: 't35k-cool', cx: 0.42, cy: 0.4, r: 0.66 }, stop(0, '--moon'), stop(0.55, '--mist', 0.9), stop(1, '--mist', 0.7)),
     s('radialGradient', { id: 't35k-seal', cx: 0.42, cy: 0.4, r: 0.66 }, stop(0, '--lantern'), stop(0.6, '--vermilion'), stop(1, '--vermilion', 0.85)),
     // feathered masks: things fade out softly toward their edges

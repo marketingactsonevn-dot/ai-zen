@@ -2,7 +2,7 @@ import './credit.css'
 import { fill, h } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
-import { clamp, onSize, rng, stableHeight, type Pt } from '../../ui/part2/ink'
+import { clamp, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './content'
@@ -152,7 +152,7 @@ function compose(W: number, H: number): Comp {
       tips: [1.5, 1.3, -0.9],
     }
   }
-  const S = Math.min(H * 0.34, W * 0.5)
+  const S = Math.min(H * 0.34, W * 0.46)
   return {
     wide, S, jx: W * 0.52, jy: H * 0.6, S1: S * 2.2, jy1: H * 0.34 + S * 2.2 * Math.cos(E1),
     bench: [-1.05, 1.05, -0.45, 0.62], ZW: 0.8, win: [0.42, 0.88, 1.16, 1.52],
@@ -264,7 +264,7 @@ export function creditScene(ctx: SceneCtx) {
       glaze, wood,
       wallWarm: t.dark ? mix(mix(t.paper, t.rockLo, 0.45), t.lantern, 0.1) : mix(mix(t.paper2, t.stepMid, 0.35), t.lantern, 0.2),
       wallCool: t.dark ? mix(t.paper, t.wash, 0.35) : mix(mix(t.paper2, t.water, 0.45), t.wash, 0.12),
-      floor: t.dark ? mix(t.paper, t.umbra, 0.55) : mix(t.paper2, t.stepMid, 0.45),
+      floor: t.dark ? mix(mix(t.paper, t.stepLo, 0.4), t.umbra, 0.3) : mix(t.paper2, t.stepMid, 0.5),
       inner: (t.dark ? [mix(t.rockLo, t.umbra, 0.45), mix(t.rockMid, t.lantern, 0.12)] : [mix(t.rockLo, t.wash, 0.45), mix(t.rockMid, t.lantern, 0.18)]) as C4[],
       clay: mix(mix(t.stepMid, t.lantern, 0.42), t.vermilion, 0.12),
       clayLit: mix(mix(t.stepHi, t.lantern, 0.5), t.vermilion, 0.08),
@@ -432,9 +432,19 @@ export function creditScene(ctx: SceneCtx) {
     g.fillRect(w0x - fw * 1.6, w0y + fw * 0.4, ww + fw * 3.2, fw * 0.9) // sill
     yield
     // floor, deeper toward us, warm under the lamp
-    g.fillStyle = vgrad(g, wb, HB, [[0, pal.floor, 1], [1, mix(pal.floor, T.umbra, 0.4), 1]])
+    g.fillStyle = vgrad(g, wb, HB, [[0, mix(pal.floor, T.umbra, 0.25), 1], [0.2, pal.floor, 1], [1, mix(pal.floor, T.umbra, 0.3), 1]])
     g.fillRect(0, wb, W, HB - wb)
-    soft(g, ...pt(-1.0, FLOOR, 0.6), S * 1.8, S * 0.5, T.lantern, T.dark ? 0.12 : 0.12)
+    // floorboards running toward us (their seams meet far behind the wall), a cross seam here and there
+    for (let x = -4.2, i = 0; x < 4.4; x += 0.36, i++) {
+      const a = pt(x, FLOOR, -c.ZW), b = pt(x * 1.0, FLOOR, 3)
+      inkLine(g, [a, b], 1.3, T.umbra, T.dark ? 0.5 : 0.22, 0.02, 0.02, 0.6)
+      inkLine(g, [[a[0] + 1.5, a[1] + 1], [b[0] + 2.5, b[1]]], 0.8, T.dark ? T.ink3 : T.card, T.dark ? 0.06 : 0.3, 0.1, 0.1, 0.3)
+      if (i % 3 === 1) {
+        const z = -0.4 + ((i * 7) % 5) * 0.5
+        inkLine(g, [pt(x, FLOOR, z), pt(x + 0.36, FLOOR, z)], 1, T.umbra, T.dark ? 0.4 : 0.18, 0.05, 0.05, 0.5)
+      }
+    }
+    soft(g, ...pt(-1.0, FLOOR, 0.7), S * 2.2, S * 0.6, T.lantern, T.dark ? 0.2 : 0.16)
     // the moonbeam from the window into the jar's mouth: a soft column with dust standing in it
     beam(g, 1)
     grain(g, 0, 0, W, HB, T.dark ? 0.06 : 0.08)
@@ -510,7 +520,8 @@ export function creditScene(ctx: SceneCtx) {
     soft(g, fx0, fy0, (top[1][0] - top[0][0]) * 0.55, S * 0.22, T.umbra, T.dark ? 0.5 : 0.3)
     for (const [lx, lz] of [[x0 + 0.12, z1 - 0.06], [x1 - 0.12, z1 - 0.06], [x0 + 0.16, z0 + 0.08], [x1 - 0.16, z0 + 0.08]]) {
       const a = pt(lx - 0.045, -AP, lz), b = pt(lx + 0.045, -AP, lz), cc = pt(lx + 0.045, FLOOR, lz), d = pt(lx - 0.045, FLOOR, lz)
-      g.fillStyle = vgrad(g, a[1], d[1], [[0, lz < 0 ? mix(pal.wood[0], T.umbra, 0.4) : pal.wood[0], 1], [1, T.umbra, T.dark ? 0.9 : 0.6]])
+      soft(g, (cc[0] + d[0]) / 2, cc[1], S * 0.09, S * 0.025, T.umbra, T.dark ? 0.85 : 0.5)
+      g.fillStyle = vgrad(g, a[1], d[1], [[0, lz < 0 ? mix(pal.wood[0], T.umbra, 0.4) : pal.wood[0], 1], [1, mix(pal.wood[0], T.umbra, 0.55), 1]])
       poly(g, [a, b, cc, d])
       g.fill()
     }
@@ -1183,18 +1194,30 @@ export function creditScene(ctx: SceneCtx) {
   }
 
   /** before the first scoop: dots from the chosen ladle's cup up into the jar's mouth */
+  // H2: a faint curved ink arrow (the gesture, like the guide's), from over the ladle toward the jar's mouth; built once
+  // per layout / ladle (drawFx can run in frames)
+  let arrow: Path2D | null = null, arrowKey = ''
   function hintArc(g: CanvasRenderingContext2D) {
-    const a = pt(...ladleRest(pick[0])), b = pt(0, 1.05, 0)
-    const m: Pt = [(a[0] + b[0]) / 2, Math.min(a[1], b[1]) - S * 0.35]
-    for (let i = 1; i < 14; i++) {
-      const t = i / 14, u = 1 - t
-      const x = u * u * a[0] + 2 * u * t * m[0] + t * t * b[0], y = u * u * a[1] + 2 * u * t * m[1] + t * t * b[1]
-      g.fillStyle = rgba(T.lantern, (T.dark ? 0.55 : 0.7) * Math.sin(Math.PI * t))
-      g.beginPath()
-      g.arc(x, y, 1.6, 0, 6.3)
-      g.fill()
+    const key = `${pick[0]}|${S}|${jx}|${jy}`
+    if (key !== arrowKey) {
+      arrowKey = key
+      const a = pt(...ladleRest(pick[0])), b = pt(0, 1.05, 0)
+      const m: Pt = [(a[0] + b[0]) / 2, Math.min(a[1], b[1]) - S * 0.35]
+      const q = (t: number): Pt => {
+        const u = 1 - t
+        return [u * u * a[0] + 2 * u * t * m[0] + t * t * b[0], u * u * a[1] + 2 * u * t * m[1] + t * t * b[1]]
+      }
+      const pts = Array.from({ length: 12 }, (_, i) => q(0.22 + (i / 11) * 0.58))
+      const [ex, ey] = pts[11], [px, py] = pts[9]
+      const d = Math.hypot(ex - px, ey - py) || 1, ux = (ex - px) / d, uy = (ey - py) / d, hl = S * 0.06
+      arrow = new Path2D(stroke(pts, Math.max(1.6, S * 0.012), 0.5, 0.15, 0.2) +
+        [-1, 1].map((sd) => stroke([[ex - ux * hl - uy * hl * 0.6 * sd, ey - uy * hl + ux * hl * 0.6 * sd], [ex, ey]], Math.max(1.4, S * 0.01), 0.3, 0.05, 0.3)).join(''))
     }
+    g.fillStyle = rgba(T.dark ? T.moon : T.ink, T.dark ? 0.32 : 0.3)
+    g.fill(arrow!)
   }
+
+
 
   // ── ladles: a bamboo dipper (light model) and a deep wooden ladle (heavy model)
   const LAD = [{ rc: 0.075, hc: 0.1, lh: 0.64, hw: 0.013 }, { rc: 0.13, hc: 0.115, lh: 0.68, hw: 0.022 }]
@@ -1363,17 +1386,30 @@ export function creditScene(ctx: SceneCtx) {
       el.style.height = `${hh.toFixed(1)}px`
       at(el, [(a[0] + b[0]) / 2 - w / 2, (a[1] + b[1]) / 2 - hh / 2])
     }
+    hitBox = box
     for (let k = 0; k < 2; k++) {
       const p = ladleRest(k), L = LAD[k]
       box(hits[k], pt(p[0] - L.rc * 1.3, p[1] - L.hc, p[2]), pt(p[0] + L.rc * 1.3, p[1] + L.lh * 0.95, p[2]))
-      const rr = c.rings[k], R = k ? 0.33 : 0.25
-      box(hits[2 + k], pt(rr[0] - R, rr[1] - 0.05, rr[2] + R), pt(rr[0] + R, rr[1] + 0.05, rr[2] - R))
+      placeHoop(k)
       box(hits[4 + k], pt(c.glass[0] + (k ? 0.01 : -0.16), c.glass[1], c.glass[2]), pt(c.glass[0] + (k ? 0.16 : -0.01), c.glass[1] + 0.3, c.glass[2]))
     }
     box(look, pt(-ro(1) * 1.25, 1.08, 0), pt(ro(1) * 1.25, 0.9, 0), 48)
     box(jarLabel, pt(-0.5, 0.95, 0), pt(0.5, 0.05, 0), 10)
   }
 
+  let hitBox: ((el: HTMLElement, a: Pt, b: Pt, min?: number) => void) | null = null
+  /** a hoop's hit box and name: lying on the bench (its name written inside it) or fitted on the jar's lip (name beside) */
+  function placeHoop(k: number) {
+    const c = cp
+    if (!c || !hitBox) return
+    const on = ringTo[k] === 1
+    hits[2 + k].classList.toggle('on-lip', on)
+    if (on) hitBox(hits[2 + k], pt(-ro(1) - 0.06, 1.04, 0), pt(-ro(1) + 0.12, 0.92, 0))
+    else {
+      const rr = c.rings[k], R = k ? 0.33 : 0.25
+      hitBox(hits[2 + k], pt(rr[0] - R, rr[1] - 0.05, rr[2] + R), pt(rr[0] + R, rr[1] + 0.05, rr[2] - R))
+    }
+  }
   function drawAll() {
     if (!cp) return
     drawBack()
@@ -1454,6 +1490,8 @@ export function creditScene(ctx: SceneCtx) {
       ringTo[i] = 1
       ringTo[1 - i] = 0
       if (still) (ringU[i] = 1), (ringU[1 - i] = 0)
+      placeHoop(0)
+      placeHoop(1)
     }
     if (k === 2) glassP[1] = i ? 1 : 0
     markHits()
@@ -1543,7 +1581,7 @@ export function creditScene(ctx: SceneCtx) {
       G.ok(cost)
       facts.replaceChildren(ctx.fact(F(K.facts[0]), 'p'))
       tips.hidden = false
-      if (cp?.wide) setTips(1)
+      root.classList.add('done')
       ctx.insight(F(K.insight), K.detail)
     } else if (!pair) {
       aim()

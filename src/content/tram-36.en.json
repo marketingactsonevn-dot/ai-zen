@@ -113,6 +113,9 @@
       "facePrompt": "Face ‘{piece}’: pick a paper strip",
       "specDecode": "spec.md = the sheet that describes the game; AI reads it before writing code",
       "guess": "AI guesses: ???",
+      "turnHint": "drag to turn",
+      "extraPrompt": "spec.md has two blank lines: tap each one to fill it",
+      "extraAria": "Fill in the line “{key}”",
       "extra": [
         [
           "Not in the first version",
@@ -190,18 +193,34 @@
       "dragPrompt": "Drag inside the frame to try this brush",
       "otherFlat": "Now pick a flat brush: Canvas, p5.js or Phaser",
       "other3d": "Now pick the Three.js or Godot / Unity brush",
+      "triedTpl": "Tried {n}/{total} pens",
       "askNote": "Copy this line to AI as it is; the odd words are tool names, AI knows them."
     },
     "carve": {
       "label": "Carve one cut at a time, save each step",
-      "art": "Ink painting: the wood shop at night, seen at table height. A cypress block on its carving stand stands against the open door onto the moonlit lake, the moon behind it rimming its outline in light. Seven stones in a row along the bench's front edge are the seven steps; each one placed right is a stroke of the mallet — chips fly and the block becomes one stage more of a fish: chalk lines, rough cut, split tail, fins, scales, eye. The work lamp can be dragged so its warm light rakes the wood; the code lies rolled up on the bench.",
-      "lampAria": "Work lamp: drag left or right, or use the arrow keys, to light the wood",
-      "prompt": "Tap the stones in the order you'd do them",
-      "pathAria": "A seven-stone path for making a web game",
-      "stoneAria": "Stone: {label}",
-      "slotAria": "Empty spot {n} on the path",
-      "keys": "Tap in turn, or use number keys 1 to 7.",
-      "done": "The path is lit. Open your take-away card.",
+      "art": "Ink painting: the wood shop at night, seen at table height. A cypress block on its carving stand stands against the open door onto the moonlit lake, the moon behind it rimming its outline in light; chalk lines on the wood mark where the next cut goes. A wooden mallet with a worn handle lies on the bench. Each blow of the mallet adds one feature: chips fly and fall to the bench, the block becomes one stage more of a fish, and a checkpoint pebble drops into the wooden tray along the bench's edge. On the fourth blow the block cracks; touch the third pebble and the wood heals. A wooden board leaning on the wall carries the prompt in chalk; the code lies rolled up on the bench.",
+      "malletAria": "Mallet: strike to add the feature “{name}”",
+      "prompt": "Strike the mallet to add one feature",
+      "features": [
+        { "name": "Pond", "ask": "Build the skeleton from spec.md: a night pond on Canvas 2D. No score or sound yet." },
+        { "name": "Koi", "ask": "Add exactly one thing: a red-and-white koi swimming slowly. Keep everything else the same." },
+        { "name": "Controls", "ask": "Make the koi follow your finger or the mouse." },
+        { "name": "Dry leaves", "ask": "Add slowly falling dry leaves; touching one costs the koi 1 heart." },
+        { "name": "Falling moon", "ask": "Drop shards of moon; each one the koi catches is +1 point." },
+        { "name": "End of round", "ask": "After 30 seconds or when the hearts run out, show the score." }
+      ],
+      "strikePrompt": "Strike the mallet to add: {name}",
+      "decode": "Checkpoint = a saved version of the game (a git commit); if something breaks, you can go back.",
+      "crackChalk": "After adding dry leaves, the koi stopped moving.",
+      "crackPrompt": "Touch checkpoint 3 to go back — or strike again to keep carving",
+      "spreadChalk": "Carving on over the break: the crack spreads.",
+      "spreadPrompt": "Touch checkpoint 3 to go back",
+      "revertChalk": "Back at checkpoint 3: the wood is whole again. Ask again, with evidence: “After adding dry leaves the koi stopped moving. Console error: [PASTE].”",
+      "redoPrompt": "Strike the mallet to add again: {name}",
+      "trayCount": "Checkpoints {n}/{total}",
+      "pebbleAria": "Checkpoint {n}: {name}",
+      "backAria": "Checkpoint {n}: {name} — touch to go back to it",
+      "sheetAria": "Open the code scroll: sample code, sample prompts and take-away cards",
       "promptLabel": "Sample prompts",
       "steps": {
         "steps": [
@@ -325,6 +344,8 @@
       "art": "Ink painting: an empty round stone basin floating in the dark over its soft shadow. Above it hang seven sheets of tracing paper, apart, each one layer of the game — water, koi, the leading hand, falling moon, score and hearts, the sound of water, fireflies — its name on the front edge. Touch the lit sheet: it sinks into the basin with a ring of ripples, the prompt for that layer is written beside the basin and the pond comes one step more alive. With all seven, the view rises over the basin and the real game plays in its water.",
       "prompt": "Tap the glowing sheet to drop it into the basin",
       "layerAria": "Layer {n}: {name}",
+      "layerTag": "{n} · {name}",
+      "countTpl": "Layer {n}/{total}",
       "promptLabel": "The prompt that made this layer",
       "layers": [
         {
@@ -465,6 +486,8 @@
       },
       "detail": "The koi game runs in the browser with no accounts or payments, so the risk is low. When an app has logins, money or user data, ask someone who knows code to review it.",
       "question": "Vibe coding: ask AI to write the code, run it, never read the code.",
+      "focusTop": "Surface",
+      "focusBottom": "Bottom (code)",
       "focusPrompt": "Drag up and down on the pond to look down at the code on the bottom",
       "left": "{n} people left"
     }

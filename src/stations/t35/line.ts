@@ -35,14 +35,17 @@ export function lineScene(ctx: SceneCtx) {
   const trail = s('path', { class: 't35d-trail' })
   cord.append(trail)
   const boat = h('div', { class: 't35d-boat', 'aria-hidden': 'true' }, s('svg', { viewBox: '-20 -14 40 24' },
-    s('circle', { class: 't35d-boat-glow', r: 13, fill: 'url(#t35k-pool)' }),
-    s('path', { class: 't35d-boat-paper', d: 'M-12 2L12 2L7 7L-7 7Z M-8 2L-1 -9L-1 2Z M1 2L1 -7L7 2Z' })))
+    s('circle', { class: 't35d-boat-glow', r: 15, fill: 'url(#t35k-pool)' }),
+    // an origami boat: hull folds (lit side, shaded side), two sails, the crease down the middle
+    s('path', { class: 't35d-boat-paper', d: 'M-13 1L0 1L-1 7L-8 7Z M-1 -10L-1 1L-8 1Z' }),
+    s('path', { class: 't35d-boat-fold', d: 'M0 1L13 1L8 7L-1 7Z M1 -8L1 1L7 1Z' }),
+    s('path', { class: 't35d-boat-crease', d: 'M-13 1L13 1M0 1L-1 7' })))
   const lamps = stations.map((st, i) => {
     const art = s('svg', { class: 't35d-lamp-art', 'aria-hidden': 'true' })
     // the name on the lantern's paper (or its number, where the paper is small), and on a tanzaku under it
     const btn = h('button', { class: 't35d-lamp', type: 'button', 'aria-pressed': 'false', 'aria-label': fill(K.stationAria, { n: i + 1, name: st.name }) },
       art, h('span', { class: 't35d-on', 'aria-hidden': 'true' }, h('span', { class: 't35d-on-name' }, st.name), h('span', { class: 't35d-on-n' }, String(i + 1))),
-      h('span', { class: 't35d-name t35k-paper', 'aria-hidden': 'true' }, st.name))
+      h('span', { class: 't35d-name', 'aria-hidden': 'true' }, st.name))
     // keyboard only (a click with detail 0): a pointer tap is placed by geometry in the hall (see tapAt), since the near
     // lanterns' boxes and tanzaku overlap the far ones
     btn.addEventListener('click', (e) => e.detail === 0 && join(i))
@@ -53,8 +56,10 @@ export function lineScene(ctx: SceneCtx) {
     })
     const spot = h('button', { class: 't35d-spot', type: 'button', 'aria-pressed': 'false', 'aria-label': fill(K.stoneAria, { name: st.name }), onClick: () => tapStone(i) },
       s('svg', { viewBox: '-30 -14 60 24', 'aria-hidden': 'true' },
-        // a faint chalk mark on the boards where a stone may go
-        s('path', { class: 't35d-chalk', d: stroke(Array.from({ length: 22 }, (_, q) => { const a = (q / 20) * Math.PI * 2 + i; return [Math.cos(a) * 21 * (1 + Math.sin(q * 2.1 + i) * 0.05), Math.sin(a) * 6.5] as Pt }), 1.8, 0.2, 0.25, 0.3) }),
+        // a shallow stone socket set into the boards where a stone may go: its dark hollow, a lit far lip
+        s('ellipse', { class: 't35d-socket', cx: 0, cy: 0, rx: 24, ry: 8 }),
+        s('ellipse', { class: 't35d-hollow', cx: 0, cy: 1, rx: 19, ry: 5.5 }),
+        s('path', { class: 't35d-chalk', d: stroke(Array.from({ length: 13 }, (_, q) => { const a = Math.PI * (1.05 + (q / 12) * 0.9); return [Math.cos(a) * 22, Math.sin(a) * 7.2] as Pt }), 1.8, 0.2, 0.25, 0.3) }),
         s('g', { class: 't35d-seal' },
           s('ellipse', { class: 't35k-contact', cx: 2, cy: 4, rx: 20, ry: 5 }),
           s('path', { class: 't35d-seal-body', d: blob(0, -3, 17, 9, 3560 + i, 0.14, 14), filter: 'url(#ink-rough)' }),
@@ -74,11 +79,13 @@ export function lineScene(ctx: SceneCtx) {
   const release = h('button', { class: 't35d-release t35k-paper', type: 'button', onClick: () => launch() }, K.release)
   const note = h('div', { class: 't35d-note t35k-halo' })
   const doorFact = h('div', { class: 't35d-doorfact t35k-paper' })
+  const said = h('p', { class: 'visually-hidden', 'aria-live': 'polite' })
   const root = h('div', { class: `t35 t35d${still ? ' still' : ''}` },
     h('p', { class: 'visually-hidden' }, K.art), hall, cord, board, table,
     h('ol', { class: 't35d-line', 'aria-label': K.lineAria }, ...lamps.map((l) => h('li', null, l.btn, l.spot))),
-    bowl, boat, release, ghost, doorFact, note)
+    bowl, boat, release, ghost, doorFact, note, said)
   ctx.art.append(root)
+  ctx.art.classList.add('t35d-art')
   ctx.prompt(K.prompt)
 
   // ── guide: a dot on the next lantern (then the bowl, then the boat), a faint ink line to the next lantern, two counts
@@ -103,6 +110,16 @@ export function lineScene(ctx: SceneCtx) {
     }
   }
   const par = drift(ctx, root, [[hall, 5, 3]])
+  // H7: standing still 6 s, the lantern waiting to be joined sways on its cord
+  const idle = () => {
+    if (ctx.reduced || lit.size >= N) return
+    const a = lamps[lit.size].art
+    a.classList.remove('sway')
+    void a.getBoundingClientRect() // restart the sway
+    a.classList.add('sway')
+  }
+  ctx.el.addEventListener('p2:idle', idle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', idle))
 
   let W = 0, H = 0, vx = 0, vy = 0, port = false
   let door: [number, number, number, number] = [0, 0, 0, 0]
@@ -351,9 +368,10 @@ export function lineScene(ctx: SceneCtx) {
     root.classList.remove('ready')
     say('')
     dot.done()
-    doorFact.replaceChildren(h('p', { class: 't35d-done' }, K.done), ctx.fact(F(K.facts[0]), 'p'))
+    // one block of words at the end: the insight; the guide's fact goes into its details
+    said.textContent = K.done
     ctx.chime('ok')
-    ctx.insight(F(K.insight), K.detail)
+    ctx.insight(F(K.insight), [F(K.facts[0]), K.detail])
   }
 
   /** The cord: catenaries from each lit lantern to the next lit one, and from the last on to the door. */
@@ -389,7 +407,7 @@ export function lineScene(ctx: SceneCtx) {
     // the floor: planks running to the door, two tones, seams, butt joints; warm pools under the lanterns
     const r = rng(3600)
     const tone = ['', '']
-    let seams = '', joints = ''
+    let seams = '', joints = '', grain = ''
     const nb = port ? 9 : 13
     for (let k = 0; k < nb; k++) {
       const u0 = -1 + (2 * k) / nb, u1 = -1 + (2 * (k + 1)) / nb
@@ -398,6 +416,11 @@ export function lineScene(ctx: SceneCtx) {
       for (let j = 0; j < 3; j++) {
         const d = r() * 0.8
         joints += stroke([pt(u0, -1, d), pt(u1, -1, d)], Math.max(0.6, 2 * sc(d)), 0.05, 0.05, 0.4)
+      }
+      // the grain: two long wavering lines down each board
+      for (let j = 0; j < 2; j++) {
+        const uu = u0 + (u1 - u0) * (0.3 + j * 0.4 + (r() - 0.5) * 0.1)
+        grain += stroke(Array.from({ length: 9 }, (_, q) => pt(uu + Math.sin(q * 1.3 + k + j) * 0.006, -1, q * 0.1)), 1.1, 0.1, 0.4, 0.2)
       }
     }
     // the walls: shoji panels between dark posts over a dark wainscot; the ceiling dark with beams
@@ -437,6 +460,8 @@ export function lineScene(ctx: SceneCtx) {
       const warm = d < 0.28
       pools.push(
         s('ellipse', { class: `t35d-pool${warm ? '' : ' cool'}`, 'data-i': String(i), cx: f1(fx), cy: f1(fy), rx: f1(halfW * k * 0.55), ry: f1(floorY * k * 0.16), fill: `url(#${warm ? 't35d-warm' : 't35d-cool'})` }),
+        // the lantern's reflection on the polished boards: a soft streak running toward us
+        s('ellipse', { class: `t35d-pool refl${warm ? '' : ' cool'}`, 'data-i': String(i), cx: f1(fx), cy: f1(fy + floorY * k * 0.12), rx: f1(halfW * k * 0.05), ry: f1(floorY * k * 0.2), fill: `url(#${warm ? 't35d-warm' : 't35d-cool'})` }),
         s('ellipse', { class: `t35d-pool wall${warm ? '' : ' cool'}`, 'data-i': String(i), cx: f1(pt(side, 0.3, d)[0]), cy: f1(pt(side, 0.3, d)[1]), rx: f1(halfW * k * 0.12), ry: f1(ceilY * k * 0.75), fill: `url(#${warm ? 't35d-warm' : 't35d-cool'})` }))
     })
     // washi fibres for the shoji (one small tile)
@@ -470,7 +495,7 @@ export function lineScene(ctx: SceneCtx) {
       s('path', { class: 't35d-wains', d: wains }),
       s('path', { class: 't35d-ceil', d: ceil }),
       s('path', { class: 't35d-floor f0', d: tone[0] }), s('path', { class: 't35d-floor f1', d: tone[1] }),
-      ink(seams, 't35d-seam', 'dry'), ink(joints, 't35d-seam', 'rough'),
+      ink(seams, 't35d-seam', 'dry'), ink(joints, 't35d-seam', 'rough'), ink(grain, 't35d-grain', 'dry'),
       // the moonlight spills in through the door along the floor
       s('path', { class: 't35d-moonfloor', d: `M${P([dx + dW * 0.06, dy + dH])}L${P([dx + dW * 0.94, dy + dH])}L${P(pt(0.42, -1, 0.15))}L${P(pt(-0.32, -1, 0.15))}Z`, fill: 'url(#t35k-beam)' }),
             ...pools,
@@ -504,12 +529,13 @@ export function lineScene(ctx: SceneCtx) {
       const onBody = !port && rr >= 40
       l.btn.classList.toggle('named', onBody)
       Object.assign(body.style, { left: `${f1(bw / 2 - rr * 0.78)}px`, width: `${f1(rr * 1.56)}px`, top: `${f1(cordLen + rr * 0.32)}px`, height: `${f1(rr * 1.86)}px`, fontSize: `${f1(onBody ? clamp(rr * 0.25, 13, 17) : clamp(rr * 0.55, 12, 18))}px` })
-      const sw = clamp(110 * k, 40, 100)
+      const sw = clamp(110 * k, 52, 104)
       Object.assign(l.spot.style, { left: `${f1(fx - sw / 2)}px`, top: `${f1(fy - sw * 0.24)}px`, width: `${f1(sw)}px`, height: `${f1(sw * 0.4)}px` })
       l.btn.classList.toggle('right', side > 0)
+      l.btn.classList.toggle('cool', d > 0.26)
       const tag = l.btn.querySelector<HTMLElement>('.t35d-name')!
       const tw = port ? Math.min(W * 0.4, 150) : clamp(W * 0.085, 104, 124)
-      const cx = side < 0 ? clamp(x, tw / 2 + W * 0.02, vx - dW * 0.6 - tw / 2) : clamp(x, vx + dW * 0.6 + tw / 2, W * 0.98 - tw / 2)
+      const cx = side < 0 ? clamp(x, tw / 2 + W * 0.05, vx - dW * 0.6 - tw / 2) : clamp(x, vx + dW * 0.6 + tw / 2, W * 0.95 - tw / 2)
       Object.assign(tag.style, { width: `${f1(tw)}px`, left: `${f1(cx - (x - bw / 2))}px` })
     })
     names()
@@ -537,9 +563,10 @@ export function lineScene(ctx: SceneCtx) {
     const bwid = clamp(W * (port ? 0.2 : 0.1), 72, 130)
     Object.assign(bowl.style, { left: `${f1(tx + tw2 * 0.56)}px`, top: `${f1(ty + th2 * 0.06 - bwid * 0.3)}px`, width: `${f1(bwid)}px` })
     const l0 = lamps[0]
-    Object.assign(board.style, port
-      ? { left: `${f1(W * 0.04)}px`, top: `${f1(H * 0.015)}px`, maxWidth: `${f1(W * 0.6)}px` }
-      : { left: `${f1(Math.max(W * 0.03, l0.x - l0.r * 1.6))}px`, top: `${f1(Math.max(4, l0.y - l0.r * 1.25 - (l0.y - l0.r * 1.25 - 0) * 0.62))}px`, maxWidth: `${f1(W * 0.22)}px` })
+    // the task hangs on two cords from the ceiling beam over the middle of the hall
+    void l0
+    const beamY = pt(0, 1, 0.1)[1]
+    Object.assign(board.style, { left: `${f1(vx)}px`, top: `${f1(Math.max(4, beamY + (port ? 8 : 14)))}px`, maxWidth: `${f1(W * (port ? 0.62 : 0.3))}px` })
     Object.assign(note.style, port
       ? { left: `${f1(tw2 * 0.86)}px`, right: '3%', top: 'auto', bottom: `${f1(H * 0.02)}px` }
       : { left: `${f1(W * 0.34)}px`, right: '12%', top: 'auto', bottom: `${f1(H * 0.03)}px` })

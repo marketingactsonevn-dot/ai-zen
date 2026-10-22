@@ -96,10 +96,13 @@ export function marketScene(ctx: SceneCtx) {
     return b
   })
   const lanGroup = h('div', { class: 't34m-lans', role: 'group', 'aria-label': K.taskGroup }, ...lans)
+  // H2: while a lantern is carried, a few rings of ripple on the water lead from it toward the nearest stall
+  const trail = h('div', { class: 't34m-trail', 'aria-hidden': 'true' }, ...Array.from({ length: 5 }, () => h('i')))
+  const rip = [...trail.children] as HTMLElement[]
   // the warning on a board nailed to the bow's lamp post
   const vol = h('div', { class: 't34m-vol' }, h('p', null, K.volatile))
   group.append(...stalls.map((s) => s.el), say)
-  wraps[3].append(vol, lanGroup)
+  wraps[3].append(trail, vol, lanGroup)
   const veil = h('div', { class: 't34m-veil', 'aria-hidden': 'true' })
   const view = h('div', { class: 't34m-view' }, wraps[0], wraps[1], wraps[2], group, wraps[3], veil)
   const root = h('div', { class: 't34 t34m' }, h('p', { class: 'visually-hidden' }, K.art), h('p', { class: 'visually-hidden', id: keysId }, K.keys), view)
@@ -176,12 +179,18 @@ export function marketScene(ctx: SceneCtx) {
       return g
     })
     // the boat: bow tip low in the middle, its lamp post; the floating lanterns in an arc round it, smaller as they go out
-    bow = [W * 0.5, H * (wide ? 0.93 : 0.985)]
-    post = H * (wide ? 0.2 : 0.14)
-    if (wide) {
-      const R = W * 0.19
-      home = [182, 236, 304, 358].map((a) => [bow[0] + R * Math.cos((a * Math.PI) / 180), bow[1] + 4 + R * 0.24 * Math.sin((a * Math.PI) / 180)] as Pt)
-    } else home = [[W * 0.1, H * 1.035], [W * 0.27, H * 0.965], [W * 0.73, H * 0.965], [W * 0.9, H * 1.035]]
+    bow = [W * 0.5, H * (wide ? 0.93 : 0.9)]
+    post = H * (wide ? 0.2 : 0.12)
+    board = wide ? (() => {
+      const [x, y] = gunAt(-1, 0.62)
+      return [x, y - H * 0.05] as Pt
+    })() : [W * 0.86, H * 0.585]
+    root.style.setProperty('--t34m-h', `${H.toFixed(0)}px`)
+    // the floating lanterns: a loose curve from beside the bow out across the water, near ones big, far ones small
+    // (kept low on the water: the words that come under a stall must not land on a lantern still waiting)
+    // (clear gaps between them: no lantern may hide another's words)
+    if (wide) home = [[W * 0.2, H * 0.97], [W * 0.335, H * 0.885], [W * 0.6, H * 0.965], [W * 0.765, H * 0.93]]
+    else home = [[W * 0.1, H * 1.0], [W * 0.3, H * 0.94], [W * 0.7, H * 0.94], [W * 0.9, H * 1.0]]
     placeDom()
     const d = dprFor(ctx, 1.75)
     L.forEach((l) => l.size(W, HB, d))
@@ -193,11 +202,22 @@ export function marketScene(ctx: SceneCtx) {
 
   // ── guide (H1–H6): a dot on the next lantern, dashed rings at the stalls' feet while one is carried, a count on the bow
   const G = guide(ctx)
-  const next = G.dot(lans[0], { dir: [0, -1] })
+  const dots = lans.map((b) => G.dot(b, { dir: [0, -1] }))
   const rings = stalls.map((st) => G.drop(st.foot))
   rings.forEach((r) => r.el.classList.add('t34m-ring'))
   const lift = (on: boolean) => rings.forEach((r) => r.lift(on))
-  const count = G.count(K.count, lans.length, () => [bow[0], bow[1] - post * 0.08])
+  const count = G.count(K.count, lans.length, () => [bow[0], bow[1] + (wide ? H * 0.075 : H * 0.07)])
+  count.el.classList.add('t34m-count') // carved into the bow's foredeck
+  // H7: after 6 s still, the next lantern drifts a little out from the boat toward the stalls and back
+  const idle = () => {
+    const b = lans.find((_, k) => !placed.has(k))
+    if (!b || still || busy || picked >= 0) return
+    b.classList.remove('nudge')
+    void b.offsetWidth
+    b.classList.add('nudge')
+  }
+  ctx.el.addEventListener('p2:idle', idle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', idle))
 
   function* paintSteps() {
     yield* paintFar()
@@ -251,7 +271,7 @@ export function marketScene(ctx: SceneCtx) {
     // the lake: it mirrors the sky at the horizon, deep toward the boat (by day a mid grey-blue, darker than the sky)
     g.fillStyle = vgrad(g, hz, HB, T.dark
       ? [[0, mix(T.water, T.mist, 0.18), 1], [0.2, mix(T.water, T.mist, 0.06), 1], [1, T.water, 1]]
-      : [[0, mix(T.water, T.paper, 0.5), 1], [0.22, mix(T.water, T.paper, 0.2), 1], [0.7, T.water, 1], [1, mix(T.water, T.wash, 0.12), 1]])
+      : [[0, mix(T.water, T.paper, 0.3), 1], [0.22, mix(T.water, T.paper, 0.1), 1], [0.7, T.water, 1], [1, mix(T.water, T.wash, 0.16), 1]])
     g.fillRect(0, hz, W, HB - hz)
     mist(g, T, W * 0.5, hz + 3, W * 0.75, H * 0.025, T.dark ? 1.3 : 0.6)
     yield
@@ -296,9 +316,10 @@ export function marketScene(ctx: SceneCtx) {
       if (st.far) {
         // the far stall sinks into the mist: contrast × 0.4, no ink edges
         sg.globalCompositeOperation = 'source-atop'
-        sg.fillStyle = rgba(T.dark ? mix(T.paper, T.mist, 0.35) : mix(T.paper, T.mist, 0.4), T.dark ? 0.55 : 0.6)
+        sg.fillStyle = rgba(T.dark ? mix(T.paper, T.mist, 0.35) : mix(T.paper, T.mist, 0.4), T.dark ? 0.4 : 0.45)
         sg.fillRect(bx0, by0, bx1 - bx0, by1 - by0)
         sg.globalCompositeOperation = 'source-over'
+        for (const [x, y, r] of st.lamps) paperLantern(sg, x, y, r, T.lantern, true)
       }
       yield
       // the reflection: rows of the sprite flipped about the waterline, broken by the ripples, fading down
@@ -380,11 +401,12 @@ export function marketScene(ctx: SceneCtx) {
       g.fillStyle = rgba(c)
       g.fillRect(x - ww / 2, top, ww, bot - top)
     }
-    for (const x of [x0 + 0.1 * s, x1 - 0.1 * s]) {
+    if (wide) for (const x of [x0 + 0.1 * s, x1 - 0.1 * s]) {
       const a = back([x, deck]), b = back([x, yw])
       stilt(a[0], a[1], b[1] + 2, 0.08 * s * kb, mix(wood[0], T.umbra, 0.3))
     }
     const sideFace = (y0: number, y1: number, c: string | CanvasGradient) => {
+      if (!wide) return
       const a: Pt = [edge, y0], b: Pt = [edge, y1]
       poly(g, [a, back(a), back(b), b])
       g.fillStyle = c
@@ -464,9 +486,11 @@ export function marketScene(ctx: SceneCtx) {
     g.fillRect(x0 - o * 0.6, eave - 0.04 * s, x1 - x0 + o * 1.2, 0.1 * s)
     const e = st.side > 0 ? R : L
     const tp: Pt = [st.side > 0 ? x1 - 0.1 * s : x0 + 0.1 * s, top]
-    poly(g, [e, back(e), back(tp), tp])
-    g.fillStyle = rgba(mix(wood[0], T.wash, 0.35))
-    g.fill()
+    if (wide) {
+      poly(g, [e, back(e), back(tp), tp])
+      g.fillStyle = rgba(mix(wood[0], T.wash, 0.35))
+      g.fill()
+    }
     g.beginPath()
     g.moveTo(L[0] - 0.12 * s, L[1] - 0.16 * s)
     g.quadraticCurveTo(L[0] + 0.1 * s, L[1] + 0.08 * s, L[0] + 0.5 * s, L[1] + 0.04 * s)
@@ -486,6 +510,11 @@ export function marketScene(ctx: SceneCtx) {
     // the eave line in ink, the ridge with a moonlit edge (an ink edge by day)
     inkLine(g, [[L[0] - 0.12 * s, L[1] - 0.16 * s], [L[0] + 0.5 * s, L[1] + 0.06 * s], [R[0] - 0.5 * s, R[1] + 0.06 * s], [R[0] + 0.12 * s, R[1] - 0.16 * s]], Math.max(1.4, 0.035 * s), T.dark ? T.wash : T.ink, T.dark ? 0.8 : 0.75, 0.1, 0.1, 0.5)
     inkLine(g, [[x0, top], [x1, top]], Math.max(2, 0.07 * s), T.dark ? T.wash : T.ink, 0.9, 0.05, 0.05, 0.7)
+    // the moon's rim down the roof's slope on its side (the moon stands right of the hub, left of the far stall)
+    const mxs = W * (wide ? 0.69 : 0.2)
+    const rs = st.cx < mxs ? 1 : -1
+    const re: Pt = rs > 0 ? R : L
+    inkLine(g, [[rs > 0 ? x1 - 0.1 * s : x0 + 0.1 * s, top + 0.02 * s], [(rs > 0 ? x1 : x0) + rs * 0.12 * s, (top + eave) / 2], [re[0] + rs * 0.1 * s, re[1] - 0.14 * s]], Math.max(1.2, 0.03 * s), T.dark ? T.moon : T.card, T.dark ? 0.5 : 0.75, 0.15, 0.15, 0.3)
     inkLine(g, [[x0 + 0.1 * s, top - 0.03 * s], [x1 - 0.1 * s, top - 0.03 * s]], Math.max(1, 0.02 * s), T.dark ? T.moon : T.card, T.dark ? 0.45 : 0.6, 0.1, 0.1, 0.3)
   }
   /** a glowing paper lantern (chōchin) in tone c */
@@ -511,20 +540,26 @@ export function marketScene(ctx: SceneCtx) {
     g.fillRect(x - r * 0.42, y + r * 1.04, r * 0.84, r * 0.2)
   }
 
+  /** where the price board sits (its bottom centre): desk on a short post on the bow's left gunwale, phone on a mooring
+   *  pole standing in the water on the right */
+  let board: Pt = [0, 0]
+  const spreadOf = () => (wide ? W * 0.21 : W * 0.48) // half-width where the gunwales leave the frame
+  /** a point on the gunwale of side sd (−1 left, 1 right), t = 0 at the stem … 1 where it leaves the frame */
+  const gunAt = (sd: number, t: number, o = 0): Pt => {
+    const sp = spreadOf()
+    return [bow[0] + sd * (sp * Math.pow(t, 0.72) + Math.sin(Math.PI * t) * sp * 0.08 + o * t), bow[1] + (HB + 10 - bow[1]) * t]
+  }
   // ── near layer: the boat's bow (the darkest, sharpest thing, cut by the bottom edge), its lamp post
   function paintBow() {
     const l = L[3], g = l.g
     l.clear()
     const [bx, by] = bow
     const bot = HB + 10
-    const spread = wide ? W * 0.21 : W * 0.48 // half-width where the gunwales leave the frame
+    const spread = spreadOf()
     const wood = T.dark ? mix(T.stepLo, T.umbra, 0.6) : mix(T.umbra, T.stepLo, 0.42)
     const deep = T.dark ? mix(T.umbra, T.wash, 0.3) : mix(T.umbra, T.wash, 0.2)
     const rimC = T.dark ? T.moon : T.ink
-    const gun = (sd: number, o = 0): Pt[] => Array.from({ length: 15 }, (_, i) => {
-      const t = i / 14
-      return [bx + sd * (spread * Math.pow(t, 0.72) + Math.sin(Math.PI * t) * spread * 0.08 + o * t), by + (bot - by) * t]
-    })
+    const gun = (sd: number, o = 0): Pt[] => Array.from({ length: 15 }, (_, i) => gunAt(sd, i / 14, o))
     /** a strip along pts, w0 wide at the stem growing to w1 at the frame (nearer = thicker) */
     const strip = (pts: Pt[], w0: number, w1: number, dy = 0): Pt[] => {
       const n = pts.length - 1
@@ -573,6 +608,28 @@ export function marketScene(ctx: SceneCtx) {
       g.fill()
       inkLine(g, gp.map(([x, y], i) => [x - sd * 0.5, y - (cap * 0.8 + cap * 2.6 * (i / 14)) / 2] as Pt).slice(0, 13), Math.max(1.2, cap * 0.32), rimC, T.dark ? 0.6 : 0.85, 0.15, 0.1, 0.2)
     }
+    if (!wide) {
+      // the mooring pole the board is nailed to: out of the water on the right, its broken reflection under it
+      const [fx, fy] = board, wl = H * 0.665, pw = 5
+      g.fillStyle = vgrad(g, fy - 10, wl, [[0, mix(wood, T.lantern, 0.2), 1], [1, deep, 1]])
+      g.fillRect(fx - pw / 2, fy - 10, pw, wl - fy + 10)
+      inkLine(g, [[fx + pw * 0.3, fy], [fx + pw * 0.3, wl - 2]], 1, rimC, T.dark ? 0.4 : 0.6, 0.1, 0.1, 0.3)
+      for (let d = 2; d < H * 0.07; d += 3) {
+        if (noise(d * 0.2, 7) < 0.35) continue
+        g.fillStyle = rgba(T.dark ? mix(wood, T.moon, 0.2) : T.wash, (T.dark ? 0.4 : 0.3) * (1 - d / (H * 0.07)))
+        g.fillRect(fx - pw / 2 + (noise(d * 0.3, 3) - 0.5) * 3, wl + d, pw, 1.6)
+      }
+      soft(g, fx, wl, 9, 2.5, T.umbra, 0.5)
+    }
+    if (wide) {
+      // the short post the price board is nailed to, stepped into the left gunwale
+      const [fx, fy] = gunAt(-1, 0.62)
+      const pw = 6
+      g.fillStyle = vgrad(g, board[1] - 12, fy, [[0, mix(wood, T.lantern, 0.3), 1], [1, deep, 1]])
+      g.fillRect(fx - pw / 2, board[1] - 12, pw, fy - board[1] + 12)
+      inkLine(g, [[fx + pw * 0.3, board[1]], [fx + pw * 0.3, fy - 2]], 1, rimC, T.dark ? 0.4 : 0.6, 0.1, 0.1, 0.3)
+      soft(g, fx, fy + 2, 10, 3, T.umbra, 0.6)
+    }
     // the stem: a little raised prow at the tip, moonlit on its edge
     poly(g, [[bx - cap * 1.1, by + 8], [bx - cap * 0.2, by - cap * 2.2], [bx + cap * 0.5, by - cap * 2.4], [bx + cap * 1.1, by + 8]])
     g.fillStyle = rgba(deep)
@@ -617,7 +674,8 @@ export function marketScene(ctx: SceneCtx) {
     placed.forEach((si, ti) => setLan(ti, dockAt(si, ti), dockScale(si)))
     // the board: a small plank on the bow's right gunwale, out of the way of the task (phone: hung on the near stall's corner post)
     const hub = geo[0]
-    vol.style.transform = wide ? `translate3d(${px(bow[0] + W * 0.25)},${px(bow[1] + H * 0.08)},0)` : `translate3d(${px(Math.min(W * 0.78, hub.cx + hub.w / 2 + W * 0.2))},${px(hub.eave + hub.s * 0.15)},0)`
+    void hub
+    vol.style.transform = `translate3d(${px(board[0])},${px(board[1])},0) translateY(-100%)`
   }
   /** words on the water just under the stall they speak about (phone: the open water band between the near stall and the boat) */
   function placeSay() {
@@ -635,7 +693,7 @@ export function marketScene(ctx: SceneCtx) {
     say.style.transform = `translate3d(${px(x)},${px(Math.max(st.yw + st.s * 0.42 + 6, sayBelow + 10))},0)`
     say.style.width = px(sw)
   }
-  const homeScale = (i: number) => clamp(1 - (bow[1] - home[i][1]) / (bow[1] - hz) * 0.5, 0.88, 1)
+  const homeScale = (i: number) => clamp(1 - ((bow[1] - home[i][1]) / (bow[1] - hz)) * 0.6, 0.76, 1)
   const setLan = (i: number, p: Pt, sc: number) => (lans[i].style.transform = `translate3d(${p[0].toFixed(1)}px,${p[1].toFixed(1)}px,0) translate(-50%,-100%) scale(${sc.toFixed(3)})`)
   const dockScale = (si: number) => clamp(geo[si].s / (wide ? 150 : 90), 0.36, 0.85)
   function dockAt(si: number, ti: number): Pt {
@@ -646,10 +704,28 @@ export function marketScene(ctx: SceneCtx) {
     return [st.cx - st.w * 0.3 + j * st.w * 0.2, st.yw + st.s * 0.42]
   }
 
+  /** H2: rings of ripple from the carried lantern at p toward the nearest stall's footing; null hides them */
+  function showTrail(p: Pt | null) {
+    trail.classList.toggle('on', !!p)
+    if (!p || !geo.length) return
+    let best = geo[0], bd = Infinity
+    for (const st of geo) {
+      const d = Math.hypot(st.cx - p[0], st.yw - p[1])
+      if (d < bd) (bd = d), (best = st)
+    }
+    rip.forEach((el, j) => {
+      const t = (j + 1) / (rip.length + 1)
+      const x = p[0] + (best.cx - p[0]) * t, y = p[1] + (best.yw + best.s * 0.15 - p[1]) * t
+      const k = clamp((y - hz) / (bow[1] - hz), 0.25, 1)
+      el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) scale(${k.toFixed(2)})`
+      el.style.setProperty('--d', `${(j * 0.18).toFixed(2)}s`)
+    })
+  }
   // ── interaction
   function pick(i: number) {
     if (busy) return
     picked = i
+    showTrail(i >= 0 ? home[i] : null)
     if (i >= 0) stalls.forEach((x) => x.el.classList.remove('open'))
     lans.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)))
     root.classList.toggle('is-picking', i >= 0)
@@ -738,14 +814,14 @@ export function marketScene(ctx: SceneCtx) {
       // a ghost lantern drifts toward the hub, which could have done it too (dimly), and fades
       for (const f of others) ghost(ti, si, K.stalls.findIndex((x) => x.id === f))
       const nx = lans.findIndex((_, k) => !placed.has(k))
+      dots[ti].done()
       if (nx >= 0) {
-        next.at(lans[nx])
         ctx.prompt(fill(K.left, { n: lans.length - placed.size }))
         lans[nx].focus({ preventScroll: true })
       } else {
-        next.done()
         rings.forEach((r) => r.done())
-        S.btn.focus({ preventScroll: true })
+        // one block of words at the end: the insight; the water's words fade
+        later(() => say.classList.remove('on'), 2600)
         ctx.insight(F(K.insight), K.detail)
       }
     }, 1150)
@@ -781,6 +857,27 @@ export function marketScene(ctx: SceneCtx) {
     }, 1900)
   }
 
+  /** the lanterns still waiting drift aside from the one being carried, so it never covers their words (null: back) */
+  function makeWay(i: number, p: Pt | null) {
+    const bw = wide ? 136 : 70, bh = wide ? 96 : 84
+    const hit = (a: Pt, c: Pt) => Math.abs(a[0] - c[0]) < bw && Math.abs(a[1] - c[1]) < bh
+    lans.forEach((b, k) => {
+      if (k === i || placed.has(k)) return
+      let off: Pt = [0, 0]
+      const h0 = home[k]
+      if (p && hit(h0, p)) {
+        // the smallest step aside (either way across, or up / down) that lands clear of the carried one and the others
+        const ox = h0[0] - p[0], oy = h0[1] - p[1]
+        const cands: Pt[] = ([[(ox < 0 ? -1 : 1) * (bw - Math.abs(ox) + 4), 0], [(ox < 0 ? 1 : -1) * (bw + Math.abs(ox) + 4), 0], [0, (oy < 0 ? -1 : 1) * (bh - Math.abs(oy) + 4)], [0, (oy < 0 ? 1 : -1) * (bh + Math.abs(oy) + 4)]] as Pt[])
+          .sort((u, v) => Math.hypot(...u) - Math.hypot(...v))
+        off = cands.find(([dx, dy]) => {
+          const q: Pt = [h0[0] + dx, h0[1] + dy]
+          return !hit(q, p) && lans.every((_, j) => j === k || j === i || placed.has(j) || !hit(q, home[j]))
+        }) ?? [0, 0]
+      }
+      b.style.translate = off[0] || off[1] ? `${off[0].toFixed(0)}px ${off[1].toFixed(0)}px` : ''
+    })
+  }
   // drag a lantern across the water: it shrinks as it goes out; let go over a stall to float it there
   function grab(i: number, e: PointerEvent) {
     if (busy || placed.has(i) || e.button) return
@@ -802,6 +899,8 @@ export function marketScene(ctx: SceneCtx) {
       const p = at(ev)
       const k = clamp((p[1] - hz) / (bow[1] - hz), 0.36, 1.05) * homeScale(i)
       setLan(i, p, k)
+      showTrail(p)
+      makeWay(i, p)
     }
     const up = (ev: PointerEvent) => {
       b.removeEventListener('pointermove', move)
@@ -810,6 +909,8 @@ export function marketScene(ctx: SceneCtx) {
       b.classList.remove('drag')
       if (!moved) return
       lift(false)
+      showTrail(null)
+      makeWay(i, null)
       b.dataset.dragged = '1'
       setTimeout(() => delete b.dataset.dragged)
       const [x, y] = [ev.clientX - r0.left, ev.clientY - r0.top]

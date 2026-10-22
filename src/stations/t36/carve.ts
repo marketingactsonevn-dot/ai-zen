@@ -1,18 +1,23 @@
 import './carve.css'
-import { h, s } from '../../core/dom'
+import { fill, h, s } from '../../core/dom'
 import { L } from '../../core/content'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { cssVar, onPrefs } from '../../core/prefs'
-import { clamp, onSize, rng, stableHeight, type Pt } from '../../ui/part2/ink'
-import { stepPath } from '../../ui/part2/steps'
+import { clamp, onSize, rng, type Pt } from '../../ui/part2/ink'
 import { codeScroll } from '../../ui/part2/code'
-import type { CodeScroll, StepPath } from '../../ui/part2/types'
+import { findTakeaway, takeaway } from '../../ui/part2/takeaway'
+import { guide, type Mark } from '../../ui/part2/guide'
+import type { CodeScroll, Takeaway } from '../../ui/part2/types'
 import type { SceneCtx } from '../types'
 import { C } from './content'
-import { F, f1, gdefs } from './kit'
+import { F, f1, gdefs, zonedHeight } from './kit'
 
 const K = C.scenes.carve
+const FEAT = K.features
+const N = FEAT.length
+/** the feature that breaks the game (dry leaves): the block cracks, checkpoint BUG (the one before it) heals it */
+const BUG = 3
 const TAU = Math.PI * 2
 type G = CanvasRenderingContext2D
 interface Pal { paper: string; paper2: string; card: string; wash: string; umbra: string; ink: string; moon: string; mist: string; water: string; rockLo: string; rockMid: string; rockHi: string; stepLo: string; stepMid: string; stepHi: string; lantern: string; moss: string; dark: boolean }
@@ -47,7 +52,7 @@ const CUT: UV[] = [[-0.5, -0.22], [-0.42, -0.82], [-0.1, -0.99], [0.24, -0.84], 
 /** fins (n ≥ 5): dorsal, pectoral, pelvic, anal — each [root a, tip, root b] */
 const FINS: [UV, UV, UV][] = [[[-0.12, -0.9], [0.08, -1.3], [0.27, -0.6]], [[-0.25, 0.5], [-0.12, 1.08], [-0.1, 0.62]], [[0.04, 0.76], [0.14, 1.08], [0.15, 0.72]], [[0.24, 0.5], [0.33, 0.78], [0.33, 0.3]]]
 
-/** one geometry for the whole room, from the scene's size (stepPath's callbacks and the layout both read it) */
+/** one geometry for the whole room, from the scene's size */
 interface Geo {
   W: number; H: number; A: number; wide: boolean
   back: number; front: number; edge: number
@@ -55,63 +60,64 @@ interface Geo {
   blk: { x: number; y: number; w: number; h: number }
   foot: number
   rail: [number, number, number]
-  slate: [number, number, number, number]
+  lampX: number
+  board: [number, number, number, number]
   scroll: [number, number, number]
   sheet: [number, number, number, number]
-  stone: Pt
-  slots: Pt[]; pile: Pt[]
+  /** the mallet lying on the bench: centre x, y, length */
+  mallet: [number, number, number]
+  /** the checkpoint tray along the front edge: x0, x1, top, foot */
+  tray: [number, number, number, number]
+  hollows: Pt[]
 }
 function geom(W: number, H: number, A: number): Geo {
   const wide = W / H > 1.1
+  const hollowsOf = (t: [number, number, number, number]) => {
+    const [x0, x1, y0, y1] = t, th = y1 - y0
+    return Array.from({ length: N }, (_, k) => [x0 + ((x1 - x0) * (k + 0.5)) / N + (k - 2.5) * 1.5, y0 + th * 0.27] as Pt)
+  }
   if (wide) {
-    const back = H * 0.52, front = H * 0.86
-    const bw = clamp(W * 0.24, 200, 360)
-    const st: Pt = [clamp(W * 0.105, 118, 150), 58]
-    const step = st[0] + 14, x0 = W / 2 - step * 3
-    const p0 = W * 0.205 + st[0] / 2, pstep = st[0] + 8, py = back + st[1] / 2 + 6
+    const back = H * 0.5, front = H * 0.86
+    const bw = clamp(W * 0.3, 240, 440)
+    const tray: [number, number, number, number] = [W * 0.2, W * 0.62, front - H * 0.095, front - H * 0.014]
     return {
-      W, H, A, wide, back, front, edge: Math.min(A, front + H * 0.07),
-      door: [W * 0.56, H * 0.03, W * 0.36, back - H * 0.03],
-      blk: { x: W * 0.74, y: H * 0.29, w: bw, h: bw * 0.36 }, foot: back + H * 0.045,
-      rail: [W * 0.14, W * 0.52, H * 0.022],
-      slate: [W * 0.025, back + 4 - H * 0.38, clamp(W * 0.165, 150, 230), H * 0.38],
-      scroll: [W * 0.03, back + H * 0.03, clamp(W * 0.13, 120, 180)],
+      W, H, A, wide, back, front, edge: Math.min(A, front + H * 0.075),
+      door: [W * 0.5, H * 0.03, W * 0.42, back - H * 0.03],
+      blk: { x: W * 0.705, y: H * 0.27, w: bw, h: bw * 0.36 }, foot: back + H * 0.05,
+      rail: [W * 0.12, W * 0.48, H * 0.022], lampX: W * 0.36,
+      board: [W * 0.03, back - H * 0.36, clamp(W * 0.18, 170, 260), H * 0.36],
+      scroll: [W * 0.045, back + H * 0.045, clamp(W * 0.12, 110, 170)],
       sheet: [W * 0.02, H * 0.03, Math.min(W * 0.44, 540), front - H * 0.05],
-      stone: st,
-      slots: Array.from({ length: 7 }, (_, i) => [x0 + i * step + Math.sin(i * 2.3) * 5, front - 6 - st[1] / 2 + Math.sin(i * 1.7) * 3] as Pt),
-      pile: Array.from({ length: 7 }, (_, k) => (k < 4 ? [p0 + k * pstep, py + (k % 2) * 3] : [p0 + (k - 4 + 0.5) * pstep, py + st[1] * 0.95 + (k % 2) * 2]) as Pt),
+      mallet: [W * 0.4, back + (front - back) * 0.38, clamp(W * 0.17, 170, 250)],
+      tray, hollows: hollowsOf(tray),
     }
   }
-  const back = H * 0.5, front = H * 0.9
-  const bw = W * 0.56
-  const st: Pt = [(W - 15) / 4, 42]
-  const row = (n: number, y: number, k0: number, arc: number) => Array.from({ length: n }, (_, i) => {
-    const t = n > 1 ? i / (n - 1) : 0.5
-    return [W / 2 + (i - (n - 1) / 2) * (st[0] + 5), y - Math.sin(t * Math.PI) * arc + ((k0 + i) % 2) * 1.5] as Pt
-  })
+  const back = H * 0.47, front = H * 0.9
+  const bw = W * 0.6
+  const tray: [number, number, number, number] = [W * 0.04, W * 0.96, front - H * 0.085, front - H * 0.012]
   return {
-    W, H, A, wide, back, front, edge: Math.min(A, H * 0.935),
-    door: [W * 0.42, H * 0.025, W * 0.56, back - H * 0.025],
-    blk: { x: W * 0.68, y: H * 0.25, w: bw, h: bw * 0.36 }, foot: back + H * 0.035,
-    rail: [W * 0.06, W * 0.4, 3],
-    slate: [W * 0.03, back + 2 - H * 0.25, W * 0.36, H * 0.25],
-    scroll: [W * 0.035, back + H * 0.03, W * 0.3],
+    W, H, A, wide, back, front, edge: Math.min(A, H * 0.955),
+    door: [W * 0.4, H * 0.02, W * 0.58, back - H * 0.02],
+    blk: { x: W * 0.665, y: H * 0.235, w: bw, h: bw * 0.36 }, foot: back + H * 0.035,
+    rail: [W * 0.04, W * 0.36, 3], lampX: W * 0.2,
+    board: [W * 0.025, back - H * 0.31, W * 0.33, H * 0.31],
+    scroll: [W * 0.05, back + H * 0.045, W * 0.28],
     sheet: [0, back - H * 0.02, W, H - back + H * 0.02],
-    stone: st,
-    slots: [...row(4, H * 0.77, 0, 7), ...row(3, H * 0.855, 1, 5)],
-    pile: [...row(4, H * 0.6, 1, 0), ...row(3, H * 0.685, 0, 0)],
+    mallet: [W * 0.56, back + (front - back) * 0.42, W * 0.42],
+    tray, hollows: hollowsOf(tray),
   }
 }
 
 /**
- * Scene 3 — the wood shop at night, eye level with the bench (art direction §4 t36 `carve`): a block of hinoki on its
- * carving horse stands in the open door, the moonlit lake behind it drawing a bright rim round each stage of the
- * carving; the work lamp, hung on a rail at the top left, lays warm light on the near face, the bench and the wall's
- * tools. Seven river stones of many shapes lie on the bench; set in a row along its front edge, each right one is a
- * stroke of the mallet — chips fly, the block becomes more fish (log → squared blank chalked → sawn → rough fish → split
- * tail → fins → bent, scaled → eye and barbels). The step's sample prompt is chalked on the slate leaning by the bench.
- * The code lies rolled up on the bench, tied: it unrolls into a sheet, as does the card at the end. stepPath does the
- * steps' logic.
+ * Scene 3 — the wood shop at night, eye level with the bench (audit 36-3: "a carving round with checkpoints"): a block of
+ * hinoki on its carving horse stands in the open door, the moonlit lake behind it drawing a bright rim round each stage
+ * of the carving; chalk on the wood marks the next cut. The work lamp hangs from the beam and lays warm light on the
+ * near face, the board and the mallet. Each blow of the mallet adds one feature: chips fly and fall round the horse's
+ * feet, the block becomes one stage more of a fish, and a pebble — a checkpoint, a saved version — drops into the tray
+ * along the bench's front edge. The fourth feature (dry leaves) cracks the block: strike on and the crack spreads; touch
+ * checkpoint 3 and the wood is whole again, ready for the feature to be asked again with evidence. The prompt of each cut
+ * is chalked on a wooden board leaning on the wall. The code lies rolled up and tied on the bench: it unrolls into a
+ * sheet with the sample prompts and the take-away cards.
  */
 export function carveScene(ctx: SceneCtx) {
   gdefs()
@@ -119,25 +125,28 @@ export function carveScene(ctx: SceneCtx) {
     const st = (o: number, c: string) => s('stop', { offset: o, style: `stop-color:var(${c})` })
     document.getElementById('p2-defs')!.append(s('defs', { id: 't36c-defs' }, s('linearGradient', { id: 't36c-stone', x1: 0.2, y1: 0, x2: 0.5, y2: 1 }, st(0, '--step-hi'), st(0.55, '--step-mid'), st(1, '--step-lo'))))
   }
-  const stableH = stableHeight(ctx, [F(K.insight)])
+  const stableH = zonedHeight(ctx, [F(K.insight)])
   const low = ctx.quality === 'low'
   let P = readPal()
-  let stage = 0
-  let lampT = 0.3 // 0 = the lamp far left (raking), 1 = right above the block (frontal)
+  let saved = 0 // checkpoints in the tray
+  let crack = 0 // 0 whole · 1 cracked · 2 the crack spread
+  let fixed = false // went back once: the feature is asked again with evidence
+  let over = false
+  const stageOf = () => saved + 1 + (crack ? 1 : 0)
   let geo: Geo | null = null
   const geoOf = (W: number, H: number) => (geo && geo.W === W && geo.H === H ? geo : (geo = geom(W, H, ctx.art.clientHeight)))
 
-  // ── layers under the step path: the painted shop, the lamp's light (wall glow, cone, pool), the carving, chips
+  // ── layers: the painted shop, the lamp's light (wall glow, cone, pool), the carving, chips; objects on top
   const shop = h('canvas', { class: 't36c-shop', 'aria-hidden': 'true' })
   const wallGlow = h('i', { class: 't36c-wglow', 'aria-hidden': 'true' })
   const cone = h('i', { class: 't36c-cone', 'aria-hidden': 'true' })
   const pool = h('i', { class: 't36c-pool', 'aria-hidden': 'true' })
   const cvA = h('canvas', { class: 't36c-carve', 'aria-hidden': 'true' }), cvB = h('canvas', { class: 't36c-carve', 'aria-hidden': 'true' })
-  const warmA = h('canvas', { class: 't36c-warm', 'aria-hidden': 'true' }), warmB = h('canvas', { class: 't36c-warm', 'aria-hidden': 'true' })
+  const warm = h('canvas', { class: 't36c-warm', 'aria-hidden': 'true' })
   const chipCv = h('canvas', { class: 't36c-chips', 'aria-hidden': 'true' })
-  const carving = h('div', { class: 't36c-block' }, cvA, cvB, warmA, warmB, chipCv)
-  const lampEl = h('div', { class: 't36c-lamp', role: 'slider', tabindex: '0', 'aria-label': K.lampAria, 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '30' },
-    s('svg', { viewBox: '0 0 60 140', 'aria-hidden': 'true' },
+  const carving = h('div', { class: 't36c-block' }, cvA, cvB, warm, chipCv)
+  const lampEl = h('div', { class: 't36c-lamp', 'aria-hidden': 'true' },
+    s('svg', { viewBox: '0 0 60 140' },
       s('path', { class: 't36c-cord', d: 'M30 0V64' }),
       s('rect', { class: 't36c-hook', x: 24, y: 0, width: 12, height: 7, rx: 2 }),
       s('ellipse', { class: 't36c-glow', cx: 30, cy: 104, rx: 30, ry: 24 }),
@@ -145,91 +154,152 @@ export function carveScene(ctx: SceneCtx) {
       s('path', { class: 't36c-shade-hi', d: 'M17 92Q19 77 29 72', fill: 'none' }),
       s('ellipse', { class: 't36c-mouth', cx: 30, cy: 98, rx: 19, ry: 4.4 }),
       s('ellipse', { class: 't36c-bulb', cx: 30, cy: 98.6, rx: 8, ry: 3.4 })))
-  if (low) ['role', 'tabindex', 'aria-label', 'aria-valuemin', 'aria-valuemax', 'aria-valuenow'].forEach((a) => lampEl.removeAttribute(a)), lampEl.setAttribute('aria-hidden', 'true')
-  const back = h('div', { class: `t36 t36c${low ? ' low' : ''}` }, shop, wallGlow, cone, pool, carving, lampEl)
-  ctx.art.append(back)
 
-  // ── the steps (stepPath): a row of stones along the bench's front edge; the loose ones lie at its back
-  let placedAt = 0
-  // stepPath sizes its stones for its own layouts; ours are smaller, so centres are shifted to keep the visible stone where we want it
-  const vis = (g: { size: Pt }, c: Pt, st: Pt): Pt => [c[0] + (g.size[0] - st[0]) / 2, c[1] + (g.size[1] - st[1]) / 2]
-  const off = stepPath(K.steps as StepPath, {
-    label: K.label, prompt: K.prompt, insight: F(K.insight), detail: K.detail,
-    cards: K.steps.cards, // with the frame prompt: the feature and the bug-report prompts (the cuts in between)
-    art: () => [],
-    slots: (g) => {
-      const o = geoOf(g.w, g.h)
-      return o.slots.map((c) => vis(g, c, o.stone))
-    },
-    pile: (g) => {
-      const o = geoOf(g.w, g.h)
-      return o.pile.map((c) => vis(g, c, o.stone))
-    },
-    piece: (i, g) => stonePiece(g.w, g.h, i),
-    onPlace: (k) => {
-      placedAt = performance.now()
-      chalk(k)
-      strike(k + 1)
-    },
-  }).mount(ctx)
-  if (off) ctx.onCleanup(off)
-  const path = ctx.art.querySelector<HTMLElement>('.p2s')!
-  path.classList.add('t36c-on')
-
-  // the slate leaning on the bench: a step's sample prompt is chalked on it (and a wrong stone's hint)
-  const slEye = h('p', { class: 't36c-sl-eye' }, K.promptLabel)
-  const slText = h('p', { class: 't36c-sl-text' })
-  const slHint = h('p', { class: 't36c-sl-hint', 'aria-hidden': 'true' })
-  const slate = h('div', { class: 't36c-slate', 'aria-live': 'polite' }, slEye, slText, slHint)
-  function chalk(i: number) {
-    slEye.textContent = `${i + 1} · ${K.promptLabel}`
-    slText.textContent = K.prompts[i]
-    slHint.textContent = ''
-    slate.classList.remove('wrong', 'new')
-    void slate.offsetWidth
-    slate.classList.add('new')
-  }
-  // a wrong stone: stepPath writes its hint in the note; the slate repeats it in chalk (the note stays for screen readers)
-  const note = path.querySelector<HTMLElement>('.p2s-note')
-  if (note) {
-    const mo = new MutationObserver(() => {
-      if (!note.classList.contains('wrong')) return
-      slHint.textContent = note.textContent
-      slate.classList.add('wrong')
-    })
-    mo.observe(note, { attributes: true, attributeFilter: ['class'], childList: true, characterData: true, subtree: true })
-    ctx.onCleanup(() => mo.disconnect())
-  }
-
-  // the code, rolled up and tied on the bench: it unrolls into a sheet (code + the seven sample prompts)
+  // the board leaning on the wall: the decode at first, then each cut's prompt in chalk
+  const bEye = h('p', { class: 't36c-sl-eye' })
+  const bText = h('p', { class: 't36c-sl-text' }, K.decode)
+  const board = h('div', { class: 't36c-board' }, h('i', { class: 't36c-bnail', 'aria-hidden': 'true' }), bEye, bText)
+  // the mallet lying on the bench
+  const mallet = h('button', { class: 't36c-mallet', type: 'button', 'aria-label': fill(K.malletAria, { name: FEAT[0].name }), onClick: () => strike() }, malletArt())
+  // the tray: six hollows, a pebble for each checkpoint, the count carved in its front
+  const count = h('p', { class: 't36c-count', 'aria-live': 'off' }, fill(K.trayCount, { n: 0, total: N }))
+  const pebbles = FEAT.map((f, k) => {
+    const b = h('button', { class: 't36c-peb', type: 'button', hidden: true, 'aria-label': fill(K.pebbleAria, { n: k + 1, name: f.name }), onClick: () => touchPebble(k) }, pebbleArt(k))
+    return b
+  })
+  // the code, rolled up and tied on the bench: it unrolls into a sheet (code, the sample prompts, the take-away cards)
   const close = h('button', { class: 't36n-close', type: 'button' }, L.close)
+  const cards = [K.steps.takeaway, ...K.steps.cards].map((id) => findTakeaway(id)).filter((c): c is Takeaway => !!c)
   const sheet = h('div', { class: 't36c-sheet t36c-unroll', role: 'region', 'aria-label': K.codeAria, hidden: true }, close,
     h('div', { class: 't36c-body' },
       h('div', { class: 't36c-code' }, codeScroll(K.code as CodeScroll, { title: K.fileName })),
       h('div', { class: 't36c-prompts' }, h('p', { class: 'p2-eyebrow' }, K.promptLabel),
-        h('ol', null, ...K.prompts.map((p, i) => h('li', null, h('span', { class: 't36c-step' }, K.steps.steps[i].label), p))))))
-  const scroll = h('button', { class: 't36c-scroll', type: 'button', 'aria-expanded': 'false', 'aria-label': `${K.fileName} · ${K.promptLabel}` },
+        h('ol', null, ...K.prompts.map((p, i) => h('li', null, h('span', { class: 't36c-step' }, K.steps.steps[i].label), h('span', { class: 't36c-sdetail' }, K.steps.steps[i].detail), p)))),
+      ...cards.map((c) => takeaway(c, null, ctx.onCleanup))))
+  const scroll = h('button', { class: 't36c-scroll', type: 'button', 'aria-expanded': 'false', 'aria-label': K.sheetAria },
     scrollArt(), h('span', { class: 't36c-tag', 'aria-hidden': 'true' }, K.fileName))
+  const objects = h('div', { class: 't36c-objs' }, board, scroll, mallet, count, ...pebbles, sheet)
+  const back = h('div', { class: `t36 t36c${low ? ' low' : ''}` }, h('p', { class: 'visually-hidden' }, K.art), shop, wallGlow, cone, pool, carving, lampEl, objects)
+  ctx.art.append(back)
+  ctx.prompt(fill(K.strikePrompt, { name: FEAT[0].name }))
+
   const setSheet = (on: boolean) => {
     sheet.hidden = !on
     scroll.setAttribute('aria-expanded', String(on))
     ;(on ? close : scroll).focus()
+    if (on) scrollDot?.done()
   }
   scroll.addEventListener('click', () => setSheet(true))
   close.addEventListener('click', () => setSheet(false))
   const esc = (e: KeyboardEvent) => e.key === 'Escape' && !sheet.hidden && setSheet(false)
   addEventListener('keydown', esc)
   ctx.onCleanup(() => removeEventListener('keydown', esc))
-  path.append(slate, scroll, sheet)
-  // a placed stone, touched again: its sample prompt goes back on the slate
-  path.addEventListener('click', (e) => {
-    const st = (e.target as Element).closest<HTMLElement>('.p2s-stone.placed')
-    if (!st || performance.now() - placedAt < 80) return
-    const i = K.steps.steps.findIndex((x) => x.label === st.querySelector('.p2s-label')?.textContent)
-    if (i >= 0) chalk(i)
-  })
-  // the card at the end unrolls from the same scroll
-  path.querySelector('.p2s-sheet')?.classList.add('t36c-unroll')
+
+  // ── guide: a vermilion dot on the mallet (it lifts a little when idle), then on checkpoint 3 when the wood cracks
+  const GD = guide(ctx)
+  let dot: Mark | null = GD.dot(mallet, { dir: [0, -1] })
+  let scrollDot: Mark | null = null
+  const idle = () => {
+    if (over || ctx.reduced || crack) return
+    mallet.classList.remove('nudge')
+    void mallet.offsetWidth
+    mallet.classList.add('nudge')
+  }
+  ctx.el.addEventListener('p2:idle', idle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', idle))
+
+  function chalk(eye: string, text: string) {
+    bEye.textContent = eye
+    bText.textContent = text
+    board.classList.remove('new')
+    void board.offsetWidth
+    board.classList.add('new')
+    if (!board.hasAttribute('aria-live')) board.setAttribute('aria-live', 'polite')
+  }
+
+  // ── a blow of the mallet: chips fly, the carving moves on one stage; the checkpoint drops into the tray
+  let hitT = 0
+  ctx.onCleanup(() => clearTimeout(hitT))
+  function strike() {
+    if (over || crack === 2) return
+    mallet.classList.remove('hit', 'nudge')
+    void mallet.offsetWidth
+    mallet.classList.add('hit')
+    if (crack === 1) {
+      // carving on over the break: the crack runs further, only going back helps now
+      crack = 2
+      hitT = window.setTimeout(() => (carve(), ctx.chime('tap')), ctx.reduced ? 0 : 200)
+      chalk(FEAT[BUG].name, K.spreadChalk)
+      ctx.prompt(K.spreadPrompt, 'wrong')
+      mallet.disabled = true
+      return
+    }
+    const f = saved
+    const breaks = f === BUG && !fixed
+    hitT = window.setTimeout(() => {
+      if (breaks) crack = 1
+      else saved++
+      carve()
+      ctx.chime('tap')
+      if (breaks) return broke()
+      drop(saved - 1)
+      if (saved === 1) count.setAttribute('aria-live', 'polite')
+      count.textContent = fill(K.trayCount, { n: saved, total: N })
+      chalk(`${fill(K.pebbleAria, { n: saved, name: FEAT[f].name })} · ${K.promptLabel}`, FEAT[f].ask)
+      if (saved === N) return finish()
+      mallet.setAttribute('aria-label', fill(K.malletAria, { name: FEAT[saved].name }))
+      ctx.prompt(fill(K.strikePrompt, { name: FEAT[saved].name }))
+    }, ctx.reduced ? 0 : 200)
+  }
+  function broke() {
+    chalk(FEAT[BUG].name, K.crackChalk)
+    ctx.prompt(K.crackPrompt, 'wrong')
+    // the way back: checkpoint 3 carries the dot now
+    dot?.done()
+    dot = GD.dot(pebbles[BUG - 1], { dir: [0, 1] })
+    pebbles[BUG - 1].setAttribute('aria-label', fill(K.backAria, { n: BUG, name: FEAT[BUG - 1].name }))
+    pebbles[BUG - 1].classList.add('way')
+  }
+  function touchPebble(k: number) {
+    if (crack && k === BUG - 1) {
+      // back to checkpoint 3: the wood heals, the feature is asked again with evidence
+      crack = 0
+      fixed = true
+      carve()
+      GD.ok(pebbles[k])
+      ctx.chime('ok')
+      dot?.done()
+      dot = GD.dot(mallet, { dir: [0, -1] })
+      mallet.disabled = false
+      pebbles[k].classList.remove('way')
+      pebbles[k].setAttribute('aria-label', fill(K.pebbleAria, { n: k + 1, name: FEAT[k].name }))
+      chalk(fill(K.pebbleAria, { n: BUG, name: FEAT[BUG - 1].name }), K.revertChalk)
+      ctx.prompt(fill(K.redoPrompt, { name: FEAT[BUG].name }))
+      mallet.focus({ preventScroll: true })
+      return
+    }
+    // any other checkpoint: its prompt goes back on the board (nothing is a dead touch)
+    if (crack) return ctx.prompt(K.crackPrompt, 'wrong')
+    chalk(`${fill(K.pebbleAria, { n: k + 1, name: FEAT[k].name })} · ${K.promptLabel}`, FEAT[k].ask)
+  }
+  function drop(k: number) {
+    const p = pebbles[k]
+    p.hidden = false
+    p.classList.remove('drop')
+    void p.offsetWidth
+    p.classList.add('drop')
+  }
+  function finish() {
+    over = true
+    dot?.done()
+    dot = null
+    mallet.disabled = true
+    board.classList.add('rest')
+    ctx.insight(F(K.insight), [K.detail, F(K.facts[0]), F(K.facts[1])])
+    ctx.chime('ok')
+    // the scroll waits now: the sample prompts and the cards are in it
+    scrollDot = GD.dot(scroll, { dir: [0, -1] })
+  }
 
   // ── geometry (set in layout), the painted shop, the carving canvases
   const blk = { cw: 0, chh: 0, top: 0, dpr: 1, foot: 0 }
@@ -244,18 +314,21 @@ export function carveScene(ctx: SceneCtx) {
     const o = geoOf(W, H)
     back.style.height = `${f1(A)}px`
     back.classList.toggle('wide', o.wide)
-    path.classList.toggle('wide', o.wide)
-    // the visible stones, the slate, the scroll, where sheets unroll
-    const set = (k: string, v: number) => path.style.setProperty(k, `${f1(v)}px`)
-    set('--sw', o.stone[0])
-    set('--sh', o.stone[1])
-    Object.assign(slate.style, { left: `${f1(o.slate[0])}px`, bottom: `${f1(H - o.slate[1] - o.slate[3])}px`, width: `${f1(o.slate[2])}px`, minHeight: `${f1(o.slate[3])}px` })
-    Object.assign(scroll.style, { left: `${f1(o.scroll[0])}px`, top: `${f1(o.scroll[1])}px`, width: `${f1(o.scroll[2])}px` })
+    const px = (n: number) => `${f1(n)}px`
+    const [bx, by, bw, bh] = o.board
+    Object.assign(board.style, { left: px(bx), top: px(by), width: px(bw), height: px(bh) })
+    Object.assign(scroll.style, { left: px(o.scroll[0]), top: px(o.scroll[1]), width: px(o.scroll[2]) })
+    const [mx, my, ml] = o.mallet
+    Object.assign(mallet.style, { left: px(mx - ml / 2), top: px(my - ml * 0.2), width: px(ml), height: px(ml * (90 / 220)) })
+    const [tx0, tx1, ty0, ty1] = o.tray
+    Object.assign(count.style, { left: px(tx0 + 12), top: px(ty0 + (ty1 - ty0) * 0.78), width: px(tx1 - tx0 - 24) })
+    const pw = clamp((tx1 - tx0) / N * 0.62, 34, 58)
+    o.hollows.forEach(([x, y], k) => Object.assign(pebbles[k].style, { left: px(x - pw / 2 - 6), top: px(y - pw * 0.52), width: px(pw + 12), height: px(pw * 0.7 + 10) }))
+    const set = (k: string, v: number) => back.style.setProperty(k, px(v))
     set('--ux', o.sheet[0])
     set('--uy', o.sheet[1])
     set('--uw', o.sheet[2])
     set('--uh', o.sheet[3])
-    set('--cap', o.edge)
     // the block on its horse: a canvas with room round it for fins, rim light and chips
     const { blk: b } = o
     blk.cw = b.w * 1.4
@@ -263,8 +336,8 @@ export function carveScene(ctx: SceneCtx) {
     blk.foot = o.foot - blk.top
     blk.chh = blk.foot + 12
     blk.dpr = Math.min(devicePixelRatio || 1, low ? 1 : 1.5)
-    Object.assign(carving.style, { left: `${f1(b.x - blk.cw / 2)}px`, top: `${f1(blk.top)}px`, width: `${f1(blk.cw)}px`, height: `${f1(blk.chh)}px` })
-    for (const c of [cvA, cvB, warmA, warmB, chipCv]) {
+    Object.assign(carving.style, { left: px(b.x - blk.cw / 2), top: px(blk.top), width: px(blk.cw), height: px(blk.chh) })
+    for (const c of [cvA, cvB, warm, chipCv]) {
       c.width = Math.round(blk.cw * blk.dpr)
       c.height = Math.round(blk.chh * blk.dpr)
     }
@@ -276,7 +349,8 @@ export function carveScene(ctx: SceneCtx) {
       job = sliced(paint, { budget: 6 })
     } else while (!paint.next().done);
     drawn = true
-    drawCarving(stage)
+    drawCarving(stageOf())
+    GD.refresh()
   }))
   ctx.onCleanup(onPrefs(() => {
     const was = JSON.stringify(P)
@@ -284,19 +358,18 @@ export function carveScene(ctx: SceneCtx) {
     if (was === JSON.stringify(P) || !geo) return
     const paint = paintShop(shop, geo, P)
     while (!paint.next().done);
-    drawCarving(stage)
+    drawCarving(stageOf())
   }))
 
   function placeLamp() {
     const o = geo
     if (!o) return
-    const [x0, x1, ry] = o.rail
-    const x = x0 + (x1 - x0) * lampT
+    const ry = o.rail[2], x = o.lampX
     const lw = o.wide ? clamp(o.W * 0.042, 42, 62) : 34
     const lh = lw * (140 / 60)
     Object.assign(lampEl.style, { left: `${f1(x - lw / 2)}px`, top: `${f1(ry)}px`, width: `${f1(lw)}px`, height: `${f1(lh)}px` })
     // the light: a cone from the shade's mouth to the bench, a glow on the wall behind, a pool on the bench top
-    const mouth = ry + lh * 0.7, benchY = (o.back + o.front) / 2
+    const mouth = ry + lh * 0.7, benchY = o.mallet[1]
     back.style.setProperty('--lx', `${f1(x)}px`)
     back.style.setProperty('--ly', `${f1(mouth)}px`)
     back.style.setProperty('--lw', `${f1(lw * 0.62)}px`)
@@ -304,64 +377,31 @@ export function carveScene(ctx: SceneCtx) {
     back.style.setProperty('--cw', `${f1(o.wide ? o.W * 0.36 : o.W * 0.8)}px`)
     back.style.setProperty('--by', `${f1(benchY)}px`)
     back.style.setProperty('--wy', `${f1(o.back * 0.5)}px`)
-    lampEl.setAttribute('aria-valuenow', String(Math.round(lampT * 100)))
-    // raking light from the left vs a soft frontal light: two warm layers trade places
-    warmA.style.opacity = ((1 - lampT) * 0.95).toFixed(3)
-    warmB.style.opacity = (lampT * 0.85).toFixed(3)
   }
-  // drag the lamp along its rail (or ← →): its warm light sweeps the near face
-  let lampDrag: { id: number; x: number; t0: number } | null = null
-  lampEl.addEventListener('pointerdown', (e) => {
-    if (e.button || low) return
-    lampDrag = { id: e.pointerId, x: e.clientX, t0: lampT }
-    lampEl.setPointerCapture(e.pointerId)
-    lampEl.classList.add('held')
-  })
-  lampEl.addEventListener('pointermove', (e) => {
-    if (!lampDrag || e.pointerId !== lampDrag.id || !geo) return
-    lampT = clamp(lampDrag.t0 + (e.clientX - lampDrag.x) / Math.max(60, geo.rail[1] - geo.rail[0]), 0, 1)
-    placeLamp()
-  })
-  const lampUp = (e: PointerEvent) => {
-    if (!lampDrag || e.pointerId !== lampDrag.id) return
-    lampDrag = null
-    lampEl.classList.remove('held')
-  }
-  lampEl.addEventListener('pointerup', lampUp)
-  lampEl.addEventListener('pointercancel', lampUp)
-  lampEl.addEventListener('keydown', (e) => {
-    const d = e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -0.1 : e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 0.1 : 0
-    if (!d) return
-    e.preventDefault()
-    lampT = clamp(lampT + d, 0, 1)
-    placeLamp()
-  })
 
-  // ── a stroke of the mallet: chips fly, the carving moves on one stage (crossfade)
+  // ── the carving: crossfade from the stage on show to the next
   let front = cvA, behind = cvB
-  function strike(n: number) {
-    stage = n
+  function carve() {
     ;[front, behind] = [behind, front]
-    drawCarving(n, front)
+    drawCarving(stageOf(), front)
     front.classList.add('in')
     behind.classList.remove('in')
-    ctx.chime('tap')
     if (!low && !ctx.reduced) burst()
   }
   function drawCarving(n: number, into = front) {
     if (!geo) return
     const D = blk.dpr, b = geo.blk
-    for (const [cv, kind] of [[into, 'base'], [warmA, 'rake'], [warmB, 'front']] as const) {
+    for (const [cv, kind] of [[into, 'base'], [warm, 'rake']] as const) {
       const g = cv.getContext('2d')!
       g.setTransform(D, 0, 0, D, 0, 0)
       g.clearRect(0, 0, blk.cw, blk.chh)
-      paintCarving(g, n, kind, blk.cw, b.w, b.h, b.y - blk.top, blk.foot, P)
+      paintCarving(g, n, kind, blk.cw, b.w, b.h, b.y - blk.top, blk.foot, P, crack, !over)
     }
     into.classList.add('in')
   }
   cvA.classList.add('in')
 
-  // ── chips: ≤ 60 curls, a loop only while they fly
+  // ── chips: ≤ 60 curls, a loop only while they fly; they come to rest on the bench round the horse's feet
   const chips = Array.from({ length: 60 }, () => ({ x: 0, y: 0, vx: 0, vy: 0, r: 0, a: 0, va: 0, on: false }))
   const cg = chipCv.getContext('2d')!
   const rr = rng(3660)
@@ -418,34 +458,46 @@ export function carveScene(ctx: SceneCtx) {
   }
 }
 
-/** a river stone of its own shape and colour (step i), seen from a little above: contact shadow, dark flank, lit crown (w × h box) */
-function stonePiece(w: number, hh: number, i: number): SVGElement {
-  const r = rng(3700 + i * 17)
-  // seven different stones: long and flat, round, a tilted egg, a pillow, a wedge, a slab, a lump — each its own tone
-  const shapes: [number, number, number, number][] = [[0.49, 0.28, 0.1, 0.1], [0.4, 0.42, 0.04, 0.3], [0.47, 0.36, -0.16, 0.2], [0.48, 0.34, 0.06, 0.5], [0.44, 0.38, 0.22, -0.1], [0.49, 0.3, -0.04, 0.6], [0.43, 0.42, -0.08, 0.15]]
-  const [rx, ry, skew, flat] = shapes[i % 7]
+/** a wooden mallet lying on the bench (viewBox 0 0 220 90): the handle worn pale where it is held, the head a short log
+ *  lying across it, its end grain toward us with its rings; contact shadow under both */
+function malletArt(): SVGSVGElement {
+  const r = rng(3701)
+  let grain = ''
+  for (let k = 0; k < 4; k++) grain += `M${f1(14 + r() * 20)} ${f1(56 + (r() - 0.5) * 4)}Q60 ${f1(52 + (r() - 0.5) * 3)} ${f1(118 + r() * 6)} ${f1(49 + (r() - 0.5) * 4)}`
+  return s('svg', { class: 't36c-mart', viewBox: '0 0 220 90', 'aria-hidden': 'true' },
+    s('ellipse', { class: 't36c-msh', cx: 118, cy: 82, rx: 104, ry: 6.5 }),
+    // the handle: from its butt (left) into the head, a little thicker toward the head
+    s('path', { class: 't36c-mhandle', d: 'M8 61Q6 55 11 53L128 44L130 58L13 66Q8 66 8 61Z' }),
+    s('path', { class: 't36c-mworn', d: 'M22 55L70 51L71 60L23 63Z' }),
+    s('path', { class: 't36c-mgrain', d: grain, fill: 'none' }),
+    s('path', { class: 't36c-mhandle-hi', d: 'M12 54L126 45', fill: 'none' }),
+    // the head: its body running back (up and right), then its round end facing us
+    s('path', { class: 't36c-mhead', d: 'M130 22Q158 8 190 18L204 30Q210 52 200 76L186 82Q152 88 132 78Z' }),
+    s('path', { class: 't36c-mhead-top', d: 'M134 24Q160 10 190 18L203 29Q178 22 150 30Z' }),
+    s('ellipse', { class: 't36c-mend', cx: 158, cy: 50, rx: 30, ry: 32 }),
+    ...[1, 2, 3, 4].map((k) => s('ellipse', { class: 't36c-mrings', cx: f1(158 - k * 0.6), cy: f1(50 + k * 0.4), rx: f1(k * 6.2), ry: f1(k * 6.8), fill: 'none' })),
+    s('path', { class: 't36c-mcheck', d: 'M158 50L178 28', fill: 'none' }),
+    s('path', { class: 't36c-mrim', d: 'M131 40Q140 20 162 18', fill: 'none' }))
+}
+
+/** a checkpoint pebble (viewBox 0 0 60 42): a river stone of its own shape, its number cut small in its crown */
+function pebbleArt(k: number): SVGSVGElement {
+  const r = rng(3720 + k * 13)
+  const rx = 22 + r() * 5, ry = 12 + r() * 3, skew = (r() - 0.5) * 6
   const pts: Pt[] = []
-  for (let k = 0; k < 26; k++) {
-    const a = (k / 26) * TAU
-    const n = 1 + (r() - 0.5) * 0.08 + Math.sin(a * 2 + i * 1.7) * 0.07 + Math.sin(a * 5 + i) * 0.025
-    const sq = Math.abs(Math.sin(a)) ** (0.85 - flat * 0.55)
-    pts.push([w / 2 + Math.cos(a) * w * rx * n + Math.sin(a) * w * skew * 0.14, hh * 0.44 + Math.sign(Math.sin(a)) * sq * hh * ry * n])
+  for (let i = 0; i < 22; i++) {
+    const a = (i / 22) * TAU
+    const n = 1 + (r() - 0.5) * 0.08 + Math.sin(a * 2 + k) * 0.06
+    pts.push([30 + Math.cos(a) * rx * n + Math.sin(a) * skew, 22 + Math.sin(a) * ry * n])
   }
-  const path = (dy: number) => `M${pts.map(([x, y]) => `${f1(x)} ${f1(y + dy)}`).join('L')}Z`
-  const crown = `M${f1(w * (0.5 - rx * 0.62))} ${f1(hh * (0.44 - ry * 0.5))}Q${f1(w * (0.48 - skew * 0.1))} ${f1(hh * (0.44 - ry * 1.02))} ${f1(w * (0.5 + rx * 0.6))} ${f1(hh * (0.44 - ry * 0.42))}`
-  let speck = ''
-  for (let k = 0; k < 12; k++) speck += `M${f1(w * (0.5 + (r() - 0.5) * rx * 1.5))} ${f1(hh * (0.44 + (r() - 0.5) * ry * 1.1))}h${f1(0.6 + r() * 1.6)}`
-  // a vein across some of them, moss in the hollow of others
-  const vein = i % 3 === 1 ? `M${f1(w * (0.5 - rx * 0.8))} ${f1(hh * (0.36 + r() * 0.1))}Q${f1(w * 0.5)} ${f1(hh * (0.3 + r() * 0.3))} ${f1(w * (0.5 + rx * 0.8))} ${f1(hh * (0.45 + r() * 0.1))}` : ''
-  return s('g', { class: `t36c-stone t36c-t${i % 4}` },
-    s('ellipse', { class: 't36c-ssh', cx: f1(w * 0.56), cy: f1(hh * (0.48 + ry * 0.95)), rx: f1(w * rx * 1.06), ry: f1(hh * 0.13) }),
-    s('path', { class: 't36c-sside', d: path(hh * (0.08 + flat * 0.06)) }),
-    s('path', { class: 't36c-stop', d: path(0), fill: 'url(#t36c-stone)' }),
-    s('path', { class: 't36c-stint', d: path(0) }),
-    vein ? s('path', { class: 't36c-vein', d: vein, fill: 'none' }) : '',
-    i % 3 === 2 ? s('ellipse', { class: 't36c-moss', cx: f1(w * (0.5 - rx * 0.55)), cy: f1(hh * (0.44 + ry * 0.55)), rx: f1(w * rx * 0.35), ry: f1(hh * ry * 0.3) }) : '',
-    s('path', { class: 't36c-spk', d: speck }),
-    s('path', { class: 't36c-srim', d: crown, fill: 'none' }))
+  const d = `M${pts.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}Z`
+  return s('svg', { class: `t36c-part t36c-t${k % 4}`, viewBox: '0 0 60 42', 'aria-hidden': 'true' },
+    s('ellipse', { class: 't36c-ssh', cx: 32, cy: 33, rx: f1(rx * 1.02), ry: 4.5 }),
+    s('path', { class: 't36c-sside', d, transform: 'translate(0 3)' }),
+    s('path', { class: 't36c-stop', d, fill: 'url(#t36c-stone)' }),
+    s('path', { class: 't36c-stint', d }),
+    s('path', { class: 't36c-srim', d: `M${f1(30 - rx * 0.6)} ${f1(22 - ry * 0.55)}Q30 ${f1(22 - ry * 1.05)} ${f1(30 + rx * 0.55)} ${f1(22 - ry * 0.5)}`, fill: 'none' }),
+    s('text', { class: 't36c-pnum', x: 30, y: 26.5, 'text-anchor': 'middle' }, String(k + 1)))
 }
 
 /** the code: a closed calligraphy scroll — paper roll, two rod ends, a cord wound round it (viewBox 0 0 200 40) */
@@ -479,9 +531,10 @@ function segPath(g: G, pts: Seg[], P: (u: number, v: number) => Pt) {
 /**
  * One stage of the carving into g (css px, w wide; the block bw × bh, its middle at y = cy; the horse's feet at y = foot).
  * kind: 'base' = the wood seen against the door (pale hinoki in its own shade, the moon wrapping its far edges in a
- * bright rim, saw and chisel marks, the horse), 'rake' / 'front' = the lamp's warm light on the near face.
+ * bright rim, saw and chisel marks, the horse, the chips on the bench, chalk for the next cut, a crack), 'rake' = the
+ * lamp's warm light on the near face.
  */
-function paintCarving(g: G, n: number, kind: 'base' | 'rake' | 'front', w: number, bw: number, bh: number, cy: number, foot: number, P: Pal) {
+function paintCarving(g: G, n: number, kind: 'base' | 'rake', w: number, bw: number, bh: number, cy: number, foot: number, P: Pal, crack: number, chalkOn: boolean) {
   const cx = w / 2
   // the fish flexes as it comes alive: the tail lifts (stage 6), more with the eye in (7)
   const bend = n >= 7 ? 0.32 : n >= 6 ? 0.2 : 0
@@ -489,15 +542,7 @@ function paintCarving(g: G, n: number, kind: 'base' | 'rake' | 'front', w: numbe
   const r = rng(3670 + n)
   const Wd = woodOf(P)
   const shape = () => {
-    if (n === 0) {
-      // a log section: flat underneath, the rounded back still in its bark
-      g.beginPath()
-      g.moveTo(...at(-0.5, 0.9))
-      g.lineTo(...at(-0.5, -0.4))
-      g.bezierCurveTo(...at(-0.48, -1.12), ...at(0.48, -1.18), ...at(0.5, -0.45))
-      g.lineTo(...at(0.5, 0.9))
-      g.closePath()
-    } else if (n === 1) {
+    if (n <= 1) {
       g.beginPath()
       const c: UV[] = [[-0.5, -0.93], [0.5, -0.95], [0.5, 0.93], [-0.5, 0.95]]
       c.forEach(([u, v], i) => (i ? g.lineTo(...at(u, v)) : g.moveTo(...at(u, v))))
@@ -550,9 +595,16 @@ function paintCarving(g: G, n: number, kind: 'base' | 'rake' | 'front', w: numbe
       g.lineTo(cx + b * bw + 2, foot)
     }
     g.stroke()
+    // the horse's feet on the bench: a soft contact shadow under each, falling away from the door's light
+    g.fillStyle = rgba(P.umbra, P.dark ? 0.55 : 0.3)
+    for (const b of [-0.46, -0.22, 0.2, 0.46]) {
+      g.beginPath()
+      g.ellipse(cx + b * bw + bh * 0.06, foot + 1.5, bh * 0.14, bh * 0.035, 0, 0, TAU)
+      g.fill()
+    }
     // the chips fallen so far: pale curls on the bench round the feet
     g.fillStyle = Wd.hi
-    for (let i = 0; i < Math.min(70, n * 10); i++) {
+    for (let i = 0; i < Math.min(70, (n - 1) * 12); i++) {
       g.globalAlpha = 0.45 + r() * 0.45
       g.save()
       g.translate(cx + (r() - 0.5) * bw * 1.25, foot - r() * 5)
@@ -594,7 +646,7 @@ function paintCarving(g: G, n: number, kind: 'base' | 'rake' | 'front', w: numbe
       g.bezierCurveTo(...at(-0.2, v + (r() - 0.5) * 0.12), ...at(0.18, v + (r() - 0.5) * 0.12), ...at(0.56, v + (r() - 0.5) * 0.06))
       g.stroke()
     }
-    // the surface each stage leaves: saw marks (0–2), chisel facets (2–5), finer gouges (5+)
+    // the surface each stage leaves: saw marks (1–2), chisel facets (2–5), finer gouges (5+)
     if (n <= 2) {
       g.strokeStyle = rgba(Wd.lo, 0.35)
       g.lineWidth = 0.7
@@ -645,36 +697,6 @@ function paintCarving(g: G, n: number, kind: 'base' | 'rake' | 'front', w: numbe
       }
     }
     g.restore()
-    // what each stage has done to the wood
-    if (n === 0) {
-      // the bark along the rounded back: dark, cracked, a lighter cambium line under it
-      g.save()
-      clipBody()
-      const bark = mix(P.wash, P.lantern, P.dark ? 0.16 : 0.24)
-      g.strokeStyle = bark
-      g.lineWidth = bh * 0.2
-      g.beginPath()
-      g.moveTo(...at(-0.52, -0.3))
-      g.bezierCurveTo(...at(-0.5, -1.1), ...at(0.5, -1.16), ...at(0.52, -0.36))
-      g.stroke()
-      g.strokeStyle = rgba(Wd.hi, 0.6)
-      g.lineWidth = 1.4
-      g.beginPath()
-      g.moveTo(...at(-0.5, -0.18))
-      g.bezierCurveTo(...at(-0.47, -0.88), ...at(0.47, -0.93), ...at(0.5, -0.22))
-      g.stroke()
-      g.strokeStyle = rgba(P.umbra, 0.5)
-      g.lineWidth = 1
-      for (let i = 0; i < 14; i++) {
-        const u = -0.46 + i * 0.066 + (r() - 0.5) * 0.02
-        const yv = -0.98 + Math.abs(u) * 0.9
-        g.beginPath()
-        g.moveTo(...at(u, yv - 0.15))
-        g.lineTo(...at(u + 0.01, yv + 0.12))
-        g.stroke()
-      }
-      g.restore()
-    }
     if (n <= 1) {
       // the end grain at the tail end: growth rings round the pith, a check splitting out from it
       const [ex, ey] = at(0.5, 0.15)
@@ -689,32 +711,6 @@ function paintCarving(g: G, n: number, kind: 'base' | 'rake' | 'front', w: numbe
         g.ellipse(ex - bh * 0.02, ey + bh * 0.08, bh * 0.022 * k, bh * 0.09 * k, 0, 0, TAU)
         g.stroke()
       }
-      g.strokeStyle = rgba(P.umbra, 0.55)
-      g.lineWidth = 1.2
-      g.beginPath()
-      g.moveTo(ex - bh * 0.02, ey + bh * 0.08)
-      g.lineTo(ex + bh * 0.06, ey - bh * 0.28)
-      g.stroke()
-    }
-    if (n === 1) {
-      // chalk: the fish laid out on the squared blank, a centre line, two cross ticks
-      g.strokeStyle = rgba(P.dark ? P.ink : P.card, 0.92)
-      g.lineWidth = 1.8
-      g.setLineDash([7, 4])
-      segPath(g, FISH, at)
-      g.stroke()
-      g.setLineDash([2, 5])
-      g.beginPath()
-      g.moveTo(...at(-0.48, 0.04))
-      g.lineTo(...at(0.48, 0.04))
-      g.stroke()
-      g.setLineDash([])
-      g.beginPath()
-      for (const u of [-0.24, 0.24]) {
-        g.moveTo(...at(u, -0.12))
-        g.lineTo(...at(u, 0.2))
-      }
-      g.stroke()
     }
     if (n >= 4) {
       // the split tail: rays fanning into each lobe
@@ -821,21 +817,22 @@ function paintCarving(g: G, n: number, kind: 'base' | 'rake' | 'front', w: numbe
     g.lineWidth = 1.1
     shape()
     g.stroke()
+    if (crack) paintCrack(g, at, bh, crack, P, Wd)
+    else if (chalkOn) paintChalk(g, n, at, bh, P)
     return
   }
-  // ── the lamp's warm light on the near face: raking from the upper left, or soft and frontal
-  const grad = kind === 'rake' ? g.createLinearGradient(...at(-0.6, -1.1), ...at(0.5, 0.9)) : g.createRadialGradient(cx, cy - bh * 0.15, bh * 0.1, cx, cy, bw * 0.62)
-  grad.addColorStop(0, rgba(mix(P.lantern, Wd.hi, 0.35), kind === 'rake' ? 0.9 : 0.55))
-  grad.addColorStop(kind === 'rake' ? 0.5 : 0.7, rgba(P.lantern, 0.16))
+  // ── the lamp's warm light on the near face, raking from the upper left: it catches the lip of every cut
+  const grad = g.createLinearGradient(...at(-0.6, -1.1), ...at(0.5, 0.9))
+  grad.addColorStop(0, rgba(mix(P.lantern, Wd.hi, 0.35), 0.8))
+  grad.addColorStop(0.5, rgba(P.lantern, 0.14))
   grad.addColorStop(1, rgba(P.lantern, 0))
   g.save()
   clipBody()
   g.fillStyle = grad
   g.fillRect(0, 0, w, foot)
   if (n >= 2) {
-    // raking light catches the near lip of every cut, so the work stands up
     const rr = rng(3670 + n)
-    g.strokeStyle = rgba(mix(P.lantern, P.card, 0.45), kind === 'rake' ? 0.42 : 0.16)
+    g.strokeStyle = rgba(mix(P.lantern, P.card, 0.45), 0.38)
     g.lineCap = 'round'
     for (let i = 0; i < (n >= 6 ? 40 : 70); i++) {
       const u = -0.44 + rr() * 0.86, v = -0.9 + rr() * 1.8, len = bw * (0.025 + rr() * 0.035)
@@ -850,7 +847,104 @@ function paintCarving(g: G, n: number, kind: 'base' | 'rake' | 'front', w: numbe
   g.restore()
 }
 
-/** The shop, painted once per size / theme: plank wall and its tools, the open door on the moonlit lake, the bench. A generator for sliced(). */
+/** chalk on the wood where the next cut goes (H3): dashed, a carpenter's hand */
+function paintChalk(g: G, n: number, at: (u: number, v: number) => Pt, bh: number, P: Pal) {
+  if (n >= 7) return
+  g.save()
+  g.strokeStyle = rgba(P.dark ? P.ink : P.card, 0.92)
+  g.lineWidth = Math.max(1.4, bh * 0.028)
+  g.lineCap = 'round'
+  g.setLineDash([7, 5])
+  g.beginPath()
+  if (n <= 1) {
+    // the fish laid out on the squared blank, its centre line, two cross ticks
+    segPath(g, FISH, at)
+    g.stroke()
+    g.setLineDash([2, 5])
+    g.beginPath()
+    g.moveTo(...at(-0.48, 0.04))
+    g.lineTo(...at(0.48, 0.04))
+  } else if (n === 2) segPath(g, BLUNT, at)
+  else if (n === 3) {
+    // where the tail splits
+    g.moveTo(...at(0.33, -0.15))
+    g.quadraticCurveTo(...at(0.42, -0.5), ...at(0.5, -0.9))
+    g.moveTo(...at(0.33, 0.16))
+    g.quadraticCurveTo(...at(0.42, 0.5), ...at(0.5, 0.9))
+    g.moveTo(...at(0.47, -0.3))
+    g.lineTo(...at(0.38, 0))
+    g.lineTo(...at(0.47, 0.3))
+  } else if (n === 4) {
+    for (const [a, t, b] of FINS) {
+      g.moveTo(...at(a[0], a[1]))
+      g.quadraticCurveTo(...at(a[0] + (t[0] - a[0]) * 0.2, t[1] * 0.95), ...at(t[0], t[1]))
+      g.quadraticCurveTo(...at((t[0] + b[0]) / 2 - 0.02, (t[1] + b[1]) / 2), ...at(b[0], b[1]))
+    }
+  } else if (n === 5) {
+    for (let i = 0; i < 4; i++) for (let j = -1; j <= 1; j++) {
+      const [x, y] = at(-0.12 + i * 0.09, j * 0.36 + (i % 2) * 0.18)
+      g.moveTo(x + Math.cos(-1.1) * bh * 0.1, y + Math.sin(-1.1) * bh * 0.1)
+      g.arc(x, y, bh * 0.1, -1.1, 1.1)
+    }
+  } else {
+    const [ex, ey] = at(-0.38, -0.16)
+    g.moveTo(ex + bh * 0.11, ey)
+    g.arc(ex, ey, bh * 0.11, 0, TAU)
+  }
+  g.stroke()
+  g.restore()
+}
+
+/** a split in the wood from the tail toward the head (1), run on through the body with a branch (2): a dark gap with
+ *  its lit lip, splinters lifted along it */
+function paintCrack(g: G, at: (u: number, v: number) => Pt, bh: number, level: number, P: Pal, Wd: { hi: string; mid: string; lo: string }) {
+  const r = rng(3690)
+  const run = (u0: number, v0: number, u1: number, v1: number, k: number): Pt[] => Array.from({ length: k + 1 }, (_, i) => {
+    const t = i / k
+    return at(u0 + (u1 - u0) * t + (i && i < k ? (r() - 0.5) * 0.025 : 0), v0 + (v1 - v0) * t + (i && i < k ? (r() - 0.5) * 0.22 : 0))
+  })
+  const main = run(0.46, -0.1, level > 1 ? -0.42 : -0.02, level > 1 ? 0.22 : 0.12, level > 1 ? 16 : 9)
+  const branch = level > 1 ? run(0.06, 0.04, -0.12, -0.7, 6) : []
+  g.save()
+  g.lineJoin = 'round'
+  g.lineCap = 'round'
+  for (const pts of [main, branch]) {
+    if (!pts.length) continue
+    // the gap: widest where it opened (at the tail), narrowing to nothing
+    for (let i = 1; i < pts.length; i++) {
+      const t = i / pts.length
+      g.strokeStyle = rgba(P.umbra, 0.92)
+      g.lineWidth = Math.max(1, bh * 0.07 * (1 - t) + 1)
+      g.beginPath()
+      g.moveTo(...pts[i - 1])
+      g.lineTo(...pts[i])
+      g.stroke()
+      // the lip above the gap catches the lamp
+      g.strokeStyle = rgba(mix(Wd.hi, P.lantern, 0.3), 0.75)
+      g.lineWidth = 1
+      g.beginPath()
+      g.moveTo(pts[i - 1][0], pts[i - 1][1] - bh * 0.035 * (1 - t) - 1)
+      g.lineTo(pts[i][0], pts[i][1] - bh * 0.035 * (1 - t) - 1)
+      g.stroke()
+    }
+    // splinters: thin slivers lifted off the edges of the split
+    g.fillStyle = mix(Wd.hi, Wd.mid, 0.3)
+    for (let i = 1; i < pts.length - 1; i += 2) {
+      const [x, y] = pts[i]
+      const s0 = r() < 0.5 ? -1 : 1, len = bh * (0.08 + r() * 0.1)
+      g.beginPath()
+      g.moveTo(x, y)
+      g.lineTo(x - len * 0.9, y + s0 * len * 0.35)
+      g.lineTo(x - len * 0.2, y + s0 * bh * 0.025)
+      g.closePath()
+      g.fill()
+    }
+  }
+  g.restore()
+}
+
+/** The shop, painted once per size / theme: plank wall and its tools, the open door on the moonlit lake, the bench and
+ *  the checkpoint tray on its front edge. A generator for sliced(). */
 function* paintShop(cv: HTMLCanvasElement, o: Geo, P: Pal) {
   const { W, A, wide, back: bb, front: bf, edge: be } = o
   const dpr = Math.min(devicePixelRatio || 1, 1.5)
@@ -887,10 +981,18 @@ function* paintShop(cv: HTMLCanvasElement, o: Geo, P: Pal) {
   shadeTop.addColorStop(0.6, rgba(P.umbra, 0))
   g.fillStyle = shadeTop
   g.fillRect(0, 0, W, bb)
-  // the beam the lamp runs on
+  // the beam the lamp hangs from, held by two brackets to the wall
   const [rx0, rx1, ry] = o.rail
   g.fillStyle = mix(Wd.lo, P.wash, P.dark ? 0.6 : 0.4)
   g.fillRect(rx0 - 24, ry - 4, rx1 - rx0 + 48, 7)
+  for (const x of [rx0 - 12, rx1 + 12]) {
+    g.beginPath()
+    g.moveTo(x - 5, ry + 3)
+    g.lineTo(x + 5, ry + 3)
+    g.lineTo(x, ry + 16)
+    g.closePath()
+    g.fill()
+  }
   g.fillStyle = rgba(P.lantern, 0.35)
   g.fillRect(rx0 - 24, ry + 3, rx1 - rx0 + 48, 1)
   yield
@@ -938,12 +1040,13 @@ function* paintShop(cv: HTMLCanvasElement, o: Geo, P: Pal) {
   mist.addColorStop(1, rgba(P.mist, P.dark ? 0.35 : 0.85))
   g.fillStyle = mist
   g.fillRect(dx, horizon - dh * 0.12, dw, dh * 0.16)
-  g.fillStyle = P.dark ? mix(P.water, P.paper, 0.25) : mix(P.water, P.card, 0.45)
+  // the lake: always darker than the sky above it, the moon's road broken on it
+  g.fillStyle = P.dark ? mix(P.water, P.paper, 0.25) : mix(P.water, P.wash, 0.12)
   g.fillRect(dx, horizon, dw, dy + dh - horizon)
   for (let y = horizon + 3; y < dy + dh; y += 4) {
     const t = (y - horizon) / (dy + dh - horizon)
     const len = 4 + t * dw * 0.12 * (0.3 + r())
-    g.fillStyle = rgba(P.moon, (P.dark ? 0.55 : 0.65) * (1 - t * 0.5))
+    g.fillStyle = rgba(P.moon, (P.dark ? 0.55 : 0.6) * (1 - t * 0.5))
     g.fillRect(mx - len / 2 + (r() - 0.5) * t * 30, y, len, 1)
   }
   g.restore()
@@ -973,9 +1076,8 @@ function* paintShop(cv: HTMLCanvasElement, o: Geo, P: Pal) {
   // ── left of the door: a rack of chisels and a saw on the wall, boards leaning in the corner — the lamp catches them
   const tool = mix(Wd.lo, P.wash, P.dark ? 0.35 : 0.2)
   const steel = P.dark ? mix(P.rockHi, P.moon, 0.2) : P.rockLo
-  const rk = wide ? [W * 0.26, bb * 0.2, W * 0.24] : [W * 0.06, bb * 0.08, 0]
-  if (rk[2]) {
-    const [kx, ky, kw] = rk
+  if (wide) {
+    const kx = W * 0.24, ky = bb * 0.2, kw = W * 0.22
     g.fillStyle = tool
     g.fillRect(kx, ky, kw, 8)
     g.fillStyle = rgba(P.lantern, 0.4)
@@ -991,8 +1093,12 @@ function* paintShop(cv: HTMLCanvasElement, o: Geo, P: Pal) {
       g.fillStyle = rgba(P.umbra, 0.25)
       g.fillRect(x + 3, ky + 8, 2.5, len * 0.5)
     }
-    // the saw: a long blade with its teeth, the handle wrapped
+    // the saw, hung by its handle from a peg: a long blade with its teeth
     const sx = kx + kw * 0.72, sy = ky + 22
+    g.fillStyle = tool
+    g.beginPath()
+    g.arc(sx - kw * 0.05, sy + 2, 3, 0, TAU)
+    g.fill()
     g.fillStyle = steel
     g.beginPath()
     g.moveTo(sx, sy)
@@ -1010,11 +1116,11 @@ function* paintShop(cv: HTMLCanvasElement, o: Geo, P: Pal) {
     }
     g.stroke()
     g.fillStyle = tool
-    g.fillRect(sx - kw * 0.11, sy + bb * 0.02, kw * 0.12, 7)
+    g.fillRect(sx - kw * 0.11, sy, kw * 0.12, 7)
   }
-  // boards leaning in the left corner, behind the slate
-  for (const [x, wdt, tilt] of (wide ? [[W * 0.012, W * 0.045, 0.1], [W * 0.05, W * 0.04, 0.06], [W * 0.19, W * 0.03, -0.08]] : [[W * 0.005, W * 0.08, 0.08]]) as [number, number, number][]) {
-    const topY = bb * 0.06
+  // boards leaning in the corner by the door, on the bench
+  for (const [x, wdt, tilt] of (wide ? [[W * 0.43, W * 0.03, -0.08], [W * 0.462, W * 0.026, -0.05]] : [[W * 0.36, W * 0.035, -0.06]]) as [number, number, number][]) {
+    const topY = bb * 0.12
     g.fillStyle = mix(Wd.mid, P.wash, P.dark ? 0.45 : 0.22)
     g.beginPath()
     g.moveTo(x, bb)
@@ -1077,6 +1183,61 @@ function* paintShop(cv: HTMLCanvasElement, o: Geo, P: Pal) {
   g.lineTo(dx - dw * 0.15, bf)
   g.closePath()
   g.fill()
+  // the board's foot rests on the bench: its contact shadow, thrown away from the lamp
+  const [kbx, , kbw] = o.board
+  g.fillStyle = rgba(P.umbra, P.dark ? 0.55 : 0.28)
+  g.beginPath()
+  g.ellipse(kbx + kbw * 0.55, bb + 3, kbw * 0.58, (bf - bb) * 0.035, 0, 0, TAU)
+  g.fill()
+  // the mallet's shadow and the scroll's lie with the objects themselves (SVG)
+  yield
+  // ── the checkpoint tray on the front edge: a thick plank with six round hollows cut in its top
+  const [tx0, tx1, ty0, ty1] = o.tray
+  const th = ty1 - ty0, tTop = th * 0.48
+  g.fillStyle = rgba(P.umbra, P.dark ? 0.6 : 0.3)
+  g.beginPath()
+  g.ellipse((tx0 + tx1) / 2 + 8, ty1 + 2, (tx1 - tx0) * 0.53, th * 0.16, 0, 0, TAU)
+  g.fill()
+  // its top face, then the front face in its own shade, the lamp on the near lip
+  g.fillStyle = mix(Wd.mid, P.wash, P.dark ? 0.32 : 0.08)
+  g.beginPath()
+  g.moveTo(tx0 + th * 0.18, ty0)
+  g.lineTo(tx1 - th * 0.18, ty0)
+  g.lineTo(tx1, ty0 + tTop)
+  g.lineTo(tx0, ty0 + tTop)
+  g.closePath()
+  g.fill()
+  const tf = g.createLinearGradient(0, ty0 + tTop, 0, ty1)
+  tf.addColorStop(0, mix(Wd.lo, P.wash, P.dark ? 0.42 : 0.18))
+  tf.addColorStop(1, mix(Wd.lo, P.wash, P.dark ? 0.62 : 0.36))
+  g.fillStyle = tf
+  g.fillRect(tx0, ty0 + tTop, tx1 - tx0, th - tTop)
+  g.strokeStyle = rgba(mix(Wd.lo, P.wash, 0.6), 0.3)
+  g.lineWidth = 0.7
+  for (let k = 0; k < 3; k++) {
+    const gy = ty0 + tTop + (th - tTop) * (0.25 + k * 0.25)
+    g.beginPath()
+    g.moveTo(tx0 + 4, gy)
+    g.bezierCurveTo(tx0 + (tx1 - tx0) * 0.3, gy + (r() - 0.5) * 2, tx0 + (tx1 - tx0) * 0.7, gy + (r() - 0.5) * 2, tx1 - 4, gy)
+    g.stroke()
+  }
+  g.fillStyle = rgba(P.lantern, P.dark ? 0.45 : 0.55)
+  g.fillRect(tx0, ty0 + tTop - 0.6, tx1 - tx0, 1.2)
+  g.fillStyle = rgba(P.moon, P.dark ? 0.35 : 0.5)
+  g.fillRect(tx0 + th * 0.18, ty0, tx1 - tx0 - th * 0.36, 0.8)
+  // the hollows: dark inside, the far wall lit, the near lip in shade
+  const hr = Math.min(((tx1 - tx0) / N) * 0.34, th * 1.1)
+  for (const [hx, hy] of o.hollows) {
+    g.fillStyle = mix(Wd.lo, P.umbra, P.dark ? 0.55 : 0.4)
+    g.beginPath()
+    g.ellipse(hx, hy + tTop * 0.12, hr, tTop * 0.36, 0, 0, TAU)
+    g.fill()
+    g.fillStyle = rgba(mix(Wd.hi, P.lantern, 0.3), P.dark ? 0.5 : 0.6)
+    g.beginPath()
+    g.ellipse(hx, hy + tTop * 0.12, hr, tTop * 0.36, 0, Math.PI * 1.08, Math.PI * 1.92)
+    g.ellipse(hx, hy + tTop * 0.02, hr * 0.92, tTop * 0.28, 0, Math.PI * 1.92, Math.PI * 1.08, true)
+    g.fill()
+  }
   yield
   // ── the bench's front edge, the near layer: a thick beam cut by the frame, lit along its top
   const beam = g.createLinearGradient(0, bf, 0, be)

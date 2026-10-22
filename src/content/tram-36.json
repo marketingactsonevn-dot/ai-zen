@@ -98,6 +98,9 @@
       "facePrompt": "Mặt ‘{piece}’: chọn một dải giấy",
       "specDecode": "spec.md = tờ mô tả game; AI đọc tờ này trước khi viết code",
       "guess": "AI tự đoán: ???",
+      "turnHint": "kéo để xoay",
+      "extraPrompt": "spec.md còn hai dòng trống: chạm từng dòng để điền",
+      "extraAria": "Điền dòng “{key}”",
       "extra": [
         ["Chưa làm ở bản đầu", "âm thanh, bảng xếp hạng"],
         ["Xong khi", "chơi 30 giây không lỗi trên điện thoại"]
@@ -169,18 +172,34 @@
       "dragPrompt": "Kéo trong khung tranh để thử bút này",
       "otherFlat": "Giờ chọn một bút phẳng: Canvas, p5.js hoặc Phaser",
       "other3d": "Giờ chọn bút Three.js hoặc Godot / Unity",
+      "triedTpl": "Đã thử {n}/{total} bút",
       "askNote": "Chép nguyên câu này cho AI; chữ lạ trong đó là tên công cụ, AI tự hiểu."
     },
     "carve": {
       "label": "Đẽo từng nhát, lưu từng mốc",
-      "art": "Tranh mực: xưởng mộc đêm nhìn ngang mặt bàn. Khối gỗ bách trên giá chạm đứng trước khung cửa mở ra hồ trăng, ánh trăng sau lưng viền sáng đường bao của nó. Bảy viên đá nằm thành hàng dọc mép trước bàn là bảy bước; mỗi viên đặt đúng là một nhát vồ, phoi gỗ bay và khối gỗ thành hình con cá thêm một bậc: vạch phấn, đẽo thô, chẻ đuôi, vây, vảy, mắt. Đèn làm việc kéo được để ánh ấm quét mặt gỗ; cuộn mã nằm cuộn tròn trên bàn.",
-      "lampAria": "Đèn làm việc: kéo sang trái, phải hoặc dùng phím mũi tên để soi mặt gỗ",
-      "prompt": "Chạm từng viên đá theo thứ tự làm",
-      "pathAria": "Lối đá bảy bước làm một game web",
-      "stoneAria": "Viên đá: {label}",
-      "slotAria": "Chỗ trống số {n} trên lối",
-      "keys": "Chạm lần lượt hoặc dùng phím số 1 đến 7.",
-      "done": "Lối đã sáng. Mở thẻ mang về.",
+      "art": "Tranh mực: xưởng mộc đêm nhìn ngang mặt bàn. Khối gỗ bách trên giá chạm đứng trước khung cửa mở ra hồ trăng, ánh trăng sau lưng viền sáng đường bao của nó; vạch phấn trên gỗ chỉ chỗ sắp đẽo. Cây vồ gỗ cán mòn nằm trên bàn. Mỗi lần gõ vồ là thêm một tính năng: phoi gỗ bay rơi xuống bàn, khối gỗ thành hình con cá thêm một bậc, và một viên cuội mốc rơi vào khay gỗ dọc mép bàn. Ở nhát thứ tư, khối gỗ nứt; chạm viên mốc thứ ba thì khối gỗ lành lại. Tấm bảng gỗ dựa vách ghi lời dặn bằng phấn; cuộn mã nằm cuộn tròn trên bàn.",
+      "malletAria": "Cây vồ: gõ để thêm tính năng “{name}”",
+      "prompt": "Gõ vồ để thêm một tính năng",
+      "features": [
+        { "name": "Mặt hồ", "ask": "Dựng khung từ spec.md: mặt hồ đêm trên Canvas 2D. Chưa cần điểm, âm thanh." },
+        { "name": "Cá koi", "ask": "Thêm đúng một việc: một cá koi trắng đỏ bơi chậm. Giữ nguyên mọi thứ khác." },
+        { "name": "Điều khiển", "ask": "Cho cá bơi theo ngón tay hoặc chuột." },
+        { "name": "Lá khô", "ask": "Thêm lá khô rơi chậm; cá chạm thì mất 1 tim." },
+        { "name": "Trăng rơi", "ask": "Thả mảnh trăng rơi; cá đớp thì +1 điểm." },
+        { "name": "Kết thúc ván", "ask": "Hết 30 giây hoặc hết tim thì hiện điểm." }
+      ],
+      "strikePrompt": "Gõ vồ để thêm: {name}",
+      "decode": "Mốc = một bản lưu của game (git commit); hỏng thì quay về được.",
+      "crackChalk": "Thêm lá khô xong thì cá đứng yên.",
+      "crackPrompt": "Chạm viên mốc 3 để quay về — hoặc gõ vồ đẽo tiếp",
+      "spreadChalk": "Đẽo tiếp trên chỗ hỏng: vết nứt lan rộng hơn.",
+      "spreadPrompt": "Chạm viên mốc 3 để quay về",
+      "revertChalk": "Về mốc 3: khối gỗ lành lại. Dặn lại, kèm bằng chứng: “Thêm lá khô xong thì cá đứng yên. Lỗi Console: [DÁN].”",
+      "redoPrompt": "Gõ vồ để thêm lại: {name}",
+      "trayCount": "Mốc {n}/{total}",
+      "pebbleAria": "Mốc {n}: {name}",
+      "backAria": "Mốc {n}: {name} — chạm để quay về mốc này",
+      "sheetAria": "Mở cuộn mã: code mẫu, lời dặn mẫu và thẻ mang về",
       "promptLabel": "Lời dặn mẫu",
       "steps": {
         "steps": [
@@ -301,6 +320,8 @@
       "art": "Tranh mực: một chậu đá tròn rỗng lơ lửng trong bóng tối trên bóng đổ mềm. Phía trên, bảy tờ giấy can treo cách nhau, mỗi tờ một lớp của trò chơi — mặt nước, cá koi, bàn tay dẫn đường, trăng rơi, điểm và tim, tiếng nước, đom đóm — tên lớp ghi trên mép trước. Chạm tờ đang sáng: tờ giấy hạ xuống chậu, gợn một vòng sóng, câu dặn của lớp đó hiện bên chậu và hồ sống thêm một bậc. Đủ bảy lớp, góc nhìn nâng lên trên chậu và trò chơi thật chạy trong lòng nước.",
       "prompt": "Chạm tờ giấy đang sáng để thả vào chậu",
       "layerAria": "Lớp {n}: {name}",
+      "layerTag": "{n} · {name}",
+      "countTpl": "Lớp {n}/{total}",
       "promptLabel": "Câu dặn đã tạo ra lớp này",
       "layers": [
         {
@@ -438,6 +459,8 @@
       },
       "detail": "Game hồ koi chạy trong trình duyệt, không có tài khoản hay thanh toán, nên rủi ro thấp. Khi app có đăng nhập, tiền hay dữ liệu người dùng, hãy nhờ người biết code xem lại.",
       "question": "Vibe coding: bảo AI viết code, chạy thử, không đọc code.",
+      "focusTop": "Mặt nước",
+      "focusBottom": "Đáy (code)",
       "focusPrompt": "Kéo lên xuống mặt hồ để nhìn xuống đáy code",
       "left": "Còn {n} người"
     }
