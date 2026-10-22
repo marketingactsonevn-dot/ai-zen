@@ -24,7 +24,8 @@ Theo bảng ở `docs/part2-audit/README.md` (ô **P1**). Đi theo vườn, mỗ
 - [x] Sửa thứ tự thông tin: insight sau bằng chứng, không lộ đáp án sớm, quiz khớp bài. *(đổi thứ tự scene trong trạm theo B.5: t19, t23, t25, t28, t30, t33, t34, t35, t39; không cắt/gộp — phase 5)*
 
 ## Phase 4 · Vẽ lại + cân bố cục + 31 slide Làm lại
-Ưu tiên slide thẩm mỹ ≤ 2 (22 slide, mục E) rồi cân bằng ≤ 2 (37 slide, mục F); gộp chung khi cùng slide. Theo vườn, mỗi vườn một commit, kèm ảnh trước/sau:
+Ưu tiên slide thẩm mỹ ≤ 2 (22 slide, mục E) rồi cân bằng ≤ 2 (37 slide, mục F); gộp chung khi cùng slide. Theo vườn, mỗi vườn một commit, kèm ảnh trước/sau.
+**Mốc chủ app chốt (22/10/2026):** mỗi slide vẽ lại đạt thẩm mỹ + cân bằng **≥ 4/5** và làm cả các món phụ trong mục Thẩm mỹ/Bố cục của audit (không dừng ở ≥ 3); vật dựng phải đúng cấu trúc (mái đặt lên xà, không hở, không vật lơ lửng).
 - [x] Vườn 7 · [ ] 8 · [ ] 9 · [ ] 10 · [ ] 11 · [ ] 12 · [ ] 13 (nước luôn tối hơn trời; bình minh là nắng sượt)
 - [ ] Phone bố cục lại riêng, không chỉ thu nhỏ.
 

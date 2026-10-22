@@ -934,9 +934,8 @@
 .t19s-col-base { fill: var(--rock-mid); stroke: var(--wash); stroke-opacity: 0.5; stroke-width: 1; }
 :root[data-theme='dark'] .t19s-col-base { fill: var(--rock-lo); }
 .t19s-bracket { fill: var(--wash); }
-/* the beam has thickness: a lit top edge, a dark face, a shadow under it */
+/* the beam: a dark face in the eave's shadow (no lit top: the roof covers it), a shadow under it */
 .t19s-beam { fill: color-mix(in srgb, var(--wash) 88%, var(--step-lo)); }
-.t19s-beam-lit { fill: var(--step-mid); opacity: 0.55; }
 .t19s-beam-sh { fill: var(--umbra); opacity: 0.22; }
 /* the roof: yin-yang tiles (lit convex caps over dark channels), round tile ends along the upturned eave */
 .t19s-roof { fill: var(--wash); opacity: 0.94; }
@@ -945,7 +944,13 @@
 .t19s-cap-lit { fill: var(--rock-hi); opacity: 0.45; }
 :root[data-theme='dark'] .t19s-cap { fill: color-mix(in srgb, var(--wash) 50%, var(--rock-lo)); }
 :root[data-theme='dark'] .t19s-cap-lit { fill: var(--moon); opacity: 0.25; }
-.t19s-fascia { fill: color-mix(in srgb, var(--wash) 80%, var(--step-lo)); }
+/* the eave's underside resting on the beam, rafter ends lit faintly; tile courses; ridge and hips in solid ink */
+.t19s-soffit { fill: color-mix(in srgb, var(--wash) 85%, var(--step-lo)); }
+.t19s-rafter { fill: var(--rock-mid); opacity: 0.45; }
+:root[data-theme='dark'] .t19s-rafter { fill: var(--moon); opacity: 0.14; }
+.t19s-course { fill: var(--wash); opacity: 0.25; }
+:root[data-theme='dark'] .t19s-course { fill: #000; opacity: 0.3; }
+.t19s-ridge, .t19s-hip { fill: var(--wash); }
 .t19s-tile-end { fill: color-mix(in srgb, var(--wash) 60%, var(--rock-mid)); stroke: var(--wash); stroke-width: 0.8; }
 :root[data-theme='dark'] .t19s-tile-end { fill: color-mix(in srgb, var(--rock-lo) 80%, var(--moon)); }
 .t19s-eave { fill: var(--wash); }

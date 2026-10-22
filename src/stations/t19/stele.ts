@@ -220,7 +220,9 @@ export function steleScene(ctx: SceneCtx) {
     root.style.height = `${f1(H)}px`
     const tall = W / H < 1.05
     root.classList.toggle('tall', tall)
-    const roofH = tall ? H * 0.075 : H * 0.12
+    const roofH = tall ? H * 0.1 : H * 0.15
+    // the eave's underside (rafter ends) sits straight on the beam: no daylight between roof and beam
+    const soffit = clamp(H * 0.028, 10, 22), bt = clamp(H * 0.018, 8, 16)
     // the stele, a little left of centre on wide screens (the strips hang to its right); seven-tenths of a phone's width
     fw = tall ? Math.min(W * 0.7, 360) : clamp(Math.min(W * 0.34, H * 0.58), 300, 520)
     fh = tall ? Math.min(H * 0.5, fw * 1.38) : Math.min(H * 0.62, fw * 1.22)
@@ -237,7 +239,7 @@ export function steleScene(ctx: SceneCtx) {
     Object.assign(tally.style, { left: `${f1(fx + fw - ts * 1.25)}px`, top: `${f1(plinthY + plinthH * 0.5 - ts * 0.48)}px`, width: `${f1(ts)}px`, height: `${f1(ts)}px` })
     Object.assign(slot.style, { left: `${f1(fx - 10)}px`, top: `${f1(plinthY + plinthH * 0.45)}px`, width: `${f1(fw + 20)}px` })
     slot.style.setProperty('--room', `${f1(plinthY + plinthH * 0.45 - 8)}px`)
-    const beamY = roofH + clamp(H * 0.016, 7, 14) + 4
+    const beamY = roofH + soffit + bt
     if (tall) {
       Object.assign(side.style, { left: '14px', right: '14px', top: `${f1(beamY)}px`, width: 'auto', height: `${f1(fy - beamY - 8)}px` })
       Object.assign(foot.style, { left: '16px', right: '16px', top: `${f1(plinthY + plinthH + 10)}px`, width: 'auto' })
@@ -248,13 +250,13 @@ export function steleScene(ctx: SceneCtx) {
     }
     face.style.setProperty('--r', `${f1(R)}px`)
     if (!held) setLamp(R * 0.3, fh - R * 0.3, true)
-    paintHall(W, H, roofH, plinthY, plinthH, tall)
+    paintHall(W, H, roofH, soffit, bt, plinthY, plinthH, tall)
     paintTally()
     startBake()
   }
 
-  /** the pavilion: moon and pine beyond, two round columns, tiled eaves with upturned corners, the beam, the stele's body, the plinth */
-  function paintHall(W: number, H: number, roofH: number, plinthY: number, plinthH: number, tall: boolean) {
+  /** the pavilion: moon and pine beyond, two round columns, a hip roof (ridge, tiled slope, upturned corners) resting on the beam, the stele's body, the plinth */
+  function paintHall(W: number, H: number, roofH: number, soffit: number, bt: number, plinthY: number, plinthH: number, tall: boolean) {
     const r = rng(1931)
     hall.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     const colW = clamp(W * 0.03, 14, 34)
@@ -263,29 +265,44 @@ export function steleScene(ctx: SceneCtx) {
     // the eaves: a long low line sweeping up at the corners just past the columns
     const over = tall ? W * 0.12 : clamp(W * 0.09, 60, 140)
     const x0 = cL - over, x1 = cR + over
-    const rise = clamp(roofH * 0.75, 18, 74)
+    const rise = clamp(roofH * 0.42, 14, 44)
     const eaveAt = (u: number) => ey - rise * Math.pow(Math.abs(u * 2 - 1), 4.5) + roofH * 0.04 * (1 - (u * 2 - 1) ** 2)
     const eave: Pt[] = Array.from({ length: 49 }, (_, i) => [x0 + ((x1 - x0) * i) / 48, eaveAt(i / 48)])
-    // yin-yang tiles: convex caps (lit on the moon side) over concave channels, converging up the roof; round end caps on the eave
-    let caps = '', capLit = '', channels = '', ends = ''
+    // the ridge inside the frame, shorter than the eave: the two hips run from its ends down to the upturned corners
+    const ridgeY = Math.max(roofH * 0.24, 8), inset = (x1 - x0) * 0.17
+    const xr0 = x0 + inset, xr1 = x1 - inset
+    const top = (u: number): Pt => [xr0 + (xr1 - xr0) * u, ridgeY]
+    const at = (u: number, t: number): Pt => { const [ax, ay] = top(u); return [ax + (x0 + (x1 - x0) * u - ax) * t, ay + (eaveAt(u) - ay) * t] }
+    // yin-yang tiles: convex caps (lit on the moon side) over concave channels, ridge to eave; round end caps on the eave
+    let caps = '', capLit = '', channels = '', ends = '', courses = '', rafters = ''
     const nT = Math.round((x1 - x0) / clamp(W * 0.018, 12, 26))
+    const tw = clamp(W * 0.006, 4, 9)
     for (let i = 0; i <= nT; i++) {
       const u = i / nT
-      const bx = x0 + (x1 - x0) * u, by = eaveAt(u)
-      const lean = (u - 0.5) * roofH * 0.9
-      const tw = clamp(W * 0.006, 4, 9)
+      const line = [top(u), at(u, 0.5), at(u, 1)].map(([x, y], k) => [x, y - (k === 2 ? 2 : 0)] as Pt)
       if (i % 2) {
-        caps += stroke([[bx - lean, -12], [bx - lean * 0.4, by * 0.45], [bx, by - 3]], tw, 0.02, 0.05, 0.85)
-        capLit += stroke([[bx - lean + tw * 0.25, -12], [bx - lean * 0.4 + tw * 0.25, by * 0.45], [bx + tw * 0.25, by - 4]], tw * 0.28, 0.1, 0.1, 0.4)
+        caps += stroke(line, tw, 0.3, 0.05, 0.85)
+        capLit += stroke(line.map(([x, y]) => [x + tw * 0.25, y] as Pt), tw * 0.28, 0.3, 0.1, 0.4)
+        const [bx, by] = at(u, 1)
         ends += `M${f1(bx + tw * 0.62)} ${f1(by - 1)}a${f1(tw * 0.62)} ${f1(tw * 0.62)} 0 1 0 ${f1(-tw * 1.24)} 0a${f1(tw * 0.62)} ${f1(tw * 0.62)} 0 1 0 ${f1(tw * 1.24)} 0`
-      } else channels += stroke([[bx - lean, -12], [bx - lean * 0.4, by * 0.45], [bx, by - 2]], tw * 0.7, 0.02, 0.05, 0.85)
+      } else channels += stroke(line, tw * 0.7, 0.3, 0.05, 0.85)
     }
-    const roofD = `M${eave.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}L${f1(x1)} -20L${f1(x0)} -20Z`
-    // the fascia under the tiles and the beam with its thickness: a lit top edge, a dark face, a shadow under it
-    const fascia = clamp(H * 0.012, 5, 10)
-    const fasciaD = `M${eave.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}L${eave.slice().reverse().map(([x, y]) => `${f1(x)} ${f1(y + fascia)}`).join('L')}Z`
-    const bt = clamp(H * 0.018, 8, 16)
-    const beamTop = ey + fascia + 3
+    // tile courses: the slope reads as overlapping rows, not a comb
+    for (const t of [0.4, 0.72]) courses += stroke(Array.from({ length: 25 }, (_, i) => at(i / 24, t)), 1, 0.05, 0.05, 0.5)
+    const roofD = `M${eave.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}L${f1(xr1)} ${f1(ridgeY)}L${f1(xr0)} ${f1(ridgeY)}Z`
+    // ridge with curled ends; hips down to the corners, flicking up past the eave tips
+    const curl = clamp(roofH * 0.12, 5, 12)
+    const ridgeD = stroke([[xr0 - curl * 1.4, ridgeY - curl * 0.6], [xr0 - curl * 0.4, ridgeY - 1], [xr1 + curl * 0.4, ridgeY - 1], [xr1 + curl * 1.4, ridgeY - curl * 0.6]], clamp(roofH * 0.08, 4, 8), 0.12, 0.12, 0.6)
+    const hipD = stroke([[xr0, ridgeY], [x0, eaveAt(0)], [x0 - curl * 1.2, eaveAt(0) - curl * 0.5]], clamp(roofH * 0.05, 3, 6), 0.05, 0.25, 0.45) +
+      stroke([[xr1, ridgeY], [x1, eaveAt(1)], [x1 + curl * 1.2, eaveAt(1) - curl * 0.5]], clamp(roofH * 0.05, 3, 6), 0.05, 0.25, 0.45)
+    // the underside of the eave: a dark board from the eave line down onto the beam, tapering up into the corners
+    const beamTop = ey + soffit
+    const sL = cL - colW * 1.6, sR = cR + colW * 1.6
+    const soffitD = `M${eave.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}L${f1(sR)} ${f1(beamTop + 2)}L${f1(sL)} ${f1(beamTop + 2)}Z` // overlaps the beam: no anti-aliased seam
+    for (let i = 0; i <= nT; i += 2) {
+      const [bx, by] = at(i / nT, 1)
+      if (bx > sL && bx < sR) rafters += `M${f1(bx - 1.5)} ${f1(by + 2)}h3v${f1((beamTop - by) * 0.5)}h-3Z`
+    }
     const beamD = `M${f1(cL - colW)} ${f1(beamTop)}H${f1(cR + colW)}V${f1(beamTop + bt)}H${f1(cL - colW)}Z`
     // round columns: a dark flank, a lit flank toward the moon, a stone base and a bracket under the beam
     const col = (x: number) => `M${f1(x - colW / 2)} ${f1(beamTop + bt)}H${f1(x + colW / 2)}V${f1(H + 10)}H${f1(x - colW / 2)}Z`
@@ -340,15 +357,18 @@ export function steleScene(ctx: SceneCtx) {
       s('path', { class: 't19s-col-base', d: base(cL) + base(cR) }),
       s('path', { class: 't19s-beam-sh', d: `M${f1(cL - colW)} ${f1(beamTop + bt)}H${f1(cR + colW)}V${f1(beamTop + bt + bt * 0.8)}H${f1(cL - colW)}Z` }),
       s('path', { class: 't19s-beam', d: beamD }),
-      s('path', { class: 't19s-beam-lit', d: `M${f1(cL - colW)} ${f1(beamTop)}H${f1(cR + colW)}V${f1(beamTop + bt * 0.22)}H${f1(cL - colW)}Z` }),
       s('path', { class: 't19s-bracket', d: bracket(cL) + bracket(cR) }),
+      s('path', { class: 't19s-soffit', d: soffitD }),
+      s('path', { class: 't19s-rafter', d: rafters }),
       s('path', { class: 't19s-roof', d: roofD, filter: 'url(#ink-wash)' }),
       s('path', { class: 't19s-channel', d: channels }),
       s('path', { class: 't19s-cap', d: caps }),
       s('path', { class: 't19s-cap-lit', d: capLit }),
-      s('path', { class: 't19s-fascia', d: fasciaD }),
+      s('path', { class: 't19s-course', d: courses }),
       s('path', { class: 't19s-tile-end', d: ends }),
-      s('path', { class: 't19s-eave', d: stroke(eave, 3, 0.04, 0.04, 0.5), filter: 'url(#ink-rough)' }))
+      s('path', { class: 't19s-eave', d: stroke(eave, 3, 0.04, 0.04, 0.5), filter: 'url(#ink-rough)' }),
+      s('path', { class: 't19s-hip', d: hipD }),
+      s('path', { class: 't19s-ridge', d: ridgeD, filter: 'url(#ink-rough)' }))
     void r
   }
 
