@@ -15,7 +15,7 @@ const station: StationModule = {
   scenes: [
     { label: S.peaks.label, text: 'bl', mount: peaksScene },
     // audit v3: the launch tide is the context ("why the news comes so fast"), so it comes second, before the fence
-    { label: S.tide.label, mount: tideScene },
+    { label: S.tide.label, text: 'br', mount: tideScene },
     { label: S.gate.label, mount: gateScene },
     courtScene(),
     { label: S.stele.label, mount: steleScene },

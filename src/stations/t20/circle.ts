@@ -14,7 +14,11 @@ import { brush, canvas, col, dprOf, fit, glow, mix, mossDots, paintRock, palette
 const S = raw.scenes.circle
 const P = S.perspectives as Perspectives
 const TAU = Math.PI * 2
-const PHI0 = Math.PI / 4 // the frame square on, so the four chimes hang apart: left, front, right, and the far one above the front
+// the frame square on and wider than deep: two chimes hang from the front beam (near, inside), two from the back beam
+// (far, outside, on longer cords so they show under the front beam) — four apart, left to right in key order
+const FX = 1.6, FZ = 1.4 // the frame's half width, half depth (× Rw): its posts stand clear of the curb
+const HX = [-0.95, -0.3, 0.3, 0.95] // chime k along its beam (× FX)
+const FAR = [true, false, false, true]
 const TRAIN = 4.2 // seconds a ripple train runs before it holds still
 type V3 = [number, number, number]
 
@@ -46,20 +50,19 @@ export const circleScene: SceneDef = {
       SY = cy0 - (F * yc) / zc
     }
     const pt = (p: V3): Pt => (proj(p[0], p[1], p[2]), [SX, SY])
-    const corner = (k: number): Pt => [Math.cos(PHI0 + (k * Math.PI) / 2) * Rw * 1.6, Math.sin(PHI0 + (k * Math.PI) / 2) * Rw * 1.6]
+    // corners k = 0 front right, 1 front left, 2 back left, 3 back right: beam k runs corner k → k+1 (0 front, 2 back)
+    const corner = (k: number): Pt => [(k % 4 === 0 || k % 4 === 3 ? 1 : -1) * FX * Rw, (k % 4 < 2 ? 1 : -1) * FZ * Rw]
     const HP = 2.7 // post height (× Rw)
     const PS = 0.17 // post side
     const BW = 0.14, BH = 0.16 // beam width, height
-    const CORD = 0.42 // the chime's cord (× Rw)
+    const CORD = 0.42 // the chime's cord (× Rw); the far ones hang lower
+    const cordOf = (k: number) => CORD + (FAR[k] ? 0.3 : 0)
     const RIM = 0.62, WATER = 0.52 // curb top, water level (× Rw)
     const RO = 1.24 // the curb's outer radius
     /** beam k's top (× Rw): two beams lie on top, the other two lap under them through the posts */
     const beamTop = (k: number) => (k % 2 ? HP - BH * 1.05 : HP)
-    // each chime hangs from the middle of beam k (corners k → k+1), under the beam
-    const hang = (k: number): V3 => {
-      const a = corner(k), b = corner(k + 1)
-      return [(a[0] + b[0]) / 2, Rw * (beamTop(k) - BH), (a[1] + b[1]) / 2]
-    }
+    // each chime hangs under the front (near) or back (far) beam
+    const hang = (k: number): V3 => [HX[k] * FX * Rw, Rw * (HP - BH), (FAR[k] ? -FZ : FZ) * Rw]
     let rootEl: HTMLElement | null = null
     const rootOf = () => (rootEl ??= ctx.art.querySelector<HTMLElement>('.p2c')) // the component's root (it lays out before mount returns)
     function setGeo(w: number, hh: number) {
@@ -75,9 +78,10 @@ export const circleScene: SceneDef = {
       const L = Math.hypot(d[0], d[1], d[2])
       fwd = [d[0] / L, d[1] / L, d[2] / L]
       up = [0, -fwd[2], fwd[1]] // right (1, 0, 0) × forward
-      F = hh * (wide ? 1.0 : 1.0)
-      cx0 = w * (wide ? 0.5 : 0.38) // tall: the frame stands left, the paper strip hangs on the right
-      cy0 = hh * 0.5
+      // the well and its frame are the hero: ~65% of the frame's height on wide screens, 90% of the width on tall ones
+      F = wide ? hh * 1.5 : Math.min(w * 1.1, hh * 1.2)
+      cx0 = w * 0.5
+      cy0 = hh * (wide ? 0.66 : 0.56)
     }
     /** the stage's height: the component's on wide screens; on tall ones most of the art (the strip hangs inside it) */
     const stageH = (g: PondGeo) => {
@@ -96,8 +100,6 @@ export const circleScene: SceneDef = {
     let ready = false
     let job: ReturnType<typeof sliced> | null = null
     let host: HTMLElement | null = null
-    let last = -1 // the chime last struck (the strip hangs on its side)
-    let frameL = 0, frameR = 0, frameT = 0
     const back = s('svg', { class: 't20c-back', 'aria-hidden': 'true' })
     const base = canvas('t20c-base'), fx = canvas('t20c-fx'), front = canvas('t20c-front')
     let g: CanvasRenderingContext2D | null = null
@@ -112,15 +114,14 @@ export const circleScene: SceneDef = {
       place(k, _n, geo) {
         setGeo(geo.w, stageH(geo))
         const [x, y, z] = hang(k)
-        proj(x, y - Rw * (CORD + 0.46), z) // the chime's lowest point
-        return { x: SX, y: SY, s: (F / SZ) * Rw * 0.0092, z: Math.round(1000 - SZ) }
+        proj(x, y - Rw * (cordOf(k) + 0.42), z) // the chime's lowest point
+        return { x: SX, y: SY, s: (F / SZ) * Rw * 0.0066, z: Math.round(1000 - SZ) }
       },
       stone: () => s('g'),
       onHear(k) {
         if (t0[k] < 0) t0[k] = now
         else t0[k] = now - 0.01 // struck again: the swing restarts (its train stays)
         swing[k] = now
-        last = k
         hangStrip()
         if (t0.every((v) => v >= 0) && allAt < 0) allAt = now + 0.9
         loop.start()
@@ -135,19 +136,15 @@ export const circleScene: SceneDef = {
     const card = root.querySelector<HTMLElement>('.p2c-card')!
     let stageLeft = 0
 
-    /** the paper strip hangs from the frame on the struck chime's side (tall: always on the right of the frame) */
+    /** the words are written on the water (audit v3 20-4: no card beside the frame), over the near half of the well */
     function hangStrip() {
-      if (!sw || last < 0) return
+      if (!sw) return
       const W = root.clientWidth
-      const sx = hang(last)
-      proj(sx[0], sx[1], sx[2])
-      const right = !wide || SX >= cx0
-      Object.assign(card.style, { width: '', maxHeight: '', transform: 'none' }) // drop the component's card box, then measure
-      const cw = card.offsetWidth
-      // its cord (18% in from the frame's side) hangs from the beam end jutting past the corner post
-      const x = wide ? (right ? frameR - cw * 0.18 : frameL - cw * 0.82) : W - cw - 4
-      Object.assign(card.style, { left: `${clamp(stageLeft + x, 4, W - cw - 4).toFixed(1)}px`, top: `${(frameT + 30).toFixed(1)}px` })
-      card.classList.toggle('left', !right)
+      // (tall: the water is too small for the words, they are written on the ground just under the well)
+      if (wide) proj(0, Rw * WATER, Rw * 0.35)
+      else proj(0, 0, Rw * FZ * 1.15)
+      const cw = Math.min(wide ? 440 : W - 24, W - 24)
+      Object.assign(card.style, { width: `${cw}px`, maxHeight: '', transform: wide ? 'translate(-50%, -50%)' : 'translateX(-50%)', left: `${(stageLeft + SX).toFixed(1)}px`, top: `${SY.toFixed(1)}px` })
     }
 
     /**
@@ -205,16 +202,11 @@ export const circleScene: SceneDef = {
       const hz = SY
       back.replaceChildren(
         mist(W * 0.5, hz - H * 0.18, W * 0.75, H * 0.22),
-        moon(W * (wide ? 0.78 : 0.7), H * 0.09, clamp(Rw * 0.2, 12, 26), 2071, true),
+        moon(wide ? W + padX * 0.45 : W * 0.82, H * (wide ? 0.06 : 0.04), clamp(Rw * 0.2, 12, 26), 2071, true),
         range(-padX, W + padX, hz, H * 0.26, 2072, 0.85, 5),
         mist(W * 0.5, hz, W * 0.8, H * 0.07),
         range(-padX, W * 0.45, hz + H * 0.02, H * 0.2, 2073, 0.62, 2),
         mist(W * 0.3, hz + H * 0.03, W * 0.6, H * 0.06))
-      // the frame's reach on screen (for the strip)
-      const tops = [0, 1, 2, 3].map((k) => pt([corner(k)[0], Rw * HP, corner(k)[1]]))
-      frameL = Math.min(...tops.map((q) => q[0])) - Rw * 0.2
-      frameR = Math.max(...tops.map((q) => q[0])) + Rw * 0.2
-      frameT = Math.min(...tops.map((q) => q[1]))
       fit(base, W + padX * 2, H + padY * 2, dpr).translate(padX, padY)
       g = fit(fx, W + padX * 2, H + padY * 2, dpr)
       g.translate(padX, padY)
@@ -253,7 +245,7 @@ export const circleScene: SceneDef = {
         gx.clip(path)
         const [e0, e1] = Math.hypot(...a) > Math.hypot(...b) ? [q[0], q[1]] : [q[0], q[3]]
         const [s0, s1] = Math.hypot(...a) > Math.hypot(...b) ? [q[0], q[3]] : [q[0], q[1]]
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 16; i++) {
           const t = r(), l0 = r() * 0.3, l1 = l0 + 0.3 + r() * 0.6
           const bx = s0[0] + (s1[0] - s0[0]) * t, by = s0[1] + (s1[1] - s0[1]) * t
           const dx = e1[0] - e0[0], dy = e1[1] - e0[1]
@@ -427,7 +419,7 @@ export const circleScene: SceneDef = {
       chimes = P.stones.map((_, k) => {
         const [x, y, z] = hang(k)
         proj(x, y, z)
-        const w = Rw * 0.8 * (F / SZ), hh = Rw * 0.52 * (F / SZ)
+        const w = Rw * 0.62 * (F / SZ), hh = w
         return sprite(w * 2, hh * 1.6, dpr, (sp) => chimeArt(sp, w, hh, k))
       })
     }
@@ -435,9 +427,10 @@ export const circleScene: SceneDef = {
     /** the four posts and four beams as boxes (× Rw), each marked near (front canvas) or far, sorted far → near */
     function frame() {
       const p = pal
-      const woodHi = p.dark ? mix(p['step-mid'], p.moon, 0.15) : mix(p['step-mid'], p['step-hi'], 0.35)
-      const woodLo = p.dark ? mix(p['step-lo'], p.umbra, 0.6) : mix(p['step-lo'], p.umbra, 0.5)
-      const ca = Math.cos(PHI0), sa = Math.sin(PHI0)
+      // weathered cedar: the step tones warmed a touch toward the wood's own red-brown
+      const woodHi = mix(p.dark ? mix(p['step-lo'], p['step-mid'], 0.55) : mix(p['step-mid'], p['step-hi'], 0.35), p.lantern, p.dark ? 0.22 : 0.2)
+      const woodLo = mix(p.dark ? mix(p['step-lo'], p.umbra, 0.6) : mix(p['step-lo'], p.umbra, 0.5), p.lantern, 0.08)
+      const ca = 1, sa = 0 // posts square to the frame
       const out: { o: V3; u: V3; v: V3; w: V3; hi: RGB; lo: RGB; seed: number; near: boolean; d: number }[] = []
       const s0 = PS * Rw
       for (let k = 0; k < 4; k++) {
@@ -462,9 +455,14 @@ export const circleScene: SceneDef = {
     function chimeArt(sp: CanvasRenderingContext2D, w: number, hh: number, k: number) {
       const p = pal
       const ox = w, oy = hh * 0.1
-      const shape: Pt[] = [[-0.46, 0.5], [-0.08, -0.02], [0.12, -0.02], [0.66, 0.66], [0.47, 1.0], [0.03, 0.47], [-0.27, 0.86]] // a thick bent slab, the long arm right
-      const at = (dx: number, dy: number) => shape.map(([x, y]) => [ox + x * w + dx, oy + y * hh + dy] as Pt)
-      const tk = Math.max(2, w * 0.05) // its thickness, seen a little from above
+      // a khánh: a thick slab bent at an obtuse angle, hung at the bend; the short broad arm left, the long narrow arm
+      // right, the underside cut in a curve up to the inner corner
+      // it hangs tilted: the long arm is the heavier, so it rides lower (rotated about the hole)
+      const tc = Math.cos(0.2), ts = Math.sin(0.2)
+      const R = (x: number, y: number): Pt => [ox + (x * tc - y * ts) * w, oy + (x * ts + y * tc) * hh]
+      const shape: Pt[] = [[-0.6, 0.48], [-0.07, 0.02], [0.06, 0.0], [0.78, 0.5], [0.7, 0.66], [0.3, 0.42], [0.04, 0.31], [-0.04, 0.31], [-0.3, 0.5], [-0.46, 0.66]]
+      const at = (dx: number, dy: number) => shape.map(([x, y]) => { const q = R(x, y); return [q[0] + dx, q[1] + dy] as Pt })
+      const tk = Math.max(2, w * 0.07) // its thickness, seen a little from above
       const backF = at(tk * 0.5, -tk), frontF = at(0, 0)
       const ink = mix(p.umbra, p['rock-lo'], p.dark ? 0.35 : 0.2)
       // the thickness: the back face, then each top edge swept to it, catching the moon
@@ -487,16 +485,26 @@ export const circleScene: SceneDef = {
       sp.save()
       sp.clip(poly(frontF))
       sp.globalCompositeOperation = p.dark ? 'lighter' : 'source-over'
-      glow(sp, ox + w * 0.3, oy + hh * 0.45, w * 0.24, hh * 0.08, p.moon, p.dark ? 0.35 : 0.55, 0.4)
-      glow(sp, ox - w * 0.22, oy + hh * 0.5, w * 0.12, hh * 0.06, p.moon, p.dark ? 0.15 : 0.3, 0.4)
+      // polish: a long thin sheen just under each upper edge, as on wet black stone
+      sp.lineCap = 'round'
+      sp.lineWidth = Math.max(1.5, w * 0.035)
+      sp.strokeStyle = col(p.moon, p.dark ? 0.3 : 0.5)
+      sp.beginPath()
+      sp.moveTo(...R(-0.48, 0.48))
+      sp.lineTo(...R(-0.1, 0.16))
+      sp.moveTo(...R(0.14, 0.13))
+      sp.lineTo(...R(0.66, 0.5))
+      sp.stroke()
+      const sh = R(0.4, 0.3)
+      glow(sp, sh[0], sh[1], w * 0.16, hh * 0.06, p.moon, p.dark ? 0.3 : 0.45, 0.4)
       sp.restore()
       sp.strokeStyle = col(p.dark ? p.moon : p['rake-hi'], p.dark ? 0.8 : 1)
       sp.lineWidth = Math.max(1.2, w * 0.02)
       sp.beginPath()
-      sp.moveTo(frontF[2][0], frontF[2][1])
+      sp.moveTo(frontF[0][0], frontF[0][1])
+      sp.lineTo(frontF[1][0], frontF[1][1])
+      sp.lineTo(frontF[2][0], frontF[2][1])
       sp.lineTo(frontF[3][0], frontF[3][1])
-      sp.moveTo(frontF[1][0], frontF[1][1])
-      sp.lineTo(frontF[0][0], frontF[0][1])
       sp.stroke()
       sp.strokeStyle = col(p.umbra, 0.9)
       sp.lineWidth = 1
@@ -504,10 +512,10 @@ export const circleScene: SceneDef = {
       // the hanging hole
       sp.fillStyle = col(p.dark ? p['rock-hi'] : p.paper, 0.9)
       sp.beginPath()
-      sp.arc(ox + w * 0.02, oy + hh * 0.12, Math.max(1.4, w * 0.028), 0, TAU)
+      sp.arc(...R(0, 0.11), Math.max(1.4, w * 0.03), 0, TAU)
       sp.fill()
       // the speaker's sign, cut big into the long arm: a dark groove with the moon on its lower lip
-      const mx = ox + 0.33 * w, my = oy + 0.55 * hh, mr = w * 0.085
+      const [mx, my] = R(0.42, 0.4), mr = w * 0.07
       const sign = (dy: number) => {
         sp.beginPath()
         if (k === 0) sp.arc(mx, my + dy, mr, 0, TAU)
@@ -553,7 +561,7 @@ export const circleScene: SceneDef = {
       const calm = still ? (allAt >= 0 ? 1 : 0) : settle
       const heardN = t0.reduce((a, v) => a + (v >= 0 ? 1 : 0), 0)
       // the moon's reflection: flakes scattered by the trains, gathering into one bright disc as they cancel
-      proj(Rw * 0.18, wy, -Rw * 0.3)
+      proj(Rw * 0.22, wy, -Rw * 0.55) // far half: the words take the near half
       const mx = SX, my = SY, ms = (F / SZ) * Rw * 0.9
       const spread = (1 - calm) * Math.min(1, 0.35 + heardN * 0.18)
       g.globalCompositeOperation = p.dark ? 'lighter' : 'source-over'
@@ -624,7 +632,7 @@ export const circleScene: SceneDef = {
         const hx = SX, hy = SY
         const age = now - swing[k]
         const th = still ? (t0[k] >= 0 ? 0.08 : 0.03) * (k % 2 ? 1 : -1) : age < 6 ? 0.3 * Math.exp(-age * 0.7) * Math.sin(age * 5.2) : 0
-        const cord = Rw * CORD * (F / SZ)
+        const cord = Rw * cordOf(k) * (F / SZ)
         g.strokeStyle = col(p.dark ? p['ink-3'] : p.wash, 0.8)
         g.lineWidth = 1
         g.beginPath()
@@ -641,7 +649,7 @@ export const circleScene: SceneDef = {
       }
     }
     // far chimes first (drawn under the near ones)
-    const order = [0, 1, 2, 3].sort((a, b) => Math.sin(PHI0 + ((a + 0.5) * Math.PI) / 2) - Math.sin(PHI0 + ((b + 0.5) * Math.PI) / 2))
+    const order = [0, 3, 1, 2]
 
     const loop = createLoop(root, (_t, dt) => {
       now += dt

@@ -897,8 +897,8 @@
   -webkit-tap-highlight-color: transparent;
 }
 :root[data-theme='dark'] .t19s {
-  --t19s-stone: color-mix(in srgb, var(--rock-lo) 80%, var(--rock-mid));
-  --t19s-stone-lo: color-mix(in srgb, var(--rock-lo) 70%, #000);
+  --t19s-stone: color-mix(in srgb, var(--umbra) 55%, var(--rock-lo));
+  --t19s-stone-lo: color-mix(in srgb, var(--umbra) 80%, var(--rock-lo));
 }
 .t19s:not(.tall) {
   -webkit-mask-image: linear-gradient(to bottom, #000 92%, transparent);
@@ -949,6 +949,17 @@
 .t19s-tile-end { fill: color-mix(in srgb, var(--wash) 60%, var(--rock-mid)); stroke: var(--wash); stroke-width: 0.8; }
 :root[data-theme='dark'] .t19s-tile-end { fill: color-mix(in srgb, var(--rock-lo) 80%, var(--moon)); }
 .t19s-eave { fill: var(--wash); }
+/* the pine beyond in the same dark ink as the columns, not a pale cut-out (audit 19-4) */
+:root[data-theme='dark'] .t19s-hall .p2p-pine :is(.p2p-trunk, .p2p-bark, .p2p-pad, .p2p-needle) {
+  fill: color-mix(in srgb, var(--rock-lo) 75%, var(--rock-mid));
+}
+.t19s-hall .p2p-pine .p2p-pad { opacity: 0.55; }
+/* the strips hang from the beam down to the plinth's top and no further: older ones go into the dark, never over the tally */
+.t19s:not(.tall) .t19s-side {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, #000 82%, transparent);
+}
 .t19s-face {
   position: absolute;
   background: var(--t19s-stone);
@@ -1118,7 +1129,7 @@
 .t19s.tall .t19s-read { align-items: stretch; }
 .t19s.tall .t19s-strip { padding: 10px 14px 12px; }
 .t19s.tall .t19s-strip + .t19s-strip { display: none; }
-.t19s.tall .t19s-q { font-size: 0.9rem; }
+.t19s.tall .t19s-q { font-size: 0.8rem; }
 @media (hover: none) {
   .t19s-face { cursor: default; }
 }
@@ -1201,17 +1212,34 @@
   transition: opacity 0.6s ease;
   pointer-events: none;
 }
-.t19t-cmp-b { translate: -100% 0; }
+.t19t-cmp-b, .t19t.tall .t19t-cmp-a { translate: -100% 0; }
+.t19t.tall .t19t-cmp { font-size: 0.75rem; }
 .t19t.cmp .t19t-cmp { opacity: 1; }
 .t19t-fore {
   translate: -50% -100%;
   white-space: normal;
-  width: min(18rem, 60vw);
+  width: min(16rem, 60vw);
   text-align: center;
   font-weight: 400;
   color: var(--ink-2);
 }
 .t19t.today .t19t-fore { opacity: 1; }
+.t19t.tall .t19t-fore { translate: -100% 0; width: min(9rem, 40vw); text-align: right; font-size: 0.8rem; }
+/* wide: the reading is a small label beside the stone that just rose (placed by JS), not a block in the corner */
+.t19t:not(.tall) .t19t-words {
+  left: 0;
+  top: 0;
+  width: min(21rem, 27%);
+  gap: 6px;
+  transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.t19t:not(.tall) .t19t-words.flip { translate: -100% -100%; text-align: right; }
+/* near: just under the shoreline, wide and short so it ends before the frame's soft foot */
+.t19t:not(.tall) .t19t-words:not(.flip) { width: min(27rem, 33%); }
+/* the legend (what a stone stands for) is said once, by the first stone */
+.t19t:not(.tall) .t19t-words.flip .t19t-q { display: none; }
+.t19t:not(.tall) .t19t-q { font-size: 0.8rem; }
+.t19t:not(.tall) .t19t-fact { font-size: 0.95rem; }
 /* tall: date · label · fact in the sky band at the top, the foot of the frame left to the sand and the near stone */
 .t19t.tall .t19t-words {
   top: 6px;

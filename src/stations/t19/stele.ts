@@ -7,6 +7,7 @@ import type { SceneCtx } from '../types'
 import { blob, clamp, onSize, p2Defs, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { moon, paperLantern, pine, wash } from '../../ui/part2/paint'
 import { findTakeaway, foldedTakeaway } from '../../ui/part2/takeaway'
+import { guide } from '../../ui/part2/guide'
 
 const T = raw.scenes.stele
 const f1 = (n: number) => n.toFixed(1)
@@ -87,6 +88,7 @@ export function steleScene(ctx: SceneCtx) {
   let lx = -1e4, ly = -1e4 // the lantern, face px
   let R = 120
   let raf = 0
+  let held = false // the lantern has been taken up (mouse, touch, keyboard); until then it rests at the lower-left
   let job: { cancel(): void } | null = null
   let palKey = ''
   ctx.onCleanup(() => {
@@ -150,7 +152,11 @@ export function steleScene(ctx: SceneCtx) {
     }
   }
   const redraw = () => void (raf ||= requestAnimationFrame(draw))
-  function setLamp(x: number, y: number) {
+  function setLamp(x: number, y: number, rest = false) {
+    if (!rest && !held) {
+      held = true
+      root.classList.remove('rest')
+    }
     lx = x
     ly = y
     glow.style.transform = `translate(${f1(x)}px, ${f1(y)}px)`
@@ -184,6 +190,7 @@ export function steleScene(ctx: SceneCtx) {
     read.setAttribute('aria-live', 'polite')
     if (found.has(i)) return
     found.add(i)
+    lampDot.done()
     lines[i].setAttribute('aria-label', `${l.aria} · ${l.sign}`)
     const sg = signs[i]
     const seal = h('span', { class: 't19s-seal' })
@@ -240,6 +247,7 @@ export function steleScene(ctx: SceneCtx) {
       Object.assign(foot.style, { left: `${f1(sx)}px`, top: `${f1(plinthY + 8)}px`, width: `${f1(Math.min(270, W - sx - 140))}px`, right: '' })
     }
     face.style.setProperty('--r', `${f1(R)}px`)
+    if (!held) setLamp(R * 0.3, fh - R * 0.3, true)
     paintHall(W, H, roofH, plinthY, plinthH, tall)
     paintTally()
     startBake()
@@ -495,9 +503,10 @@ export function steleScene(ctx: SceneCtx) {
       if (y % 48 === 47) yield
     }
     const { lo, mid, hi, umbra, moon: mc, lamp: lc, dark } = pal
-    // polished black stone; by night a step lighter so it does not sink into the dark
-    const stone: RGB = dark ? mix3(lo, mid, 0.3) : mix3(umbra, lo, 0.3)
-    const vein: RGB = mix3(stone, hi, dark ? 0.32 : 0.22)
+    // polished black stone (audit 19-4: not a grey panel); the moon's sheen and rim keep it off the night behind
+    const stone: RGB = dark ? mix3(umbra, lo, 0.42) : mix3(umbra, lo, 0.22)
+    const vein: RGB = mix3(stone, hi, dark ? 0.4 : 0.3)
+    const io = Math.max(1, Math.round(dpr * 1.6)) // the inner shadow: how far the cut's upper-right lip shades its floor
     const dustC: RGB = dark ? mix3(hi, mc, 0.35) : mix3(hi, mid, 0.15)
     const make = () => {
       const c = h('canvas')
@@ -521,13 +530,15 @@ export function steleScene(ctx: SceneCtx) {
           const u = x / w
           // the stone's own face: veins, the dust in the deep cuts
           const vk = veinK[i]
-          const al = dust[i]
-          let r0 = stone[0] + (vein[0] - stone[0]) * vk * 0.6, g0 = stone[1] + (vein[1] - stone[1]) * vk * 0.6, b0 = stone[2] + (vein[2] - stone[2]) * vk * 0.6
+          // recessed, not printed: under the moon the lip toward it shades the floor of every cut
+          const inner = isMoon && near[i] && y >= io && x < w - io ? Math.max(0, H0[i] - H0[i - io * w + io]) : 0
+          const al = dust[i] * (1 - 0.7 * inner)
+          let r0 = stone[0] + (vein[0] - stone[0]) * vk * 0.85, g0 = stone[1] + (vein[1] - stone[1]) * vk * 0.85, b0 = stone[2] + (vein[2] - stone[2]) * vk * 0.85
           r0 += (dustC[0] - r0) * al
           g0 += (dustC[1] - g0) * al
           b0 += (dustC[2] - b0) * al
-          // the moon sees the deep cuts softly (no hard drop shadow under the letters), the lantern sees every wall
-          const relief = isMoon ? (near[i] ? 0.45 : 0) : 1
+          // the moon sees the deep cuts' walls, the lantern sees every wall
+          const relief = isMoon ? (near[i] ? 0.7 : 0) : 1
           const Nx = nx[i] * relief, Ny = ny[i] * relief, Nz = relief ? nz[i] : 1
           const dif = Math.max(0, Nx * Lx + Ny * Ly + Nz * Lz)
           const sp = Math.pow(Math.max(0, Nx * hx + Ny * hy + Nz * hz), 40)
@@ -536,8 +547,9 @@ export function steleScene(ctx: SceneCtx) {
             // the weak moon from the upper right: walls facing it lit, the others dark; a long reflection down the polish,
             // the moon's rim down the right-hand edge
             const shd = 0.3 + 0.75 * dif
-            const streak = Math.exp(-Math.pow((u - 0.72 + v * 0.06) * 9, 2)) * (0.07 + 0.05 * (1 - v)) * (1 - al)
-            const rim = Math.exp(-Math.pow((1 - u) * w / (3 * dpr), 2)) * 0.35
+            const streak = Math.exp(-Math.pow((u - 0.72 + v * 0.06) * 9, 2)) * (0.12 + 0.09 * (1 - v)) * (1 - al)
+            // the bevel: a bright arris down the right edge, a fainter one along the head
+            const rim = Math.exp(-Math.pow((1 - u) * w / (4 * dpr), 2)) * 0.75 + Math.exp(-Math.pow(v * hh / (3 * dpr), 2)) * 0.22 * u
             R0 = r0 * shd + mc[0] * (streak + rim + sp * 0.18)
             G0 = g0 * shd + mc[1] * (streak + rim + sp * 0.18)
             B0 = b0 * shd + mc[2] * (streak + rim + sp * 0.18)
@@ -596,5 +608,7 @@ export function steleScene(ctx: SceneCtx) {
   }))
   const lampArt = s('svg', { viewBox: '-20 -34 40 50', class: 't19s-lamp-svg' }, paperLantern(0, -30, 9, 1941, 12))
   lamp.append(lampArt)
+  root.classList.add('rest')
+  const lampDot = guide(ctx).dot(lamp, { dir: [1, -1] })
   ctx.onCleanup(onSize(ctx.art, layout))
 }

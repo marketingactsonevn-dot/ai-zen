@@ -137,7 +137,7 @@
     },
     "mason": {
       "label": "The mason who tests every step",
-      "art": "A stone stair climbs the moonlit hillside, one step of the solution written for the machine cut into each stair; tapped in order, the old stonemason climbs to it and strikes it with his hammer. On the landing, under a paper lantern, a wooden sign carries the problem as written for the machine; beside it hangs the scroll with the original problem, to drag up and compare.",
+      "art": "A stone stair climbs the moonlit hillside, one step of the solution written for the machine cut into each stair; tapped in order, the old stonemason climbs to it and strikes it with his hammer. On the landing, under a paper lantern, a wooden sign carries the problem as written for the machine; from a pine bough nearby hangs the scroll with the original problem, to drag up and compare.",
       "prompt": "Tap the first step",
       "steps": [
         "Tap the next step ({n}/{total})",
@@ -186,7 +186,7 @@
     },
     "circle": {
       "label": "Four chimes",
-      "art": "A stone well with a thick curb, the moon in its water; above it a square frame of wooden posts, a polished black stone chime hanging from each beam. Strike a chime and it swings, rings and sends a train of ripples across the well; the speaker's words appear on a hanging paper strip. When all four have rung, the ripples meet in the middle and cancel, the water stills and holds the whole moon.",
+      "art": "A stone well with a thick curb, the moon in its water; above it a square frame of wooden posts, four polished black stone chimes hanging from its front and back beams. Strike a chime and it swings, rings and sends a train of ripples across the well; the speaker's words appear on the water. When all four have rung, the ripples meet in the middle and cancel, the water stills and holds the whole moon.",
       "prompt": "Strike each stone chime",
       "stoneAria": "Hear the view of {who}",
       "perspectives": {

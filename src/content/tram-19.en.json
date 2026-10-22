@@ -191,6 +191,7 @@
       "art": "Lying at the water’s edge at one end of a long tidal flat that runs diagonally into the distance, to a mountain with cloud round its summit: time runs into depth. The tide is in, water covers the flat and the moon’s broken road runs toward you. Drag the moon across the sky and the water draws back toward the mountain while the stones rise in date order: far apart near you, crowding at the mountain’s foot and climbing its flank like steps.",
       "prompt": "Drag the moon: watch large models rise year by year",
       "moonAria": "Drag the moon, or use the ← → keys to move through the milestones",
+      "ticks": ["2022", "2023", "2024", "2025", "04/2026", "now"],
       "stones": "Each stone: one AI model at GPT-4 size or larger (as counted by Epoch AI)",
       "tide": {
         "milestones": [

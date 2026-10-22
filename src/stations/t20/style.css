@@ -162,6 +162,9 @@
 .t20m-cun { fill: var(--wash); opacity: 0.3; }
 :root[data-theme='dark'] .t20m-cun { fill: #000; opacity: 0.5; }
 .t20m-back, .t20m-hill:not(.t20m-front) { -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
+.t20m.wide .t20m-hill:not(.t20m-front) { -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(#000 82%, transparent 99%); -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(#000 82%, transparent 99%); mask-composite: intersect; }
+.t20m.wide .t20m-lampwrap { margin-top: -170px; }
+.t20m.wide .t20m-scroll::before { top: -50px; height: 50px; }
 .t20m-slope-ink { fill: var(--wash); opacity: 0.55; }
 :root[data-theme='dark'] .t20m-slope-ink { fill: var(--moon); opacity: 0.22; }
 .t20m-tuft, .t20m-blade { fill: var(--moss-b); opacity: 0.9; }
@@ -230,7 +233,7 @@
   transform: rotateX(90deg);
   background-image:
     linear-gradient(180deg, color-mix(in srgb, var(--umbra) 35%, transparent), transparent 40%),
-    linear-gradient(90deg, color-mix(in srgb, var(--moon) 22%, transparent), transparent 60%),
+    linear-gradient(90deg, color-mix(in srgb, var(--moon) 36%, transparent), color-mix(in srgb, var(--moon) 10%, transparent) 70%),
     var(--tex-tread, linear-gradient(0deg, var(--step-mid), var(--step-hi)));
   background-size: 100% 100%, 100% 100%, 200% 100%;
   background-position: 0 0, 0 0, calc(var(--i) * 27%) 0;
@@ -313,7 +316,8 @@
 @keyframes t20m-knock { 35% { transform: rotate(22deg); } 70% { transform: rotate(-48deg); } }
 /* the sign on the landing: two posts and a board with the problem as written for the machine */
 .t20m-sign { position: absolute; left: 0; top: 0; width: 300px; height: 200px; margin: -200px 0 0 -150px; pointer-events: none; }
-.t20m-post { position: absolute; bottom: 0; width: 11px; height: 100%; background: linear-gradient(90deg, color-mix(in srgb, var(--step-lo) 60%, var(--umbra)), var(--step-mid) 70%, var(--step-hi)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--umbra) 40%, transparent); }
+.t20m-sign { --wood: color-mix(in srgb, var(--step-mid) 62%, var(--lantern)); --wood-lo: color-mix(in srgb, color-mix(in srgb, var(--step-lo) 70%, var(--umbra)) 80%, var(--lantern)); }
+.t20m-post { position: absolute; bottom: 0; width: 13px; height: 100%; background: linear-gradient(90deg, var(--wood-lo), var(--wood) 70%, color-mix(in srgb, var(--wood) 70%, var(--moon))); box-shadow: 0 0 0 1px color-mix(in srgb, var(--umbra) 50%, transparent); }
 .t20m-post.l { left: 34px; }
 .t20m-post.r { right: 34px; }
 .t20m-board {
@@ -325,14 +329,20 @@
   display: flex;
   align-items: flex-end;
   padding: 10px 14px 12px;
-  border-radius: 3px;
+  border-radius: 4px 2px 5px 3px;
+  /* three weathered planks: iron nails, the grain running long, the lantern's warmth from upper left, dark worn edges */
   background:
-    repeating-linear-gradient(180deg, transparent 0 37px, color-mix(in srgb, var(--umbra) 30%, transparent) 37px 39px),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .2 .5 0 0 0 -.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    linear-gradient(180deg, var(--step-hi), var(--step-mid));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--umbra) 45%, transparent), 0 10px 18px -10px var(--umbra), 0 0 40px -6px color-mix(in srgb, var(--lantern) 40%, transparent);
+    radial-gradient(circle at 16px 13px, var(--umbra) 0 2.4px, color-mix(in srgb, var(--moon) 40%, transparent) 2.8px, transparent 4px),
+    radial-gradient(circle at calc(100% - 16px) 13px, var(--umbra) 0 2.4px, color-mix(in srgb, var(--moon) 40%, transparent) 2.8px, transparent 4px),
+    radial-gradient(circle at 16px calc(100% - 13px), var(--umbra) 0 2.4px, color-mix(in srgb, var(--moon) 40%, transparent) 2.8px, transparent 4px),
+    radial-gradient(circle at calc(100% - 16px) calc(100% - 13px), var(--umbra) 0 2.4px, color-mix(in srgb, var(--moon) 40%, transparent) 2.8px, transparent 4px),
+    radial-gradient(ellipse 70% 90% at 12% 0%, color-mix(in srgb, var(--lantern) 42%, transparent), transparent 70%),
+    repeating-linear-gradient(180deg, transparent 0 40px, color-mix(in srgb, var(--umbra) 55%, transparent) 40px 42px, color-mix(in srgb, var(--moon) 12%, transparent) 42px 43px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='124'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .28' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .1 0 0 0 0 .06 1.1 0 0 0 -.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, var(--wood), var(--wood-lo));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--umbra) 60%, transparent), inset 0 -6px 10px -6px var(--umbra), 0 12px 20px -10px var(--umbra), 0 0 60px -6px color-mix(in srgb, var(--lantern) 45%, transparent);
 }
-.t20m-board code { font: 400 17px/1.32 var(--serif); white-space: pre-wrap; color: var(--stone-text, var(--ink)); background: none; transition: color 0.8s 0.5s; }
+.t20m-board code { font: 500 17px/1.32 var(--serif); white-space: pre-wrap; color: color-mix(in srgb, var(--umbra) 78%, var(--lantern)); background: none; text-shadow: 0 1px 0 color-mix(in srgb, var(--lantern) 45%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 40%, transparent); transition: color 0.8s 0.5s; } /* burnt into the plank */
 .t20m-odd { transition: color 0.8s 0.5s, text-shadow 0.8s 0.5s; }
 /* held up together: everything but the mismatch fades, so "lẻ" on the scroll and "Even" on the board both read */
 .t20m.compared .t20m-board code { color: color-mix(in srgb, var(--ink) 28%, transparent); }
@@ -365,7 +375,7 @@
 .t20m.ok .t20m-scroll { cursor: grab; }
 .t20m-scroll.drag { transition: none; cursor: grabbing; z-index: 3; }
 .t20m-scroll:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 4px; }
-.t20m-rod { position: absolute; left: 0; right: 0; top: 0; height: 9px; border-radius: 5px; background: linear-gradient(180deg, var(--step-mid), color-mix(in srgb, var(--step-lo) 60%, var(--umbra))); box-shadow: 0 2px 4px -1px var(--umbra); }
+.t20m-rod { position: absolute; left: 0; right: 0; top: 0; height: 9px; border-radius: 5px; background: linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--step-lo) 70%, var(--lantern)) 80%, var(--moon)), color-mix(in srgb, color-mix(in srgb, var(--step-lo) 50%, var(--umbra)) 85%, var(--lantern))); box-shadow: 0 2px 4px -1px var(--umbra), inset 6px 0 0 -2px var(--umbra), inset -6px 0 0 -2px var(--umbra); }
 .t20m-rod.b { top: 66px; transform: translateY(-58px); transition: transform 1s var(--ease); }
 .t20m-paper {
   position: absolute;
@@ -379,10 +389,10 @@
   text-align: left;
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.04 .9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .3 0 0 0 0 .35 .25 0 0 0 -.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    var(--card);
+    color-mix(in srgb, var(--card) 86%, var(--lantern)); /* dó paper, warm */
   box-shadow: 0 6px 14px -8px var(--umbra);
   transform-origin: 50% 0;
-  transform: scaleY(0.04);
+  transform: scaleY(0.12);
   transition: transform 1s var(--ease), background-color 0.8s;
 }
 .t20m-orig { display: block; font: 400 17px/1.3 var(--serif); color: var(--ink); opacity: 0; transition: opacity 0.6s 0.6s, color 0.8s 0.5s; }
@@ -415,13 +425,13 @@
 :root[data-theme='dark'] .t20m-far-mason { fill: var(--moon); opacity: 0.6; }
 /* the folded card, handed once the scroll has been compared (top left, clear of the stair) */
 .t20m-card { position: absolute; left: 8px; top: 8px; z-index: 3; }
-.t20m:not(.wide) .t20m-line { font-size: 14.5px; }
-.t20m:not(.wide) .t20m-step { padding: 8px 30px 4px 12px; }
+.t20m:not(.wide) .t20m-line { font-size: 13.5px; }
+.t20m:not(.wide) .t20m-step { padding: 8px 22px 4px 12px; }
 .t20m:not(.wide) .t20m-sign { scale: 0.72; transform-origin: 50% 100%; }
 .t20m:not(.wide) .t20m-scroll { scale: 0.72; transform-origin: 50% 178px; /* the same anchor as the sign, so it lands square on the board */ }
 .t20m:not(.wide) .t20m-lampwrap { scale: 0.6; transform-origin: 33% 100%; }
 .t20m:not(.wide) .t20m-mason { scale: 0.74; transform-origin: 50% 100%; }
-.t20m:not(.wide) .t20m-mismatch { left: 4px; right: 4px; top: auto; bottom: 0; width: auto; translate: none; text-align: left; font-size: 14px; }
+.t20m:not(.wide) .t20m-mismatch { left: 16px; right: 16px; top: auto; bottom: 0; width: auto; translate: none; text-align: left; font-size: 14px; }
 .t20m.still .t20m-stage,
 .t20m.still .t20m-back { transform: none; transition: none; }
 
@@ -484,39 +494,25 @@
 .t20c .p2c-num { display: none; } /* a chime is told by the sign cut into it; its key and its name stay (aria, 1–4) */
 .t20c .p2c-stone { animation: none; border-radius: 30%; }
 .t20c .p2c-stone:hover .p2c-stone-art { transform: none; }
-/* the words on a strip of paper hung from the frame beside the chime just struck, on one cord, swaying a breath */
+/* the words written on the water of the well, the ink lifted by a breath of the water's own dark (no card, no strip) */
 .t20c .p2c-card {
-  width: 236px;
   max-height: none;
   overflow: visible;
   border: 0;
-  border-radius: 1px;
-  padding: 22px 18px 16px;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.04 .9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .3 0 0 0 0 .35 .22 0 0 0 -.04'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    linear-gradient(180deg, color-mix(in srgb, var(--card) 96%, var(--moon)), var(--card));
-  box-shadow: 6px 14px 22px -14px var(--umbra), 0 1px 0 color-mix(in srgb, var(--umbra) 20%, transparent);
-  transform-origin: 18% -30px;
-  rotate: 0.6deg;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 0 6px var(--paper), 0 0 14px var(--paper), 0 0 22px color-mix(in srgb, var(--paper) 70%, transparent);
   transition: left 0.6s var(--ease), top 0.6s var(--ease);
 }
-.t20c .p2c-card.left { rotate: -0.6deg; }
-.t20c .p2c-card::before {
-  content: '';
-  position: absolute;
-  left: 18%;
-  top: -30px;
-  height: 30px;
-  border-left: 1.5px solid color-mix(in srgb, var(--ink-3) 75%, transparent);
-}
-.t20c .p2c-card.left::before { left: 82%; }
-.t20c .p2c-card.left::after { left: calc(82% - 3px); }
-.t20c .p2c-card::after { content: ''; position: absolute; left: calc(18% - 3px); top: -3px; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3); }
-.t20c .p2c-who { font-size: 0.98rem; }
-.t20c .p2c-view { font-size: 1.02rem; line-height: 1.48; }
-.t20c:not(.wide) .p2c-card { width: 44%; padding: 16px 12px 12px; transform-origin: 50% -30px; }
-.t20c:not(.wide) .p2c-card::before { left: 50%; }
-.t20c:not(.wide) .p2c-card::after { left: calc(50% - 3px); }
-.t20c:not(.wide) .p2c-who { font-size: 0.9rem; }
-.t20c:not(.wide) .p2c-view { font-size: 0.92rem; line-height: 1.42; }
-.t20c.is-all .p2c-card { box-shadow: 6px 14px 22px -14px var(--umbra), 0 0 40px -10px color-mix(in srgb, var(--moon) 50%, transparent); }
+.t20c .p2c-card .cmark, .t20c .p2c-card a, .t20c .p2c-card button { pointer-events: auto; }
+.t20c .p2c-who { font-size: 0.92rem; color: var(--ink-2); margin: 0 0 4px; }
+.t20c .p2c-view { font-size: 1.12rem; line-height: 1.45; color: var(--ink); text-wrap: balance; }
+.t20c .p2c-count { justify-content: center; color: var(--ink-2); }
+:root[data-theme='dark'] .t20c .p2c-card { text-shadow: 0 0 6px var(--water), 0 0 14px var(--water), 0 0 24px var(--water); }
+.t20c .p2c-who-label { display: none; } /* the name is enough: one line less on the water */
+.t20c:not(.wide) .p2c-view { font-size: 0.98rem; line-height: 1.4; }
+.t20c:not(.wide) .p2c-who { font-size: 0.84rem; }
+.t20c.is-all .p2c-card { opacity: 0.9; }

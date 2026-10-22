@@ -16,10 +16,10 @@ const DEG = Math.PI / 180
 
 /** The stair's geometry in design units: risers Wb × Hb, treads Db deep, a camera low on the left (perspective P at o).
  *  xs: each block's sideways shift (tall: two flights, a zig-zag), sign/scroll/lamp: where they stand on the landing. */
-interface Design { DW: number; DH: number; P: number; o: Pt; Wb: number; Hb: number; Db: number; from: [number, number, number]; rot: number; xs?: number[]; sign: number; scroll: [number, number, number]; lamp: [number, number]; mason: number }
+interface Design { DW: number; DH: number; P: number; o: Pt; Wb: number; Hb: number; Db: number; from: [number, number, number]; rot: number; xs?: number[]; sign: number; scroll: [number, number, number]; lamp: [number, number]; mason: number; hang?: [number, number, number] }
 // wide: a long flight seen from its left flank; tall: two short flights folded back on the hillside, the steps ~70% wide
-const WIDE: Design = { DW: 1000, DH: 620, P: 1100, o: [240, 500], Wb: 260, Hb: 80, Db: 104, from: [170, 500, 60], rot: -36, sign: -0.1, scroll: [1.02, 0, -0.85], lamp: [-0.1, -1.6], mason: 0.84 }
-const TALL: Design = { DW: 360, DH: 600, P: 820, o: [180, 440], Wb: 236, Hb: 74, Db: 46, from: [20, 466, 20], rot: -16, xs: [0, 46, 92, 46, 0], sign: 0.4, scroll: [0.5, -1.05, -0.2], lamp: [0.75, -1.2], mason: 0.86 }
+const WIDE: Design = { DW: 1100, DH: 620, P: 1100, o: [300, 260], Wb: 260, Hb: 78, Db: 96, from: [100, 480, 20], rot: -30, xs: [0, 90, 180, 270, 360], sign: 0.55, scroll: [1.02, 0, -0.85], lamp: [-0.12, -1.2], mason: 0.84, hang: [330, 330, 0] }
+const TALL: Design = { DW: 360, DH: 600, P: 820, o: [180, 440], Wb: 226, Hb: 74, Db: 46, from: [44, 466, 20], rot: -16, xs: [0, 46, 92, 46, 0], sign: 0.4, scroll: [0.5, -1.05, -0.2], lamp: [0.75, -1.2], mason: 0.86 }
 
 /**
  * Scene 3 · the stonemason (2.5D, LOW from beside the stair; the camera stays put). A stair of rough stone climbs an earth
@@ -157,7 +157,10 @@ export function masonScene(ctx: SceneCtx) {
     // the blocks: each riser's top-left corner, run by run (a flight climbs along -normal by Db, up by Hb)
     const c = [-Math.sin(D.rot * DEG), 0, -Math.cos(D.rot * DEG)]
     // the landing is a lower curb (0.8 of a riser) sitting on the last tread
-    origins = [...steps, landing].map((_, q) => [D.from[0] + c[0] * D.Db * q + (D.xs?.[q] ?? 0), D.from[1] - D.Hb * q + (q === steps.length ? D.Hb * 0.2 : 0), D.from[2] + c[2] * D.Db * q, D.rot])
+    // xs: each block also slides sideways along its own width, so the flight climbs the hill on a diagonal, every riser
+    // still resting on the tread below it
+    const ax = [Math.cos(D.rot * DEG), -Math.sin(D.rot * DEG)]
+    origins = [...steps, landing].map((_, q) => [D.from[0] + c[0] * D.Db * q + ax[0] * (D.xs?.[q] ?? 0), D.from[1] - D.Hb * q + (q === steps.length ? D.Hb * 0.2 : 0), D.from[2] + c[2] * D.Db * q + ax[1] * (D.xs?.[q] ?? 0), D.rot])
     ;[...steps, landing].forEach((el, i) => {
       const o = origins[i]
       el.style.transform = t3(o, ` rotateY(${o[3]}deg)`)
@@ -165,7 +168,8 @@ export function masonScene(ctx: SceneCtx) {
     const L = origins[steps.length]
     // on the landing: the sign under the lantern, the original scroll hanging beside it, the mismatch line below
     signAt = rot(L, D.Wb * D.sign, 0, -D.Db * 0.85)
-    restScroll = rot(L, D.Wb * D.scroll[0], D.Hb * D.scroll[1], D.Db * D.scroll[2])
+    // wide: the original hangs upper left from a pine bough, level with the sign (a counterweight); tall: by the landing
+    restScroll = D.hang ?? rot(L, D.Wb * D.scroll[0], D.Hb * D.scroll[1], D.Db * D.scroll[2])
     held = [signAt[0], signAt[1] - 44, signAt[2] + 6] // over the board's upper half, clear of the code cut below
     sign.style.transform = t3(signAt)
     lampWrap.style.transform = t3(rot(L, D.Wb * D.lamp[0], 0, D.Db * D.lamp[1]))
@@ -176,13 +180,14 @@ export function masonScene(ctx: SceneCtx) {
     scroll.style.transform = t3(root.classList.contains('compared') ? held : restScroll)
     placeMason(masonAt, false)
     paintHill(wide)
-    paintBack(W, H, wide)
+    paintBack(W, H, wide, left, top)
     texture()
+    g.refresh() // the dot and the count follow the blocks just moved
   }
 
   function standAt(i: number): number[] {
-    if (i < 0) return rot(origins[0], -D.Wb * 0.08, D.Hb * 1.05, D.Db * 0.5) // at the foot of the stair
-    if (i >= steps.length) return rot(origins[i], D.Wb * (D === TALL ? 1.0 : 0.86), 0, -D.Db * 0.45) // on the landing, clear of the words and the sign
+    if (i < 0) return rot(origins[0], D === TALL ? D.Wb * 0.02 : -D.Wb * 0.08, D.Hb * 1.05, D.Db * 0.5) // at the foot of the stair, inside the frame
+    if (i >= steps.length) return rot(origins[i], D.Wb * (D === TALL ? 1.0 : 0.1), 0, -D.Db * 0.45) // on the landing, clear of the words and the sign
     return rot(origins[i], D.Wb * D.mason, 0, -D.Db * 0.5) // crouched on the tread, at its right end
   }
   function placeMason(i: number, climb: boolean) {
@@ -277,7 +282,7 @@ export function masonScene(ctx: SceneCtx) {
       grass(feet[0][0] - 40, feet[0][1] + 16, 46, 2055))
   }
 
-  function paintBack(W: number, H: number, wide: boolean) {
+  function paintBack(W: number, H: number, wide: boolean, left: number, top: number) {
     back.setAttribute('viewBox', `0 0 ${W} ${H}`)
     const hz = H * (wide ? 0.62 : 0.5)
     const r = rng(2060)
@@ -286,7 +291,7 @@ export function masonScene(ctx: SceneCtx) {
     let flight = ''
     for (let q = 0; q < 6; q++) flight += `M${(sx + q * 9).toFixed(1)} ${(sy - q * 8).toFixed(1)}h12v8h-12Z`
     back.replaceChildren(
-      moon(W * (wide ? 0.13 : 0.8), H * (wide ? 0.16 : 0.07), Math.min(30, W * 0.035 + 8), 2061, true),
+      moon(W * (wide ? 0.4 : 0.8), H * (wide ? 0.08 : 0.07), Math.min(30, W * 0.035 + 8), 2061, true),
       mist(W * 0.5, hz - H * 0.22, W * 0.7, H * 0.2),
       range(-W * 0.05, W * 1.05, hz, H * 0.3, 2062, 0.85, wide ? 6 : 3),
       mist(W * 0.5, hz - H * 0.02, W * 0.8, H * 0.08),
@@ -295,11 +300,22 @@ export function masonScene(ctx: SceneCtx) {
         s('path', { class: 't20m-far-stair', d: flight }),
         s('path', { class: 't20m-far-mason', d: stroke(curve([sx + 40, sy - 44], [sx + 36, sy - 36], [sx + 40, sy - 30], 6), 4, 0.1, 0.3, 0.3) + stroke([[sx + 35, sy - 47], [sx + 40, sy - 52], [sx + 45, sy - 47]], 3, 0.2, 0.2, 0.3) + stroke([[sx + 43, sy - 42], [sx + 49, sy - 49]], 1.4, 0.1, 0.1, 0.5) })),
       mist(W * 0.62, hz + H * 0.04, W * 0.6, H * 0.07),
-      mist(W * (0.3 + r() * 0.1), hz + H * 0.1, W * 0.5, H * 0.06))
-    // the lantern under a pine bough above the sign
+      mist(W * (0.3 + r() * 0.1), hz + H * 0.1, W * 0.5, H * 0.06),
+      ...(D.hang ? bough(W, H, left, top) : []))
+    // the lantern on its bough, beside the sign
     lamp.replaceChildren(
       s('path', { class: 't20m-bough', d: stroke(curve([300, -18], [110, 10], [-60, 2], 18), 8, 0.02, 0.55, 0.2) + stroke(curve([60, 6], [20, 22], [-30, 30], 8), 3, 0.05, 0.5, 0.2) + stroke(curve([180, 2], [150, 24], [110, 34], 8), 2.6, 0.05, 0.5, 0.2), filter: 'url(#ink-rough)' }),
       paperLantern(0, 8, 15, 2064, 22))
+  }
+
+  /** wide: a pine leaning in from the left edge, its long bough reaching over to hold the original's cord */
+  function bough(W: number, H: number, left: number, top: number) {
+    const hx = left + D.hang![0] * k, hy = top + (D.hang![1] - 178 - 52) * k // the cord's top (.t20m.wide .t20m-scroll::before)
+    const tx = Math.max(W * 0.03, hx - 300 * k)
+    return [
+      pine(tx - 40 * k, H * 0.86, H * 0.95, 2066, 1),
+      s('path', { class: 'p2p-trunk', d: stroke(curve([tx - 10 * k, hy + 34 * k], [hx - 120 * k, hy - 18 * k], [hx + 70 * k, hy + 6 * k], 14), 7 * k, 0.05, 0.55, 0.2) + stroke(curve([hx - 60 * k, hy - 4 * k], [hx - 20 * k, hy - 26 * k], [hx + 20 * k, hy - 30 * k], 8), 2.6 * k, 0.05, 0.5, 0.2), filter: 'url(#ink-rough)' }),
+    ]
   }
 
   // ── the stone itself: three textures (riser, tread, flank) painted once per theme, worn by every block ──
@@ -322,7 +338,7 @@ export function masonScene(ctx: SceneCtx) {
     const W2 = D.Wb * 2, HB = D.Hb + 10
     const faces: [string, number, number, RGB, 'bottom' | 'back' | null][] = [
       ['--tex-riser', W2, HB, p.dark ? mix(p['rock-lo'], p['rock-mid'], 0.35) : mix(p['rock-mid'], p['rock-hi'], 0.25), 'bottom'],
-      ['--tex-tread', W2, D.Db + 10, p.dark ? mix(p['rock-mid'], p['rock-hi'], 0.45) : p['rock-hi'], 'back'],
+      ['--tex-tread', W2, D.Db + 10, p.dark ? mix(p['rock-mid'], p['rock-hi'], 0.75) : p['rock-hi'], 'back'],
       ['--tex-flank', D.Db * 2 + 20, HB * 1.3, p.dark ? mix(p['rock-lo'], p.umbra, 0.35) : mix(p['rock-lo'], p['rock-mid'], 0.3), null],
     ]
     const out: { name: string; c: HTMLCanvasElement }[] = []
@@ -430,6 +446,7 @@ export function masonScene(ctx: SceneCtx) {
     scroll.setAttribute('aria-disabled', 'true')
     ctx.chime('low')
     dot.done()
+    count.done() // the stair is done with: its count gives the foot back to the words
     place?.hit()
     ctx.insight(M.insights[1] as Fact, [M.detail as Fact, M.codeNote as Fact])
     const card = findTakeaway(M.takeaway)

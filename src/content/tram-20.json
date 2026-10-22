@@ -137,7 +137,7 @@
     },
     "mason": {
       "label": "Người thợ đá kiểm từng bậc",
-      "art": "Một cầu thang đá leo chéo lên sườn đồi dưới trăng, mỗi bậc khắc một bước của lời giải viết cho máy; gõ đúng thứ tự, người thợ đá già leo lên bậc đó và gõ búa. Trên chiếu nghỉ, dưới đèn lồng, tấm biển gỗ ghi đề bài viết cho máy; bên cạnh treo cuộn giấy đề gốc để kéo lên đối chiếu.",
+      "art": "Một cầu thang đá leo chéo lên sườn đồi dưới trăng, mỗi bậc khắc một bước của lời giải viết cho máy; gõ đúng thứ tự, người thợ đá già leo lên bậc đó và gõ búa. Trên chiếu nghỉ, dưới đèn lồng, tấm biển gỗ ghi đề bài viết cho máy; trên cành thông gần đó treo cuộn giấy đề gốc để kéo lên đối chiếu.",
       "prompt": "Gõ bậc thứ nhất",
       "steps": [
         "Gõ bậc tiếp theo ({n}/{total})",
@@ -186,7 +186,7 @@
     },
     "circle": {
       "label": "Bốn tiếng khánh",
-      "art": "Một giếng đá có vành dày, nước in trăng; trên giếng là khung cột gỗ vuông, mỗi xà treo một khánh đá đen bóng. Gõ khánh nào, khánh ấy đung đưa, ngân và gửi một chuỗi gợn sóng qua mặt giếng; lời người nói hiện trên dải giấy treo. Khi cả bốn cùng ngân, các chuỗi gợn gặp nhau ở giữa và triệt tiêu, nước lặng và in trọn vầng trăng.",
+      "art": "Một giếng đá có vành dày, nước in trăng; trên giếng là khung cột gỗ vuông, xà trước và xà sau treo bốn khánh đá đen bóng. Gõ khánh nào, khánh ấy đung đưa, ngân và gửi một chuỗi gợn sóng qua mặt giếng; lời người nói hiện trên mặt nước. Khi cả bốn cùng ngân, các chuỗi gợn gặp nhau ở giữa và triệt tiêu, nước lặng và in trọn vầng trăng.",
       "prompt": "Gõ từng khánh đá",
       "stoneAria": "Nghe góc nhìn của {who}",
       "perspectives": {
