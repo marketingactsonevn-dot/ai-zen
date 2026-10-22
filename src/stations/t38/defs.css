@@ -339,6 +339,21 @@
   stroke-width: 1.3;
   opacity: 0.9;
 }
+.t38d-dawn {
+  fill: var(--dawn);
+  opacity: 0.42;
+}
+:root[data-theme='light'] .t38d-dawn {
+  opacity: 0.45;
+}
+.t38d-ripple {
+  fill: var(--moon);
+  opacity: 0.4;
+}
+:root[data-theme='light'] .t38d-ripple {
+  fill: var(--rake-hi);
+  opacity: 0.7;
+}
 .t38d-rip {
   fill: none;
   stroke: var(--moon);
@@ -359,6 +374,10 @@
 }
 .pouring .t38d-rip {
   animation: t38d-rip 1.7s calc(0.7s + var(--k) * 0.32s) ease-out both;
+}
+/* H7: idle, the water of the next vessel stirs once */
+.stir .t38d-rip {
+  animation: t38d-rip 1.5s calc(var(--k) * 0.3s) ease-out both;
 }
 .pouring .t38d-disc {
   animation: t38d-shiver 1.2s 0.6s ease-in-out both;
@@ -433,6 +452,20 @@
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .3 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23f)'/%3E%3C/svg%3E"),
     linear-gradient(100deg, var(--rock-hi), var(--rock-mid) 55%, var(--rock-lo));
 }
+.t38d-name::after {
+  content: '';
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  bottom: -5px;
+  height: 9px;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side at 22% 45%, color-mix(in srgb, var(--moss-b) 85%, transparent), transparent),
+    radial-gradient(closest-side at 80% 55%, color-mix(in srgb, var(--moss-a) 70%, transparent) 30%, transparent),
+    radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 55%, transparent), transparent);
+  z-index: -1;
+}
 .heard .t38d-name-in {
   background-color: color-mix(in srgb, var(--moss-c) 20%, transparent);
 }
@@ -505,7 +538,8 @@
   .is-all .t38d-threads path {
     transition: none;
   }
-  .pouring * {
+  .pouring *,
+  .stir * {
     animation: none !important;
   }
 }
@@ -514,6 +548,31 @@
   transition: none;
 }
 
+/* one block at a time: the key goes once a stone is touched; the strip stands back while the camera leans in; with the
+   insight only the threads of moonlight remain */
+.t38d-legend {
+  transition: opacity 0.5s;
+}
+.heard-any .t38d-legend {
+  opacity: 0;
+}
+.t38d.close .t38d-strip,
+.t38d.close .t38d-cord {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.t38d.is-all .t38d-strip,
+.t38d.is-all .t38d-cord {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s, visibility 0s 0.6s;
+}
+.t38d-count-at {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
 /* what AGI means, said once over the scene (audit 38-1) */
 .t38d-legend {
   position: absolute;

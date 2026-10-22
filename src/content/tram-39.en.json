@@ -333,17 +333,17 @@
               "local",
               "code"
             ],
-            "note": "On a phone: use the chat assistant app and the web or app versions of image and video tools."
+            "note": "Phone: the chat assistant app and an image or video app are enough."
           },
           "laptop": {
             "drop": [],
-            "note": "Ordinary laptop: AI on your own machine only runs small versions; you don’t need it at first."
+            "note": "Ordinary laptop: local AI only runs small versions; skip it at first."
           },
           "strong": {
             "add": [
               "local"
             ],
-            "note": "Powerful machine: try running open models locally, so your data never leaves it."
+            "note": "Powerful machine: try an AI that runs on it; your data stays there."
           }
         },
         "budget": {
@@ -352,7 +352,7 @@
               "chat",
               "skill"
             ],
-            "note": "Most tools have a limited free plan. Starting with one chat assistant is enough."
+            "note": "Not paying yet: start with the free plan of a chat assistant; this one can wait."
           },
           "mid": {
             "note": "Pay for the one tool you use most; avoid piling up subscriptions."
@@ -378,8 +378,9 @@
     "path": {
       "label": "A 30-day path",
       "art": "From the veranda step you look up a backlit moss slope: a gravel path leads to a garden gate on the horizon, the sun about to rise behind it, a thin moon still in a corner of the sky. Along the path wait four empty hollows, smaller the farther they are; four week-stones lie on the veranda floor, each carved with a thing: a tea bowl, a picture frame, a scroll, a wooden box. Each stone stands on the one before; once all are set, the sun clears the gate and a ray runs down the path waking each stone.",
-      "prompt": "Drag each stone up the path — the one that is the base goes first",
+      "prompt": "Drag the base stone up to the lowest hollow (1/4)",
       "next": "Drag the next stone up to hollow {n} ({n}/{total})",
+      "shorts": ["Clear tasks", "One whole piece", "Write it down", "A small app"],
       "keys": "Press 1 to 4 to set the stone of week 1 to week 4",
       "stoneAria": "Week {n}: {label}",
       "wrong": "This stone needs “{prev}” underneath as its base.",
@@ -429,6 +430,7 @@
       "prompt": "Drag the leaf to visit each lantern ({n}/{total})",
       "drop": "Let the leaf go in the ring in the middle",
       "legend": "Each lantern is a piece of advice or a study about learning with AI. The leaf is you.",
+      "lampAria": "Lamp {n}",
       "leafAria": "The leaf is you: Enter to visit the next lantern; once all three have spoken, Enter to let it go in the middle",
       "group": "Three views on learning with AI",
       "stoneAria": "View: {who}",

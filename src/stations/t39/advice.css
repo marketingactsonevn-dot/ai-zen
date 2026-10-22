@@ -1,10 +1,19 @@
-/* Scene 4 · advice — a puddle in the moss seen from a few centimetres above it (perspectiveCircle with this station's
-   stage: a full-bleed painting, a light canvas, the leaf; the lamps are the component's stones). */
+/* Scene 3 · advice — a rain puddle in the moss at sunrise, seen from a few centimetres above it (perspectiveCircle with
+   this station's stage: a full-bleed painting, a light canvas, the leaf; the lamps are the component's stones). The
+   water is always darker than the sky; the low sun on the right rakes the moss and throws long shadows left. */
 .t39v-bleed {
   /* the moss from the horizon's haze to the lens: pale and warm far off, dark and saturated near */
-  --t39v-far: color-mix(in srgb, color-mix(in srgb, var(--lantern) 25%, var(--mist)) 75%, var(--moss-c));
-  --t39v-mid: color-mix(in srgb, var(--moss-c) 70%, var(--paper-2));
-  --t39v-near: color-mix(in srgb, var(--moss-b) 80%, var(--umbra));
+  --t39v-far: color-mix(in srgb, color-mix(in srgb, var(--lantern) 22%, var(--mist)) 70%, var(--moss-c));
+  --t39v-mid: color-mix(in srgb, var(--moss-a) 75%, var(--paper-2));
+  --t39v-near: color-mix(in srgb, var(--moss-b) 70%, var(--umbra));
+  /* the mirror: the dawn at its far edge (dimmer than the sky it shows), the deep near you */
+  --t39v-m0: color-mix(in srgb, #f4c4a6 30%, color-mix(in srgb, var(--paper) 32%, var(--water)));
+  --t39v-m1: color-mix(in srgb, var(--paper) 14%, var(--water));
+  --t39v-m2: color-mix(in srgb, var(--water) 72%, var(--umbra));
+  /* granite: mid grey with a real shade side */
+  --t39v-g0: color-mix(in srgb, var(--rock-lo) 45%, var(--umbra));
+  --t39v-g1: color-mix(in srgb, var(--rock-lo) 80%, var(--rock-mid));
+  --t39v-g2: color-mix(in srgb, var(--lantern) 28%, var(--rock-mid));
   position: absolute;
   left: calc(-1 * var(--gutter));
   right: calc(-1 * var(--gutter));
@@ -13,8 +22,20 @@
   overflow: hidden;
   overflow: clip;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 84px), transparent);
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 84px), transparent);
+  background: var(--t39v-near);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+}
+:root[data-theme='dark'] .t39v-bleed {
+  --t39v-far: color-mix(in srgb, color-mix(in srgb, var(--lantern) 18%, var(--mist)) 26%, var(--moss-b));
+  --t39v-mid: color-mix(in srgb, var(--moss-b) 70%, var(--paper));
+  --t39v-near: color-mix(in srgb, var(--moss-b) 45%, var(--umbra));
+  --t39v-m0: color-mix(in srgb, #e8b092 20%, color-mix(in srgb, var(--mist) 20%, var(--paper)));
+  --t39v-m1: color-mix(in srgb, var(--paper) 70%, var(--water));
+  --t39v-m2: var(--water);
+  --t39v-g0: color-mix(in srgb, var(--rock-lo) 70%, var(--umbra));
+  --t39v-g1: color-mix(in srgb, var(--rock-lo) 55%, var(--rock-mid));
+  --t39v-g2: color-mix(in srgb, var(--lantern) 35%, var(--rock-mid));
 }
 .t39v-bleed svg {
   max-width: none;
@@ -26,106 +47,216 @@
   width: 100%;
   height: 100%;
 }
-:root[data-theme='dark'] .t39v-bleed {
-  --t39v-far: color-mix(in srgb, color-mix(in srgb, var(--lantern) 20%, var(--mist)) 30%, var(--moss-b));
-  --t39v-mid: color-mix(in srgb, var(--moss-b) 80%, var(--paper));
-  --t39v-near: color-mix(in srgb, var(--moss-b) 55%, var(--umbra));
-}
 .t39v-forewrap {
   position: absolute;
   inset: 0;
-  filter: blur(9px);
+  filter: blur(7px);
 }
 :root[data-quality='low'] .t39v-forewrap {
   filter: none;
-  opacity: 0.6;
+  opacity: 0.7;
 }
-/* without the lens blur, the tall blades would read as sharp spikes: low keeps only the soft mounds */
-:root[data-quality='low'] .t39v-blades {
-  display: none;
-}
-.t39v-shrubs {
-  fill: var(--wash);
-  opacity: 0.14;
-}
-:root[data-theme='dark'] .t39v-shrubs {
-  opacity: 0.6;
-}
-.t39v-moss-dk {
-  fill: var(--umbra);
-  opacity: 0.22;
-}
-.t39v-moss-lt {
-  fill: var(--moss-c);
-  opacity: 0.45;
-}
-:root[data-theme='dark'] .t39v-moss-lt {
-  opacity: 0.3;
-}
-.t39v-moss-hi {
-  fill: color-mix(in srgb, var(--lantern) 50%, #fff);
+
+/* the far bank */
+.t39v-hedge {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--moss-b));
   opacity: 0.55;
 }
-:root[data-theme='dark'] .t39v-moss-hi {
+:root[data-theme='dark'] .t39v-hedge {
+  fill: color-mix(in srgb, var(--wash) 60%, var(--moss-b));
+  opacity: 0.9;
+}
+.t39v-hedge-lit {
   fill: var(--lantern);
+  opacity: 0.55;
+}
+.t39v-maple-wood {
+  fill: color-mix(in srgb, var(--wash) 85%, var(--moss-b));
+  opacity: 0.85;
+}
+.t39v-maple-leaf {
+  fill: color-mix(in srgb, var(--vermilion) 75%, var(--wash));
+  opacity: 0.85;
+}
+.t39v-maple-dk {
+  fill: color-mix(in srgb, var(--vermilion) 40%, var(--wash));
+  opacity: 0.85;
+}
+.t39v-maple-lit {
+  fill: color-mix(in srgb, var(--vermilion) 60%, var(--lantern));
+  opacity: 0.95;
+}
+
+/* the ground */
+.t39v-streak {
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .t39v-streak {
+  opacity: 0.28;
+}
+/* the moss rows (top of a row lit, its crevice dark), far rows melting into the haze */
+.t39v-bleed {
+  --t39v-r0a: color-mix(in srgb, var(--moss-c) 55%, var(--t39v-far));
+  --t39v-r0b: color-mix(in srgb, var(--moss-a) 40%, var(--t39v-far));
+  --t39v-r0c: color-mix(in srgb, var(--moss-b) 55%, var(--t39v-far));
+  --t39v-r1a: color-mix(in srgb, var(--moss-c) 65%, var(--moss-a));
+  --t39v-r1b: color-mix(in srgb, var(--moss-a) 55%, var(--moss-b));
+  --t39v-r1c: color-mix(in srgb, var(--moss-b) 65%, var(--umbra));
+  --t39v-r2a: color-mix(in srgb, var(--moss-a) 65%, var(--moss-c));
+  --t39v-r2b: var(--moss-b);
+  --t39v-r2c: color-mix(in srgb, var(--moss-b) 35%, var(--umbra));
+}
+:root[data-theme='dark'] .t39v-bleed {
+  --t39v-r0a: color-mix(in srgb, var(--moss-c) 50%, var(--t39v-far));
+  --t39v-r0b: color-mix(in srgb, var(--moss-a) 45%, var(--t39v-far));
+  --t39v-r0c: color-mix(in srgb, var(--moss-b) 60%, var(--t39v-far));
+  --t39v-r1a: color-mix(in srgb, var(--moss-c) 70%, var(--moss-a));
+  --t39v-r1b: var(--moss-a);
+  --t39v-r1c: color-mix(in srgb, var(--moss-b) 55%, var(--umbra));
+  --t39v-r2a: color-mix(in srgb, var(--moss-c) 55%, var(--moss-a));
+  --t39v-r2b: var(--moss-b);
+  --t39v-r2c: color-mix(in srgb, var(--moss-b) 30%, var(--umbra));
+}
+.t39v-mlit {
+  fill: color-mix(in srgb, var(--lantern) 55%, var(--moss-c));
+}
+.t39v-mlit.t39v-b0 {
   opacity: 0.3;
+}
+.t39v-mlit.t39v-b1 {
+  opacity: 0.5;
+}
+.t39v-mlit.t39v-b2 {
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t39v-mlit {
+  fill: color-mix(in srgb, var(--lantern) 45%, var(--moss-c));
+}
+:root[data-theme='dark'] .t39v-mlit.t39v-b0 {
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t39v-mlit.t39v-b1 {
+  opacity: 0.38;
+}
+:root[data-theme='dark'] .t39v-mlit.t39v-b2 {
+  opacity: 0.45;
+}
+.t39v-rimmoss {
+  fill: color-mix(in srgb, var(--moss-b) 75%, var(--umbra));
+}
+.t39v-rimmoss-lit {
+  fill: color-mix(in srgb, var(--lantern) 50%, var(--moss-c));
+  opacity: 0.5;
+}
+.t39v-frond {
+  fill: color-mix(in srgb, var(--moss-c) 50%, var(--lantern));
+  opacity: 0.55;
+}
+.t39v-dew {
+  fill: #fff;
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t39v-dew {
+  fill: var(--lantern);
+  opacity: 0.55;
+}
+.t39v-cast {
+  opacity: 0.9;
+}
+/* at dawn in the dark theme the moss is dark already: the shadow also eats the lit hump tops under it */
+:root[data-theme='dark'] .t39v-casts {
+  filter: blur(1.2px);
+}
+:root[data-theme='dark'] .t39v-cast {
+  opacity: 1;
+  fill-opacity: 1;
 }
 /* the warm pool each lamp lays on the moss at its foot */
 .t39v-pool {
   transition: opacity 0.4s;
 }
-.t39v-wet {
+
+/* the puddle */
+.t39v-mud {
+  fill: color-mix(in srgb, var(--umbra) 70%, var(--rock-lo));
+  opacity: 0.55;
+}
+.t39v-mirror {
+  opacity: 1;
+}
+.t39v-dawnref {
+  opacity: 0.8;
+}
+.t39v-reflect {
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t39v-reflect {
+  opacity: 0.55;
+}
+.t39v-rip-lt {
+  fill: #fff;
+  opacity: 0.4;
+}
+:root[data-theme='dark'] .t39v-rip-lt {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--moon));
+  opacity: 0.22;
+}
+.t39v-rip-dk {
   fill: var(--umbra);
-  opacity: 0.3;
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t39v-rip-dk {
+  fill: var(--moon);
+  opacity: 0.06;
 }
 .t39v-lip {
-  fill: color-mix(in srgb, var(--lantern) 50%, #fff);
-  opacity: 0.8;
+  fill: color-mix(in srgb, var(--lantern) 55%, #fff);
+  opacity: 0.85;
 }
 :root[data-theme='dark'] .t39v-lip {
   fill: var(--lantern);
+  opacity: 0.5;
+}
+.t39v-nearlip {
+  fill: var(--umbra);
   opacity: 0.45;
 }
-.t39v-mirror {
-  opacity: 0.95;
+.t39v-peb {
+  fill: color-mix(in srgb, var(--rock-lo) 70%, var(--umbra));
 }
-.t39v-reflect {
-  opacity: 0.4;
+.t39v-peb-hi {
+  fill: color-mix(in srgb, var(--rock-mid) 70%, var(--lantern));
+  opacity: 0.8;
 }
-.t39v-glint {
-  fill: #fff;
-  opacity: 0.7;
+:root[data-theme='dark'] .t39v-peb-hi {
+  opacity: 0.5;
 }
-:root[data-theme='dark'] .t39v-glint {
-  fill: var(--moon);
-  opacity: 0.35;
-}
-.t39v-rim {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1.4;
-  opacity: 0.35;
-}
-:root[data-theme='dark'] .t39v-rim {
-  stroke: var(--moon);
-  opacity: 0.2;
+
+/* the nearest moss, out of focus */
+.t39v-near-sh {
+  fill: var(--umbra);
+  opacity: 0.3;
 }
 .t39v-near {
-  fill: color-mix(in srgb, var(--moss-b) 62%, var(--umbra));
+  fill: color-mix(in srgb, var(--moss-b) 70%, var(--umbra));
 }
 .t39v-near-hi {
   fill: color-mix(in srgb, var(--lantern) 35%, var(--moss-c));
-  opacity: 0.7;
+  opacity: 0.45;
 }
 .t39v-bokeh {
   fill: color-mix(in srgb, var(--lantern) 55%, #fff);
-  opacity: 0.32;
+  opacity: 0.28;
 }
 :root[data-theme='dark'] .t39v-bokeh {
   fill: var(--lantern);
-  opacity: 0.18;
+  opacity: 0.22;
 }
 
+/* the circle: one stacking layer under the insight's zone (the lamps' z-index never climbs over the text) */
+.t39v {
+  z-index: 1;
+}
 .t39v .p2c-halo,
 .t39v .p2c-ring,
 .t39v .p2c-num {
@@ -134,23 +265,43 @@
 .t39v .p2c-stone {
   --lit: 0.5;
   pointer-events: none;
+  animation: none;
 }
-.t39v .p2c-stone .t39v-lamp-stone,
-.t39v .p2c-stone .t39v-fire {
-  pointer-events: visiblePainted;
+/* only the post and firebox take a touch (≤ 160 px wide on a desk) */
+.t39v-hit {
+  fill: transparent;
+  pointer-events: all;
   cursor: pointer;
 }
 .t39v .p2c-stone:focus-visible {
   outline: none;
 }
-.t39v .p2c-stone:focus-visible .t39v-lamp-stone {
+.t39v .p2c-stone:focus-visible .t39v-hit {
   stroke: var(--ink-2);
-  stroke-width: 1.2;
+  stroke-width: 0.8;
 }
-/* the lantern: weathered granite, lichen on its roof, the fire behind the lattice */
+/* the lantern: weathered granite on a fieldstone slab, lichen on its roof, the fire behind the lattice */
 .t39v-contact {
   fill: var(--umbra);
-  opacity: 0.4;
+  opacity: 0.45;
+}
+.t39v-slab {
+  fill: color-mix(in srgb, var(--rock-lo) 60%, var(--umbra));
+}
+.t39v-slab-top {
+  fill: color-mix(in srgb, var(--rock-mid) 75%, var(--lantern));
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t39v-slab-top {
+  fill: color-mix(in srgb, var(--rock-mid) 80%, var(--lantern));
+  opacity: 0.6;
+}
+.t39v-slab-moss {
+  fill: var(--moss-a);
+}
+.t39v-foot {
+  fill: var(--umbra);
+  opacity: 0.5;
 }
 .t39v-fire {
   fill: color-mix(in srgb, var(--lantern) 75%, #fff);
@@ -169,8 +320,9 @@
 .t39v-lattice {
   fill: color-mix(in srgb, var(--rock-lo) 50%, var(--umbra));
 }
-.t39v .p2c-stone .t39v-lamp-stone {
-  fill: url(#g39-lampstone);
+.t39v .p2c-stone .t39v-lamp-stone,
+.t39v-reflect .t39v-lamp-stone {
+  fill: url(#t39v-granite);
 }
 .t39v-eave {
   fill: var(--umbra);
@@ -203,21 +355,25 @@
 :root[data-theme='dark'] .t39v-lamp-rim {
   opacity: 0.55;
 }
+
+/* the leaf: you */
 .t39v-light {
   position: absolute;
-  left: 0;
-  top: 0;
   pointer-events: none;
 }
 .t39v-leaf {
   position: absolute;
-  left: -48px;
-  top: -48px;
-  width: 96px;
-  height: 96px;
+  left: 0;
+  top: 0;
   cursor: grab;
   touch-action: none;
   z-index: 2;
+}
+.t39v-leaf:focus-visible {
+  outline: none;
+}
+.t39v-leaf:focus-visible svg {
+  filter: drop-shadow(0 0 5px var(--lantern));
 }
 .t39v-leaf.drag {
   cursor: grabbing;
@@ -227,32 +383,96 @@
   height: 100%;
   overflow: visible;
 }
+/* the dot rides the leaf's middle */
+.t39v-leaf > .p2g-dot.ride {
+  top: 50%;
+}
 .t39v-leaf-body {
   fill: var(--vermilion);
 }
 .t39v-leaf-lit {
-  fill: color-mix(in srgb, var(--vermilion) 60%, var(--lantern));
-  opacity: 0.55;
+  fill: color-mix(in srgb, var(--vermilion) 55%, var(--lantern));
+  opacity: 0.6;
 }
-.t39v-leaf-vein {
-  fill: color-mix(in srgb, var(--vermilion) 60%, var(--umbra));
+.t39v-leaf-vein,
+.t39v-leaf-stalk {
+  fill: color-mix(in srgb, var(--vermilion) 55%, var(--umbra));
   opacity: 0.8;
 }
 .t39v.t39v-star .t39v-leaf svg {
   filter: drop-shadow(0 0 6px color-mix(in srgb, var(--lantern) 60%, transparent));
 }
 
-/* what a lamp says: written on the morning air, no box (no rounded clip either: nothing of the text is cut) */
+/* targets on the water: a ripple ring breathing under each lamp not yet visited, a thin ink ring in the middle at the end */
+.t39v ~ .p2g .p2g-drop {
+  border: 1.4px solid color-mix(in srgb, #fff 70%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--lantern) 30%, transparent);
+}
+:root[data-theme='dark'] .t39v ~ .p2g .p2g-drop {
+  border-color: color-mix(in srgb, var(--moon) 55%, transparent);
+}
+:root[data-quality='high'] .t39v ~ .p2g .p2g-drop:not(.is-hit) {
+  animation: t39v-breathe 2.6s ease-in-out infinite;
+}
+.t39v ~ .p2g .p2g-drop.t39v-mid {
+  border: 1.6px solid color-mix(in srgb, var(--ink) 75%, transparent);
+  box-shadow: none;
+}
+.t39v ~ .p2g .p2g-drop.is-lift {
+  border-color: var(--vermilion);
+}
+@keyframes t39v-breathe {
+  0%,
+  100% {
+    scale: 0.92;
+    opacity: 0.55;
+  }
+  50% {
+    scale: 1.06;
+    opacity: 1;
+  }
+}
+
+/* what a lamp says: written on the morning air in the clear sky (tall: on the moss under the lamps), no box */
 .t39v .p2c-card {
-  background: radial-gradient(farthest-side, color-mix(in srgb, var(--paper) 80%, transparent), color-mix(in srgb, var(--paper) 58%, transparent) 62%, transparent);
+  background: radial-gradient(farthest-side, color-mix(in srgb, var(--paper) 82%, transparent), color-mix(in srgb, var(--paper) 62%, transparent) 64%, transparent);
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  padding: 26px 30px;
+  padding: 14px 26px 16px;
   z-index: 600;
+  transition: opacity 0.8s;
+}
+.t39v:not(.wide) .p2c-card {
+  padding: 12px 16px 10px;
 }
 .t39v .p2c-who,
-.t39v .p2c-view {
+.t39v .p2c-view,
+.t39v .p2-question,
+.t39v .p2c-count {
   text-shadow: 0 0 8px var(--paper), 0 0 14px var(--paper);
 }
+/* once a lamp speaks, its words replace the legend: one block of text */
+.t39v .p2c-card:has(.p2c-body-text:not(:empty)) .p2-question {
+  display: none;
+}
+/* the leaf at rest in the middle: the insight is the only text */
+.t39v.t39v-star .p2c-card {
+  opacity: 0;
+  pointer-events: none;
+}
 
+/* the insight on the clear moss right of the puddle, a little lower than the zone's default */
+.scene-art:has(> .p2c.t39v) > .scene-zone[data-z='br'] {
+  bottom: 2px;
+}
+/* phone: the lamps' words fit the band under the scene */
+.t39v:not(.wide) .p2c-view {
+  font-size: 0.93rem;
+  line-height: 1.36;
+  margin-bottom: 0.4em;
+}
+.t39v:not(.wide) .p2c-who {
+  font-size: 0.92rem;
+  line-height: 1.3;
+}

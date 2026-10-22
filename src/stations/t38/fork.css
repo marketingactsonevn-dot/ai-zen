@@ -78,46 +78,116 @@
   line-height: 1.38;
 }
 
-/* the note: a paper tag nailed to a bamboo stake beside the table */
+/* one block at a time: with the insight out only the scenario's name stays over the table; an open mist takes the words' place */
+.t38f.told .t38f-text,
+.t38f.told .t38f-words .t38f-note {
+  display: none;
+}
+/* once the insight is out the mists are the next thing to touch: they come over the levers */
+.t38f-mists-on .t38f-mist {
+  z-index: 5;
+}
+.t38f-words {
+  transition: opacity 0.4s;
+}
+.t38f.mist-open .t38f-words {
+  opacity: 0;
+}
+.t38f-strips {
+  position: absolute;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* the note: carved into a wooden board roped to a bamboo stake driven into the sand beside the table */
 .t38f-stake {
   position: absolute;
   z-index: 2;
+  height: var(--post, 120px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
+.t38f-stake[hidden] {
+  display: none;
+}
 .t38f-post {
   order: 2;
-  width: 7px;
-  height: 46px;
-  margin-left: 18px;
+  flex: 1;
+  width: 8px;
+  margin-left: 22px;
   fill: color-mix(in srgb, var(--step-lo) 80%, var(--moss-b));
+}
+/* the post's foot in the sand: its contact shadow */
+.t38f-stake::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  bottom: -3px;
+  width: 34px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 60%, transparent), transparent);
+}
+.t38f-board {
+  position: relative;
+  padding: 9px 12px 10px;
+  border-radius: 3px 4px 3px 5px;
+  /* planed cedar: grain along the board, a darker end, the moon on its top edge */
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--rake-hi) 45%, transparent) 0 1.5px, transparent 1.5px),
+    repeating-linear-gradient(176deg, transparent 0 5px, color-mix(in srgb, var(--umbra) 10%, transparent) 5px 6px, transparent 6px 11px),
+    linear-gradient(100deg, color-mix(in srgb, var(--step-mid) 80%, var(--lantern)), color-mix(in srgb, var(--step-lo) 85%, var(--umbra)));
+  box-shadow: 3px 5px 8px -4px color-mix(in srgb, var(--umbra) 60%, transparent);
+  transform: rotate(-1.5deg);
+}
+:root[data-theme='dark'] .t38f-board {
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--moon) 30%, transparent) 0 1.5px, transparent 1.5px),
+    repeating-linear-gradient(176deg, transparent 0 5px, color-mix(in srgb, var(--umbra) 22%, transparent) 5px 6px, transparent 6px 11px),
+    linear-gradient(100deg, color-mix(in srgb, var(--step-mid) 70%, var(--lantern) 30%), color-mix(in srgb, var(--step-lo) 80%, var(--umbra)));
+}
+/* two turns of straw rope round the board and the stake */
+.t38f-board::before,
+.t38f-board::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  width: 14px;
+  height: 5px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(60deg, color-mix(in srgb, var(--lantern) 40%, var(--step-mid)) 0 2px, color-mix(in srgb, var(--step-lo) 80%, var(--umbra)) 2px 3px);
+}
+.t38f-board::before {
+  top: -2px;
+}
+.t38f-board::after {
+  bottom: -2px;
 }
 .t38f-note {
   margin: 0;
-  padding: 7px 10px 8px;
-  font: 400 0.8rem/1.4 var(--serif);
+  font: 500 0.8rem/1.4 var(--serif);
+  /* carved: dark in the cut, a lit lower lip */
+  color: color-mix(in srgb, var(--umbra) 72%, var(--step-lo));
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--rake-hi) 55%, transparent);
+}
+:root[data-theme='dark'] .t38f-note {
+  color: color-mix(in srgb, var(--umbra) 85%, transparent);
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--moon) 25%, transparent);
+}
+/* on a phone the note is a line under the scenario's words */
+.t38f-words .t38f-note {
+  margin-top: 6px;
+  font: 400 0.74rem/1.35 var(--serif);
   color: var(--ink-2);
-  background: color-mix(in srgb, var(--card) 92%, transparent);
-  border: 1px solid var(--line);
-  border-radius: 2px 2px 3px 6px;
-  box-shadow: 2px 3px 0 color-mix(in srgb, var(--umbra) 12%, transparent);
-  transform: rotate(-1.2deg);
-}
-.t38f:not(.wide) .t38f-note {
-  padding: 5px 8px 6px;
-  font-size: 0.72rem;
-  line-height: 1.32;
-}
-.t38f:not(.wide) .t38f-post {
-  height: 22px;
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper);
 }
 
 /* the well-sweeps */
 .t38f-lever {
   position: absolute;
   z-index: 4;
-  pointer-events: auto;
+  pointer-events: none;
   touch-action: none;
   cursor: ns-resize;
   outline: none;
@@ -131,6 +201,12 @@
   left: 0;
   top: 0;
   overflow: visible;
+  pointer-events: none;
+}
+.t38f-hit {
+  fill: transparent;
+  pointer-events: all;
+  cursor: ns-resize;
 }
 .t38f-beam {
   fill: url(#t38f-g-beam);
@@ -236,6 +312,21 @@
 .t38f-lever:focus-visible .t38f-pail {
   filter: brightness(1.12);
 }
+.t38f-way-arc {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 5;
+  opacity: 0.7;
+}
+.t38f-way-tick {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
 /* the two words ride the beam's tips: the end that is up is the lever's state */
 .t38f-tip {
   font: 400 13px var(--serif);
@@ -274,7 +365,10 @@
   display: none;
 }
 .t38f:not(.wide) .t38f-plaque {
+  width: 108px;
+  white-space: normal;
   font-size: 0.78rem;
+  line-height: 1.2;
   text-align: center;
 }
 .t38f:not(.wide) .t38f-now {
@@ -302,7 +396,14 @@
   pointer-events: none;
 }
 :root[data-theme='dark'] .t38f-veil {
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) 42%, transparent), color-mix(in srgb, var(--mist) 22%, transparent) 50%, color-mix(in srgb, var(--mist) 6%, transparent) 78%, transparent);
+  background: radial-gradient(closest-side at 50% 40%, color-mix(in srgb, color-mix(in srgb, var(--mist) 80%, var(--moon)) 58%, transparent), color-mix(in srgb, var(--mist) 28%, transparent) 50%, color-mix(in srgb, var(--mist) 8%, transparent) 78%, transparent);
+}
+.t38f-mists-on .t38f-mist:not(.open) {
+  animation: t38f-breathe 2.6s ease-in-out infinite alternate;
+}
+@keyframes t38f-breathe {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.35); }
 }
 .t38f-veil.a {
   left: -8%;
@@ -366,24 +467,26 @@
   filter: brightness(1.05);
 }
 .t38f-strip {
-  position: absolute;
-  bottom: 70%;
-  z-index: 5;
-  padding: 10px 14px 12px;
+  position: relative;
   pointer-events: auto;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  box-shadow: var(--shadow-1);
   animation: t38f-strip 0.6s ease-out both;
+}
+.t38f-strip::before {
+  content: '';
+  position: absolute;
+  inset: -30% -12%;
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 80%, transparent), color-mix(in srgb, var(--paper) 40%, transparent) 60%, transparent);
+  pointer-events: none;
 }
 .t38f-strip .p2-eyebrow {
   margin: 0 0 4px;
 }
 .t38f-view {
   margin: 0;
-  font: 400 0.9rem/1.45 var(--serif);
+  font: 400 clamp(0.9rem, 1.1vw, 1.02rem)/1.5 var(--serif);
   color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 12px var(--paper);
 }
 @keyframes t38f-strip {
   from {
@@ -396,7 +499,8 @@
   .t38f-veil {
     transition: none;
   }
-  .t38f-strip {
+  .t38f-strip,
+  .t38f-mists-on .t38f-mist:not(.open) {
     animation: none;
   }
 }

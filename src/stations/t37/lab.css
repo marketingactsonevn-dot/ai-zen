@@ -66,7 +66,7 @@
 }
 /* placements (world: x right, y down, z toward you; the house corner on the ground is 0 0 0) */
 .t37l-ground {
-  transform: translate3d(calc(-9 * var(--u)), 0, calc(-6 * var(--u))) rotateX(90deg);
+  transform: translate3d(calc(-12 * var(--u)), 0, calc(-7 * var(--u))) rotateX(90deg);
   /* gravel: dark grains and moonlit grains over the ground's colour, scaled with the house */
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='1' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.6 0 0 0 -1.42'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
@@ -74,8 +74,8 @@
     var(--gravel);
   background-size: calc(var(--u) * 1.1), calc(var(--u) * 1.4), auto;
   /* every edge melts into the mist, whichever way you look at it */
-  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 58% 55%, #000 52%, transparent 100%);
-  mask-image: radial-gradient(ellipse 50% 50% at 58% 55%, #000 52%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 52% 50% at 56% 46%, #000 60%, transparent 100%);
+  mask-image: radial-gradient(ellipse 52% 50% at 56% 46%, #000 60%, transparent 100%);
 }
 .t37l-front {
   transform: translate3d(calc(-4 * var(--u)), calc(-2.6 * var(--u)), 0);
@@ -472,16 +472,15 @@
   pointer-events: none;
 }
 .t37l-tag {
+  /* a name written beside the thing on a breath of mist, not a chip */
   position: absolute;
   left: 0;
   top: 0;
-  padding: 1px 7px 2px;
+  padding: 1px 4px 2px;
   white-space: nowrap;
-  font: 500 0.82rem/1.25 var(--serif);
+  font: 400 italic 0.86rem/1.25 var(--serif);
   color: var(--ink);
-  background: color-mix(in srgb, var(--card) 88%, var(--lantern));
-  border-radius: 2px;
-  box-shadow: 0 2px 8px -4px var(--umbra);
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper), 0 0 14px var(--paper);
   opacity: 0;
   transition: opacity 0.6s ease 0.4s;
 }
@@ -574,32 +573,42 @@
 .t37l-hit.box {
   inset: -30% -20%;
 }
-.t37l-hit:hover,
-.t37l-hit:focus-visible,
-.t37l-hit[aria-pressed='true'] {
-  outline: 2px solid color-mix(in srgb, var(--lantern) 75%, transparent);
+.t37l-hit:focus-visible {
+  outline: 2px solid var(--vermilion);
   outline-offset: 2px;
 }
-.t37l-hit:focus-visible {
-  outline-color: var(--vermilion);
-}
 
-/* what you touched, on a paper slip; the room's state, under the picture */
+/* what you touched: words on a breath of mist in the insight's corner (before the insight, alone there), never a card */
 .t37l-note {
   position: absolute;
-  left: 3%;
-  top: 6%;
-  width: min(330px, 34%);
-  padding: 10px 14px 12px;
-  background: color-mix(in srgb, var(--card) 94%, var(--lantern));
-  border-left: 2px solid var(--vermilion);
-  box-shadow: 0 6px 22px color-mix(in srgb, var(--wash) 16%, transparent);
+  right: clamp(8px, 2.5%, 36px);
+  bottom: clamp(8px, 3%, 28px);
+  width: min(27rem, 32%);
   font-family: var(--serif);
   animation: p2-rise 0.5s ease-out both;
 }
+.t37l-note::before {
+  content: '';
+  position: absolute;
+  inset: -30% -18%;
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 78%, transparent), color-mix(in srgb, var(--paper) 40%, transparent) 60%, transparent);
+  pointer-events: none;
+}
+.scene-insight .t37l-note {
+  position: static;
+  width: auto;
+  margin: 0 0 0.8em;
+  padding-left: 0.8em;
+  border-left: 2px solid var(--vermilion);
+  animation: none;
+}
+.scene-insight .t37l-note::before {
+  display: none;
+}
 .t37l-name {
   margin: 0 0 4px;
-  font: 500 1rem/1.3 var(--serif);
+  font: 400 italic 1rem/1.3 var(--serif);
   color: var(--ink);
 }
 .t37l-what {
@@ -620,12 +629,18 @@
   text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper), 0 0 14px var(--paper);
 }
 /* wide: the room's state sits low on the left, under the veranda; the insight takes the empty corner on the right */
+/* wide: the room's state, then the insight, then what you touched, all in one corner: the sand right of the gate */
 @media (min-width: 721px) {
   .t37l:not(.tall) .t37l-status {
-    left: 4%;
-    width: min(28rem, 44%);
+    left: auto;
+    right: clamp(8px, 2.5%, 36px);
+    bottom: clamp(8px, 3%, 28px);
+    width: min(27rem, 32%);
     transform: none;
     text-align: left;
+  }
+  .t37l-art .scene-zone[data-z='br'] {
+    width: min(27rem, 32%);
   }
 }
 .t37l.dark .t37l-status::before {
@@ -638,9 +653,30 @@
   background: var(--vermilion);
   vertical-align: 0.12em;
 }
+.t37l.tall .t37l-status {
+  /* a tall frame: the room's state on the sky over the roof; the ground keeps the foot of the picture */
+  bottom: auto;
+  top: 3%;
+}
+.t37l.tall .t37l-skyw {
+  height: 44%;
+  right: -220px;
+}
 .t37l.tall .t37l-note {
-  left: 3%;
-  right: 3%;
+  left: 4%;
+  right: 4%;
   width: auto;
   top: 3%;
+  bottom: auto;
+}
+/* the room's state gives way to the insight */
+.t37l-status {
+  transition: opacity 0.6s ease;
+}
+.t37l.tested .t37l-status {
+  opacity: 0;
+}
+/* a name read is a name no longer needed on the picture */
+.t37l.tested .t37l-tag.read {
+  opacity: 0;
 }

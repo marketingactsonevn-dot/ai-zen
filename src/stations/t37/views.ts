@@ -1,7 +1,7 @@
 import './views.css'
 import { fill, h, nextId, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
-import { blob, clamp, curve, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
+import { blob, clamp, curve, rng, rock, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, moon, reeds } from '../../ui/part2/paint'
 import { perspectiveCircle, type CircleApi } from '../../ui/part2/perspectives'
 import { guide, type Mark } from '../../ui/part2/guide'
@@ -32,40 +32,89 @@ const PLANES = [0.9, 0.96, 1, 1.07] // sky, far shore, water, near: turn rates (
 
 // ── the four horizons, one quarter box Q wide × H tall each, horizon at hy, the direction at x = c
 
-/** gradient ids shared by every painted billow (set once per mount, in the scene's own defs) */
-const G = { body: '', lit: '', shade: '', cloud: '' }
-const billow = (x: number, y: number, rx: number, ry: number, id: string) => s('ellipse', { cx: f1(x), cy: f1(y), rx: f1(rx), ry: f1(ry), fill: `url(#${id})` })
+/** gradient ids shared by the painted clouds (set once per mount, in the scene's own defs) */
+const G = { body: '', glow: '', refl: '', dark: '', lit: '' }
+/** the storm's offset in its quarter for the current frame (wide / tall) */
+let stormDx = 0.55
 
-/** north: a towering thunderhead far off, soft billows stacked to an anvil, their crowns lit by the moon on the west,
- *  bellies in shade, lightning glowing inside, rain trailing under it */
-function north(Q: number, H: number, hy: number, seed: number): SVGElement[] {
+/** half-width of the storm's column (share of its height) at height share t: 0 foot … 0.74 the anvil's root */
+const cbHalf = (t: number) => 0.36 + 0.04 * Math.sin(t * 6 + 0.6) - t * 0.12
+
+/**
+ * A cumulonimbus in ink wash, foot on the horizon at (cx, base), `hc` tall: one silhouette, not a pile of balls — the
+ * west flank and the crown billow out in broad swells, the east side and the anvil's underside run smooth, the anvil
+ * spreads flat and long to the east from an overshooting dome. Inside it (through its own clip) one soft wash each: a
+ * dark core and base, the moon's light on the west flank and along the anvil's top; a moonlit rim brushed down the west
+ * edge; a lightning glow; a rain veil under it. The kit's ink wash wets its edge.
+ */
+function thunderhead(cx: number, base: number, hc: number, seed: number, wash = true): SVGElement[] {
   const r = rng(seed)
-  const c = Q / 2, base = hy - H * 0.012, top = H * 0.03, cw = Q * 0.36
-  const body: SVGElement[] = [], lit: SVGElement[] = [], shade: SVGElement[] = []
-  for (let i = 0; i < 46; i++) {
-    const t = Math.pow(i / 45, 0.9), y = base - (base - top) * t + (r() - 0.5) * H * 0.02
-    const spread = t < 0.76 ? 0.6 + t * 0.45 : 1.15 + (t - 0.76) * 5.4
-    const bx = c + (r() - 0.5) * cw * spread + t * cw * 0.28
-    const br = H * (t < 0.76 ? 0.05 + r() * 0.05 : 0.03 + r() * 0.025)
-    const rx = br * (t < 0.76 ? 1.3 : 2.9), ry = br
-    body.push(billow(bx, y, rx, ry, G.body))
-    lit.push(billow(bx - rx * 0.26, y - ry * 0.34, rx * 0.7, ry * 0.55, G.lit))
-    if (t < 0.7) shade.push(billow(bx + rx * 0.22, y + ry * 0.36, rx * 0.75, ry * 0.5, G.shade))
+  const id = nextId('t37v-cb')
+  const P = (x: number, y: number): Pt => [cx + x * hc, base - y * hc]
+  // the outline, anticlockwise from the foot on the west: [x, y] in shares of hc (y up), and how far each stretch swells
+  const west: Pt[] = [], east: Pt[] = []
+  for (let t = 0; t <= 0.64; t += 0.08) {
+    west.push([-(cbHalf(t) + 0.05 * Math.sin(t * 9 + 1) + r() * 0.04), 0.04 + t])
+    east.push([cbHalf(t) * 0.86 + 0.06 * Math.sin(t * 7 + 2) + t * 0.14 + r() * 0.03, 0.04 + t])
   }
+  const top: Pt[] = [[-0.5, 0.86], [-0.36, 0.95], [-0.12, 0.99], [0.02, 1.06], [0.18, 1.05], [0.36, 0.99], [0.62, 0.97], [0.9, 0.95], [1.18, 0.92]]
+  const under: Pt[] = [[1.24, 0.9], [0.95, 0.87], [0.68, 0.82], [east[east.length - 1][0] + 0.06, 0.74]]
+  // a stretch from a to b swelling out by k (shares of hc) to the outside of the turning path
+  const swell = (a: Pt, b: Pt, k: number) => {
+    const [ax, ay] = P(a[0], a[1]), [bx, by] = P(b[0], b[1])
+    const dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy) || 1
+    return `Q${f1((ax + bx) / 2 + (dy / L) * k * hc)} ${f1((ay + by) / 2 - (dx / L) * k * hc)} ${f1(bx)} ${f1(by)}`
+  }
+  const ring: [Pt, number][] = [
+    ...west.map((p) => [p, 0.05 + r() * 0.03] as [Pt, number]),
+    [[-0.44, 0.76], 0.06],
+    ...top.map((p, i) => [p, i < 6 ? 0.04 + r() * 0.025 : 0.012] as [Pt, number]),
+    ...under.map((p) => [p, -0.01] as [Pt, number]),
+    ...east.slice().reverse().map((p) => [p, 0.02 + r() * 0.015] as [Pt, number]),
+  ]
+  const [sx, sy] = P(ring[0][0][0], ring[0][0][1])
+  let body = `M${f1(sx)} ${f1(sy)}`
+  for (let i = 1; i < ring.length; i++) body += swell(ring[i - 1][0], ring[i][0], ring[i][1])
+  body += swell(ring[ring.length - 1][0], ring[0][0], -0.015) + 'Z'
+  // the moon's rim: brushed down the west swells and along the crown, thinning toward the anvil's far end
+  const rimPts: Pt[] = [...west, [-0.44, 0.76], ...top.slice(0, 6)].map(([x, y]) => P(x - 0.008, y + 0.004))
+  const rim = stroke(rimPts, Math.max(1.2, hc * 0.014), 0.3, 0.7, 0.15)
+  // dry-brush drag along the anvil's base and across the tower: the ink's own texture, no shapes
+  let streak = ''
+  for (let i = 0; i < 6; i++) {
+    const y = 0.78 + i * 0.025, x0 = -0.2 + r() * 0.3
+    const [ax, ay] = P(x0, y), [bx, by] = P(x0 + 0.5 + r() * 0.5, y - 0.02)
+    streak += stroke([[ax, ay], [bx, by]], hc * 0.01, 0.2, 0.8, 0.05)
+  }
+  // rain: a slanting veil under the base, a few streaks in it
   let rain = ''
-  for (let i = 0; i < 34; i++) {
-    const x = c + (r() - 0.45) * cw * 1.2
-    rain += stroke([[x, base], [x - H * 0.04, hy + H * 0.004]], 0.8 + r() * 0.9, 0.2, 0.5, 0.1)
+  for (let i = 0; i < 16; i++) {
+    const x = cx - hc * 0.28 + r() * hc * 0.56
+    rain += stroke([[x, base - hc * 0.02], [x - hc * 0.05, base + hc * 0.09]], 0.7 + r() * 0.8, 0.3, 0.6, 0.1)
   }
-  // the billows are pushed about by a turbulence filter, so their edges boil like cauliflower and run together
+  const E = (cls: string, x: number, y: number, rx: number, ry: number, g: string) => s('ellipse', { class: cls, cx: f1(cx + x * hc), cy: f1(base - y * hc), rx: f1(rx * hc), ry: f1(ry * hc), fill: `url(#${g})` })
   return [
+    s('defs', null, s('clipPath', { id }, s('path', { d: body }))),
+    s('path', { class: 't37v-veil', d: `M${f1(cx - hc * 0.3)} ${f1(base - hc * 0.04)}L${f1(cx + hc * 0.3)} ${f1(base - hc * 0.04)}L${f1(cx + hc * 0.22)} ${f1(base + hc * 0.1)}L${f1(cx - hc * 0.38)} ${f1(base + hc * 0.1)}Z`, fill: 'url(#g13-fog)' }),
     s('path', { class: 't37v-rain', d: rain }),
-    s('g', { class: 't37v-cb', filter: `url(#${G.cloud})` }, ...body, ...shade),
-    s('circle', { class: 't37v-cb-glow', cx: f1(c + cw * 0.08), cy: f1(base - (base - top) * 0.3), r: f1(H * 0.2), fill: 'url(#g13-sun)' }),
-    s('g', { class: 't37v-cb', filter: `url(#${G.cloud})` }, ...lit),
-    s('path', { class: 't37v-bolt', d: stroke([[c + cw * 0.1, base - H * 0.03], [c + cw * 0.02, base + (hy - base) * 0.45], [c + cw * 0.07, base + (hy - base) * 0.5], [c - cw * 0.02, hy - 1]], 1.8, 0.1, 0.5, 0.2) }),
+    s('path', { class: 't37v-cb', d: body, fill: `url(#${G.body})`, filter: wash ? 'url(#ink-wash)' : null }),
+    s('g', { 'clip-path': `url(#${id})` },
+      // the heavy core and the rain-dark base, away from the moon
+      E('t37v-cb-dark', 0.18, 0.28, 0.5, 0.42, G.dark),
+      E('t37v-cb-dark', 0.05, 0.02, 0.55, 0.16, G.dark),
+      E('t37v-cb-glow', 0.06, 0.36, 0.15, 0.2, G.glow),
+      // the moon on the west flank, and along the anvil's top
+      E('t37v-cb-lit', -0.34, 0.58, 0.32, 0.5, G.lit),
+      E('t37v-cb-lit', 0.3, 1.0, 0.75, 0.08, G.lit),
+      s('path', { class: 't37v-cb-streak', d: streak })),
+    s('path', { class: 't37v-cb-rim', d: rim }),
+    s('path', { class: 't37v-bolt', d: stroke([[cx + hc * 0.03, base - hc * 0.02], [cx - hc * 0.02, base + hc * 0.04], [cx + hc * 0.015, base + hc * 0.06], [cx - hc * 0.03, base + hc * 0.12]], 1.4, 0.1, 0.5, 0.2) }),
   ]
 }
+
+/** the north quarter's storm: far off on the horizon, a quarter of the frame tall, east of the stone you face */
+const STORM = { k: 0.3 }
+const north = (Q: number, H: number, hy: number, seed: number) => thunderhead(Q / 2 + Q * stormDx, hy - H * 0.004, H * STORM.k, seed)
 
 /** south: the sun's rim about to burst over the water, rays fanning, cloud bars lit from below */
 function south(Q: number, H: number, hy: number, seed: number): SVGElement[] {
@@ -96,7 +145,10 @@ function south(Q: number, H: number, hy: number, seed: number): SVGElement[] {
 }
 
 /** west: the moon going down over the fields, a veil of mist across it */
-const west = (Q: number, H: number, hy: number, seed: number): SVGElement[] => [fog(Q * 0.56, hy - H * 0.18, Q * 0.42, H * 0.2), moon(Q * 0.56, hy - H * 0.19, H * 0.06, seed, true)]
+const west = (Q: number, H: number, hy: number, seed: number): SVGElement[] => [
+  // its light reaches well round into the north: the storm's west side is the lit one
+  s('ellipse', { class: 't37v-moonhaze', cx: f1(Q * 0.56), cy: f1(hy - H * 0.19), rx: f1(Q * 1.05), ry: f1(H * 0.42), fill: 'url(#p2-halo)' }),
+  fog(Q * 0.56, hy - H * 0.18, Q * 0.42, H * 0.2), moon(Q * 0.56, hy - H * 0.19, H * 0.06, seed, true)]
 
 /** the far and mid shore for each quarter: hills, a bank with reeds; the village close across the water (east); the
  *  path off the shore into fields (west) */
@@ -107,7 +159,7 @@ function shore(kind: number, Q: number, H: number, hy: number, seed: number): SV
   const reedRow = (x0: number, x1: number, y: number, n: number, hh: number) => Array.from({ length: n }, (_, i) => reeds(x0 + ((x1 - x0) * (i + r() * 0.6)) / n, y, hh * (0.7 + r() * 0.6), seed + kind * 31 + i, 4 + Math.round(r() * 3)))
   if (kind === 1) {
     // the village right across the water: its bank comes below the horizon (near), houses with warm windows, smoke
-    const yb = hy + H * 0.032, u = H * 0.085
+    const yb = hy + H * 0.026, u = H * 0.06
     let roofs = '', walls = '', shade = '', win = '', smoke = '', edges = '', trees = ''
     const houses: [number, number, number][] = [[-3.1, -0.15, 0.82], [-1.5, 0.05, 1.08], [0.15, -0.1, 0.9], [1.75, 0.02, 1.14], [3.35, -0.12, 0.8]]
     for (const [dx, dy, k] of houses) {
@@ -118,7 +170,7 @@ function shore(kind: number, Q: number, H: number, hy: number, seed: number): SV
       roofs += `M${f1(hx - q * 1.45)} ${f1(hb - q * 0.95)}Q${f1(hx - q * 0.7)} ${f1(hb - q * 1.85)} ${f1(hx)} ${f1(hb - q * 2.05)}Q${f1(hx + q * 0.7)} ${f1(hb - q * 1.85)} ${f1(hx + q * 1.45)} ${f1(hb - q * 0.95)}Z`
       win += `M${f1(hx - q * 0.66)} ${f1(hb - q * 0.74)}h${f1(q * 0.5)}v${f1(q * 0.42)}h${f1(-q * 0.5)}ZM${f1(hx + q * 0.12)} ${f1(hb - q * 0.74)}h${f1(q * 0.36)}v${f1(q * 0.42)}h${f1(-q * 0.36)}Z`
       edges += stroke([[hx - q * 1.5, hb - q * 0.95], [hx + q * 1.5, hb - q * 0.95]], 1.8, 0.1, 0.1, 0.4) + stroke([[hx - q, hb], [hx + q, hb]], 1.4, 0.1, 0.1, 0.4)
-      smoke += stroke(curve([hx + q * 0.3, hb - q * 2], [hx + u * 0.2, hb - H * 0.16], [hx + u * 1.6, hb - H * (0.3 + r() * 0.08)], 16), u * 0.32, 0.08, 0.95, 0.1)
+      smoke += stroke(curve([hx + q * 0.3, hb - q * 2], [hx - u * 0.5, hb - H * 0.1], [hx + u * 1.3, hb - H * (0.17 + r() * 0.05)], 16), u * 0.45, 0.1, 0.95, 0.1)
     }
     const pier = lines([[c + u * 0.8, yb + u * 0.05, c + u * 1.4, yb + H * 0.06], [c + u * 1.3, yb + u * 0.05, c + u * 1.9, yb + H * 0.06]], 1.6) + stroke([[c + u * 0.6, yb + H * 0.02], [c + u * 2.2, yb + H * 0.024]], 3, 0.1, 0.1, 0.4)
     return [
@@ -188,10 +240,23 @@ function water(kind: number, Q: number, H: number, hy: number, seed: number): SV
     return d
   }
   const out: SVGElement[] = [s('path', { class: 't37v-rip', d: rip }), s('path', { class: 't37v-glint', d: glint })]
-  if (kind === 0) out.push(
-    s('g', { class: 't37v-stormrefl' }, ...[0, 1, 2, 3].map((i) => billow(c + Q * (0.02 + i * 0.02), hy + H * (0.03 + i * 0.045), Q * (0.16 - i * 0.02), H * 0.035, G.body))),
-    s('path', { class: 't37v-boltrefl', d: roadOf(c + Q * 0.02, hy + H * 0.01, H * 0.12, H * 0.008) }))
-  if (kind === 1) out.push(s('path', { class: 't37v-winrefl', d: [-3.1, -1.5, 0.15, 1.75, 3.35].map((dx) => roadOf(c + dx * H * 0.085 * 1.2 - H * 0.035, hy + H * 0.05, H * 0.17, H * 0.02)).join('') }))
+  if (kind === 0) {
+    // the storm upside down in the water: darker than itself, broken into ripple bars, gone a little way down
+    const hc = H * STORM.k, sx = c + Q * stormDx, gap = Math.max(3, H * 0.009)
+    let refl = ''
+    for (let y = hy + gap * 0.6, i = 0; y < hy + hc * 0.85; y += gap, i++) {
+      const t = (y - hy) / (hc * 0.95)
+      const u = Math.max(0, (t - 0.62) / 0.36)
+      const [x0, x1] = t < 0.64 ? [sx - cbHalf(t) * hc, sx + cbHalf(t) * hc + t * hc * 0.12] : [sx - hc * (0.28 + u * 0.24), sx + hc * (0.3 + u * u * 0.95)]
+      // two or three pieces, the gaps where the wind roughs the water
+      const cut1 = x0 + (x1 - x0) * (0.28 + r() * 0.2), cut2 = cut1 + (x1 - x0) * (0.05 + r() * 0.06)
+      const wd = gap * (0.62 - t * 0.25)
+      refl += stroke([[x0 + (r() - 0.5) * gap * 2, y], [cut1, y + 0.4]], wd, 0.3, 0.3, 0.1) + stroke([[cut2, y], [x1 + (r() - 0.5) * gap * 2, y + 0.4]], wd, 0.3, 0.3, 0.1)
+      if (i > 60) break
+    }
+    out.push(s('path', { class: 't37v-stormrefl', d: refl, fill: `url(#${G.refl})` }), s('path', { class: 't37v-boltrefl', d: roadOf(sx, hy + H * 0.012, hc * 0.2, H * 0.006) }))
+  }
+  if (kind === 1) out.push(s('path', { class: 't37v-winrefl', d: [-3.1, -1.5, 0.15, 1.75, 3.35].map((dx) => roadOf(c + dx * H * 0.06 * 1.2 - H * 0.025, hy + H * 0.04, H * 0.13, H * 0.016)).join('') }))
   if (kind === 2) out.push(s('ellipse', { class: 't37v-warm', cx: f1(c), cy: f1(hy + H * 0.02), rx: f1(Q * 0.4), ry: f1(H * 0.1), fill: 'url(#g13-sun)' }), s('path', { class: 't37v-dawnrefl', d: roadOf(c, hy + H * 0.008, (H - hy) * 0.85, Q * 0.07) }))
   if (kind === 3) out.push(s('path', { class: 't37v-moonrefl', d: roadOf(Q * 0.56, hy + H * 0.01, (H - hy) * 0.5, Q * 0.03) }))
   return out
@@ -201,7 +266,20 @@ function water(kind: number, Q: number, H: number, hy: number, seed: number): SV
 function near(kind: number, Q: number, H: number, seed: number): SVGElement[] {
   const r = rng(seed + 70 + kind)
   const c = Q / 2
+  // a low flat rock awash between this stone and the next, moss on its crown, its double broken in the water and the
+  // ripples it makes (it fills the open water of a wide view; a tall view never sees it)
+  const rx = c + Q * 0.47, ry = H * 0.82, rw = H * 0.2
+  let rip = ''
+  for (const [k, a0, a1] of [[1, 0.02, 0.4], [1, 0.6, 0.98], [1.35, 0.1, 0.3], [1.35, 0.7, 0.9], [1.7, 0.2, 0.36]] as const)
+    rip += stroke(Array.from({ length: 9 }, (_, q) => {
+      const a = Math.PI * (a0 + ((a1 - a0) * q) / 8)
+      return [rx + Math.cos(a) * rw * 0.62 * k, ry + 1 + Math.sin(a) * rw * 0.1 * k] as Pt
+    }), 1.4 / k, 0.3, 0.3, 0.1)
   return [
+    s('g', { class: 't37v-mirror', transform: `translate(${f1(rx)} ${f1(ry)}) scale(1 -0.5)` }, stoneArt(rw, rw * 0.28, seed + 80 + kind)),
+    s('path', { class: 't37v-wetring', d: rip }),
+    s('g', { transform: `translate(${f1(rx)} ${f1(ry)})` }, stoneArt(rw, rw * 0.28, seed + 80 + kind)),
+    s('path', { class: 't37v-moss', d: blob(rx - rw * 0.08, ry - rw * 0.22, rw * 0.24, rw * 0.05, seed + 90 + kind, 0.3) }),
     reeds(c - Q * 0.42 + r() * Q * 0.06, H * 1.0, H * 0.22, seed + 10 + kind, 7),
     reeds(c + Q * 0.38 + r() * Q * 0.06, H * 1.0, H * 0.16, seed + 14 + kind, 5),
     s('path', { class: 't37v-pad', d: blob(c + Q * 0.28, H * 0.95, H * 0.06, H * 0.017, seed + 11, 0.2) + blob(c + Q * 0.33, H * 0.975, H * 0.035, H * 0.011, seed + 12, 0.2) + blob(c - Q * 0.3, H * 0.93, H * 0.04, H * 0.012, seed + 13, 0.2) }),
@@ -209,7 +287,7 @@ function near(kind: number, Q: number, H: number, seed: number): SVGElement[] {
 }
 
 /** the little planet: one pond, the four horizons curled round its rim as big silhouettes, each pointing outward */
-function planet(cx: number, cy: number, R: number, seed: number): SVGElement[] {
+function planet(cx: number, cy: number, R: number, seed: number, W = Infinity): SVGElement[] {
   const r = rng(seed + 99)
   const gid = nextId('t37v-pl')
   const stop = (o: number, a: number, cls: string) => s('stop', { offset: o, class: cls, 'stop-opacity': a })
@@ -248,33 +326,23 @@ function planet(cx: number, cy: number, R: number, seed: number): SVGElement[] {
   // each horizon carries the name of the view it stands for, upright, out past the shore (audit 37-4)
   for (const kind of [0, 1, 2, 3]) {
     const a = (AT[kind] * Math.PI) / 180, d = R * (kind % 2 ? 1.2 : 1.16)
-    out.push(s('text', { class: 't37v-pl-name', x: f1(cx + Math.sin(a) * d), y: f1(cy - Math.cos(a) * d + (kind === 2 ? R * 0.1 : kind ? R * 0.04 : 0)), 'text-anchor': kind === 1 ? 'start' : kind === 3 ? 'end' : 'middle', 'font-size': f1(Math.max(13, R * 0.12)) }, (V.carve[kind] ?? []).join(' ')))
+    const text = (V.carve[kind] ?? []).join(' '), fs = Math.max(13, R * 0.12), tw = text.length * fs * 0.52
+    const x = cx + Math.sin(a) * d
+    let y = cy - Math.cos(a) * d + (kind === 2 ? R * 0.1 : kind ? R * 0.04 : 0)
+    // a narrow frame: a side name that would run off the edge breaks onto its carved lines
+    const lines = V.carve[kind] ?? []
+    const split = lines.length > 1 && ((kind === 3 && x - tw < 4) || (kind === 1 && x + tw > W - 4))
+    if (split) y -= fs * 0.5
+    out.push(s('text', { class: 't37v-pl-name', x: f1(x), y: f1(y), 'text-anchor': kind === 1 ? 'start' : kind === 3 ? 'end' : 'middle', 'font-size': f1(fs) },
+      ...(split ? lines.map((l, j) => s('tspan', { x: f1(x), dy: j ? f1(fs * 1.15) : '0' }, l)) : [text])))
   }
   return out
 }
 
 /** one horizon of the little planet as a big silhouette: foot at 0, 0 on the rim, outward toward −y, ~0.8 R tall */
 function vignette(kind: number, R: number, seed: number): SVGElement[] {
-  const r = rng(seed + 300 + kind)
   const reedsAt = (x: number, k: number) => reeds(x, 0, R * 0.16 * k, seed + kind * 13 + Math.round(x), 5)
-  if (kind === 0) {
-    // the storm: a column of billows climbing to an anvil, moonlit on its west side, a flicker at its foot
-    const body: SVGElement[] = [], lit: SVGElement[] = []
-    for (let i = 0; i < 16; i++) {
-      const t = i / 15, y = -R * (0.12 + t * 0.66), w = R * (t < 0.78 ? 0.26 + t * 0.12 : 0.62)
-      const bx = (r() - 0.5) * R * 0.1 + t * R * 0.06, hh = R * (t < 0.78 ? 0.13 : 0.07)
-      body.push(billow(bx, y, w, hh, G.body))
-      lit.push(billow(bx - w * 0.28, y - hh * 0.35, w * 0.62, hh * 0.5, G.lit))
-    }
-    return [
-      s('g', { class: 't37v-cb', filter: `url(#${G.cloud})` }, ...body),
-      s('circle', { class: 't37v-cb-glow', cx: f1(R * 0.03), cy: f1(-R * 0.3), r: f1(R * 0.26), fill: 'url(#g13-sun)' }),
-      s('g', { class: 't37v-cb', filter: `url(#${G.cloud})` }, ...lit),
-      s('path', { class: 't37v-anvil', d: stroke(curve([-R * 0.5, -R * 0.76], [R * 0.05, -R * 0.86], [R * 0.6, -R * 0.74], 16), R * 0.07, 0.5, 0.7, 0.06) }),
-      s('path', { class: 't37v-bolt', d: stroke([[R * 0.04, -R * 0.12], [-R * 0.03, -R * 0.06], [R * 0.02, -R * 0.04], [-R * 0.02, 0]], 1.6, 0.1, 0.5, 0.2) }),
-      reedsAt(-R * 0.4, 1), reedsAt(R * 0.36, 0.8),
-    ]
-  }
+  if (kind === 0) return [...thunderhead(-R * 0.1, 0, R * 0.66, seed + 5, false), reedsAt(-R * 0.4, 1), reedsAt(R * 0.36, 0.8)]
   if (kind === 1) {
     // the village: houses with lit windows, smoke rising
     const u = R * 0.11
@@ -339,17 +407,19 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
   // water: pale where it mirrors the sky at the horizon, deep toward you
   const wid = nextId('t37v-w')
   G.body = nextId('t37v-gb')
+  G.glow = nextId('t37v-gg')
+  G.refl = nextId('t37v-gr')
+  G.dark = nextId('t37v-gd')
   G.lit = nextId('t37v-gl')
-  G.shade = nextId('t37v-gs')
-  G.cloud = nextId('t37v-cf')
-  const soft = (id: string, cls: string, a: number) => s('radialGradient', { id }, s('stop', { offset: 0, class: cls, 'stop-opacity': a }), s('stop', { offset: 0.62, class: cls, 'stop-opacity': a * 0.75 }), s('stop', { offset: 1, class: cls, 'stop-opacity': 0 }))
+  const stop = (o: number, cls: string, a = 1) => s('stop', { offset: o, class: cls, 'stop-opacity': a })
   const defs = s('svg', { class: 'visually-hidden', 'aria-hidden': 'true' }, s('defs', null, s('linearGradient', { id: wid, x1: 0, y1: 0, x2: 0, y2: 1 },
     s('stop', { offset: 0, class: 't37v-w0' }), s('stop', { offset: 0.3, class: 't37v-w1' }), s('stop', { offset: 1, class: 't37v-w2' })),
-    soft(G.body, 't37v-gb', 0.9), soft(G.lit, 't37v-gl', 0.85), soft(G.shade, 't37v-gs', 0.7),
-    s('filter', { id: G.cloud, x: '-25%', y: '-25%', width: '150%', height: '150%' },
-      s('feTurbulence', { type: 'fractalNoise', baseFrequency: '0.018', numOctaves: ctx.quality === 'low' ? 1 : 3, seed: '37', result: 'n' }),
-      s('feDisplacementMap', { in: 'SourceGraphic', in2: 'n', scale: '34', xChannelSelector: 'R', yChannelSelector: 'G', result: 'd' }),
-      s('feGaussianBlur', { in: 'd', stdDeviation: '2.2' }))))
+    // the cloud: crowns pale toward the moon, the foot heavy with rain
+    s('linearGradient', { id: G.body, x1: 0, y1: 0, x2: 0.25, y2: 1 }, stop(0, 't37v-gb0'), stop(0.55, 't37v-gb1'), stop(1, 't37v-gb2')),
+    s('radialGradient', { id: G.glow }, stop(0, 't37v-gg', 0.85), stop(0.5, 't37v-gg', 0.3), stop(1, 't37v-gg', 0)),
+    s('linearGradient', { id: G.refl, x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, 't37v-gr', 1), stop(1, 't37v-gr', 0)),
+    s('radialGradient', { id: G.dark }, stop(0, 't37v-gd', 1), stop(0.6, 't37v-gd', 0.6), stop(1, 't37v-gd', 0)),
+    s('radialGradient', { id: G.lit }, stop(0, 't37v-gl', 1), stop(0.55, 't37v-gl', 0.5), stop(1, 't37v-gl', 0))))
   const pan = h('div', { class: 't37v-pan' }, defs, ...planes.map((p) => p.el), column, own)
   const plEl = h('div', { class: 't37v-pl' }, pl)
   const turn = h('div', { class: 't37v-turn', tabindex: '0', role: 'group', 'aria-label': V.art, 'aria-description': V.hint }, pan, plEl)
@@ -358,6 +428,8 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
   const stageEl = host.parentElement as HTMLElement
 
   let W = 0, SH = 0, tall = false
+  /** where the way you face meets the frame (share of its width) */
+  let AX = 0.5
   let feet: { x: number; y: number; s: number }[] = []
   let Q = 400 // px per quarter
   let stoneW = 170, bwPx = 140
@@ -370,10 +442,16 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
 
   /** draw the panorama (each quarter painted once per plane, used six times round) and the planet for this size */
   function draw() {
-    const hh = SH, hy = hh * 0.5
-    const fov = tall ? 70 : 110
+    const hh = SH, hy = hh * (tall ? 0.4 : 0.46)
+    // a wide frame sees 140°: the faced stone stands in the left third, the next one peeks in at the right edge
+    const fov = tall ? 70 : 140
     Q = (W * 90) / fov
-    planes.forEach(({ svg }, p) => {
+    AX = tall ? 0.5 : 0.31
+    stormDx = tall ? 0.14 : 0.55
+    STORM.k = tall ? 0.2 : 0.3
+    // low / reduced motion never turns: the little planet is all there is, so the panorama is not painted at all
+    if (still) planes.forEach(({ svg }) => svg.replaceChildren())
+    else planes.forEach(({ svg }, p) => {
       svg.setAttribute('viewBox', `0 0 ${f1(Q * 6)} ${f1(hh)}`)
       svg.setAttribute('width', f1(Q * 6))
       svg.setAttribute('height', f1(hh))
@@ -389,9 +467,9 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
       svg.replaceChildren(...kids)
     })
     // you stand on a dark stone at the bottom; the moon's broken road runs to it on the water
-    const cx = W / 2
+    const cx = W * AX
     own.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(hh)}`)
-    own.replaceChildren(s('g', { transform: `translate(${f1(cx)} ${f1(hh * 1.05)})` }, stoneArt(Math.min(W * 0.46, 420), hh * 0.12, 3751)))
+    own.replaceChildren(s('g', { transform: `translate(${f1(tall ? cx : W * 0.56)} ${f1(hh * (tall ? 1.05 : 1.1))})` }, stoneArt(Math.min(W * 0.46, 420), hh * 0.12, 3751)))
     column.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(hh)}`)
     let road = '', spec = ''
     const r = rng(3752)
@@ -403,9 +481,9 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
     column.replaceChildren(s('g', { class: 't37v-road' }, s('path', { d: road }), s('path', { class: 't37v-spec', d: spec })))
     // the planet: about 70 % of the frame's height with its horizons; the slip beside it (wide) or under (tall)
     // (the pond R, its horizons reaching about 1.1 R further: the whole ≈ 0.8 of the frame's height)
-    P = tall ? { cx: W / 2, cy: hh * 0.5, R: Math.min(W * 0.2, hh * 0.21) } : { cx: W * 0.4, cy: hh * 0.48, R: hh * 0.17 }
+    P = tall ? { cx: W / 2, cy: hh * 0.42, R: Math.min(W * 0.24, hh * 0.15) } : { cx: W * 0.33, cy: hh * 0.53, R: hh * 0.215 }
     pl.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(hh)}`)
-    pl.replaceChildren(...planet(P.cx, P.cy, P.R, 3750))
+    pl.replaceChildren(...planet(P.cx, P.cy, P.R, 3750, W))
     apply()
   }
 
@@ -416,19 +494,21 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
     if (!card) return
     card.classList.add('t37v-slip')
     if (tall) {
-      const top = SH + 6
+      // a tall frame: the words lie on the near water under the stone and the compass
+      const top = SH * 0.685
       return void Object.assign(card.style, { left: '0px', top: `${f1(top)}px`, width: `${f1(W)}px`, maxHeight: `${f1(root.clientHeight - top - 2)}px`, transform: 'none' })
     }
-    const w = Math.min(330, W * 0.25)
-    const x = hooks.all ? Math.min(W - w - 8, P.cx + P.R * 2.7) : W / 2 + stoneW * 0.42
-    Object.assign(card.style, { left: `${f1(x)}px`, top: `${f1(hooks.all ? SH * 0.18 : SH * 0.55)}px`, width: `${f1(w)}px`, maxHeight: `${f1(SH * 0.42)}px`, transform: '' })
+    // on the water beside the faced stone (all heard: in the right column, where the insight will be)
+    const w = Math.min(340, W * 0.26)
+    const x = hooks.all ? W * 0.64 : W * AX + stoneW * 0.64
+    Object.assign(card.style, { left: `${f1(x)}px`, top: `${f1(hooks.all ? SH * 0.2 : SH * 0.56)}px`, width: `${f1(w)}px`, maxHeight: `${f1(SH * 0.4)}px`, transform: '' })
   }
 
   const stoneAt = (k: number) => AT[hooks.view[k] ?? k]
   /** write the turn: each plane slides at its own rate; the stones ride on the near plane; the moon's road leans */
   function apply() {
     if (!W) return
-    const pxPerDeg = Q / 90, cx = W / 2
+    const pxPerDeg = Q / 90, cx = W * AX
     // parallax: each plane slides a little more or less than the turn, but all agree at every quarter's middle (period 90°)
     const par = (p: number) => (PLANES[p] - 1) * pxPerDeg * (90 / (2 * Math.PI)) * Math.sin((2 * Math.PI * yaw) / 90)
     planes.forEach(({ el }, p) => {
@@ -449,8 +529,8 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
         return
       }
       const x = wrap(stoneAt(k) - yaw) * pxPerDeg - par(3)
-      b.style.transform = `translate(${f1(cx + x - f.x)}px, ${f1(SH * 0.9 - f.y)}px) scale(${f1(stoneW / bwPx)})`
-      b.style.visibility = Math.abs(x) > Math.min(W * 0.62, Q * 0.62) ? 'hidden' : ''
+      b.style.transform = `translate(${f1(cx + x - f.x)}px, ${f1(SH * (tall ? 0.58 : 0.88) - f.y)}px) scale(${f1(stoneW / bwPx)})`
+      b.style.visibility = cx + x < -stoneW * 0.55 || cx + x > W + stoneW * 0.3 ? 'hidden' : ''
     })
     // the moon's road leans toward the stone you face; the compass marks that way
     const n = nearest()
@@ -459,7 +539,7 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
       hooks.facing(n.k >= 0 && Math.abs(n.d) < 30 ? (hooks.view[n.k] ?? n.k) : -1)
     }
     const lean = n.k >= 0 ? clamp(n.d / 30, -1, 1) * 9 : 0
-    ;(column.firstChild as SVGGElement | null)?.setAttribute('transform', `rotate(${f1(-lean)} ${f1(cx)} ${f1(SH * 0.5)})`)
+    ;(column.firstChild as SVGGElement | null)?.setAttribute('transform', `rotate(${f1(-lean)} ${f1(cx)} ${f1(SH * (tall ? 0.4 : 0.46))})`)
   }
   function nearest() {
     let k = -1, d = 999
@@ -491,6 +571,7 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
   /** came to rest: if a stone is in front, hear it after a breath */
   function settle() {
     clearTimeout(dwell)
+    hooks.laid() // the guide's dot follows its stone to where the turn left it (one read, when the turn stops)
     if (hooks.all) return
     const n = nearest()
     if (n.k < 0 || Math.abs(n.d) > 18) return
@@ -540,7 +621,7 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi, hooks: Hooks): 
     W = ctx.art.clientWidth
     const H = root.clientHeight
     tall = W / H < 1.15
-    SH = Math.round(tall ? H * 0.58 : H)
+    SH = H
     root.classList.toggle('t37v-tall', tall)
     Object.assign(stageEl.style, { left: '0px', width: `${f1(W)}px`, height: `${f1(SH)}px` })
     bwPx = parseFloat(stones()[0]?.style.width || '140') || 140
@@ -598,7 +679,6 @@ export const viewsScene: SceneDef = {
     ctx.onCleanup(() => ctx.art.classList.remove('t37v-art'))
     const n = V.perspectives.stones.length
     const g = guide(ctx)
-    const dots: (Mark | null)[] = []
     let arrows: Mark[] = []
     // the insight (with the evidence dilemma in its detail) once all four are heard; no common line under the planet
     const def = perspectiveCircle(V.perspectives, {
@@ -610,12 +690,14 @@ export const viewsScene: SceneDef = {
       stone: (k, _g, i) => ((hooks.view[k] = i), speaker(i)),
       onHear: (k) => {
         hooks.heard.add(k)
-        dots[k]?.done()
-        dots[k] = null
+        markNext()
         compass.querySelector(`[data-d="${hooks.view[k] ?? k}"]`)?.classList.add('on')
         const m = hooks.heard.size
+        // one block of words at a time: the key to the picture gives way to what the stone says
+        root.classList.add('heard')
         if (m === n) {
           for (const a of arrows) a.done()
+          if (still) root.classList.add('quiet')
           return void setTimeout(curl, ctx.reduced ? 0 : 700)
         }
         // H5: hear the one in front → turn to the next → all four, counted
@@ -628,6 +710,7 @@ export const viewsScene: SceneDef = {
     // the ink compass under the picture: four dots N E S W on an arc, inked vermilion once heard; touch one to turn
     // and hear (H2 + H4: where the others are, how many are left)
     const compass = h('div', { class: 't37v-compass', role: 'group', 'aria-label': V.compassAria },
+      s('svg', { class: 't37v-arc', viewBox: '0 0 194 30', 'aria-hidden': 'true' }, s('path', { d: stroke(curve([2, 2], [97, 26], [192, 2], 20), 2, 0.2, 0.2, 0.3) })),
       ...V.compass.map((c, d) => h('button', { type: 'button', class: 't37v-cp', 'data-d': String(d), style: `--d:${d}`, 'aria-label': fill(V.compassTo, { dir: V.compassNames[d] }), onClick: () => hooks.pick(d) }, c)))
     def.mount(ctx)
     const root = ctx.art.querySelector<HTMLElement>('.p2c')!
@@ -636,19 +719,38 @@ export const viewsScene: SceneDef = {
     root.querySelector('.p2c-stage')!.append(h('p', { class: 't37v-legend' }, V.legend), compass)
     const cps = [...compass.children]
     hooks.facing = (d) => cps.forEach((b, i) => b.classList.toggle('here', i === d))
-    hooks.laid = () => g.refresh()
+    // (which stone holds which view is known once the component has laid them out)
+    hooks.laid = () => (markNext(), g.refresh())
     hooks.turned = () => {
       for (const a of arrows) a.done()
       arrows = []
     }
     // a dot on every stone not heard yet; two faint arrows at the sides for the turn
-    root.querySelectorAll<HTMLButtonElement>('.p2c-stone').forEach((b, k) => (dots[k] = g.dot(b, { dir: [0, -1] })))
+    // one vermilion focus at a time: on the stone suggested next (north, east, south, west: the first not heard yet),
+    // moving on after each is heard
+    const stoneEls = [...root.querySelectorAll<HTMLButtonElement>('.p2c-stone')]
+    let nextDot: Mark | null = null
+    function markNext() {
+      let k = -1
+      stoneEls.forEach((_, i) => !hooks.heard.has(i) && (k < 0 || (hooks.view[i] ?? i) < (hooks.view[k] ?? k)) && (k = i))
+      if (k < 0) return void (nextDot?.done(), (nextDot = null))
+      if (nextDot) nextDot.at(stoneEls[k])
+      else nextDot = g.dot(stoneEls[k], { dir: [0, -1] })
+    }
+    markNext()
     if (!still) {
       const stageEl = root.querySelector<HTMLElement>('.p2c-stage')!
-      const at = (x: number) => () => [ctx.art.clientWidth * x, stageEl.clientHeight * 0.7] as Pt
-      arrows = [g.gesture('drag-h', at(0.07), { r: 30 }), g.gesture('drag-h', at(0.93), { r: 30 })]
+      // the turn's two faint arrows on the water either side of the faced stone (the same sums as the stage's layout)
+      const at = (side: number) => () => {
+        const W = ctx.art.clientWidth, H = stageEl.clientHeight, t = W / Math.max(1, H) < 1.15
+        const sw = t ? Math.min(W * 0.52, 200) : clamp(W * 0.17, 230, 290)
+        return [W * (t ? 0.5 : 0.31) + side * sw * (t ? 0.62 : 0.72), H * (t ? 0.5 : 0.8)] as Pt
+      }
+      arrows = [g.gesture('drag-h', at(-1), { r: 30 }), g.gesture('drag-h', at(1), { r: 30 })]
     }
     ctx.prompt(still ? fill(V.count, { n: 0, total: n }) : V.prompt)
+    // all heard, the planet speaks through the insight; a stone touched again brings its words back beside it
+    root.querySelectorAll('.p2c-stone').forEach((b) => b.addEventListener('click', () => hooks.all && hooks.heard.size === n && root.classList.remove('quiet')))
     hooks.planetNow = () => {
       root.classList.add('planet', 'now')
       hooks.all = true
@@ -660,7 +762,7 @@ export const viewsScene: SceneDef = {
     /** all four heard: tip up and back, the cylinder curls into a little planet */
     function curl() {
       hooks.all = true
-      root.classList.add('planet')
+      root.classList.add('planet', 'quiet')
       hooks.redraw()
       g.refresh()
       // the north storm softens once the detail is open
@@ -674,12 +776,29 @@ export const viewsScene: SceneDef = {
 function speaker(i: number): SVGElement {
   const name = V.carve[i] ?? []
   const y0 = -30 - (name.length - 1) * 6
+  const seed = 3760 + i * 7
+  const { top } = rock(84, 56, seed)
+  const r = rng(seed + 3)
+  // moss on the stone's crown (the faces turned up), a few dabs spilling down the moonward side
+  let moss = ''
+  top.slice(Math.floor(top.length * 0.18), Math.floor(top.length * 0.72)).forEach(([x, y], j) => {
+    if (j % 2) return
+    moss += blob(x + (r() - 0.5) * 3, y + 2.4 + r() * 1.5, 3 + r() * 3.4, 1.4 + r() * 1.2, seed + j, 0.3, 9)
+  })
+  // the water rings round its foot: broken arcs, not a ring
+  let rings = ''
+  for (const [k, a0, a1] of [[1, 0.05, 0.42], [1, 0.58, 0.95], [1.28, 0.12, 0.34], [1.28, 0.66, 0.86]] as const)
+    rings += stroke(Array.from({ length: 9 }, (_, q) => {
+      const a = Math.PI * (a0 + ((a1 - a0) * q) / 8)
+      return [Math.cos(a) * 50 * k, 2 + Math.sin(a) * 6.5 * k] as Pt
+    }), 1.3 / k, 0.3, 0.3, 0.1)
   return s('g', { class: 't37v-speaker' },
-    s('g', { class: 't37v-mirror', transform: 'scale(1 -0.62)' }, stoneArt(84, 56, 3760 + i * 7)),
-    s('ellipse', { class: 't37v-wetring', cx: 0, cy: 1, rx: 58, ry: 6.5 }),
-    stoneArt(84, 56, 3760 + i * 7),
+    s('g', { class: 't37v-mirror', transform: 'scale(1 -0.62)' }, stoneArt(84, 56, seed)),
+    s('path', { class: 't37v-wetring', d: rings }),
+    stoneArt(84, 56, seed),
+    s('path', { class: 't37v-moss', d: moss }),
     s('path', { class: 't37v-wet', d: 'M-42 0Q-43 -7 -38 -11Q0 -7 40 -11Q44 -6 42 0Z' }),
-    s('ellipse', { class: 't37v-wl', cx: 0, cy: 0, rx: 46, ry: 4.5 }),
+    s('path', { class: 't37v-wl', d: stroke(Array.from({ length: 11 }, (_, q) => [Math.cos(Math.PI * (0.1 + q * 0.08)) * 44, Math.sin(Math.PI * (0.1 + q * 0.08)) * 4.5] as Pt), 1.4, 0.3, 0.3, 0.2) }),
     ...name.map((line, j) => s('g', { class: 't37v-carve' },
       s('text', { class: 't37v-carve-lo', x: 0, y: y0 + j * 12 + 0.7, 'text-anchor': 'middle' }, line),
       s('text', { class: 't37v-carve-hi', x: 0, y: y0 + j * 12, 'text-anchor': 'middle' }, line))))

@@ -327,17 +327,17 @@
               "local",
               "code"
             ],
-            "note": "Trên điện thoại: dùng app trợ lý chat và công cụ ảnh, video bản web hoặc app."
+            "note": "Điện thoại: dùng app trợ lý chat và app ảnh, video là đủ."
           },
           "laptop": {
             "drop": [],
-            "note": "Laptop thường: AI trên máy chỉ chạy được bản nhỏ, chưa cần lúc đầu."
+            "note": "Laptop thường: AI trên máy chỉ chạy bản nhỏ, chưa cần lúc đầu."
           },
           "strong": {
             "add": [
               "local"
             ],
-            "note": "Máy mạnh: thử chạy model mở ngay trên máy, dữ liệu không rời khỏi máy."
+            "note": "Máy mạnh: thử tải một AI về chạy ngay trên máy, dữ liệu không rời máy."
           }
         },
         "budget": {
@@ -346,7 +346,7 @@
               "chat",
               "skill"
             ],
-            "note": "Hầu hết công cụ có gói miễn phí có giới hạn. Bắt đầu với một trợ lý chat là đủ."
+            "note": "Chưa muốn trả tiền: dùng bản miễn phí của trợ lý chat trước, món này để sau."
           },
           "mid": {
             "note": "Trả phí cho một công cụ bạn dùng nhiều nhất; tránh đăng ký tràn lan."
@@ -372,8 +372,9 @@
     "path": {
       "label": "Lộ trình 30 ngày",
       "art": "Đứng ở bậc hiên nhìn lên một dốc rêu ngược sáng: lối sỏi dẫn tới cổng vườn trên đường chân trời, mặt trời sắp mọc sau cổng, trăng mỏng còn ở góc trời. Dọc lối có bốn hốc trống, càng xa càng nhỏ; bốn viên đá tuần nằm trên sàn hiên, mỗi viên khắc một vật: chén trà, khung ảnh, cuộn giấy, hộp gỗ. Mỗi viên đứng trên viên trước; đặt đủ, mặt trời lên khỏi cổng và một tia nắng chạy dọc lối đánh thức từng viên.",
-      "prompt": "Kéo từng viên đá lên lối — viên làm nền đặt trước",
+      "prompt": "Kéo viên làm nền lên hốc thấp nhất (1/4)",
       "next": "Kéo viên kế tiếp lên hốc thứ {n} ({n}/{total})",
+      "shorts": ["Giao việc rõ", "Làm trọn sản phẩm", "Ghi cách làm", "Làm app nhỏ"],
       "keys": "Bấm phím 1 đến 4 để đặt viên của tuần 1 đến tuần 4",
       "stoneAria": "Tuần {n}: {label}",
       "wrong": "Viên này cần viên “{prev}” nằm dưới làm nền.",
@@ -423,6 +424,7 @@
       "prompt": "Kéo chiếc lá ghé từng ngọn đèn ({n}/{total})",
       "drop": "Thả lá vào vòng giữa vũng",
       "legend": "Mỗi ngọn đèn là một lời khuyên hay một nghiên cứu về cách học cùng AI. Chiếc lá là bạn.",
+      "lampAria": "Ngọn đèn {n}",
       "leafAria": "Chiếc lá là bạn: Enter để ghé ngọn đèn kế tiếp, nghe đủ ba đèn thì Enter để thả vào giữa vũng",
       "group": "Ba góc nhìn về cách học cùng AI",
       "stoneAria": "Góc nhìn: {who}",

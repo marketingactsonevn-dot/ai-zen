@@ -28,6 +28,8 @@ import { f1, g13Defs, leafCloud, leafD, lines, mossBed } from './sumi'
 const K = C.scenes.goal
 type State = 'loose' | 'better' | 'best'
 const NIGHT = 2.2
+/** where along the bough the three plaques hang (wide frame): its middle, leaving the clear sky at its end for words */
+const EMA_U = [0.4, 0.53, 0.67]
 /** how far the stage runs on below the frame (share of its height): the sand goes on under the foot of the picture */
 const BLEED = 0.16
 
@@ -244,14 +246,14 @@ function lyingShadow(x: number, y: number, ux: number, uy: number, len: number, 
 type Spot = [number, number, number, number]
 type Plan = { maple: Spot; toro: Spot; dozer: Spot; screen: Spot; man: Spot; hut: Spot; man2: Spot; basket: Spot; dry: Spot; log: Spot; pond: [number, number]; moon: [number, number, number] }
 const WIDE: Plan = {
-  maple: [0.02, 0.42, 0.3, 1.5], toro: [0.59, 0.5, 0.1, 0.37], dozer: [0.73, 0.54, 0.12, 0.12], screen: [0.8, 0.6, 0.14, 0.19],
+  maple: [0.02, 0.42, 0.3, 1.5], toro: [0.59, 0.5, 0.1, 0.37], dozer: [0.71, 0.52, 0.12, 0.2], screen: [0.8, 0.6, 0.14, 0.19],
   man: [0.32, 0.36, 0.12, 0.33], hut: [1.2, 0.78, 0.22, 0.38], man2: [1.1, 0.74, 0.08, 0.22], basket: [0.19, 0.3, 0.08, 0.08],
   dry: [0.46, 0.18, 0.05, 0.18], log: [0.04, 0.435, 0.02, 0.12], pond: [-0.2, 0.62], moon: [0.1, 0.35, 0.045],
 }
 const TALL: Plan = {
-  maple: [-0.03, 0.45, 0.4, 1.7], toro: [0.5, 0.5, 0.12, 0.28], dozer: [0.68, 0.56, 0.14, 0.1], screen: [0.77, 0.62, 0.16, 0.15],
+  maple: [-0.03, 0.45, 0.4, 1.7], toro: [0.5, 0.5, 0.12, 0.28], dozer: [0.68, 0.56, 0.14, 0.15], screen: [0.77, 0.62, 0.16, 0.15],
   man: [0.21, 0.3, 0.16, 0.26], hut: [1.18, 0.8, 0.3, 0.31], man2: [1.06, 0.76, 0.1, 0.18], basket: [-0.04, 0.3, 0.1, 0.07],
-  dry: [0.4, 0.16, 0.06, 0.16], log: [-0.01, 0.465, 0.02, 0.13], pond: [0.62, 0.62], moon: [0.78, 0.15, 0.055],
+  dry: [0.6, 0.3, 0.06, 0.16], log: [-0.01, 0.465, 0.02, 0.13], pond: [0.62, 0.62], moon: [0.78, 0.15, 0.055],
 }
 
 /** the floor in top view: the path, its leaves, moss and scraped earth, the pond, light and shadow on the sand */
@@ -330,6 +332,18 @@ function floorArt(f: FloorGeo, L: Plan, H: number): SVGElement[] {
     s('path', { class: 't37g-step-warm', d: hi }),
     // the last leaf drifting into the moon's double (only once the maple is gone)
     s('g', { class: 't37g-drift', style: `transform-origin:${f1(qx)}px ${f1(qy)}px` }, s('path', { class: 'g13-leaf', d: leafD(qx - W * 0.04, qy + W * 0.01, W * 0.009, 40) })))
+  // first light: the sun just over the east (right) rim rakes the sand, long warm streaks between long shadows laid west
+  const dx = -0.92, dy = 0.36
+  const [hx, hy] = at(L.hut), [zx, zy] = at(L.dozer)
+  let streak = ''
+  for (let i = 0; i < 6; i++) {
+    const [sx, sy] = A(1.05 - i * 0.03, 0.08 + i * 0.13 + r() * 0.04), len = W * (0.45 + r() * 0.3)
+    streak += stroke([[sx, sy], [sx + dx * len * 0.5, sy + dy * len * 0.5 * 0.4], [sx + dx * len, sy + dy * len * 0.4]], W * (0.01 + r() * 0.012), 0.3, 0.9, 0.1)
+  }
+  kids.push(s('g', { class: 't37g-dawn' },
+    s('path', { class: 't37g-dawnlit', d: streak }),
+    s('path', { class: 't37g-dsh', d: lyingShadow(px, py, dx, dy * 0.5, ph * 3, ph * 0.2, 3746) + lyingShadow(tx, ty, dx, dy * 0.5, th * 2.4, th * 0.16, 3747) + lyingShadow(zx, zy, dx, dy * 0.5, L.dozer[3] * H * 2, L.dozer[3] * H * 0.4, 3748) + lyingShadow(hx, hy, dx, dy * 0.4, L.hut[3] * H * 2.2, L.hut[3] * H * 0.5, 3749) }),
+    s('path', { class: 't37g-dsh t37g-dsh-maple', d: stroke([[fx, fy], [fx + dx * W * 0.25, fy + dy * W * 0.06]], W * 0.03, 0.02, 0.4, 0.4) })))
   // fallen leaves over the path (gone by morning in every version: it was the order)
   kids.push(s('g', { class: 't37g-leaves' }, s('path', { class: 'g13-leaf', d: pts.map(([x, y], i) => leafScatter(x, y, W * 0.05, W * 0.03, 10 - (i >> 1), W * 0.007, 3760 + i)).join('') + leafScatter(...A(L.maple[0] + 0.18, L.maple[1] - 0.12), W * 0.1, W * 0.05, 18, W * 0.007, 3770) })))
   // the felled crown's leaves spilled wide over the sand
@@ -341,11 +355,14 @@ function floorArt(f: FloorGeo, L: Plan, H: number): SVGElement[] {
 export function goalScene(ctx: SceneCtx) {
   g13Defs()
   const low = ctx.quality === 'low' || ctx.reduced
-  const stable = stableHeight(ctx, [K.insight])
+  // a tall frame shows the morning's words over the insight in the foot: keep room for both
+  const longest = K.options.reduce((a, o) => (o.result.length > a.length ? o.result : a), '')
+  const stable = stableHeight(ctx, ctx.art.clientHeight > ctx.art.clientWidth ? [`${K.morning}. ${longest} ${K.insight.text}`] : [K.insight])
   const card = findTakeaway(C.takeaways[0])
   const root = h('div', { class: `t37g${low ? ' still' : ''}` })
   const stageEl = h('div', { class: 't37g-stage' })
-  const sky = h('div', { class: 't37g-sky', 'aria-hidden': 'true' })
+  const skySvg = s('svg', { class: 't37g-skyart', 'aria-hidden': 'true' })
+  const sky = h('div', { class: 't37g-sky', 'aria-hidden': 'true' }, skySvg)
   const morning = h('p', { class: 't37g-morning', 'aria-hidden': 'true' }, K.morning)
   const fore = s('svg', { class: 't37g-fore', 'aria-hidden': 'true' })
   const foreEl = h('div', { class: 't37g-l0' }, fore)
@@ -353,6 +370,9 @@ export function goalScene(ctx: SceneCtx) {
   const boughEl = h('div', { class: 't37g-lb' }, bough)
   const emas = h('div', { class: 't37g-emas', role: 'group', 'aria-label': K.group })
   const caption = h('div', { class: 't37g-caption', hidden: true })
+  // the insight's corner sits in the clear sky on the right, under the bough's end (see .t37g-art in goal.css)
+  ctx.art.classList.add('t37g-art')
+  ctx.onCleanup(() => ctx.art.classList.remove('t37g-art'))
   const kept = h('div', { class: 't37g-kept', hidden: true })
   // who the paper gardener is, said once where it stands (audit 37-1)
   const legend = h('p', { class: 't37g-legend' }, K.legend)
@@ -361,6 +381,7 @@ export function goalScene(ctx: SceneCtx) {
   ctx.prompt(K.prompt)
   const g = guide(ctx)
   let retryDot: Mark | null = null
+
 
   // ── the stage: L3 / L2 / L1 as a diorama (backdrop flats, the floor in true perspective, cut-outs standing on it)
   const P = { maple: 0, toro: 1, dozer: 2, screen: 3, man: 4, hut: 5, man2: 6, basket: 7, dry: 8, log: 9 }
@@ -392,6 +413,15 @@ export function goalScene(ctx: SceneCtx) {
     ],
   })
   const props = d.props
+  // H3: the paper gardener's sleeve is where the order goes: a breathing ring there until it is given
+  const sleeveAt = (): Pt => {
+    const a = ctx.art.getBoundingClientRect(), m = (props[P.man].querySelector('.g13-paper') ?? props[P.man]).getBoundingClientRect()
+    return [m.left - a.left + m.width * 0.62, m.top - a.top + m.height * 0.5]
+  }
+  let sleeve = g.drop(sleeveAt, { w: 58, h: 58, round: true })
+  // the diorama stands its cut-outs in slices after mount: measure the sleeve again once they are up
+  const reMeasure = window.setTimeout(() => g.refresh(), 900)
+  ctx.onCleanup(() => clearTimeout(reMeasure))
   const cls = ['maple', 'toro', 'dozer', 'screen', 'man', 'hut', 'man2', 'basket', 'dry', 'log']
   props.forEach((p, i) => p.classList.add(`t37g-p-${cls[i]}`))
   // the dry branch is a button laid over the branch (the diorama redraws its props, so it lives in the overlay)
@@ -428,8 +458,9 @@ export function goalScene(ctx: SceneCtx) {
     // the bough: thick at the corner, tapering across the top, bokeh where its leaves are (1.4× nearer than the maple)
     // the bough's layer covers only the top of the frame: its blur is rastered over that band, not the whole picture
     bough.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H * 0.44)}`)
-    const end: Pt = t ? [W * 0.64, -H * 0.02] : [W * 0.88, -H * 0.03]
-    const line = curve([-W * 0.05, t ? H * 0.17 : H * 0.26], t ? [W * 0.3, H * 0.02] : [W * 0.36, H * 0.02], end, 30)
+    // (tall: lower, under the legend's line at the top)
+    const end: Pt = t ? [W * 0.56, H * 0.14] : [W * 0.88, -H * 0.03]
+    const line = curve([-W * 0.05, t ? H * 0.3 : H * 0.26], t ? [W * 0.3, H * 0.12] : [W * 0.36, H * 0.02], end, 30)
     const thick = t ? W * 0.11 : clamp(H * 0.085, 36, 64)
     let twigs = ''
     const tips: Pt[] = []
@@ -442,9 +473,11 @@ export function goalScene(ctx: SceneCtx) {
     let leaves = '', bokeh: SVGElement[] = []
     for (const [x, y] of [line[3], line[8], ...tips]) {
       leaves += leafCloud(x, y + thick * 0.2, thick * 1.1, thick * 0.6, 5, thick * 0.32, Math.round(r() * 1e4))
-      for (let i = 0; i < 3; i++) {
-        const R = thick * (0.28 + r() * 0.42)
-        bokeh.push(s('circle', { class: `t37g-bokeh${r() < 0.3 ? ' warm' : ''}`, cx: f1(x + (r() - 0.5) * thick * 2.4), cy: f1(y + (r() - 0.2) * thick * 1.4), r: f1(R) }))
+      // the nearest leaves, out of focus: big blurred maple leaves, the moon catching the edge of some
+      for (let i = 0; i < 2; i++) {
+        const R = thick * (0.45 + r() * 0.45), lx = x + (r() - 0.5) * thick * 2.4, ly = y + (r() - 0.2) * thick * 1.4, a = r() * 360
+        bokeh.push(s('path', { class: `t37g-bokeh${r() < 0.25 ? ' warm' : ''}`, d: leafD(lx, ly, R, a) }))
+        if (r() < 0.5) bokeh.push(s('path', { class: 't37g-bokeh-rim', d: leafD(lx - R * 0.12, ly - R * 0.14, R * 0.9, a) }))
       }
     }
     bough.replaceChildren(
@@ -452,8 +485,30 @@ export function goalScene(ctx: SceneCtx) {
       s('path', { class: 't37g-bough-rim', d: stroke(line.map(([x, y]) => [x - thick * 0.08, y - thick * 0.3] as Pt).slice(0, 22), thick * 0.14, 0.05, 0.6, 0.2) }),
       ...bokeh,
       s('path', { class: 't37g-bough-leaf', d: leaves }))
-    // where the plaques hang (wide: from the bough's far half, staggered; tall: a short chain low on the right)
-    hooks = t ? [0, 1, 2].map((i) => [W * 0.69, H * (0.4 + i * 0.205)] as Pt) : [0.6, 0.74, 0.88].map((u, i) => [line[Math.round(u * 30)][0], H * [0.12, 0.2, 0.15][i]] as Pt)
+    // the morning sky: the sun not up yet behind the east hills (right of the lantern, clear of the words' corner), a low
+    // band of first light hugging the horizon, a few long rays raking in low over the garden (painted once, shown at dawn)
+    skySvg.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
+    const hz = H * (t ? 0.42 : 0.47), sx = t ? W * 0.9 : W * 0.6
+    let rays = ''
+    for (let i = 0; i < 4; i++) {
+      const ex = sx - W * (0.3 + i * 0.1), ey = hz + H * (0.04 + i * 0.035), wd = H * (0.01 + i * 0.004)
+      rays += `M${f1(sx)} ${f1(hz - H * 0.004)}L${f1(ex)} ${f1(ey - wd)}L${f1(ex)} ${f1(ey + wd)}Z`
+    }
+    // and fanning up from behind the hills into the west sky: crepuscular rays, faint and long (they fill the sky the
+    // felled maple leaves empty, the light still coming from one place)
+    let fan = ''
+    for (let i = 0; i < 6; i++) {
+      const a = Math.PI * (1.03 + i * 0.045), L = W * (t ? 0.95 : 0.75), wd = 0.02 + i * 0.003
+      fan += `M${f1(sx)} ${f1(hz)}L${f1(sx + Math.cos(a - wd) * L)} ${f1(hz + Math.sin(a - wd) * L)}L${f1(sx + Math.cos(a + wd) * L)} ${f1(hz + Math.sin(a + wd) * L)}Z`
+    }
+    skySvg.replaceChildren(
+      s('path', { class: 't37g-fan', d: fan }),
+      s('ellipse', { class: 't37g-dawnband', cx: f1(sx), cy: f1(hz), rx: f1(W * 0.62), ry: f1(H * 0.22), fill: 'url(#g13-dawn)' }),
+      s('ellipse', { class: 't37g-dawnband', cx: f1(sx), cy: f1(hz), rx: f1(W * 0.35), ry: f1(H * 0.09), fill: 'url(#g13-dawn)' }),
+      s('ellipse', { class: 't37g-dawncore', cx: f1(sx), cy: f1(hz), rx: f1(W * 0.2), ry: f1(H * 0.05), fill: 'url(#g13-sun)' }),
+      s('path', { class: 't37g-rays', d: rays }))
+    // where the plaques hang (wide: from the bough's far half, staggered; tall: a short chain high on the right)
+    hooks = t ? [0, 1, 2].map((i) => [W * 0.7, H * (0.21 + i * 0.165)] as Pt) : EMA_U.map((u, i) => [line[Math.round(u * 30)][0], H * [0.13, 0.21, 0.16][i]] as Pt)
     layoutEmas(line)
   }
 
@@ -472,13 +527,20 @@ export function goalScene(ctx: SceneCtx) {
     emas.append(b)
     return b
   })
+  // one vermilion focus at a time: the plaque suggested next (the shortest order first, then the next untried one)
+  const tried = new Set<number>()
+  const markNext = () => {
+    const n = [0, 1, 2].find((i) => !tried.has(i)) ?? 2
+    btns.forEach((b, i) => b.classList.toggle('next', i === n))
+  }
+  markNext()
   const emaSh = s('svg', { class: 't37g-ema-sh', 'aria-hidden': 'true' })
   const shId = nextId('t37g-sh')
   emas.prepend(emaSh)
   function layoutEmas(line: Pt[]) {
     const t = tallAtMount
     const W = root.clientWidth, H = root.clientHeight
-    const w = t ? Math.min(W * 0.56, 230) : clamp(W * 0.135, 172, 214)
+    const w = t ? Math.min(W * 0.5, 210) : clamp(W * 0.135, 172, 214)
     const sh: SVGElement[] = []
     btns.forEach((b, i) => {
       const [x, y] = hooks[i] ?? [0, 0]
@@ -486,7 +548,7 @@ export function goalScene(ctx: SceneCtx) {
       b.style.left = `${f1(x - w / 2)}px`
       b.style.top = `${f1(y)}px`
       // the cord runs up to the bough (wide) or to the plaque above (tall)
-      const top = t ? (i ? hooks[i - 1][1] + 40 : H * 0.3) : line[Math.round([0.6, 0.74, 0.88][i] * 30)][1]
+      const top = t ? (i ? hooks[i - 1][1] + 40 : H * 0.1) : line[Math.round(EMA_U[i] * 30)][1]
       b.style.setProperty('--cord', `${f1(Math.max(14, y - top))}px`)
       // its soft shadow on the sand below and to the right (the moon is low in the west)
       const fy = floorY(t ? 0.22 + i * 0.05 : 0.3 + i * 0.04)
@@ -511,6 +573,7 @@ export function goalScene(ctx: SceneCtx) {
     if (!drag || e.pointerId !== drag.id) return
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y
     if (!dragged && Math.hypot(dx, dy) < 6) return
+    if (!dragged) sleeve.lift(true)
     dragged = true
     const b = btns[drag.i]
     b.classList.add('drag')
@@ -527,6 +590,7 @@ export function goalScene(ctx: SceneCtx) {
     const b = btns[i]
     b.classList.remove('drag')
     if (!dragged) return
+    sleeve.lift(false)
     const t = target(), over = e.clientX > t.left - 40 && e.clientX < t.right + 40 && e.clientY > t.top - 50 && e.clientY < t.bottom + 30
     root.classList.remove('over')
     if (over) pick(i)
@@ -545,6 +609,7 @@ export function goalScene(ctx: SceneCtx) {
     if (state.busy || state.picked) return
     const o = K.options[i]
     state.busy = true
+    tried.add(i)
     btns.forEach((b, j) => b.setAttribute('aria-pressed', String(i === j)))
     // the plaque flies into the sleeve
     const b = btns[i]
@@ -554,7 +619,8 @@ export function goalScene(ctx: SceneCtx) {
     }
     off.x = off.y = 0
     b.classList.add('given')
-    root.classList.add('reading')
+    root.classList.add('reading', 'given')
+    sleeve.hit()
     const done = () => {
       root.classList.remove('reading', 'night')
       root.dataset.state = o.id
@@ -563,7 +629,7 @@ export function goalScene(ctx: SceneCtx) {
       emas.classList.add('gone')
       caption.hidden = false
       caption.dataset.ok = String(o.ok)
-      caption.replaceChildren(h('p', { class: 't37g-res' }, o.result))
+      caption.replaceChildren(h('p', { class: 't37g-eyebrow' }, K.morning), h('p', { class: 't37g-res' }, o.result))
       caption.setAttribute('aria-live', 'polite')
       kept.hidden = !(o.ok && card)
       // the card to keep once the order is right: a folded slip, opened by a touch (it never covers the garden by itself)
@@ -575,13 +641,15 @@ export function goalScene(ctx: SceneCtx) {
       if (!o.ok && !told) {
         told = true
         root.classList.add('told')
-        ctx.insight(K.insight, K.detail)
+        // one block of words: what the morning showed goes in over the insight, in its corner
+        ctx.insight(K.insight, K.detail).prepend(caption)
       }
+      // (a tall frame keeps the foot for the words: the branch's own dot and label say what to do)
       if (!told || !o.ok) {
-        ctx.prompt(o.ok ? K.tryLoose : K.rewind)
+        if (!(told && tallAtMount)) ctx.prompt(o.ok ? K.tryLoose : K.rewind)
         retryDot ??= g.dot(retry, { dir: [0, -1] })
         g.refresh()
-      }
+      } else ctx.complete() // the right order after a wrong one: nothing left to ask
     }
     if (low) {
       root.classList.add('morning')
@@ -603,7 +671,10 @@ export function goalScene(ctx: SceneCtx) {
     retry.hidden = true
     retryDot?.done()
     retryDot = null
-    ctx.prompt(K.again)
+    if (!(told && tallAtMount)) ctx.prompt(K.again)
+    markNext()
+    root.classList.remove('given')
+    sleeve = g.drop(sleeveAt, { w: 58, h: 58, round: true })
     btns[0].focus()
   }
 
@@ -621,5 +692,6 @@ export function goalScene(ctx: SceneCtx) {
     root.style.height = `${Math.max(240, stable(ctx.art.clientHeight))}px`
     drawFore()
     placeRetry()
+    g.refresh()
   }))
 }

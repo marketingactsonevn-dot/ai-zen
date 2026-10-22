@@ -1,9 +1,13 @@
-/* Scene 1 · ask — a dawn pond from above in one CSS 3D view (bottom, koi, water film, surface). Tokens only. */
+/* Scene 1 · ask — a dawn pond from above in one CSS 3D view (bottom, koi, water film, surface). Tokens only.
+   The water is always darker than the sky: deep blue-black, lit only where it mirrors the dawn (far, upper right) and
+   the setting moon (near, lower left). */
 .t39a {
   /* the sky this pond mirrors: cool where the moon sets (near), dawn where the sun comes (far) */
   --t39a-cool: color-mix(in srgb, var(--mist) 70%, #b8cbe6);
-  --t39a-warm: color-mix(in srgb, var(--lantern) 45%, #f6c2a4);
-  --t39a-water: color-mix(in srgb, var(--water) 72%, var(--moss-b));
+  --t39a-warm: color-mix(in srgb, var(--lantern) 55%, #f6c2a4);
+  --t39a-water: color-mix(in srgb, var(--water) 82%, var(--moss-b));
+  --t39a-deep: color-mix(in srgb, var(--wash) 70%, var(--water));
+  --t39a-bankc: color-mix(in srgb, var(--moss-b) 55%, var(--paper-2));
   position: absolute;
   left: calc(-1 * var(--gutter));
   right: calc(-1 * var(--gutter));
@@ -12,15 +16,18 @@
   height: calc(100% + var(--top) + 24px);
   overflow: hidden;
   overflow: clip;
-  background: var(--paper-2);
+  background: var(--t39a-bankc);
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
   mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
 }
 :root[data-theme='dark'] .t39a {
-  --t39a-cool: color-mix(in srgb, var(--moon) 40%, var(--mist));
-  --t39a-warm: color-mix(in srgb, var(--lantern) 70%, #e89a7a);
-  /* a moonlit pond, not a hole: deep indigo with the night still in it */
-  --t39a-water: color-mix(in srgb, color-mix(in srgb, var(--mist) 70%, var(--moss-c)) 36%, var(--paper-2));
+  --t39a-cool: color-mix(in srgb, var(--moon) 45%, var(--mist));
+  /* the dawn sky mirrored on black water: a pale warm grey, never brown */
+  --t39a-warm: color-mix(in srgb, var(--lantern) 38%, var(--mist));
+  /* a pond before sunrise: near-black indigo with a little green in it */
+  --t39a-water: color-mix(in srgb, var(--water) 80%, var(--moss-b));
+  --t39a-deep: var(--water);
+  --t39a-bankc: color-mix(in srgb, var(--moss-b) 70%, var(--paper));
 }
 /* the insight and the prompt sit over the water: a little low mist keeps them readable */
 .scene:has(.t39a) > .scene-foot {
@@ -68,7 +75,6 @@
   pointer-events: none;
 }
 
-/* the bottom */
 /* the bottom, a hand's depth down: blurred and dimmed by the water over it */
 .t39a-bed {
   filter: blur(2.2px);
@@ -77,29 +83,34 @@
   filter: none;
 }
 .t39a-sandbed {
-  fill: color-mix(in srgb, var(--lantern) 12%, var(--step-mid));
+  fill: color-mix(in srgb, var(--step-lo) 55%, var(--water));
 }
 :root[data-theme='dark'] .t39a-sandbed {
-  fill: color-mix(in srgb, var(--mist) 22%, var(--step-lo));
+  fill: color-mix(in srgb, var(--step-lo) 42%, var(--water));
 }
 .t39a-deep {
-  fill: color-mix(in srgb, var(--wash) 80%, var(--moss-b));
-  opacity: 0.16;
-}
-:root[data-theme='dark'] .t39a-deep {
-  opacity: 0.16;
+  fill: var(--t39a-deep);
+  opacity: 0.3;
 }
 .t39a-peb {
   fill: var(--rock-lo);
-  opacity: 0.62;
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t39a-peb {
+  fill: var(--rock-mid);
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t39a-peb-hi {
+  fill: var(--rock-hi);
+  opacity: 0.4;
 }
 .t39a-peb-hi {
-  fill: var(--rock-hi);
-  opacity: 0.6;
+  fill: var(--rock-mid);
+  opacity: 0.55;
 }
 .t39a-weed {
   fill: var(--moss-b);
-  opacity: 0.6;
+  opacity: 0.7;
 }
 .t39a-fish {
   position: absolute;
@@ -118,8 +129,8 @@
   height: auto;
   overflow: visible;
   transform: rotate(90deg);
-  opacity: 0.78;
-  filter: blur(0.8px);
+  opacity: 0.85;
+  filter: blur(0.7px);
 }
 :root[data-quality='low'] .t39a-fish svg {
   filter: none;
@@ -128,43 +139,43 @@
   transform: rotate(-90deg);
 }
 .t39a-koi-body {
-  fill: color-mix(in srgb, #fff 80%, var(--lantern));
+  fill: color-mix(in srgb, #fff 82%, var(--lantern));
 }
 .t39a-koi-red {
   fill: var(--vermilion);
 }
 .t39a-koi-fin {
   fill: #fff;
-  opacity: 0.5;
+  opacity: 0.45;
 }
 :root[data-theme='dark'] .t39a-fish svg {
-  opacity: 0.55;
+  opacity: 0.7;
 }
 :root[data-theme='dark'] .t39a-koi-body {
-  fill: color-mix(in srgb, var(--moon) 70%, var(--mist));
+  fill: color-mix(in srgb, var(--moon) 75%, var(--mist));
 }
 @keyframes t39a-swim {
   to {
     transform: rotate(360deg);
   }
 }
+/* shadows on the bottom: long toward the lower left, away from the low sun */
 .t39a-stsh {
   position: absolute;
-  border-radius: 46% 54% 50% 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 50%, transparent), color-mix(in srgb, var(--umbra) 30%, transparent) 62%, transparent);
-  opacity: 0.45;
+  border-radius: 40% 60% 46% 54%;
+  transform: rotate(-24deg);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 55%, transparent), color-mix(in srgb, var(--umbra) 28%, transparent) 62%, transparent);
+  opacity: 0.4;
   transition: opacity 1.3s ease 0.15s;
 }
 .t39a-stsh.up {
   opacity: 1;
 }
-:root[data-theme='dark'] .t39a-stsh {
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 55%, transparent), color-mix(in srgb, var(--umbra) 30%, transparent) 60%, transparent);
-}
 .t39a-padsh {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 36%, transparent), color-mix(in srgb, var(--umbra) 14%, transparent) 70%, transparent);
+  transform: rotate(-24deg);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 42%, transparent), color-mix(in srgb, var(--umbra) 16%, transparent) 70%, transparent);
   animation: t39a-in 0.9s ease both;
   animation-delay: calc(var(--i) * 70ms + 120ms);
   transition: opacity 0.8s;
@@ -176,43 +187,46 @@
 /* the water film and the banks */
 .t39a-water {
   fill: var(--t39a-water);
-  opacity: 0.36;
+  opacity: 0.66;
 }
 :root[data-theme='dark'] .t39a-water {
-  opacity: 0.72;
+  opacity: 0.78;
+}
+.t39a-water-mid {
+  fill: var(--t39a-deep);
+  opacity: 0.16;
+}
+:root[data-theme='dark'] .t39a-water-mid {
+  opacity: 0.22;
 }
 .t39a-skyref {
-  opacity: 0.85;
+  opacity: 0.9;
 }
 .t39a-moonref {
-  opacity: 0.9;
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t39a-moonref {
+  opacity: 0.35;
 }
 .t39a-moonroad,
 .t39a-mooncres {
   fill: #fff;
-  opacity: 0.75;
+  opacity: 0.6;
 }
 .t39a-rip {
   fill: #fff;
-  opacity: 0.35;
+  opacity: 0.16;
 }
 :root[data-theme='dark'] .t39a-moonroad,
 :root[data-theme='dark'] .t39a-mooncres {
   fill: var(--moon);
-  opacity: 0.6;
+  opacity: 0.55;
 }
 :root[data-theme='dark'] .t39a-rip {
   fill: var(--moon);
-  opacity: 0.12;
+  opacity: 0.08;
 }
-.t39a-water-mid {
-  fill: var(--t39a-water);
-  opacity: 0.12;
-}
-:root[data-theme='dark'] .t39a-water-mid {
-  opacity: 0.1;
-}
-/* the surface: glints and a slow sheen above everything wet */
+/* the surface: glints, the sun's sheen and its long low streaks, above everything wet */
 .t39a-spec {
   position: absolute;
   overflow: visible;
@@ -220,22 +234,33 @@
   transform: translateZ(0.5px);
 }
 .t39a-sheen {
-  opacity: 0.4;
+  opacity: 0.22;
 }
 :root[data-theme='dark'] .t39a-sheen {
+  opacity: 0.1;
+}
+.t39a-beam {
+  fill: var(--lantern);
+  opacity: 0.22;
+  filter: blur(2px);
+}
+:root[data-theme='dark'] .t39a-beam {
   opacity: 0.16;
 }
+:root[data-quality='low'] .t39a-beam {
+  filter: none;
+}
 .t39a-glint {
-  fill: #fff;
+  fill: color-mix(in srgb, var(--lantern) 35%, #fff);
 }
 .t39a-glint-a {
-  opacity: 0.85;
+  opacity: 0.75;
 }
 .t39a-glint-b {
   opacity: 0.25;
 }
 :root[data-theme='dark'] .t39a-glint {
-  fill: var(--moon);
+  fill: color-mix(in srgb, var(--lantern) 50%, var(--moon));
 }
 :root[data-quality='high'] .t39a:not(.is-idle):not(.is-still) .t39a-glint-a {
   animation: t39a-shimmer 3.8s ease-in-out infinite alternate;
@@ -245,7 +270,7 @@
 }
 @keyframes t39a-shimmer {
   from {
-    opacity: 0.85;
+    opacity: 0.75;
   }
   to {
     opacity: 0.2;
@@ -253,48 +278,48 @@
 }
 .t39a-shallow {
   fill: none;
-  stroke: var(--step-hi);
+  stroke: var(--step-mid);
+  filter: blur(5px);
+}
+:root[data-quality='low'] .t39a-shallow {
+  filter: none;
 }
 :root[data-theme='dark'] .t39a-shallow {
-  stroke: var(--step-mid);
+  stroke: var(--step-lo);
 }
 .t39a-bank {
-  fill: color-mix(in srgb, var(--moss-c) 38%, var(--paper-2));
-}
-:root[data-theme='dark'] .t39a-bank {
-  fill: color-mix(in srgb, var(--moss-a) 45%, var(--paper-2));
+  fill: var(--t39a-bankc);
 }
 .t39a-wet {
   fill: none;
-  stroke: var(--step-lo);
-  stroke-width: 26;
-  opacity: 0.2;
+  stroke: var(--umbra);
+  stroke-width: 22;
+  opacity: 0.16;
 }
 .t39a-bankdots {
-  fill: var(--moss-b);
-  opacity: 0.32;
+  fill: var(--moss-c);
+  opacity: 0.4;
 }
 :root[data-theme='dark'] .t39a-bankdots {
-  fill: var(--moss-c);
-  opacity: 0.3;
+  opacity: 0.32;
 }
 .t39a-shore {
   fill: none;
   stroke: var(--wash);
   stroke-width: 2.4;
-  opacity: 0.3;
+  opacity: 0.35;
 }
 .t39a-iris {
   fill: var(--moss-b);
-  opacity: 0.75;
+  opacity: 0.85;
 }
 :root[data-theme='dark'] .t39a-iris {
   fill: var(--moss-c);
-  opacity: 0.6;
+  opacity: 0.55;
 }
 .t39a-boulder-sh {
   fill: var(--umbra);
-  opacity: 0.22;
+  opacity: 0.3;
 }
 .t39a-boulder {
   fill: var(--rock-lo);
@@ -302,15 +327,15 @@
 .t39a-boulder-hi {
   fill: var(--rock-mid);
 }
-/* the light over the whole view: dawn warming the upper right, the moon's cool in the lower left */
+/* the light over the whole view: the dawn warming the upper right (low, from the corner), the moon's cool lower left */
 .t39a-sky {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(46% 42% at 100% 0%, color-mix(in srgb, var(--lantern) 22%, transparent), transparent),
-    radial-gradient(60% 55% at 94% 0%, var(--dawn), transparent),
-    radial-gradient(40% 46% at 0% 100%, color-mix(in srgb, var(--t39a-cool) 22%, transparent), transparent);
+    radial-gradient(38% 34% at 100% 0%, color-mix(in srgb, var(--lantern) 18%, transparent), transparent),
+    radial-gradient(55% 48% at 96% 0%, var(--dawn), transparent),
+    radial-gradient(40% 46% at 0% 100%, color-mix(in srgb, var(--t39a-cool) 12%, transparent), transparent);
 }
 
 /* the stones */
@@ -325,8 +350,21 @@
   font: inherit;
   cursor: default;
   transform: translateZ(var(--z, -60px));
-  transition: transform 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s;
+  transition: transform 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s, filter 1.3s, opacity 1.3s;
   border-radius: 46%;
+}
+/* a stone still under the water, just below the surface: a dim, blurred, smaller shape the next answer will raise */
+.t39a-stone:not(.up) {
+  transform: translateZ(0.6px) scale(0.94);
+  filter: blur(2px) brightness(0.62);
+  opacity: 0.32;
+}
+:root[data-theme='dark'] .t39a-stone:not(.up) {
+  opacity: 0.26;
+  filter: blur(2px) brightness(0.75);
+}
+:root[data-quality='low'] .t39a-stone:not(.up) {
+  filter: none;
 }
 .t39a-stone.up {
   transform: translateZ(2px);
@@ -350,16 +388,51 @@
   height: 124%;
   overflow: visible;
 }
-.t39a-q {
+.t39a-face {
   position: relative;
-  max-width: 76%;
+  display: grid;
+  gap: 4px;
+  max-width: 78%;
   margin-bottom: var(--wall, 0px);
-  font: 500 18px/1.25 var(--serif);
-  color: var(--stone-text);
+  justify-items: center;
   text-align: center;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45), 0 -1px 0 rgba(0, 0, 0, 0.16);
+  color: var(--stone-text);
   opacity: 0;
   transition: opacity 0.8s 0.6s;
+}
+.t39a-stone.up .t39a-face {
+  opacity: 1;
+}
+/* letters cut into the stone: dark in the cut, a lit lower lip */
+.t39a-q {
+  font: 500 18px/1.25 var(--serif);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45), 0 -1px 0 rgba(0, 0, 0, 0.16);
+}
+.t39a-ans {
+  display: none;
+  font: 600 15px/1.22 var(--serif);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4), 0 -1px 0 rgba(0, 0, 0, 0.18);
+}
+/* answered: the question steps back, the answer is cut beneath it */
+.t39a-stone.has .t39a-q {
+  font-size: 13px;
+  opacity: 0.72;
+}
+.t39a-stone.has .t39a-ans {
+  display: block;
+}
+/* pulled back over the whole path: only the answers, kept at a readable size (the camera scale is --k) */
+.t39a.is-done .t39a-stone.has .t39a-q {
+  display: none;
+}
+.t39a.is-done .t39a-ans {
+  font-size: calc(14px * var(--k, 1));
+}
+.t39a.is-done .t39a-face {
+  max-width: 88%;
+}
+.t39a.is-done .t39a-n {
+  opacity: 0 !important;
 }
 /* cut into the side wall: pale letters in the shaded stone */
 .t39a-n {
@@ -378,54 +451,68 @@
 :root[data-theme='dark'] .t39a-n {
   color: var(--moon);
 }
-.t39a-stone.up .t39a-q {
-  opacity: 1;
-}
 .t39a-stone.up .t39a-n {
   opacity: 0.95;
 }
 .t39a-sunk {
   fill: var(--wash);
-  opacity: 0.2;
+  opacity: 0.3;
 }
 .t39a-striae {
   fill: var(--umbra);
-  opacity: 0.18;
+  opacity: 0.2;
 }
 .t39a-wetband {
   fill: var(--umbra);
-  opacity: 0.32;
+  opacity: 0.36;
 }
 .t39a-waterline {
   fill: var(--umbra);
   opacity: 0.55;
 }
 .t39a-bevel {
-  fill: color-mix(in srgb, var(--rock-hi) 70%, #fff);
-  opacity: 0.75;
+  fill: color-mix(in srgb, var(--lantern) 30%, #fff);
+  opacity: 0.6;
 }
 :root[data-theme='dark'] .t39a-bevel {
-  fill: var(--moon);
+  fill: var(--lantern);
   opacity: 0.35;
 }
 .t39a-meniscus,
 .t39a-ripple {
   fill: #fff;
-  opacity: 0.7;
+  opacity: 0.5;
 }
 .t39a-ripple {
-  opacity: 0.4;
+  opacity: 0.3;
 }
 :root[data-theme='dark'] .t39a-meniscus,
 :root[data-theme='dark'] .t39a-ripple {
   fill: var(--moon);
-  opacity: 0.32;
+  opacity: 0.28;
 }
 .t39a-grain {
   fill: var(--wash);
   opacity: 0.14;
 }
-/* at night the crown takes the moonlight: a pale face that the dark letters read on */
+.t39a-crack {
+  fill: var(--umbra);
+  opacity: 0.38;
+}
+.t39a-lichen {
+  fill: color-mix(in srgb, var(--moss-c) 50%, var(--rock-hi));
+  opacity: 0.55;
+}
+.t39a-crown-shade {
+  fill: var(--umbra);
+  opacity: 0.16;
+  filter: url(#ink-wash);
+}
+.t39a-crown-sun {
+  fill: var(--lantern);
+  opacity: 0.12;
+}
+/* at night the crown takes the first light: a pale face that the dark letters read on */
 .t39a-crown-moon {
   fill: var(--moon);
   opacity: 0;
@@ -433,13 +520,23 @@
 :root[data-theme='dark'] .t39a-crown-moon {
   opacity: 0.34;
 }
-:root[data-theme='dark'] .t39a-q {
+:root[data-theme='dark'] .t39a-crown-shade {
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t39a-face {
   color: #0d1122;
+}
+:root[data-theme='dark'] .t39a-q,
+:root[data-theme='dark'] .t39a-ans {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 .t39a-mossy {
-  fill: var(--moss-a);
+  fill: color-mix(in srgb, var(--moss-b) 80%, var(--umbra));
   opacity: 0.85;
+}
+:root[data-theme='dark'] .t39a-mossy {
+  fill: var(--moss-a);
+  opacity: 0.8;
 }
 .t39a-sunrim {
   fill: color-mix(in srgb, var(--lantern) 60%, #fff);
@@ -451,10 +548,10 @@
 }
 .t39a-inkedge {
   fill: var(--wash);
-  opacity: 0.4;
+  opacity: 0.45;
 }
 
-/* the leaves (answers) */
+/* the leaves (answers): real lotus leaves lying on the dark water */
 .t39a-pad {
   position: absolute;
   display: grid;
@@ -498,75 +595,78 @@
 }
 /* afloat: a tight dark contact on the water, away from the sun */
 .t39a-pad > .t39a-pad-art {
-  filter: drop-shadow(-3px 4px 3px color-mix(in srgb, var(--umbra) 42%, transparent));
+  filter: drop-shadow(-5px 5px 3px color-mix(in srgb, var(--umbra) 50%, transparent));
 }
 :root[data-quality='low'] .t39a-pad > .t39a-pad-art {
   filter: none;
 }
+/* the dot sits just above the words cut into the leaf */
+.t39a-pad > .p2g-dot.ride {
+  top: 19%;
+}
+.t39a-pad:has(.long) > .p2g-dot.ride {
+  top: 7%;
+}
+/* words cut faintly into the leaf: ink by day, paper-pale by night; no glow, no ring */
 .t39a-pad-label {
   position: relative;
-  padding: 0 13%;
-  font: 500 15px/1.22 var(--serif);
+  padding: 0 14%;
+  font: 500 15px/1.2 var(--serif);
   color: var(--ink);
   text-align: center;
-  text-shadow: 0 0 3px var(--moss-c), 0 0 7px var(--moss-c), 0 0 12px var(--moss-c);
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--moss-c) 70%, transparent);
 }
 .t39a-pad-label.long {
-  padding: 0 9%;
+  padding: 0 10%;
   font-size: 13.5px;
-  line-height: 1.16;
+  line-height: 1.15;
 }
 :root[data-theme='dark'] .t39a-pad-label {
-  color: var(--ink);
-  text-shadow: 0 0 3px var(--moss-b), 0 0 7px var(--moss-b), 0 0 12px var(--moss-b);
+  color: color-mix(in srgb, var(--moon) 70%, var(--ink));
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
 }
 .t39a-pad[aria-pressed='true'] .t39a-leaf {
   stroke: var(--lantern);
-  stroke-width: 3;
+  stroke-width: 2.5;
+}
+.t39a-leaf-sheen {
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t39a-leaf-sheen {
+  opacity: 0.12;
 }
 .t39a-vein {
   fill: var(--moss-c);
-  opacity: 0.42;
+  opacity: 0.58;
 }
 :root[data-theme='dark'] .t39a-vein {
-  opacity: 0.4;
+  opacity: 0.42;
 }
-.t39a-leaf-fold {
-  fill: var(--umbra);
-  opacity: 0.3;
-}
-.t39a-leaf-rim {
-  fill: color-mix(in srgb, color-mix(in srgb, var(--lantern) 30%, #fff) 45%, var(--moss-c));
-  opacity: 0.95;
-}
-:root[data-theme='dark'] .t39a-leaf-rim {
-  fill: color-mix(in srgb, var(--lantern) 25%, var(--moss-c));
-}
-.t39a-leaf-lip {
-  fill: #fff;
-  opacity: 0.55;
-}
-:root[data-theme='dark'] .t39a-leaf-lip {
-  fill: var(--moon);
-  opacity: 0.3;
-}
-.t39a-leaf-edge {
-  fill: var(--umbra);
-  opacity: 0.22;
-}
-.t39a-stem {
-  fill: var(--moss-c);
+/* the curled rim on the sun's side: its paler underside, a bright lip */
+.t39a-leaf-under {
+  fill: color-mix(in srgb, var(--moss-c) 70%, var(--lantern));
   opacity: 0.8;
 }
-.t39a-dew,
-.t39a-dew-hi {
-  fill: #fff;
-  opacity: 0.9;
+.t39a-leaf-lip {
+  fill: color-mix(in srgb, var(--lantern) 55%, #fff);
+  opacity: 0.85;
 }
-:root[data-theme='dark'] .t39a-dew,
-:root[data-theme='dark'] .t39a-dew-hi {
-  fill: var(--moon);
-  opacity: 0.7;
+:root[data-theme='dark'] .t39a-leaf-under {
+  fill: color-mix(in srgb, var(--moss-c) 65%, var(--lantern));
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t39a-leaf-lip {
+  fill: var(--lantern);
+  opacity: 0.6;
+}
+.t39a-leaf-shade {
+  fill: var(--umbra);
+  opacity: 0.35;
+}
+.t39a-stem {
+  fill: var(--moss-b);
+  stroke: var(--umbra);
+  stroke-opacity: 0.3;
 }
 .t39a-dock {
   position: absolute;
@@ -574,6 +674,7 @@
   opacity: 0;
   transition: opacity 0.6s 0.5s;
   pointer-events: none;
+  filter: drop-shadow(-3px 3px 2px color-mix(in srgb, var(--umbra) 45%, transparent));
 }
 .t39a-dock.on {
   opacity: 1;
@@ -581,17 +682,34 @@
 .t39a-dock .t39a-pad-art {
   transform: rotate(-30deg);
 }
-.t39a-dock-label {
+
+/* H7: waiting, the leaf nearest the stone turns a little and rings spread round it */
+.t39a-pad.t39a-hint::before {
+  content: '';
   position: absolute;
-  top: 50%;
-  right: calc(100% + 4px);
-  transform: translateY(-50%);
-  width: max-content;
-  max-width: 190px;
-  font: 500 15px/1.25 var(--serif);
-  color: var(--ink);
-  text-align: right;
-  text-shadow: 0 0 6px var(--paper), 0 0 12px var(--paper);
+  inset: -4% -10%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--moon) 60%, #fff);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--moon) 30%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+.scene.is-idle .t39a-pad.t39a-hint .t39a-pad-art {
+  animation: t39a-turn 2.6s ease-in-out 2;
+}
+.scene.is-idle .t39a-pad.t39a-hint::before {
+  animation: t39a-ring 2.2s cubic-bezier(0.2, 0.7, 0.3, 1) 2;
+}
+@keyframes t39a-turn {
+  50% {
+    transform: rotate(calc(var(--r) + 9deg)) translate(-6px, 6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene.is-idle .t39a-pad.t39a-hint .t39a-pad-art,
+  .scene.is-idle .t39a-pad.t39a-hint::before {
+    animation: none;
+  }
 }
 
 /* rings spreading from a stone when a leaf touches it */
@@ -624,7 +742,7 @@
 }
 @keyframes t39a-ring {
   from {
-    opacity: 0.7;
+    opacity: 0.6;
     transform: scale(0.9);
   }
   to {
@@ -679,74 +797,141 @@
 }
 .t39a-streak {
   position: absolute;
-  height: 70px;
-  margin-top: -35px;
-  transform-origin: 0 50%;
-  border-radius: 50%;
-  background: linear-gradient(to right, color-mix(in srgb, var(--lantern) 42%, transparent), transparent 80%);
+  overflow: visible;
+  transform: translateZ(1px);
+  fill: var(--lantern);
   opacity: 0;
   transition: opacity 2s 1s;
   pointer-events: none;
 }
 .t39a.is-done .t39a-streak {
-  opacity: 1;
+  opacity: 0.55;
 }
 
-/* the privacy board on the near bank, on two short posts in the moss */
-.t39a-sign {
+/* the privacy note cut into a squared cedar post standing in the moss of the near bank (painted by postPaint): the
+   words are cut into its front face, which is a little in shade (the sun is low on the right) */
+.t39a-post {
+  --wood: color-mix(in srgb, var(--lantern) 38%, color-mix(in srgb, var(--rock-mid) 60%, var(--umbra)));
   position: absolute;
   z-index: 1;
-  width: 250px;
   box-sizing: border-box;
-  padding: 10px 14px 11px;
-  transform: rotate(-3deg);
-  background:
-    repeating-linear-gradient(176deg, transparent 0 7px, color-mix(in srgb, var(--wash) 7%, transparent) 7px 8px),
-    linear-gradient(var(--step-hi), var(--step-mid));
-  border-radius: 3px 4px 3px 5px;
-  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--wash) 18%, transparent), 6px 10px 16px -8px color-mix(in srgb, var(--umbra) 55%, transparent);
-  font: 400 13px/1.4 var(--serif);
-  color: var(--stone-text);
+  display: grid;
+  align-content: start;
+  padding: 14px 13px 12px 12px;
+  font: 500 13px/1.36 var(--serif);
+  color: color-mix(in srgb, var(--umbra) 88%, var(--wood));
 }
-.t39a-sign p {
-  margin: 0;
-}
-.t39a-sign::before,
-.t39a-sign::after {
-  content: '';
+.t39a-post-art {
   position: absolute;
-  z-index: -1;
-  top: 100%;
-  width: 9px;
-  height: 46px;
-  border-radius: 0 0 3px 3px;
-  background: linear-gradient(to right, color-mix(in srgb, var(--umbra) 45%, var(--step-lo)), var(--step-mid) 70%, var(--step-lo));
+  overflow: visible;
+  pointer-events: none;
 }
-.t39a-sign::before {
-  left: 18%;
+.t39a-post p {
+  position: relative;
+  margin: 0;
+  text-shadow: 0 1px 0 color-mix(in srgb, #fff 30%, transparent);
+  transition: opacity 0.8s;
 }
-.t39a-sign::after {
-  right: 18%;
+.t39a-post-face {
+  fill: var(--wood);
+}
+.t39a-post-shade {
+  opacity: 0.35;
+  transform: scaleY(-1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.t39a-post-side {
+  fill: color-mix(in srgb, var(--lantern) 22%, var(--wood));
+}
+.t39a-post-roof {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--wood));
+}
+.t39a-post-gable {
+  fill: var(--umbra);
+  opacity: 0.12;
+}
+.t39a-post-grain,
+.t39a-post-knot {
+  fill: color-mix(in srgb, var(--umbra) 70%, var(--lantern));
+  opacity: 0.28;
+}
+.t39a-post-knot {
+  opacity: 0.3;
+}
+.t39a-post-crack {
+  fill: var(--umbra);
+  opacity: 0.45;
+}
+.t39a-post-arris {
+  fill: color-mix(in srgb, var(--lantern) 50%, #fff);
+  opacity: 0.7;
+}
+.t39a-post-edge {
+  fill: var(--umbra);
+  opacity: 0.35;
+}
+.t39a-post-contact {
+  fill: var(--umbra);
+  opacity: 0.4;
+}
+.t39a-post-cast {
+  opacity: 0.9;
+}
+.t39a-post-moss {
+  fill: color-mix(in srgb, var(--moss-b) 80%, var(--umbra));
+}
+.t39a-post-blades {
+  fill: var(--moss-b);
+}
+:root[data-theme='dark'] .t39a-post-blades {
+  fill: var(--moss-a);
+}
+.t39a-post-mosshi {
+  fill: var(--moss-c);
+  opacity: 0.3;
+}
+/* pulled back over the path, the camera rises: the near bank with its post drops out of the frame's foot (one text
+   block per state: the insight alone speaks) */
+.t39a-post {
+  transition: transform 1.5s cubic-bezier(0.45, 0, 0.25, 1);
+}
+.t39a.is-done .t39a-post {
+  transform: translateY(460px);
+}
+.t39a-near {
+  transition: translate 1.5s cubic-bezier(0.45, 0, 0.25, 1);
+}
+.t39a.is-done .t39a-near {
+  translate: 0 240px;
 }
 @media (max-aspect-ratio: 1/1) {
-  .t39a.is-done .t39a-sign {
+  /* tall: pulled back over the path the stones are small; the insight alone says the four answers, and the near bank
+     with its post drops out of the frame as the camera rises */
+  .t39a.is-done .t39a-face,
+  .t39a-stone:not(.now) .t39a-face {
     opacity: 0;
   }
-  .t39a-sign {
-    transition: opacity 0.8s;
+  .t39a-post {
+    transition: transform 1.5s cubic-bezier(0.45, 0, 0.25, 1);
   }
-}
-@media (max-aspect-ratio: 1/1) {
-  .t39a-sign {
-    width: 186px;
-    font-size: 12.5px;
+  .t39a-post {
+    padding: 6px 10px 10px 10px;
+    font-size: 12px;
+    line-height: 1.3;
   }
   .t39a-q {
     font-size: 15.5px;
   }
+  .t39a-stone.has .t39a-q {
+    font-size: 12px;
+  }
+  .t39a-ans {
+    font-size: 13.5px;
+  }
   .t39a-pad-label {
     font-size: 14px;
-    padding: 0 10%;
+    padding: 0 11%;
   }
   .t39a-pad-label.long {
     font-size: 12.5px;
@@ -769,21 +954,21 @@
   height: 100%;
   overflow: visible;
   pointer-events: none;
-  filter: blur(2.6px);
+  filter: blur(2px);
 }
 :root[data-quality='low'] .t39a-near {
   filter: none;
 }
-.t39a-near-shadow {
-  fill: var(--umbra);
-  opacity: 0.16;
-}
 .t39a-nearbank {
-  fill: color-mix(in srgb, var(--moss-b) 85%, var(--umbra));
+  fill: color-mix(in srgb, var(--moss-b) 80%, var(--umbra));
 }
 .t39a-nearbank-hi {
   fill: var(--moss-c);
-  opacity: 0.55;
+  opacity: 0.5;
+}
+.t39a-nearrock-sh {
+  fill: var(--umbra);
+  opacity: 0.35;
 }
 .t39a-nearrock {
   fill: color-mix(in srgb, var(--rock-lo) 80%, var(--umbra));
@@ -791,14 +976,4 @@
 .t39a-nearrock-hi {
   fill: var(--rock-mid);
   opacity: 0.8;
-}
-.t39a-near-twig {
-  fill: color-mix(in srgb, var(--wash) 85%, var(--moss-b));
-}
-.t39a-near-leaf {
-  fill: var(--vermilion);
-  opacity: 0.92;
-}
-.t39a-near-leaf2 {
-  fill: color-mix(in srgb, var(--vermilion) 55%, var(--wash));
 }

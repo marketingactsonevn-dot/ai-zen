@@ -283,6 +283,7 @@
       "art": "Sát sàn hiên gỗ lúc trăng lặn, ván chạy về phía vườn. Dưới trái là giỏ mây chứa tám viên sỏi khắc tên việc. Ba khay đá lùi dần theo đường chéo: khay sỏi khô gần nhất, khay ngập nửa nước sát mép hồ, khay xa nhất chìm trong sương dưới trăng. Nhặt một viên rồi ném vào khay. Đủ tám, kéo dây rèm tre: nắng sớm tràn qua ba khay, hiện vết lõm nơi AI Zen đặt từng viên, viên lệch lăn theo đường chấm về chỗ của nó.",
       "prompt": "Kéo từng viên sỏi, ném vào khay bạn nghĩ đúng ({n}/{total})",
       "pullPrompt": "Kéo dây rèm lên",
+      "placed": "Đã xếp {n}/{total}",
       "why": "Chạm viên lệch để xem vì sao",
       "keys": "Chọn một viên sỏi, rồi bấm phím 1, 2, 3 để đặt vào khay",
       "pickAria": "Đặt “{task}” vào khay {tray}",

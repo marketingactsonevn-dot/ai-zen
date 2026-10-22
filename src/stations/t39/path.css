@@ -1,9 +1,12 @@
-/* Scene 3 · path — a backlit climb to the garden gate (stepPath with this station's land, hollows and depth). */
+/* Scene 4 · path — a backlit climb to the garden gate (stepPath with this station's land, hollows and stones). Tokens only. */
 .t39p {
   /* the moss slope under a sun behind it: dark and saturated near, paling into the glare toward the crest */
-  --t39p-near: color-mix(in srgb, var(--moss-b) 75%, var(--umbra));
-  --t39p-mid: color-mix(in srgb, var(--moss-a) 80%, var(--paper-2));
-  --t39p-far: color-mix(in srgb, color-mix(in srgb, var(--lantern) 30%, var(--mist)) 70%, var(--moss-c));
+  --t39p-near: color-mix(in srgb, var(--moss-b) 70%, var(--umbra));
+  --t39p-mid: color-mix(in srgb, var(--moss-a) 75%, var(--paper-2));
+  --t39p-far: color-mix(in srgb, var(--moss-a) 60%, var(--lantern));
+  /* the gravel path: damp earth near, pale dust toward the glare */
+  --t39p-road: color-mix(in srgb, var(--step-lo) 70%, var(--umbra));
+  --t39p-road-far: color-mix(in srgb, var(--lantern) 25%, var(--step-mid));
   position: absolute;
   left: calc(-1 * var(--gutter));
   right: calc(-1 * var(--gutter));
@@ -14,6 +17,13 @@
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 84px), transparent);
   mask-image: linear-gradient(to bottom, #000 calc(100% - 84px), transparent);
+}
+:root[data-theme='dark'] .t39p {
+  --t39p-near: color-mix(in srgb, var(--moss-b) 45%, var(--umbra));
+  --t39p-mid: color-mix(in srgb, var(--moss-b) 80%, var(--paper));
+  --t39p-far: color-mix(in srgb, var(--moss-b) 62%, var(--lantern));
+  --t39p-road: color-mix(in srgb, var(--step-lo) 45%, var(--umbra));
+  --t39p-road-far: color-mix(in srgb, var(--lantern) 22%, var(--step-lo));
 }
 .t39p svg {
   max-width: none;
@@ -44,32 +54,22 @@
 :root[data-theme='dark'] .t39p-hills {
   opacity: 0.55;
 }
-:root[data-theme='dark'] .t39p {
-  --t39p-near: color-mix(in srgb, var(--moss-b) 60%, var(--umbra));
-  --t39p-mid: color-mix(in srgb, var(--moss-b) 85%, var(--paper));
-  --t39p-far: color-mix(in srgb, color-mix(in srgb, var(--lantern) 25%, var(--mist)) 35%, var(--moss-c));
-}
-.t39p-moss-dk {
-  fill: var(--umbra);
-  opacity: 0.28;
-}
-.t39p-moss-md {
-  fill: var(--moss-c);
-  opacity: 0.42;
-}
-:root[data-theme='dark'] .t39p-moss-md {
-  opacity: 0.3;
-}
-.t39p-moss-hi {
-  fill: color-mix(in srgb, var(--lantern) 55%, #fff);
-  opacity: 0.6;
-}
-:root[data-theme='dark'] .t39p-moss-hi {
-  fill: var(--lantern);
-  opacity: 0.35;
+/* the moss canvas (painted with the tokens; repainted on a theme change) */
+.t39p-moss {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .t39p-mist {
-  opacity: 0.75;
+  opacity: 0.6;
+}
+/* the crest haze: warm in the glare, never a cold band that would read as water */
+.t39p-crest {
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t39p-crest {
+  opacity: 0.25;
 }
 .t39p-glare {
   opacity: 0.85;
@@ -80,47 +80,57 @@
   stroke: none;
   filter: none;
 }
-.t39p-pine-rim {
-  opacity: 1;
-}
 :root[data-theme='dark'] .t39p-pine-rim * {
   fill: var(--lantern);
 }
 :root[data-theme='dark'] .t39p-pine-rim {
   opacity: 0.7;
 }
-.t39p-road {
-  fill: color-mix(in srgb, var(--step-mid) 70%, var(--moss-c));
+.t39p-root {
+  fill: var(--umbra);
+  opacity: 0.45;
 }
-:root[data-theme='dark'] .t39p-road {
-  fill: color-mix(in srgb, var(--step-lo) 80%, var(--moss-b));
+.t39p-road-edge {
+  fill: none;
+  stroke: color-mix(in srgb, var(--umbra) 70%, var(--moss-b));
+  stroke-width: 1.4;
+  opacity: 0.5;
 }
 .t39p-gravel {
   fill: var(--umbra);
-  opacity: 0.22;
+  opacity: 0.3;
 }
-.t39p-road-lit {
-  fill: color-mix(in srgb, var(--lantern) 45%, #fff);
-  opacity: 0.32;
+.t39p-gravel-hi {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--step-hi));
+  opacity: 0.45;
 }
-:root[data-theme='dark'] .t39p-road-lit {
+:root[data-theme='dark'] .t39p-gravel-hi {
   fill: var(--lantern);
-  opacity: 0.16;
+  opacity: 0.2;
+}
+/* the hollows: damp earth, a dark hole, the far lip lit from behind */
+.t39p-hollow-earth {
+  fill: color-mix(in srgb, color-mix(in srgb, var(--step-lo) 80%, var(--vermilion)) 45%, var(--umbra));
+  opacity: 0.7;
+}
+.t39p-hollow-crumbs {
+  fill: color-mix(in srgb, var(--step-lo) 50%, var(--umbra));
 }
 .t39p-hollow-in {
-  fill: var(--umbra);
-  opacity: 0.32;
+  fill: color-mix(in srgb, var(--umbra) 60%, var(--step-lo));
+  opacity: 0.8;
 }
-:root[data-theme='dark'] .t39p-hollow-in {
-  opacity: 0.42;
+.t39p-hollow-deep {
+  fill: var(--umbra);
+  opacity: 0.6;
 }
 .t39p-hollow-lip {
-  fill: color-mix(in srgb, var(--lantern) 55%, #fff);
-  opacity: 0.85;
+  fill: color-mix(in srgb, var(--lantern) 60%, #fff);
+  opacity: 0.9;
 }
 :root[data-theme='dark'] .t39p-hollow-lip {
   fill: var(--lantern);
-  opacity: 0.5;
+  opacity: 0.7;
 }
 .t39p-ray {
   fill: color-mix(in srgb, var(--lantern) 70%, #fff);
@@ -131,11 +141,11 @@
   fill: var(--lantern);
 }
 .t39p.is-lit .t39p-ray {
-  opacity: 0.55;
+  opacity: 0.5;
 }
+/* the gate against the light: dark timber, the sun on its edges, its shadow down the path */
 .t39p-gate-sh {
-  fill: var(--umbra);
-  opacity: 0.25;
+  opacity: 0.9;
 }
 .t39p-door,
 .t39p-roof,
@@ -143,46 +153,102 @@
   fill: color-mix(in srgb, var(--wash) 82%, var(--moss-b));
 }
 :root[data-theme='light'] .t39p-door {
-  opacity: 0.7;
+  opacity: 0.75;
+}
+.t39p-footstone {
+  fill: color-mix(in srgb, var(--rock-lo) 60%, var(--umbra));
 }
 .t39p-gate-rim {
   fill: color-mix(in srgb, var(--lantern) 60%, #fff);
 }
+/* the four notches in the tie beam: a dark cut with a lit lower lip, inked vermilion as each week is set (H4) */
+.t39p-pip {
+  fill: var(--umbra);
+  transition: fill 0.5s 0.3s;
+}
+.t39p-pip.on {
+  fill: var(--vermilion);
+}
+.t39p-pip-lip {
+  fill: color-mix(in srgb, var(--lantern) 60%, #fff);
+  opacity: 0.8;
+}
+/* the still life on the veranda: dark wood, a pale glazed bowl, a lacquered caddy */
+.t39p-tray-wood {
+  fill: color-mix(in srgb, var(--umbra) 55%, var(--step-lo));
+}
+.t39p-tray-rim {
+  fill: color-mix(in srgb, color-mix(in srgb, var(--vermilion) 15%, var(--step-lo)) 55%, var(--umbra));
+}
+.t39p-tray-top {
+  fill: color-mix(in srgb, color-mix(in srgb, var(--vermilion) 22%, var(--step-lo)) 75%, var(--umbra));
+}
+.t39p-tray-grain {
+  fill: var(--umbra);
+  opacity: 0.25;
+}
+.t39p-tray-lip {
+  fill: color-mix(in srgb, var(--lantern) 40%, var(--step-mid));
+  opacity: 0.5;
+}
+.t39p-bowl {
+  fill: color-mix(in srgb, var(--rock-mid) 70%, var(--umbra));
+}
+.t39p-bowl-mouth {
+  fill: color-mix(in srgb, var(--umbra) 70%, var(--moss-b));
+}
+.t39p-caddy {
+  fill: color-mix(in srgb, var(--umbra) 75%, var(--wash));
+}
+.t39p-caddy-lid {
+  fill: color-mix(in srgb, var(--umbra) 55%, var(--step-lo));
+}
+.t39p-cloth-fold {
+  fill: var(--umbra);
+  opacity: 0.5;
+}
 /* the veranda: old cedar boards in shade, the sun's ray laid warm along them */
 .t39p-floor {
-  fill: color-mix(in srgb, var(--lantern) 22%, color-mix(in srgb, var(--vermilion) 12%, var(--step-lo)));
+  fill: color-mix(in srgb, var(--lantern) 18%, color-mix(in srgb, var(--vermilion) 12%, var(--step-lo)));
 }
 :root[data-theme='dark'] .t39p-floor {
-  fill: color-mix(in srgb, var(--lantern) 12%, color-mix(in srgb, var(--vermilion) 8%, var(--step-lo)));
+  fill: color-mix(in srgb, var(--lantern) 10%, color-mix(in srgb, var(--vermilion) 8%, var(--step-lo)));
+}
+.t39p {
+  --t39p-ray: color-mix(in srgb, var(--lantern) 70%, #fff);
+}
+:root[data-theme='dark'] .t39p {
+  --t39p-ray: var(--lantern);
 }
 .t39p-floor-ray {
-  fill: color-mix(in srgb, var(--lantern) 70%, #fff);
-  opacity: 0.35;
+  opacity: 0.3;
   transition: opacity 1.2s ease 2.4s;
 }
 .t39p.is-lit .t39p-floor-ray {
-  opacity: 0.75;
+  opacity: 0.7;
 }
 :root[data-theme='dark'] .t39p-floor-ray {
-  fill: var(--lantern);
-  opacity: 0.22;
+  opacity: 0.18;
 }
 :root[data-theme='dark'] .t39p.is-lit .t39p-floor-ray {
-  opacity: 0.5;
+  opacity: 0.45;
 }
 .t39p-planks {
   fill: none;
   stroke: var(--umbra);
   stroke-width: 1.6;
-  opacity: 0.4;
+  opacity: 0.45;
 }
 .t39p-grain {
   fill: var(--umbra);
   opacity: 0.16;
 }
-.t39p-floor-edge {
+.t39p-knots {
   fill: var(--umbra);
-  opacity: 0.55;
+  opacity: 0.3;
+}
+.t39p-beam-face {
+  fill: color-mix(in srgb, var(--umbra) 60%, var(--step-lo));
 }
 .t39p-floor-lit {
   fill: color-mix(in srgb, var(--lantern) 55%, #fff);
@@ -205,16 +271,34 @@
   color: var(--stone-text);
   transition: transform 0.6s var(--ease), scale 0.6s var(--ease), translate 0.6s var(--ease), filter 0.4s;
 }
+/* the drawn stone rises above its box: the box's touch area rises with it (≥ 44 px everywhere) */
+.t39p-steps .p2s-stone::before {
+  content: '';
+  position: absolute;
+  inset: -36% -2% -6%;
+}
+.t39p-steps .p2s-stone:not(.placed) {
+  cursor: grab;
+}
+.t39p-steps .p2s-art {
+  scale: var(--ps, 1);
+  transform-origin: 50% 96%;
+  transition: scale 0.6s var(--ease);
+}
+.t39p-steps .p2s-stone.drag .p2s-art {
+  filter: drop-shadow(0 16px 10px color-mix(in srgb, var(--umbra) 40%, transparent));
+}
 :root[data-theme='dark'] .t39p-steps .p2s-stone {
   color: var(--ink);
 }
-/* the week's title is not painted on the stone: it rises above it on hover, focus or while dragged */
+/* the week's full title is not on the stone (its short name is cut in the face): it rises above it on hover, focus or
+   while dragged */
 .t39p-steps .p2s-label {
   position: absolute;
   left: 50%;
-  bottom: calc(100% + 4px);
+  bottom: calc(100% + 18px);
   width: max-content;
-  max-width: 220px;
+  max-width: 230px;
   translate: -50% 4px;
   font: 500 15px/1.25 var(--serif);
   color: var(--ink);
@@ -224,18 +308,11 @@
   pointer-events: none;
   transition: opacity 0.3s, translate 0.3s;
 }
-/* a loose stone carries its short name above it (no number on it: the order is the puzzle) */
-.t39p-steps .p2s-stone:not(.placed) .p2s-label {
-  max-width: calc(100% + 16px);
-  font-size: 14px;
-  opacity: 1;
-  translate: -50% 0;
-}
 .t39p-steps .p2s-stone.placed .p2s-label {
   scale: calc(1 / var(--s, 1));
   transform-origin: 50% 100%;
 }
-.t39p-steps .p2s-stone:is(:hover, :focus-visible, .drag) .p2s-label {
+.t39p-steps .p2s-stone:not(.placed):is(:hover, :focus-visible, .drag) .p2s-label {
   opacity: 1;
   translate: -50% 0;
 }
@@ -243,18 +320,8 @@
 .t39p-steps .p2s-key {
   display: none;
 }
-.t39p-steps:has(.p2s-stone:focus-visible) .p2s-stone:not(.placed) .p2s-key {
-  display: grid;
-  position: absolute;
-  right: 10%;
-  top: 30%;
-  width: 18px;
-  height: 18px;
-  border: 0;
-  background: none;
-  color: var(--rock-hi);
-  font: 600 12px/1 var(--serif);
-  opacity: 0.85;
+.t39p-steps .p2s-stone.shake .p2s-art {
+  animation: p2s-shake 0.45s var(--ease);
 }
 .t39p-steps .p2s-stone::after {
   content: '';
@@ -270,90 +337,240 @@
 .t39p-steps.lit .p2s-stone::after {
   opacity: 1;
 }
-/* a stone against the light: the body dark, the crown a little lighter, the back edge and flanks burning */
+/* the stones: four rocks, each its own; the body dark against the light, the crown catching the sky */
+.t39p-st0 {
+  --st-body: color-mix(in srgb, var(--rock-lo) 55%, var(--umbra));
+  --st-top: color-mix(in srgb, var(--rock-mid) 80%, var(--lantern));
+}
+.t39p-st1 {
+  --st-body: color-mix(in srgb, var(--step-lo) 70%, var(--umbra));
+  --st-top: color-mix(in srgb, var(--step-mid) 80%, var(--lantern));
+}
+.t39p-st2 {
+  --st-body: color-mix(in srgb, color-mix(in srgb, var(--wash) 50%, var(--rock-lo)) 75%, var(--umbra));
+  --st-top: color-mix(in srgb, var(--rock-lo) 70%, var(--mist));
+}
+.t39p-st3 {
+  --st-body: color-mix(in srgb, color-mix(in srgb, var(--moss-b) 35%, var(--rock-lo)) 65%, var(--umbra));
+  --st-top: color-mix(in srgb, color-mix(in srgb, var(--moss-a) 30%, var(--rock-mid)) 85%, var(--lantern));
+}
 .t39p-piece-sh {
-  opacity: 0.9;
+  opacity: 0.85;
+}
+.t39p-piece-contact {
+  fill: var(--umbra);
+  opacity: 0.55;
 }
 .t39p-piece-glow {
   fill: color-mix(in srgb, var(--lantern) 70%, #fff);
-  opacity: 0.75;
+  opacity: 0.7;
 }
 .t39p-piece-body {
-  fill: color-mix(in srgb, var(--rock-lo) 42%, var(--umbra));
+  fill: var(--st-body);
+}
+.t39p-piece-foot {
+  fill: var(--umbra);
+  opacity: 0.3;
 }
 .t39p-piece-top {
-  fill: color-mix(in srgb, color-mix(in srgb, var(--lantern) 12%, var(--rock-lo)) 70%, var(--umbra));
+  fill: var(--st-top);
+}
+.t39p-piece-lip {
+  fill: var(--umbra);
+  opacity: 0.35;
 }
 .t39p-piece-pits {
-  fill: #fff;
-  opacity: 0.12;
+  fill: var(--umbra);
+  opacity: 0.35;
+}
+.t39p-piece-crack {
+  fill: var(--umbra);
+  opacity: 0.75;
 }
 .t39p-piece-moss {
   fill: var(--moss-a);
-  opacity: 0.85;
+  opacity: 0.9;
 }
 .t39p-piece-rim {
-  fill: color-mix(in srgb, var(--lantern) 40%, #fff);
+  fill: color-mix(in srgb, var(--lantern) 50%, #fff);
 }
 :root[data-theme='dark'] .t39p-piece-rim {
   fill: color-mix(in srgb, var(--lantern) 80%, #fff);
 }
-.t39p-num {
+/* the relief: a raised thing, lit on its upper edges, shadowed under */
+.t39p-relief {
+  fill: color-mix(in srgb, var(--st-body) 75%, var(--st-top));
+}
+.t39p-relief-lit {
+  fill: color-mix(in srgb, var(--lantern) 55%, #fff);
+  opacity: 0.75;
+}
+:root[data-theme='dark'] .t39p-relief-lit {
+  fill: var(--lantern);
+  opacity: 0.6;
+}
+.t39p-relief-sh {
+  fill: var(--umbra);
+  opacity: 0.6;
+}
+.t39p-relief-cut {
+  fill: var(--umbra);
+  opacity: 0.7;
+}
+/* the short name, cut faintly: the cut's lower wall takes the sky, the letters stay shaded */
+.t39p-name,
+.t39p-name-lip {
   font-family: var(--serif);
   font-weight: 600;
-  fill: color-mix(in srgb, var(--umbra) 85%, #000);
+  letter-spacing: 0.02em;
 }
-.t39p-num-lip {
-  font-family: var(--serif);
-  font-weight: 600;
-  fill: color-mix(in srgb, var(--lantern) 55%, var(--rock-mid));
-  opacity: 0.9;
+.t39p-name-lip {
+  fill: color-mix(in srgb, var(--lantern) 45%, #fff);
+  opacity: 0.55;
 }
-.t39p-steps.lit .p2s-stone .t39p-num-lip {
+.t39p-name {
+  fill: color-mix(in srgb, var(--st-top) 70%, #fff);
+  opacity: 0.88;
+}
+:root[data-theme='dark'] .t39p-name {
+  fill: color-mix(in srgb, var(--st-top) 60%, var(--moon));
+}
+.t39p-steps.lit .p2s-stone .t39p-relief-lit {
   fill: var(--lantern);
   opacity: 1;
 }
-.t39p-steps .p2s-note {
-  font: 400 15px/1.45 var(--serif);
-  text-shadow: 0 0 6px var(--paper), 0 0 12px var(--paper);
+
+/* the placed week beside its stone: its name and why, two lines of serif on the slope */
+.t39p-steps .p2s-note.t39p-note {
+  margin: -10px -18px;
+  padding: 10px 18px;
+  box-sizing: content-box;
+  /* a low veil of morning mist behind the two lines, so they read on the moss in both themes */
+  background: radial-gradient(farthest-side, color-mix(in srgb, var(--paper) 72%, transparent) 55%, transparent);
+  font: 400 14.5px/1.4 var(--serif);
+  color: var(--ink-2);
+  text-shadow: 0 0 5px var(--paper), 0 0 11px var(--paper), 0 0 18px var(--paper);
 }
-/* the 30-day sheet: a scroll hung from the gate's beam, unrolling down the slope once the ray has run; its close rolls
-   it back up under the beam, a touch unrolls it again */
-/* (.p2s twice: above the component's own column-mode sheet) */
+.t39p-steps .p2s-note.t39p-note b {
+  display: block;
+  font-weight: 600;
+  color: var(--ink);
+}
+.t39p-steps .p2s-note:empty {
+  display: none;
+}
+@media (max-width: 720px) {
+  .t39p-steps .p2s-note.t39p-note {
+    font-size: 13px;
+    line-height: 1.35;
+    padding-inline: 4px;
+  }
+}
+
+/* the 30-day card: rolled up on the gate's threshold once the ray has run (H1 dot), it opens in the right column
+   (the gate, the sun and the path stay seen); its × rolls it back. (.p2s twice: above the component's own rules) */
 .p2s.p2s.t39p-steps .p2s-sheet {
-  top: var(--t39p-top, 8%) !important;
-  bottom: auto !important;
-  left: 50% !important;
+  top: calc(var(--t39p-sy) - 22px) !important;
+  left: calc(var(--t39p-sx) - var(--t39p-sw) / 2) !important;
   right: auto !important;
-  width: min(560px, calc(100% - 8px));
-  max-height: var(--t39p-max, 60%);
-  translate: -50% 0;
+  bottom: auto !important;
+  width: var(--t39p-sw);
+  height: 44px;
+  padding: 0;
+  overflow: visible;
+  background: none;
+  box-shadow: none;
+  animation: t39p-scroll-in 1s ease 3.2s both;
+}
+.t39p-steps .p2s-done {
+  display: none;
+}
+@keyframes t39p-scroll-in {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+.t39p.is-still ~ .p2s.p2s.t39p-steps .p2s-sheet,
+:root[data-quality='low'] .p2s.p2s.t39p-steps .p2s-sheet {
+  animation-delay: 0s;
+}
+/* the slip is the scroll itself: a rolled paper with dark rollers and a cord, its silhouette rimmed by the sun */
+.t39p-steps .p2s-sheet .p2k-slip {
+  position: relative;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  animation: none;
+  cursor: pointer;
+}
+.t39p-steps .p2s-sheet .p2k-slip-art,
+.t39p-steps .p2s-sheet .p2k-slip-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.t39p-steps .p2s-sheet .p2k-slip::before {
+  content: '';
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 34%;
+  height: 34%;
+  border-radius: 4px / 50%;
+  background:
+    linear-gradient(90deg, transparent 47%, color-mix(in srgb, var(--vermilion) 80%, var(--umbra)) 47% 53%, transparent 53%),
+    linear-gradient(90deg, var(--t39p-roller) 0 7%, transparent 7% 93%, var(--t39p-roller) 93%),
+    linear-gradient(color-mix(in srgb, var(--lantern) 75%, #fff), color-mix(in srgb, var(--step-mid) 70%, var(--paper)) 30%, color-mix(in srgb, var(--step-lo) 55%, var(--umbra)) 80%);
+  box-shadow: 0 -2px 8px -2px color-mix(in srgb, var(--lantern) 70%, transparent);
+  --t39p-roller: color-mix(in srgb, var(--wash) 80%, var(--step-lo));
+}
+.t39p-steps .p2s-sheet .p2k-slip::after {
+  content: '';
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: 60%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 70%, transparent), transparent);
+  z-index: -1;
+}
+.t39p-steps .p2s-sheet .p2k-slip:hover::before,
+.t39p-steps .p2s-sheet .p2k-slip:focus-visible::before {
+  translate: 0 -2px;
+}
+.t39p-steps .p2s-sheet .p2k-fold.open .p2k-slip {
+  display: none;
+}
+/* opened: a hanging scroll of paper in the right column */
+.p2s.p2s.t39p-steps .p2s-sheet:has(.p2k-fold.open) {
+  top: 2% !important;
+  left: auto !important;
+  right: 2% !important;
+  width: min(400px, 34%);
+  height: auto;
+  max-height: 92%;
   box-sizing: border-box;
   padding: 10px 18px 14px;
   border-block: 15px solid transparent;
   border-radius: 8px;
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .5' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .3 0 0 0 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") padding-box,
     linear-gradient(color-mix(in srgb, var(--lantern) 10%, var(--card)), var(--card)) padding-box,
     linear-gradient(color-mix(in srgb, var(--umbra) 70%, var(--step-lo)), color-mix(in srgb, var(--lantern) 35%, var(--step-mid)) 5px, color-mix(in srgb, var(--umbra) 55%, var(--step-lo)) 15px, transparent 15px calc(100% - 15px), color-mix(in srgb, var(--umbra) 70%, var(--step-lo)) calc(100% - 15px), color-mix(in srgb, var(--lantern) 35%, var(--step-mid)) calc(100% - 10px), color-mix(in srgb, var(--umbra) 60%, var(--step-lo))) border-box;
   box-shadow: 0 18px 30px -16px color-mix(in srgb, var(--umbra) 60%, transparent);
   overflow-y: auto;
   overscroll-behavior: contain;
-  transform-origin: 50% 0;
-  animation: t39p-unroll 1.3s cubic-bezier(0.3, 0.6, 0.2, 1) 2.6s both;
+  animation: t39p-unroll 0.9s cubic-bezier(0.3, 0.6, 0.2, 1) both;
 }
-:root[data-theme='dark'] .p2s.p2s.t39p-steps .p2s-sheet {
-  background:
-    linear-gradient(color-mix(in srgb, var(--lantern) 8%, var(--card)), var(--card)) padding-box,
-    linear-gradient(color-mix(in srgb, var(--umbra) 50%, var(--step-lo)), color-mix(in srgb, var(--lantern) 35%, var(--step-lo)) 5px, color-mix(in srgb, var(--umbra) 45%, var(--step-lo)) 15px, transparent 15px calc(100% - 15px), color-mix(in srgb, var(--umbra) 50%, var(--step-lo)) calc(100% - 15px), color-mix(in srgb, var(--lantern) 35%, var(--step-lo)) calc(100% - 10px), color-mix(in srgb, var(--umbra) 45%, var(--step-lo))) border-box;
-}
-/* wide: the scroll hangs in the right column, clear of the gate and the sun (audit 39-3: the payoff stays seen) */
-@media (min-width: 721px) {
-  .p2s.p2s.t39p-steps .p2s-sheet {
-    left: auto !important;
-    right: 2% !important;
-    width: min(400px, 34%);
-    translate: none;
+@media (max-width: 720px) {
+  .p2s.p2s.t39p-steps .p2s-sheet:has(.p2k-fold.open) {
+    left: 0 !important;
+    right: 0 !important;
+    width: auto;
+    max-height: 96%;
   }
 }
 @keyframes t39p-unroll {
@@ -368,22 +585,8 @@
     clip-path: inset(0 0 0 0);
   }
 }
-.t39p.is-still ~ .p2s.p2s.t39p-steps .p2s-sheet,
-:root[data-quality='low'] .p2s.p2s.t39p-steps .p2s-sheet {
-  animation-delay: 0s;
-}
-.p2s.p2s.t39p-steps .p2s-sheet.is-rolled {
-  max-height: 46px;
-  width: min(300px, calc(100% - 40px));
-  overflow: hidden;
-  cursor: pointer;
-  animation: none;
-}
-.t39p-steps .p2s-sheet.is-rolled > :not(.p2s-close, .p2s-done) {
-  visibility: hidden;
-}
-.t39p-steps .p2s-sheet.is-rolled .p2s-close {
-  rotate: 45deg;
+.t39p-steps .p2s-sheet .p2k-panel {
+  width: 100%;
 }
 .t39p-steps .p2s-sheet .p2k {
   background: none;
@@ -393,10 +596,8 @@
   box-shadow: none;
   padding-inline: 2px;
 }
-.t39p-steps .p2s-done {
-  margin: 0 0 6px;
-}
 .t39p.is-still .t39p-sun,
-.t39p.is-still .t39p-ray {
+.t39p.is-still .t39p-ray,
+.t39p.is-still .t39p-floor-ray {
   transition: none;
 }

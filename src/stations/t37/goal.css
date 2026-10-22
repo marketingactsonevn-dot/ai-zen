@@ -32,56 +32,117 @@
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 42%), linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
   mask-image: linear-gradient(to bottom, transparent, #000 42%), linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
 }
-/* the dawn coming up in the east (right) once the night has passed */
+/* the dawn coming up in the east (right) once the night has passed: a low band on the horizon, cloud bars lit from
+   below, rays raking in low; the night's darks stay */
 .t37g-sky {
   position: absolute;
-  inset: 0 0 20% 0;
+  inset: 0;
   pointer-events: none;
   opacity: 0;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 62%, transparent), linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 62%, transparent 80%), linear-gradient(to right, transparent, #000 6%, #000 96%, transparent);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 62%, transparent), linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 62%, transparent 80%), linear-gradient(to right, transparent, #000 6%, #000 96%, transparent);
   mask-composite: intersect;
-  background:
-    radial-gradient(ellipse 70% 60% at 86% 76%, color-mix(in srgb, var(--lantern) 34%, transparent), transparent 70%),
-    linear-gradient(to top, var(--dawn), transparent 80%);
   transition: opacity 1.2s ease;
 }
-:root[data-theme='dark'] .t37g-sky {
-  background:
-    radial-gradient(ellipse 70% 60% at 86% 76%, color-mix(in srgb, var(--lantern) 22%, transparent), transparent 70%),
-    linear-gradient(to top, color-mix(in srgb, var(--vermilion) 16%, transparent), transparent 75%);
+.t37g-skyart {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .t37g.morning .t37g-sky {
   opacity: 1;
 }
-/* "next morning", written in the sky; what the words did, under it */
-.t37g-morning {
-  position: absolute;
-  left: 74%;
-  top: 5%;
-  margin: 0;
-  transform: translateX(-50%);
-  font: 400 clamp(1.15rem, 2.2vw, 1.7rem) / 1.2 var(--serif);
-  color: var(--ink-2);
-  text-shadow: 0 0 10px var(--paper), 0 0 10px var(--paper);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1s ease;
-  white-space: nowrap;
-}
-.t37g.morning .t37g-morning,
-.t37g[data-state] .t37g-morning {
+.t37g-dawnband {
   opacity: 1;
+}
+:root[data-theme='light'] .t37g-dawnband {
+  opacity: 1.6;
+}
+.t37g-dawncore {
+  opacity: 0.8;
+}
+.t37g-fan {
+  fill: var(--lantern);
+  opacity: 0.11;
+  filter: blur(10px);
+}
+:root[data-theme='light'] .t37g-fan {
+  opacity: 0.22;
+}
+html[data-quality='low'] .t37g-fan {
+  filter: none;
+  opacity: 0.05;
+}
+.t37g-rays {
+  fill: var(--lantern);
+  opacity: 0.1;
+  filter: blur(7px);
+}
+html[data-quality='low'] .t37g-rays {
+  filter: none;
+  opacity: 0.05;
+}
+:root[data-theme='dark'] .t37g-rays {
+  opacity: 0.07;
+}
+.t37g-bars {
+  fill: var(--wash);
+  opacity: 0.26;
+}
+:root[data-theme='dark'] .t37g-bars {
+  fill: #05070f;
+  opacity: 0.6;
+}
+.t37g-barlit {
+  fill: var(--lantern);
+  opacity: 0.75;
+}
+:root[data-theme='light'] .t37g-bars {
+  opacity: 0.14;
+}
+:root[data-theme='light'] .t37g-barlit {
+  opacity: 0.5;
+}
+/* "next morning" is the eyebrow of what the words did (one block of words, in the insight's corner) */
+.t37g-morning {
+  display: none;
 }
 .t37g-caption {
   position: absolute;
-  left: 74%;
-  top: calc(5% + clamp(1.15rem, 2.2vw, 1.7rem) * 1.6);
-  width: min(25rem, 34%);
-  transform: translateX(-50%);
-  text-align: center;
+  right: clamp(8px, 2.5%, 36px);
+  top: 20%;
+  width: min(27rem, 36%);
   animation: p2-rise 0.6s ease-out both;
+}
+.t37g-caption::before {
+  content: '';
+  position: absolute;
+  inset: -28% -18%;
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 78%, transparent), color-mix(in srgb, var(--paper) 40%, transparent) 60%, transparent);
+  pointer-events: none;
+}
+.scene-insight .t37g-caption {
+  position: static;
+  width: auto;
+  margin: 0 0 0.7em;
+  animation: none;
+}
+.scene-insight .t37g-caption::before {
+  display: none;
+}
+/* the insight's corner on a wide frame: the clear sky at the bough's end, under its twigs */
+.t37g-art .scene-zone[data-z='tr'] {
+  top: 20%;
+}
+.t37g-eyebrow {
+  margin: 0 0 0.2em;
+  font: 500 0.78rem/1.2 var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
 }
 .t37g-res {
   margin: 0;
@@ -176,7 +237,51 @@
   opacity: 0.4;
 }
 :root[data-theme='dark'] .t37g-bokeh {
-  opacity: 0.42;
+  opacity: 0.46;
+}
+.t37g-bokeh-rim {
+  fill: var(--rake-hi);
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t37g-bokeh-rim {
+  fill: var(--moon);
+  opacity: 0.16;
+}
+/* first light on the sand: warm streaks and long shadows laid west, only in the morning */
+.t37g-dawn {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.t37g.morning .t37g-dawn,
+.t37g[data-state] .t37g-dawn {
+  opacity: 1;
+}
+.t37g-dawnlit {
+  fill: var(--lantern);
+  opacity: 0.32;
+}
+:root[data-theme='dark'] .t37g-dawnlit {
+  opacity: 0.22;
+  mix-blend-mode: screen;
+}
+.t37g-dsh {
+  fill: var(--umbra);
+  opacity: 0.32;
+}
+:root[data-theme='light'] .t37g-dsh {
+  fill: var(--wash);
+  opacity: 0.2;
+}
+.t37g[data-state='loose'] .t37g-dsh-maple {
+  opacity: 0;
+}
+/* by morning the moon's shadows are gone */
+.t37g-sh {
+  transition: opacity 1.2s ease;
+}
+.t37g.morning .t37g-sh,
+.t37g[data-state] .t37g-sh {
+  opacity: 0.12;
 }
 html[data-quality='low'] :is(.t37g-bough, .t37g-l0-stone, .t37g-l0-leaf) {
   filter: none;
@@ -283,7 +388,31 @@ html[data-quality='low'] .t37g-ema-board {
   height: 8px;
   border-radius: 50%;
   background: var(--wood-dk);
+  /* a faint ink ring; only the plaque suggested next carries the vermilion focus */
+  box-shadow: 0 0 0 1.4px color-mix(in srgb, var(--wood-dk) 70%, transparent);
+}
+.t37g-ema.next .t37g-ema-knot {
+  background: var(--vermilion);
   box-shadow: 0 0 0 1.6px var(--vermilion);
+}
+.t37g-ema.next .t37g-ema-knot::after {
+  background: linear-gradient(to bottom, var(--vermilion), color-mix(in srgb, var(--vermilion) 70%, var(--wash)));
+}
+.t37g:not(.given):not([data-state]):not(.still) .t37g-ema.next .t37g-ema-knot {
+  animation: t37g-knot 2.6s ease-in-out infinite;
+}
+@keyframes t37g-knot {
+  50% {
+    box-shadow: 0 0 0 1.6px var(--vermilion), 0 0 0 6px color-mix(in srgb, var(--vermilion) 22%, transparent);
+  }
+}
+html[data-quality='low'] .t37g-ema-knot {
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t37g-ema-knot {
+    animation: none !important;
+  }
 }
 .t37g-ema-knot::after {
   content: '';
@@ -293,7 +422,7 @@ html[data-quality='low'] .t37g-ema-board {
   width: 4px;
   height: 14px;
   border-radius: 0 0 2px 2px;
-  background: linear-gradient(to bottom, var(--vermilion), color-mix(in srgb, var(--vermilion) 70%, var(--wash)));
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--vermilion) 45%, var(--wood-dk)), var(--wood-dk));
   transform: rotate(-14deg);
   transform-origin: 50% 0;
 }
@@ -758,32 +887,27 @@ html[data-quality='low'] .t37g-ema-board {
   outline-offset: 2px;
 }
 
-/* the card to keep: in the sky between the maple and the morning on a wide frame, a folded slip low on the left of a tall one */
 .t37g-kept {
+  /* the card to keep: a folded slip lying on the near sand, bottom left (the legend's place), opened by a touch */
   position: absolute;
-  left: 30%;
-  top: 3%;
-  width: min(320px, 26%);
-  max-height: 60%;
-  overflow: auto;
-  scrollbar-width: thin;
+  left: 3%;
+  bottom: 5%;
+  width: min(300px, 26%);
+  max-height: 70%;
   animation: p2-rise 0.7s ease-out 0.2s both;
-}
-.t37g-fold > summary {
-  display: none;
 }
 .t37g.tall .t37g-morning {
   left: 62%;
   top: 2.5%;
 }
 .t37g.tall .t37g-caption {
-  left: 50%;
-  top: calc(3% + 2.2rem);
-  width: 92%;
+  left: 5%;
+  right: 5%;
+  top: 25%;
+  width: auto;
 }
 .t37g.tall .t37g-kept {
   left: 3%;
-  top: auto;
   bottom: 3%;
   width: 70%;
   max-height: 72%;
@@ -832,17 +956,26 @@ html[data-quality='low'] .t37g-bokeh {
   text-shadow: 0 0 8px var(--paper), 0 0 14px var(--paper);
   pointer-events: none;
 }
+.t37g.given .t37g-legend,
+.t37g[data-state] .t37g-legend,
 .t37g.told .t37g-legend {
   opacity: 0;
   transition: opacity 0.6s;
 }
 .t37g.tall .t37g-legend {
+  /* a tall frame: on the near sand under the paper gardener (the maple's crown fills the top corner) */
   width: auto;
-  right: 3%;
-  bottom: auto;
-  top: 1%;
+  right: 4%;
+  left: 4%;
+  /* (below the paper gardener's feet: the foot's empty paper until the insight comes, and it fades before that) */
+  bottom: -8%;
 }
-/* the dry branch says what it does */
+/* the dry branch says what it does (a tall frame: beside it, the foot below is the insight's) */
+.t37g.tall .t37g-retry-label {
+  left: 100%;
+  top: 30%;
+  translate: 2px 0;
+}
 .t37g-retry-label {
   position: absolute;
   left: 50%;

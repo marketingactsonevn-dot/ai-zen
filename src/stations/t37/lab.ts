@@ -78,23 +78,24 @@ export function labScene(ctx: SceneCtx) {
   }
   const plane = (cls: string, w: number, hh: number, ...kids: Kid[]) =>
     h('div', { class: `t37l-plane ${cls}`, style: `--w:${w};--h:${hh}` }, fillIn(s('svg', { viewBox: `0 0 ${w * 100} ${hh * 100}`, preserveAspectRatio: 'none', 'aria-hidden': 'true' }), kids))
-  const G = (x: number, z: number): Pt => [(x + 9) * 100, (z + 6) * 100]
+  const G = (x: number, z: number): Pt => [(x + 12) * 100, (z + 7) * 100]
 
-  // the ground: 16 u across (x −9…7), 12 deep (z −6…6), gravel (the plane's own background) with moss in it.
+  // the ground: 22 u across (x −12…10), 16 deep (z −7…9), gravel (the plane's own background) with moss in it; it runs
+  // on under the foot of the frame, so the house stands in a garden, not on an island.
   // Two stone paths: one from your feet to the veranda, one round the fence's end to a fork in the side garden, where it
   // splits: the main way to the gate, the other way off into the dark under the bamboo.
   const fork = G(2.5, -1.2)
-  const frontLine = [G(-1.3, 5.8), G(-1.6, 4.3), G(-1.3, 2.9), G(-1.0, 1.55)]
+  const frontLine = [G(-0.6, 8.6), G(-1.1, 7.1), G(-1.6, 5.7), G(-1.6, 4.3), G(-1.3, 2.9), G(-1.0, 1.55)]
   const mainLine = [G(0.5, 1.6), G(2.3, 1.3), G(3.2, 0.4), G(2.9, -0.5), fork, G(2.85, -2.4), G(3.25, -3.3)]
   const sideLine = [fork, G(3.8, -2.0), G(4.8, -2.9), G(5.7, -3.9)]
-  const front = stonesPath(frontLine, 5)
+  const front = stonesPath(frontLine, 8)
   const main = stonesPath(mainLine, 11)
   const side = stonesPath(sideLine, 5).slice(1)
   // the shadow lies head-first along a path from the fork: its angle (svg degrees) for the main path and for the other
   const along = ([x, y]: Pt) => Math.atan2(x - fork[0], -(y - fork[1])) * (180 / Math.PI)
   const onMain = along(G(3.25, -3.3)), turn = along(G(5.7, -3.9)) - onMain
-  const ground = plane('t37l-ground', 16, 12,
-    () => s('g', { class: 't37l-mossbeds' }, ...([[1.4, -0.6, 1.3, 0.7], [4.2, -0.7, 1.6, 0.8], [2.0, -3.0, 1.4, 0.8], [5.2, -3.4, 1.5, 0.9], [-6.2, 1.6, 1.6, 0.8], [-5.2, -1.2, 1.2, 0.6], [3.6, 2.4, 1.4, 0.7]] as const).map(([x, z, a, b], i) => mossBed(...G(x, z), a * 100, b * 100, 3722 + i))),
+  const ground = plane('t37l-ground', 22, 16,
+    () => s('g', { class: 't37l-mossbeds' }, ...([[1.4, -0.6, 1.3, 0.7], [4.2, -0.7, 1.6, 0.8], [2.0, -3.0, 1.4, 0.8], [5.2, -3.4, 1.5, 0.9], [-6.2, 1.6, 1.6, 0.8], [-5.2, -1.2, 1.2, 0.6], [3.6, 2.4, 1.4, 0.7], [-8.4, 4.4, 1.0, 0.45], [6.6, 4.0, 1.0, 0.45], [-3.6, 7.4, 0.7, 0.3], [2.2, 8.2, 0.6, 0.26]] as const).map(([x, z, a, b], i) => mossBed(...G(x, z), a * 100, b * 100, 3722 + i))),
     // raked gravel lanes under the stones: the paths read as paths, the fork as a fork
     s('path', { class: 't37l-lane', d: stroke(frontLine, 95, 0.06, 0.1, 0.7) + stroke(mainLine, 92, 0.04, 0.12, 0.6) + stroke(sideLine, 84, 0.04, 0.4, 0.35) }),
     // the house's own shadow toward you (the moon is low behind it), and the fence's along its foot
@@ -102,7 +103,7 @@ export function labScene(ctx: SceneCtx) {
     s('path', { class: 't37l-cast t37l-fencefoot', d: blob(...G(1.5, 0.55), 150, 22, 3726, 0.15) }),
     // the lamp's warm spill from the shōji onto the gravel in front
     s('ellipse', { class: 't37l-spill', cx: G(-2, 1.5)[0], cy: G(-2, 1.5)[1], rx: 260, ry: 130 }),
-    () => stepStones(front, (i) => 30 + i * 3, 3728),
+    () => stepStones(front, (i) => 44 - i * 2, 3728),
     () => stepStones(main, (i) => 32 - i * 1.4, 3729),
     () => stepStones(side, (i) => 26 - i * 2.2, 3730),
     // the second shadow: from the fork it lies along the main path toward the gate, or turns down the other one
@@ -290,6 +291,7 @@ export function labScene(ctx: SceneCtx) {
     return b
   }
   const note = h('div', { class: 't37l-note', hidden: true })
+  let insightBox: HTMLElement | null = null
   const status = h('p', { class: 't37l-status' }, K.watched)
   const tools = [tag(frontWall, 'papers', K.tools[0].name, () => tell(0)), tag(red, 'red', K.tools[1].name, () => tell(1)), tag(keeper, 'keeper', K.tools[2].name, () => tell(2))]
   const box = tag(boxF, 'box', K.exampleLabel, () => tell(3))
@@ -297,6 +299,8 @@ export function labScene(ctx: SceneCtx) {
   // has been down (audit 37-2)
   const names = [...K.tools.map((t) => t.name), K.exampleLabel].map((t) => h('span', { class: 't37l-tag' }, t))
   const tagLayer = h('div', { class: 't37l-tags', 'aria-hidden': 'true' }, ...names)
+  ctx.art.classList.add('t37l-art')
+  ctx.onCleanup(() => ctx.art.classList.remove('t37l-art'))
   const root = h('div', { class: `t37l${still ? ' still' : ''}${tallAtMount ? ' tall' : ''}` }, h('p', { class: 'visually-hidden' }, K.art), skyEl, view, tagLayer, note, status)
   ctx.art.append(root)
   // the brushwork soaks in after mount, one piece per slice (reduced motion: at once)
@@ -319,7 +323,8 @@ export function labScene(ctx: SceneCtx) {
   let grab: Mark | null = g.dot(pull, { dir: [0, 1] })
   const way = g.track(() => {
     const a = ctx.art.getBoundingClientRect(), r = blind.getBoundingClientRect()
-    const x = r.left - a.left - (tallAtMount ? 8 : 16)
+    // (tall: the house fills the width, so the groove runs down the window's right edge, inside the frame)
+    const x = tallAtMount ? r.right - a.left - 6 : r.left - a.left - 8
     return [[x, r.top - a.top + 4], [x, r.bottom - a.top - 4]]
   }, { ticks: 2, labels: tallAtMount ? undefined : [K.open, K.down] }) // a phone has no room left of the window for words
   const toolDots: (Mark | null)[] = []
@@ -350,8 +355,11 @@ export function labScene(ctx: SceneCtx) {
     status.setAttribute('aria-live', 'polite')
     ctx.prompt(K.steps[0], 'ok')
     const t = window.setTimeout(() => {
-      ctx.insight(K.insight, K.detail)
-      ctx.prompt(K.steps[1])
+      // one block of words: the room's state gives way to the insight; what you touch is read over it, in its corner
+      insightBox = ctx.insight(K.insight, K.detail)
+      if (!note.hidden) insightBox.prepend(note)
+      // (a tall frame: the foot is the insight's; the dots on the three things say what to do)
+      if (!tallAtMount) ctx.prompt(K.steps[1])
       root.classList.add('tested')
       tools.forEach((b, i) => (toolDots[i] = g.dot(b, { dir: [0, -1] })))
     }, ctx.reduced || still ? 0 : 2200)
@@ -413,6 +421,9 @@ export function labScene(ctx: SceneCtx) {
     box.setAttribute('aria-pressed', String(i === 3))
     note.hidden = false
     note.dataset.k = String(i)
+    if (insightBox && note.parentElement !== insightBox) insightBox.prepend(note)
+    // its name on the picture has done its job
+    names[i]?.classList.add('read')
     if (i < 3) note.replaceChildren(h('p', { class: 't37l-name' }, K.tools[i].name), h('p', { class: 't37l-what' }, K.tools[i].what))
     else note.replaceChildren(h('p', { class: 't37l-name' }, K.exampleLabel), ctx.fact(K.example, 'p', 't37l-what'))
     note.setAttribute('aria-live', 'polite')
@@ -433,12 +444,14 @@ export function labScene(ctx: SceneCtx) {
     root.style.height = `${H}px`
     const W = ctx.art.clientWidth
     const tall = H > W
-    const u = tall ? Math.min(W / 9.4, H / 10) : Math.min(W / 13.4, H / 7.6)
+    const u = tall ? Math.min(W / 7.1, H / 7.4) : Math.min(W / 13.4, H / 7.6)
     root.style.setProperty('--u', `${f1(u)}px`)
-    world.style.left = `${f1(W * (tall ? 0.46 : 0.55))}px`
+    world.style.left = `${f1(W * (tall ? 0.64 : 0.45))}px`
     // a narrow sky keeps its right side: the moon low beside the house corner
     sky.setAttribute('preserveAspectRatio', tall ? 'xMaxYMax slice' : 'xMidYMax slice')
-    world.style.top = `${f1(H * (tall ? 0.63 : 0.73))}px`
+    // a tall frame: slide the sky so the low moon sits just over the roof's far corner and the pine stays in
+    skyEl.style.transform = `translateX(${f1(tall ? -W * 0.24 : -yaw * 1.6)}px)`
+    world.style.top = `${f1(H * (tall ? 0.6 : 0.67))}px`
     view.style.perspectiveOrigin = `${f1(W * 0.5)}px ${f1(H * 0.3)}px`
     root.classList.toggle('tall', tall)
     g.refresh()
@@ -451,7 +464,9 @@ export function labScene(ctx: SceneCtx) {
   function placeTags() {
     const a = root.getBoundingClientRect()
     const at = [...tools, box].map((b) => b.getBoundingClientRect())
-    at.forEach((r, i) => (names[i].style.transform = `translate(${f1(r.left - a.left + r.width / 2)}px, ${f1(r.top - a.top - 6)}px) translate(-50%, -100%)`))
+    const ws = names.map((n) => n.offsetWidth)
+    // centred over the thing, kept inside the frame
+    at.forEach((r, i) => (names[i].style.transform = `translate(${f1(clamp(r.left - a.left + r.width / 2 - ws[i] / 2, 6, a.width - ws[i] - 6))}px, ${f1(r.top - a.top - 6)}px) translate(0, -100%)`))
   }
 }
 

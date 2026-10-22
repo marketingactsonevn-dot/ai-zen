@@ -29,13 +29,30 @@
   overflow: visible;
 }
 .t39e-ground {
+  /* the far sand runs into a lake under the haze: darker than the sky in both themes */
+  fill: color-mix(in srgb, var(--water) 45%, var(--paper-2));
+}
+:root[data-theme='dark'] .t39e-ground {
   fill: var(--paper-2);
 }
 .t39e-haze {
   pointer-events: none;
+  opacity: 0.6;
 }
-.t39e-glare {
-  opacity: 0.55;
+:root[data-theme='dark'] .t39e-haze {
+  opacity: 1;
+}
+.t39e-glint {
+  fill: color-mix(in srgb, var(--lantern) 80%, var(--dawn));
+}
+.t39e-glint0 {
+  opacity: 0.7;
+}
+.t39e-glint1 {
+  opacity: 0.42;
+}
+.t39e-glint2 {
+  opacity: 0.18;
 }
 .t39e-horizon {
   opacity: 0.8;
@@ -109,6 +126,10 @@
 .t39e.is-top .t39e-up {
   opacity: 0;
 }
+/* the garden's own rocks stand from the start */
+.t39e-up.is-rock svg {
+  transform: none;
+}
 .t39e-shades,
 .t39e-tops {
   position: absolute;
@@ -164,7 +185,7 @@
   opacity: 0.9;
 }
 
-/* the way out: a seal on a sheet of paper, a cloth bundle */
+/* what lies on the sand once the garden is seen from above: the paper counting the stations, a stone's name */
 .t39e-exits > * {
   position: absolute;
   opacity: 0;
@@ -201,22 +222,15 @@
   filter: none;
 }
 :root[data-theme='dark'] .t39e-paper::before {
+  /* washi in the first sun: pale and warm even at dawn, so the ink on it is dark */
   background:
-    linear-gradient(200deg, color-mix(in srgb, var(--lantern) 16%, transparent), transparent 55%),
-    color-mix(in srgb, color-mix(in srgb, var(--lantern) 14%, var(--step-lo)) 70%, var(--card));
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .5' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .32 0 0 0 -.17'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(200deg, color-mix(in srgb, var(--lantern) 30%, transparent), transparent 60%),
+    color-mix(in srgb, var(--lantern) 24%, var(--step-hi));
 }
-/* an old impression of the seal, faded, in the sheet's corner: what the seal is for */
-.t39e-paper::after {
-  content: '';
-  position: absolute;
-  right: 16px;
-  top: 14px;
-  width: 26px;
-  height: 26px;
-  border: 2.5px solid var(--vermilion);
-  border-radius: 2px;
-  opacity: 0.22;
-  transform: rotate(4deg);
+:root[data-theme='dark'] .t39e-paper,
+:root[data-theme='dark'] .t39e-paper p + p {
+  color: color-mix(in srgb, var(--wash) 88%, var(--lantern));
 }
 .t39e-paper p {
   margin: 0;
@@ -240,143 +254,50 @@
   opacity: 0.9;
   transform: rotate(-6deg);
 }
-.t39e-seal,
-.t39e-cloth {
-  display: block;
-  transform: translate(-50%, -50%) translateZ(2px);
-  pointer-events: auto;
-  text-decoration: none;
-  border-radius: 12px;
-  cursor: pointer;
-}
-.t39e-seal {
-  width: 64px;
-  height: 64px;
-}
-/* the seal is lifted on hover (its shadow grows), comes down hard on the press, then steps aside off its print */
-.t39e-seal-art {
-  filter: drop-shadow(-6px 8px 4px color-mix(in srgb, var(--umbra) 45%, transparent));
-  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.3s;
-}
-.t39e-seal:hover .t39e-seal-art {
-  filter: drop-shadow(-12px 16px 8px color-mix(in srgb, var(--umbra) 35%, transparent));
-}
-:root[data-quality='low'] .t39e-seal-art {
-  filter: none;
-}
-.t39e-cloth {
-  width: 64px;
-  height: 64px;
-}
-.t39e-seal-art,
-.t39e-cloth-art {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.t39e-seal:hover .t39e-seal-art,
-.t39e-cloth:hover .t39e-cloth-art {
-  transform: scale(1.06);
-}
-.t39e-seal.is-pressed .t39e-seal-art {
-  animation: t39e-press 0.52s cubic-bezier(0.3, 0.6, 0.2, 1) both;
-}
-@keyframes t39e-press {
-  30% {
-    transform: scale(0.86);
-    filter: drop-shadow(-1px 1px 1px color-mix(in srgb, var(--umbra) 60%, transparent));
-  }
-  to {
-    transform: translate(30px, -8px) scale(1.04);
-  }
-}
-.t39e-seal:focus-visible,
-.t39e-cloth:focus-visible,
-.t39e-brush:focus-visible {
-  outline: 2px solid var(--ink-2);
-  outline-offset: 4px;
-}
-.t39e-tag {
-  position: absolute;
-  top: 50%;
-  left: calc(100% + 10px);
-  transform: translateY(-50%);
-  white-space: nowrap;
-  font: 500 16px/1.3 var(--serif);
-  text-shadow: none;
-}
-.t39e-cloth .t39e-tag {
-  top: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-}
-.t39e-seal-body {
-  fill: var(--rock-lo);
-}
-.t39e-seal-side {
-  fill: var(--umbra);
-  opacity: 0.35;
-}
-.t39e-seal-paste,
-.t39e-stamp-x {
-  fill: var(--vermilion);
-}
-.t39e-seal-knob {
-  fill: var(--rock-mid);
-}
-.t39e-seal-knob-hi,
-.t39e-seal-rim {
-  fill: var(--lantern);
-  opacity: 0.8;
-}
-.t39e-cloth-body {
-  fill: var(--moss-b);
-}
-:root[data-theme='dark'] .t39e-cloth-body {
-  fill: var(--moss-c);
-}
-.t39e-cloth-fold {
-  fill: var(--wash);
-  opacity: 0.35;
-}
-.t39e-cloth-dots {
-  fill: var(--paper);
-  opacity: 0.5;
-}
-.t39e-cloth-knot {
-  fill: var(--moss-a);
-}
-.t39e-cloth-hi {
-  fill: var(--lantern);
-  opacity: 0.6;
-}
-
 /* the brush on its rest: draws the ensō for keyboard and screen-reader users (and anyone who prefers it) */
 .t39e-brush {
   position: absolute;
-  right: 6%;
-  bottom: 9%;
+  z-index: 1;
   display: grid;
   justify-items: center;
-  gap: 2px;
-  padding: 6px 8px;
+  gap: 0;
+  padding: 0;
   border: 0;
   background: none;
   color: var(--ink);
   font: 500 15px/1.3 var(--serif);
   cursor: pointer;
   border-radius: 12px;
-  transition: opacity 0.6s, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.t39e-brush:hover {
-  transform: translateY(-3px);
+.t39e-brush:focus-visible {
+  outline: 2px solid var(--ink-2);
+  outline-offset: 4px;
 }
 .t39e-brush-art {
-  width: 120px;
-  height: 54px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 120 / 54;
   overflow: visible;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.t39e-brush:hover .t39e-brush-art {
+  transform: translateY(-3px);
+}
+.t39e-brush-say {
+  margin-top: -2px;
+}
+.t39e-brush[disabled] {
+  pointer-events: none;
+}
+/* H7: the brush leans toward the ring and back */
+.t39e.is-nudge .t39e-brush-art {
+  animation: t39e-nudge 2.4s ease-in-out;
+}
+@keyframes t39e-nudge {
+  40%,
+  60% {
+    transform: translate(-12px, -4px) rotate(-3deg);
+  }
 }
 .t39e-brush-sh {
   fill: var(--umbra);
@@ -386,7 +307,7 @@
   fill: var(--step-mid);
 }
 :root[data-theme='dark'] .t39e-handle {
-  fill: var(--step-hi);
+  fill: color-mix(in srgb, var(--step-mid) 70%, var(--lantern));
 }
 .t39e-node {
   fill: var(--wash);
@@ -399,20 +320,12 @@
   fill: var(--wash);
 }
 :root[data-theme='dark'] .t39e-tip {
-  fill: var(--ink);
+  fill: var(--wash);
+  stroke: color-mix(in srgb, var(--lantern) 60%, transparent);
+  stroke-width: 0.8;
 }
-.t39e.is-drawing .t39e-brush {
-  opacity: 0.3;
-}
-@media (max-aspect-ratio: 1/1) {
-  .t39e-brush {
-    right: 50%;
-    bottom: 3%;
-    transform: translateX(50%);
-  }
-  .t39e-brush:hover {
-    transform: translateX(50%) translateY(-3px);
-  }
+.t39e.is-drawing .t39e-brush-art {
+  opacity: 0.55;
 }
 .t39e-stamp-ink {
   fill: var(--vermilion);
@@ -479,23 +392,6 @@
 :root[data-quality='low'] .t39e-mist i {
   animation: none;
 }
-@media (max-aspect-ratio: 1/1) {
-  .t39e-tag {
-    font-size: 14px;
-  }
-  .t39e-cloth .t39e-tag {
-    width: 76px;
-    white-space: normal;
-    text-align: center;
-  }
-}
-.t39e-seal-body {
-  fill: color-mix(in srgb, var(--moss-b) 45%, var(--rock-lo));
-}
-.t39e-seal-knob {
-  fill: color-mix(in srgb, var(--moss-c) 40%, var(--rock-mid));
-}
-
 /* the dotted ring to brush along and the vermilion start; gone once the stroke has begun (audit 39-5) */
 .t39e-trace {
   position: absolute;
@@ -509,12 +405,24 @@
   stroke-linecap: round;
   opacity: 0.35;
 }
-.t39e-trace-start {
-  fill: var(--vermilion);
-}
-.t39e.is-drawing .t39e-trace-start,
 .t39e.is-drawn .t39e-trace {
   opacity: 0;
+}
+.t39e-hint {
+  fill: var(--ink);
+  opacity: 0;
+}
+:root[data-theme='dark'] .t39e-hint {
+  fill: var(--wash);
+}
+.t39e.is-nudge .t39e-hint {
+  animation: t39e-hint 2.4s ease-in-out;
+}
+@keyframes t39e-hint {
+  45%,
+  60% {
+    opacity: 0.45;
+  }
 }
 /* what an ensō is: one line on the sky */
 .t39e-legend {
@@ -534,4 +442,101 @@
 .t39e.is-drawn .t39e-legend {
   opacity: 0;
   transition: opacity 0.6s;
+}
+
+/* the stones can be touched once the garden is seen from above: a hit area over each (≥ 44 px), its name beside it */
+.t39e-hits {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(1.4px);
+  pointer-events: none;
+}
+.t39e-hit {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: none;
+}
+.t39e.is-done .t39e-hit {
+  pointer-events: auto;
+}
+.t39e-hit:focus-visible {
+  outline: 2px solid var(--ink-2);
+  outline-offset: 2px;
+}
+.t39e-hit[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--lantern) 70%, transparent);
+}
+.t39e-exits > .t39e-tag {
+  margin: 0;
+  width: max-content;
+  padding: 4px 12px 5px 14px;
+  transform: translateZ(1.6px) rotate(-2deg);
+  font: 500 15px/1.3 var(--serif);
+  color: color-mix(in srgb, var(--wash) 88%, var(--lantern));
+  text-shadow: none;
+  isolation: isolate;
+  /* its shadow on the sand, away from the low sun */
+  filter: drop-shadow(-5px 7px 4px color-mix(in srgb, var(--umbra) 50%, transparent));
+}
+/* a slip of washi laid on the sand by its stone: torn ends, fibres, warm in the first sun */
+.t39e-tag::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .6' numOctaves='2' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .3 0 0 0 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(200deg, color-mix(in srgb, var(--lantern) 26%, transparent), transparent 70%),
+    color-mix(in srgb, var(--lantern) 16%, var(--step-hi));
+  clip-path: polygon(1.5% 6%, 30% 0, 62% 4%, 98% 0, 100% 34%, 97.5% 62%, 100% 100%, 64% 95%, 33% 100%, 0 96%, 2% 58%, 0 28%);
+}
+:root[data-quality='low'] .t39e-exits > .t39e-tag {
+  filter: none;
+}
+.t39e-exits > .t39e-tag:not(.on) {
+  opacity: 0;
+  visibility: hidden;
+}
+/* granite tones: no two stones alike */
+.t39e-tone1 .t39e-top-face {
+  fill: color-mix(in srgb, color-mix(in srgb, var(--lantern) 8%, var(--rock-hi)) 70%, var(--rock-mid));
+}
+.t39e-tone2 .t39e-top-face {
+  fill: color-mix(in srgb, var(--moss-c) 18%, var(--rock-mid));
+}
+.t39e-tone2 .t39e-top-side {
+  fill: color-mix(in srgb, var(--rock-lo) 60%, var(--wash));
+}
+.t39e-num,
+.t39e-num-lip {
+  font-family: var(--serif);
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  letter-spacing: 0.02em;
+}
+.t39e-num {
+  fill: var(--umbra);
+  opacity: 0.62;
+}
+.t39e-num-lip {
+  fill: color-mix(in srgb, var(--lantern) 50%, #fff);
+  opacity: 0.55;
+}
+.t39e-near-veil {
+  fill: var(--umbra);
+  opacity: 0.18;
+}
+@media (max-aspect-ratio: 1/1) {
+  .t39e-paper {
+    padding: 46px 14px 12px 20px;
+    font-size: 14px;
+  }
+  .t39e-brush {
+    font-size: 14px;
+  }
 }

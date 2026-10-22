@@ -206,6 +206,9 @@ export function fenceScene(ctx: SceneCtx) {
   // H5 per step; after the sixth layer a faint arrow for the hidden gesture (walking round), gone once aligned
   const g = guide(ctx)
   let turnMark: Mark | null = null
+  /** H1 on the next bundle: a vermilion dot riding a 3D point over it (k.label), so it stays on it as you walk round */
+  let nextAt: THREE.Object3D | null = null
+  let nextDot: HTMLElement | null = null
 
   // ── colours of our own materials, read on mount and on every theme change (registered before the first yield)
   const cs = () => getComputedStyle(document.documentElement)
@@ -216,7 +219,8 @@ export function fenceScene(ctx: SceneCtx) {
   let moonDisc: THREE.Object3D | null = null
   const readCol = () => {
     const c = cs()
-    const v = (n: string) => c.getPropertyValue(n).trim() || '#888'
+    // (THREE.Color reads #rrggbb, not the #rrggbbaa some tokens carry)
+    const v = (n: string) => (c.getPropertyValue(n).trim() || '#888').replace(/^(#[0-9a-f]{6})[0-9a-f]{2}$/i, '$1')
     const dark = document.documentElement.dataset.theme === 'dark'
     col.verm.setStyle(v('--vermilion'), THREE.SRGBColorSpace)
     col.core.copy(col.verm).lerp(new THREE.Color().setStyle(v('--lantern'), THREE.SRGBColorSpace), dark ? 0.7 : 0.25)
@@ -385,11 +389,15 @@ export function fenceScene(ctx: SceneCtx) {
     lampGlow && (lampGlow.visible = !!nb)
     lamp?.set(nb ? 0.95 : 0)
     if (rakeBtn) rakeBtn.hidden = built === 0
+    if (nextAt && nb) (nextAt.position.set(nb.at[0], 0.42, nb.at[2]), nextAt.updateWorldMatrix(true, false))
+    // a tall frame: closer on the sapling while the garden is bare, stepping back ring by ring until all six fill it
+    if (tall) kit?.dolly([0.72, 0.76, 0.82, 0.87, 0.92, 0.97, 1][built])
+    nextDot?.classList.toggle('off', !nb)
     if (countTag) countTag.querySelector('span')!.textContent = fill(K.count, { n: built })
     if (leakTag) leakTag.querySelector('.n')!.textContent = fill(K.leak, { n: LEAK[built] })
   }
 
-  const nameOf = (i: number) => h('p', { class: 't37f-name' }, h('span', { class: 't37f-no' }, String(i + 1)), K.layers[i].name)
+  const nameOf = (i: number) => h('p', { class: 't37f-name' }, h('span', { class: 't37f-no' }, String(i + 1)), h('span', { class: 't37f-nm' }, K.layers[i].name))
   /** ring i's name slip on its flag post, out on a short leader (a tall frame has no room: just its number) */
   const slipOf = (k: InkKit, i: number) => {
     // up and outward, a little longer for the outer rings so the papers step back like a fan
@@ -410,6 +418,8 @@ export function fenceScene(ctx: SceneCtx) {
       prev.card.remove()
       prev.card = null
     }
+    // only the newest ring's slip keeps its name; the older ones keep their number
+    prev?.slip?.classList.remove('newest')
     if (tall) {
       panel.replaceChildren(h('p', { class: 't37f-pcount' }, fill(K.count, { n: i + 1 })), nameOf(i), more)
       rings[i].slip ??= slipOf(k, i)
@@ -418,6 +428,7 @@ export function fenceScene(ctx: SceneCtx) {
     } else {
       cardEl.replaceChildren(h('div', { class: 't37f-tag new' }, h('div', { class: 't37f-paper' }, nameOf(i), more)))
       rings[i].slip ??= slipOf(k, i)
+      rings[i].slip?.classList.add('newest')
     }
   }
 
@@ -460,7 +471,10 @@ export function fenceScene(ctx: SceneCtx) {
     turnMark?.done()
     turnMark = null
     ctx.prompt(K.aligned, 'ok')
-    const t = window.setTimeout(() => ctx.insight(K.insight, K.detail), ctx.reduced ? 0 : 1600)
+    const t = window.setTimeout(() => {
+      root.classList.add('told')
+      ctx.insight(K.insight, K.detail)
+    }, ctx.reduced ? 0 : 1600)
     ctx.onCleanup(() => clearTimeout(t))
   }
 
@@ -470,6 +484,7 @@ export function fenceScene(ctx: SceneCtx) {
     built = 0
     gen++
     rings.forEach((rg) => (rg.slip?.remove(), rg.card?.remove(), (rg.slip = rg.card = null)))
+    root.classList.remove('told')
     panel.replaceChildren()
     cardEl.replaceChildren()
     root.classList.remove('lifted')
@@ -494,8 +509,9 @@ export function fenceScene(ctx: SceneCtx) {
   // ── the 3D garden
   // a tall frame: 48° down (0.71 + the kit's 0.13), pulled back so the bundles and the rake stay in, and the garden
   // lifted into the height the panel leaves free
-  const view = { yaw: YAW0, pitch: tall ? 0.71 : 0.56, yawRange: [-1e4, 1e4] as [number, number], pitchRange: [0.31, 1.08] as [number, number], fit: (tall ? [10.4, 4.8] : [5.6, 3.1]) as [number, number], target: T, shift: tall ? 0.02 : 0.05, zoomRange: [0.6, 1.3] as [number, number] }
+  const view = { yaw: YAW0, pitch: tall ? 0.71 : 0.56, yawRange: [-1e4, 1e4] as [number, number], pitchRange: [0.31, 1.08] as [number, number], fit: (tall ? [9.4, 4.5] : [4.9, 2.75]) as [number, number], target: T, shift: tall ? 0.02 : 0.05, zoomRange: [0.6, 1.3] as [number, number] }
   inkStage(ctx, host, { label: K.aria, hint: K.hint, fov: 30, gyro: true, dpr: [1.75, 1.25], view, fallback: (el) => fenceFlat(ctx, el) }, function* (k) {
+    kit = k
     const low = k.low
     // the moon is setting in the west, low: long shadows thrown east, a cold rim on the west faces
     k.uniforms.uKey.value.set(-0.8, 0.42, -0.3).normalize()
@@ -536,8 +552,10 @@ export function fenceScene(ctx: SceneCtx) {
     k.rock({ at: [-5.2, 0.2], w: 0.5, h: 0.32, seed: 3714, moss: 0.4 })
     k.rock({ at: [0, 0], w: 1.25, h: 0.3, d: 1.1, seed: 3711, moss: 0.95, rotY: 0.4 })
     const sap = new THREE.Group()
+    // the hero: about twice the size it was (audit 37-3), crown well above the first ring's rails
+    const SAP = tall ? 2.35 : 1.9
     sap.position.set(0.04, 0.2, -0.02)
-    sap.scale.setScalar(1.3)
+    sap.scale.setScalar(SAP)
     k.root.add(sap)
     const wood: THREE.BufferGeometry[] = []
     const limb = (from: THREE.Vector3, to: THREE.Vector3, r0: number, r1: number) => {
@@ -568,7 +586,7 @@ export function fenceScene(ctx: SceneCtx) {
       g.computeVertexNormals()
       g.translate(x, y, z)
       clumps.push(g)
-      leaves.push(new THREE.Vector3(x * 1.3 + sap.position.x, (y + s * 0.4) * 1.3 + sap.position.y, z * 1.3 + sap.position.z))
+      leaves.push(new THREE.Vector3(x * SAP + sap.position.x, (y + s * 0.4) * SAP + sap.position.y, z * SAP + sap.position.z))
     })
     k.mesh(mergeGeometries(clumps)!, k.ink('moss', { moss: 1, rim: 1.6 }), { parent: sap })
     clumps.forEach((g) => g.dispose())
@@ -598,7 +616,7 @@ export function fenceScene(ctx: SceneCtx) {
       k.mesh(mergeGeometries(lv)!, k.ink('moss', { moss: 1, rim: 2.2, double: true }), { parent: sap })
       lv.forEach((g) => g.dispose())
     }
-    mossGlow = k.glow([0, 0.4, 0], 1.9, col.moss, tone.moss)
+    mossGlow = k.glow([0, 0.5, 0], 2.4, col.moss, tone.moss)
     readCol()
     yield
 
@@ -606,6 +624,8 @@ export function fenceScene(ctx: SceneCtx) {
     const cane = new THREE.CylinderGeometry(0.021, 0.025, 1, low ? 5 : 6, 1, false)
     cane.translate(0, 0.5, 0)
     const node = new THREE.CylinderGeometry(0.03, 0.03, 0.018, low ? 5 : 6, 1, true)
+    const foot = new THREE.CylinderGeometry(0.034, 0.075, 0.05, low ? 6 : 8, 1, false)
+    foot.translate(0, 0.012, 0)
     const tiny = new THREE.BoxGeometry(0.01, 0.01, 0.01)
     const hidden = new THREE.MeshBasicMaterial()
     for (let i = 0; i < N; i++) {
@@ -614,7 +634,7 @@ export function fenceScene(ctx: SceneCtx) {
       const parts: THREE.BufferGeometry[] = []
       for (const p of posts) {
         const x = Math.sin(p.a) * R, z = Math.cos(p.a) * R
-        parts.push(cane.clone().scale(p.w, p.h, p.w).translate(x, -0.02, z))
+        parts.push(cane.clone().scale(p.w, p.h, p.w).translate(x, -0.02, z), foot.clone().scale(p.w, 1, p.w).translate(x, 0, z))
         if (!low) for (const y of [0.34, 0.68]) parts.push(node.clone().scale(p.w, 1, p.w).translate(x, p.h * y, z))
       }
       const g = new THREE.Group()
@@ -657,6 +677,7 @@ export function fenceScene(ctx: SceneCtx) {
     }
     cane.dispose()
     node.dispose()
+    foot.dispose()
 
     // the shadow decal under the rings and the bundles
     const sh = new THREE.Mesh(new THREE.CircleGeometry(5.6, 96), new THREE.ShaderMaterial({
@@ -692,8 +713,9 @@ export function fenceScene(ctx: SceneCtx) {
       return m
     })()
     for (let i = 0; i < N; i++) {
-      const a = YAW0 + (40 + i * 8) * (Math.PI / 180)
-      const R = 4.5 + (i % 2) * 0.3
+      // (a tall frame: further round toward you, so the pile is in the narrow view)
+      const a = YAW0 + (tall ? 20 + i * 8 : 40 + i * 8) * (Math.PI / 180)
+      const R = (tall ? 4.25 : 4.5) + (i % 2) * 0.3
       const x = Math.sin(a) * R, z = Math.cos(a) * R
       const g = new THREE.Group()
       g.position.set(x, 0, z)
@@ -771,22 +793,25 @@ export function fenceScene(ctx: SceneCtx) {
 
     // labels: the count on the bundles, what still gets through on the sapling
     const pile = new THREE.Mesh(tiny, hidden)
-    pile.position.set(Math.sin(YAW0 + 1.05) * 4.75, 0.42, Math.cos(YAW0 + 1.05) * 4.75)
+    pile.position.set(Math.sin(YAW0 + 1.05) * 4.75, 0.95, Math.cos(YAW0 + 1.05) * 4.75)
     pile.visible = false
     k.root.add(pile)
     if (!tall) countTag = label(k, pile, h('p', { class: 't37f-count', 'aria-hidden': 'true' }, h('span', null, fill(K.count, { n: 0 }))))
-    // what still gets through, stamped in vermilion on the near sand in front of the rings
-    const top = new THREE.Mesh(tiny, hidden)
-    top.position.set(Math.sin(YAW0 - 0.6) * 4.15, 0.02, Math.cos(YAW0 - 0.6) * 4.15)
-    top.visible = false
-    k.root.add(top)
-    leakTag = label(k, top, h('div', { class: 't37f-under' }, h('p', { class: 't37f-legend' }, K.legend), h('p', { class: 't37f-leak' }, h('span', { class: 'n' }, fill(K.leak, { n: LEAK[0] })), ' ', ctx.tag('illustration'))))
+    // what the sapling and the sparks stand for, and what still gets through: one block in the frame's corner (a 3D
+    // anchor on the sand left the frame as the camera came closer)
+    leakTag = h('div', { class: 't37f-under' }, h('p', { class: 't37f-legend' }, K.legend), h('p', { class: 't37f-leak' }, h('span', { class: 'n' }, fill(K.leak, { n: LEAK[0] })), ' ', ctx.tag('illustration')))
+    root.append(leakTag)
 
+    nextAt = new THREE.Mesh(tiny, hidden)
+    nextAt.visible = false
+    k.root.add(nextAt)
+    nextDot = label(k, nextAt, h('i', { class: 't37f-dot', 'aria-hidden': 'true' }))
     plan(0, true)
     syncBundles()
 
     // every drawn frame: the fireflies, the haze following the camera's distance, and the thread when the holes line up
     let moonSet = false
+    let lastAz = NaN
     k.onFrame((now) => {
       const cam = k.stage?.camera
       if (!cam) return
@@ -794,7 +819,7 @@ export function fenceScene(ctx: SceneCtx) {
       // top left of the frame, 20 m out along that sightline (it stays there in the world as you orbit)
       if (!moonSet && moonDisc && cam.position.lengthSq() > 1) {
         moonSet = true
-        const dir = new THREE.Vector3(tall ? -0.5 : -0.74, tall ? 0.8 : 0.6, 0.5).unproject(cam).sub(cam.position).normalize()
+        const dir = new THREE.Vector3(tall ? -0.5 : -0.5, tall ? 0.8 : 0.5, 0.5).unproject(cam).sub(cam.position).normalize()
         moonDisc.position.copy(cam.position).addScaledVector(dir, 20)
       }
       const live = k.live
@@ -812,7 +837,12 @@ export function fenceScene(ctx: SceneCtx) {
         if (!r || u.value !== r.last) rangeK.set(u, (r = { base: u.value, last: 0 }))
         r.last = u.value = r.base * low * low
       }
-      const a = lineThrough(Math.atan2(cam.position.x - T[0], cam.position.z - T[2]), built)
+      const az = Math.atan2(cam.position.x - T[0], cam.position.z - T[2])
+      // reduced motion draws one frame per input, and the kit places the camera after these callbacks: while the view
+      // is still moving, ask for one more frame so the check below sees where the input left it
+      if (ctx.reduced && az !== lastAz) k.render()
+      lastAz = az
+      const a = lineThrough(az, built)
       const want = Number.isNaN(a) ? 0 : 1
       if (want && a !== threadAt) {
         threadAt = a
@@ -845,6 +875,25 @@ export function fenceScene(ctx: SceneCtx) {
     if (!k?.stage) return
     kit = k
     const st = k.stage
+    // the first draw meets a dozen programs at once (three's onFirstUse reads each one back from the GPU): one long
+    // task at CPU 4×. They are compiled before it (compileAsync), so the draw is spread under the fade-in instead, a
+    // fifth of the garden more each frame (as t28/gardeners.ts)
+    const parts = k.root.children.slice(), N = 5, was = new Map<THREE.Object3D, boolean>()
+    let reveal = -1
+    st.onFrame(() => {
+      if (reveal >= N) return
+      if (reveal < 0) {
+        if (st.renderer.info.render.frame) return void (reveal = N) // already drawn (a resize / theme redraw)
+        const progs = st.renderer.info.programs
+        if (!progs?.length || progs.some((p) => !(p as unknown as { isReady(): boolean }).isReady())) return
+        parts.forEach((o, i) => i % N && (was.set(o, o.visible), (o.visible = false)))
+        reveal = 1
+      } else {
+        parts.forEach((o, i) => i % N === reveal && (o.visible = was.get(o) ?? true))
+        reveal++
+      }
+      st.render()
+    })
     // the sand rakes in rings round the mound all the way out (the kit rakes only a band round each stone)
     const rg = (groundMesh?.material as THREE.ShaderMaterial | undefined)?.uniforms.uRings.value as THREE.Vector4[] | undefined
     const c = rg?.find((q) => Math.hypot(q.x, q.y) < 0.3 && q.w > 0)

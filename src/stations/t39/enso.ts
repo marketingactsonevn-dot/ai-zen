@@ -4,10 +4,12 @@ import { progress } from '../../core/progress'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
+import { ALL_STATIONS, displayNo } from '../../core/content'
 import { blob, clamp, onSize, rng, rock, stableHeight, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { C } from './shell'
-import { D2R, clip, dark, dawnSky, f1, f2, g39Defs, grain, idle, mossBed, polyD, readTok, rgba, type Tok } from './g39'
+import { D2R, clip, dark, dawnSky, f1, f2, g39Defs, grain, idle, mossBed, polyD, readTok, rgba, smoothD, type Tok } from './g39'
 
 const K = C.scenes.enso
 const PART2 = Array.from({ length: 21 }, (_, i) => 19 + i)
@@ -18,8 +20,9 @@ const SWEEP = 330
 /** how far the hand has to turn to close it (audit 39-5: a tilted ellipse turns less than a circle; ~300° is enough) */
 const GESTURE = 300
 
-type Lay = { W: number; H: number; R: number; wB: number; U: number; Vf: number; Vn: number; P: number; oy: number; hz0: number; s0: number; yc0: number; yc1: number; gap: number; wide: boolean }
-type Spot = { id: number; u: number; v: number; w: number; seed: number; on: boolean }
+type Lay = { W: number; H: number; R: number; wB: number; U: number; Vf: number; Vn: number; P: number; oy: number; hz0: number; s0: number; yc0: number; yc1: number; gap: number; wide: boolean; ax: number; ay: number }
+/** a station's place in the ring (n = its number in the Moon Garden), or one of the garden's own big rocks (n = 0) */
+type Spot = { id: number; n: number; u: number; v: number; w: number; seed: number; on: boolean }
 
 /**
  * ★ Scene 5 — the ensō (CRANE, CSS 3D). Dawn over a raked sand garden seen from just above the sand: one stroke of the
@@ -46,12 +49,16 @@ export function ensoScene(ctx: SceneCtx) {
   const stamp = s('svg', { class: 't39e-stamp', viewBox: '-12 -12 24 24', 'aria-hidden': 'true' })
   const paper = h('div', { class: 't39e-paper' }, stamp,
     h('p', null, fill(K.visited, { n: nVisited })), h('p', null, fill(K.visitedAll, { n: nAll })))
-  const exits = h('div', { class: 't39e-exits' }, paper)
-  // H2 + H1: a faint dotted ring on the sand to brush along, a vermilion dot where the stroke starts
+  // the stone touched last: its station's number and name, cut in a strip of paper laid beside it
+  const tag = h('p', { class: 't39e-tag g39-say', 'aria-live': 'polite' })
+  const hits = h('div', { class: 't39e-hits' })
+  const exits = h('div', { class: 't39e-exits' }, paper, tag)
+  // H2: a faint dotted ring on the sand to brush along (the start's vermilion dot is a guide mark, upright on screen)
   const trace = s('svg', { class: 't39e-trace', 'aria-hidden': 'true' })
-  const plane = h('div', { class: 't39e-plane' }, ...tiles, warm, ink, trace, garden, exits)
+  const hint = s('path', { class: 't39e-hint' })
+  const plane = h('div', { class: 't39e-plane' }, ...tiles, warm, ink, trace, garden, exits, hits)
   const view = h('div', { class: 't39e-view' }, plane)
-  const brush = h('button', { class: 't39e-brush', type: 'button', 'aria-label': K.drawAria, onClick: () => auto() }, brushArt(), h('span', { class: 'g39-say' }, K.draw))
+  const brush = h('button', { class: 't39e-brush', type: 'button', 'aria-label': K.drawAria, onClick: () => auto() }, brushArt(), h('span', { class: 't39e-brush-say g39-say' }, K.draw))
   const fore = s('svg', { class: 't39e-fore', 'aria-hidden': 'true', preserveAspectRatio: 'none' })
   // morning mist lying on the sand at the horizon, drifting a little (CSS, quality=high only, pauses when idle)
   const mist = h('div', { class: 't39e-mist', 'aria-hidden': 'true' }, h('i'), h('i'))
@@ -63,6 +70,8 @@ export function ensoScene(ctx: SceneCtx) {
   ctx.art.append(root)
   idle(ctx, root)
   ctx.prompt(K.prompt)
+  const gd = guide(ctx)
+  let startDot: Mark | null = null, moreDot: Mark | null = null
 
   let L: Lay | null = null
   let T: Tok = readTok()
@@ -116,7 +125,9 @@ export function ensoScene(ctx: SceneCtx) {
       for (let i = n - 1; i >= 0; i--) g2.lineTo(X[i] - NX[i] * Wd[i] * k * 0.94, Y[i] - NY[i] * Wd[i] * k * 0.94)
       g2.closePath()
     }
-    g2.fillStyle = T.ink
+    // sumi is black in both themes (the night theme's --ink is the pale ink of its letters, not of a brush)
+    const dk = dark()
+    g2.fillStyle = dk ? T.wash : T.ink
     // a faint bleed into the sand round the wet body
     if (!low) {
       g2.globalAlpha = 0.08
@@ -155,7 +166,7 @@ export function ensoScene(ctx: SceneCtx) {
     }
     g2.globalCompositeOperation = 'source-atop'
     // the hairs: a few lighter lines inside the wet body
-    g2.strokeStyle = dark() ? T.moon : T.paper
+    g2.strokeStyle = dk ? T.moon : T.paper
     g2.lineWidth = Math.max(0.6, wB * 0.03)
     for (let k = 0; k < (low ? 2 : 5); k++) {
       const o = (k / 4 - 0.5) * 1.3
@@ -164,7 +175,27 @@ export function ensoScene(ctx: SceneCtx) {
       for (let i = 0; i < n; i++) g2.lineTo(X[i] + NX[i] * Wd[i] * o, Y[i] + NY[i] * Wd[i] * o)
       g2.stroke()
     }
+    // the wet core still shining where the ink lies thick (the dawn caught on it, sunward side)
+    g2.strokeStyle = T.lantern
+    g2.lineWidth = Math.max(0.8, wB * 0.07)
+    g2.globalAlpha = dk ? 0.28 : 0.18
+    g2.beginPath()
+    let on = false
+    for (let i = 0; i < n; i++) {
+      const x = X[i] - NX[i] * Wd[i] * 0.35, y = Y[i] - NY[i] * Wd[i] * 0.35
+      if (D[i] < 0.3) (on ? g2.lineTo(x, y) : g2.moveTo(x, y)), (on = true)
+      else on = false
+    }
+    g2.stroke()
     g2.globalCompositeOperation = 'source-over'
+    // H4: the stroke is the progress; its head shines while the brush is still on the way
+    if (strokes[n - 1][0] < 1) {
+      g2.fillStyle = T.lantern
+      g2.globalAlpha = 0.9
+      g2.beginPath()
+      g2.arc(X[n - 1], Y[n - 1], Math.max(3, Wd[n - 1] * 0.42), 0, Math.PI * 2)
+      g2.fill()
+    }
     g2.globalAlpha = 1
   }
   function paintTo(target: number, dry: number) {
@@ -207,6 +238,8 @@ export function ensoScene(ctx: SceneCtx) {
     turn = painted > 0 && sign ? sign * painted * GESTURE * D2R : 0
     if (!turn) sign = 0
     else ctx.prompt(K.prompt)
+    moreDot?.done()
+    moreDot = null
     lastDir = NaN
     lx = e.clientX
     ly = e.clientY
@@ -238,17 +271,40 @@ export function ensoScene(ctx: SceneCtx) {
     lx = e.clientX
     ly = e.clientY
     lt = e.timeStamp
-    if (!sign && Math.abs(turn) > 0.3) sign = Math.sign(turn)
+    if (!sign && Math.abs(turn) > 0.3) (sign = Math.sign(turn)), startDot?.done(), (startDot = null)
     if (sign) paintTo(Math.max(painted, (sign * turn) / (GESTURE * D2R)), clamp((speed - 0.7) / 2.6, 0, 0.75))
   })
   const up = () => {
     root.classList.remove('is-drawing', 'is-turning')
     if (phase !== 'draw') return
-    phase = 'idle' // half a stroke stays on the sand; the next touch goes on from its end (H6: say so)
-    if (painted > 0.02) ctx.prompt(K.more, 'wrong')
+    phase = 'idle' // half a stroke stays on the sand; the next touch goes on from its end (H6: say so, and mark the end)
+    if (painted > 0.02) {
+      ctx.prompt(K.more, 'wrong')
+      const end = () => toArt(project(...spine(painted)))
+      if (moreDot) moreDot.at(end)
+      else moreDot = gd.dot(end, { dir: [-sign, 0.3] })
+    }
   }
   root.addEventListener('pointerup', up)
   root.addEventListener('pointercancel', up)
+
+  // H7: left alone 6 s, the brush leans in and a faint 10° of ink shows where the stroke goes next, then fades
+  let nudgeT = 0
+  const nudge = () => {
+    if (phase !== 'idle' || !L || still) return
+    const was = sign
+    sign ||= 1 // before the first stroke the brush goes the way the dot points
+    const pts = Array.from({ length: 6 }, (_, i) => spine(painted + (i / 5) * (10 / SWEEP)))
+    sign = was
+    hint.setAttribute('d', stroke(pts, L.wB * 0.7, 0.3, 0.4, 0.2))
+    root.classList.remove('is-nudge')
+    void root.offsetWidth
+    root.classList.add('is-nudge')
+    clearTimeout(nudgeT)
+    nudgeT = window.setTimeout(() => root.classList.remove('is-nudge'), 2600)
+  }
+  ctx.el.addEventListener('p2:idle', nudge)
+  ctx.onCleanup(() => (ctx.el.removeEventListener('p2:idle', nudge), clearTimeout(nudgeT)))
 
   let autoT = 0
   function auto() {
@@ -257,6 +313,9 @@ export function ensoScene(ctx: SceneCtx) {
     painted = 0
     clearInk()
     sign = 1
+    startDot?.done()
+    moreDot?.done()
+    startDot = moreDot = null
     if (ctx.reduced) {
       phase = 'auto'
       paintTo(1, 0.15)
@@ -270,9 +329,14 @@ export function ensoScene(ctx: SceneCtx) {
   function finish() {
     phase = 'crane'
     root.classList.add('is-drawn')
-    brush.hidden = true
+    startDot?.done()
+    moreDot?.done()
+    startDot = moreDot = null
+    // the brush stays on its rest in the near sand; the rising camera leaves it below the frame
+    brush.disabled = true
+    brush.setAttribute('aria-hidden', 'true')
     ctx.chime('soft')
-    if (still) return done()
+    if (still) return (brush.hidden = true), done()
     root.classList.add('is-risen')
     loop.start()
   }
@@ -282,6 +346,8 @@ export function ensoScene(ctx: SceneCtx) {
     apply()
     root.classList.add('is-done')
     paper.classList.add('is-stamped')
+    // the stones can be touched now: each says which station it is
+    for (const b of hits.children) (b as HTMLButtonElement).tabIndex = 0
     if (!told) {
       told = true
       ctx.insight(K.insight)
@@ -327,10 +393,21 @@ export function ensoScene(ctx: SceneCtx) {
     mist.style.transform = `translateY(${f1(hz - hz0)}px)`
     if (th < 50 !== root.classList.contains('is-top')) root.classList.toggle('is-top', th < 50)
     if (!still) {
-      fore.style.transform = `translateY(${f1(e * H * 0.45)}px)`
-      fore.style.opacity = f2(clamp(1 - e * 1.6, 0, 1))
+      fore.style.transform = brush.style.transform = `translateY(${f1(e * H * 0.45)}px)`
+      fore.style.opacity = brush.style.opacity = f2(clamp(1 - e * 1.6, 0, 1))
     }
   }
+  /** where a point of the sand (plane px from the ring's centre) is on screen now (root px) */
+  function project(u: number, v: number, t = camT, z = rz): Pt {
+    const { P, oy, s0, yc0, yc1, W } = L!
+    const e = ease(t)
+    const th = (TH0 + (TH1 - TH0) * e) * D2R, sc = s0 + (1 - s0) * e, yc = yc0 + (yc1 - yc0) * e
+    const c = Math.cos(z * D2R), sz = Math.sin(z * D2R)
+    const x = u * c - v * sz, y = u * sz + v * c
+    const k = P / (P - (P * (1 - 1 / sc) + y * Math.sin(th)))
+    return [W / 2 + x * k, oy + (y * Math.cos(th) + (yc - oy) / sc) * k]
+  }
+  const toArt = ([x, y]: Pt): Pt => [x - L!.ax, y - L!.ay]
 
   // ── layout, sprites, the baked sand ─────────────────────────────────────────────────────────────────────────────
   let job: { cancel(): void } | null = null
@@ -343,50 +420,78 @@ export function ensoScene(ctx: SceneCtx) {
     // the root runs full-bleed: out to the screen's sides, up under the header, a little down behind the foot
     const W = root.clientWidth, H = root.clientHeight, T0 = H - ctx.art.clientHeight - 24
     const wide = W > Ha * 1.1
-    const R = Math.round(Math.min(Ha * (wide ? 0.36 : 0.27), W * (wide ? 0.4 : 0.37)))
+    const R = Math.round(Math.min(Ha * (wide ? 0.36 : 0.27), W * (wide ? 0.4 : 0.33)))
     const wB = Math.max(13, R * 0.15)
-    const P = clamp(Math.max(W, H) * 0.6, 600, 900)
-    const hz0 = T0 + Ha * (wide ? 0.34 : 0.28)
-    const oy = hz0 + P / Math.tan(TH0 * D2R)
-    const yc1 = T0 + Ha * (wide ? 0.47 : 0.36), yc0 = T0 + Ha * (wide ? 0.66 : 0.6)
-    const U = Math.round((W / 2) * 1.12 + 40), Vf = Math.round(Math.max(R * 2.8, yc1 + 80)), Vn = Math.round(Math.max(H - yc1 + 70, R * 1.5))
-    // the low view's scale: the smallest at which the sand's near edge passes the frame's foot (in front of the camera)
+    const hz0 = T0 + Ha * (wide ? 0.34 : 0.3)
+    // the low view: the camera down near the sand and close, the ring half the frame's width (a phone: all of it) in its
+    // lower third; the high view: the ring round the frame's middle
+    const yc1 = T0 + Ha * (wide ? 0.47 : 0.41), yc0 = T0 + Ha * (wide ? 0.72 : 0.6)
+    const s0 = clamp((W * (wide ? 0.44 : 0.8)) / (2 * R), 0.4, 2.2)
+    const U = Math.round((W / 2) * 1.12 + 40 + (wide ? 0 : 60)), Vf = Math.round(Math.max(R * 2.8, yc1 + 80))
+    let Vn = Math.round(Math.max(H - yc1 + 70, R * 1.5))
+    // a lens long enough that the near sand reaches the frame's foot before it reaches the lens
     const sn = Math.sin(TH0 * D2R), cs = Math.cos(TH0 * D2R)
-    let s0 = 0.3
-    for (; s0 < 1.2; s0 += 0.02) {
-      const tz = P * (1 - 1 / s0), Z = tz + Vn * sn
-      if (Z > P - 60) { s0 = Math.max(0.3, s0 - 0.02); break }
-      if (oy + ((yc0 - oy) / s0 + Vn * cs) * (P / (P - Z)) > H + 12) break
+    let P = clamp(Math.max(W, H) * 0.6, 600, 900), oy = 0
+    for (let k = 0; k < 40; k++, P *= 1.08) {
+      oy = hz0 + P / Math.tan(TH0 * D2R)
+      const tz = P * (1 - 1 / s0), ty = (yc0 - oy) / s0
+      let v = 0
+      for (; v < 6000; v += 8) {
+        const Z = tz + v * sn
+        if (Z > P - 80) { v = -1; break }
+        if (oy + (ty + v * cs) * (P / (P - Z)) > H + 16) break
+      }
+      if (v > 0 && v < 6000) {
+        Vn = Math.max(Vn, Math.round(v + 24))
+        break
+      }
     }
-    L = { W, H, R, wB, U, Vf, Vn, P, oy, hz0, s0, yc0, yc1, gap: (wide ? 24 : 90) * D2R, wide }
+    L = { W, H, R, wB, U, Vf, Vn, P, oy, hz0, s0, yc0, yc1, gap: (wide ? -35 : 70) * D2R, wide, ax: (W - ctx.art.clientWidth) / 2, ay: T0 }
     Object.assign(view.style, { perspective: `${f1(P)}px`, perspectiveOrigin: `50% ${f1(oy)}px` })
     Object.assign(plane.style, { left: `${f1(W / 2 - U)}px`, top: `${f1(oy - Vf)}px`, width: `${2 * U}px`, height: `${Vf + Vn}px`, transformOrigin: `${U}px ${Vf}px` })
     const r = rng(3990)
     const Rin = R - wB * 0.9 - R * 0.1
     spots = PART2.map((id, i) => {
       const a = i * 2.39996 + 0.9, rr = Rin * Math.sqrt((i + 0.7) / 21.7)
-      return { id, u: Math.cos(a) * rr, v: Math.sin(a) * rr * (1 + (r() - 0.5) * 0.08), w: R * (0.13 + r() * 0.08), seed: id * 13, on: progress.isVisited(id) }
+      return { id, n: i + 1, u: Math.cos(a) * rr, v: Math.sin(a) * rr * (1 + (r() - 0.5) * 0.08), w: R * (0.13 + r() * 0.08), seed: id * 13, on: progress.isVisited(id) }
     })
+    // the garden's own rocks outside the ring, a group on the left (the paper lies on the right): a counterweight
+    const gx = wide ? -1 : 0.47, gy = wide ? -0.35 : -1.62
+    spots.push(...([[0, 0, 0.5, 71], [0.36, 0.3, 0.3, 72], [-0.3, 0.38, 0.2, 73]] as const).map(([du, dv, k, seed]) => (
+      { id: -seed, n: 0, u: R * (gx * 1.72 + du * (wide ? 1 : 0.8)), v: R * (gy + dv), w: R * k * (wide ? 1 : 0.8), seed: seed * 53, on: true })))
+    // the brush on its rest: in the near sand just off the ring's right front (a phone: under the ring)
+    const bw = wide ? 230 : 190
+    const a0 = L.gap + 15 * D2R
+    const sy = project(Math.cos(a0) * R, Math.sin(a0) * R, 0, 0)[1]
+    let [bx, by] = project(wide ? R * 1.05 : R * 0.22, wide ? R * 0.75 : R * 1.5, 0, 0)
+    // never over the start dot: the first touch there must land on the sand, not on the brush
+    if (!wide) by = Math.max(by, sy + 52 + bw * 0.3)
+    Object.assign(brush.style, { left: `${f1(bx - bw * 0.5)}px`, top: `${f1(by - bw * 0.3)}px`, width: `${bw}px` })
     Object.assign(mist.style, { top: `${f1(hz0 - Ha * 0.08)}px`, height: `${f1(Ha * 0.16)}px` })
     sky.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     Object.assign(sky.style, { width: `${W}px`, height: `${H}px` })
     paintSky = () => {
     const hh = Math.min(Ha * 0.15, 120)
-    sky.replaceChildren(...dawnSky(W, H, hz0, W * 0.62, 3946, { moon: [W * (wide ? 0.16 : 0.2), T0 + Math.max(24, (hz0 - T0) * 0.32)], hillH: hh, sunY: hz0 - hh * 0.42 }), ...ground(W, H, hz0))
+    sky.replaceChildren(...dawnSky(W, H, hz0, W * 0.62, 3946, { moon: wide ? [W * 0.16, T0 + Math.max(24, (hz0 - T0) * 0.32)] : [W * 0.12, T0 + (hz0 - T0) * 0.62], hillH: hh, sunY: hz0 - hh * 0.42 }), ...ground(W, H, hz0))
     if (!still) {
       fore.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
       const sw = clamp(W * 0.26, 140, 380)
-      // two stones close to the lens, against the light: dark, rimmed with sun, out of focus
+      // two rocks close to the lens, against the low sun: granite with moss on their crowns, the sun along their tops
       const near = (x: number, y: number, w: number, hh: number, seed: number) => {
         const { top, d } = rock(w, hh, seed)
+        const [cid, cp] = clip(d)
+        const n = top.length
         return s('g', { transform: `translate(${f1(x)} ${f1(y)})` },
-          s('path', { class: 't39e-fore-rock', d }),
-          s('path', { class: 't39e-fore-rim', d: stroke(top.slice(2, -2), Math.max(2, w * 0.012), 0.2, 0.2, 0.2) }))
+          cp,
+          stoneArt(w, hh, seed, 'p2-stone t39e-near'),
+          s('path', { class: 't39e-near-veil', d }),
+          s('path', { class: 't39e-moss', d: blob(-w * 0.12, -hh * 0.9, w * 0.3, hh * 0.16, seed, 0.3, 14) + blob(w * 0.12, -hh * 0.8, w * 0.16, hh * 0.1, seed + 1, 0.35, 10), 'clip-path': `url(#${cid})` }),
+          s('path', { class: 't39e-fore-rim', d: stroke(top.slice(Math.floor(n * 0.3), n - 3), Math.max(2, w * 0.014), 0.2, 0.3, 0.2) }))
       }
       fore.replaceChildren(
-        near(sw * 0.16, H + sw * 0.06, sw, sw * 0.46, 3997),
-        mossBed(sw * 0.1, H - sw * 0.3, sw * 0.34, sw * 0.08, 3998),
-        near(W - sw * 0.08, H + sw * 0.12, sw * 0.72, sw * 0.36, 3999))
+        near(sw * 0.18, H + sw * 0.1, sw * 1.05, sw * 0.5, 3997),
+        mossBed(sw * 0.5, H - sw * 0.06, sw * 0.4, sw * 0.07, 3998),
+        near(W - sw * 0.1, H + sw * 0.14, sw * 0.74, sw * 0.4, 3999))
     }
     }
     placeExits()
@@ -403,12 +508,14 @@ export function ensoScene(ctx: SceneCtx) {
     ink.width = ink.height = Math.round(side * kI)
     Object.assign(ink.style, { width: `${side}px`, height: `${side}px`, left: `${U - side / 2}px`, top: `${Vf - side / 2}px` })
     // the dotted ring to follow and the dot where the stroke starts (clockwise from the ensō's mouth, as the brush does)
-    const a0 = L.gap + 15 * D2R
     trace.setAttribute('viewBox', `${f1(-side / 2)} ${f1(-side / 2)} ${side} ${side}`)
     Object.assign(trace.style, { width: `${side}px`, height: `${side}px`, left: `${U - side / 2}px`, top: `${Vf - side / 2}px` })
     trace.replaceChildren(
-      s('circle', { class: 't39e-trace-ring', r: f1(R), 'stroke-width': f1(Math.max(2, wB * 0.18)), 'stroke-dasharray': `${f1(wB * 0.25)} ${f1(wB * 0.9)}` }),
-      s('circle', { class: 't39e-trace-start', cx: f1(Math.cos(a0) * R), cy: f1(Math.sin(a0) * R), r: f1(Math.max(7, wB * 0.55)) }))
+      s('circle', { class: 't39e-trace-ring', r: f1(R), 'stroke-width': f1(Math.max(2, wB * 0.18)), 'stroke-dasharray': `${f1(wB * 0.25)} ${f1(wB * 0.9)}` }), hint)
+    // H1: the vermilion dot (upright on screen, not lying flat in the sand) where the stroke starts
+    const start = () => toArt(project(Math.cos(a0) * R, Math.sin(a0) * R))
+    if (phase === 'idle' && !painted) startDot ? startDot.at(start) : (startDot = gd.dot(start, { dir: [-1, 0.25] }))
+    else if (moreDot) moreDot.at(() => toArt(project(...spine(painted))))
     inkOrigin()
     replay()
     job?.cancel()
@@ -424,20 +531,24 @@ export function ensoScene(ctx: SceneCtx) {
     // standing cut-outs one by one (each rises on its own); the stones from above and their shadows share two flat layers
     const sprites: HTMLElement[] = []
     const shades: SVGElement[] = [], tops: SVGElement[] = []
+    const btns: HTMLButtonElement[] = []
     let order = 0
-    const nOn = spots.filter((p) => p.on).length || 1
+    const nOn = spots.filter((p) => p.on && p.n).length || 1
     for (const p of spots) {
       if (!p.on) continue
-      const d = `--d:${(0.25 + (order++ / nOn) * CRANE * 0.72).toFixed(2)}s`
+      // the garden's own rocks stand from the start; a station's stone rises as the camera climbs
+      const d = p.n ? `--d:${(0.25 + (order++ / nOn) * CRANE * 0.72).toFixed(2)}s` : ''
       sprites.push(standing(p, d))
       const [sh, st] = lying(p)
       shades.push(sh)
       tops.push(st)
+      if (p.n) btns.push(hit(p))
       if (order % 6 === 0) yield
     }
     const { U, Vf, Vn } = L!
     const flat = (cls: string, kids: SVGElement[]) => s('svg', { class: cls, viewBox: `${-U} ${-Vf} ${2 * U} ${Vf + Vn}`, style: `width:${2 * U}px;height:${Vf + Vn}px`, 'aria-hidden': 'true' }, ...kids)
     garden.replaceChildren(flat('t39e-shades', shades), flat('t39e-tops', tops), ...sprites)
+    hits.replaceChildren(...btns)
     yield
     yield* bake(kS)
   }
@@ -448,26 +559,29 @@ export function ensoScene(ctx: SceneCtx) {
     const { top, d: rd } = rock(bw, bh, p.seed)
     const [cid, cp] = clip(rd)
     const n = top.length
-    const moss = p.id % 3 === 0
+    const moss = !p.n || p.id % 3 === 0
     const art = s('svg', { viewBox: `${f1(-bw * 0.7)} ${f1(-bh * 1.25)} ${f1(bw * 1.4)} ${f1(bh * 1.25)}`, 'aria-hidden': 'true' },
       cp, stoneArt(bw, bh, p.seed),
       moss ? s('path', { class: 't39e-moss', d: blob(-bw * 0.08, -bh * 0.95, bw * 0.32, bh * 0.16, p.seed, 0.3, 12), 'clip-path': `url(#${cid})` }) : null,
       s('path', { class: 't39e-sunrim', d: stroke(top.slice(Math.floor(n * 0.25), Math.floor(n * 0.85)), Math.max(1.2, bw * 0.04), 0.3, 0.3, 0.1) }))
-    return h('div', { class: 't39e-up', style: `${d};left:${f1(L!.U + p.u - bw * 0.7)}px;top:${f1(L!.Vf + p.v - bh * 1.25)}px;width:${f1(bw * 1.4)}px;height:${f1(bh * 1.25)}px` }, art)
+    return h('div', { class: `t39e-up${p.n ? '' : ' is-rock'}`, style: `${d};left:${f1(L!.U + p.u - bw * 0.7)}px;top:${f1(L!.Vf + p.v - bh * 1.25)}px;width:${f1(bw * 1.4)}px;height:${f1(bh * 1.25)}px` }, art)
   }
   function lying(p: Spot): [SVGElement, SVGElement] {
     const w = p.w, q = rng(p.seed)
-    // an irregular block of granite from above: a few broken corners, never an oval
-    const nC = 6 + Math.floor(q() * 3)
-    const a0 = q() * Math.PI
+    // granite from above, each its own: a long or a squat block, a few broken corners or worn round (never an oval)
+    const nC = 6 + Math.floor(q() * 4)
+    const a0 = q() * Math.PI, long = 0.66 + q() * 0.34, turn = q() * Math.PI
     const pts: Pt[] = Array.from({ length: nC }, (_, i) => {
-      const a = a0 + (i / nC) * Math.PI * 2 + (q() - 0.5) * 0.55
-      const rr = w * 0.5 * (0.72 + q() * 0.4)
-      return [Math.cos(a) * rr, Math.sin(a) * rr * 0.86]
+      const a = a0 + (i / nC) * Math.PI * 2 + (q() - 0.5) * 0.5
+      const rr = w * 0.5 * (0.74 + q() * 0.34)
+      const x = Math.cos(a) * rr, y = Math.sin(a) * rr * long
+      return [x * Math.cos(turn) - y * Math.sin(turn), (x * Math.sin(turn) + y * Math.cos(turn)) * 0.9]
     })
-    const outline = polyD(pts) + 'Z'
+    const worn = p.seed % 3 === 0
+    const shape = (ps: Pt[]) => (worn ? smoothD(ps) : polyD(ps) + 'Z')
+    const outline = shape(pts)
     // the top face: the outline drawn in toward the sun (far, a little right), a shade of the flank left showing
-    const face = polyD(pts.map(([x, y]) => [x * 0.8 + w * 0.03, y * 0.78 - w * 0.06] as Pt)) + 'Z'
+    const face = shape(pts.map(([x, y]) => [x * 0.8 + w * 0.03, y * 0.76 - w * 0.06] as Pt))
     let speck = ''
     for (let i = 0; i < 9; i++) speck += blob((q() - 0.5) * w * 0.6, (q() - 0.6) * w * 0.5, 0.6 + q() * 1.2, 0.5 + q(), p.seed + i, 0.3, 6)
     const at = `translate(${f1(p.u)} ${f1(p.v)})`
@@ -488,26 +602,68 @@ export function ensoScene(ctx: SceneCtx) {
       const nx = y1 - y0, ny = -(x1 - x0)
       if ((nx * 0.4 - ny * 0.92) / (Math.hypot(nx, ny) || 1) > 0.3) lit += stroke([[x0, y0], [x1, y1]], Math.max(0.9, w * 0.035), 0.15, 0.15, 0.3)
     }
-    const moss = p.id % 3 === 0
+    const moss = !p.n || p.id % 3 === 0
     const mx = (q() - 0.5) * w * 0.3 - w * 0.08, my = (q() - 0.2) * w * 0.2
-    const stone = s('g', { transform: at },
+    // the station's number cut small into the face: a dark cut with the sunlit lip below it
+    const num = p.n ? String(p.n).padStart(2, '0') : ''
+    const fs = f1(Math.max(9, w * 0.26))
+    const stone = s('g', { transform: at, class: `t39e-st t39e-tone${p.seed % 3}` },
       s('path', { class: 't39e-top-side', d: outline, filter: 'url(#ink-rough)' }),
       s('path', { class: 't39e-top-face', d: face }),
       s('path', { class: 't39e-top-speck', d: speck }),
       s('path', { class: 't39e-top-lit', d: lit }),
-      moss ? s('path', { class: 't39e-moss', d: blob(mx, my, w * 0.2, w * 0.13, p.seed + 1, 0.35, 12) + blob(mx + w * 0.12, my + w * 0.06, w * 0.08, w * 0.06, p.seed + 2, 0.4, 9) }) : null)
+      moss ? s('path', { class: 't39e-moss', d: blob(mx, my, w * 0.2, w * 0.13, p.seed + 1, 0.35, 12) + blob(mx + w * 0.12, my + w * 0.06, w * 0.08, w * 0.06, p.seed + 2, 0.4, 9) }) : null,
+      num ? s('text', { class: 't39e-num-lip', x: f1(w * 0.04), y: f1(-w * 0.02 + 0.8), 'font-size': fs }, num) : null,
+      num ? s('text', { class: 't39e-num', x: f1(w * 0.04), y: f1(-w * 0.02), 'font-size': fs }, num) : null)
     return [shadow, stone]
+  }
+
+  /** a station's stone answers a touch (≥ 44 px): its number and name on a strip of paper beside it */
+  function hit(p: Spot) {
+    const st = ALL_STATIONS.find((x) => x.id === p.id)
+    const say = `${displayNo(p.id)} · ${st?.title ?? ''}`
+    const sz = Math.max(44, p.w * 1.1)
+    const show = () => {
+      tag.textContent = say
+      const { R } = L!
+      // beside the stone on the side away from the ring's edge, so the strip stays inside the ring
+      const right = p.u < 0
+      Object.assign(tag.style, { left: `${f1(L!.U + p.u + (right ? p.w * 0.62 : -p.w * 0.62))}px`, top: `${f1(L!.Vf + p.v)}px`, translate: right ? '0 -50%' : '-100% -50%', maxWidth: `${f1(R * 0.9)}px` })
+      tag.classList.remove('on')
+      void tag.offsetWidth
+      tag.classList.add('on')
+      for (const b of hits.children) b.setAttribute('aria-pressed', String(b === btn))
+    }
+    const btn = h('button', { class: 't39e-hit', type: 'button', tabindex: '-1', 'aria-label': say, 'aria-pressed': 'false', onClick: show,
+      style: `left:${f1(L!.U + p.u - sz / 2)}px;top:${f1(L!.Vf + p.v - sz / 2)}px;width:${f1(sz)}px;height:${f1(sz)}px` }) as HTMLButtonElement
+    return btn
   }
 
   // the paper counting the stations, just outside the ensō's mouth
   function placeExits() {
-    const { R, gap, wide, W } = L!
-    const gx = Math.cos(gap) * R, gy = Math.sin(gap) * R
-    const pw = Math.round(wide ? clamp(R * 1.2, 250, 290) : Math.min(W - 150, 224))
-    const seat = (el: HTMLElement, x: number, y: number) => Object.assign(el.style, { left: `${f1(L!.U + x)}px`, top: `${f1(L!.Vf + y)}px` })
+    const { R, wB, wide, W } = L!
+    // outside the ring: on the sand to its right (a phone: below it, by the ensō's open mouth), never over the stroke
+    const pw = Math.round(wide ? clamp(R * 1.1, 250, 290) : Math.min(W - 140, 214))
     paper.style.width = `${pw}px`
-    const [px, py] = wide ? [gx + L!.wB * 0.7, gy - 26] : [-W / 2 + 128, gy + L!.wB * 0.55]
-    seat(paper, px, py)
+    const [px, py] = wide ? [R + wB * 1.4 + 56, -R * 0.44] : [-pw / 2 + 30, R + wB * 1.3 + 16]
+    Object.assign(paper.style, { left: `${f1(L!.U + px)}px`, top: `${f1(L!.Vf + py)}px` })
+  }
+
+  /** the sun's road on the lake: broken ripples of light under the sun, widening and fading toward the viewer, three
+   *  bands of falling strength (never brighter than the disc) */
+  function glitter(x: number, hz: number, depth: number, W: number): SVGElement[] {
+    const r = rng(3947)
+    const d = ['', '', '']
+    const N = 22
+    for (let i = 0; i < N; i++) {
+      const k = i / N, y = hz + 3 + depth * k ** 1.25
+      const spread = W * (0.01 + 0.045 * k)
+      for (let j = 0; j < 2 + Math.round(k * 4); j++) {
+        const cx = x + (r() - 0.5) * 2 * spread * (0.3 + r() * 0.7), L = 3 + r() * (6 + k * 18)
+        d[Math.min(2, Math.floor(k * 3))] += stroke([[cx - L / 2, y], [cx, y + (r() - 0.5) * 0.8], [cx + L / 2, y]], 0.8 + r() * (1 + k), 0.3, 0.3, 0.2)
+      }
+    }
+    return d.map((dd, i) => s('path', { class: `t39e-glint t39e-glint${i}`, d: dd }))
   }
 
   /** the far sand under the sky (the plane covers the near part): sand, receding rake lines, the sun's path on it */
@@ -520,7 +676,7 @@ export function ensoScene(ctx: SceneCtx) {
         s('stop', { offset: 0.5, style: 'stop-color:var(--mist);stop-opacity:calc(var(--mist-a) * 0.35)' }),
         s('stop', { offset: 1, style: 'stop-color:var(--mist);stop-opacity:0' }))),
       s('rect', { class: 't39e-haze', x: -2, y: f1(hz - 4), width: f1(W + 4), height: f1((H - hz) * 0.7), fill: 'url(#t39e-hazeg)' }),
-      s('ellipse', { cx: f1(W * 0.62), cy: f1(hz + (H - hz) * 0.12), rx: f1(W * 0.08), ry: f1((H - hz) * 0.22), fill: 'url(#g39-sun)', class: 't39e-glare' }),
+      ...glitter(W * 0.62, hz, (H - hz) * 0.18, W),
       s('rect', { class: 't39e-horizon', x: -2, y: f1(hz - 3), width: f1(W + 4), height: 8, fill: 'url(#g39-fog)' }),
     ]
   }
@@ -544,6 +700,7 @@ export function ensoScene(ctx: SceneCtx) {
       if (count > 2600) (paths.push(path), (path = new Path2D()), (count = 0))
     }
     // straight rows outside the garden, stopping at its circle
+    const holes = [[0, 0, Rz], ...spots.filter((p) => !p.n).map((p) => [p.u, p.v, p.w * 0.5 + gap * 0.8])]
     let n = 0
     for (let v = -Vf + gap; v < Vn; v += gap) {
       // a hand rake: the rows breathe a little
@@ -554,11 +711,17 @@ export function ensoScene(ctx: SceneCtx) {
         pts.push([x1, wob(x1)])
         poly(pts)
       }
-      if (Math.abs(v) < Rz) {
-        const x = Math.sqrt(Rz * Rz - v * v)
-        row(-U, -x)
-        row(x, U)
-      } else row(-U, U)
+      // the rows part round the ring and round each rock outside it (their own rings close the gap)
+      let x0 = -U
+      const cut = holes.filter(([, cv, cr]) => Math.abs(v - cv) < cr).map(([cu, cv, cr]) => {
+        const dx = Math.sqrt(cr * cr - (v - cv) ** 2)
+        return [cu - dx, cu + dx]
+      }).sort((a, b) => a[0] - b[0])
+      for (const [a, b] of cut) {
+        if (a > x0) row(x0, a)
+        x0 = Math.max(x0, b)
+      }
+      if (x0 < U) row(x0, U)
       if (++n % 40 === 0) yield
     }
     yield
@@ -585,7 +748,7 @@ export function ensoScene(ctx: SceneCtx) {
     const rings = new Path2D()
     for (const p of spots) {
       const gapTo = Math.min(...spots.map((q) => (q === p ? 1e9 : Math.hypot(q.u - p.u, q.v - p.v) - q.w * 0.5)))
-      for (const m of gapTo > p.w * 0.5 + gap * 3.6 ? [0.75, 1.75] : [0.75]) {
+      for (const m of !p.n ? [0.8, 1.8, 2.8] : gapTo > p.w * 0.5 + gap * 3.6 ? [0.75, 1.75] : [0.75]) {
         const rr = p.w * 0.5 + gap * m
         const N = Math.max(16, Math.round((rr * Math.PI * 2) / 6))
         for (let i = 0; i <= N; i++) {
@@ -620,7 +783,7 @@ export function ensoScene(ctx: SceneCtx) {
       // the grooves: a long soft shadow toward the viewer, a sunlit lip toward the sun, the groove itself
       g.lineJoin = 'round'
       g.lineCap = 'round'
-      const pass = (dy: number, color: string, alpha: number, w: number) => {
+      const pass = (dy: number, color: string | CanvasGradient, alpha: number, w: number) => {
         g.save()
         g.translate(0, dy)
         g.strokeStyle = color
@@ -628,11 +791,17 @@ export function ensoScene(ctx: SceneCtx) {
         g.lineWidth = w
         return (p: Path2D) => g.stroke(p)
       }
+      // the low sun from the far right: every crest catches it, brighter toward the sun (nắng sượt), its groove's
+      // shadow long toward the viewer
+      const crest = g.createLinearGradient(-U, 0, U, 0)
+      crest.addColorStop(0, rgba(dk ? T.lantern : '#ffffff', dk ? 0.05 : 0.3))
+      crest.addColorStop(0.6, rgba(dk ? T.lantern : '#ffffff', dk ? 0.22 : 0.7))
+      crest.addColorStop(1, rgba(dk ? T.lantern : '#ffffff', dk ? 0.34 : 0.9))
       for (const p of paths) {
-        pass(gap * 0.26, T.umbra, dk ? 0.36 : 0.11, gap * 0.42)(p)
+        pass(gap * 0.34, T.umbra, dk ? 0.4 : 0.13, gap * 0.5)(p)
         g.restore()
         yield
-        pass(-gap * 0.2, dk ? T.moon : '#fff', dk ? 0.08 : 0.6, gap * 0.2)(p)
+        pass(-gap * 0.2, crest, 1, gap * 0.2)(p)
         g.restore()
         pass(0, T.rake, dk ? 0.7 : 0.55, gap * 0.14)(p)
         g.restore()
@@ -648,7 +817,7 @@ export function ensoScene(ctx: SceneCtx) {
       g.globalAlpha = 1
       // hollows where a station still waits: a shaded far wall, a sunlit near lip
       for (const p of spots) {
-        if (p.on) continue
+        if (p.on || !p.n) continue
         const rs = p.w * 0.42
         g.fillStyle = T.umbra
         g.globalAlpha = dk ? 0.5 : 0.16
@@ -690,7 +859,7 @@ export function ensoScene(ctx: SceneCtx) {
       g.fillRect(-U, -Vf, 2 * U, Vf + Vn)
       const vig = g.createRadialGradient(0, 0, R * 1.1, 0, 0, Math.max(U, Vn, R * 2.4))
       vig.addColorStop(0, rgba(T.umbra, 0))
-      vig.addColorStop(1, rgba(T.umbra, dk ? 0.5 : 0.3))
+      vig.addColorStop(1, rgba(T.umbra, dk ? 0.36 : 0.24))
       g.fillStyle = vig
       g.fillRect(-U, -Vf, 2 * U, Vf + Vn)
       yield

@@ -39,7 +39,8 @@
   font-family: var(--serif);
   color: var(--ink);
   scrollbar-width: thin;
-  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--paper) 88%, transparent) 22px, var(--paper) 40px);
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--paper) 70%, transparent) 30px, color-mix(in srgb, var(--paper) 86%, transparent) 70px);
+  text-shadow: 0 0 6px var(--paper);
 }
 .t37f-panel .t37f-name {
   font-size: 1.05rem;
@@ -73,20 +74,14 @@
   background: var(--ink-2);
 }
 .t37f-paper {
+  /* a name written at the end of its leader, on a breath of mist (not a paper card) */
   position: absolute;
   left: calc(var(--dx, 0px) - 3px);
   bottom: calc(-1 * var(--dy, 0px));
   width: max-content;
   max-width: min(250px, 60vw);
-  padding: 5px 11px 6px 9px;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .06' numOctaves='2' seed='37'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23f)'/%3E%3C/svg%3E"),
-    color-mix(in srgb, var(--card) 94%, var(--lantern));
-  border-left: 2px solid color-mix(in srgb, var(--ink) 55%, transparent);
-  border-radius: 1px 3px 2px 1px;
-  box-shadow: 1px 2px 0 color-mix(in srgb, var(--wash) 14%, transparent), 0 6px 18px color-mix(in srgb, var(--wash) 16%, transparent);
-  transform: rotate(-1.2deg);
-  transform-origin: 0 100%;
+  padding: 2px 6px 3px 4px;
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper), 0 0 16px var(--paper);
   pointer-events: none;
 }
 
@@ -109,18 +104,29 @@
 .t37f-tag.left .t37f-paper {
   left: auto;
   right: calc(-1 * var(--dx, 0px) - 3px);
-  border-left: 0;
-  border-right: 2px solid color-mix(in srgb, var(--ink) 55%, transparent);
-  transform: rotate(1.2deg);
-  transform-origin: 100% 100%;
 }
-/* the newest layer's card: a paper tag hung in the frame's top-right corner, clear of the rings, on two cords */
+/* only the newest ring's slip keeps its name; older ones keep their number */
+.t37f-tag:not(.newest):not(.new) .t37f-nm {
+  display: none;
+}
+/* the newest layer's words: in the right column, mid frame, clear of the rings, on a breath of mist (audit 37-3) */
 .t37f-card {
   position: absolute;
-  right: 1%;
-  top: 2%;
-  width: min(226px, 18%);
+  right: 2.5%;
+  top: 3%;
+  width: min(310px, 22%);
+  transition: opacity 0.6s ease;
+}
+.t37f-card::before {
+  content: '';
+  position: absolute;
+  inset: -30% -22%;
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 80%, transparent), color-mix(in srgb, var(--paper) 42%, transparent) 62%, transparent);
   pointer-events: none;
+}
+.t37f-card:empty::before {
+  display: none;
 }
 .t37f.tall .t37f-card {
   display: none;
@@ -131,35 +137,68 @@
   bottom: auto;
   width: auto;
   max-width: none;
-  padding: 10px 12px 10px 11px;
-  border-left: 0;
-  border-top: 3px solid color-mix(in srgb, var(--ink) 60%, transparent);
-  transform: rotate(1.2deg);
-  transform-origin: 50% 0;
+  padding: 0;
 }
-.t37f-card .t37f-paper::before,
-.t37f-card .t37f-paper::after {
+.t37f-card .t37f-name {
+  font: 400 italic 1.05rem/1.3 var(--serif);
+}
+/* one block of words: once the insight is told, the card (and the panel, the legend) give way */
+.t37f.told :is(.t37f-card, .t37f-panel, .t37f-legend) {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.t37f.tall.lifted .t37f-legend {
+  display: none;
+}
+.t37f.told.tall .t37f-panel {
+  display: none !important;
+}
+/* H1 on the next bundle: a vermilion dot with a breathing ring (rides the bundle as you walk round) */
+.p2s3-label:has(> .t37f-dot) {
+  width: 0;
+  height: 0;
+}
+.t37f-dot {
+  position: absolute;
+  left: -4.5px;
+  top: -4.5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--vermilion);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--paper) 70%, transparent);
+  transition: opacity 0.4s;
+}
+.t37f-dot::after {
   content: '';
   position: absolute;
-  top: -40px;
-  width: 1.2px;
-  height: 38px;
-  background: linear-gradient(to top, var(--ink-2), transparent);
-  opacity: 0.65;
+  inset: -9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--vermilion);
+  opacity: 0;
+  animation: p2g-breathe 2.4s ease-out infinite;
 }
-.t37f-card .t37f-paper::before {
-  left: 18%;
+.t37f-dot.off,
+.off > .t37f-dot {
+  opacity: 0;
 }
-.t37f-card .t37f-paper::after {
-  right: 18%;
+html[data-quality='low'] .t37f-dot::after {
+  animation: none;
+  opacity: 0.4;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t37f-dot::after {
+    animation: none;
+    opacity: 0.4;
+  }
 }
 /* far slips stay legible however deep the haze the rings fade into */
 .p2s3-label.t37f-tag {
   opacity: 1 !important;
 }
 .t37f-tag:not(.new) .t37f-paper {
-  opacity: 0.86;
-  padding: 2px 8px 3px 7px;
+  padding: 1px 5px 2px 4px;
 }
 .t37f-tag:not(.new) .t37f-name {
   font-size: 0.875rem;
@@ -214,46 +253,48 @@
   font: 400 0.8rem/1.3 var(--sans);
   color: var(--ink-3);
 }
-/* the count on the bundles, what still gets through written on the sand under the sapling */
-.p2s3-label.t37f-under {
-  width: 0;
-  height: 0;
+/* the count on the bundles (a 3D label); what the picture means and what still gets through, low on the left */
+.t37f-under {
+  position: absolute;
+  left: 3%;
+  top: 4%;
+  width: min(19rem, 30%);
+  pointer-events: none;
+}
+.t37f.tall .t37f-under {
+  left: 4%;
+  right: 4%;
+  width: auto;
+  bottom: auto;
+  top: 1%;
 }
 .t37f-under > p {
-  position: absolute;
-  left: 0;
-  top: 4px;
   margin: 0;
-  transform: translateX(-50%);
+}
+.t37f-count {
   white-space: nowrap;
 }
 .t37f-count,
 .t37f-leak {
   font: 500 0.95rem/1.2 var(--serif);
   color: var(--ink);
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper);
 }
-/* what the sapling and the red sparks stand for, once, where they are (audit 37-3): over the leak stamp */
-.t37f-under > p.t37f-legend {
-  top: auto;
-  bottom: 0.4rem;
-  width: 17rem;
-  white-space: normal;
-  text-align: center;
-  font: 400 italic 0.86rem/1.35 var(--serif);
+.t37f-legend {
+  margin: 0 0 6px !important;
+  font: 400 italic 0.92rem/1.38 var(--serif);
   color: var(--ink);
   text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper);
 }
-/* the leak count: an ink stamp pressed on the near sand */
+/* the leak count: vermilion words on the near sand, a brushed line under them (no box) */
 .t37f-leak .n {
   display: inline-block;
-  padding: 3px 7px 4px;
+  padding: 0 2px 2px;
   font-weight: 600;
   color: var(--vermilion);
-  border: 2px solid color-mix(in srgb, var(--vermilion) 85%, transparent);
-  border-radius: 3px 5px 3px 6px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--vermilion) 30%, transparent);
-  background: color-mix(in srgb, var(--paper) 55%, transparent);
-  transform: rotate(-3deg);
+  border-bottom: 2px solid color-mix(in srgb, var(--vermilion) 70%, transparent);
+  border-radius: 0 0 40% 20% / 0 0 3px 2px;
+  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper);
   letter-spacing: 0.01em;
 }
 .t37f-leak .tag {

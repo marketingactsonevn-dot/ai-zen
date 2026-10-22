@@ -15,7 +15,7 @@ export interface T38 extends StationContent {
       mistsLabel: string; mistPrompt: string; mists: View[]; insight: Fact; detail: Fact
     }
     trays: {
-      label: string; art: string; prompt: string; pullPrompt: string; why: string; keys: string; pickAria: string; compare: string; match: string
+      label: string; art: string; prompt: string; pullPrompt: string; placed: string; why: string; keys: string; pickAria: string; compare: string; match: string
       trays: { id: string; name: string }[]
       tasks: { id: string; label: string; short: string; expert: string; why: string }[]
       expertNote: Fact; insight: Fact; detail: Fact; jobs: Fact

@@ -44,8 +44,8 @@ export function g39Defs() {
     // a shadow running toward the viewer, fading as it comes
     s('linearGradient', { id: 'g39-shadowv', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, '--umbra', 0.42), stop(0.35, '--umbra', 0.2), stop(1, '--umbra', 0)),
     s('filter', { id: 'g39-glow', x: '-20%', y: '-60%', width: '140%', height: '220%' }, s('feGaussianBlur', { stdDeviation: 3 })),
-    // a lotus leaf cupped round its stem: deeper green in the cup, paler toward the rim
-    s('radialGradient', { id: 'g39-lotus', cx: 0.5, cy: 0.5, r: 0.5 }, stop(0, '--moss-b'), stop(0.45, '--moss-a'), stop(0.92, '--moss-c'), stop(1, '--moss-a'))))
+    // a lotus leaf cupped round its stem: deeper green in the cup, no pale ring at the rim
+    s('radialGradient', { id: 'g39-lotus', cx: 0.48, cy: 0.52, r: 0.52 }, stop(0, '--moss-b'), stop(0.4, '--moss-b', 0.96), stop(0.78, '--moss-a'), stop(1, '--moss-a'))))
 }
 
 /** Several short brushed lines [x0, y0, x1, y1] as one path d. */

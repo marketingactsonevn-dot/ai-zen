@@ -35,14 +35,15 @@ function geo(W: number, H: number) {
   const end = (side: number): Pt => [cx + side * HW * 0.6, foot + H * 0.02]
   const paths: Pt[][] = wide
     ? [[[W * 0.21, H * 1.03], [W * 0.27, H * 0.82], end(-1)], [[W * 0.5, H * 1.03], [W * 0.5, H * 0.86], [cx, foot + H * 0.025]], [[W * 0.79, H * 1.03], [W * 0.73, H * 0.82], end(1)]]
-    : [[[W * 0.2, H * 1.02], [W * 0.18, H * 0.8], end(-1)], [[W * 0.5, H * 1.02], [W * 0.5, H * 0.82], [cx, foot + H * 0.02]], [[W * 0.8, H * 1.02], [W * 0.82, H * 0.8], end(1)]]
+    : [[[W * 0.2, H * 0.9], [W * 0.18, H * 0.76], end(-1)], [[W * 0.5, H * 0.9], [W * 0.5, H * 0.78], [cx, foot + H * 0.02]], [[W * 0.8, H * 0.9], [W * 0.82, H * 0.76], end(1)]]
   // well-sweeps: foot x, bucket side (+1 = bucket to the right, over the path)
+  // one convention for all three (audit 38-3): the bucket end is on the right, and up = high
   const levers: { x: number; y: number; d: number }[] = wide
-    ? [{ x: W * 0.115, y: H - 30, d: 1 }, { x: W * 0.585, y: H - 26, d: -1 }, { x: W * 0.885, y: H - 30, d: -1 }]
-    : [{ x: W * 0.12, y: H - 40, d: 1 }, { x: W * 0.42, y: H - 40, d: 1 }, { x: W * 0.88, y: H - 40, d: -1 }]
+    ? [{ x: W * 0.115, y: H - 30, d: 1 }, { x: W * 0.43, y: H - 26, d: 1 }, { x: W * 0.7, y: H - 30, d: 1 }]
+    : [{ x: W / 6 - beam * 0.12, y: H - 64, d: 1 }, { x: W / 2 - beam * 0.12, y: H - 64, d: 1 }, { x: (W * 5) / 6 - beam * 0.12, y: H - 64, d: 1 }]
   // mist bands across each path, a little more than half way in
   const mists = paths.map((pp) => {
-    const [x, y] = curve(pp[0], pp[1], pp[2], 20)[11]
+    const [x, y] = curve(pp[0], pp[1], pp[2], 20)[14]
     return { x, y, w: W * (wide ? 0.25 : 0.4), h: H * (wide ? 0.11 : 0.08) }
   })
   return { W, H, wide, hz, HW, cx, yN, ped, foot, LH, beam, paths, levers, mists }
@@ -98,11 +99,14 @@ function paintPath(g: CanvasRenderingContext2D, p: Pal, G: Geo, pp: Pt[], seed: 
   // stepping stones, alternating a little either side of the line
   const n = G.wide ? 9 : 8
   for (let i = n - 1; i >= 0; i--) {
-    const t = Math.pow(i / (n - 1), 0.72) * 0.96
-    const [x, y] = pts[Math.round(t * (pts.length - 1))]
+    const t = Math.pow(i / (n - 1), 0.72) * 0.96 + (r() - 0.5) * 0.03
+    const [x, y] = pts[Math.round(clamp(t, 0, 1) * (pts.length - 1))]
     const d = depthOf(G, y)
-    const rx = half(y) * (0.78 + r() * 0.22)
-    stepStone(g, p, x + (i % 2 ? 1 : -1) * rx * 0.16, y, rx, rx * (0.2 + 0.2 * d), seed + i, -1, clamp(0.55 - d * 1.1, 0, 0.55))
+    const rx = half(y) * (0.58 + r() * 0.55)
+    const sx = x + (i % 2 ? 1 : -1) * rx * (0.1 + r() * 0.25)
+    // moss in the gap before it
+    if (i > 0 && r() < 0.7) fillD(g, blob(sx + (r() - 0.5) * rx, y + rx * (0.25 + 0.2 * d), rx * (0.25 + r() * 0.2), rx * 0.07 * (1 + d), seed + 40 + i, 0.4, 10), col(p['moss-b'], 0.55 * Math.min(1, d * 1.5)))
+    stepStone(g, p, sx, y, rx, rx * (0.18 + 0.22 * d) * (0.85 + r() * 0.3), seed + i, -1, clamp(0.55 - d * 1.1, 0, 0.55))
   }
 }
 
@@ -239,16 +243,31 @@ function leverArt(LH: number, beam: number, seed: number, d: number, lo: string,
     s('ellipse', { class: 't38f-contact', cx: f1(pw * 0.6), cy: 0, rx: f1(LH * 0.13), ry: f1(LH * 0.025) }),
     s('path', { class: 't38f-cast', d: stroke([[pw, 0], [d * LH * 0.55, LH * 0.03], [d * LH * 1.05, LH * 0.05]], pw * 1.6, 0.05, 0.6, 0.2) }),
     wshadow)
+  // H2: the bucket's way, a dotted arc on the lever round its axle, ticked high · middle · low
+  const arcR = a2 + LH * 0.03
+  const arcPt = (deg: number): Pt => [Math.cos((deg * Math.PI) / 180) * arcR, py + Math.sin((deg * Math.PI) / 180) * arcR]
+  let ticks = ''
+  for (const deg of [-TILT, 0, TILT]) {
+    const [x0, y0] = arcPt(deg), k = 1 + 9 / arcR
+    ticks += `M${f1(x0)} ${f1(y0)}L${f1(x0 * k)} ${f1(py + (y0 - py) * k)}`
+  }
+  const way = s('g', { class: 't38f-way' },
+    s('path', { class: 't38f-way-arc', d: `M${arcPt(-TILT - 3).map(f1).join(' ')}A${f1(arcR)} ${f1(arcR)} 0 0 1 ${arcPt(TILT + 3).map(f1).join(' ')}` }),
+    s('path', { class: 't38f-way-tick', d: ticks }))
   const hiT = s('text', { class: 't38f-tip hi', 'text-anchor': 'middle' }, hi)
   const loT = s('text', { class: 't38f-tip lo', 'text-anchor': 'middle' }, lo)
+  // the part that takes the pointer: the beam's swing and the hanging bucket (≥ 44 px), not the whole post's box
+  const sw0 = Math.sin((TILT * Math.PI) / 180) * a2
+  const hit = s('rect', { class: 't38f-hit', x: f1(-a1 - 8), y: f1(py - sw0 - 22), width: f1(a1 + a2 + 26), height: f1(sw0 * 2 + LH * 0.36 + 22) })
   const el = s('g', null,
+    hit,
     s('g', { transform: `scale(${d} 1)` },
       shadow,
       s('path', { class: 't38f-cane', d: post, fill: 'url(#t38f-g-cane)' }),
       ...rings(0, -LH * 0.02, 0, py + pw * 1.6, pw, 5),
       s('path', { class: 't38f-cane', d: prong(-1) + prong(1), fill: 'url(#t38f-g-cane)' }),
       s('path', { class: 't38f-tie', d: lash }),
-      weight, bucket, arm,
+      way, weight, bucket, arm,
       s('path', { class: 't38f-grass', d: Array.from({ length: 7 }, (_, i) => stroke([[(i - 3) * LH * 0.02, 0], [(i - 3) * LH * 0.03 + (r() - 0.5) * LH * 0.04, -LH * (0.05 + r() * 0.06)]], 1.2, 0.05, 0.6, 0.1)).join('') })),
     hiT, loT)
   return { el, arm, weight, bucket, wshadow, hiT, loT, a1, a2, py, d }
@@ -267,7 +286,8 @@ export function forkScene(ctx: SceneCtx) {
   const text = h('p', { class: 't38f-text' })
   const words = h('div', { class: 't38f-words' }, name, text)
   const noteP = ctx.fact(K.note, 'p', 't38f-note')
-  const note = h('div', { class: 't38f-stake' }, s('svg', { class: 't38f-post', viewBox: '0 0 10 60', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, s('path', { d: stroke([[5, 60], [5.4, 30], [5, 0]], 5, 0.02, 0.05, 0.8) })), noteP)
+  // the note on a wooden board roped to a stake driven into the sand beside the table (wide); on a phone, under the words
+  const note = h('div', { class: 't38f-stake' }, s('svg', { class: 't38f-post', viewBox: '0 0 10 60', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, s('path', { d: stroke([[5, 60], [5.4, 30], [5, 0]], 5, 0.02, 0.05, 0.8) })), h('div', { class: 't38f-board' }, noteP))
   const vals: Record<Id, number> = { speed: 50, share: 50, control: 50 }
   const stop = (o: number, c: string, a = 1) => s('stop', { offset: o, style: `stop-color:${c};stop-opacity:${a}` })
   const defs = s('svg', { class: 't38f-defs', width: 0, height: 0, 'aria-hidden': 'true' }, s('defs', null,
@@ -276,18 +296,26 @@ export function forkScene(ctx: SceneCtx) {
     s('linearGradient', { id: 't38f-g-pail', x1: 0, y1: 0, x2: 1, y2: 0 }, stop(0, 'color-mix(in srgb, var(--step-hi) 70%, var(--lantern))'), stop(1, 'color-mix(in srgb, var(--step-lo) 75%, var(--umbra))')),
     s('radialGradient', { id: 't38f-g-stone', cx: 0.32, cy: 0.28, r: 0.8 }, stop(0, 'var(--rock-hi)'), stop(0.55, 'var(--rock-mid)'), stop(1, 'color-mix(in srgb, var(--rock-lo) 70%, var(--umbra))'))))
 
-  // mist bands across the three paths: touch one and it parts on a strip of paper (who + view)
+  // mist bands across the three paths: touch one and it parts; what people guess is written where the scenario's words
+  // stand (one block at a time: the words and the insight step back while it is open)
   const mistEls = K.mists.map((m, i) => {
     const id = nextId('t38f-strip')
     const strip = h('div', { class: 't38f-strip', id, hidden: true }, h('p', { class: 'p2-eyebrow' }, m.who), ctx.fact(m.view, 'p', 't38f-view'))
     const btn = h('button', { class: 't38f-mist-btn', type: 'button', 'aria-expanded': 'false', 'aria-controls': id, onClick: () => openMist(i) }, h('span', { class: 'visually-hidden' }, m.who))
-    const el = h('div', { class: 't38f-mist', style: `--i:${i}` }, h('i', { class: 't38f-veil a' }), h('i', { class: 't38f-veil b' }), h('i', { class: 't38f-veil c' }), btn, strip)
+    const el = h('div', { class: 't38f-mist', style: `--i:${i}` }, h('i', { class: 't38f-veil a' }), h('i', { class: 't38f-veil b' }), h('i', { class: 't38f-veil c' }), btn)
     return { el, btn, strip }
   })
+  const strips = h('div', { class: 't38f-strips' }, ...mistEls.map((m) => m.strip))
   let open = -1
-  const mistDots: ({ done(): void } | undefined)[] = []
+  let insightEl: HTMLElement | null = null
+  const seen = new Set<number>()
+  let mistDot: { done(): void } | null = null
   function openMist(i: number) {
-    mistDots[i]?.done()
+    seen.add(i)
+    if (mistDot) {
+      if (seen.size >= mistEls.length) (mistDot.done(), (mistDot = null))
+      else g.refresh()
+    }
     const was = open
     if (open >= 0) {
       mistEls[open].el.classList.remove('open')
@@ -295,6 +323,8 @@ export function forkScene(ctx: SceneCtx) {
       mistEls[open].strip.hidden = true
     }
     open = was === i ? -1 : i
+    root.classList.toggle('mist-open', open >= 0)
+    insightEl?.classList.toggle('t38-hush', open >= 0)
     if (open < 0) return
     mistEls[i].el.classList.add('open')
     mistEls[i].btn.setAttribute('aria-expanded', 'true')
@@ -308,22 +338,35 @@ export function forkScene(ctx: SceneCtx) {
     const now = h('small', { class: 't38f-now' })
     const nm = h('span', { class: 't38f-plaque', 'aria-hidden': 'true' }, sl.label, now)
     const el = h('div', { class: 't38f-lever', role: 'slider', tabindex: '0', 'aria-label': sl.label, 'aria-orientation': 'vertical', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '50' }, svg, nm)
-    return { sl, i, el, svg, nm, now, art: null as ReturnType<typeof leverArt> | null, swing: 0, sv: 0 }
+    return { sl, i, el, svg, nm, now, art: null as ReturnType<typeof leverArt> | null, swing: 0, sv: 0, bx: 0, by: 0 }
   })
 
   const far0 = h('div', { class: 't38f-layer far' }, far)
   const mid0 = h('div', { class: 't38f-layer mid' }, ground, tray, note)
   const near0 = h('div', { class: 't38f-layer near' }, h('div', { class: 't38f-mists', role: 'group', 'aria-label': K.mistsLabel }, ...mistEls.map((m) => m.el)), ...levers.map((l) => l.el))
-  const root = h('div', { class: 't38f' }, h('p', { class: 'visually-hidden' }, K.art), defs, far0, mid0, words, near0)
+  const root = h('div', { class: 't38f' }, h('p', { class: 'visually-hidden' }, K.art), defs, far0, mid0, words, strips, near0)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
   // H1: a dot on each lever until it has been pulled once; on each mist once the insight is out
   const g = guide(ctx)
-  const leverDots = levers.map((l) => g.dot(l.el, { dir: [0, -1] }))
+  // one vermilion point at a time: on the bucket of the next lever not yet pulled, then on the next mist not yet opened
+  const pulled = new Set<number>()
+  const nextLever = () => levers.find((x) => !pulled.has(x.i))
+  let leverDot: { done(): void } | null = g.dot(() => {
+    const l = nextLever()
+    return l ? [l.bx, l.by] : [-99, -99]
+  }, { dir: [0, -1] })
+  const usedLever = (i: number) => {
+    if (pulled.has(i)) return
+    pulled.add(i)
+    if (!nextLever()) (leverDot?.done(), (leverDot = null))
+    else g.refresh()
+  }
 
   const table = createTable(low)
   let p: Pal = palette()
   let G: Geo | null = null
+  let gutter = 0
   let view: TrayView | null = null
   let built = false
   let dirty = true
@@ -380,6 +423,10 @@ export function forkScene(ctx: SceneCtx) {
     a.loT.setAttribute('y', f1(wy - G!.LH * 0.09))
     a.hiT.classList.toggle('on', k === 'high')
     a.loT.classList.toggle('on', k === 'low')
+    // where the bucket hangs, in the art's px (for its dot)
+    const at = G!.levers[l.i]
+    l.bx = at.x + a.d * ex - gutter
+    l.by = at.y + ey + G!.LH * 0.2
   }
   function setVal(l: (typeof levers)[number], v: number) {
     v = Math.round(clamp(v, 0, 100))
@@ -402,10 +449,15 @@ export function forkScene(ctx: SceneCtx) {
     made.add(scId)
     if (told || made.size < 2) return
     told = true
-    ctx.insight(K.insight, K.detail)
+    insightEl = ctx.insight(K.insight, K.detail)
     ctx.prompt(K.mistPrompt)
-    root.classList.add('t38f-mists-on')
-    mistEls.forEach((m, i) => (mistDots[i] = g.dot(m.btn, { dir: [0, -1] })))
+    // one block: the scenario keeps only its name over the table once the insight is out
+    root.classList.add('t38f-mists-on', 'told')
+    mistDot = g.dot(() => {
+      const k = mistEls.findIndex((_, j) => !seen.has(j))
+      const b = G && k >= 0 ? G.mists[k] : null
+      return b ? [b.x - gutter, b.y] : [-99, -99]
+    }, { dir: [0, -1] })
   }
 
   levers.forEach((l) => {
@@ -414,8 +466,8 @@ export function forkScene(ctx: SceneCtx) {
     l.el.addEventListener('pointerdown', (e) => {
       if (e.button) return
       drag = true
-      leverDots[l.i].done()
-      l.el.setPointerCapture(e.pointerId)
+      usedLever(l.i)
+      ;(e.target as Element).setPointerCapture(e.pointerId)
       l.el.focus({ preventScroll: true })
       const r = l.svg.getBoundingClientRect()
       pivotY = r.top + (G ? G.LH + l.art!.py : 0)
@@ -440,10 +492,21 @@ export function forkScene(ctx: SceneCtx) {
       const to = { ArrowUp: v + 5, ArrowRight: v + 5, ArrowDown: v - 5, ArrowLeft: v - 5, PageUp: v + 20, PageDown: v - 20, Home: 0, End: 100 }[e.key]
       if (to == null) return
       e.preventDefault()
+      usedLever(l.i)
       setVal(l, to)
       done()
     })
   })
+  // H7: standing still 6 s, a bucket not yet pulled bobs a little on its rope (the way to drag)
+  const onIdle = () => {
+    if (still || told) return
+    const l = levers.find((x) => !pulled.has(x.i)) ?? levers[0]
+    if (!l.art) return
+    l.sv += 1.1
+    loop.start()
+  }
+  ctx.el.addEventListener('p2:idle', onIdle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
   const onEsc = (e: KeyboardEvent) => e.key === 'Escape' && open >= 0 && openMist(open)
   root.addEventListener('keydown', onEsc)
 
@@ -508,17 +571,25 @@ export function forkScene(ctx: SceneCtx) {
     view = { RW: tray.width, RH: tray.height, cx: (G.cx - left) * rs, yN: (G.yN - top) * rs, HW: G.HW * rs }
     // words over the sky (inside the gutter); the note on a stake beside the pedestal
     const gut = (W - ctx.art.clientWidth) / 2
-    Object.assign(words.style, G.wide ? { left: `${f1(W * 0.7)}px`, top: `${f1(H * 0.04)}px`, width: `${f1(Math.min(360, W * 0.26))}px`, textAlign: 'left' } : { left: `${f1(gut)}px`, top: '0px', width: `${f1(W - gut * 2)}px`, textAlign: 'center' })
-    Object.assign(note.style, G.wide
-      ? { left: `${f1(G.cx + G.HW * 1.18)}px`, top: `${f1(G.yN - G.HW * 0.32)}px`, width: `${f1(Math.min(210, G.W * 0.15))}px` }
-      : { left: `${f1(W - gut - Math.min(150, W * 0.4))}px`, top: `${f1(G.foot + G.H * 0.012)}px`, width: `${f1(Math.min(150, W * 0.4))}px` })
+    gutter = gut
+    const ww = G.wide ? Math.min(560, W * 0.4) : W - gut * 2
+    const wbox = G.wide ? { left: `${f1(G.cx - ww / 2)}px`, top: `${f1(H * 0.035)}px`, width: `${f1(ww)}px`, textAlign: 'center' } : { left: `${f1(gut)}px`, top: '0px', width: `${f1(ww)}px`, textAlign: 'center' }
+    Object.assign(words.style, wbox)
+    Object.assign(strips.style, wbox)
+    if (G.wide) {
+      if (noteP.parentElement !== note.lastChild) note.lastChild!.appendChild(noteP)
+      const bw = Math.min(200, W * 0.14)
+      Object.assign(note.style, { left: `${f1(G.cx - G.HW * 1.32 - bw)}px`, top: `${f1(G.yN - G.HW * 0.28)}px`, width: `${f1(bw)}px` })
+      note.hidden = false
+    } else {
+      words.append(noteP)
+      note.hidden = true
+    }
+    root.style.setProperty('--post', `${f1(G.wide ? G.foot + G.H * 0.02 - (G.yN - G.HW * 0.28) : 0)}px`)
     // mist bands and their strips
     mistEls.forEach((m, i) => {
       const b = G!.mists[i]
       Object.assign(m.el.style, { left: `${f1(b.x - b.w / 2)}px`, top: `${f1(b.y - b.h / 2)}px`, width: `${f1(b.w)}px`, height: `${f1(b.h)}px` })
-      const sw = G!.wide ? Math.min(360, G!.W * 0.28) : W - gut * 2
-      const sx = clamp(b.x - sw / 2, gut, W - sw - gut) - (b.x - b.w / 2)
-      Object.assign(m.strip.style, { width: `${f1(sw)}px`, left: `${f1(sx)}px` })
     })
     // levers
     levers.forEach((l, i) => {
@@ -539,6 +610,7 @@ export function forkScene(ctx: SceneCtx) {
       Object.assign(l.nm.style, { left: `${f1(clamp(at.x, gut + half, W - gut - half) - at.x - vx0)}px`, top: `${f1(G!.LH + 6)}px` })
       hang(l)
     })
+    g.refresh()
     job?.cancel()
     if (drawn) {
       // a re-layout after the first painting: one go, and the tray only re-rendered (its landscape is already mixed)

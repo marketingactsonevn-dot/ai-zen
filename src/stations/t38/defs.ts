@@ -4,7 +4,7 @@ import { L } from '../../core/content'
 import { onPrefs } from '../../core/prefs'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, onDigit, onSize, rng, seedOf, shuffledIdx, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
-import { guide } from '../../ui/part2/guide'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneDef } from '../types'
 import { C } from './shell'
 import { pine, toro } from '../../ui/part2/paint'
@@ -41,7 +41,7 @@ const SPOKES = [0.82, 0.74, 0.66, 0.38, 0.62, 0.7, 0.44, 0.5, 0.36, 0.48]
 function sign(kind: string, cx: number, cy: number, rx: number, ry: number): SVGElement {
   const k = ry / rx // reflections lie flat: squash the sign to the water's ellipse
   if (kind === 'bowl') {
-    const r = rx * 0.5
+    const r = rx * 0.6
     return s('g', { class: 't38d-sign' },
       s('path', { class: 't38d-moonlit', d: ell(cx, cy, r, r * k * 1.1) }),
       s('path', { class: 't38d-cut', d: `M${f1(cx - r * 0.3)} ${f1(cy - r * k * 0.32)}h${f1(r * 0.6)}v${f1(r * k * 0.64)}h${f1(-r * 0.6)}Z` }),
@@ -60,7 +60,7 @@ function sign(kind: string, cx: number, cy: number, rx: number, ry: number): SVG
       s('path', { class: 't38d-rail', d: `M${f1(cx - rx * 0.8)} ${f1(cy - ry * 0.46)}H${f1(cx + rx * 0.8)}M${f1(cx - rx * 0.8)} ${f1(cy + ry * 0.46)}H${f1(cx + rx * 0.8)}` }))
   }
   if (kind === 'basin') {
-    const R = rx * 0.64
+    const R = rx * 0.74
     const pt = (i: number, v: number): Pt => {
       const a = -Math.PI / 2 + (i / 10) * Math.PI * 2
       return [cx + Math.cos(a) * R * v, cy + Math.sin(a) * R * v * k]
@@ -75,7 +75,7 @@ function sign(kind: string, cx: number, cy: number, rx: number, ry: number): SVG
       s('path', { class: 't38d-radar now', d: poly(1) }))
   }
   // the council's seal: a square vermilion stamp, carved with a cross of white lines
-  const w = rx * 0.64
+  const w = rx * 0.72
   return s('g', { class: 't38d-sign' },
     s('path', { class: 't38d-moonlit', d: ell(cx, cy, rx * 0.84, ry * 0.8) }),
     s('path', { class: 't38d-seal', d: `M${f1(cx - w / 2)} ${f1(cy - w * k * 0.62)}l${f1(w)} ${f1(-w * 0.04)}l${f1(w * 0.03)} ${f1(w * k * 1.22)}l${f1(-w * 1.02)} ${f1(w * 0.03)}Z` }),
@@ -156,18 +156,35 @@ function vessel(i: number, seed: number): SVGElement {
       s('path', { class: 't38d-rim soft', d: stroke(arc(0, -36.4, 31, 8.6, 20, 160, 12), 1, 0.3, 0.3, 0.1) }))
   }
   // the water: sky at the back, the moon's disc and its halo (before), the definition's sign (after), ripples
-  const cid = nextId('t38d-w')
+  const cid = nextId('t38d-w'), mid = nextId('t38d-m')
   const mr = Math.min(wrx * 0.3, wry * 2.2), mry = Math.min(wry * 0.72, mr * 0.52)
   const mx = wx - wrx * 0.2, my = wy - wry * 0.1
+  // fine ripples break every reflection into slivers: a mask of thin bands, each a little offset
+  const bands: SVGElement[] = []
+  for (let y = wy - wry; y < wy + wry; ) {
+    const th = 1.8 + r() * 2.2
+    bands.push(s('rect', { x: f1(wx - wrx + (r() - 0.5) * 4), y: f1(y), width: f1(wrx * 2), height: f1(th), fill: '#fff' }))
+    y += th + 0.22 + r() * 0.3
+  }
+  // ripple lines: thin arcs of light across the surface, the sky's dawn on the far (right) side
+  let ripples = ''
+  for (let k = 0; k < 4; k++) {
+    const yy = wy - wry * 0.55 + k * wry * 0.38, x0 = wx - wrx * (0.5 + r() * 0.3)
+    ripples += stroke([[x0, yy], [x0 + wrx * 0.5, yy + 0.3], [x0 + wrx * (0.9 + r() * 0.4), yy - 0.2]], 0.45, 0.2, 0.3, 0.1)
+  }
   parts.push(s('g', { class: 't38d-water' },
     s('clipPath', { id: cid }, s('path', { d: ell(wx, wy, wrx, wry) })),
+    s('mask', { id: mid, maskUnits: 'userSpaceOnUse', x: f1(wx - wrx * 1.2), y: f1(wy - wry * 1.2), width: f1(wrx * 2.4), height: f1(wry * 2.4) }, ...bands),
     s('path', { class: 't38d-surface', d: ell(wx, wy, wrx, wry) }),
     s('g', { 'clip-path': `url(#${cid})` },
       s('path', { class: 't38d-sky', d: ell(wx, wy - wry * 0.9, wrx * 1.1, wry * 0.55) }),
+      s('ellipse', { class: 't38d-dawn', cx: f1(wx + wrx * 0.62), cy: f1(wy - wry * 0.35), rx: f1(wrx * 0.55), ry: f1(wry * 0.5) }),
       s('ellipse', { class: 't38d-halo', cx: f1(mx), cy: f1(my), rx: f1(mr * 2.3), ry: f1(mry * 2.3) }),
-      s('ellipse', { class: 't38d-disc', cx: f1(mx), cy: f1(my), rx: f1(mr), ry: f1(mry) }),
+      s('g', { mask: `url(#${mid})` },
+        s('ellipse', { class: 't38d-disc', cx: f1(mx), cy: f1(my), rx: f1(mr), ry: f1(mry) }),
+        sign(V.kind, wx, wy, wrx, wry)),
       s('path', { class: 't38d-glints', d: `M${f1(mx - mr * 1.2)} ${f1(my + mry * 1.5)}h${f1(mr * 0.9)}M${f1(mx + mr * 0.2)} ${f1(my + mry * 1.9)}h${f1(mr * 1.3)}M${f1(mx - mr * 0.5)} ${f1(my + mry * 2.4)}h${f1(mr * 0.7)}` }),
-      sign(V.kind, wx, wy, wrx, wry),
+      s('path', { class: 't38d-ripple', d: ripples }),
       ...[0, 1, 2].map((k) => s('path', { class: 't38d-rip', style: `--k:${k}`, d: ell(wx, wy, wrx * 0.5, wry * 0.5) }))),
     // the meniscus: a thread of light along the water's near edge
     s('path', { class: 't38d-meniscus', d: stroke(arc(wx, wy, wrx - 0.5, wry - 0.3, 25, 155, 12), 0.9, 0.3, 0.3, 0.1) })))
@@ -182,7 +199,7 @@ function worldOf(W: number, H: number) {
   const wide = W / H > 1.15
   const Hw = Math.round(H * 1.32)
   const F: Foot[] = wide
-    ? [[0.165, 0.75, 0.4, 0], [0.385, 0.615, 0.32, 0], [0.56, 0.515, 0.265, 136], [0.71, 0.44, 0.225, 126]].map(([x, y, w, m]) => ({ x: W * x, y: H * y, vw: Math.max(H * w, m) }))
+    ? [[0.17, 0.815, 0.45, 0], [0.4, 0.675, 0.36, 0], [0.585, 0.57, 0.295, 140], [0.745, 0.49, 0.25, 128]].map(([x, y, w, m]) => ({ x: W * x, y: H * y, vw: Math.max(H * w, m) }))
     : [[0.34, 0.86, 0.42], [0.5, 0.67, 0.34], [0.62, 0.505, 0.28], [0.72, 0.355, 0.24]].map(([x, y, w]) => ({ x: W * x, y: H * y, vw: W * w }))
   // the name stone's carved letters: px, from near to far
   const nf = F.map((f) => clamp(f.vw * (wide ? 0.07 : 0.09), 12, 16))
@@ -250,7 +267,26 @@ function paintStage(g: CanvasRenderingContext2D, p: Pal, Wd: World) {
       brush(g, [[vp[0] + (e2[0] - vp[0]) * t0, vp[1] + (e2[1] - vp[1]) * t0], [vp[0] + (e2[0] - vp[0]) * t1, vp[1] + (e2[1] - vp[1]) * t1]], 0.5 + t, col(p.dark ? p.umbra : p.wash, p.dark ? 0.22 : 0.07), 0.3, 0.3, 0.2)
     }
   }
-  // the moon's sheen along the boards near the edge
+  // knots in the grain, damp patches where water was carried, the moon's sheen along the boards near the edge
+  for (let i = 0; i < 9; i++) {
+    const t = 0.15 + r() * 0.8
+    const end: Pt = [W * 1.2 - W * 2.1 * Math.pow(t, 1.25), Hw + 4]
+    const at: Pt = [vp[0] + (end[0] - vp[0]) * (0.35 + r() * 0.6), vp[1] + (end[1] - vp[1]) * (0.35 + r() * 0.6)]
+    if (at[1] < ey(at[0]) + 6) continue
+    const kr = 2 + t * 6
+    for (let q = 0; q < 3; q++) {
+      g.beginPath()
+      g.ellipse(at[0], at[1], kr * (1 + q * 0.75), kr * (0.38 + q * 0.22), -0.35, 0, Math.PI * 2)
+      g.strokeStyle = col(p.dark ? p.umbra : p.wash, (p.dark ? 0.45 : 0.16) / (q + 1))
+      g.lineWidth = 0.9
+      g.stroke()
+    }
+    g.fillStyle = col(p.dark ? p.umbra : p.wash, p.dark ? 0.5 : 0.18)
+    g.beginPath()
+    g.ellipse(at[0], at[1], kr * 0.7, kr * 0.28, -0.35, 0, Math.PI * 2)
+    g.fill()
+  }
+  for (const [x, y, k] of [[0.3, 0.9, 1], [0.62, 0.8, 0.8], [0.12, 0.98, 0.7]] as const) glow(g, W * x, H * y, W * 0.07 * k, H * 0.035 * k, p.umbra, p.dark ? 0.28 : 0.1, 0.6)
   glow(g, W * 0.4, ey(W * 0.4) + H * 0.05, W * 0.45, H * 0.05, p.dark ? p.moon : p['step-hi'], p.dark ? 0.12 : 0.5, 0.5)
   // the vessels' long shadows across the boards, away from the moon
   for (const f of F) {
@@ -258,6 +294,7 @@ function paintStage(g: CanvasRenderingContext2D, p: Pal, Wd: World) {
     glow(g, f.x + f.vw * 0.08, f.y + f.vw * 0.01, f.vw * 0.55, f.vw * 0.05, p.umbra, p.dark ? 0.7 : 0.3, 0.5)
   }
   g.restore()
+  if (wide) ladle(g, p, W * 0.66, H * 0.9, H * 0.36)
   // the edge: a moonlit lip, a dark line under it
   brush(g, [[-4, ey(-4)], [W + 4, ey(W + 4)]], 2.2, p.dark ? col(p.moon, 0.4) : col(p['rake-hi'], 1), 0.02, 0.02, 0.5)
   brush(g, [[-4, ey(-4) + 2.5], [W + 4, ey(W + 4) + 2.5]], 1.6, col(p.dark ? p.umbra : p.wash, p.dark ? 0.7 : 0.4), 0.02, 0.02, 0.5)
@@ -274,6 +311,38 @@ function paintStage(g: CanvasRenderingContext2D, p: Pal, Wd: World) {
   mistBank(g, p, W * 0.9, hz + H * 0.06, W * 0.3, H * 0.1, 1.2)
   grainOver(g, p, W, Hw)
   return { mx, my }
+}
+
+/** A bamboo ladle lying on the boards at (x, y), handle running back to the right: a cane handle, a short cup of cane
+ *  with its mouth toward us, both lit from the moon on the left, a soft shadow thrown right. */
+function ladle(g: CanvasRenderingContext2D, p: Pal, x: number, y: number, L: number) {
+  const cane = p.dark ? mix(p['step-mid'], p.lantern, 0.22) : mix(p['step-hi'], p.lantern, 0.3)
+  const a: Pt = [x, y], b: Pt = [x + L, y - L * 0.16]
+  glow(g, (a[0] + b[0]) / 2 + L * 0.06, (a[1] + b[1]) / 2 + 5, L * 0.55, 6, p.umbra, p.dark ? 0.6 : 0.25, 0.5)
+  brush(g, [a, b], Math.max(3, L * 0.022), col(mix(cane, p.umbra, 0.3)), 0.02, 0.02, 0.7)
+  brush(g, [[a[0], a[1] - 1.2], [b[0], b[1] - 1.2]], Math.max(1, L * 0.007), p.dark ? col(p.moon, 0.35) : col(p['rake-hi'], 0.9), 0.05, 0.05, 0.5)
+  // the cup: a short cylinder lying on its side
+  const cw = L * 0.13, ch = L * 0.16
+  const cx = a[0] - cw * 0.3, cy = a[1] - ch * 0.35
+  glow(g, cx + cw * 0.3, cy + ch * 0.55, cw * 1.1, ch * 0.22, p.umbra, p.dark ? 0.7 : 0.3, 0.5)
+  const lg = g.createLinearGradient(cx - cw / 2, 0, cx + cw / 2, 0)
+  lg.addColorStop(0, col(mix(cane, p.dark ? p.moon : p['rake-hi'], 0.3)))
+  lg.addColorStop(1, col(mix(cane, p.umbra, 0.45)))
+  g.fillStyle = lg
+  g.fillRect(cx - cw / 2, cy - ch / 2, cw, ch)
+  g.fillStyle = col(mix(cane, p.umbra, 0.25))
+  g.beginPath()
+  g.ellipse(cx + cw / 2, cy, cw * 0.18, ch / 2, 0, 0, Math.PI * 2)
+  g.fill()
+  g.fillStyle = col(mix(cane, p.dark ? p.moon : p['rake-hi'], 0.25))
+  g.beginPath()
+  g.ellipse(cx - cw / 2, cy, cw * 0.2, ch / 2, 0, 0, Math.PI * 2)
+  g.fill()
+  g.fillStyle = col(p.water)
+  g.beginPath()
+  g.ellipse(cx - cw / 2, cy, cw * 0.13, ch * 0.38, 0, 0, Math.PI * 2)
+  g.fill()
+  brush(g, [[cx - cw / 2, cy - ch / 2], [cx + cw / 2, cy - ch / 2]], 1, p.dark ? col(p.moon, 0.4) : col(p['rake-hi'], 1), 0.05, 0.05, 0.5)
 }
 
 /** A slab's chipped outline as a clip-path polygon (rough corners, a nick or two along the edges). */
@@ -323,15 +392,29 @@ export const defsScene: SceneDef = {
     const world = h('div', { class: 't38d-world' }, cv, ...mists, garden, vessels, threads)
     const who = h('p', { class: 't38d-who' })
     const view = h('div', { class: 't38d-view-box' })
-    const count = h('p', { class: 't38d-count' })
-    const strip = h('div', { class: 't38d-strip', role: 'region', 'aria-label': D.strip, hidden: true }, who, view, count)
+    const strip = h('div', { class: 't38d-strip', role: 'region', 'aria-label': D.strip, hidden: true }, who, view)
     const cord = s('svg', { class: 't38d-cord', 'aria-hidden': 'true' }, s('path'))
     // what AGI means in plain words, and what the four vessels are (audit 38-1)
     const legend = h('p', { class: 't38d-legend' }, D.legend)
-    const root = h('div', { class: 't38d' }, h('p', { class: 'visually-hidden' }, D.art), defs, world, cord, strip, legend)
+    // where the count is cut into the boards (near right), visible from the start (H4)
+    const countAt = h('i', { class: 't38d-count-at', 'aria-hidden': 'true' })
+    const root = h('div', { class: 't38d' }, h('p', { class: 'visually-hidden' }, D.art), defs, world, cord, strip, legend, countAt)
     ctx.art.append(root)
     const g = guide(ctx)
-    const dots = btns.map((b) => g.dot(b, { dir: [0, -1] }))
+    const counter = g.count(L.heard, n, countAt)
+    // one vermilion point at a time: on the next name stone to touch (its upper right corner), moving on after each
+    let cam = { tx: 0, ty: 0, z: 1 }, gut = 0
+    const nextK = () => [...Array(n).keys()].find((j) => !heard.has(j)) ?? -1
+    const stoneAt = (): Pt => {
+      const k = nextK()
+      if (!Wd || k < 0) return [-99, -99]
+      const f = Wd.F[k], nf = Wd.nf[k] // the stone keeps its size on screen while the camera leans in
+      const lines = (D.names[order[k]] ?? '').split('\n')
+      const half = (Math.max(...lines.map((l) => l.length)) * 0.56 + 1.8) * nf * 0.5
+      const x = f.x + f.vw * Wd.nx, y = f.y + 5
+      return [x * cam.z + cam.tx + half - 3 - gut, y * cam.z + cam.ty + 2]
+    }
+    let dot: Mark | null = g.dot(stoneAt, { dir: [0, -1] })
     ctx.prompt(D.prompt)
 
     const heard = new Set<number>()
@@ -340,19 +423,23 @@ export const defsScene: SceneDef = {
     let moonAt: Pt = [0, 0]
     let p = palette()
 
+    let closeT = 0, endT = 0
+    const live = !ctx.reduced && !low
     function pick(k: number) {
-      if (k < 0 || k >= n) return
+      if (k < 0 || k >= n || root.classList.contains('is-all')) return
       const vi = order[k]
       const st = P.stones[vi]
       btns.forEach((b, j) => b.setAttribute('aria-pressed', String(j === k)))
       sel = k
       const b = btns[k]
+      root.classList.add('heard-any')
       if (!heard.has(k)) {
         heard.add(k)
-        dots[k].done()
+        if (heard.size === n) (dot?.done(), (dot = null))
+        counter.set(heard.size)
         if (heard.size < n) ctx.prompt(fill(D.next, { n: heard.size, total: n }))
         b.classList.add('heard')
-        if (!ctx.reduced && !low) {
+        if (live) {
           b.classList.add('pouring')
           setTimeout(() => b.classList.remove('pouring'), 2600)
         }
@@ -360,30 +447,75 @@ export const defsScene: SceneDef = {
       }
       who.textContent = st.who
       view.replaceChildren(ctx.fact(st.view, 'p', 't38d-view'))
-      count.textContent = fill(L.heard, { n: heard.size, total: n })
       const first = strip.hidden
       strip.hidden = false
       if (first) strip.setAttribute('aria-live', 'polite') // after the first fill: not read out on entering the scene
-      if (!ctx.reduced) strip.animate([{ opacity: 0, transform: 'translateY(-6px) rotate(-0.8deg)' }, { opacity: 1, transform: 'rotate(-0.8deg)' }], { duration: 700, delay: 250, easing: 'ease-out', fill: 'backwards' })
-      frame()
-      if (heard.size === n && !root.classList.contains('is-all')) {
-        root.classList.add('is-all')
-        // the main idea on screen, the four rulers in the detail (audit 38-1)
-        ctx.insight(D.insight, P.common)
-        ctx.chime('ok')
-      } else ctx.chime('soft')
+      ctx.chime('soft')
+      // the camera leans right over the water for a moment (the moon's new shape ≈ 30 % of the frame), then backs off
+      // to read the paper strip hung under the vessel (audit 38-1)
+      clearTimeout(closeT)
+      if (live) {
+        closeUp(k)
+        // held until the new shape has settled in the water (the pour, the ripples, then the sign: ≈ 2.6 s)
+        closeT = window.setTimeout(() => (root.classList.remove('close'), frame()), 2900)
+      } else frame()
+      if (heard.size === n && !endT) {
+        // the fourth view is read first; then the camera backs off, the threads of moonlight join the four waters and
+        // the insight is the one block left on screen
+        endT = window.setTimeout(() => {
+          clearTimeout(closeT)
+          root.classList.remove('close')
+          root.classList.add('is-all')
+          counter.done()
+          sel = -1
+          btns.forEach((x) => x.setAttribute('aria-pressed', 'false'))
+          frame()
+          ctx.insight(D.insight, P.common)
+          ctx.chime('ok')
+        }, ctx.reduced ? 2500 : 6200)
+      }
     }
+    ctx.onCleanup(() => (clearTimeout(closeT), clearTimeout(endT)))
+    function closeUp(k: number) {
+      if (!Wd) return
+      const { W, H, Hw, wide, F } = Wd
+      const f = F[k], V = VESSELS[order[k]], sc = f.vw / V.vis
+      const cx = f.x + V.w[0] * sc, cy = f.y + V.w[1] * sc
+      const z = clamp((W * (wide ? 0.4 : 0.78)) / (V.w[2] * 2 * sc), 1.15, wide ? 1.9 : 2.2)
+      const tx = clamp(W / 2 - cx * z, W - W * z, 0), ty = clamp(H * 0.46 - cy * z, H - Hw * z, 0)
+      root.classList.add('close')
+      if (!wide) counter.el.style.opacity = '0'
+      world.style.transform = `translate(${f1(tx)}px, ${f1(ty)}px) scale(${z.toFixed(3)})`
+      world.style.setProperty('--cz', z.toFixed(3))
+      cam = { tx, ty, z }
+      g.refresh()
+    }
+    // H7: standing still 6 s, the water of the nearest vessel not yet heard stirs, as if about to be filled
+    const onIdle = () => {
+      const k = [...Array(n).keys()].find((j) => !heard.has(j))
+      if (k == null || !live) return
+      btns[k].classList.remove('stir')
+      void btns[k].offsetWidth
+      btns[k].classList.add('stir')
+    }
+    ctx.el.addEventListener('p2:idle', onIdle)
+    ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
 
     /** the camera: listening, it lifts / leans toward the vessel so its paper strip hangs under it, inside the frame */
     function frame() {
       if (!Wd) return
       const { W, H, Hw, wide, F } = Wd
       if (sel < 0) {
+        counter.el.style.opacity = ''
         world.style.transform = 'none'
         world.style.setProperty('--cz', '1')
+        cam = { tx: 0, ty: 0, z: 1 }
+        g.refresh()
         return
       }
       const f = F[sel]
+      // on a phone the camera moves the whole row: the count (fixed on the frame) steps aside while a strip is read
+      counter.el.style.opacity = wide ? '' : '0'
       const sw = wide ? Math.min(420, W * 0.28) : W - 32
       strip.style.width = `${f1(sw)}px`
       const sh = strip.offsetHeight // the one read: the strip's text height for this view
@@ -411,6 +543,8 @@ export const defsScene: SceneDef = {
       if (!wide) top = Math.max(top, slabY * z + ty + 10)
       world.style.transform = `translate(${f1(tx)}px, ${f1(ty)}px) scale(${z.toFixed(3)})`
       world.style.setProperty('--cz', z.toFixed(3)) // the name stones keep their letter size while the camera leans in
+      cam = { tx, ty, z }
+      g.refresh()
       Object.assign(strip.style, { left: `${f1(left)}px`, top: `${f1(top)}px` })
       // the cord: from under the name stone down to the strip's top edge
       const ax = slabX * z + tx, ay = slabY * z + ty
@@ -428,6 +562,7 @@ export const defsScene: SceneDef = {
       if (W < 40 || H < 40) return
       root.style.height = `${f1(H)}px`
       Wd = worldOf(W, H)
+      gut = (W - ctx.art.clientWidth) / 2
       root.classList.toggle('wide', Wd.wide)
       Object.assign(world.style, { width: `${f1(W)}px`, height: `${f1(Wd.Hw)}px` })
       Wd.F.forEach((f, k) => {
@@ -438,8 +573,10 @@ export const defsScene: SceneDef = {
         btns[k].style.setProperty('--foot', `${f1(bh * (-BOX[1] / BOX[3]))}px`)
         btns[k].style.setProperty('--nx', `${f1(bw / 2 + f.vw * Wd!.nx)}px`)
       })
+      Object.assign(countAt.style, Wd.wide ? { left: `${f1(W * 0.88)}px`, top: `${f1(H * 0.935)}px` } : { left: `${f1(W * 0.8)}px`, top: `${f1(H * 0.17)}px` })
       paint()
       frame()
+      g.refresh()
     }
 
     let job: { cancel(): void } | null = null

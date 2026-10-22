@@ -283,6 +283,7 @@
       "art": "Low over a wooden veranda at moonset, boards running toward the garden. Bottom left, a rattan basket holds eight pebbles engraved with tasks. Three stone trays recede on a diagonal: dry gravel nearest, one half under water at the pond's edge, the farthest sunk in mist under the moon. Pick up a pebble and throw it into a tray. With all eight placed, pull the blind's cord: early sun spills across the trays, the hollows where AI Zen would lay each pebble appear, and stray pebbles roll along dotted paths to their places.",
       "prompt": "Drag each pebble and throw it into the tray you think is right ({n}/{total})",
       "pullPrompt": "Pull the blind’s cord up",
+      "placed": "Placed {n}/{total}",
       "why": "Touch a pebble that moved to see why",
       "keys": "Pick a pebble, then press 1, 2 or 3 to place it in a tray",
       "pickAria": "Place “{task}” in the tray {tray}",

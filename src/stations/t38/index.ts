@@ -8,6 +8,6 @@ import { traysScene } from './trays'
 const S = C.scenes
 const station: StationModule = {
   content: C,
-  scenes: [defsScene, tideScene, { label: S.fork.label, mount: forkScene }, { label: S.trays.label, text: 'tl', mount: traysScene }],
+  scenes: [defsScene, tideScene, { label: S.fork.label, text: 'tl', mount: forkScene }, { label: S.trays.label, mount: traysScene }],
 }
 export default station
