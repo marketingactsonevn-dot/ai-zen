@@ -23,6 +23,7 @@
       "art": "Đêm trăng trên một gò rêu: giữa mâm cát cào là pho tượng đá nhỏ không mặt — một AI — đứng trên bệ rêu. Sau tượng là bình phong giấy hai cánh rắc nhũ vàng; phía trước, xếp theo vòng cung, bốn chiếc đèn đá khác dáng. Thắp đèn nào, bóng pho tượng đổ dài trên cát rồi trèo lên bình phong, mỗi đèn một hình: lúc là dáng người trọn vẹn, lúc là dáng người mờ như đang ngoái nhìn mình, lúc chỉ là bóng một hòn đá. Xoay quanh thì thấy tượng vẫn chỉ là đá.",
       "prompt": "Chạm một chiếc đèn đá",
       "promptNext": "Thắp {n} đèn còn lại — xem bóng đổi",
+      "count": "Đã thắp {n}/{total} đèn",
       "eyebrow": "{i}/{n} · {name} ({en})",
       "decode": "Bóng người: theo đèn này, AI có thể có ý thức · Bóng đá: không thể",
       "hint": "Kéo để đi quanh pho tượng. Phím 1 đến 4 thắp từng đèn.",
@@ -104,6 +105,7 @@
         "vừa",
         "đậm"
       ],
+      "count": "Đã thử {n}/{total} nấc",
       "ask": "Chạm cò để hỏi",
       "askAria": "Hỏi mô hình: bạn có thấy ý nghĩ nào lạ không?",
       "question": "“Bạn có thấy ý nghĩ nào lạ không?”",
@@ -143,20 +145,18 @@
     },
     "rule": {
       "label": "Các mốc của một quy định",
-      "art": "Nhìn từ trên cao xuống một đầm diên vĩ đêm: cây cầu ván chạy zíc zắc như tia chớp từ bờ gần vào sương. Bóng trăng trên mặt đầm trượt dọc cầu, một hình người giấy đi theo; tới mỗi khúc quanh, đèn đá nhỏ bên mốc thắp lên: một cuộn thư, một cổng tre hé mở, một cánh cửa có then để khép, một tấm bia khắc quy định. Cuối cầu là sương. Sau đó, dưới chân bia, năm mảnh giấy tình huống rơi từ trăng xuống, chờ xếp vào hai giỏ tre.",
-      "prompt": "Kéo bóng trăng dọc cầu, qua từng mốc",
+      "art": "Nhìn từ trên cao xuống một đầm diên vĩ đêm, mặt nước ôm cả trời và một vầng sáng lớn quanh bóng trăng: cây cầu ván chạy zíc zắc từ góc dưới trái lên sương ở góc trên phải. Bóng trăng trên mặt đầm trượt dọc cầu, một hình người giấy đi theo; ở ba khúc quanh, trên một phiến đá giữa nước, là ba mốc, mỗi mốc một đèn đá nhỏ và ngày khắc bên cạnh: cổng tre hé mở (04/2025), cánh cửa có then để khép (08/2025), tấm bia khắc chính sách (10/2026). Tới hôm nay là một hòn đá ranh giới buộc dây, rồi cầu tan vào sương. Lời của từng mốc hiện trên mặt nước trống ở góc dưới phải.",
+      "prompt": "Kéo bóng trăng dọc cầu tới mốc đầu tiên",
       "sliderAria": "Bóng trăng trên đầm: kéo dọc cây cầu qua các mốc",
+      "promptNext": "Kéo tiếp dọc cầu — còn {n} mốc tới hôm nay",
+      "ticks": [
+        "04/2025",
+        "08/2025",
+        "10/2026",
+        "Hôm nay"
+      ],
       "tide": {
         "milestones": [
-          {
-            "date": "2024-11",
-            "label": "Lời kêu gọi xem xét “phúc lợi AI”",
-            "fact": {
-              "text": "Một nhóm triết gia và nhà khoa học (có David Chalmers) đề nghị các công ty AI bắt đầu xem xét: AI có thể bị tổn hại không?",
-              "asOf": "2026-10-15",
-              "source": "long-sebo-2024"
-            }
-          },
           {
             "date": "2025-04",
             "label": "Nhóm nghiên cứu “AI có bị tổn hại không?”",
@@ -206,6 +206,7 @@
       "sort": {
         "label": "Hai giỏ tre",
         "pill": "Kéo mảnh giấy vào một giỏ",
+        "count": "{n}/{total} mảnh",
         "prompt": "Chính sách mới có nhắm tới việc này không?",
         "yes": "Bị nhắm tới",
         "no": "Không bị tính",
@@ -260,9 +261,23 @@
     },
     "circle": {
       "label": "Có nên có quy định như vậy?",
-      "art": "Nằm dưới mái một ngôi đình mở mà ngước lên: rui mái toả tia về lỗ khói ở tâm đang đóng, bốn cột đứng ở bốn góc, câu hỏi viết thành vòng quanh lỗ khói. Bốn đèn lồng giấy treo ở bốn góc mái, giống hệt nhau. Thắp đèn nào, góc mái ấy ửng ấm và một dải giấy rủ xuống mang lời một người. Mỗi dải giấy ghi người ấy nên thận trọng hay còn hoài nghi. Thắp đủ bốn, nắp lỗ khói trượt mở: trăng ở ngay trên đầu.",
-      "prompt": "Thắp từng đèn lồng — nghe lý do của mỗi người",
+      "art": "Ngồi dưới mái một ngôi đình mở mà ngước lên: rui mái toả về lỗ khói đang đóng, câu hỏi viết thành vòng trên ván mái quanh lỗ khói. Qua khung xà phía xa là đêm ngoài đình: núi trong sương, vầng trăng thấp và vệt trăng trên mặt hồ. Dưới lỗ khói treo một đòn cân tre, một đầu “nên thận trọng”, đầu kia “còn hoài nghi”. Bốn đèn lồng giấy nan tre treo dưới hai xà bên, chưa thắp. Thắp đèn nào, một dải giấy rủ xuống dưới đèn mang lời một người, rồi đèn được treo sang đầu đòn hợp với lý do ấy; đòn cân nghiêng rồi lại thăng bằng khi đủ hai và hai. Thắp đủ bốn, nắp lỗ khói trượt mở.",
+      "prompt": "Chạm một đèn lồng — nghe lý do của người ấy",
       "question": "Cấm bạo hành một AI chưa chắc cảm thấy gì — nên không?",
+      "promptNext": "Còn {n} đèn — mỗi lý do treo về một đầu đòn cân",
+      "ends": [
+        "Nên thận trọng",
+        "Còn hoài nghi"
+      ],
+      "sides": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "lampAria": "Đèn lồng {n}: nghe lý do",
+      "lampHeard": "Đèn lồng {n} — {who}",
+      "count": "Đã nghe {n}/{total}",
       "perspectives": {
         "stones": [
           {

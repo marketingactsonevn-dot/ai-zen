@@ -1,12 +1,17 @@
 /* 3 · mirror: a stone basin seen from kneeling (mirror.ts). Three depths slide apart; the stir is drawn on a canvas. */
 .t25m {
   --swirl: 0;
-  -webkit-mask-image: radial-gradient(ellipse 62% 66% at 50% 50%, #000 78%, transparent 100%);
-  mask-image: radial-gradient(ellipse 62% 66% at 50% 50%, #000 78%, transparent 100%);
+  /* the ground runs out under a soft feathered edge (no island: it fills the frame) */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent), linear-gradient(transparent, #000 5%, #000 95%, transparent);
+  mask-composite: intersect;
 }
-.t25m:not(.land) {
-  -webkit-mask-image: radial-gradient(ellipse 80% 62% at 50% 47%, #000 76%, transparent 100%);
-  mask-image: radial-gradient(ellipse 80% 62% at 50% 47%, #000 76%, transparent 100%);
+.t25m-ground {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
 }
 .t25m-art,
 .t25m-rim {
@@ -44,17 +49,29 @@
   transition: opacity 0.2s;
 }
 
-/* ground */
-.t25m-g0 { stop-color: var(--paper-2); stop-opacity: 0.9; }
-.t25m-g1 { stop-color: var(--paper); stop-opacity: 0; }
-.t25m-gravel { fill: var(--rock-mid); opacity: 0.5; }
-:root[data-theme='dark'] .t25m-gravel { fill: var(--rock-lo); opacity: 0.9; }
+/* ground: moss cushions at the basin's foot, flat stones (top lit from the upper right, side, shadow down-left) */
 .t25m-moss { fill: var(--moss-a); opacity: 0.85; }
 :root[data-theme='dark'] .t25m-moss { fill: var(--moss-c); opacity: 0.6; }
 .t25m-moss-dk { fill: var(--moss-b); opacity: 0.8; }
 :root[data-theme='dark'] .t25m-moss-dk { fill: var(--moss-b); opacity: 0.9; }
-.t25m-shadow { fill: var(--umbra); opacity: 0.18; }
-:root[data-theme='dark'] .t25m-shadow { opacity: 0.55; }
+.t25m-st-sh { fill: var(--umbra); opacity: 0.3; }
+:root[data-theme='dark'] .t25m-st-sh { opacity: 0.7; }
+.t25m-st-side { fill: var(--rock-lo); }
+:root[data-theme='dark'] .t25m-st-side { fill: color-mix(in srgb, var(--rock-lo) 60%, var(--umbra)); }
+.t25m-st-shade { opacity: 0.9; }
+.t25m-st-rim { fill: #fff; opacity: 0.8; }
+:root[data-theme='dark'] .t25m-st-rim { fill: var(--moon); opacity: 0.4; }
+.t25m-st-moss { fill: var(--moss-a); opacity: 0.75; }
+:root[data-theme='dark'] .t25m-st-moss { fill: var(--moss-c); opacity: 0.55; }
+/* the bamboo leaning in at the top right, near and dark; its soft shadow on the moss */
+.t25m-bam-sh { fill: var(--umbra); opacity: 0.16; }
+:root[data-theme='dark'] .t25m-bam-sh { opacity: 0.5; }
+.t25m-twig { fill: color-mix(in srgb, var(--moss-b) 70%, var(--umbra)); }
+.t25m-leaf { fill: color-mix(in srgb, var(--moss-b) 80%, var(--umbra)); }
+:root[data-theme='dark'] .t25m-twig,
+:root[data-theme='dark'] .t25m-leaf { fill: color-mix(in srgb, var(--moss-b) 55%, var(--umbra)); }
+.t25m-leaf-rib { fill: #fff; opacity: 0.35; }
+:root[data-theme='dark'] .t25m-leaf-rib { fill: var(--moon); opacity: 0.22; }
 
 /* the reflection: the night sky in the water */
 .t25m-deep { fill: color-mix(in srgb, var(--water) 75%, var(--mist)); }
@@ -194,6 +211,9 @@
   transition: opacity 1.2s 1.2s;
 }
 .t25m.frozen .t25m-arcsrc { opacity: 0.85; }
+:root[data-theme='dark'] .t25m-arcsrc { fill: var(--ink-3); }
+/* while the ladle turns, its word stays out of the way */
+.t25m.stirred .t25m-ladle-word { opacity: 0; transition: opacity 0.3s; }
 
 /* words on the water */
 .t25m-ai {

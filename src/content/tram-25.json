@@ -87,7 +87,7 @@
     },
     "current": {
       "label": "Tín hiệu cảm xúc bên trong AI",
-      "art": "Nhìn xiên từ bờ một con suối dưới trăng, chia hai quanh bãi lau. Nhánh dài uốn xa tới bến có đèn đá thắp; nhánh ngắn thẳng qua lau tới hàng cọc tre cờ giấy. Bảng gỗ ghi việc giao ở đầu suối, hai cửa cống đá khắc “bình tĩnh” và “tuyệt vọng”, giữa là cần gạt gỗ ba nấc. Thuyền giấy cập bến nào thì được đếm ở bến đó. Một thuyền giấy neo ở chỗ rẽ, cánh buồm giấy viết câu trả lời bình thản. Nhìn xiên, mặt nước là gương soi trăng; kéo mặt nước xuống tới khi nhìn thẳng, gương trong ra và lộ dòng mực chảy dưới thuyền.",
+      "art": "Nhìn xiên từ bờ một con suối dưới trăng, chia hai quanh bãi lau. Nhánh dài uốn xa tới bến có đèn đá thắp; nhánh ngắn thẳng qua lau tới hàng cọc tre cờ giấy. Bảng gỗ ghi việc giao ở đầu suối, đèn đá có tấm biển đóng trên cột, ở bến đường tắt một lá cờ giấy treo trên cọc tre. Ngay chỗ rẽ là hai cửa cống gỗ; ở bờ gần phía trước, dưới ánh trăng, là cần gạt gỗ ba nấc trên bệ đá khắc “bình tĩnh · bình thường · tuyệt vọng”. Thuyền giấy cập bến nào thì được đếm ở bến đó. Một thuyền giấy neo ở chỗ rẽ, cánh buồm giấy viết câu trả lời bình thản. Nhìn xiên, mặt nước là gương soi trăng; kéo mặt nước xuống tới khi nhìn thẳng, gương trong ra và lộ dòng mực chảy dưới thuyền.",
       "prompts": [
         "Gạt cần sang “tuyệt vọng”, xem thuyền rẽ",
         "Gạt về “bình tĩnh”",
@@ -156,7 +156,7 @@
     },
     "mirror": {
       "label": "Gương nước",
-      "art": "Nhìn từ tư thế quỳ xuống một chậu đá rửa tay (tsukubai) dưới trăng. Vành đá granite lấm tấm, rêu trong khe, ống tre bên trái thỉnh thoảng nhỏ giọt, muôi tre gác trên vành phải. Trong nước có ba độ sâu: lá phong và cánh hoa trôi trên mặt, sỏi và đồng xu cũ dưới đáy, và sâu hơn cả đáy là bóng phản chiếu: trăng, một cành trúc, bóng người cúi xuống, cùng câu trả lời ân cần. Khi khuấy, câu trả lời tan thành hàng trăm lời an ủi khác nhau do người viết tay, xoáy vào tâm; nước lặng lại thì chúng lắng xuống và hợp thành câu trả lời.",
+      "art": "Nhìn từ tư thế quỳ xuống một chậu đá rửa tay (tsukubai) dưới trăng. Chậu nằm giữa một vòng sỏi cuội trên nền rêu, bóng đổ về phía dưới trái; lối đá bước đi tới phiến đá quỳ ở mép dưới, một cây trúc ngả vào góc trên phải. Vành đá granite lấm tấm, rêu trong khe, ống tre bên trái đứng trên một phiến đá và thỉnh thoảng nhỏ giọt, muôi tre gác trên vành phải. Trong nước có ba độ sâu: lá phong và cánh hoa trôi trên mặt, sỏi và đồng xu cũ dưới đáy, và sâu hơn cả đáy là bóng phản chiếu: trăng, một cành trúc, bóng người cúi xuống, cùng câu trả lời ân cần. Khi khuấy, câu trả lời tan thành hàng trăm lời an ủi khác nhau do người viết tay, xoáy vào tâm; nước lặng lại thì chúng lắng xuống và hợp thành câu trả lời.",
       "prompt": "Khuấy nước — xem câu an ủi này học từ đâu",
       "userLine": "“Hôm nay tôi buồn quá.”",
       "aiLine": "“Nghe bạn buồn, mình thấy tiếc lắm. Bạn muốn kể thêm không?”",

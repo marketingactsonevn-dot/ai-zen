@@ -1,5 +1,6 @@
-import { s } from '../../core/dom'
-import { blob, curve, onSize, p2Defs, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
+import { fill, s } from '../../core/dom'
+import { blob, clamp, curve, onSize, p2Defs, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
+import { guide } from '../../ui/part2/guide'
 import { progressTide, type TideGeo } from '../../ui/part2/tide'
 import { mist } from '../../ui/part2/paint'
 import type { Tide } from '../../ui/part2/types'
@@ -11,29 +12,6 @@ import { bamboo, f1 } from '../t25/kit'
 const ink = (d: string, cls = 't26r-ink') => s('path', { class: `zk-ink ${cls}`, d, filter: 'url(#ink-rough)' })
 const rockFill = (d: string) => [s('path', { class: 't26r-stone', d, fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }), s('path', { d, fill: 'url(#p2-shade)' })]
 const shadow = (w: number) => s('ellipse', { class: 't26r-sh', cx: f1(w * 0.06), cy: 1.5, rx: f1(w * 0.55), ry: f1(Math.max(2.5, w * 0.08)) })
-
-/** 0 · the call: a letter scroll half unrolled on a low stand, columns of writing, a red cord on the roll. */
-function scroll(z: number, seed: number) {
-  const r = rng(seed)
-  const w = z * 1.2, hh = z * 0.5, y = -z * 0.16, x0 = -w * 0.5, x1 = w * 0.22
-  let cols = ''
-  for (let c = 0; c < 5; c++) {
-    const x = x1 - w * 0.08 - c * w * 0.12
-    for (let yy = y - hh * 0.84; yy < y - hh * 0.14; yy += 3.2 + r() * 2.4) if (r() < 0.82) cols += stroke([[x - 1.6, yy], [x + 1.6, yy + 0.5]], 1.4, 0.2, 0.2, 0.3)
-  }
-  const sheet = `M${f1(x0)} ${f1(y)}L${f1(x1)} ${f1(y)}L${f1(x1)} ${f1(y - hh)}L${f1(x0 + 2)} ${f1(y - hh * 0.97)}Z`
-  return s('g', null, shadow(w),
-    ...rockFill(`M${f1(-w * 0.52)} 0L${f1(-w * 0.47)} ${f1(-z * 0.16)}L${f1(w * 0.47)} ${f1(-z * 0.16)}L${f1(w * 0.52)} 0Z`),
-    s('path', { class: 't26r-paper', d: sheet }),
-    ink(stroke([[x0, y - hh * 0.97], [x1, y - hh]], 1.6, 0.1, 0.1, 0.3) + stroke([[x0, y], [x1, y]], 1.6, 0.1, 0.1, 0.3) + stroke([[x0, y], [x0 + 2, y - hh * 0.97]], 1.4, 0.1, 0.1, 0.3), 't26r-ink t26r-edge'),
-    ink(cols, 't26r-ink t26r-text'),
-    s('path', { class: 't26r-seal', d: blob(x0 + w * 0.08, y - hh * 0.22, 2.6, 2.6, 2, 0.1, 8) }),
-    // the roll: a short cylinder with its end showing
-    s('path', { class: 't26r-paper', d: `M${f1(x1)} ${f1(y - hh * 1.04)}L${f1(x1 + w * 0.2)} ${f1(y - hh * 1.04)}L${f1(x1 + w * 0.2)} ${f1(y + 1)}L${f1(x1)} ${f1(y + 1)}Z` }),
-    s('path', { class: 't26r-wood', d: blob(x1 + w * 0.21, y - hh * 0.52, w * 0.035, hh * 0.56, 3, 0.04, 10) }),
-    ink(stroke([[x1, y - hh * 1.04], [x1 + w * 0.2, y - hh * 1.04]], 1.4, 0.1, 0.1, 0.3) + stroke([[x1, y + 1], [x1 + w * 0.2, y + 1]], 1.4, 0.1, 0.1, 0.3)),
-    s('path', { class: 't26r-cord', d: stroke([[x1 + w * 0.1, y - hh * 1.06], [x1 + w * 0.12, y - hh * 0.5], [x1 + w * 0.1, y + 1]], 2.2, 0.1, 0.1, 0.3) + stroke([[x1 + w * 0.11, y - hh * 0.4], [x1 + w * 0.2, y + hh * 0.16]], 1.6, 0.1, 0.5, 0.2) + stroke([[x1 + w * 0.11, y - hh * 0.4], [x1 + w * 0.04, y + hh * 0.18]], 1.6, 0.1, 0.5, 0.2) }))
-}
 
 /** 1 · the programme opens: a bamboo gate, one leaf swung half open. */
 function gate(z: number, seed: number) {
@@ -78,14 +56,26 @@ export function stele(z: number, seed: number) {
   const w = z * 0.68, hh = z * 1.35
   const r = rng(seed)
   const slab = `M${f1(-w * 0.5)} ${f1(-z * 0.16)}L${f1(-w * 0.47)} ${f1(-hh * 0.8)}Q${f1(-w * 0.45)} ${f1(-hh)} ${f1(0)} ${f1(-hh * 1.02)}Q${f1(w * 0.45)} ${f1(-hh)} ${f1(w * 0.47)} ${f1(-hh * 0.8)}L${f1(w * 0.5)} ${f1(-z * 0.16)}Z`
-  let carve = ''
+  // a recessed panel, and four columns of characters cut into it: each cut dark, its lower lip catching the moon
+  const px0 = -w * 0.36, px1 = w * 0.36, py0 = -hh * 0.86, py1 = -z * 0.26
+  const panel = `M${f1(px0)} ${f1(py1)}L${f1(px0)} ${f1(py0)}L${f1(px1)} ${f1(py0)}L${f1(px1)} ${f1(py1)}`
+  const cw = Math.max(1.2, z * 0.016), gl = Math.max(2.2, z * 0.034)
+  let carve = '', lip = ''
   for (let c = 0; c < 4; c++) {
-    const x = w * (0.26 - c * 0.17)
-    for (let y = -hh * 0.82; y < -z * 0.3; y += 4 + r() * 3) if (r() < 0.8) carve += stroke([[x - 2.4, y], [x + 2.4, y + 0.4]], 1.5, 0.2, 0.2, 0.3)
+    const x = w * (0.24 - c * 0.16)
+    for (let y = py0 + z * 0.06; y < py1 - z * 0.03; y += gl * 1.9 + r() * gl) {
+      if (r() < 0.12) continue
+      const k = r()
+      const seg = k < 0.4 ? [[x - gl, y], [x + gl, y + 0.3]] : k < 0.7 ? [[x, y - gl * 0.7], [x + 0.3, y + gl * 0.7]] : [[x - gl * 0.8, y - gl * 0.5], [x + gl * 0.8, y + gl * 0.5]]
+      carve += stroke(seg as Pt[], cw, 0.2, 0.2, 0.3)
+      lip += stroke((seg as Pt[]).map(([a, b]) => [a + 0.4, b + cw * 0.9] as Pt), cw * 0.6, 0.2, 0.2, 0.3)
+    }
   }
   return s('g', null, shadow(w * 1.3),
     ...rockFill(`M${f1(-w * 0.68)} 0L${f1(-w * 0.6)} ${f1(-z * 0.17)}L${f1(w * 0.6)} ${f1(-z * 0.17)}L${f1(w * 0.68)} 0Z` + slab),
-    ink(carve, 't26r-ink t26r-carve'),
+    s('path', { class: 't26r-panel', d: panel, 'stroke-width': f1(Math.max(1, z * 0.012)) }),
+    s('path', { class: 't26r-lip', d: lip }),
+    s('path', { class: 't26r-carve', d: carve }),
     s('path', { class: 't26r-rim', d: stroke(curve([-w * 0.44, -hh * 0.78], [-w * 0.4, -hh * 0.98], [w * 0.05, -hh * 1.0], 8), 1.6, 0.2, 0.4, 0.1) }))
 }
 
@@ -120,31 +110,46 @@ function oki(hh: number, seed: number) {
 }
 
 /**
- * Scene 3 — the door and the rule board (art direction §4, t26 `rule`): HIGH 65°, looking down into an iris marsh at
- * night. A yatsuhashi bridge of eight planks zig-zags from the near bank into the mist like a flash of lightning; at each
- * bend stands a milestone with a little stone lantern. The moon's reflection on the marsh is what you drag (progressTide
- * with a zig-zag `track`); a paper figure — you — walks the planks beside it, the planks behind it catch the light, each
- * lantern warms as you reach it. Today the reflection sinks into the mist.
+ * Scene 3 — the milestones of a rule (audit v3 26-3 "Làm lại"): HIGH, looking down into an iris marsh at night that holds
+ * the sky — lighter far off, a broad glow round the moon's reflection. A yatsuhashi bridge of plank runs zig-zags up from
+ * the frame's lower left into the mist at the upper right. Three milestones stand at its bends, each on a stone landing
+ * with a little stone lantern and its date: a bamboo gate half open (04/2025), a plank door with its bar ready (08/2025),
+ * the stele of the new policy (10/2026); then a boundary stone at today, where the planks go on into the mist. The moon's
+ * reflection is what you drag (progressTide with a zig-zag `track`); a paper figure — you — walks the planks with it, the
+ * planks behind it catch the light, each lantern warms as you reach it. The reading lies on the open water at the lower
+ * right, never across the bridge; at today it gives way to the insight in that same corner.
  */
 const R = C.scenes.rule
 const F = (x: unknown) => x as Fact
-// one milestone object per dated milestone, in order (the last bend after them is today, sinking into the mist)
-const MARKS = [scroll, gate, door, stele, boundary]
-const N = R.tide.milestones.length
+// one object per stop: the three dated milestones, then today's boundary stone
+const MARKS = [gate, door, stele, boundary]
+const N = R.tide.milestones.length // stops 0…N-1 milestones, N = today
 
-/** bends of the bridge in band shares (u across, v down = near): B0 on the bank … B6 today in the mist … B8 gone */
+/** bends of the bridge in frame shares (u across, v down = near): B0 below the frame … stops at B1, B3, B5, today at B7,
+ *  B8 lost in the mist. Wide: up from the lower left, the lower right left open for the words; tall: up the top part */
 function bends(w: number, hh: number): Pt[] {
-  const land = w / hh > 1.6
+  const land = w / hh > 1.1
   const uv: Pt[] = land
-    ? [[0.035, 0.95], [0.13, 0.76], [0.29, 0.86], [0.4, 0.56], [0.55, 0.64], [0.63, 0.38], [0.76, 0.42], [0.84, 0.22], [0.95, 0.18]]
-    : [[0.1, 0.96], [0.22, 0.84], [0.66, 0.78], [0.38, 0.6], [0.74, 0.5], [0.42, 0.36], [0.7, 0.26], [0.5, 0.14], [0.62, 0.05]]
+    ? [[-0.03, 1.06], [0.13, 0.78], [0.3, 0.9], [0.37, 0.56], [0.53, 0.64], [0.58, 0.35], [0.73, 0.4], [0.79, 0.19], [0.95, 0.12]]
+    : [[-0.08, 0.7], [0.2, 0.6], [0.78, 0.53], [0.3, 0.42], [0.8, 0.33], [0.34, 0.23], [0.74, 0.15], [0.5, 0.07], [0.66, -0.03]]
   return uv.map(([u, v]) => [u * w, v * hh])
 }
-/** how near a point is (1 at the band's foot … 0.45 at its top): sizes shrink into the distance */
-const near = (y: number, hh: number) => 0.45 + 0.55 * Math.max(0, Math.min(1, y / hh))
+/** how near a point is (1 at the frame's foot … 0.5 at its top): sizes shrink into the distance */
+const near = (y: number, hh: number) => 0.5 + 0.5 * Math.max(0, Math.min(1, y / hh))
+/** stop i (0…N) sits at bend 2i + 1 */
+const stopAt = (B: Pt[], i: number) => B[2 * i + 1]
+/** the point a share f of the way from stop i to stop i + 1, along the two runs between them (by length) */
+function between(B: Pt[], i: number, f: number): Pt {
+  const a = B[2 * i + 1], m = B[2 * i + 2], b = B[2 * i + 3]
+  const l1 = Math.hypot(m[0] - a[0], m[1] - a[1]), l2 = Math.hypot(b[0] - m[0], b[1] - m[1])
+  const d = f * (l1 + l2)
+  if (d <= l1) { const k = d / (l1 || 1); return [a[0] + (m[0] - a[0]) * k, a[1] + (m[1] - a[1]) * k] }
+  const k = (d - l1) / (l2 || 1)
+  return [m[0] + (b[0] - m[0]) * k, m[1] + (b[1] - m[1]) * k]
+}
 
 /** what the band holds, kept for onStep: the lit overlay, the walker, the milestones */
-const live = { lit: null as SVGPathElement | null, len: [] as number[], total: 0, walker: null as SVGGElement | null, marks: [] as SVGGElement[], B: [] as Pt[], hh: 1, art: null as HTMLElement | null, near: null as SVGGElement | null }
+const live = { lit: null as SVGPathElement | null, len: [] as number[], walker: null as SVGGElement | null, marks: [] as SVGGElement[], B: [] as Pt[], hh: 1, reached: -1, onReach: null as ((i: number) => void) | null }
 
 /** an iris clump in the marsh water: flat fans of sword leaves, a few arching over, now and then a stalk with
 *  a bud or an open flower above them, the moon along some edges */
@@ -184,7 +189,7 @@ function iris(x: number, y: number, k: number, sd: number) {
 /** The bridge's planks along B (bend points) at scale k(y): two weathered boards per run on posts standing in the water —
  *  a moonlit edge strip, the board's face, cross seams, the shaded side below, a soft shadow and the posts' reflections. */
 function planks(B: Pt[], k: (y: number) => number): SVGElement[] {
-  let top = '', hi = '', side = '', shade = '', posts = '', refl = '', seam = ''
+  let top = '', hi = '', side = '', shade = '', posts = '', refl = '', seam = '', rings = ''
   const Q = (x: number, y: number) => `${f1(x)} ${f1(y)}`
   for (let i = 0; i < B.length - 1; i++) {
     const [ax, ay] = B[i], [bx, by] = B[i + 1]
@@ -208,78 +213,72 @@ function planks(B: Pt[], k: (y: number) => number): SVGElement[] {
     const th = (5 * (ka + kb)) / 2
     side += `M${Q(ax - nx * wa, ay - ny * wa + 1)}L${Q(bx - nx * wb, by - ny * wb + 1)}L${Q(bx - nx * wb, by - ny * wb + th + 1)}L${Q(ax - nx * wa, ay - ny * wa + th + 1)}Z` +
       `M${Q(ax + nx * wa, ay + ny * wa + 1)}L${Q(bx + nx * wb, by + ny * wb + 1)}L${Q(bx + nx * wb, by + ny * wb + th + 1)}L${Q(ax + nx * wa, ay + ny * wa + th + 1)}Z`
-    shade += stroke([[ax + 8 * ka, ay + 13 * ka], [bx + 8 * kb, by + 13 * kb]], (30 * (ka + kb)) / 2, 0.05, 0.05, 0.6)
-    if (i > 0) {
+    shade += stroke([[ax + 6 * ka, ay + 26 * ka], [bx + 6 * kb, by + 26 * kb]], (18 * (ka + kb)) / 2, 0.05, 0.05, 0.6)
+    // piles: a pair at every joint and two more pairs along each run, standing in the water, each with a short
+    // broken reflection under it (so the boards visibly stand in the marsh, not float on it)
+    for (const u of i > 0 ? [0, 0.34, 0.67] : [0.34, 0.67]) {
+      const cx = ax + (bx - ax) * u, cy = ay + (by - ay) * u, kk = ka + (kb - ka) * u, ww = wa + (wb - wa) * u
       for (const sd of [-1, 1]) {
-        const px = ax + nx * wa * 1.05 * sd, py = ay + ny * wa * 1.05 * sd
-        posts += stroke([[px, py + 2], [px, py + 15 * ka]], 5 * ka, 0.05, 0.05, 0.8)
-        refl += stroke([[px, py + 16 * ka], [px + 0.5, py + 26 * ka], [px - 0.4, py + 38 * ka]], 3.6 * ka, 0.05, 0.7, 0.15)
+        const px = cx + nx * ww * 0.98 * sd, py = cy + ny * ww * 0.98 * sd + th
+        posts += stroke([[px, py], [px + 0.3, py + 20 * kk]], 5.2 * kk, 0.05, 0.05, 0.8)
+        refl += stroke([[px, py + 21 * kk], [px + 0.6, py + 31 * kk], [px - 0.5, py + 44 * kk]], 3.8 * kk, 0.05, 0.75, 0.15)
+        rings += stroke([[px - 5 * kk, py + 20.5 * kk], [px + 5 * kk, py + 20.8 * kk]], 1.1 * kk, 0.2, 0.2, 0.2)
       }
     }
   }
-  return [s('path', { class: 't26r-bshade', d: shade }), s('path', { class: 't26r-brefl', d: refl }), s('path', { class: 't26r-post', d: posts }), s('path', { class: 't26r-bside', d: side }), s('path', { class: 't26r-btop', d: top }), s('path', { class: 't26r-bhi', d: hi }), s('path', { class: 't26r-seam', d: seam })]
+  return [s('path', { class: 't26r-bshade', d: shade }), s('path', { class: 't26r-brefl', d: refl }), s('path', { class: 't26r-pring', d: rings }), s('path', { class: 't26r-post', d: posts }), s('path', { class: 't26r-bside', d: side }), s('path', { class: 't26r-btop', d: top }), s('path', { class: 't26r-bhi', d: hi }), s('path', { class: 't26r-seam', d: seam })]
 }
 
-/** The marsh, the bridge and its milestones, painted inside the tide's band. */
+/** The bridge, its milestones and lanterns, painted inside the tide's band (the band is the whole frame here). */
 function back({ w, h: hh, seed }: TideGeo): SVGElement[] {
   const B = bends(w, hh)
   live.B = B
   live.hh = hh
-  const r = rng(seed)
   const out: SVGElement[] = []
-  const spots: Pt[] = []
-  for (let i = 0; i < 30; i++) {
-    const x = 46 + r() * (w - 92), y = 60 + r() * (hh - 70)
-    // not on the planks
-    let ok = true
-    for (let k = 0; k < B.length - 1 && ok; k++) {
-      const [ax, ay] = B[k], [bx, by] = B[k + 1]
-      const t = Math.max(0, Math.min(1, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / ((bx - ax) ** 2 + (by - ay) ** 2)))
-      if (Math.hypot(x - ax - (bx - ax) * t, y - ay - (by - ay) * t) < 52 * near(y, hh)) ok = false
-    }
-    if (ok) spots.push([x, y])
-  }
-  spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => out.push(...iris(x, y, near(y, hh), seed + 50 + i)))
-  out.push(...planks(B, (y) => near(y, hh)))
-  // the light that follows you along the planks (stroke dash = how far the moon has come)
-  live.len = B.slice(1).map((p, k) => Math.hypot(p[0] - B[k][0], p[1] - B[k][1]))
-  live.total = live.len.slice(0, N + 1).reduce((a, b) => a + b, 0)
-  live.lit = s('path', { class: 't26r-lit', d: `M${B.slice(0, N + 2).map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}`, 'stroke-dasharray': `${f1(live.total)} ${f1(live.total)}`, 'stroke-dashoffset': f1(live.total) }) as SVGPathElement
+  // the last run, past today, fades out into the mist instead of ending in the air
+  const [ex0, ey0] = B[7], [ex1, ey1] = B[8]
+  const fade = `t26r-fade-${seed}`
+  out.push(s('defs', null,
+    s('linearGradient', { id: `${fade}-g`, gradientUnits: 'userSpaceOnUse', x1: f1(ex0), y1: f1(ey0), x2: f1(ex0 + (ex1 - ex0) * 0.8), y2: f1(ey0 + (ey1 - ey0) * 0.8) }, s('stop', { offset: 0, 'stop-color': '#fff' }), s('stop', { offset: 1, 'stop-color': '#000' })),
+    s('mask', { id: fade, maskUnits: 'userSpaceOnUse', x: 0, y: -hh, width: w, height: hh * 3 }, s('rect', { x: 0, y: -hh, width: w, height: hh * 3, fill: `url(#${fade}-g)` }))))
+  out.push(...planks(B.slice(0, 8), (y) => near(y, hh)), s('g', { mask: `url(#${fade})` }, ...planks(B.slice(7), (y) => near(y, hh))))
+  // the light that follows you along the planks (stroke dash = how far the moon has come), from the bank to today
+  const path = B.slice(0, 2 * N + 2)
+  live.len = path.slice(1).map((p, k) => Math.hypot(p[0] - path[k][0], p[1] - path[k][1]))
+  const total = live.len.reduce((a, b) => a + b, 0)
+  live.lit = s('path', { class: 't26r-lit', d: `M${path.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}`, 'stroke-dasharray': `${f1(total)} ${f1(total)}`, 'stroke-dashoffset': f1(total) }) as SVGPathElement
   out.push(live.lit)
-  // a milestone at each bend, a little lantern beside it, both scaled by distance
-  live.marks = MARKS.slice(0, N).map((mk, i) => {
-    const [x, y] = B[i + 1]
+  // at each stop, on the outside of the bend: a stone landing in the water, the milestone on it, a little lantern and its
+  // date carved on a post by the planks; all scaled by distance
+  live.marks = MARKS.slice(0, N + 1).map((mk, i) => {
+    const [x, y] = stopAt(B, i)
     const k = near(y, hh)
-    const z = Math.min(116, w * 0.19) * k
-    const prev = B[i], next = B[i + 2]
-    const sd = (prev[0] + next[0]) / 2 > x ? -1 : 1 // stand on the outside of the bend
-    const ox = sd * z * 0.95
+    const z = Math.min(150, Math.max(w, hh) * 0.125) * k
+    const prev = B[2 * i], next = B[2 * i + 2]
+    const sd = (prev[0] + next[0]) / 2 > x ? -1 : 1 // the outside of the bend
+    const ox = x + sd * z * 0.95, oy = y + z * 0.12
+    const lx = x - sd * z * 0.42, ly = y + z * 0.2
     return s('g', { class: 't26r-mk' },
-      s('g', { class: 't26r-lamp', transform: `translate(${f1(x - sd * z * 0.5)} ${f1(y + 6 * k)})` }, oki(z * 0.4, seed + i * 5)),
-      s('g', { class: 't26r-obj', transform: `translate(${f1(x + ox)} ${f1(y + 2 * k)}) scale(1 0.9)` }, mk(z, seed + i * 7)))
+      // the landing: a flat stone, its wet rim, its reflection
+      s('path', { class: 't26r-landsh', d: blob(ox + z * 0.06, oy + z * 0.08, z * 0.66, z * 0.18, seed + i * 3, 0.12, 14) }),
+      s('path', { class: 't26r-land', d: blob(ox, oy, z * 0.6, z * 0.15, seed + i * 3 + 1, 0.1, 14), fill: 'url(#p2-rock)' }),
+      s('path', { class: 't26r-landrim', d: stroke(curve([ox - z * 0.55, oy - z * 0.03], [ox, oy - z * 0.16], [ox + z * 0.5, oy - z * 0.05], 10), z * 0.025, 0.2, 0.3, 0.2) }),
+      s('ellipse', { class: 't26r-pool', cx: f1(lx), cy: f1(ly + z * 0.05), rx: f1(z * 0.9), ry: f1(z * 0.32) }),
+      // its reflection under the landing, then the thing itself
+      s('g', { class: 't26r-refl', transform: `translate(${f1(ox)} ${f1(oy + z * 0.1)}) scale(1 -0.5)` }, mk(z, seed + i * 7)),
+      s('g', { class: 't26r-obj', transform: `translate(${f1(ox)} ${f1(oy - z * 0.04)}) scale(1 0.92)` }, mk(z, seed + i * 7)),
+      s('g', { class: 't26r-lamp', transform: `translate(${f1(lx)} ${f1(ly)})` }, oki(z * 0.42, seed + i * 5)),
+      s('text', { class: 't26r-date', x: f1(ox), y: f1(oy + z * 0.36), 'text-anchor': 'middle', style: `font-size:${f1(clamp(z * 0.16, 11, 15))}px` }, R.ticks[i]))
   })
   out.push(...live.marks)
   // you: a little paper figure on the planks
-  const pk = near(B[1][1], hh)
   live.walker = s('g', { class: 't26r-walker' },
     s('ellipse', { class: 't26r-wsh', cx: 2, cy: 1, rx: 6, ry: 2 }),
     s('path', { class: 't26r-wbody', d: `M-4 0L-3 -12Q0 -15 3 -12L4 0Z` + blob(0, -17, 3.4, 3.8, 3, 0.05, 10) }))
-  live.walker.style.setProperty('--k', String(pk))
   out.push(live.walker)
-  // the bridge does not start at the band's edge: its first runs come up out of the frame's bottom-left corner (painted in
-  // the marsh under the band, in frame px), so the whole bridge cuts the frame corner to corner like lightning
-  const bandEl = live.art?.querySelector<HTMLElement>('.p2t-band')
-  if (live.near && live.art && bandEl) {
-    const bl = parseFloat(bandEl.style.left) || 0, bt = parseFloat(bandEl.style.top) || 0
-    const W = live.art.clientWidth, H = live.art.clientHeight
-    const b0: Pt = [bl + B[0][0], bt + B[0][1]]
-    // (on a tall frame it leaves by the left edge at once: the words lie below the band there)
-    const run: Pt[] = H > W ? [[-40, b0[1] + 70], [b0[0] + 2, b0[1]]] : [[Math.max(-20, b0[0] - W * 0.09), H + 40], [b0[0] + Math.min(140, W * 0.12), b0[1] + (H - b0[1]) * 0.5], [b0[0] + 2, b0[1]]]
-    live.near.replaceChildren(...planks(run, (y) => 0.97 + 0.4 * Math.max(0, (y - b0[1]) / Math.max(1, H - b0[1]))))
-  }
   // the far end melts into the mist where today becomes the horizon
-  const [fx, fy] = B[N + 1]
-  out.push(mist(fx + w * 0.05, fy - hh * 0.04, w * 0.3, hh * 0.22), mist(B[8][0], B[8][1], w * 0.25, hh * 0.18))
+  const [fx, fy] = stopAt(B, N)
+  out.push(mist(fx + w * 0.06, fy - hh * 0.06, w * 0.32, hh * 0.2), mist(B[8][0], B[8][1], w * 0.3, hh * 0.2))
   return out
 }
 
@@ -287,96 +286,145 @@ function back({ w, h: hh, seed }: TideGeo): SVGElement[] {
 function track(g: TideGeo) {
   const B = bends(g.w, g.h)
   return (t: number): Pt => {
-    const u = Math.max(0, Math.min(N, t * N))
-    const i = Math.min(N - 1, Math.floor(u)), f = u - i
-    const [ax, ay] = B[i + 1], [bx, by] = B[i + 2]
-    const x = ax + (bx - ax) * f, y = ay + (by - ay) * f
-    return [x, y + 34 * near(y, g.h)]
+    const u = clamp(t * N, 0, N)
+    const i = Math.min(N - 1, Math.floor(u))
+    const [x, y] = between(B, i, u - i)
+    return [x, y + 30 * near(y, g.h)]
   }
 }
 /** the thumb: the moon mirrored in the marsh, a few ripples across it */
 function thumb() {
   return s('g', { class: 't26r-moon' },
-    s('ellipse', { class: 't26r-moonglow', rx: 26, ry: 17, fill: 'url(#p2-halo)' }),
+    s('ellipse', { class: 't26r-moonglow', rx: 64, ry: 30, fill: 'url(#p2-halo)' }),
     s('ellipse', { class: 't26r-ring', rx: 23, ry: 8.5 }),
     s('ellipse', { class: 't26r-ring t26r-ring2', rx: 17.5, ry: 6.2 }),
     s('ellipse', { class: 't26r-moondisc', rx: 12, ry: 7.2 }),
-    // the water breaks the disc into a few bright dashes and dark ripples across it
     s('path', { class: 't26r-moonrip', d: stroke([[-14, -1.6], [0, -2.3], [14, -1.4]], 1.5, 0.3, 0.3, 0.2) + stroke([[-10, 2.6], [2, 2.1], [11, 2.9]], 1.2, 0.3, 0.3, 0.2) }),
     s('path', { class: 't26r-moonhi', d: stroke([[-7, -4.4], [3, -4.8]], 1.4, 0.3, 0.3, 0.2) + stroke([[-18, 5.6], [-12, 5.4]], 1.1, 0.3, 0.3, 0.2) + stroke([[13, 5.2], [19, 5.5]], 1.1, 0.3, 0.3, 0.2) }))
 }
 /** follow the moon: light the planks behind it, walk the figure, warm the lanterns reached */
 function onStep(i: number, t: number) {
-  const { lit, walker, marks, B, len, total, hh } = live
+  const { lit, walker, marks, B, len, hh } = live
   if (!lit || !walker || !B.length) return
-  const u = t * N, k = Math.min(N - 1, Math.floor(u)), f = u - k
-  const done = len[0] + len.slice(1, k + 1).reduce((a, b) => a + b, 0) + len[k + 1] * f
+  const u = clamp(t * N, 0, N), k = Math.min(N - 1, Math.floor(u)), f = u - k
+  // how far along the lit path: the approach run, the runs of the stops passed, then this part of the next two
+  const a = B[2 * k + 1], m = B[2 * k + 2]
+  const l1 = Math.hypot(m[0] - a[0], m[1] - a[1]), l2 = len[2 * k + 1] ?? 0
+  const done = len.slice(0, 2 * k + 1).reduce((x, y) => x + y, 0) + f * (l1 + l2)
+  const total = len.reduce((x, y) => x + y, 0)
   lit.setAttribute('stroke-dashoffset', f1(Math.max(0, total - done)))
-  const [ax, ay] = B[k + 1], [bx, by] = B[k + 2]
-  const x = ax + (bx - ax) * f, y = ay + (by - ay) * f
-  walker.setAttribute('transform', `translate(${f1(x)} ${f1(y)}) scale(${(near(y, hh) * 1.1).toFixed(2)})`)
-  marks.forEach((m, j) => {
-    m.classList.toggle('up', j <= i)
-    m.classList.toggle('on', j === i)
+  const [x, y] = between(B, k, f)
+  walker.setAttribute('transform', `translate(${f1(x)} ${f1(y)}) scale(${(near(y, hh) * 1.6).toFixed(2)})`)
+  marks.forEach((mk, j) => {
+    mk.classList.toggle('up', j <= i)
+    mk.classList.toggle('on', j === i)
   })
+  if (i > live.reached) {
+    live.reached = i
+    live.onReach?.(i)
+  }
 }
 
 export const ruleScene: SceneDef = {
   label: R.label,
+  text: 'br',
   mount(ctx) {
     p2Defs()
-    // the marsh under the whole scene: water darkening toward us, the far half lost in mist, big iris at the near edge
+    // the marsh under the whole scene: the sky held in the water, lighter far off, a broad glow where the moon lies,
+    // glints, lily pads, iris standing in it, big dark iris at the frame's near edges
     const marsh = s('svg', { class: 't26r-marsh', 'aria-hidden': 'true' })
     ctx.art.classList.add('t26r-art')
     ctx.art.append(marsh)
-    live.art = ctx.art
-    live.near = s('g', { class: 't26r-approach' }) as SVGGElement
+    live.reached = -1
     ctx.onCleanup(() => {
       ctx.art.classList.remove('t26r-art')
       marsh.remove()
+      live.onReach = null
     })
     ctx.onCleanup(onSize(ctx.art, () => {
       const W = ctx.art.clientWidth, H = ctx.art.clientHeight
       if (!W || !H) return
+      const tall = H > W
       marsh.setAttribute('viewBox', `0 0 ${W} ${H}`)
       const r = rng(2660)
-      const stop = (o: number, a: number) => s('stop', { offset: o, style: `stop-color:var(--paper);stop-opacity:${a}` })
-      const kids: SVGElement[] = [s('defs', null, s('linearGradient', { id: 't26r-far', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, 0.96), stop(0.55, 0.5), stop(1, 0))), s('rect', { class: 't26r-water', width: W, height: H })]
+      const B = bends(W, H)
+      const stop = (o: number, c: string, a: number) => s('stop', { offset: o, style: `stop-color:var(${c});stop-opacity:${a}` })
+      const [gx, gy] = between(B, 0, 0.35)
+      const kids: SVGElement[] = [s('defs', null,
+        // the sky held in the water: paler toward the far edge (the top), deepest near you
+        s('linearGradient', { id: 't26r-sky', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, '--mist', 0.55), stop(0.45, '--mist', 0.14), stop(1, '--mist', 0)),
+        s('radialGradient', { id: 't26r-glow', cx: f1(gx), cy: f1(gy + H * 0.06), r: f1(Math.max(W, H) * 0.42), gradientUnits: 'userSpaceOnUse', gradientTransform: `translate(${f1(gx)} ${f1(gy)}) scale(1 0.55) translate(${f1(-gx)} ${f1(-gy)})` }, stop(0, '--moon', 0.3), stop(0.4, '--moon', 0.1), stop(1, '--moon', 0))),
+        s('rect', { class: 't26r-water', width: W, height: H }),
+        s('rect', { class: 't26r-skyin', width: W, height: H, fill: 'url(#t26r-sky)' }),
+        s('rect', { width: W, height: H, fill: 'url(#t26r-glow)', class: 't26r-moonwash' })]
       // moonlight scattered on the water, short strokes, longer toward us
       let glints = ''
-      for (let i = 0; i < 140; i++) {
-        const y = H * (0.15 + 0.85 * r()), k = y / H, x = r() * W, len = 6 + k * 30 * r()
+      for (let i = 0; i < 160; i++) {
+        const y = H * (0.1 + 0.9 * r()), k = y / H, x = r() * W, len = 6 + k * 34 * r()
         glints += stroke([[x, y], [x + len, y + 0.4]], 0.8 + k * 1.2, 0.3, 0.3, 0.2)
       }
       kids.push(s('path', { class: 't26r-glint', d: glints }))
-      // lily pads, flattened by the high view
-      for (let i = 0; i < 16; i++) {
-        const y = H * (0.2 + 0.8 * r()), k = 0.5 + y / H * 0.7, x = r() * W
-        kids.push(s('path', { class: 't26r-pad', d: blob(x, y, 16 * k, 10 * k, 2661 + i, 0.08, 14) }))
+      // lily pads, flattened by the high view, kept off the planks
+      const onPlanks = (x: number, y: number, pad: number) => {
+        for (let k = 0; k < B.length - 1; k++) {
+          const [ax, ay] = B[k], [bx, by] = B[k + 1]
+          const u = clamp(((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / ((bx - ax) ** 2 + (by - ay) ** 2), 0, 1)
+          if (Math.hypot(x - ax - (bx - ax) * u, y - ay - (by - ay) * u) < pad) return true
+        }
+        return false
       }
-      kids.push(live.near!)
-      // iris standing in the lower water too, either side of where the words lie
-      const lower: Pt[] = H > W ? [[W * 0.12, H * 1.0], [W * 0.86, H * 1.01]] : [[W * 0.78, H * 0.8], [W * 0.86, H * 0.93], [W * 0.62, H * 0.97], [W * 0.94, H * 0.7], [W * 0.3, H * 0.94]]
-      lower.forEach(([x, y], i) => kids.push(...iris(x, y, H > W ? 0.8 : 1.1 + (y / H) * 0.3, 2680 + i * 7)))
-      // near iris, big and dark, cut by the frame (on a tall frame only up the sides, clear of the words below the band)
-      const tallF = H > W
-      const nearIris: [number, number, number][] = tallF ? [[W * 0.96, H * 0.3, 5], [W * 0.03, H * 0.18, 4]] : [[W * 0.98, H * 0.9, 10], [W * 0.9, H * 0.35, 6], [W * 0.06, H * 0.42, 5]]
-      for (const [x0, y0, n] of nearIris) {
+      for (let i = 0; i < 22; i++) {
+        const y = H * (0.15 + 0.85 * r()), k = 0.5 + (y / H) * 0.7, x = r() * W
+        if (onPlanks(x, y, 40 * k)) continue
+        kids.push(s('path', { class: 't26r-pad', d: blob(x, y, 17 * k, 10 * k, 2661 + i, 0.08, 14) }), s('path', { class: 't26r-padrim', d: stroke([[x - 14 * k, y - 4 * k], [x, y - 9 * k], [x + 12 * k, y - 5 * k]], 1.1 * k, 0.2, 0.3, 0.2) }))
+      }
+      // iris clumps in the water, away from the planks and the words (lower right on a wide frame, the foot on a tall one)
+      const words = (x: number, y: number) => (tall ? y > H * 0.64 : x > W * 0.6 && y > H * 0.6)
+      const spots: Pt[] = []
+      for (let i = 0; i < 46 && spots.length < (tall ? 10 : 18); i++) {
+        const x = 30 + r() * (W - 60), y = 50 + r() * (H - 60)
+        if (!onPlanks(x, y, 58 * near(y, H)) && !words(x, y)) spots.push([x, y])
+      }
+      spots.sort((a, b) => a[1] - b[1]).forEach(([x, y], i) => kids.push(...iris(x, y, near(y, H), 2690 + i)))
+      // near iris, big and dark, cut by the frame's edges (clear of the words)
+      const nearIris: [number, number, number][] = tall ? [[W * 0.97, H * 0.4, 5], [W * 0.02, H * 0.3, 4]] : [[W * 0.99, H * 0.5, 6], [W * 0.03, H * 0.5, 5], [W * 0.48, H * 1.02, 5]]
+      for (const [x0, y0, nb] of nearIris) {
         let d = '', rim = ''
         const k = 0.6 + (y0 / H) * 0.9
-        for (let i = 0; i < n; i++) {
+        for (let i = 0; i < nb; i++) {
           const a = -Math.PI / 2 + (r() - 0.5) * 1.6, len = (60 + r() * 90) * k
           const bx = x0 + (r() - 0.5) * 50 * k
           const tip: Pt = [bx + Math.cos(a) * len, y0 + Math.sin(a) * len]
-          d += stroke([[bx, y0 + 10], [bx + Math.cos(a) * len * 0.5 + (r() - 0.5) * 10, y0 + Math.sin(a) * len * 0.45], tip], (7 + r() * 5) * k, 0.05, 0.8, 0.1)
-          rim += stroke(curve([bx + Math.cos(a) * len * 0.4, y0 + Math.sin(a) * len * 0.4], [bx + Math.cos(a) * len * 0.7, y0 + Math.sin(a) * len * 0.68], tip, 6), 1.4 * k, 0.2, 0.6, 0.1)
+          d += stroke([[bx, y0 + 10], [bx + Math.cos(a) * len * 0.5 + (r() - 0.5) * 10, y0 + Math.sin(a) * len * 0.45], tip], (8 + r() * 6) * k, 0.05, 0.8, 0.1)
+          rim += stroke(curve([bx + Math.cos(a) * len * 0.4, y0 + Math.sin(a) * len * 0.4], [bx + Math.cos(a) * len * 0.7, y0 + Math.sin(a) * len * 0.68], tip, 6), 1.5 * k, 0.2, 0.6, 0.1)
         }
         kids.push(s('path', { class: 't26r-iris t26r-near', d }), s('path', { class: 't26r-irisrim', d: rim }))
       }
-      kids.push(s('rect', { class: 't26r-far', width: W, height: H * 0.5 }))
+      // mist over the far water
+      kids.push(s('rect', { class: 't26r-farmist', width: W, height: H * 0.42, fill: 'url(#t26r-farg)' }), s('defs', null, s('linearGradient', { id: 't26r-farg', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, '--paper', 0.85), stop(0.6, '--paper', 0.3), stop(1, '--paper', 0))))
       marsh.replaceChildren(...kids)
     }))
-    // the bridge's point arrives at today: still nobody knows, yet one company chose caution (audit v3 26-3)
-    return progressTide(R.tide as Tide, { label: R.label, prompt: R.prompt, aria: R.sliderAria, insight: F(R.tideInsight), detail: F(R.tideDetail), art: { back }, track, thumb, onStep }).mount(ctx)
+    // guidance: the moon in the water carries the dot (it leans along the bridge when idle); each new stop moves the prompt on
+    const g = guide(ctx)
+    let dot: ReturnType<typeof g.dot> | null = null
+    live.onReach = (i) => {
+      if (i === 0) return
+      if (i < N) ctx.prompt(fill(R.promptNext, { n: N - i }))
+      else dot?.done()
+    }
+    const sc = progressTide(R.tide as Tide, {
+      label: R.label, prompt: R.prompt, aria: R.sliderAria, insight: F(R.tideInsight), detail: [F(R.tide.horizon), F(R.tideDetail)], art: { back }, track, thumb, onStep,
+      band: (W, H) => ({ w: W, h: H, top: 0 }),
+    }).mount(ctx)
+    const moonEl = ctx.art.querySelector<HTMLElement>('.p2t-moon')
+    if (moonEl) dot = g.dot(moonEl, { dir: [0.7, -0.7] })
+    // six seconds still: the paper figure takes a step along the planks
+    const onIdle = () => {
+      if (ctx.reduced || !live.walker || live.reached >= N) return
+      live.walker.animate([{ translate: '0 0' }, { translate: '6px -6px' }, { translate: '0 0' }], { duration: 900, easing: 'ease-in-out', iterations: 2, composite: 'add' })
+    }
+    ctx.el.addEventListener('p2:idle', onIdle)
+    ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
+    return sc
   },
 }

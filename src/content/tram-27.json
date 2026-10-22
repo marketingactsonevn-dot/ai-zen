@@ -20,9 +20,9 @@
   "scenes": {
     "faces": {
       "label": "Đá có mặt người",
-      "art": "Góc vườn đêm ngang tầm mắt, bảy lớp sâu: cỏ và cành thông tối ở sát mắt, tảng đá rêu lớn có vết nứt, đèn đá thắp với vũng sáng ấm trên cát, tấm bia nhỏ chìm trong bóng dưới gốc thông, đám mây dài vắt ngang trăng, núi trong sương, trời và trăng. Mỗi vật giấu một khuôn mặt bị xé lẻ qua nhiều lớp: hai bông cỏ gần và vết nứt trên đá, hai ô cửa đèn và cành thông rủ, hai biển tối trên trăng và sợi mây. Đứng đúng chỗ thì các mảnh khớp thành mặt. Tìm đủ ba, tấm bia sáng màn hình xanh như máy tính cũ: ELIZA, 1966.",
+      "art": "Góc vườn đêm ngang tầm mắt, bảy lớp sâu: cỏ và cành thông tối ở sát mắt, tảng đá rêu lớn có vết nứt, đèn đá thắp với vũng sáng ấm trên cát, tấm bia nhỏ chìm trong bóng dưới gốc thông, đám mây dài vắt ngang trăng, núi trong sương, trời và trăng. Mỗi vật giấu một khuôn mặt bị xé lẻ qua nhiều lớp: hai bông cỏ gần và vết nứt trên đá, hai ô cửa đèn và cành thông rủ, hai biển tối trên trăng và sợi mây. Một con mắt mực có chấm son là chỗ bạn đứng nhìn; đứng đúng chỗ thì các mảnh khớp thành mặt, ánh sáng siết lại trên chúng một thoáng. Tìm đủ ba, tấm bia sáng màn hình xanh như máy tính cũ: ELIZA, 1966.",
       "view": "Rê chuột, kéo hoặc nghiêng máy để đổi chỗ đứng; mỗi khuôn mặt chỉ hiện trọn từ một chỗ. Dùng Tab để tới từng vật, Enter để bước tới đúng chỗ nhìn.",
-      "prompt": "Rê chuột (hoặc kéo) — tìm khuôn mặt ẩn",
+      "prompt": "Kéo con mắt (hoặc rê chuột) — tìm khuôn mặt ẩn",
       "left": "Còn {n} khuôn mặt",
       "things": [
         {
@@ -72,62 +72,44 @@
             "source": "weizenbaum-1976"
           }
         }
-      ]
+      ],
+      "count": "Đã thấy {n}/{total}",
+      "promptLow": "Chạm đá, trăng hay đèn — tìm khuôn mặt ẩn",
+      "promptTouch": "Kéo con mắt — tìm khuôn mặt ẩn"
     },
     "lamp": {
       "label": "Chiếc đèn bên mình",
-      "art": "Đêm gần như tối hẳn dưới một cây thông cổ: thân thông chéo từ góc dưới trái, một cành dài vươn ngang đỉnh khung. Đầu cành treo đèn lồng giấy tròn ghi câu hỏi, luôn nghiêng về phía người đến gần như con lắc. Dưới đèn là thảm rêu tối có rễ nổi và bốn hòn đá cùng cỡ trên một cung đều. Dẫn đèn tới hòn nào, mặt đá phía đèn bừng sáng và lời của nó hiện trên đất.",
-      "prompt": "Chạm từng hòn đá — nghe lợi và hại",
+      "art": "Đêm dưới một cây thông cổ: thân thông chéo từ góc dưới trái, một cành dài vươn ngang đỉnh khung. Trên cành treo một đèn lồng giấy tròn ghi câu hỏi, khoen dây trượt được dọc cành. Dưới gốc thông, ba người thật ngồi quanh khay trà trên thảm rêu: một người bạn, mẹ, một đồng nghiệp. Phía trước, chính bạn ngồi một mình ở đầu kia của cành. Kéo đèn về phía mình: chỗ bạn ấm lên, còn ba người kia chìm vào bóng tối. Đẩy đèn ra xa: họ sáng lại.",
+      "prompt": "Kéo đèn lại gần mình",
+      "promptBack": "Giờ đẩy đèn ra xa",
+      "aria": "Chiếc đèn lồng trên cành thông: mũi tên phải để kéo lại gần bạn, mũi tên trái để đẩy về phía ba người",
+      "ticks": [
+        "xa",
+        "vừa",
+        "sát"
+      ],
+      "people": "Ba người thật bên bạn: một người bạn, mẹ, một đồng nghiệp",
       "question": "Chỗ dựa, hay chỗ trốn?",
-      "opener": "72% thiếu niên Mỹ từng trò chuyện với một “bạn đồng hành AI” — ứng dụng AI đóng vai bạn bè.",
-      "insight": {
-        "text": "Mặt lợi: 39% em dùng nói đã mang kỹ năng giao tiếp luyện với AI ra đời thật.",
+      "opener": {
+        "text": "72% thiếu niên Mỹ từng trò chuyện với một “bạn đồng hành AI” — ứng dụng AI đóng vai bạn bè.",
         "asOf": "2026-10-19",
         "source": "commonsense-2025"
       },
-      "perspectives": {
-        "stones": [
-          {
-            "who": "Thiếu niên Mỹ trả lời khảo sát (2025)",
-            "view": {
-              "text": "80% em dùng vẫn dành cho bạn bè thật nhiều thời gian hơn cho AI.",
-              "asOf": "2026-10-15",
-              "source": "commonsense-2025"
-            }
-          },
-          {
-            "who": "MIT Media Lab & OpenAI (2025)",
-            "view": {
-              "text": "Thử nghiệm 4 tuần, 981 người: ai tự dùng nhiều hơn thường cô đơn hơn, dựa dẫm hơn. Chưa rõ cái nào gây ra cái nào.",
-              "asOf": "2026-10-15",
-              "source": "fang-2025"
-            }
-          },
-          {
-            "who": "Anthropic (dữ liệu Claude.ai, 2025)",
-            "view": {
-              "text": "Chỉ 2,9% cuộc trò chuyện trên Claude.ai là chuyện cảm xúc, tâm sự; nhờ AI đóng vai bạn, người yêu chưa tới 0,5%.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-affective-2025",
-              "claimBy": "Anthropic"
-            }
-          },
-          {
-            "who": "Common Sense Media, tổ chức vì trẻ em",
-            "view": {
-              "text": "Người dưới 18 tuổi chưa nên dùng bạn đồng hành AI, cho tới khi có biện pháp an toàn tốt hơn.",
-              "asOf": "2026-10-15",
-              "source": "commonsense-2025",
-              "kind": "opinion"
-            }
-          }
-        ],
-        "common": {
-          "text": "AI đồng hành giúp được phần nào; lợi hay hại tuỳ dùng bao nhiêu, và có người thật bên cạnh không.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
-        }
+      "near": {
+        "text": "Thử nghiệm 4 tuần, 981 người: ai tự dùng nhiều hơn thường cô đơn hơn. Chưa rõ cái nào gây ra cái nào.",
+        "asOf": "2026-10-15",
+        "source": "fang-2025"
+      },
+      "insight": {
+        "text": "Đèn sưởi ấm thật — nhưng kéo sát quá, nó che mất những người thật bên bạn.",
+        "asOf": "2026-10-22",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "Mặt lợi: 39% thiếu niên dùng AI đồng hành nói đã mang kỹ năng giao tiếp luyện với AI ra đời thật. Common Sense Media vẫn khuyên người dưới 18 tuổi chưa nên dùng.",
+        "asOf": "2026-10-19",
+        "source": "commonsense-2025"
       }
     },
     "flatter": {
@@ -168,7 +150,7 @@
     },
     "path": {
       "label": "Thói quen lành",
-      "art": "Khung trong khung: từ trong một chòi trên sườn đồi, sau lưng một người ngồi gù trước màn hình xanh lạnh, nhìn qua cửa trượt mở xuống lối bậc đá dốc băng qua vườn trăng, về ngôi nhà trong thung lũng có cửa giấy sáng vàng và bóng vài người ngồi quanh mâm. Bốn phiến đá nằm lộn xộn ở ngưỡng cửa; cạnh mỗi bậc có một đèn đá nhỏ chưa thắp.",
+      "art": "Khung trong khung: từ trong một chòi trên sườn đồi, sau lưng một người ngồi gù trước màn hình xanh lạnh, nhìn qua cửa trượt mở xuống lối bậc đá dốc băng qua vườn trăng, về ngôi nhà trong thung lũng có cửa giấy sáng vàng và bóng vài người ngồi quanh mâm. Bốn phiến đá tự nhiên khác dáng nằm lộn xộn ở ngưỡng cửa; cạnh mỗi bậc có một đèn đá nhỏ chưa thắp, treo thẻ gỗ ghi một lúc trong ngày: trước khi mở máy, đang trò chuyện, trước một quyết định lớn, khi gập máy. Xong lối, thẻ mang về là tờ giấy dán trên cửa giấy của ngôi nhà.",
       "prompt": "Đặt mỗi viên đá vào bậc hợp với nó",
       "keys": "Phím 1–4 để đặt đá theo thứ tự",
       "stoneAria": "Đặt viên đá “{label}”",
@@ -204,7 +186,19 @@
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
-      }
+      },
+      "marks": [
+        "trước khi mở máy",
+        "đang trò chuyện",
+        "trước một quyết định lớn",
+        "khi gập máy"
+      ],
+      "prompts": [
+        "Kéo một viên đá vào bậc gần nhất",
+        "Bậc 2: đang trò chuyện",
+        "Bậc 3: trước quyết định lớn",
+        "Bậc cuối: khi gập máy"
+      ]
     }
   },
   "sources": {

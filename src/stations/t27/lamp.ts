@@ -2,15 +2,14 @@ import { h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { cssVar, onPrefs } from '../../core/prefs'
-import { blob, clamp, curve, rng, stroke, type Pt } from '../../ui/part2/ink'
-import { perspectiveCircle } from '../../ui/part2/perspectives'
-import type { Perspectives } from '../../ui/part2/types'
+import { blob, clamp, curve, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
+import { pine } from '../../ui/part2/paint'
+import { guide } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-27.json'
-import { domePts, F, f1, P } from './ink27'
+import { F, f1, invite, nudge, wideZone } from './ink27'
 
 const S = C.scenes.lamp
-const SEEDS = [2781, 2784, 2789, 2793]
 
 /** A token's colour as numbers (tokens are hex or rgb()), so the canvas can mix and fade it. */
 type RGB = [number, number, number]
@@ -24,74 +23,76 @@ const rgbOf = (c: string): RGB => {
 }
 const rgba = ([r, g, b]: RGB, a = 1) => `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a})`
 const mix = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
-interface Col { dark: boolean; wash: RGB; moon: RGB; mossA: RGB; mossB: RGB; mossC: RGB; bark: RGB }
+interface Col { dark: boolean; wash: RGB; moon: RGB; paper: RGB; mossA: RGB; mossB: RGB; mossC: RGB; bark: RGB }
 
-/** Where everything stands (px in the scene): the pine's hook, the lantern, the arc of stones round the spot under it, the words. */
-interface Geo {
-  W: number; H: number; land: boolean
-  hook: Pt; rope: number; lr: [number, number]
-  c: Pt; rx: number; ry: number; sw: number
-  feet: Pt[]; sc: number[]; reach: number; text: [number, number, number]
-  base: Pt; tw: number; top: Pt
-}
-/** The arc: back-left, round the front, to back-right (degrees on the ground ellipse; y down, so 90° is nearest). */
-const ARC = [205, 128, 52, -25]
-function geo(W: number, H: number): Geo {
-  const land = W / H > 1.05
-  const hook: Pt = land ? [W * 0.56, H * 0.17] : [W * 0.57, H * 0.13]
-  const lr: [number, number] = land ? [clamp(H * 0.12, 56, 86), clamp(H * 0.15, 70, 106)] : [clamp(W * 0.18, 50, 66), clamp(W * 0.23, 64, 84)]
-  const c: Pt = land ? [W * 0.56, H * 0.62] : [W * 0.57, H * 0.55]
-  const rx = land ? Math.min(W * 0.29, H * 0.6) : W * 0.33
-  const ry = land ? H * 0.16 : H * 0.085
-  const sw = land ? clamp(rx * 0.34, 92, 136) : clamp(W * 0.2, 60, 78)
-  const feet = ARC.map((d) => [c[0] + rx * Math.cos((d * Math.PI) / 180), c[1] + ry * Math.sin((d * Math.PI) / 180)] as Pt)
-  // nearer stones are bigger: the arc is seen in perspective
-  const sc = ARC.map((d) => 0.78 + 0.3 * (Math.sin((d * Math.PI) / 180) + 1) / 2)
-  const tw = land ? W * 0.05 : W * 0.065
-  const base: Pt = land ? [W * 0.15, H * 0.86] : [W * 0.07, H * 0.8]
-  const top: Pt = land ? [W * 0.21, H * 0.13] : [W * 0.13, H * 0.1]
-  // the words lie on the ground: inside the arc under the pool (wide), or on the moss in front of it, right of the trunk (tall)
-  const inner = rx * Math.abs(Math.cos((ARC[1] * Math.PI) / 180)) - sw * sc[1] * 0.5 - 14
-  const text: [number, number, number] = land
-    ? [c[0] - Math.min(inner, 220), c[1] - ry * 0.3, Math.min(inner, 220) * 2]
-    : [Math.max(base[0] + tw * 2, W * 0.2), c[1] + ry * 0.95 + 8, W - Math.max(base[0] + tw * 2, W * 0.2) - 10]
-  return { W, H, land, hook, rope: land ? H * 0.075 : H * 0.055, lr, c, rx, ry, sw, feet, sc, reach: rx * 1.65, text, base, tw, top }
-}
-
-/** Four stones of one size but their own character (w, h of the dome in the stone box). */
-const DIMS: Pt[] = [[94, 52], [86, 60], [98, 50], [88, 57]]
+/** Someone sitting on the moss: feet centre (x, y), seated height h, facing f (1 = right), kind (hair, posture). */
+interface Sitter { x: number; y: number; h: number; f: 1 | -1; kind: number }
 
 /**
- * A stone of the arc (in the circle's stone box: viewBox -60 -70 120 90, foot on y = 0): dark by night; four washes of
- * lamplight (its left, right, top and the face toward you) mixed by where the pool is, its shadow thrown the other way.
+ * Where everything stands (px in the scene). The lantern's cord ring slides along the long branch between x0 (above
+ * the three people at the pine's foot: "far" from you) and x1 (above you, at the other end: "close"). Wide, the bottom
+ * right stays open ground for the insight; tall, the opening line sits in the sky over the branch.
  */
-function stoneArt(k: number): SVGElement {
-  const [w, hh] = DIMS[k]
-  const pts = domePts(0, 0, w, hh, SEEDS[k], k % 2 ? 0.1 : -0.14)
-  const d = `M${pts.map(P).join('L')}Q0 4 ${P(pts[0])}Z`
-  const n = pts.length
-  const r = rng(SEEDS[k] + 1)
-  let moss = '', cun = ''
-  for (let i = 0; i < 6; i++) {
-    const [x, y] = pts[Math.round(n * (0.3 + r() * 0.4))]
-    moss += blob(x + (r() - 0.5) * 8, y + 3, 4 + r() * 6, 2 + r() * 2, SEEDS[k] + i, 0.3, 8)
+interface Geo {
+  W: number; H: number; land: boolean
+  base: Pt; top: Pt; tw: number; branch: Pt[]
+  x0: number; x1: number; rope: number; lr: [number, number]
+  people: Sitter[]; me: Sitter; tray: Pt
+  moon: Pt; hz: number; bed: [number, number, number, number]
+  opener: [number, number, number]; near: [number, number, number]
+}
+function geo(W: number, H: number): Geo {
+  const land = W / H > 1.05
+  if (land) {
+    const knots: Pt[] = [[W * 0.165, H * 0.13], [W * 0.25, H * 0.185], [W * 0.33, H * 0.162], [W * 0.43, H * 0.178], [W * 0.52, H * 0.158], [W * 0.61, H * 0.172], [W * 0.68, H * 0.142], [W * 0.75, H * 0.11]]
+    const ph = H * 0.17
+    return {
+      W, H, land, base: [W * 0.1, H * 0.92], top: knots[0], tw: W * 0.042, branch: dense(knots, 8),
+      x0: W * 0.29, x1: W * 0.6, rope: H * 0.13, lr: [clamp(H * 0.075, 46, 72), clamp(H * 0.095, 58, 92)],
+      people: [{ x: W * 0.2, y: H * 0.765, h: ph, f: 1, kind: 0 }, { x: W * 0.385, y: H * 0.745, h: ph * 0.94, f: -1, kind: 1 }, { x: W * 0.325, y: H * 0.82, h: ph * 1.04, f: -1, kind: 2 }],
+      me: { x: W * 0.575, y: H * 0.9, h: H * 0.23, f: 1, kind: 3 }, tray: [W * 0.285, H * 0.752],
+      moon: [W * 0.87, H * 0.12], hz: H * 0.53, bed: [W * 0.4, H * 0.82, W * 0.5, H * 0.24],
+      opener: [W * 0.755, H * 0.21, W * 0.22], near: [W * 0.245, H * 0.88, W * 0.27],
+    }
   }
-  for (let i = 0; i < 5; i++) {
-    const x = -w * 0.4 + r() * w * 0.8, y = -hh * (0.15 + r() * 0.45)
-    cun += stroke([[x, y], [x + (r() - 0.5) * 4, y + hh * (0.12 + r() * 0.15)]], 1 + r() * 1.2, 0.2, 0.5, 0.1)
+  const knots: Pt[] = [[W * 0.14, H * 0.215], [W * 0.27, H * 0.262], [W * 0.42, H * 0.244], [W * 0.58, H * 0.262], [W * 0.76, H * 0.25], [W * 0.98, H * 0.222]]
+  const ph = H * 0.135
+  return {
+    W, H, land, base: [W * 0.07, H * 0.93], top: knots[0], tw: W * 0.1, branch: dense(knots, 8),
+    x0: W * 0.37, x1: W * 0.76, rope: H * 0.1, lr: [clamp(W * 0.13, 40, 54), clamp(W * 0.165, 50, 68)],
+    people: [{ x: W * 0.24, y: H * 0.755, h: ph, f: 1, kind: 0 }, { x: W * 0.5, y: H * 0.735, h: ph * 0.92, f: -1, kind: 1 }, { x: W * 0.38, y: H * 0.8, h: ph * 1.04, f: -1, kind: 2 }],
+    me: { x: W * 0.7, y: H * 0.93, h: H * 0.2, f: 1, kind: 3 }, tray: [W * 0.37, H * 0.745],
+    moon: [W * 0.84, H * 0.135], hz: H * 0.5, bed: [W * 0.45, H * 0.82, W * 0.62, H * 0.22],
+    // tall: the close-up line takes the opener's place in the sky (the opener has faded by then)
+    opener: [W * 0.05, H * 0.025, W * 0.9], near: [W * 0.05, H * 0.025, W * 0.9],
   }
-  return s('g', { class: 't27l-st' },
-    s('ellipse', { class: 't27l-st-sh', cx: 0, cy: 3, rx: w * 0.58, ry: 9 }),
-    s('ellipse', { class: 't27l-st-contact', cx: 0, cy: 1.5, rx: w * 0.5, ry: 3.5 }),
-    s('path', { class: 't27l-st-base', d, filter: 'url(#ink-rough)' }),
-    s('path', { class: 't27l-st-l', d, fill: 'url(#t27l-litL)' }),
-    s('path', { class: 't27l-st-r', d, fill: 'url(#t27l-litR)' }),
-    s('path', { class: 't27l-st-t', d, fill: 'url(#t27l-litT)' }),
-    s('path', { class: 't27l-st-f', d, fill: 'url(#t27l-litF)' }),
-    s('path', { class: 't27l-st-cun', d: cun }),
-    s('path', { class: 't27l-st-moss', d: moss, filter: 'url(#ink-wash)' }),
-    s('path', { class: 't27l-st-rim', d: stroke(pts.slice(Math.round(n * 0.35), Math.round(n * 0.85)).map(([x, y]) => [x - 0.5, y + 1.2] as Pt), 1.6, 0.2, 0.3, 0.1) }),
-    s('path', { class: 't27l-st-ink', d: stroke(pts.slice(0, Math.round(n * 0.45)), 2.2, 0.05, 0.3, 0.3) + stroke([[-w * 0.49, 0.5], [0, 3], [w * 0.49, 0.5]], 2, 0.1, 0.1, 0.4), filter: 'url(#ink-rough)' }))
+}
+/** Points along a polyline, densified (pines bend in elbows, not arcs). */
+function dense(pts: Pt[], k: number): Pt[] {
+  return pts.flatMap((p, i) => (i ? Array.from({ length: k }, (_, j) => {
+    const a = pts[i - 1], t = (j + 1) / k
+    return [a[0] + (p[0] - a[0]) * t, a[1] + (p[1] - a[1]) * t] as Pt
+  }) : [p]))
+}
+/** The branch's underside at x (where the cord ring rides). */
+function branchY(g: Geo, x: number): number {
+  const b = g.branch
+  for (let i = 1; i < b.length; i++) {
+    if (b[i][0] >= x) {
+      const a = b[i - 1], u = (x - a[0]) / (b[i][0] - a[0] || 1)
+      return a[1] + (b[i][1] - a[1]) * u
+    }
+  }
+  return b[b.length - 1][1]
+}
+const ringAt = (g: Geo, t: number): Pt => {
+  const x = g.x0 + (g.x1 - g.x0) * t
+  return [x, branchY(g, x) + g.tw * 0.12]
+}
+/** the ground under the lantern: from the people's moss to your spot */
+const groundAt = (g: Geo, t: number) => {
+  const py = g.people.reduce((a, p) => a + p.y, 0) / g.people.length
+  return py + (g.me.y - py) * t * 0.92
 }
 
 /** A band along a path between two offsets across its width (-0.5 = left of travel … 0.5 = right), the width tapering by t. */
@@ -108,18 +109,15 @@ function ribbon(pts: Pt[], wid: (t: number) => number, o0: number, o1: number, s
   })
   return `M${A.map(P).join('L')}L${B.reverse().map(P).join('L')}Z`
 }
-/** Points along a polyline, densified (pines bend in elbows, not arcs). */
-const dense = (pts: Pt[], k: number): Pt[] => pts.flatMap((p, i) => (i ? Array.from({ length: k }, (_, j) => {
-  const a = pts[i - 1], t = (j + 1) / k
-  return [a[0] + (p[0] - a[0]) * t, a[1] + (p[1] - a[1]) * t] as Pt
-}) : [p]))
+const P = (p: Pt) => `${f1(p[0])} ${f1(p[1])}`
 
 /**
- * The night behind (canvas, drawn once per size and theme): an old pine from the lower left, its long branch over the
- * top, needle clusters lit by the moon on their upper tips, a moss floor. Almost dark in both themes (dusk in light).
+ * The night behind (canvas, drawn once per size and theme): a ridge of far pines standing in the mist, an old pine from
+ * the lower left with its long branch over the top (needle pads lit by the moon on their upper tips), surface roots, and
+ * a moss floor wide enough for everyone to sit on. Night in both themes (the warm lantern carries the scene).
  */
 function* paint(c2: CanvasRenderingContext2D, g: Geo, col: Col, dpr: number) {
-  const { W, H, hook, tw, base, top } = g
+  const { W, H, tw, base, top } = g
   const r = rng(2770)
   c2.setTransform(dpr, 0, 0, dpr, 0, 0)
   c2.clearRect(0, 0, W, H)
@@ -129,68 +127,77 @@ function* paint(c2: CanvasRenderingContext2D, g: Geo, col: Col, dpr: number) {
     c2.fill(new Path2D(d))
   }
   const dark = col.dark
-  // the dusk wash, the vignette and the moon's glow are the canvas element's CSS background (no full-canvas raster here)
-  const mx = W * 0.86, my = g.land ? H * 0.13 : H * 0.08
-  fill(blob(mx, my, Math.min(W, H) * 0.035, Math.min(W, H) * 0.035, 2771, 0.02, 20), col.moon, 0.95)
+  const [mx, my] = g.moon
+  fill(blob(mx, my, Math.min(W, H) * 0.032, Math.min(W, H) * 0.032, 2771, 0.02, 20), col.moon, 0.95)
   yield
-  // far: a low ridge in mist, its foot fading into the haze
-  const hz = H * (g.land ? 0.48 : 0.42)
-  let ridge = `M-10 ${f1(hz + H * 0.08)}`
-  for (let x = -10; x <= W + 10; x += 10) ridge += `L${f1(x)} ${f1(hz - Math.max(0, Math.sin(x * 0.005 + 1.4) * H * 0.07 + Math.sin(x * 0.019) * H * 0.018))}`
-  ridge += `L${f1(W + 10)} ${f1(hz + H * 0.08)}Z`
-  const rg = c2.createLinearGradient(0, hz - H * 0.08, 0, hz + H * 0.08)
-  rg.addColorStop(0, rgba(col.wash, dark ? 0.5 : 0.3))
-  rg.addColorStop(1, rgba(col.wash, 0))
+  // far: two ridges in mist, a row of pines on the nearer one, their feet fading into the haze (no outline: behind mist)
+  const hz = g.hz
+  const ridge = (k: number, amp: number, ph: number) => {
+    let d = `M-10 ${f1(hz + H * 0.1)}`
+    for (let x = -10; x <= W + 10; x += 10) d += `L${f1(x)} ${f1(hz - k - Math.max(0, Math.sin(x * 0.004 + ph) * amp + Math.sin(x * 0.017 + ph) * amp * 0.25))}`
+    return d + `L${f1(W + 10)} ${f1(hz + H * 0.1)}Z`
+  }
+  const far = mix(col.wash, dark ? col.moon : col.paper, dark ? 0.1 : 0.35)
+  fill(ridge(H * 0.06, H * 0.07, 1.4), far, dark ? 0.45 : 0.3)
+  const pinesC = mix(col.wash, dark ? col.moon : col.paper, dark ? 0.06 : 0.2)
+  let row = ''
+  for (let i = 0; i < (g.land ? 15 : 7); i++) {
+    const x = (i + 0.3 + r() * 0.5) * (W / (g.land ? 15 : 7)), hh = H * (0.07 + r() * 0.06)
+    for (const p of pine(x, hz + H * 0.005, hh, 2900 + i, r() < 0.5 ? 1 : -1).querySelectorAll('path')) row += p.getAttribute('d') ?? ''
+    if (i % 5 === 4) yield
+  }
+  fill(row, pinesC, dark ? 0.55 : 0.35)
+  const haze = c2.createLinearGradient(0, hz - H * 0.06, 0, hz + H * 0.08)
+  haze.addColorStop(0, rgba(far, 0))
+  haze.addColorStop(0.6, rgba(far, dark ? 0.55 : 0.6))
+  haze.addColorStop(1, rgba(far, 0))
   c2.globalAlpha = 1
-  c2.fillStyle = rg
-  c2.fill(new Path2D(ridge))
+  c2.fillStyle = haze
+  c2.fillRect(0, hz - H * 0.06, W, H * 0.14)
+  fill(ridge(-H * 0.01, H * 0.035, 3.1), mix(col.wash, far, 0.4), dark ? 0.7 : 0.45)
   yield
-  // the moss ground: a soft dark bed, cushions of lighter moss, sparse tufts thinning out at its ragged edge
-  const [cx, cy] = g.c
-  const MX = g.rx * 1.45, MY = g.ry * 1.9, mcy = cy + g.ry * 0.2
-  const bed = c2.createRadialGradient(cx, mcy, 0, cx, mcy, MX)
-  bed.addColorStop(0, rgba(mix(col.mossB, col.wash, dark ? 0.35 : 0.3), dark ? 0.9 : 0.75))
-  bed.addColorStop(0.6, rgba(mix(col.mossB, col.wash, dark ? 0.45 : 0.4), dark ? 0.55 : 0.45))
+  // the moss ground: a soft dark bed under everyone, cushions of lighter moss, tufts thinning out at its ragged edge
+  const [cx, cy, MX, MY] = g.bed
+  const bed = c2.createRadialGradient(cx, cy, 0, cx, cy, MX)
+  bed.addColorStop(0, rgba(mix(col.mossB, col.wash, dark ? 0.35 : 0.3), dark ? 0.92 : 0.8))
+  bed.addColorStop(0.65, rgba(mix(col.mossB, col.wash, dark ? 0.45 : 0.4), dark ? 0.6 : 0.5))
   bed.addColorStop(1, rgba(col.mossB, 0))
   c2.save()
-  c2.translate(cx, mcy)
+  c2.translate(cx, cy)
   c2.scale(1, MY / MX)
-  c2.translate(-cx, -mcy)
+  c2.translate(-cx, -cy)
   c2.globalAlpha = 1
   c2.fillStyle = bed
-  c2.fill(new Path2D(blob(cx, mcy, MX, MX, 2772, 0.1, 40)))
+  c2.fill(new Path2D(blob(cx, cy, MX, MX, 2772, 0.1, 40)))
   c2.restore()
   yield
   const tones = [col.mossA, col.mossC, mix(col.mossB, col.wash, 0.5)]
   const tuft = ['', '', '']
-  for (let i = 0; i < (g.land ? 700 : 340); i++) {
+  for (let i = 0; i < (g.land ? 900 : 420); i++) {
     const a = r() * Math.PI * 2, q = Math.pow(r(), 0.6)
-    const x = cx + Math.cos(a) * MX * q * (0.9 + r() * 0.2), y = mcy + Math.sin(a) * MY * q
-    const near = clamp((y - (mcy - MY)) / (MY * 2), 0, 1)
+    const x = cx + Math.cos(a) * MX * q * (0.9 + r() * 0.2), y = cy + Math.sin(a) * MY * q
+    const near = clamp((y - (cy - MY)) / (MY * 2), 0, 1)
     const l = (1.5 + r() * 3) * (0.5 + near)
     tuft[i % 3] += stroke([[x, y], [x + (r() - 0.5) * l * 0.8, y - l]], 0.8 + near, 0.1, 0.5, 0.3)
-    if (i % 120 === 119) yield
+    if (i % 150 === 149) yield
   }
-  tuft.forEach((d, i) => fill(d, tones[i], dark ? 0.4 : 0.32))
-  yield
-  // fallen needles scattered on the moss
+  tuft.forEach((d, i) => fill(d, tones[i], dark ? 0.42 : 0.34))
   let fallen = ''
-  for (let i = 0; i < (g.land ? 50 : 26); i++) {
+  for (let i = 0; i < (g.land ? 60 : 30); i++) {
     const a = r() * Math.PI * 2, q = Math.sqrt(r())
-    const x = cx + Math.cos(a) * MX * q * 0.9, y = mcy + Math.sin(a) * MY * q * 0.9, l = 5 + r() * 9, ang = r() * Math.PI
+    const x = cx + Math.cos(a) * MX * q * 0.9, y = cy + Math.sin(a) * MY * q * 0.9, l = 5 + r() * 9, ang = r() * Math.PI
     fallen += stroke([[x, y], [x + Math.cos(ang) * l, y + Math.sin(ang) * l * 0.4]], 0.9, 0.2, 0.3, 0.3)
   }
   fill(fallen, mix(col.bark, col.moon, dark ? 0.15 : 0.1), dark ? 0.5 : 0.35)
   yield
-  // a round limb in three tones across its width (shade left of travel or below, bark, moonlit side), plates, a moon rim
-  const lit = mix(col.bark, col.moon, dark ? 0.32 : 0.42)
+  // a round limb in three tones across its width (shade, bark, moonlit side), bark plates, a moon rim
+  const lit = mix(col.bark, col.moon, dark ? 0.24 : 0.22)
   const limb = (pts: Pt[], wid: (t: number) => number, seed: number, litSide: 1 | -1, plates: number) => {
     const o = (v: number) => v * litSide
-    fill(ribbon(pts, wid, -0.5, 0.5, seed), col.wash, dark ? 0.96 : 0.88)
+    fill(ribbon(pts, wid, -0.5, 0.5, seed), col.wash, dark ? 0.96 : 0.9)
     fill(ribbon(pts, wid, o(-0.22), o(0.5), seed), col.bark, dark ? 0.9 : 0.85)
     fill(ribbon(pts, wid, o(0.12), o(0.47), seed + 1), lit, dark ? 0.55 : 0.6)
     fill(ribbon(pts, wid, o(-0.5), o(-0.3), seed + 2), col.wash, dark ? 0.7 : 0.55)
-    // bark plates: fissures along the limb, short cracks across it, little moonlit lips on the lit side
     let fis = '', lips = ''
     const n = pts.length
     for (let i = 0; i < plates; i++) {
@@ -205,38 +212,37 @@ function* paint(c2: CanvasRenderingContext2D, g: Geo, col: Col, dpr: number) {
     }
     fill(fis, col.wash, dark ? 0.9 : 0.75)
     fill(lips, col.moon, dark ? 0.3 : 0.4)
-    fill(ribbon(pts, wid, o(0.4), o(0.5), seed + 3), col.moon, dark ? 0.45 : 0.55)
+    fill(ribbon(pts, wid, o(0.4), o(0.5), seed + 3), col.moon, dark ? 0.36 : 0.32)
   }
-  // roots: from the trunk's foot, low over the ground, sinking into the moss
-  for (let i = 0; i < 3; i++) {
+  // surface roots: from the trunk's foot, low over the moss toward the people, sinking into it
+  for (let i = 0; i < 4; i++) {
     const dir = i === 0 ? -1 : 1
-    const len = W * (g.land ? 0.05 + i * 0.03 : 0.07 + i * 0.04)
-    const end: Pt = [base[0] + len * dir, base[1] + H * (0.03 + i * 0.012)]
-    const w0 = tw * (0.6 - i * 0.12)
-    limb(curve([base[0] + dir * tw * 0.3, base[1] - tw * 0.3], [base[0] + len * dir * 0.5, base[1] - H * 0.005], end, 14), (t) => w0 * (1 - t * 0.85), 30 + i, dir > 0 ? -1 : 1, 6)
+    const len = W * (g.land ? 0.05 + i * 0.035 : 0.08 + i * 0.05)
+    const end: Pt = [base[0] + len * dir, base[1] + H * (0.012 + i * 0.008) - (i === 3 ? H * 0.04 : 0)]
+    const w0 = tw * (0.62 - i * 0.1)
+    limb(curve([base[0] + dir * tw * 0.3, base[1] - tw * 0.3], [base[0] + len * dir * 0.5, base[1] - H * 0.01], end, 14), (t) => w0 * (1 - t * 0.85), 30 + i, dir > 0 ? -1 : 1, 6)
   }
   yield
   // the trunk: an old pine bending up from the lower left, thick at the foot, tapering into the branch
-  const trunk = [...curve([base[0] - tw * 0.3, H + 40], [base[0] + tw * 1.4, H * 0.66], [top[0] - tw * 0.2, H * 0.4], 18), ...curve([top[0] - tw * 0.2, H * 0.4], [top[0] - tw * 1.3, H * 0.2], top, 12).slice(1)]
+  const trunk = [...curve([base[0] - tw * 0.3, H + 40], [base[0] + tw * 1.4, H * 0.66], [top[0] - tw * 0.2, H * 0.42], 18), ...curve([top[0] - tw * 0.2, H * 0.42], [top[0] - tw * 1.2, H * 0.22], top, 12).slice(1)]
   limb(trunk, (t) => tw * (1.25 - t * 0.5), 11, 1, g.land ? 90 : 55)
   yield
-  // the long branch: out of the trunk's top in a few elbows, tapering to the hook and past it
-  const span = hook[0] - top[0]
-  const knots: Pt[] = [top, [top[0] + span * 0.18, top[1] + H * 0.045], [top[0] + span * 0.45, hook[1] - H * 0.03], [top[0] + span * 0.74, hook[1] - H * 0.005], [hook[0], hook[1] - H * 0.02], [hook[0] + W * 0.07, hook[1] - H * 0.045]]
-  const branch = dense(knots, 6)
-  const bw = (t: number) => tw * (0.62 - t * 0.5)
-  limb(branch, bw, 21, -1, g.land ? 40 : 24)
+  // the long branch over the top: in elbows, tapering to its tip; the ring rides its underside
+  const bw = (t: number) => tw * (0.56 - t * 0.42)
+  limb(g.branch, bw, 21, -1, g.land ? 44 : 26)
   yield
-  // needle clusters: fans of strokes from a twig's end (upper fans, a few drooping), massed into flat cloud pads;
-  // the upper-right tips catch the moon
-  const pads: [number, number, number][] = [[0.04, -1, 1.25], [0.2, 1, 1.05], [0.32, -1, 1.3], [0.5, -1, 1.1], [0.6, 1, 0.85], [0.74, -1, 1], [0.9, -1, 0.75], [1, 1, 0.55]]
-  const unit = g.land ? H * 0.16 : W * 0.21
+  // needle clusters: fans from a twig's end massed into flat cloud pads above the branch (a few drooping), the
+  // upper-right tips catching the moon; none hang where the cord ring runs
+  const pads: [number, number, number][] = g.land
+    ? [[0.03, -1, 1.2], [0.14, -1, 1.25], [0.3, -1, 1.05], [0.45, -1, 1.15], [0.6, -1, 0.95], [0.76, -1, 1], [0.92, -1, 0.8], [1, -1, 0.6]]
+    : [[0.04, -1, 1.1], [0.25, -1, 1], [0.48, -1, 1.05], [0.7, -1, 0.95], [0.92, -1, 0.85]]
+  const unit = g.land ? H * 0.15 : W * 0.2
   const needle = mix(col.bark, col.moon, dark ? 0.12 : 0.2)
   for (const [t, side, k] of pads) {
-    const i = Math.round(t * (branch.length - 1))
-    const [bx, by] = branch[i]
+    const i = Math.round(t * (g.branch.length - 1))
+    const [bx, by] = g.branch[i]
     const pw = unit * k
-    const px = bx + (r() - 0.4) * pw * 0.4, py = by + side * pw * (side < 0 ? 0.2 : 0.16)
+    const px = bx + (r() - 0.4) * pw * 0.3, py = by + side * pw * 0.2
     let twig = stroke([[bx, by], [(bx + px) / 2 + (r() - 0.5) * 6, (by + py) / 2], [px, py]], Math.max(1.4, bw(t) * 0.35), 0.1, 0.6, 0.3)
     let mass = '', nd = '', ndLit = '', rim = ''
     const fans = 5 + Math.round(k * 3)
@@ -255,10 +261,6 @@ function* paint(c2: CanvasRenderingContext2D, g: Geo, col: Col, dpr: number) {
         else nd += ndl
         if (a > Math.PI * 1.45 && a < Math.PI * 1.95 && r() < 0.75) rim += stroke([[fx + (tip[0] - fx) * 0.5, fy + (tip[1] - fy) * 0.5], tip], 1.2, 0.2, 0.4, 0.1)
       }
-      for (let j = 0; j < 5; j++) {
-        const a = Math.PI * (0.15 + r() * 0.7), l = R * (0.3 + r() * 0.3)
-        nd += stroke([[fx, fy], [fx + Math.cos(a) * l, fy + Math.sin(a) * l * 0.7]], 0.8, 0.05, 0.5, 0.15)
-      }
     }
     fill(mass, mix(col.bark, col.wash, 0.5), dark ? 0.6 : 0.5)
     fill(twig, col.bark, 0.95)
@@ -267,42 +269,99 @@ function* paint(c2: CanvasRenderingContext2D, g: Geo, col: Col, dpr: number) {
     fill(rim, col.moon, dark ? 0.75 : 0.9)
     yield
   }
-  // the hook: a short twig where the cord is tied
-  fill(stroke([[hook[0] + W * 0.02, hook[1] - H * 0.02], [hook[0] + 2, hook[1] - 2], [hook[0], hook[1]]], 3, 0.1, 0.3, 0.4), col.bark, 1)
   c2.globalAlpha = 1
 }
 
-/** Scene 2 — a paper lantern on a pine branch that always agrees: it leans after you; bring it to a stone to hear it. */
+/**
+ * A person sitting on the moss, seen from the side and a little behind (feet centre x, y; seated height h; facing f):
+ * kneeling (seiza: back over the heels, forearms on the lap), or, for you, knees drawn up and hugged. A head on a neck,
+ * the arm parted from the body by a fold, a collar, hair; the strokes the lantern lights (crown, shoulders, forearms,
+ * lap) and the moon's rim on the right-hand edges. Unit coordinates: h = 1, y up is negative, facing right.
+ */
+const POSE = {
+  kneel: {
+    body: [[-0.34, 0], [-0.37, -0.08, -0.31, -0.14, -0.27, -0.2], [-0.31, -0.33, -0.25, -0.48, -0.17, -0.58], [-0.11, -0.64, -0.02, -0.665, 0.06, -0.645],
+      [0.12, -0.625, 0.165, -0.575, 0.17, -0.5], [0.18, -0.41, 0.165, -0.33, 0.2, -0.27], [0.26, -0.215, 0.34, -0.2, 0.4, -0.175], [0.45, -0.155, 0.47, -0.11, 0.445, -0.075],
+      [0.48, -0.05, 0.52, -0.02, 0.5, 0]],
+    head: [0.05, -0.765], arm: [[0.1, -0.585], [0.175, -0.36], [0.27, -0.235], [0.42, -0.165]], collar: [[0.02, -0.65], [0.09, -0.56], [0.11, -0.5]],
+    lit: [[[-0.2, -0.56], [-0.1, -0.64], [0.03, -0.665], [0.13, -0.62]], [[0.22, -0.25], [0.32, -0.205], [0.43, -0.17]], [[0.3, -0.12], [0.42, -0.08], [0.5, -0.02]]],
+    moon: [[0.06, -0.645], [0.15, -0.6], [0.17, -0.48], [0.165, -0.36]],
+  },
+  hug: {
+    body: [[-0.3, 0], [-0.35, -0.1, -0.34, -0.26, -0.28, -0.38], [-0.23, -0.5, -0.13, -0.585, -0.02, -0.605], [0.06, -0.615, 0.12, -0.585, 0.155, -0.53],
+      [0.2, -0.505, 0.28, -0.51, 0.34, -0.525], [0.4, -0.535, 0.445, -0.51, 0.435, -0.445], [0.46, -0.3, 0.47, -0.15, 0.45, 0]],
+    head: [0.1, -0.71], arm: [[0.08, -0.56], [0.2, -0.48], [0.32, -0.47], [0.42, -0.46]], collar: [[0.04, -0.61], [0.1, -0.54]],
+    lit: [[[-0.12, -0.58], [-0.02, -0.605], [0.09, -0.6], [0.16, -0.54]], [[0.2, -0.5], [0.3, -0.505], [0.42, -0.5]], [[0.44, -0.42], [0.46, -0.28]]],
+    moon: [[0.155, -0.53], [0.24, -0.505], [0.36, -0.52], [0.44, -0.46], [0.46, -0.3]],
+  },
+}
+function sitter(p: Sitter) {
+  const { x, y, h: u, f, kind } = p
+  const pose = kind === 3 ? POSE.hug : POSE.kneel
+  const Q = (px: number, py: number): Pt => [x + f * px * u, y + py * u]
+  const q = (px: number, py: number) => P(Q(px, py))
+  const [s0, ...cs] = pose.body as number[][]
+  const body = `M${q(s0[0], s0[1])}` + cs.map((c) => `C${q(c[0], c[1])} ${q(c[2], c[3])} ${q(c[4], c[5])}`).join('') + 'Z'
+  const [hx, hy] = Q(pose.head[0], pose.head[1])
+  const neck = `M${q(pose.head[0] - 0.045, pose.head[1] + 0.1)}L${q(pose.head[0] - 0.035, pose.head[1] + 0.06)}L${q(pose.head[0] + 0.05, pose.head[1] + 0.06)}L${q(pose.head[0] + 0.06, pose.head[1] + 0.11)}Z`
+  const head = blob(hx, hy, u * 0.098, u * 0.115, Math.round(x), 0.05, 14) + neck
+  // hair: short (a friend), a bun (your mother), tied back (a colleague), loose and falling forward (you)
+  const back = -f * u
+  const hair = kind === 1
+    ? blob(hx + back * 0.025, hy - u * 0.035, u * 0.095, u * 0.085, 2851, 0.1, 12) + blob(hx + back * 0.085, hy - u * 0.075, u * 0.05, u * 0.045, 2852, 0.1, 10)
+    : kind === 2
+      ? blob(hx + back * 0.03, hy - u * 0.03, u * 0.096, u * 0.095, 2853, 0.1, 12) + stroke([[hx + back * 0.08, hy - u * 0.02], [hx + back * 0.15, hy + u * 0.04], [hx + back * 0.13, hy + u * 0.09]], u * 0.04, 0.3, 0.6, 0.3)
+      : kind === 3
+        ? blob(hx + back * 0.02, hy - u * 0.02, u * 0.105, u * 0.11, 2856, 0.12, 12) + stroke([[hx - back * 0.02, hy - u * 0.08], [hx - back * 0.09, hy + u * 0.02]], u * 0.035, 0.3, 0.5, 0.2)
+        : blob(hx + back * 0.025, hy - u * 0.045, u * 0.1, u * 0.075, 2854, 0.14, 12)
+  const pts = (a: number[][]) => a.map(([px, py]) => Q(px, py))
+  const fold = stroke(pts(pose.arm), u * 0.022, 0.3, 0.5, 0.2) + stroke(pts(pose.collar), u * 0.016, 0.3, 0.4, 0.2)
+  // a cup in your mother's hands
+  const cup = kind === 1 ? blob(...Q(0.43, -0.215), u * 0.035, u * 0.03, 2858, 0.05, 8) : ''
+  const warm = stroke(Array.from({ length: 9 }, (_, k) => {
+    const a = Math.PI * (1.1 + k * 0.1)
+    return [hx + Math.cos(a) * u * 0.1, hy + Math.sin(a) * u * 0.118] as Pt
+  }), u * 0.028, 0.2, 0.3, 0.1) + pose.lit.map((l) => stroke(pts(l), u * 0.03, 0.2, 0.3, 0.1)).join('')
+  const moon = stroke(pts(pose.moon), u * 0.016, 0.2, 0.3, 0.1)
+  return { body: body + cup, head, hair, fold, warm, moon }
+}
+
+/** The tea tray between the three: a low lacquer tray, a pot and two cups, steam no — it is late. */
+function tray([x, y]: Pt, u: number) {
+  const top = blob(x, y, u * 0.34, u * 0.08, 2861, 0.04, 16)
+  const pot = blob(x - u * 0.1, y - u * 0.08, u * 0.075, u * 0.065, 2862, 0.06, 12) + stroke([[x - u * 0.03, y - u * 0.1], [x + u * 0.03, y - u * 0.14]], u * 0.02, 0.2, 0.5, 0.2) + `M${f1(x - u * 0.13)} ${f1(y - u * 0.15)}h${f1(u * 0.06)}v${f1(u * 0.02)}h${f1(-u * 0.06)}Z`
+  const cups = blob(x + u * 0.08, y - u * 0.03, u * 0.03, u * 0.025, 2863, 0.05, 8) + blob(x + u * 0.17, y + u * 0.01, u * 0.03, u * 0.025, 2864, 0.05, 8)
+  return { top, things: pot + cups }
+}
+
+/** Scene 2 — "the lamp at your side": slide the lantern along the branch to you, then back to the people at the pine. */
 export const lampScene = {
   label: S.label,
   mount(ctx: SceneCtx) {
-    let G: Geo | null = null
-    let api: { pick(k: number): void } | null = null
-    let root: HTMLElement | null = null
-    let heard = -1
-    let all = false
-    const got = new Set<number>()
-    const lowish = ctx.quality === 'low' || ctx.reduced
+    const calm = ctx.quality === 'low' || ctx.reduced
     const cv = h('canvas', { class: 't27l-cv', 'aria-hidden': 'true' })
     const c2 = cv.getContext('2d')!
+    const figs = s('svg', { class: 't27l-figs', 'aria-hidden': 'true' })
     const pool = h('div', { class: 't27l-pool', 'aria-hidden': 'true' })
     const q = h('p', { class: 't27l-q' }, S.question)
     const body = s('svg', { class: 't27l-body', viewBox: '-60 -84 120 168', 'aria-hidden': 'true' })
-    const lamp = h('div', { class: 't27l-lamp' }, h('i', { class: 't27l-cord' }), h('div', { class: 't27l-paper' }, body, q))
-    const stop = (o: number, c: string, a = 1) => s('stop', { offset: o, style: `stop-color:${c};stop-opacity:${a}` })
-    const defs = s('svg', { width: 0, height: 0, 'aria-hidden': 'true', style: 'position:absolute' }, s('defs', null,
-      s('linearGradient', { id: 't27l-litL', x1: 0, y1: 0, x2: 1, y2: 0.3 }, stop(0, 'var(--lantern)', 0.95), stop(0.65, 'var(--lantern)', 0)),
-      s('linearGradient', { id: 't27l-litR', x1: 1, y1: 0, x2: 0, y2: 0.3 }, stop(0, 'var(--lantern)', 0.95), stop(0.65, 'var(--lantern)', 0)),
-      s('linearGradient', { id: 't27l-litT', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, 'var(--lantern)', 0.85), stop(0.7, 'var(--lantern)', 0)),
-      s('linearGradient', { id: 't27l-litF', x1: 0, y1: 1, x2: 0, y2: 0 }, stop(0, 'var(--lantern)', 0.9), stop(0.75, 'var(--lantern)', 0)),
-      // the paper: hot where the flame is (low centre), lantern orange, deeper and browner where it curves away
-      s('radialGradient', { id: 't27l-paperG', cx: 0.5, cy: 0.6, r: 0.6, fx: 0.47, fy: 0.62 },
-        stop(0, 'var(--moon)'), stop(0.22, 'color-mix(in srgb, var(--moon) 45%, var(--lantern))'), stop(0.62, 'var(--lantern)'),
-        stop(0.9, 'color-mix(in srgb, var(--lantern) 70%, var(--umbra))'), stop(1, 'color-mix(in srgb, var(--lantern) 55%, var(--umbra))')),
-      s('radialGradient', { id: 't27l-core', cx: 0.5, cy: 0.5, r: 0.5 }, stop(0, 'var(--moon)', 0.95), stop(0.4, 'var(--moon)', 0.5), stop(1, 'var(--lantern)', 0)),
-      s('radialGradient', { id: 't27l-inner', cx: 0.5, cy: 0.5, r: 0.5 }, stop(0, 'var(--lantern)', 0.75), stop(0.5, 'var(--lantern)', 0.25), stop(1, 'var(--lantern)', 0))))
-    // the lantern body: bamboo hoops with the paper bellying between them (each band shaded at its hoops), faint seams of
-    // the paper panels, the wire frame and the candle seen through it, a hot core, lacquered caps, a cold moon edge
+    const handle = h('i', { class: 't27l-handle' })
+    const paper = h('div', {
+      class: 't27l-paper', role: 'slider', tabindex: '0', 'aria-label': S.aria,
+      'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-orientation': 'horizontal',
+    }, body, q, handle)
+    const lamp = h('div', { class: 't27l-lamp' }, h('i', { class: 't27l-cord' }), h('i', { class: 't27l-ring' }), paper)
+    const opener = ctx.fact(F(S.opener), 'p', 't27l-text t27l-opener')
+    const near = ctx.fact(F(S.near), 'p', 't27l-text t27l-near')
+    const root = h('div', { class: `t27l${calm ? ' is-calm' : ''}` },
+      h('p', { class: 'visually-hidden' }, S.art, ' ', S.people), cv, figs, pool, lamp, opener, near)
+    ctx.art.append(root)
+    ctx.prompt(S.prompt)
+    const stable = stableHeight(ctx, [F(S.insight)])
+
+    const stop = (o: number, c: string, a: number | string = 1) => s('stop', { offset: o, style: `stop-color:${c};stop-opacity:${a}` })
+    // the lantern body: bamboo hoops with the paper bellying between them, faint panel seams, the wire frame and the
+    // candle seen through it, a hot core, lacquered caps, a cold moon edge
     let hoops = '', bands = '', seams = ''
     for (let i = 1; i < 8; i++) {
       const t = -1 + (i * 2) / 8, y = t * 70, hw = 56 * Math.sqrt(1 - t * t * 0.92)
@@ -315,12 +374,17 @@ export const lampScene = {
         return [u * 56 * Math.sqrt(1 - t * t * 0.92) * (1 - 0.06 * Math.abs(u)), t * 70] as Pt
       }), 0.9, 0.1, 0.1, 0.4)
     }
-    const frame = stroke([[0, -66], [0, 34]], 1.6, 0.1, 0.1, 0.5) + 'M-9 50h18l-3 -14h-12Z'
     body.append(
+      s('defs', null,
+        s('radialGradient', { id: 't27l-paperG', cx: 0.5, cy: 0.6, r: 0.6, fx: 0.47, fy: 0.62 },
+          stop(0, 'var(--moon)'), stop(0.22, 'color-mix(in srgb, var(--moon) 45%, var(--lantern))'), stop(0.62, 'var(--lantern)'),
+          stop(0.9, 'color-mix(in srgb, var(--lantern) 70%, var(--umbra))'), stop(1, 'color-mix(in srgb, var(--lantern) 55%, var(--umbra))')),
+        s('radialGradient', { id: 't27l-core', cx: 0.5, cy: 0.5, r: 0.5 }, stop(0, 'var(--moon)', 0.95), stop(0.4, 'var(--moon)', 0.5), stop(1, 'var(--lantern)', 0)),
+        s('radialGradient', { id: 't27l-inner', cx: 0.5, cy: 0.5, r: 0.5 }, stop(0, 'var(--lantern)', 0.75), stop(0.5, 'var(--lantern)', 0.25), stop(1, 'var(--lantern)', 0))),
       s('ellipse', { class: 't27l-halo', cx: 0, cy: 6, rx: 150, ry: 170, fill: 'url(#p2-lamp)' }),
       s('ellipse', { class: 't27l-halo t27l-halo-in', cx: 0, cy: 8, rx: 84, ry: 96, fill: 'url(#t27l-inner)' }),
       s('ellipse', { class: 't27l-paper-b', cx: 0, cy: 0, rx: 56, ry: 72, fill: 'url(#t27l-paperG)' }),
-      s('path', { class: 't27l-frame', d: frame }),
+      s('path', { class: 't27l-frame', d: stroke([[0, -66], [0, 34]], 1.6, 0.1, 0.1, 0.5) + 'M-9 50h18l-3 -14h-12Z' }),
       s('ellipse', { class: 't27l-core', cx: 0, cy: 26, rx: 30, ry: 34, fill: 'url(#t27l-core)' }),
       s('path', { class: 't27l-band', d: bands, filter: 'url(#ink-wash)' }),
       s('path', { class: 't27l-seam', d: seams }),
@@ -330,134 +394,132 @@ export const lampScene = {
       s('path', { class: 't27l-caphi', d: stroke([[-22, -79.5], [20, -79.5]], 1.4, 0.2, 0.2, 0.2) + stroke([[-25, 70.5], [24, 70.5]], 1.4, 0.2, 0.2, 0.2) }),
       s('path', { class: 't27l-rimline', d: stroke(Array.from({ length: 14 }, (_, i) => [Math.cos(-0.4 - i * 0.09) * 56, Math.sin(-0.4 - i * 0.09) * 72] as Pt), 2, 0.2, 0.3, 0.2) }))
 
-    // ── the lantern's swing: a damped spring toward whoever is near; the pool of light slides under it ──
-    const st = { a: 0, v: 0, tgt: 0, glow: 0.7, glowT: 0.7, dwell: 0, near: -1 }
-    let stones: HTMLElement[] = []
+    // ── guide: the ring's way is the branch itself: three notches cut in the bark (far · middle · close), their names
+    // just under it; a dot on the lantern ──
+    const gd = guide(ctx)
+    let G: Geo | null = null
+    const notches = S.ticks.map((l) => h('div', { class: 't27l-notch', 'aria-hidden': 'true' }, h('i'), h('span', null, l)))
+    root.append(...notches)
+    let dot: ReturnType<typeof gd.dot> | null = gd.dot(handle, { dir: [1, 0] })
+
+    // ── state: t = where the ring is (0 far, at the people … 1 close, at you), with a lean of the lantern as it moves ──
+    const st = { t: 0.3, tt: 0.3, a: 0, av: 0 }
+    let step = 0
     function apply() {
-      if (!G) return
       const g = G
-      const a = st.a
-      lamp.style.transform = `translate3d(${f1(g.hook[0])}px,${f1(g.hook[1])}px,0) rotate(${(-a * 57.2958).toFixed(2)}deg)`
-      const px = g.hook[0] + Math.sin(a) * g.reach, py = g.c[1] + g.ry * 0.05
-      const bloom = all ? 1.6 : 1
-      pool.style.transform = `translate3d(${f1(px - g.rx * 0.575)}px,${f1(py - g.ry * 0.62)}px,0) scale(${bloom})`
-      pool.style.opacity = (0.35 + st.glow * 0.65).toFixed(3)
-      lamp.style.setProperty('--glow', st.glow.toFixed(3))
-      // each stone: the faces turned toward the pool lit (its side, its top, or the face toward you when the pool is in
-      // front of it), its shadow thrown the other way, longer the brighter
-      for (let k = 0; k < stones.length; k++) {
-        const dx = (px - g.feet[k][0]) / g.rx, dy = (py - g.feet[k][1]) / g.ry
-        const d = Math.hypot(dx, dy) || 1
-        const ux = dx / d, uy = dy / d
-        const I = all ? 0.6 : clamp(1.35 - d * 0.75, 0, 1) * (0.45 + st.glow * 0.55)
-        const el = stones[k]
-        el.style.setProperty('--l', (I * Math.max(0.12, -ux)).toFixed(3))
-        el.style.setProperty('--r', (I * Math.max(0.12, ux)).toFixed(3))
-        el.style.setProperty('--f', (I * Math.max(0, uy)).toFixed(3))
-        el.style.setProperty('--t', (I * (0.35 + 0.45 * Math.max(0, -uy))).toFixed(3))
-        el.style.setProperty('--sx', f1(-ux * 30 * (0.4 + I)))
-        el.style.setProperty('--sy', f1(-uy * 9 * (0.4 + I)))
-        el.style.setProperty('--sl', I.toFixed(3))
-      }
+      if (!g) return
+      const [rx, ry] = ringAt(g, st.t)
+      lamp.style.transform = `translate3d(${f1(rx)}px,${f1(ry)}px,0) rotate(${(st.a * 57.2958).toFixed(2)}deg)`
+      // light: the three are lit while the lantern is over them; you, as it comes to you; the pool on the ground under it
+      const lp = clamp(1 - st.t * 1.3, 0, 1), lm = clamp((st.t - 0.15) / 0.75, 0, 1)
+      root.style.setProperty('--lp', lp.toFixed(3))
+      root.style.setProperty('--lm', lm.toFixed(3))
+      root.style.setProperty('--ld', clamp((st.t - 0.45) / 0.45, 0, 1).toFixed(3))
+      const gy = groundAt(g, st.t)
+      pool.style.transform = `translate3d(${f1(rx)}px,${f1(gy)}px,0) translate(-50%,-50%)`
+      notches.forEach((n, i) => n.classList.toggle('on', st.t >= i / 2 - 0.02))
+      paper.setAttribute('aria-valuenow', String(Math.round(st.t * 100)))
+      paper.setAttribute('aria-valuetext', S.ticks[Math.round(st.t * 2)])
+      if (step === 0 && st.t > 0.9) reachNear()
+      else if (step === 1 && st.t < 0.1) reachFar()
     }
-    const loop = createLoop(ctx.art, (_t, dt) => {
+    const loop = createLoop(root, (_t, dt) => {
       if (dt > 0) {
-        const acc = -15 * (st.a - st.tgt) - 3.4 * st.v
-        st.v += acc * dt
-        st.a += st.v * dt
-        st.glow += (st.glowT - st.glow) * (1 - Math.exp(-dt * 4))
+        const prev = st.t
+        st.t += (st.tt - st.t) * (1 - Math.exp(-dt * 8)) // the lantern is a little heavy: it trails the hand
+        const vel = (st.t - prev) / dt
+        st.av += (-28 * (st.a - clamp(-vel * 0.45, -0.45, 0.45)) - 4.5 * st.av) * dt
+        st.a += st.av * dt
       }
       apply()
-      // guiding the pool onto a stone and holding it there a moment: that stone speaks
-      if (G && !all && dt > 0) {
-        const px = G.hook[0] + Math.sin(st.a) * G.reach
-        let k = -1
-        G.feet.forEach(([x], i) => Math.abs(px - x) < G!.sw * 0.4 && (k = i))
-        if (k >= 0 && k !== heard) {
-          st.dwell = k === st.near ? st.dwell + dt : 0
-          st.near = k
-          if (st.dwell > 0.45) api?.pick(k)
-        } else st.dwell = 0
-      }
-      return Math.abs(st.v) > 0.002 || Math.abs(st.a - st.tgt) > 0.002 || Math.abs(st.glow - st.glowT) > 0.004 || st.dwell > 0
+      return Math.abs(st.tt - st.t) > 0.0008 || Math.abs(st.a) > 0.002 || Math.abs(st.av) > 0.002
     })
     ctx.onCleanup(() => loop.dispose())
-    const aimAt = (a: number, glow = st.glowT) => {
-      st.tgt = clamp(a, -0.62, 0.62)
-      st.glowT = glow
-      if (lowish) {
-        st.a = st.tgt
-        st.glow = st.glowT
+    const go = (t: number) => {
+      st.tt = clamp(t, 0, 1)
+      if (calm) {
+        st.t = st.tt
         apply()
       } else loop.start()
     }
-    const angleTo = (k: number) => (G ? Math.asin(clamp((G.feet[k][0] - G.hook[0]) / G.reach, -1, 1)) : 0)
 
-    let hold: { x: number; y: number } | null = null
-    let rect: DOMRect | null = null
-    const follow = (e: PointerEvent) => {
-      if (!G || all || lowish) return
-      if (hold) {
-        if (Math.hypot(e.clientX - hold.x, e.clientY - hold.y) < 50) return
-        hold = null
-      }
-      rect ??= ctx.art.getBoundingClientRect()
-      const x = e.clientX - rect.left, y = e.clientY - rect.top
-      const lx = G.hook[0] + Math.sin(st.a) * G.rope * 2, ly = G.hook[1] + G.rope * 2
-      const near = 1 - clamp(Math.hypot(x - lx, y - ly) / (G.W * 0.5), 0, 1)
-      aimAt(Math.atan2(x - G.hook[0], Math.max(40, y - G.hook[1])) * 0.95, 0.45 + near * 0.55)
+    function reachNear() {
+      step = 1
+      root.classList.add('is-near')
+      ctx.chime('soft')
+      ctx.prompt(S.promptBack)
+      if (dot) dot.el.style.setProperty('--dx', '-1')
+    }
+    function reachFar() {
+      step = 2
+      root.classList.remove('is-near')
+      root.classList.add('is-done')
+      dot?.done()
+      dot = null
+      root.classList.add('notched')
+      ctx.chime('ok')
+      ctx.insight(F(S.insight), F(S.detail))
     }
 
-    const def = perspectiveCircle(S.perspectives as Perspectives, {
-      // the opening number on screen first (audit v3 27-2: it was hidden in the detail), the bright side in the detail
-      label: S.label, prompt: S.prompt, question: S.opener, detail: F(S.insight),
-      place: () => ({ x: 0, y: 0 }),
-      stone: (k) => stoneArt(k),
-      onHear: (k) => {
-        heard = k
-        got.add(k)
-        st.dwell = 0
-        hold = { x: -1e4, y: -1e4 }
-        if (got.size === 4 && !all) {
-          all = true
-          return aimAt(0, 1)
-        }
-        if (!all) aimAt(angleTo(k), 1)
-      },
-      stage: (host, a) => {
-        api = a
-        root = host.closest('.p2c')
-        root?.classList.add('t27l')
-        if (lowish) root?.classList.add('is-calm')
-        host.append(defs, cv, pool, lamp)
-        a.onLayout(() => layout(host))
-        // the whole scene is the lantern's room: it follows the mouse, or a finger dragged across it
-        const onMove = (e: PointerEvent) => (e.pointerType === 'mouse' || e.buttons) && follow(e)
-        ctx.art.addEventListener('pointermove', onMove)
-        ctx.art.addEventListener('pointerdown', follow)
-        ctx.art.addEventListener('pointerenter', () => void (rect = null))
-        return () => {
-          ctx.art.removeEventListener('pointermove', onMove)
-          ctx.art.removeEventListener('pointerdown', follow)
-        }
-      },
+    // ── input: drag the lantern (or anywhere along its groove) left and right; arrows / Home / End when focused ──
+    let rect: DOMRect | null = null
+    const tAt = (clientX: number) => {
+      const g = G!
+      rect ??= root.getBoundingClientRect()
+      return ((clientX - rect.left) - g.x0) / (g.x1 - g.x0)
+    }
+    root.addEventListener('pointerdown', (e) => {
+      const g = G
+      if (!g || e.button) return
+      rect = root.getBoundingClientRect()
+      const [rx, ry] = ringAt(g, st.t)
+      const x = e.clientX - rect.left, y = e.clientY - rect.top
+      const onLamp = Math.abs(x - rx) < Math.max(g.lr[0] + 12, 36) && y > ry - 10 && y < ry + g.rope + g.lr[1] * 2 + 34
+      if (!onLamp) return
+      const dx = x - (g.x0 + (g.x1 - g.x0) * st.t)
+      root.setPointerCapture(e.pointerId)
+      root.classList.add('is-drag')
+      const move = (ev: PointerEvent) => go(tAt(ev.clientX - dx))
+      const up = () => {
+        root.removeEventListener('pointermove', move)
+        root.removeEventListener('pointerup', up)
+        root.removeEventListener('pointercancel', up)
+        root.classList.remove('is-drag')
+      }
+      root.addEventListener('pointermove', move)
+      root.addEventListener('pointerup', up)
+      root.addEventListener('pointercancel', up)
     })
+    paper.addEventListener('keydown', (e) => {
+      const k = e.key
+      const d = k === 'ArrowRight' || k === 'ArrowUp' ? 0.25 : k === 'ArrowLeft' || k === 'ArrowDown' ? -0.25 : 0
+      if (d) go(Math.round((st.tt + d) * 4) / 4)
+      else if (k === 'Home') go(0)
+      else if (k === 'End') go(1)
+      else return
+      e.preventDefault()
+    })
+    // H7: standing still, the lantern sways a little the way it should go
+    invite(ctx, () => step < 2 && nudge(ctx, lamp, step === 0 ? 11 : -11, 0))
+    // a test hook for the shot scripts (desk and phone take the same path as a drag)
+    ;(window as unknown as { __t27lamp?: (t: number) => void }).__t27lamp = go
+    ctx.onCleanup(() => delete (window as unknown as { __t27lamp?: unknown }).__t27lamp)
 
-    // ── layout: the circle places its parts in a box; this scene spreads them over the whole art ──
+    // ── layout: paint once per size and theme (the first time soaking in), place the people, the words, the lantern ──
     let job: { cancel(): void } | null = null
     let first = true
     let col = {} as Col
     const readCol = () => {
       const v = (n: string) => rgbOf(cssVar(n))
-      const next: Col = { dark: document.documentElement.dataset.theme === 'dark', wash: v('--wash'), moon: v('--moon'), mossA: v('--moss-a'), mossB: v('--moss-b'), mossC: v('--moss-c'), bark: mix(v('--rock-lo'), v('--wash'), 0.45) }
+      const next: Col = { dark: document.documentElement.dataset.theme === 'dark', wash: v('--wash'), moon: v('--moon'), paper: v('--paper'), mossA: v('--moss-a'), mossB: v('--moss-b'), mossC: v('--moss-c'), bark: mix(v('--rock-lo'), v('--wash'), 0.45) }
       const changed = JSON.stringify(next) !== JSON.stringify(col)
       col = next
       return changed
     }
     function draw() {
-      if (!G) return
-      const dpr = Math.min(2, devicePixelRatio || 1)
       const g = G
+      if (!g) return
+      const dpr = Math.min(2, devicePixelRatio || 1)
       job?.cancel()
       if (first || ctx.reduced) {
         cv.width = Math.round(g.W * dpr)
@@ -476,37 +538,72 @@ export const lampScene = {
       cv.height = off.height
       c2.drawImage(off, 0, 0)
     }
-    function layout(host: HTMLElement) {
-      if (!root) return
-      const W = ctx.art.clientWidth, H = parseFloat(root.style.height) || ctx.art.clientHeight
+    function people(g: Geo) {
+      const all = [...g.people, g.me]
+      const out: SVGElement[] = [
+        s('defs', null,
+          s('linearGradient', { id: 't27l-litTop', x1: 0, y1: 0, x2: 0.15, y2: 1 }, stop(0, 'var(--lantern)', 0.85), stop(0.45, 'var(--lantern)', 0.28), stop(1, 'var(--lantern)', 0)),
+          s('linearGradient', { id: 't27l-litMe', x1: 0.9, y1: 0, x2: 0.2, y2: 0.9 }, stop(0, 'var(--lantern)', 0.95), stop(0.5, 'var(--lantern)', 0.3), stop(1, 'var(--lantern)', 0)),
+          s('radialGradient', { id: 't27l-cast' }, stop(0, 'var(--umbra)', 0.55), stop(1, 'var(--umbra)', 0))),
+      ]
+      const t = tray(g.tray, g.people[0].h)
+      for (const p of all) {
+        // the moon (upper right) throws each shadow a little to the left; a contact shadow under the robe
+        out.push(s('ellipse', { class: 't27l-cast', cx: f1(p.x - p.h * 0.35), cy: f1(p.y + p.h * 0.01), rx: f1(p.h * 0.62), ry: f1(p.h * 0.07), fill: 'url(#t27l-cast)' }))
+        out.push(s('ellipse', { class: 't27l-contact', cx: f1(p.x + p.f * p.h * 0.1), cy: f1(p.y), rx: f1(p.h * 0.45), ry: f1(p.h * 0.035) }))
+      }
+      out.push(s('ellipse', { class: 't27l-contact', cx: f1(g.tray[0]), cy: f1(g.tray[1] + 2), rx: f1(g.people[0].h * 0.36), ry: f1(g.people[0].h * 0.03) }))
+      out.push(s('path', { class: 't27l-tray', d: t.top, filter: 'url(#ink-rough)' }), s('path', { class: 't27l-tray-things', d: t.things }),
+        s('path', { class: 't27l-tray-lit', d: t.top + t.things }))
+      for (const p of all) {
+        const f = sitter(p)
+        const me = p === g.me
+        const cls = me ? 't27l-me' : 't27l-fig'
+        out.push(s('g', { class: cls },
+          s('path', { class: 't27l-fig-body', d: f.body + f.head, filter: 'url(#ink-rough)' }),
+          s('path', { class: 't27l-fig-hair', d: f.hair, filter: 'url(#ink-wash)' }),
+          s('path', { class: 't27l-fig-fold', d: f.fold }),
+          s('path', { class: 't27l-fig-lit', d: f.body + f.head, fill: `url(#${me ? 't27l-litMe' : 't27l-litTop'})` }),
+          s('path', { class: 't27l-fig-warm', d: f.warm }),
+          s('path', { class: 't27l-fig-moon', d: f.moon }),
+          me ? null : s('path', { class: 't27l-fig-dim', d: f.body + f.head + f.hair })))
+      }
+      return out
+    }
+    function layout() {
+      const W = root.clientWidth, Hr = root.clientHeight
+      if (W < 60 || Hr < 60) return
+      const H = wideZone() ? Hr : stable(Hr)
       const g = (G = geo(W, H))
-      const stage = host.parentElement!
-      Object.assign(stage.style, { left: '0px', top: '0px', width: `${W}px`, height: `${H}px` })
       Object.assign(cv.style, { width: `${W}px`, height: `${H}px` })
-      Object.assign(pool.style, { width: `${f1(g.rx * 1.15)}px`, height: `${f1(g.ry * 1.25)}px` })
+      figs.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
+      Object.assign(figs.style, { width: `${W}px`, height: `${H}px` })
+      figs.replaceChildren(...people(g))
+      const pw = g.land ? W * 0.3 : W * 0.62, ph = g.land ? H * 0.22 : H * 0.15
+      Object.assign(pool.style, { width: `${f1(pw)}px`, height: `${f1(ph)}px` })
       const [lw, lh] = g.lr
       Object.assign(lamp.style, { width: `${f1(lw * 2)}px`, height: `${f1(g.rope + lh * 2)}px`, marginLeft: `${f1(-lw)}px` })
       lamp.style.setProperty('--rope', `${f1(g.rope)}px`)
       lamp.style.setProperty('--lw', `${f1(lw * 2)}px`)
       lamp.style.setProperty('--lh', `${f1(lh * 2)}px`)
-      stones = [...root.querySelectorAll<HTMLElement>('.p2c-stone')]
-      stones.forEach((b, k) => {
-        const [x, y] = g.feet[k]
-        const w = g.sw * g.sc[k], hh = (w * 90) / 120
-        Object.assign(b.style, { left: `${f1(x - w / 2)}px`, top: `${f1(y - hh * (70 / 90))}px`, width: `${f1(w)}px`, height: `${f1(hh)}px`, zIndex: String(Math.round(y)) })
+      const place = (el: HTMLElement, [x, y, w]: [number, number, number]) => Object.assign(el.style, { left: `${f1(x)}px`, top: `${f1(y)}px`, width: `${f1(w)}px` })
+      notches.forEach((n, i) => {
+        const x = g.x0 + ((g.x1 - g.x0) * i) / 2, y = branchY(g, x), w = g.tw * (0.56 - 0.42 * ((x - g.top[0]) / (g.branch[g.branch.length - 1][0] - g.top[0])))
+        Object.assign(n.style, { left: `${f1(x)}px`, top: `${f1(y)}px` })
+        n.style.setProperty('--bw', `${f1(Math.max(6, w * 0.8))}px`)
       })
-      // the words lie on the ground: the card is tipped back in perspective, its top edge farthest away
-      const card = root.querySelector<HTMLElement>('.p2c-card')
-      if (card) {
-        const [x, y, w] = g.text
-        Object.assign(card.style, { left: `${f1(x)}px`, top: `${f1(y)}px`, width: `${f1(w)}px`, maxHeight: `${f1(Math.max(60, H - y))}px`, transform: `perspective(${f1(Math.max(600, w * 2.2))}px) rotateX(${g.land ? 26 : 18}deg)` })
-      }
+      place(opener, g.opener)
+      place(near, g.near)
       readCol()
       draw()
       apply()
+      gd.refresh()
     }
+    ctx.onCleanup(onSize(root, () => {
+      rect = null
+      layout()
+    }))
     ctx.onCleanup(() => job?.cancel())
     ctx.onCleanup(onPrefs(() => readCol() && draw()))
-    return def.mount(ctx)
   },
 }

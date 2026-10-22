@@ -16,6 +16,152 @@ const SLOW = 1.6 // … then it slows, and the words settle back into the answer
 const HEAL = 2.6
 
 type Frag = { k: number; a: number; r: number; s: number; w: number; o: number; ha: number; hr: number; fr: number }
+type GCol = Record<'paper' | 'paper-2' | 'rock-hi' | 'rock-mid' | 'rock-lo' | 'umbra' | 'moss-a' | 'moss-b' | 'moss-c' | 'moon', string>
+const GROUND = ['paper', 'paper-2', 'rock-hi', 'rock-mid', 'rock-lo', 'umbra', 'moss-a', 'moss-b', 'moss-c', 'moon'] as const
+type GGeo = { W: number; H: number; cx: number; cy: number; R: number; RO: number; ROy: number; side: number; land: boolean }
+
+/**
+ * The ground the basin sits in, painted once on a canvas (hundreds of pebbles are cheap there, not in SVG): a moss carpet
+ * over the whole frame with low cushions lit on the moon's side (upper right), and round the basin its "sea" (umi) of
+ * river pebbles, each with a contact shadow falling down-left, a body and a moonlit crown; bigger kerb stones on its edge.
+ */
+function* paintGround(g: CanvasRenderingContext2D, dpr: number, o: GGeo, c: GCol, dark: boolean) {
+  const { W, H, cx, cy, R, RO, ROy, side } = o
+  const r = rng(2501)
+  g.setTransform(dpr, 0, 0, dpr, 0, 0)
+  g.globalAlpha = 1
+  g.fillStyle = dark ? c['rock-lo'] : c['paper-2']
+  g.fillRect(0, 0, W, H)
+  // the moss carpet: a green-ink wash over the earth, then low cushions (dark underside, lit crown)
+  g.globalAlpha = dark ? 0.82 : 0.42
+  g.fillStyle = c['moss-b']
+  g.fillRect(0, 0, W, H)
+  const E = (x: number, y: number, rx: number, ry: number, rot = 0) => {
+    g.beginPath()
+    g.ellipse(x, y, Math.max(0.3, rx), Math.max(0.3, ry), rot, 0, Math.PI * 2)
+    g.fill()
+  }
+  const inUmi = (x: number, y: number, k: number) => ((x - cx) / (RO * k)) ** 2 + ((y - cy - side) / (ROy * k)) ** 2 < 1
+  // cushions of moss in the ink painter's way: clusters of moss dots (苔点), dense at the heart, lit on the moon's side,
+  // over a faint soft shadow
+  for (let i = 0; i < 30; i++) {
+    const x = r() * W, y = r() * H, rx = R * (0.18 + r() * 0.3), ry = rx * (0.5 + r() * 0.15)
+    if (inUmi(x, y, 1.2)) continue
+    g.fillStyle = c.umbra
+    g.globalAlpha = dark ? 0.1 : 0.05
+    E(x - rx * 0.1, y + ry * 0.18, rx * 1.05, ry)
+    g.fillStyle = c['moss-a']
+    g.globalAlpha = dark ? 0.3 : 0.24
+    E(x, y, rx * 0.85, ry * 0.8)
+    const n = Math.round(rx * 1.6)
+    for (let k = 0; k < n; k++) {
+      const a = r() * Math.PI * 2, d = Math.sqrt(r())
+      const dx = Math.cos(a) * d * rx, dy = Math.sin(a) * d * ry
+      const lit = dx * 0.7 - dy > rx * 0.05 * (r() - 0.3)
+      g.fillStyle = lit ? c['moss-c'] : c['moss-b']
+      g.globalAlpha = (lit ? (dark ? 0.5 : 0.55) : dark ? 0.75 : 0.5) * (1 - d * 0.5)
+      E(x + dx, y + dy, 1 + r() * 2.2, 0.8 + r() * 1.4, r() * 3)
+    }
+    if (i % 8 === 7) yield
+  }
+  yield
+  // moss grain: a few thousand specks, light ones on the crowns, dark ones in the hollows
+  for (let i = 0; i < 2600; i++) {
+    const x = r() * W, y = r() * H
+    if (inUmi(x, y, 1.02)) continue
+    const lit = r() < 0.55
+    g.fillStyle = lit ? c['moss-c'] : c.umbra
+    g.globalAlpha = lit ? (dark ? 0.4 : 0.45) : dark ? 0.35 : 0.14
+    E(x, y, 0.6 + r() * 1.3, 0.5 + r() * 0.9)
+  }
+  // moonlight from the upper right, falling off to a darker lower left
+  const lg = g.createRadialGradient(W * 0.92, -H * 0.15, 0, W * 0.92, -H * 0.15, Math.hypot(W, H) * 0.95)
+  lg.addColorStop(0, dark ? 'rgba(242,228,184,0.13)' : 'rgba(255,255,255,0.4)')
+  lg.addColorStop(1, 'rgba(255,255,255,0)')
+  g.globalAlpha = 1
+  g.fillStyle = lg
+  g.fillRect(0, 0, W, H)
+  const sg = g.createRadialGradient(0, H * 1.05, 0, 0, H * 1.05, Math.hypot(W, H) * 0.7)
+  sg.addColorStop(0, dark ? 'rgba(0,0,0,0.42)' : 'rgba(28,34,54,0.16)')
+  sg.addColorStop(1, 'rgba(0,0,0,0)')
+  g.fillStyle = sg
+  g.fillRect(0, 0, W, H)
+  yield
+  // the sea of pebbles round the basin: dark grit between, kerb stones on its edge, pebbles packed inside
+  const KU = o.land ? 1.32 : 1.24
+  g.fillStyle = c.umbra
+  g.globalAlpha = dark ? 0.6 : 0.3
+  g.beginPath()
+  g.ellipse(cx, cy + side, RO * KU, ROy * KU, 0, 0, Math.PI * 2)
+  g.fill()
+  const peb = (x: number, y: number, rx: number, ry: number, rot: number, tone: number) => {
+    g.fillStyle = c.umbra
+    g.globalAlpha = dark ? 0.7 : 0.3
+    E(x - rx * 0.2, y + ry * 0.3, rx * 1.06, ry * 1.06, rot)
+    g.fillStyle = tone < 0.45 ? c['rock-mid'] : c['rock-lo']
+    g.globalAlpha = dark ? 1 : 0.9
+    E(x, y, rx, ry, rot)
+    if (tone > 0.8) {
+      g.fillStyle = c['rock-mid']
+      g.globalAlpha = 0.5
+      E(x, y, rx, ry, rot)
+    }
+    g.fillStyle = c['rock-hi']
+    g.globalAlpha = dark ? 0.26 : 0.5
+    E(x + rx * 0.2, y - ry * 0.24, rx * 0.62, ry * 0.5, rot)
+    if (dark) {
+      g.fillStyle = c.moon
+      g.globalAlpha = 0.1
+      E(x + rx * 0.36, y - ry * 0.4, rx * 0.22, ry * 0.15, rot)
+    }
+  }
+  const kerb = Math.round(KU * RO * 0.09)
+  for (let i = 0; i < kerb; i++) {
+    const a = (i / kerb) * Math.PI * 2 + r() * 0.05, rr = R * (0.07 + r() * 0.035)
+    peb(cx + Math.cos(a) * RO * KU, cy + side + Math.sin(a) * ROy * KU, rr, rr * 0.66, r() * 3, r())
+  }
+  yield
+  const sp = R * (o.land ? 0.085 : 0.1)
+  let n = 0
+  for (let y = cy + side - ROy * KU; y < cy + side + ROy * KU; y += sp * 0.72) {
+    for (let x = cx - RO * KU; x < cx + RO * KU; x += sp) {
+      const px = x + (r() - 0.5) * sp * 0.7, py = y + (r() - 0.5) * sp * 0.5
+      if (!inUmi(px, py, KU * 0.97) || inUmi(px, py, 0.97)) continue
+      const k = (0.36 + r() * 0.24) * (0.85 + (0.3 * py) / H) // nearer (lower) = a little bigger
+      peb(px, py, sp * k, sp * k * (0.62 + r() * 0.12), r() * 3, r())
+      if (++n % 160 === 0) yield
+    }
+  }
+  // a few strays out on the moss
+  for (let i = 0; i < 46; i++) {
+    const x = r() * W, y = r() * H
+    if (inUmi(x, y, KU * 1.05)) continue
+    const rr = R * (0.025 + r() * 0.03)
+    peb(x, y, rr, rr * 0.65, r() * 3, r())
+  }
+  g.globalAlpha = 1
+}
+
+/**
+ * A flat garden stone seen from above at the basin's angle (mae-ishi, the stone at the spout's foot): contact shadow
+ * down-left, the side showing below the top, the top plane lit from the upper right, a moonlit rim on that side, moss.
+ */
+function flatStone(x: number, y: number, rx: number, ry: number, seed: number, th: number): SVGElement[] {
+  const r = rng(seed)
+  const top = blob(x, y, rx, ry, seed, 0.12, 16)
+  const rim = Array.from({ length: 9 }, (_, i) => {
+    const a = Math.PI * (1.45 + i * 0.07)
+    return [x + Math.cos(a) * rx * 0.97, y + Math.sin(a) * ry * 0.95] as Pt
+  })
+  return [
+    s('path', { class: 't25m-st-sh', d: blob(x - rx * 0.1, y + th + ry * 0.12, rx * 1.06, ry * 1.08, seed, 0.12, 16), filter: 'url(#ink-wash)' }),
+    s('path', { class: 't25m-st-side', d: blob(x, y + th, rx * 0.99, ry, seed, 0.12, 16), filter: 'url(#ink-rough)' }),
+    s('path', { class: 't25m-st-top', d: top, fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }),
+    s('path', { class: 't25m-st-shade', d: top, fill: 'url(#p2-shade)' }),
+    s('path', { class: 't25m-st-rim', d: stroke(rim, Math.max(1.4, ry * 0.07), 0.3, 0.3, 0.15) }),
+    s('path', { class: 't25m-st-moss', d: blob(x - rx * (0.3 + r() * 0.3), y + ry * (0.1 + r() * 0.3), rx * 0.2, ry * 0.16, seed + 3, 0.4, 10) + blob(x + rx * 0.35, y + ry * 0.45, rx * 0.12, ry * 0.1, seed + 4, 0.4, 10), filter: 'url(#ink-wash)' }),
+  ]
+}
 /** where fragment i of n rests in the frozen funnel: evenly spread in radius, so per area they crowd toward the eye */
 const funnelR = (i: number, n: number) => 0.06 + 0.9 * Math.pow((i + 0.5) / n, 0.9)
 
@@ -56,7 +202,8 @@ function cylinder(a: Pt, b: Pt, w: number, seed: number, nodes: number[], cut: '
 }
 
 /**
- * Scene 3 — a stone basin (tsukubai) seen from kneeling over it. Three depths in the water: leaves and petals on the
+ * Scene 1 — a stone basin (tsukubai) seen from kneeling over it, sitting in its sea of pebbles on a moss ground (spout
+ * on a flat stone, stepping stones to the kneeling stone, a bamboo leaning in). Three depths in the water: leaves and petals on the
  * skin, pebbles and old coins on the bottom, and deeper than the bottom the reflection — moon, a bamboo sprig, the
  * shadow of the one bending over it — with the AI's kind answer floating in it. The layers slide apart as you move
  * (pointer / tilt). Stir with the ladle (or circle a finger on the water): the answer dissolves into hundreds of other
@@ -72,6 +219,11 @@ export function mirrorScene(ctx: SceneCtx) {
   let first = true
   let job: { cancel(): void } | null = null
 
+  const ground = h('canvas', { class: 't25m-ground', 'aria-hidden': 'true' })
+  const gg = ground.getContext('2d')!
+  let gcol: GCol | null = null
+  let ggeo: GGeo | null = null
+  let gdpr = 1
   const art = s('svg', { class: 't25m-art', 'aria-hidden': 'true' })
   const refl = h('div', { class: 't25m-refl' }) // deepest: moves most
   const floor = h('div', { class: 't25m-floor' })
@@ -89,13 +241,19 @@ export function mirrorScene(ctx: SceneCtx) {
   const srcWord = s('text', { class: 't25m-arcsrc' })
   refl.append(ai)
   const root = frame(ctx, 't25m', K.art, [K.insight], layout)
-  root.append(art, water, canvas, rim, user, ladle, h('p', { class: 'visually-hidden' }, `${K.fragmentsLabel}: ${K.fragments.join(', ')}`))
+  root.append(ground, art, water, canvas, rim, user, ladle, h('p', { class: 'visually-hidden' }, `${K.fragmentsLabel}: ${K.fragments.join(', ')}`))
   ctx.prompt(K.prompt)
+  // the ground's colours; a theme change repaints it in one pass
+  tokens(GROUND, ctx, (c) => {
+    gcol = c
+    if (ggeo) for (const _ of paintGround(gg, gdpr, ggeo, c, document.documentElement.dataset.theme === 'dark'));
+  })
   // guidance (H1 on the cup, a dotted ink circle on the water for the hidden gesture; H7 by the frame + a ladle wiggle)
   const gd = guide(ctx)
   let dot: Mark | null = gd.dot(cup, { dir: [-1, 0] })
   let circ: Mark | null = null
-  const wiggle = () => !stirred && !ctx.reduced && ladle.animate([{ rotate: '0deg' }, { rotate: '-4deg' }, { rotate: '3deg' }, { rotate: '0deg' }], { duration: 650, easing: 'ease-in-out' })
+  // idle: the ladle nudges ~10 px the way a stir would start it, then settles back
+  const wiggle = () => !stirred && !ctx.reduced && ladle.animate([{ translate: '0 0', rotate: '0deg' }, { translate: '-10px 4px', rotate: '-3deg' }, { translate: '3px -1px', rotate: '1deg' }, { translate: '0 0', rotate: '0deg' }], { duration: 900, easing: 'ease-in-out' })
   ctx.el.addEventListener('p2:idle', wiggle)
   ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', wiggle))
 
@@ -363,17 +521,25 @@ export function mirrorScene(ctx: SceneCtx) {
   ambient(ctx, root, (on) => root.classList.toggle('drip', on))
 
   // ── painting
-  function layout(W: number, H: number) {
+  function layout(W: number, H: number, Hraw: number) {
     const land = W / H > 1.05
-    // the whole basin (rim, its outer side and cast shadow) fits the frame with a margin
-    const R = land ? H * 0.315 : Math.min(W * 0.335, H * 0.3)
-    const cx = W * 0.5, cy = H * (land ? 0.49 : 0.46)
+    // the whole basin (rim, its outer side and cast shadow) fits the frame with ground all round it; on a wide frame it
+    // sits right of centre: the spout on its left, stepping stones coming in from the lower left, the insight's quiet
+    // moss in the upper left
+    const R = land ? Math.min(H * 0.285, W * 0.2) : Math.min(W * 0.3, H * 0.27)
+    const cx = W * (land ? 0.58 : 0.5), cy = H * (land ? 0.46 : 0.47)
     // the user's line rises from the near lip; its box (width, top) keeps the five words off it
-    const userTop = cy + R * TILT * (land ? 0.7 : 0.66)
-    G = { W, H, cx, cy, R, land, user: [R * 1.5, userTop] }
+    const userTop = cy + R * TILT * (land ? 0.7 : 0.64)
+    const uw = R * (land ? 1.5 : 1.85)
+    G = { W, H, cx, cy, R, land, user: [uw, userTop] }
     root.classList.toggle('land', land)
-    art.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
-    rim.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
+    gdpr = Math.min(1.5, devicePixelRatio || 1)
+    ground.width = Math.round(W * gdpr)
+    ground.height = Math.round(Hraw * gdpr)
+    Object.assign(ground.style, { width: `${f1(W)}px`, height: `${f1(Hraw)}px` })
+    ggeo = { W, H: Hraw, cx, cy, R, RO: R * (land ? 1.45 : 1.38), ROy: R * (land ? 1.45 : 1.38) * TILT, side: R * 0.1, land }
+    art.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(Hraw)}`)
+    rim.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(Hraw)}`)
     const box = { left: `${f1(cx - R)}px`, top: `${f1(cy - R * TILT)}px`, width: `${f1(R * 2)}px`, height: `${f1(R * 2 * TILT)}px` }
     Object.assign(water.style, box)
     Object.assign(canvas.style, box)
@@ -382,39 +548,53 @@ export function mirrorScene(ctx: SceneCtx) {
     chh = R * 2 * TILT
     canvas.width = Math.round(cw * dpr)
     canvas.height = Math.round(chh * dpr)
-    Object.assign(ai.style, { width: `${f1(R * 1.25)}px`, left: `${f1(R - R * 0.625)}px`, top: `${f1(R * TILT - R * 0.05)}px` })
-    Object.assign(user.style, { left: `${f1(cx - R * 0.75)}px`, width: `${f1(R * 1.5)}px`, top: `${f1(userTop)}px` })
-    // the ladle rests across the rim on the right (phone: across the near rim)
+    // the answer floats over the reflection's centre (phone: wider and higher, clear of the user's line)
+    const aw = R * (land ? 1.25 : 1.5)
+    Object.assign(ai.style, { width: `${f1(aw)}px`, left: `${f1(R - aw / 2)}px`, top: `${f1(R * TILT - R * (land ? 0.05 : 0.3))}px` })
+    Object.assign(user.style, { left: `${f1(cx - uw / 2)}px`, width: `${f1(uw)}px`, top: `${f1(userTop)}px` })
+    // the ladle rests across the rim on the right (phone: across the near rim), its cup over the stone's lip
     Object.assign(ladle.style, land
-      ? { left: `${f1(cx + R * 0.86)}px`, top: `${f1(cy + R * TILT * 0.18)}px`, width: `${f1(R * 1.0)}px`, height: `${f1(R * 0.3)}px` }
-      : { left: `${f1(cx + R * 0.05)}px`, top: `${f1(cy + R * TILT * 1.06)}px`, width: `${f1(R * 1.05)}px`, height: `${f1(R * 0.32)}px` })
+      ? { left: `${f1(cx + R * 0.8)}px`, top: `${f1(cy + R * TILT * 0.12)}px`, width: `${f1(R * 1.12)}px`, height: `${f1(R * 0.36)}px` }
+      : { left: `${f1(cx + R * 0.02)}px`, top: `${f1(cy + R * TILT * 1.02)}px`, width: `${f1(R * 1.2)}px`, height: `${f1(R * 0.4)}px` })
     job?.cancel()
-    job = sliced(paint(cx, cy, R, land), { sync: ctx.reduced || !first })
+    job = sliced(paint(cx, cy, R, land, W, Hraw), { sync: ctx.reduced || !first })
     first = false
     if (still && atlas) draw(0, 0)
-    if (!circ && !shown && !stirred) circ = gd.gesture('circle', () => (G ? [G.cx, G.cy] : [0, 0]), { r: Math.round(Math.min(110, R * 0.42)) })
+    // the circling gesture's ring runs near the water's edge, round the words, not through them
+    if (!circ && !shown && !stirred) circ = gd.gesture('circle', () => (G ? [G.cx, G.cy] : [0, 0]), { r: Math.round(R * 0.86) })
   }
 
-  function* paint(cx: number, cy: number, R: number, land: boolean) {
+  function* paint(cx: number, cy: number, R: number, land: boolean, W: number, H: number) {
     const r = rng(2531)
     const Ry = R * TILT
     const RO = R * (land ? 1.45 : 1.38), ROy = RO * TILT // the basin's outer edge: the whole stone sits in the frame
     const side = R * 0.1 // the outer side of the stone, seen below its top on the near half
     const outer = blob(cx, cy, RO, ROy, 2537, 0.035, 28)
     const outerSide = blob(cx, cy + side, RO * 0.995, ROy, 2537, 0.035, 28)
-    // ground round the basin: gravel in a soft wash; the basin's shadow falls away from the moon (down-left)
-    let gravel = ''
-    for (let i = 0; i < 220; i++) {
-      const a = r() * Math.PI * 2, d = 1.0 + r() * 0.75
-      gravel += blob(cx + Math.cos(a) * RO * d * 1.1, cy + side + Math.sin(a) * ROy * d, 2 + r() * 3, 1.5 + r() * 2.2, i, 0.25, 6)
-    }
-    const post: Pt = land ? [cx - RO * 1.04, cy - ROy * 0.42] : [cx - RO * 0.8, cy - ROy * 0.78]
+    // the ground (moss and the sea of pebbles) on its canvas first
+    if (gcol && ggeo) yield* paintGround(gg, gdpr, ggeo, gcol, document.documentElement.dataset.theme === 'dark')
+    // the spout's post stands on a flat stone left of the basin; the front stone you kneel on peeks in at the bottom;
+    // the bucket stone sits low on the right
+    const post: Pt = land ? [cx - RO * 1.04, cy - ROy * 0.46] : [cx - RO * 0.78, cy - ROy * 0.84]
+    const postLen = ROy * (land ? 0.82 : 0.5)
+    const foot: Pt = [post[0], post[1] + postLen]
+    const stones = [
+      ...flatStone(foot[0] + R * 0.04, foot[1] + R * 0.02, R * (land ? 0.3 : 0.26), R * (land ? 0.13 : 0.11), 2551, R * 0.05),
+      ...(land
+        ? flatStone(cx - R * 0.1, H + R * 0.06, R * 1.05, R * 0.3, 2552, R * 0.07)
+        : flatStone(cx - R * 0.12, cy + ROy + R * 0.95, R * 0.95, R * 0.32, 2552, R * 0.08)),
+      ...(land
+        ? flatStone(cx + RO * 1.22, cy + ROy * 0.78, R * 0.34, R * 0.15, 2553, R * 0.06)
+        : flatStone(cx + RO * 0.8, cy + ROy + R * 0.42, R * 0.24, R * 0.1, 2553, R * 0.05)),
+      // the way in: stepping stones over the moss from the lower left to the front stone
+      ...(land ? ([[0.05, 0.6, 0.3], [0.15, 0.71, 0.33], [0.26, 0.81, 0.36], [0.38, 0.9, 0.38]] as const).flatMap(([u, v, k], i) =>
+        flatStone(W * u, H * v, R * k, R * k * 0.42, 2556 + i, R * 0.05)) : []),
+    ]
     art.replaceChildren(
-      s('defs', null,
-        s('radialGradient', { id: 't25m-lit', cx: 0.65, cy: 0.3, r: 0.75 }, s('stop', { offset: 0, class: 't25m-g0' }), s('stop', { offset: 1, class: 't25m-g1' }))),
-      s('ellipse', { class: 't25m-sea', cx: f1(cx), cy: f1(cy + ROy * 0.08), rx: f1(RO * 1.7), ry: f1(ROy * 1.6), fill: 'url(#t25m-lit)' }),
-      s('path', { class: 't25m-gravel', d: gravel }),
-      s('path', { class: 't25m-outer-sh', d: blob(cx - RO * 0.07, cy + side + ROy * 0.07, RO * 1.03, ROy * 1.03, 2538, 0.035, 28), filter: 'url(#ink-wash)' }),
+      s('path', { class: 't25m-outer-sh', d: blob(cx - RO * 0.08, cy + side + ROy * 0.09, RO * 1.03, ROy * 1.03, 2538, 0.035, 28), filter: 'url(#ink-wash)' }),
+      ...stones,
+      // the post's own shadow on the ground, falling away from the moon (down-left)
+      s('path', { class: 't25m-cyl-sh', d: stroke([foot, [foot[0] - postLen * 0.55, foot[1] + postLen * 0.18]], Math.max(9, R * 0.075), 0.05, 0.5, 0.3), filter: 'url(#ink-wash)' }),
       // moss cushions on the ground hugging the stone's foot (a darker underside, a lit crown)
       s('path', { class: 't25m-moss-dk', d: blob(cx - RO * 0.86, cy + ROy * 0.74, RO * 0.2, ROy * 0.09, 2540, 0.35) + blob(cx + RO * 0.9, cy + ROy * 0.5, RO * 0.12, ROy * 0.06, 2541, 0.35) + blob(cx + RO * 0.62, cy - ROy * 0.86, RO * 0.12, ROy * 0.05, 2546, 0.35), filter: 'url(#ink-wash)' }),
       s('path', { class: 't25m-moss', d: blob(cx - RO * 0.87, cy + ROy * 0.71, RO * 0.17, ROy * 0.065, 2540, 0.35) + blob(cx + RO * 0.9, cy + ROy * 0.48, RO * 0.1, ROy * 0.045, 2541, 0.35) + blob(cx + RO * 0.62, cy - ROy * 0.875, RO * 0.1, ROy * 0.035, 2546, 0.35), filter: 'url(#ink-rough)' }))
@@ -429,11 +609,12 @@ export function mirrorScene(ctx: SceneCtx) {
       `Q${f1(head[0] - R * 0.3)} ${f1(head[1] - Ry * 0.16)} ${f1(head[0])} ${f1(head[1] - Ry * 0.28)}Q${f1(head[0] + R * 0.28)} ${f1(head[1] - Ry * 0.22)} ${f1(head[0] + R * 0.18)} ${f1(head[1] + Ry * 0.12)}` +
       `Q${f1(R * 0.38)} ${f1(Ry * 0.6)} ${f1(R * 0.66)} ${f1(Ry * 0.68)}Q${f1(R * 1.0)} ${f1(Ry * 0.78)} ${f1(R * 1.1)} ${f1(Ry * 1.2)}Z`
     const sprig: SVGElement[] = []
-    const stem = curve([-R * 1.08, -Ry * 0.58], [-R * 0.55, -Ry * 0.74], [-R * 0.12, -Ry * 0.46], 12)
+    // the overhanging bamboo (top right of the frame) seen in the water: on the far side, across the moon
+    const stem = curve([R * 1.08, -Ry * 0.86], [R * 0.6, -Ry * 0.78], [R * 0.14, -Ry * 0.5], 12)
     const sp = bamboo(stem[0], stem[stem.length - 1], Math.max(3, R * 0.024), 2547, 2)
     sprig.push(s('path', { class: 't25m-sprig', d: sp.cane }))
     for (let i = 0; i < 8; i++) {
-      const p = stem[2 + i], lf = leaf(p[0], p[1], R * (0.17 + r() * 0.09), (i % 2 ? 0.7 : -0.6) + r() * 0.5, 2548 + i)
+      const p = stem[2 + i], lf = leaf(p[0], p[1], R * (0.17 + r() * 0.09), Math.PI + (i % 2 ? -0.7 : 0.6) + r() * 0.5, 2548 + i)
       sprig.push(s('path', { class: 't25m-sprig', d: lf.blade }))
     }
     const mx = R * 0.5, my = -Ry * 0.48, mr = R * 0.1
@@ -503,7 +684,7 @@ export function mirrorScene(ctx: SceneCtx) {
     // the five sources, small, on the rim's inner band below it (a wider sweep, from the spout round to the ladle)
     const RS = lerp(R, RO, 0.24)
     const aS = (deg: number): Pt => [cx + Math.cos((deg * Math.PI) / 180) * RS, cy + Math.sin((deg * Math.PI) / 180) * RS * TILT]
-    const [s0, s1] = land ? [aS(236), aS(356)] : [aS(222), aS(362)]
+    const [s0, s1] = land ? [aS(236), aS(356)] : [aS(246), aS(398)] // phone: clear of the spout, long enough for all five
     const arcS = `M${f1(s0[0])} ${f1(s0[1])}A${f1(RS)} ${f1(RS * TILT)} 0 0 1 ${f1(s1[0])} ${f1(s1[1])}`
     const ocx = cx, ocy = cy - Ry * 0.07, oR = R * 1.035, oRy = Ry * 1.06
     const hole = `M${f1(ocx - oR)} ${f1(ocy)}a${f1(oR)} ${f1(oRy)} 0 1 1 ${f1(oR * 2)} 0a${f1(oR)} ${f1(oRy)} 0 1 1 ${f1(-oR * 2)} 0Z`
@@ -536,7 +717,34 @@ export function mirrorScene(ctx: SceneCtx) {
     // the kakei: an upright bamboo post and a spout reaching over the water, shaded as cylinders
     const spoutTip: Pt = [cx + drip[0] - R * 0.02, cy + drip[1] - Ry * 0.3]
     const cw = Math.max(9, R * 0.075)
-    const upright = cylinder([post[0], post[1] + ROy * (land ? 0.95 : 0.55)], [post[0] + 2, post[1] - ROy * 0.12], cw * 1.25, 2533, [0.32, 0.7], 'b', [-cw * 0.5, cw * 0.4])
+    const upright = cylinder(foot, [post[0] + 2, post[1] - ROy * 0.12], cw * 1.25, 2533, [0.32, 0.7], 'b', null)
+    // a bamboo culm leaning in over the top-right corner (it grows outside the frame): twigs from its nodes hang down-left
+    // with leaf sprays; the whole of it casts a soft shadow on the moss below
+    const cA: Pt = land ? [W * 0.79, -14] : [W * 0.6, -14], cB: Pt = [W + 16, land ? H * 0.24 : H * 0.15]
+    const culm = cylinder(cA, cB, cw * 1.35, 2571, [0.18, 0.47, 0.76], null, null)
+    let twigs = '', blades = '', ribs = ''
+    const rb = rng(2572)
+    for (const t of [0.18, 0.47, 0.76]) {
+      const p: Pt = [lerp(cA[0], cB[0], t), lerp(cA[1], cB[1], t)]
+      for (let k = 0; k < 2; k++) {
+        const len = R * (land ? 0.42 : 0.36) * (0.7 + rb() * 0.5) * (k ? 0.7 : 1)
+        const a = Math.PI * (0.68 + rb() * 0.14 + k * 0.08)
+        const end: Pt = [p[0] + Math.cos(a) * len, p[1] + Math.sin(a) * len]
+        const tw = curve(p, [p[0] + Math.cos(a - 0.4) * len * 0.5, p[1] + Math.sin(a - 0.4) * len * 0.5], end, 8)
+        twigs += stroke(tw, Math.max(1.6, cw * 0.22), 0.05, 0.7, 0.3)
+        for (let j = 0; j < 5; j++) {
+          const q = tw[4 + Math.floor(j / 2) * 2] ?? end
+          const lf = leaf(q[0], q[1], R * (0.16 + rb() * 0.1), a + (j - 2) * 0.32 + (rb() - 0.5) * 0.3, 2573 + j + k * 7 + Math.round(t * 100))
+          blades += lf.blade
+          ribs += lf.rib
+        }
+      }
+    }
+    const dx = -R * (land ? 0.5 : 0.36), dy = R * (land ? 0.55 : 0.4)
+    const overhangSh = s('g', { class: 't25m-bam-sh', transform: `translate(${f1(dx)} ${f1(dy)})` },
+      s('path', { d: stroke([cA, cB], cw * 1.35, 0.02, 0.02, 0.9) + twigs + blades, filter: 'url(#ink-wash)' }))
+    const overhang = s('g', { class: 't25m-bam' }, ...culm, s('path', { class: 't25m-twig', d: twigs }), s('path', { class: 't25m-leaf', d: blades, filter: 'url(#ink-rough)' }), s('path', { class: 't25m-leaf-rib', d: ribs }))
+    art.append(overhangSh)
     const pipe = cylinder([post[0] + cw * 0.2, post[1] + ROy * 0.02], spoutTip, cw, 2534, [0.4], 'b', [-cw * 0.6, cw * 0.9])
     arcWord.replaceChildren(s('textPath', { href: `#${arcId}`, startOffset: '50%', 'text-anchor': 'middle' }, K.fragmentsLabel))
     srcWord.replaceChildren(s('textPath', { href: `#${arcId}s`, startOffset: '50%', 'text-anchor': 'middle' }, K.fragments.join(' · ')))
@@ -582,18 +790,19 @@ export function mirrorScene(ctx: SceneCtx) {
       ...upright, ...pipe,
       s('g', { class: 't25m-drop', style: `--fall:${f1(Ry * 0.3)}px` }, s('ellipse', { cx: f1(spoutTip[0] + 2), cy: f1(spoutTip[1] + 6), rx: 2.2, ry: 3.2 })),
       s('ellipse', { class: 't25m-bead', cx: f1(spoutTip[0] + 1), cy: f1(spoutTip[1] + cw * 0.5), rx: f1(cw * 0.16), ry: f1(cw * 0.22) }),
-      arcWord, srcWord)
+      arcWord, srcWord, overhang)
     // the ladle: a bamboo handle and cup, shaded as cylinders, its shadow on the stone
     ladle.querySelector('svg')!.replaceChildren(
-      s('path', { class: 't25m-ladle-sh', d: stroke([[-92, 14], [-10, 12], [60, 10]], 8, 0.05, 0.05, 0.8) + blob(70, 16, 22, 10, 2539, 0.1, 12), filter: 'url(#ink-wash)' }),
-      ...cylinder([-88, 4], [55, -1], 7, 2535, [0.3, 0.68], 'a', null),
+      s('path', { class: 't25m-ladle-sh', d: stroke([[-94, 17], [-10, 15], [58, 13]], 12, 0.05, 0.05, 0.8) + blob(70, 21, 26, 12, 2539, 0.1, 12), filter: 'url(#ink-wash)' }),
+      ...cylinder([-90, 4], [52, -1], 11, 2535, [0.22, 0.5, 0.78], 'a', null),
       // the cup: its side (a short cylinder standing up), the rim's top, the dark hollow, moonlight on the far lip
-      s('path', { class: 't25m-cup', d: `M54 -4L54 8A20 9 0 0 0 94 8L94 -4Z` }),
-      s('path', { class: 't25m-cup-dk', d: `M54 -4L54 8A20 9 0 0 0 64 15.5L64 3Z` }),
-      s('path', { class: 't25m-cup-lt', d: `M85 3.5L85 15.5A20 9 0 0 0 90 13L90 1Z` }),
-      s('ellipse', { class: 't25m-cup-top', cx: 74, cy: -4, rx: 20, ry: 9 }),
-      s('ellipse', { class: 't25m-cup-in', cx: 74, cy: -3.4, rx: 16.5, ry: 6.8 }),
-      s('path', { class: 't25m-cup-rim', d: stroke(Array.from({ length: 9 }, (_, i) => [74 + Math.cos(Math.PI * (1.15 + i * 0.09)) * 19, -4 + Math.sin(Math.PI * (1.15 + i * 0.09)) * 8.4] as Pt), 1.8, 0.3, 0.3, 0.15) }))
+      s('path', { class: 't25m-cup', d: `M50 -6L50 10A24 11 0 0 0 98 10L98 -6Z` }),
+      s('path', { class: 't25m-cup-dk', d: `M50 -6L50 10A24 11 0 0 0 62 19L62 3Z` }),
+      s('path', { class: 't25m-cup-lt', d: `M87 2L87 19A24 11 0 0 0 93 16L93 -1Z` }),
+      s('path', { class: 't25m-knot', d: stroke([[50, 3], [74, 8.5], [98, 3]], 1.6, 0.1, 0.1, 0.5) }),
+      s('ellipse', { class: 't25m-cup-top', cx: 74, cy: -6, rx: 24, ry: 11 }),
+      s('ellipse', { class: 't25m-cup-in', cx: 74, cy: -5.3, rx: 20, ry: 8.4 }),
+      s('path', { class: 't25m-cup-rim', d: stroke(Array.from({ length: 9 }, (_, i) => [74 + Math.cos(Math.PI * (1.15 + i * 0.09)) * 23, -6 + Math.sin(Math.PI * (1.15 + i * 0.09)) * 10.3] as Pt), 2, 0.3, 0.3, 0.15) }))
   }
 
   /** a maple leaf round (x, y), L across, turned by rot: five pointed lobes, the shaded half, five veins and a stem */

@@ -1,9 +1,26 @@
 import { s } from '../../core/dom'
 import type { Fact } from '../../core/content'
+import type { SceneCtx } from '../types'
 import { blob, curve, rng, stroke, type Pt } from '../../ui/part2/ink'
 
 /** Station 27 painting kit: gradients that read tokens, a moss boulder with real light, a lit stone lantern. */
 export const F = (x: unknown) => x as Fact
+
+/** The frame puts the insight in a text zone of the art from this width up (station.ts ZONES_MQ): the art keeps its height. */
+export const wideZone = () => matchMedia('(min-width: 721px)').matches
+
+/** H7: after 6 s without input the frame fires `p2:idle`; fn invites by itself (once per idle spell). */
+export function invite(ctx: SceneCtx, fn: () => void) {
+  const on = () => fn()
+  ctx.el.addEventListener('p2:idle', on)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', on))
+}
+
+/** A nudge of el by (dx, dy) px and back, on top of whatever places it (none under reduced motion). */
+export function nudge(ctx: SceneCtx, el: Element, dx: number, dy: number) {
+  if (ctx.reduced) return
+  el.animate([{ translate: '0 0' }, { translate: `${f1(dx)}px ${f1(dy)}px`, offset: 0.4 }, { translate: '0 0' }], { duration: 1100, easing: 'cubic-bezier(.4,0,.2,1)', iterations: 2, composite: 'add' })
+}
 export const f1 = (n: number) => n.toFixed(1)
 export const P = (p: Pt) => `${f1(p[0])} ${f1(p[1])}`
 export const poly = (pts: Pt[]) => `M${pts.map(P).join('L')}Z`

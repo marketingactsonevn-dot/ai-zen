@@ -3,12 +3,12 @@ import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, pine } from '../../ui/part2/paint'
+import { guide } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-27.json'
-import { boulder, crack, F, f1, lantern, lanternWindows, lin, rad } from './ink27'
+import { boulder, crack, F, f1, invite, lantern, lanternWindows, lin, rad, wideZone } from './ink27'
 
 const K = C.scenes.faces
-const KEPT = 0.34 // a found face's vermilion, held after the flash (must match .t27f-fx.kept)
 type V = { x: number; y: number }
 
 /**
@@ -36,12 +36,14 @@ interface Geo {
 function geo(W: number, H: number, Hr: number): Geo {
   const land = W / H > 1.05
   const u = clamp(H / 640, 0.78, 1.15)
-  const yh = H * (land ? 0.58 : 0.5)
+  // the whole garden sits low (audit v3 27-1: the rock reaches the bottom edge, no empty quarter under it); wide, the
+  // insight's zone is the open sand bottom right, under the lantern's pool
+  const yh = H * (land ? 0.6 : 0.5)
   const g = land
-    ? { moon: [W * 0.6, H * 0.19] as Pt, R: clamp(H * 0.075, 26, 58), stele: [W * 0.455, yh + H * 0.075] as Pt, sw: clamp(W * 0.13, 150, 190),
-        lamp: [W * 0.795, H * 0.79] as Pt, lh: H * 0.55, rock: [W * 0.235, H * 0.885] as Pt, rw: Math.min(W * 0.3, 470), rh: H * 0.34 }
+    ? { moon: [W * 0.49, H * 0.2] as Pt, R: clamp(H * 0.075, 26, 58), stele: [W * 0.455, yh + H * 0.075] as Pt, sw: clamp(W * 0.13, 150, 190),
+        lamp: [W * 0.6, H * 0.76] as Pt, lh: H * 0.5, rock: [W * 0.235, H * 0.985] as Pt, rw: Math.min(W * 0.31, 480), rh: H * 0.37 }
     : { moon: [W * 0.68, H * 0.115] as Pt, R: clamp(W * 0.085, 24, 40), stele: [W * 0.26, yh + H * 0.005] as Pt, sw: clamp(W * 0.4, 120, 172),
-        lamp: [W * 0.8, H * 0.665] as Pt, lh: H * 0.36, rock: [W * 0.3, H * 0.885] as Pt, rw: W * 0.6, rh: H * 0.22 }
+        lamp: [W * 0.8, H * 0.68] as Pt, lh: H * 0.36, rock: [W * 0.3, H * 0.975] as Pt, rw: W * 0.62, rh: H * 0.24 }
   return { W, H, Hr, land, u, yh, aH: -22 * u, aB: 95 * u, aN: 150 * u, aS: -30 * u, aC: 40 * u, ...g, sh: g.sw * 0.8 }
 }
 const ampAt = (g: Geo, y: number) => g.aH + ((g.aB - g.aH) * (y - g.yh)) / (g.H - g.yh)
@@ -57,11 +59,11 @@ function faces(g: Geo) {
   const lF: Pt = [g.lamp[0], wl[1]]
   return [
     { eyes: [[rF[0] - rf * 0.62, rF[1] - rf * 0.3], [rF[0] + rf * 0.6, rF[1] - rf * 0.36]] as Pt[], er: [rf * 0.2, rf * 0.3] as Pt,
-      mouth: [[rF[0] - rf * 0.72, rF[1] + rf * 0.5], [rF[0] + rf * 0.02, rF[1] + rf * 0.86], [rF[0] + rf * 0.76, rF[1] + rf * 0.44]] as Pt[], mw: rf * 0.12, c: rF, f: rf },
+      mouth: [[rF[0] - rf * 0.72, rF[1] + rf * 0.56], [rF[0] - rf * 0.05, rF[1] + rf * 0.7], [rF[0] + rf * 0.76, rF[1] + rf * 0.5]] as Pt[], mw: rf * 0.12, c: rF, f: rf },
     { eyes: [[mF[0] - mf * 0.62, mF[1] - mf * 0.34], [mF[0] + mf * 0.6, mF[1] - mf * 0.42]] as Pt[], er: [mf * 0.34, mf * 0.26] as Pt,
-      mouth: [[mF[0] - mf * 1.05, mF[1] + mf * 0.42], [mF[0], mF[1] + mf * 1.05], [mF[0] + mf * 1.0, mF[1] + mf * 0.36]] as Pt[], mw: mf * 0.2, c: mF, f: mf },
+      mouth: [[mF[0] - mf * 1.05, mF[1] + mf * 0.62], [mF[0] + mf * 0.1, mF[1] + mf * 0.82], [mF[0] + mf * 1.0, mF[1] + mf * 0.5]] as Pt[], mw: mf * 0.16, c: mF, f: mf },
     { eyes: [wl, wr], er: [wr0, wr0 * 1.05] as Pt,
-      mouth: [[lF[0] - lu * 0.62, lF[1] + lu * 0.62], [lF[0], lF[1] + lu * 1.0], [lF[0] + lu * 0.62, lF[1] + lu * 0.6]] as Pt[], mw: lu * 0.13, c: lF, f: lu * 0.5 },
+      mouth: [[lF[0] - lu * 0.62, lF[1] + lu * 0.74], [lF[0] - lu * 0.05, lF[1] + lu * 0.88], [lF[0] + lu * 0.62, lF[1] + lu * 0.7]] as Pt[], mw: lu * 0.13, c: lF, f: lu * 0.5 },
   ]
 }
 
@@ -77,14 +79,23 @@ export function facesScene(ctx: SceneCtx) {
   type Name = (typeof names)[number]
   const L = Object.fromEntries(names.map((n) => [n, h('div', { class: `t27f-L t27f-${n}` }, s('svg', { class: 't27f-svg', 'aria-hidden': 'true' }))])) as Record<Name, HTMLDivElement>
   const svgOf = (n: Name) => L[n].firstChild as SVGSVGElement
-  // the face as seen at its sweet spot, in vermilion (a flash), with an ink twin kept at quality=low
+  // the moment a face is seen, the light tightens on the pieces already there (rims of moonlight, deeper darks), then
+  // lets go: nothing is drawn on the thing (audit v3 27-1 — the brain makes the face, the scene does not)
   const fx = K.things.map(() => s('svg', { class: 't27f-fx', 'aria-hidden': 'true' }))
   const host: Name[] = ['rock', 'sky', 'lamp']
   const btns = K.things.map((t, i) => h('button', { class: 't27f-hit', type: 'button', 'aria-label': t.aria, 'aria-pressed': 'false', onClick: (e: MouseEvent) => go(i, e) }))
-  // a small seal is pressed beside each thing once its face is found (the words go to the live region, not the art)
+  // a found thing keeps a small ink dot beside it (the words go to the live region, not the art)
   const labs = K.things.map(() => h('i', { class: 't27f-seal', 'aria-hidden': 'true' }, s('svg', { viewBox: '0 0 20 20' },
-    s('path', { class: 't27f-seal-ink', d: 'M2.4 2.8Q10 1.5 17.5 2.4Q18.6 10 17.7 17.6Q10 18.6 2.5 17.5Q1.5 10 2.4 2.8Z' }),
-    s('path', { class: 't27f-seal-cut', d: 'M7 6.6a1.5 1.5 0 1 0 .01 0ZM13 6.4a1.5 1.5 0 1 0 .01 0ZM5.6 11.6Q10 16.2 14.4 11.4Q10 14.2 5.6 11.6Z' }))))
+    s('path', { class: 't27f-seal-ink', d: blob(10, 10, 5.2, 4.6, 2761, 0.18, 12) + stroke([[14.2, 7.4], [16.8, 5.6]], 1.4, 0.1, 0.6, 0.2) }))))
+  // H4: three ink rings in the sky, filled as faces are found; the eye (H1) is the handle of where you stand
+  const rings = K.things.map((_, i) => s('path', { class: 't27f-ring-c', d: stroke(Array.from({ length: 15 }, (_, k) => [10 + Math.cos(-1.9 + k * 0.42) * 7, 10 + Math.sin(-1.9 + k * 0.42) * 7] as Pt), 1.5, 0.3, 0.1, 0.25), transform: `translate(${i * 22} 0)` }))
+  const ringFill = K.things.map((_, i) => s('path', { class: 't27f-ring-f', d: blob(10 + i * 22, 10, 4.6, 4.4, 2764 + i, 0.2, 12) }))
+  const countTxt = h('span', null, fill(K.count, { n: 0, total: K.things.length }))
+  const count = h('p', { class: 't27f-count' }, s('svg', { viewBox: '0 0 66 20', 'aria-hidden': 'true' }, ...rings, ...ringFill), countTxt)
+  const eye = h('div', { class: 't27f-eye', 'aria-hidden': 'true' }, s('svg', { viewBox: '-32 -20 64 40' },
+    s('path', { class: 't27f-eye-white', d: 'M-26 1Q-12 -15 1 -14Q15 -13 27 0Q13 13 0 13Q-13 13 -26 1Z' }),
+    s('path', { class: 't27f-eye-ink', d: stroke([[-27, 1], [-17, -9], [-4, -14], [10, -12], [22, -5], [28, 0]], 3.2, 0.1, 0.5, 0.3) + stroke([[-25, 2], [-13, 10], [1, 13], [14, 10], [26, 1]], 1.6, 0.3, 0.4, 0.3) }),
+    s('path', { class: 't27f-eye-iris', d: stroke(Array.from({ length: 17 }, (_, k) => [Math.cos(-0.6 + k * 0.4) * 8.4, Math.sin(-0.6 + k * 0.4) * 8.4] as Pt), 1.8, 0.3, 0.2, 0.3) })))
   const user = h('p', { class: 't27f-user' })
   const bot = h('p', { class: 't27f-bot' })
   const screen = h('button', { class: 't27f-screen', type: 'button', 'aria-label': K.eliza.aria, disabled: true, onClick: () => type(true) }, user, bot)
@@ -98,10 +109,14 @@ export function facesScene(ctx: SceneCtx) {
   L.stele.append(drift, carve, note)
   const world = h('div', { class: 't27f-world' }, ...names.map((n) => L[n]), ...fx, hits)
   const root = h('div', { class: `t27f${low ? ' is-low' : ''}` },
-    h('p', { class: 'visually-hidden' }, K.art, ' ', K.view), world, live)
+    h('p', { class: 'visually-hidden' }, K.art, ' ', K.view), world, low ? null : eye, count, live)
   ctx.art.append(root)
-  ctx.prompt(K.prompt)
+  // quality=low has no parallax: the things are tapped instead of looked for
+  ctx.prompt(low ? K.promptLow : matchMedia('(pointer: coarse)').matches ? K.promptTouch : K.prompt)
   const stable = stableHeight(ctx, K.insights.map(F))
+  // the eye's vermilion dot breathes until every face is found
+  const gd = guide(ctx)
+  let eyeDot = low ? null : gd.dot(eye, { dir: [-1, -0.4] })
 
   // ── layout: paint each layer once per size (the first time soaking in, slice by slice) ──
   let G: Geo | null = null
@@ -109,10 +124,11 @@ export function facesScene(ctx: SceneCtx) {
   let FS: ReturnType<typeof faces> = []
   let job: { cancel(): void } | null = null
   let first = true
+  let halo: SVGElement | null = null
   function layout() {
     const W = root.clientWidth, Hr = root.clientHeight
     if (W < 60 || Hr < 60) return
-    const H = stable(Hr)
+    const H = wideZone() ? Hr : stable(Hr)
     const g = (G = geo(W, H, Hr))
     FS = faces(g)
     const A = (amps = { sky: g.aS, hills: g.aH, cloud: g.aC, floor: 0, stele: ampAt(g, g.stele[1]), lamp: ampAt(g, g.lamp[1]), rock: ampAt(g, g.rock[1]), near: g.aN })
@@ -133,9 +149,10 @@ export function facesScene(ctx: SceneCtx) {
     const twig = FS[2].mouth.map((p) => into(p, A.lamp, g.aN, SWEET[2]))
     function* paint() {
       svgOf('sky').replaceChildren(...sky(g, id, FS[1]))
+      halo = svgOf('sky').querySelector('.t27f-halo')
       yield
       svgOf('hills').replaceChildren(...far(g))
-      svgOf('cloud').replaceChildren(...cloud(g, wisp, FS[1].mw))
+      svgOf('cloud').replaceChildren(...cloud(g, wisp, FS[1].mw, id))
       yield
       svgOf('floor').replaceChildren(...floor(g, id))
       yield
@@ -153,7 +170,7 @@ export function facesScene(ctx: SceneCtx) {
       yield
       FS.forEach((f, i) => {
         fx[i].setAttribute('viewBox', `0 0 ${W} ${Hr}`)
-        fx[i].replaceChildren(...faceArt(f))
+        fx[i].replaceChildren(...glintArt(f, i === 2))
       })
     }
     // DOM over the art: hit areas, labels, the stele's screen
@@ -168,7 +185,7 @@ export function facesScene(ctx: SceneCtx) {
     const [sx, sy] = g.stele
     box(screen, sx - g.sw * 0.42, sy - g.sh * 0.8, g.sw * 0.84, g.sh * 0.62)
     box(carve, sx - g.sw * 0.5, sy - g.sh * 0.97, g.sw, 0)
-    if (g.land) box(note, sx - 92, sy + 10, 260, 0) // right of centre: the big rock's shoulder stands in front of the left
+    if (g.land) box(note, sx - 110, sy + 12, 260, 0) // right of centre: the big rock's shoulder stands in front of the left
     else box(note, 6, sy + 6, Math.min(g.W * 0.62, g.lamp[0] - g.lh * 0.22 - 10), 0)
     box(drift, sx - g.sw * 1.6, sy - g.sh * 0.32, g.sw * 3.2, g.sh * 0.42)
     job?.cancel()
@@ -198,6 +215,8 @@ export function facesScene(ctx: SceneCtx) {
       el.style.transform = btns[i].style.transform = `translate3d(${f1(-cur.x * a)}px,${f1(-cur.y * a)}px,0)`
     })
     screen.style.transform = L.stele.style.transform
+    // the eye stands where the mouse would be for this view (the same map as the mouse's), so it rides under a finger
+    eye.style.transform = `translate3d(${f1(((cur.x + 1.15) / 2.3) * g.W)}px,${f1(((cur.y + 1.15) / 2.3) * g.Hr)}px,0)`
   }
   const loop = createLoop(root, (_t, dt) => {
     const f = dt > 0 ? 1 - Math.exp(-dt * 5.5) : 1
@@ -242,26 +261,46 @@ export function facesScene(ctx: SceneCtx) {
     })
   }
 
-  // ── a face is seen: a vermilion flash (~0.25 s, the brain's own correction time), then the thing is a thing again ──
+  // ── a face is seen: for ~0.25 s (the brain's own correction time) the light tightens on its pieces, the moon's rim
+  // brightens, then the thing is a thing again ──
   function see(i: number) {
-    // then it lingers faintly on the thing (the .kept opacity), so a found face stays legible
-    if (!ctx.reduced || low) fx[i].animate(ctx.reduced ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0 }, { opacity: 1, offset: 0.12 }, { opacity: 1, offset: 0.32 }, { opacity: low ? 0.7 : KEPT }], { duration: ctx.reduced ? 200 : 820, easing: 'ease-out' })
+    if (!ctx.reduced) {
+      fx[i].animate([{ opacity: 0 }, { opacity: 1, offset: 0.18 }, { opacity: 1, offset: 0.45 }, { opacity: 0 }], { duration: 700, easing: 'ease-out' })
+      halo?.animate([{ opacity: 0.7 }, { opacity: 1, offset: 0.25 }, { opacity: 0.7 }], { duration: 700, easing: 'ease-out' })
+    }
     if (found[i]) return
     found[i] = true
     btns[i].setAttribute('aria-pressed', 'true')
     labs[i].classList.add('on')
-    fx[i].classList.add('kept')
     ctx.chime('soft')
     live.textContent = `${K.things[i].label} — ${K.found}`
     const nf = found.filter(Boolean).length
+    countTxt.textContent = fill(K.count, { n: nf, total: found.length })
+    ringFill[i].classList.add('on')
     if (nf === 1) ctx.insight(F(K.insights[0]), F(K.insights[0].detail))
-    if (nf < found.length) ctx.prompt(fill(K.left, { n: found.length - nf })) // H5: how many faces are still hidden
+    // H5: how many faces are still hidden (narrow: the insight has the foot, the rings in the sky count instead)
+    if (nf < found.length && (nf > 1 || wideZone())) ctx.prompt(fill(K.left, { n: found.length - nf }))
     if (found.every(Boolean)) {
       root.classList.add('all')
+      eyeDot?.done()
+      eyeDot = null
       screen.disabled = false
       later(type, ctx.reduced ? 0 : 900)
     }
   }
+  // H7: standing still, the eye drifts a little toward the nearest face still hidden
+  invite(ctx, () => {
+    if (low || found.every(Boolean) || Math.hypot(tgt.x - cur.x, tgt.y - cur.y) > 0.02) return
+    let best = -1, bd = 9
+    SWEET.forEach(([sx, sy], i) => {
+      const d = Math.hypot(cur.x - sx, cur.y - sy)
+      if (!found[i] && d < bd) (bd = d), (best = i)
+    })
+    if (best < 0) return
+    const [sx, sy] = SWEET[best], k = Math.min(0.3, 0.22 / Math.max(bd, 0.01))
+    hold = { x: -1e4, y: -1e4 }
+    set(cur.x + (sx - cur.x) * k, cur.y + (sy - cur.y) * k)
+  })
   /** Tab + Enter (or a tap): the eye glides to that thing's sweet spot */
   let hold: { x: number; y: number } | null = null
   let holdT = 0
@@ -309,7 +348,8 @@ export function facesScene(ctx: SceneCtx) {
     const onMove = (e: PointerEvent) => {
       if (drag && e.pointerId === drag.id) {
         rect ??= root.getBoundingClientRect()
-        return aim(drag.bx + (e.clientX - drag.x) / (rect.width * 0.42), drag.by + (e.clientY - drag.y) / (rect.height * 0.42))
+        // 1:1 under the finger: the eye (drawn where the mouse's map puts this view) follows it exactly
+        return aim(drag.bx + ((e.clientX - drag.x) * 2.3) / rect.width, drag.by + ((e.clientY - drag.y) * 2.3) / rect.height)
       }
       if (e.pointerType !== 'mouse') return
       if (hold) {
@@ -358,11 +398,24 @@ export function facesScene(ctx: SceneCtx) {
 
 // ───────────── the seven layers ─────────────
 
-/** 7 · sky: a wide moonlit glow, the moon with its seas (two of them are the moon-face's eyes). */
+/**
+ * 7 · sky: a wide moonlit glow, the moon with its seas. Two of them are the moon-face's eyes, but at rest they are only
+ * part of a map of seas (a long one up-left, a chain down-right, small ones at the limb): no face until the cloud's
+ * strand crosses under them from the one right spot (audit v3 27-1: the moon showed a face from the first frame).
+ */
 function sky(g: Geo, id: string, face: ReturnType<typeof faces>[number]): SVGElement[] {
   const [mx, my] = g.moon, R = g.R
-  const maria = blob(mx - R * 0.08, my + R * 0.42, R * 0.22, R * 0.12, 2731, 0.3) + blob(mx + R * 0.46, my + R * 0.18, R * 0.14, R * 0.2, 2732, 0.3) + blob(mx - R * 0.5, my + R * 0.2, R * 0.12, R * 0.1, 2733, 0.3)
-  const eyes = face.eyes.map(([x, y], i) => blob(x, y, face.er[0], face.er[1], 2734 + i, 0.22, 12)).join('')
+  const [[ex0, ey0], [ex1, ey1]] = face.eyes, [er0, er1] = face.er
+  const maria =
+    // the left "eye" is the bright end of a long sea reaching to the upper-left limb
+    blob(ex0 - er0 * 0.9, ey0 - er1 * 0.55, er0 * 1.55, er1 * 0.85, 2731, 0.3, 16) + blob(ex0, ey0, er0 * 0.95, er1, 2734, 0.24, 12) +
+    // the right one heads a chain running down to the right limb
+    blob(ex1, ey1, er0 * 0.8, er1 * 0.95, 2735, 0.24, 12) + blob(ex1 + er0 * 0.9, ey1 + er1 * 1.4, er0 * 0.85, er1 * 0.75, 2732, 0.3, 14) +
+    blob(mx + R * 0.68, my + R * 0.42, R * 0.13, R * 0.17, 2733, 0.3, 10) +
+    // small seas at the limb, lower left; a few craters
+    blob(mx - R * 0.6, my + R * 0.5, R * 0.16, R * 0.11, 2736, 0.3, 10) + blob(mx - R * 0.78, my - R * 0.05, R * 0.08, R * 0.14, 2737, 0.3, 8)
+  let craters = ''
+  for (const [u, v, k] of [[0.18, 0.7, 0.07], [-0.2, 0.32, 0.05], [0.45, -0.55, 0.05], [-0.4, 0.78, 0.04]] as const) craters += blob(mx + R * u, my + R * v, R * k, R * k * 0.9, Math.round(2738 + u * 10), 0.15, 8)
   return [
     s('defs', null,
       rad(`${id}-glow`, [[0, '--moon', 0.32], [0.3, '--moon', 0.1], [1, '--moon', 0]]),
@@ -371,7 +424,7 @@ function sky(g: Geo, id: string, face: ReturnType<typeof faces>[number]): SVGEle
     s('circle', { class: 't27f-halo', cx: f1(mx), cy: f1(my), r: f1(R * 2.4), fill: 'url(#p2-halo)' }),
     s('circle', { class: 't27f-disc', cx: f1(mx), cy: f1(my), r: f1(R), fill: `url(#${id}-disc)` }),
     s('path', { class: 't27f-maria', d: maria, filter: 'url(#ink-wash)' }),
-    s('path', { class: 't27f-maria t27f-eyes', d: eyes, filter: 'url(#ink-wash)' }),
+    s('path', { class: 't27f-crater', d: craters }),
     s('circle', { class: 't27f-moonrim', cx: f1(mx), cy: f1(my), r: f1(R) }),
   ]
 }
@@ -389,41 +442,59 @@ function far(g: Geo): SVGElement[] {
   ]
 }
 
-/** 5 · a long cloud bank drifting left of the moon; one dark tendril (the moon-face's mouth) reaches across. */
-function cloud(g: Geo, wisp: Pt[], mw: number): SVGElement[] {
+/**
+ * 5 · a cloud bank drifting left of the moon, painted as one ink wash with volume (lit crown, dark wet belly and core,
+ * a soft moon rim on its right end); a dark strand (the moon-face's mouth) trails from its end across the disc.
+ */
+function cloud(g: Geo, wisp: Pt[], mw: number, id: string): SVGElement[] {
   const [mx, my] = g.moon, R = g.R
   const lens = (x0: number, y0: number, len: number, w: number) =>
     `M${f1(x0)} ${f1(y0)}Q${f1(x0 + len * 0.42)} ${f1(y0 - w * 1.8)} ${f1(x0 + len)} ${f1(y0 - w * 0.3)}Q${f1(x0 + len * 0.55)} ${f1(y0 + w * 0.7)} ${f1(x0)} ${f1(y0)}Z`
   const L = g.land ? g.W * 0.34 : g.W * 0.7
   const x1 = wisp[0][0] - R * 0.15, y1 = wisp[0][1] + R * 0.12
   const x0 = x1 - L
-  // the bank: soft puffs along a line, their bellies in shade, their tops caught by the moon; thin stratus streaks beside
-  const puffs: [number, number, number, number][] = [[0.08, 0.3, 0.14, 0.34], [0.26, 0.08, 0.2, 0.46], [0.47, 0.2, 0.2, 0.4], [0.66, 0.06, 0.17, 0.42], [0.84, 0.18, 0.13, 0.3], [0.97, 0.1, 0.07, 0.2]]
-  let body = '', belly = '', top = ''
+  // [along, up/down in R, half-width in L, half-height in R]: a back row higher and smaller, a front row fuller
+  const puffs: [number, number, number, number][] = [
+    [0.12, -0.32, 0.1, 0.42], [0.3, -0.5, 0.13, 0.56], [0.5, -0.4, 0.12, 0.5], [0.69, -0.48, 0.11, 0.46], [0.86, -0.3, 0.09, 0.36],
+    [0.03, 0.2, 0.1, 0.36], [0.2, 0.08, 0.15, 0.55], [0.4, 0.16, 0.14, 0.5], [0.59, 0.04, 0.14, 0.54], [0.78, 0.12, 0.12, 0.44], [0.94, 0.1, 0.07, 0.3],
+  ]
+  // one ink-wash mass, not a stack of billows: the billows merge into a single silhouette, wet and soft at its edges
+  // (blurred), lit along its crown and dark in its belly across the whole bank, a darker wet core low in the middle, a
+  // haze round it, and a soft rim only on the side toward the moon
+  let mass = '', core = '', rim = ''
   puffs.forEach(([u, v, k, q], i) => {
     const cx = x0 + L * u, cy = y1 + R * v, rx = L * k, ry = R * q
-    body += blob(cx, cy, rx, ry, 2780 + i, 0.18, 20)
-    belly += blob(cx + rx * 0.06, cy + ry * 0.5, rx * 0.9, ry * 0.42, 2786 + i, 0.2, 16)
-    top += stroke(Array.from({ length: 10 }, (_, k2) => {
-      const a = Math.PI * (1.12 + k2 * 0.07)
-      return [cx + Math.cos(a) * rx * 0.96, cy + Math.sin(a) * ry * 0.96] as Pt
-    }), R * 0.05, 0.25, 0.3, 0.1)
+    mass += blob(cx, cy, rx, ry, 2780 + i, 0.2, 20)
+    if (v > 0 && u > 0.12 && u < 0.85) core += blob(cx + rx * 0.1, cy + ry * 0.25, rx * 0.7, ry * 0.45, 2795 + i, 0.25, 14)
+    const near = clamp(1 - Math.hypot(cx - mx, cy - my) / (L * 0.55), 0, 1)
+    if (near > 0.6 && v < 0) rim += stroke(Array.from({ length: 10 }, (_, k2) => {
+      const a = Math.PI * (1.3 + k2 * 0.06)
+      return [cx + Math.cos(a) * rx * 0.94, cy + Math.sin(a) * ry * 0.94] as Pt
+    }), R * (0.04 + near * 0.05), 0.3, 0.3, 0.1)
   })
-  body += lens(x0 - L * 0.2, y1 + R * 0.62, L * 0.7, R * 0.08) + lens(x0 + L * 0.3, y1 + R * 0.78, L * 0.6, R * 0.06)
-  const under = stroke(curve([x0 + L * 0.05, y1 + R * 0.5], [x0 + L * 0.5, y1 + R * 0.7], [x1, y1 + R * 0.4], 14), R * 0.05, 0.2, 0.4, 0.2)
+  const top = y1 - R * 1.1, bot = y1 + R * 0.8
+  const blur = (n: string, sd: number) => s('filter', { id: `${id}-${n}`, x: '-20%', y: '-60%', width: '140%', height: '220%' }, s('feGaussianBlur', { stdDeviation: sd }))
+  const out: SVGElement[] = [
+    s('defs', null,
+      lin(`${id}-puff`, 0, top, 0, bot, [[0, '--t27-cloud-hi', 1], [0.42, '--t27-cloud', 1], [1, '--t27-cloud-lo', 1]], true),
+      blur('cb1', R * 0.07), blur('cb2', R * 0.2), blur('cb3', R * 0.025)),
+    s('path', { class: 't27f-cloud-haze', d: mass, filter: `url(#${id}-cb2)` }),
+    s('path', { class: 't27f-puff', d: mass, fill: `url(#${id}-puff)`, filter: `url(#${id}-cb1)` }),
+    s('path', { class: 't27f-cloud-core', d: core, filter: `url(#${id}-cb2)` }),
+    s('path', { class: 't27f-cloud-rim', d: rim, filter: `url(#${id}-cb1)` }),
+  ]
   // the tendril: from the bank's end, thin, then the stroke that crosses the disc at the sweet spot
   const tail = curve([x1 - L * 0.12, y1 + R * 0.05], [(x1 + wisp[0][0]) / 2, y1 - R * 0.05], wisp[0], 8)
   const strand = [...curve(wisp[0], [wisp[1][0] - (wisp[2][0] - wisp[0][0]) * 0.25, wisp[1][1] + mw * 0.6], wisp[1], 8), ...curve(wisp[1], [wisp[1][0] + (wisp[2][0] - wisp[0][0]) * 0.25, wisp[1][1] + mw * 0.4], wisp[2], 8).slice(1)]
-  // a second, thinner streak right of the moon for balance
+  // thin stratus streaks right of the moon for balance
   const sx = mx + R * 1.6, sy = my + R * 0.9
-  return [
-    s('path', { class: 't27f-cloud', d: body + lens(sx, sy, R * 4.2, R * 0.1) + lens(sx + R * 1.2, sy + R * 0.3, R * 2.4, R * 0.06), filter: 'url(#ink-wash)' }),
-    s('path', { class: 't27f-cloud-belly', d: belly, filter: 'url(#ink-wash)' }),
-    s('path', { class: 't27f-cloud-top', d: top + stroke([[sx + R * 0.3, sy - R * 0.12], [sx + R * 2.2, sy - R * 0.28], [sx + R * 3.8, sy - R * 0.1]], R * 0.04, 0.2, 0.3, 0.1) }),
-    s('path', { class: 't27f-cloud-ink', d: under, filter: 'url(#ink-rough)' }),
+  out.push(
+    s('path', { class: 't27f-cloud', d: lens(x0 - L * 0.2, y1 + R * 0.72, L * 0.7, R * 0.08) + lens(sx, sy, R * 4.2, R * 0.1) + lens(sx + R * 1.2, sy + R * 0.3, R * 2.4, R * 0.06), filter: 'url(#ink-wash)' }),
+    s('path', { class: 't27f-cloud-top', d: stroke([[sx + R * 0.3, sy - R * 0.12], [sx + R * 2.2, sy - R * 0.28], [sx + R * 3.8, sy - R * 0.1]], R * 0.04, 0.2, 0.3, 0.1), filter: `url(#${id}-cb3)` }),
     s('path', { class: 't27f-wisp', d: stroke(tail, mw * 0.55, 0.4, 0.05, 0.3), filter: 'url(#ink-wash)' }),
     s('path', { class: 't27f-wisp t27f-mouth', d: stroke(strand, mw, 0.15, 0.2, 0.25), filter: 'url(#ink-wash)' }),
-  ]
+  )
+  return out
 }
 
 /** The sand at eye level: rake rows crowding toward the horizon, scattered grit; it shears with the eye (drawn deep below the art). */
@@ -570,9 +641,10 @@ function near(g: Geo, id: string, eyes: Pt[], er: Pt, twig: Pt[], tw: number, lu
   const foot = Hr + 170 // the layer rises up to ~150 px: keep the roots out of sight
   const blade = (x: number, hh: number, lean: number, w: number) =>
     stroke(curve([x, foot], [x + lean * 0.15, Hr - hh * 0.45], [x + lean, Hr - hh], 10), w, 0.04, 0.7, 0.08)
-  // clumps: thick in the corners, a thin tuft mid-left, the middle open to the sand
+  // clumps: thick in the corners, a thin tuft mid-left, the middle open to the sand; wide, the bottom right stays open
+  // sand (the insight's zone)
   let blades = ''
-  const clumps: [number, number, number][] = g.land ? [[-0.02, 34, 1], [0.13, 18, 0.7], [0.44, 7, 0.45], [0.9, 26, 0.9], [1.03, 20, 1]] : [[0, 18, 1], [0.95, 16, 0.9], [0.5, 5, 0.4]]
+  const clumps: [number, number, number][] = g.land ? [[-0.02, 34, 1], [0.13, 18, 0.7], [0.44, 7, 0.45], [0.58, 6, 0.4]] : [[0, 18, 1], [0.95, 16, 0.9], [0.5, 5, 0.4]]
   for (const [cx, n, k] of clumps) {
     for (let i = 0; i < n; i++) {
       const x = W * cx + (r() - 0.5) * W * (g.land ? 0.09 : 0.2)
@@ -587,7 +659,7 @@ function near(g: Geo, id: string, eyes: Pt[], er: Pt, twig: Pt[], tw: number, lu
     blades += blade(x, hh, (r() - 0.6) * hh * 0.35, 2 + r() * 2.2)
   }
   let stems = '', heads = ''
-  const decoys: Pt[] = [[eyes[0][0] - W * (g.land ? 0.1 : 0.16), eyes[0][1] + H * 0.12], [eyes[1][0] + W * (g.land ? 0.14 : 0.2), eyes[1][1] + H * 0.2], [W * 0.03, Hr - H * 0.2], [W * (g.land ? 0.93 : 0.9), Hr - H * 0.17]]
+  const decoys: Pt[] = [[eyes[0][0] - W * (g.land ? 0.1 : 0.16), eyes[0][1] + H * 0.12], [eyes[1][0] + W * (g.land ? 0.14 : 0.2), eyes[1][1] + H * 0.2], [W * 0.03, Hr - H * 0.2], [W * (g.land ? 0.57 : 0.9), Hr - H * (g.land ? 0.1 : 0.17)]]
   decoys.forEach(([x, y], i) => {
     const bx = x + (i % 2 ? 10 : -12)
     stems += stroke(curve([bx, foot], [bx + (x - bx) * 0.3, y + (Hr - y) * 0.5], [x, y + er[1] * 0.6], 12), 1.8, 0.02, 0.35, 0.5)
@@ -636,7 +708,7 @@ function near(g: Geo, id: string, eyes: Pt[], er: Pt, twig: Pt[], tw: number, lu
   // nearest of all, the bough is the most out of focus (the grass and the seed heads a little less, they make the rock's eyes)
   const blur = (k: string, sd: number) => s('filter', { id: `${id}-${k}`, x: '-8%', y: '-8%', width: '116%', height: '116%' }, s('feGaussianBlur', { stdDeviation: sd }))
   return [
-    s('defs', null, low ? null : blur('blur', g.land ? 1.8 : 1.3), low ? null : blur('blur2', g.land ? 3.6 : 2.4)),
+    s('defs', null, low ? null : blur('blur', g.land ? 2.4 : 1.6), low ? null : blur('blur2', g.land ? 4.4 : 3)),
     s('g', low ? { class: 't27f-near t27f-bough-g' } : { class: 't27f-near t27f-bough-g', filter: `url(#${id}-blur2)` },
       s('path', { class: 't27f-pad', d: pads }),
       s('path', { class: 't27f-bough', d: stroke(branch, H * 0.022, 0.0, 0.2, 0.4) + stroke(fall, tw * 1.4, 0.05, 0.1, 0.7) }),
@@ -655,14 +727,16 @@ function near(g: Geo, id: string, eyes: Pt[], er: Pt, twig: Pt[], tw: number, lu
   ]
 }
 
-/** The face itself, as it reads from its sweet spot (eyes + mouth + a breath of a jaw), in vermilion and in ink. */
-function faceArt(f: ReturnType<typeof faces>[number]): SVGElement[] {
-  const eyes = f.eyes.map(([x, y], i) => blob(x, y, f.er[0] * 1.05, f.er[1] * 1.05, 2760 + i, 0.15, 12)).join('')
-  const [a, b, c] = f.mouth
-  const mouth = stroke([...curve(a, [(a[0] + b[0]) / 2, b[1] + f.mw * 0.3], b, 8), ...curve(b, [(b[0] + c[0]) / 2, b[1] + f.mw * 0.2], c, 8).slice(1)], f.mw * 1.1, 0.15, 0.2, 0.3)
-  const jaw = stroke(Array.from({ length: 19 }, (_, i) => {
-    const t = Math.PI * (0.08 + (i / 18) * 0.84)
-    return [f.c[0] + Math.cos(t) * f.f * 1.55, f.c[1] - f.f * 0.1 + Math.sin(t) * f.f * 1.45] as Pt
-  }), f.mw * 0.5, 0.3, 0.3, 0.1)
-  return [s('path', { class: 't27f-fx-v', d: eyes + mouth }), s('path', { class: 't27f-fx-jaw', d: jaw })]
+/**
+ * The light tightening on a face's own pieces for a moment: a breath of moonlight pooled over them (the lantern's
+ * windows flare warm). Nothing is drawn: no eyes, no mouth (the pieces already lined up are the whole face).
+ */
+function glintArt(f: ReturnType<typeof faces>[number], lit = false): SVGElement[] {
+  const id = `t27f-gl${Math.round(f.c[0])}`
+  const out: SVGElement[] = [
+    s('defs', null, rad(id, [[0, '--moon', 0.34], [0.55, '--moon', 0.12], [1, '--moon', 0]])),
+    s('ellipse', { cx: f1(f.c[0]), cy: f1(f.c[1] + f.f * 0.15), rx: f1(f.f * 2.6), ry: f1(f.f * 2.2), fill: `url(#${id})` }),
+  ]
+  if (lit) out.push(s('path', { class: 't27f-fx-warm', d: f.eyes.map(([x, y], i) => blob(x, y, f.er[0] * 0.8, f.er[1] * 0.8, 2760 + i, 0.15, 10)).join('') }))
+  return out
 }

@@ -3,7 +3,7 @@ import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
-import { guide, type Mark, type Track } from '../../ui/part2/guide'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { hills, mist, moon, pine, reeds, ridge } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-25.json'
@@ -17,17 +17,16 @@ const TW = 192 // fibre tile width (plane px)
 // illustration only: the six boats each notch sends, 1 = the shortcut (calm 1 of 6 … desperate 5 of 6), so the counts
 // at the two landings read the same every time
 const RIDES: (0 | 1)[][] = [[0, 0, 0, 1, 0, 0], [0, 1, 0, 1, 1, 0], [1, 1, 0, 1, 1, 1]]
-const LEV = 1.5 // the lever's size against the stream (a tall wooden arm, easy to find and to grab)
 const LOOK = 48 // the view (deg) at or below which the mirror has cleared enough to see the current under the boat
 
 // The stream as it should look in the slanting view (shares of the art box), back-projected onto the plane at layout.
 // landscape: 3/4 from the bank, flowing left → right · portrait: standing at the source, looking downstream
 const PATHS = {
   land: {
-    hero: [0.31, 0.68] as Pt,
-    head: [[-0.04, 0.97], [0.1, 0.84], [0.2, 0.74], [0.31, 0.68], [0.44, 0.62]] as Pt[],
-    long: [[0.44, 0.62], [0.41, 0.53], [0.45, 0.465], [0.54, 0.425], [0.64, 0.4], [0.72, 0.375], [0.79, 0.36], [0.85, 0.35]] as Pt[],
-    short: [[0.44, 0.62], [0.56, 0.655], [0.68, 0.665], [0.78, 0.635], [0.86, 0.595]] as Pt[],
+    hero: [0.33, 0.82] as Pt,
+    head: [[0.06, 1.1], [0.18, 0.95], [0.33, 0.82], [0.46, 0.74]] as Pt[],
+    long: [[0.46, 0.74], [0.4, 0.65], [0.31, 0.57], [0.26, 0.49], [0.3, 0.42], [0.4, 0.38], [0.5, 0.355], [0.58, 0.34]] as Pt[],
+    short: [[0.46, 0.74], [0.57, 0.68], [0.67, 0.61], [0.76, 0.54], [0.84, 0.49]] as Pt[],
   },
   tall: {
     hero: [0.5, 0.8] as Pt,
@@ -159,6 +158,78 @@ function swirl(R: number, seed: number): string {
   return d
 }
 
+type SCol = Record<'paper' | 'umbra' | 'moss-a' | 'moss-b' | 'moss-c' | 'rock-lo' | 'rock-mid' | 'rock-hi', string>
+const SOIL = ['paper', 'umbra', 'moss-a', 'moss-b', 'moss-c', 'rock-lo', 'rock-mid', 'rock-hi'] as const
+
+/**
+ * The ground beyond the stream's own banks (screen space, from the horizon down, twice the frame tall so it can slide
+ * up with the view): a faint moss tint over the earth, moss-dot cushions and stray pebbles, all smaller toward the far
+ * edge. Under the plane, so looking straight down never shows a void (audit v3 25-2).
+ */
+function* soilPaint(g: CanvasRenderingContext2D, dpr: number, W: number, H: number, deep: number, c: SCol, dark: boolean) {
+  const r = rng(2599)
+  g.setTransform(dpr, 0, 0, dpr, 0, 0)
+  g.clearRect(0, 0, W, H * 2)
+  g.globalAlpha = dark ? 0.32 : 0.16
+  g.fillStyle = c['moss-b']
+  g.fillRect(0, 0, W, H * 2)
+  const sh = g.createLinearGradient(0, 0, 0, deep)
+  sh.addColorStop(0, 'rgba(0,0,0,0)')
+  sh.addColorStop(1, dark ? 'rgba(0,0,0,0.3)' : 'rgba(28,34,54,0.08)')
+  g.globalAlpha = 1
+  g.fillStyle = sh
+  g.fillRect(0, 0, W, H * 2)
+  const E = (x: number, y: number, rx: number, ry: number) => {
+    g.beginPath()
+    g.ellipse(x, y, Math.max(0.3, rx), Math.max(0.2, ry), 0, 0, Math.PI * 2)
+    g.fill()
+  }
+  const k = (y: number) => clamp(0.12 + y / deep, 0.12, 1.6) // nearer (lower) = bigger
+  for (let i = 0; i < 30; i++) {
+    const y = r() * H * 2, s = k(y), x = r() * W, rx = W * 0.06 * s * (0.6 + r()), ry = rx * 0.32
+    g.fillStyle = c['moss-a']
+    g.globalAlpha = dark ? 0.1 : 0.08
+    E(x, y, rx, ry)
+    for (let j = 0, n = Math.round(rx * 1.2); j < n; j++) {
+      const a = r() * Math.PI * 2, d = Math.sqrt(r()), dx = Math.cos(a) * d * rx, dy = Math.sin(a) * d * ry
+      const lit = dx * 0.5 - dy * 1.6 > 0
+      g.fillStyle = lit ? c['moss-c'] : c['moss-b']
+      g.globalAlpha = (lit ? 0.42 : dark ? 0.7 : 0.4) * (1 - d * 0.5)
+      E(x + dx, y + dy, (0.8 + r() * 1.6) * s, (0.5 + r()) * s)
+    }
+    if (i % 6 === 5) yield
+  }
+  yield
+  for (let i = 0; i < 1600; i++) {
+    const y = r() * H * 2, s = k(y), lit = r() < 0.5
+    g.fillStyle = lit ? c['moss-c'] : c.umbra
+    g.globalAlpha = lit ? 0.3 : dark ? 0.35 : 0.12
+    E(r() * W, y, (0.5 + r()) * s, (0.4 + r() * 0.5) * s)
+  }
+  yield
+  for (let i = 0; i < 70; i++) {
+    const y = r() * H * 2, s = k(y), x = r() * W, rr = (2 + r() * 3.5) * s
+    g.fillStyle = c.umbra
+    g.globalAlpha = dark ? 0.5 : 0.18
+    E(x - rr * 0.2, y + rr * 0.25, rr * 1.05, rr * 0.55)
+    g.fillStyle = c['rock-mid']
+    g.globalAlpha = dark ? 0.8 : 0.7
+    E(x, y, rr, rr * 0.5)
+    g.fillStyle = c['rock-hi']
+    g.globalAlpha = dark ? 0.3 : 0.6
+    E(x + rr * 0.2, y - rr * 0.15, rr * 0.55, rr * 0.25)
+  }
+  // the far edge melts into the mist under the hills
+  g.globalCompositeOperation = 'destination-out'
+  const fade = g.createLinearGradient(0, 0, 0, H * 0.08)
+  fade.addColorStop(0, 'rgba(0,0,0,1)')
+  fade.addColorStop(1, 'rgba(0,0,0,0)')
+  g.globalAlpha = 1
+  g.fillStyle = fade
+  g.fillRect(0, 0, W, H * 0.08)
+  g.globalCompositeOperation = 'source-over'
+}
+
 interface Geo {
   W: number
   H: number
@@ -205,7 +276,7 @@ function plan(W: number, H: number): Geo {
   const E = (p: Pt): Pt => [p[0] - x0, p[1] - y0]
   const head = rel.head.map(E), lg = rel.lg.map(E), sh = rel.sh.map(E)
   const join = (b: Pt[]) => along([...head.slice(0, -2), ...b])
-  const moonAt: Pt = land ? [W * 0.62, H * 0.1] : [W * 0.82, H * 0.075]
+  const moonAt: Pt = land ? [W * 0.71, H * 0.1] : [W * 0.85, H * 0.2]
   return { W, H, land, P, PW: x1 - x0, PD: y1 - y0, piv: E([0, 0]), sx, sy, px, py, ww, head, lg, sh, rides: [join(lg), join(sh)], landing: [lg[lg.length - 1], sh[sh.length - 1]], at: (u, v) => E(un([u, v])), moon: moonAt }
 }
 
@@ -229,6 +300,10 @@ export function currentScene(ctx: SceneCtx) {
   const flows: Animation[][] = [[], [], []] // head (+ the eddy), long, short
   let live = false
 
+  const soil = h('canvas', { class: 't25c-soil', 'aria-hidden': 'true' })
+  const sg = soil.getContext('2d')!
+  let scol: SCol | null = null
+  let soilTop = 0
   const back = s('svg', { class: 't25c-back', 'aria-hidden': 'true' })
   const plane = h('div', { class: 't25c-plane' })
   const view = h('div', { class: 't25c-view' }, plane)
@@ -238,15 +313,25 @@ export function currentScene(ctx: SceneCtx) {
   // the grip's place in the lever's box follows the arm (CSS by mood): the guide's dot rides on it
   const knob = h('i', { class: 't25c-knob', 'aria-hidden': 'true' })
   const lever = h('div', { class: 't25c-lever', role: 'slider', tabindex: '0', 'aria-label': K.dialAria, 'aria-valuemin': '0', 'aria-valuemax': '2' }, knob)
+  // the lever stands in the foreground on the near bank: its art and its hit box share one box pinned to the spot
+  const levArt = s('svg', { class: 't25c-levart', 'aria-hidden': 'true' })
+  const levBox = h('div', { class: 't25c-levbox' }, levArt, lever)
+  let PL = 98 // half the plinth's length in lever units (room for the notches' words)
+  /** where the grip sits (share of the lever's box) at notch m: the arm turns ±34° about its axle (0, −24) */
+  const knobAt = (m: number) => {
+    const a = ((m - 1) * 34 * Math.PI) / 180
+    knob.style.left = `${(((PL + 2 + Math.sin(a) * 66) / (2 * PL + 4)) * 100).toFixed(1)}%`
+    knob.style.top = `${(((106 - 24 - Math.cos(a) * 66) / 108) * 100).toFixed(1)}%`
+  }
   const note = h('div', { class: 't25c-note', hidden: true }, ctx.fact(F(K.illustration), 'p'))
-  // the dial's name and the illustration note: a quiet caption up in the sky, off the stream and its banks
-  const cap = h('div', { class: 't25c-cap' }, h('p', { class: 't25c-dial' }, K.dial), note)
+  // the illustration note: a quiet caption up in the sky, off the stream and its banks (the dial's own words are carved
+  // on the lever's quadrant)
+  const cap = h('div', { class: 't25c-cap' }, note)
   // the AI's calm sentence is written on the hero boat's paper sail
   const strip = h('div', { class: 't25c-strip' }, h('p', null, K.said))
-  const calmNote = h('div', { class: 't25c-saidnote', 'aria-hidden': 'true' }, h('p', null, K.saidNote), h('p', { class: 'flip' }, K.saidNote))
   const hero = h('div', { class: 't25c-boat t25c-hero', role: 'img', 'aria-label': K.boat })
   // the other words live on things, in a screen layer pinned to them (so they always read): a wooden board on a stake
-  // at the head of the stream, the stone lantern's post, paper flags on the bamboo stakes, two carved stone lintels.
+  // at the head of the stream, a plaque nailed across the stone lantern's post, one paper banner on a bamboo pole.
   // ax / ay: which point of the element sits on its spot (0 … 1); flip: hangs to the left of its pole near the right edge
   type Pin = { el: HTMLElement; p: Pt; up: number; ax: number; ay: number; w: number; flip?: boolean }
   const pins: Pin[] = []
@@ -258,18 +343,32 @@ export function currentScene(ctx: SceneCtx) {
     h('p', { class: 't25c-plaque', 'aria-hidden': 'true' }, ...K.carefulPost.map((w) => h('span', null, w))),
     h('p', { class: 'visually-hidden' }, K.careful),
     h('i', { class: 't25c-plinth' }))
-  const flagEls = K.shortcutFlags.map((w) => h('span', { class: 't25c-flag', 'aria-hidden': 'true' }, w))
-  const lintels = [K.calm, K.desperate].map((w) => h('p', { class: 't25c-lintel' }, w))
+  // the shortcut: one paper banner (nobori) hung from a crossbar on a bamboo pole at the short landing, read top down
+  const banner = h('p', { class: 't25c-banner', 'aria-hidden': 'true' }, ...K.shortcutFlags.map((w) => h('span', null, w)))
+  const flagEls = [banner]
   // how many boats came in at each landing for the notch now set (counted afresh at every notch)
   const tallies = [0, 1].map(() => h('p', { class: 't25c-tally', 'aria-hidden': 'true' }))
-  tags.append(boardEl, lanternEl, ...flagEls, h('p', { class: 'visually-hidden' }, K.shortcut), ...lintels, ...tallies)
+  tags.append(boardEl, lanternEl, banner, h('p', { class: 'visually-hidden' }, K.shortcut), ...tallies, levBox)
   const boats: { el: HTMLElement; ride: 0 | 1; d: number; v: number }[] = []
   const parked: HTMLElement[][] = [[], []]
   let spawn = 0 // boats still to release
   let clock = 0
 
   const root = frame(ctx, 't25c', K.art, K.insights, layout)
-  root.append(back, view, near, tags, tiltEl, cap)
+  root.append(soil, back, view, near, tags, tiltEl, cap)
+  /** the soil's painting as steps (sliced on the first layout; all at once on a theme change) */
+  function* repaintSoil() {
+    if (!G || !scol) return
+    const d = Math.min(1.5, devicePixelRatio || 1)
+    soil.width = Math.round(G.W * d)
+    soil.height = Math.round(G.H * 2 * d)
+    Object.assign(soil.style, { width: `${f1(G.W)}px`, height: `${f1(G.H * 2)}px`, top: `${f1(soilTop)}px` })
+    yield* soilPaint(sg, d, G.W, G.H, G.H - soilTop, scol, document.documentElement.dataset.theme === 'dark')
+  }
+  tokens(SOIL, ctx, (c) => {
+    scol = c
+    for (const _ of repaintSoil());
+  })
 
   // the two fibre tiles are baked when the page is idle (one per idle slot), never on the mount path; again on theme change
   const ric = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 120))
@@ -306,11 +405,11 @@ export function currentScene(ctx: SceneCtx) {
     if (m === mood) return
     mood = m
     root.dataset.mood = String(m)
+    knobAt(m)
     rate()
     const fresh = !seen.has(m)
     seen.add(m)
     note.hidden = false
-    calmNote.classList.add('on')
     ctx.chime('tap')
     // a new notch: the boats still on the water and the ones moored are cleared, the six of this notch counted afresh
     boats.forEach((b) => b.el.remove())
@@ -395,6 +494,8 @@ export function currentScene(ctx: SceneCtx) {
   root.addEventListener('pointercancel', endTilt)
 
   let warned = false
+  let done = 0
+  ctx.onCleanup(() => clearTimeout(done))
   function check() {
     if (shown[1]) return
     if (a > LOOK) return void (warned = false)
@@ -407,28 +508,14 @@ export function currentScene(ctx: SceneCtx) {
     ctx.insight(F(K.insights[1]), F(K.insights[1].detail))
     ctx.chime('soft')
     steps.set(shown.filter(Boolean).length)
+    done = window.setTimeout(() => steps.done(), 1600) // 2/2 read, then it leaves the looking-down view clear
     step()
   }
 
-  // ── guidance (audit v3 H1–H7): the step's words, a dot on the grip, the lever's groove with its three notches, a
+  // ── guidance (audit v3 H1–H7): the step's words, a dot on the grip (its notched rail and words are drawn on the lever), a
   // count of the two steps, then an ink arrow down the water's right edge for the tilt
   const gd = guide(ctx)
-  const steps = gd.count(K.steps, 2, () => (G ? (G.land ? [G.W * 0.86, G.H * 0.07] : [G.W * 0.6, G.H * 0.95]) : [0, 0]))
-  let levP: Pt | null = null
-  /** the arc the grip sweeps (screen px), desperate end first */
-  const leverArc = (): Pt[] => {
-    if (!G || !levP) return [[0, 0], [0, 0]]
-    const g = G, lp = levP
-    const v = { ...o, a: (a * Math.PI) / 180, tz: -g.P * 0.25 * ((A0 - a) / (A0 - A1)), P: g.P, px: g.px, py: g.py }
-    const R = g.ww * LEV * 1.08 // just above the grip: the arm is ww·LEV tall and turns about its foot
-    return [34, 17, 0, -17, -34].map((d) => {
-      const r = (d * Math.PI) / 180
-      const [x, y] = project([lp[0] + Math.sin(r) * R, lp[1]], v, Math.cos(r) * R)
-      return [x, y] as Pt
-    })
-  }
-  // (no words on the notches: the lever leans toward the gate carved with the same word)
-  let groove: Track | null = gd.track(leverArc, { ticks: 3 })
+  const steps = gd.count(K.steps, 2, () => (G ? (G.land ? [G.W * 0.86, G.H * 0.07] : [G.W * 0.5, G.H * 0.035]) : [0, 0]))
   let dot: Mark | null = null
   let dotDir = 0
   let down: Mark | null = null
@@ -440,11 +527,7 @@ export function currentScene(ctx: SceneCtx) {
       dot = want ? gd.dot(knob, { dir: [want, 0] }) : null
       dotDir = want
     }
-    if (groove && shown[0] && mood === 2) {
-      groove.done()
-      groove = null
-    }
-    if (!down && shown[0] && mood === 2 && !shown[1]) down = gd.gesture('drag-v', () => (G ? [G.W * (G.land ? 0.92 : 0.88), G.H * 0.58] : [0, 0]), { r: 46 })
+    if (!down && shown[0] && mood === 2 && !shown[1]) down = gd.gesture('drag-v', () => (G ? [G.W * (G.land ? 0.94 : 0.9), G.H * (G.land ? 0.6 : 0.56)] : [0, 0]), { r: 46 })
     if (down && shown[1]) {
       down.done()
       down = null
@@ -478,7 +561,7 @@ export function currentScene(ctx: SceneCtx) {
     } else if (a !== tgt) {
       a = tgt
       apply()
-      if (groove) gd.refresh() // the view has come to rest: the groove finds the lever again (one measure, next frame)
+      gd.refresh() // the view has come to rest: the marks find the lever again (one measure, next frame)
     }
     if (spawn > 0) {
       clock += dt
@@ -567,7 +650,7 @@ export function currentScene(ctx: SceneCtx) {
     const view1 = { ...o, a: rad, tz, P: g.P, px: g.px, py: g.py }
     const far = project([g.PW / 2, 0], view1)[1]
     const far0 = project([g.PW / 2, 0], { ...view1, a: (A0 * Math.PI) / 180, tz: 0 })[1]
-    back.style.transform = `translateY(${f1(Math.min(0, far - far0))}px)`
+    back.style.transform = soil.style.transform = `translateY(${f1(Math.min(0, far - far0))}px)`
     for (const pn of pins) {
       const [x, y] = project(pn.p, view1, pn.up)
       const ax = pn.flip ? (x > g.W * 0.6 ? 1 : 0) : pn.ax
@@ -579,8 +662,9 @@ export function currentScene(ctx: SceneCtx) {
   }
 
   // ── painting (once per size; the first one soaks in)
-  function layout(W: number, H: number) {
-    G = plan(W, H)
+  function layout(W: number, H: number, Hraw: number) {
+    // wide: the insight lives in the picture's quiet corner, so the painting uses the whole frame
+    G = plan(W, W / H > 1.05 ? Hraw : H)
     const g = G
     o = { left: g.sx - g.piv[0], top: g.sy - g.piv[1], ox: g.piv[0], oy: g.piv[1] }
     Object.assign(plane.style, { left: `${f1(o.left)}px`, top: `${f1(o.top)}px`, width: `${f1(g.PW)}px`, height: `${f1(g.PD)}px`, transformOrigin: `${f1(o.ox)}px ${f1(o.oy)}px` })
@@ -609,6 +693,8 @@ export function currentScene(ctx: SceneCtx) {
 
     // ── the sky beyond the far bank (screen space): moon, two ranges, mist lying where the plane ends
     const [mx, my] = g.moon
+    soilTop = hz + H * 0.015
+    yield* repaintSoil()
     back.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     back.replaceChildren(
       s('defs', null, s('radialGradient', { id: 't25c-lglow' }, s('stop', { offset: 0, style: 'stop-color:var(--lantern);stop-opacity:.6' }), s('stop', { offset: 0.45, style: 'stop-color:var(--lantern);stop-opacity:.18' }), s('stop', { offset: 1, style: 'stop-color:var(--lantern);stop-opacity:0' }))),
@@ -624,24 +710,26 @@ export function currentScene(ctx: SceneCtx) {
     // ── key places on the plane
     const lamp = g.land ? beside(lg, 0.97, ww * 0.9) : beside(lg, 0.8, ww * 0.95)
     const gateA = pick(lg, 0.2), gateB = pick(sh, 0.3)
-    const tip = pick(lg, 0.07), tip2 = pick(sh, 0.09)
-    const lev: Pt = [lerp(tip[0], tip2[0], 0.5), lerp(tip[1], tip2[1], 0.5) - ww * 0.15]
+    // the lever stands on the near bank right of the fork, in front of everything: the thing to touch is big and lit
+    const lev: Pt = g.land ? g.at(0.53, 0.94) : g.at(0.73, 0.93)
     const board = g.land ? beside(head, 0.42, ww * 1.55) : beside(head, 0.2, ww * 1.15)
+    // the mooring post: a bamboo pole driven into the bank beside the moored boat; the AI's calm sentence hangs from its
+    // top as a paper flag over the water, a rope runs from its foot to the boat
+    const hi = head.reduce((b, p, i) => (Math.hypot(p[0] - g.piv[0], p[1] - g.piv[1]) < Math.hypot(head[b][0] - g.piv[0], head[b][1] - g.piv[1]) ? i : b), 0)
+    const postSide = 1 // the left bank, a step back from the water's edge
+    const post = beside(head, hi / (head.length - 1), ww * (g.land ? 1.1 : 1.05))
     const isl = Array.from({ length: 11 }, (_, i) => {
       const t = 0.3 + (i / 10) * 0.62, u = 0.32 + ((i * 7) % 5) * 0.09
       const a0 = pick(lg, t), b0 = pick(sh, t)
       return [lerp(a0[0], b0[0], u), lerp(a0[1], b0[1], u)] as Pt
     })
-    const fringe = [0.5, 0.78].map((t) => beside(sh, t, -ww * 0.8))
-    const nearReeds = [[0.42, -2.1], [0.6, -1.7], [0.74, -2.6]].map(([t, d]) => beside(sh, t, d * ww))
-    // the bamboo stakes stand along the short branch's outer bank toward its landing, each with a paper flag
-    // (portrait: the branch runs away from us up the screen, so the first words go on the farthest stake and read downward)
-    const stakes = flagEls.map((_, i) => {
-      const u = i / Math.max(1, flagEls.length - 1)
-      return beside(sh, (g.land ? 0.46 : 0.44) + (g.land ? u : 1 - u) * (g.land ? 0.48 : 0.54), -ww * (g.land ? 0.95 : 0.75))
-    })
-    const stakeH = stakes.map((_, i) => ww * (g.land ? 1.05 + (i % 2) * 0.35 : 1.1))
-    const rocks: [Pt, number][] = [[beside(head, 0.62, -ww * 0.85), 0.42], [beside(lg, 0.5, ww * 0.8), 0.5], [beside(sh, 0.55, -ww * 2.3), 0.62]]
+    // reeds stand on the island and on the inner banks (the near bank right of the short way is the insight's quiet ground)
+    const fringe = [0.5, 0.78].map((t) => beside(sh, t, ww * 0.85))
+    const nearReeds = [[0.45, 2.1], [0.7, 2.6]].map(([t, d]) => beside(head, t, d * ww))
+    // one tall bamboo pole at the short landing carries the paper banner
+    const stakes = flagEls.map(() => beside(sh, g.land ? 0.93 : 0.64, -ww * (g.land ? 0.85 : 0.8)))
+    const stakeH = stakes.map(() => ww * (g.land ? 2.1 : 1.6))
+    const rocks: [Pt, number][] = [[beside(head, 0.62, -ww * 0.85), 0.42], [beside(lg, 0.5, ww * 0.8), 0.5], [beside(lg, 0.3, ww * 2.2), 0.62]]
 
     // ── the water (one flat layer under everything): bed — shallows show sand, the deep is ink — and over it the
     // mirror: the night sky held in the water, lighter toward the far bank; the moon's road (the screen column under
@@ -803,6 +891,7 @@ export function currentScene(ctx: SceneCtx) {
     const banks = svg('t25c-banks',
       s('defs', null,
         s('mask', { id: 't25c-dry', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: f1(PW), height: f1(PD) }, s('rect', { width: f1(PW), height: f1(PD), fill: '#fff' }), s('path', { d: bands(0.9), fill: '#000' })),
+        s('radialGradient', { id: 't25c-moonpool' }, s('stop', { offset: 0, class: 't25c-mp0' }), s('stop', { offset: 0.5, class: 't25c-mp1' }), s('stop', { offset: 1, class: 't25c-mp2' })),
         s('radialGradient', { id: 't25c-pool' }, s('stop', { offset: 0, style: 'stop-color:var(--lantern);stop-opacity:.5' }), s('stop', { offset: 0.4, style: 'stop-color:var(--lantern);stop-opacity:.14' }), s('stop', { offset: 1, style: 'stop-color:var(--lantern);stop-opacity:0' })),
         s('linearGradient', { id: 't25c-fade', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, style: 'stop-color:#fff;stop-opacity:0' }), s('stop', { offset: 0.22, style: 'stop-color:#fff;stop-opacity:1' })),
         s('mask', { id: 't25c-far', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: f1(PW), height: f1(PD) }, s('rect', { width: f1(PW), height: f1(PD), fill: 'url(#t25c-fade)' }))),
@@ -814,12 +903,15 @@ export function currentScene(ctx: SceneCtx) {
           s('path', { class: 't25c-gravel', d: gravel }),
           s('path', { class: 't25c-wet', d: bands(1.45) }),
           s('path', { class: 't25c-wet', d: bands(1.2) })),
-        s('ellipse', { cx: f1(lamp[0]), cy: f1(lamp[1] + ww * 0.6), rx: f1(ww * 3.4), ry: f1(ww * 2.6), fill: 'url(#t25c-pool)' }),
+        s('ellipse', { cx: f1(lamp[0]), cy: f1(lamp[1] + ww * 0.6), rx: f1(ww * 3.4), ry: f1(ww * 2.6), fill: 'url(#t25c-pool)', opacity: 0.7 }),
+        // moonlight falls brightest on the near bank where the lever stands (the thing to touch is the lit thing)
+        s('ellipse', { cx: f1(lev[0]), cy: f1(lev[1] + ww * 0.1), rx: f1(ww * 2.2), ry: f1(ww * 1.3), fill: 'url(#t25c-moonpool)' }),
         s('path', { class: 't25c-cast t25c-castup', d: [shadow(lamp, ww * 0.6, ww * 2.4), shadow(lev, ww * 0.4, ww * 1), shadow(board, ww * 1.8, ww * 1.2), shadow(gateA, ww, ww), shadow(gateB, ww, ww), ...isl.map((p) => shadow(p, ww * 0.6, ww * 1.4)), ...stakes.map((p, i) => shadow(p, ww * 0.3, stakeH[i]))].join('') }),
         s('path', { class: 't25c-cast', d: flatSh }),
         s('path', { class: 't25c-flat', d: flat }),
         s('path', { class: 't25c-flatlit', d: flat, transform: `translate(${f1(ww * 0.03)} ${f1(-ww * 0.03)}) scale(1)` }),
         s('path', { class: 't25c-planks', d: planks, filter: 'url(#ink-rough)' }),
+        s('path', { class: 't25c-rope', d: stroke(curve(post, [(post[0] + g.piv[0]) / 2, (post[1] + g.piv[1]) / 2 + ww * 0.12], g.piv, 10), Math.max(1.2, ww * 0.018), 0.05, 0.05, 0.6) }),
         s('path', { class: 't25c-edge', d: edge }),
         s('path', { class: 't25c-grass', d: grass }),
         s('path', { class: 't25c-cast', d: sides, transform: `translate(${f1(ww * 0.12)} ${f1(ww * 0.18)})` }),
@@ -833,17 +925,18 @@ export function currentScene(ctx: SceneCtx) {
       h('div', { class: `t25c-prop ${cls}`, style: `left:${f1(p[0] - w / 2)}px;top:${f1(p[1] - hh)}px;width:${f1(w)}px;height:${f1(hh)}px` },
         s('svg', { viewBox: `${f1(-w / 2)} ${f1(-hh)} ${f1(w)} ${f1(hh)}`, width: f1(w), height: f1(hh), 'aria-hidden': 'true' }, ...kids), ...extra)
     const props: HTMLElement[] = []
-    // bamboo stakes, alternating heights so their paper flags (screen layer) do not touch
+    // the banner's bamboo pole, driven into the bank (the banner and its crossbar hang from the top, screen layer)
     stakes.forEach((p, i) => props.push(prop(p, ww * 0.4, stakeH[i] * 1.04, [
-      s('path', { class: 't25c-cane', d: stroke([[0, 0], [(i - 1.5) * 1.5, -stakeH[i]]], ww * 0.055, 0.02, 0.02, 0.9) }),
-      s('path', { class: 't25c-canelt', d: stroke([[ww * 0.012, -stakeH[i] * 0.05], [(i - 1.5) * 1.5 + ww * 0.012, -stakeH[i] * 0.95]], ww * 0.014, 0.1, 0.1, 0.5) }),
-      s('path', { class: 't25c-knot', d: [0.35, 0.7].map((k) => stroke([[-ww * 0.035, -stakeH[i] * k], [ww * 0.035, -stakeH[i] * k - 1]], ww * 0.018, 0.2, 0.2, 0.5)).join('') }),
+      s('path', { class: 't25c-cane', d: stroke([[0, 0], [0.5, -stakeH[i]]], ww * 0.07, 0.02, 0.02, 0.9) }),
+      s('path', { class: 't25c-canelt', d: stroke([[ww * 0.016, -stakeH[i] * 0.05], [0.5 + ww * 0.016, -stakeH[i] * 0.95]], ww * 0.018, 0.1, 0.1, 0.5) }),
+      s('path', { class: 't25c-knot', d: [0.3, 0.55, 0.8].map((k) => stroke([[-ww * 0.045, -stakeH[i] * k], [ww * 0.045, -stakeH[i] * k - 1]], ww * 0.022, 0.2, 0.2, 0.5)).join('') }),
+      s('ellipse', { class: 't25c-castup', cx: f1(-ww * 0.05), cy: 1, rx: f1(ww * 0.12), ry: f1(ww * 0.03) }),
     ])))
     isl.forEach((p, i) => props.push(prop(p, ww * 1.3, ww * 1.9, [reeds(0, 0, ww * (1.15 + ((i * 5) % 4) * 0.18), 2580 + i, 9)], 't25c-reed')))
     fringe.forEach((p, i) => props.push(prop(p, ww * 1.1, ww * 1.5, [reeds(0, 0, ww * (1 + (i % 2) * 0.25), 2660 + i, 7)], 't25c-reed')))
     nearReeds.forEach((p, i) => props.push(prop(p, ww * 1.2, ww * 1.4, [reeds(0, 0, ww * (0.9 + (i % 2) * 0.3), 2680 + i, 8)], 't25c-reed')))
     rocks.forEach(([p, k], i) => props.push(prop(p, ww * k * 1.3, ww * k * 0.8, [stoneArt(ww * k, ww * k * 0.58, 2670 + i)])))
-    // two sluice gates just past the fork (each word on a stone plaque, pinned below); the lever on the island's tip
+    // two sluice gates just past the fork (the lever that works them stands on the near bank, screen layer)
     const gate = (p: Pt, k: number) => {
       const wd = ww * 1.12, ph = ww * 0.64
       const post = (x: number) => s('g', null,
@@ -861,44 +954,62 @@ export function currentScene(ctx: SceneCtx) {
       ], `t25c-gate t25c-gate-${k}`)
     }
     props.push(gate(gateA, 0), gate(gateB, 1))
-    const u = (ww * LEV) / 100 // the lever drawn in a 100-unit box
-    const grain = stroke([[-1.5 * u, -30 * u], [-1 * u, -70 * u]], 0.9 * u, 0.2, 0.2, 0.5) + stroke([[1.8 * u, -34 * u], [1.4 * u, -62 * u]], 0.7 * u, 0.2, 0.2, 0.5)
+    // the lever, in its own 100-unit drawing (foot at 0, 0; the box is 2·PL + 4 wide, 108 tall): wide plinth with the
+    // notches' words carved on its face, a curved notched rail, the arm on its axle (turned by CSS: fill-box, bottom centre)
+    PL = g.land ? 124 : 80
+    const lw = g.land ? 300 : 168, u = 1
+    levBox.style.width = `${lw}px`
+    levBox.style.height = `${f1((lw * 108) / (2 * PL + 4))}px`
+    levArt.setAttribute('viewBox', `${-PL - 2} -106 ${2 * PL + 4} 108`)
+    const grain = stroke([[-1.5 * u, -34 * u], [-1 * u, -70 * u]], 0.9 * u, 0.2, 0.2, 0.5) + stroke([[1.8 * u, -38 * u], [1.4 * u, -64 * u]], 0.7 * u, 0.2, 0.2, 0.5)
     const arm = s('g', { class: 't25c-arm' },
-      s('path', { class: 't25c-wood', d: `M${f1(-3.2 * u)} ${f1(-22 * u)}L${f1(-2.2 * u)} ${f1(-82 * u)}L${f1(2.2 * u)} ${f1(-82 * u)}L${f1(3.2 * u)} ${f1(-22 * u)}Z` }),
-      s('path', { class: 't25c-woodlt', d: `M${f1(1.4 * u)} ${f1(-22 * u)}L${f1(1 * u)} ${f1(-82 * u)}L${f1(2.2 * u)} ${f1(-82 * u)}L${f1(3.2 * u)} ${f1(-22 * u)}Z` }),
+      s('path', { class: 't25c-wood', d: `M${f1(-3.4 * u)} ${f1(-24 * u)}L${f1(-2.4 * u)} ${f1(-82 * u)}L${f1(2.4 * u)} ${f1(-82 * u)}L${f1(3.4 * u)} ${f1(-24 * u)}Z` }),
+      s('path', { class: 't25c-woodlt', d: `M${f1(1.5 * u)} ${f1(-24 * u)}L${f1(1.1 * u)} ${f1(-82 * u)}L${f1(2.4 * u)} ${f1(-82 * u)}L${f1(3.4 * u)} ${f1(-24 * u)}Z` }),
       s('path', { class: 't25c-woodln', d: grain }),
       // the grip: cord wound round the top
-      s('path', { class: 't25c-grip', d: `M${f1(-3.2 * u)} ${f1(-80 * u)}L${f1(-3.2 * u)} ${f1(-100 * u)}Q0 ${f1(-104 * u)} ${f1(3.2 * u)} ${f1(-100 * u)}L${f1(3.2 * u)} ${f1(-80 * u)}Z` }),
-      s('path', { class: 't25c-gripln', d: [84, 88, 92, 96].map((y) => stroke([[-3.2 * u, -y * u], [3.2 * u, -(y + 2) * u]], 0.8 * u, 0.1, 0.1, 0.6)).join('') }))
-    props.push(prop(lev, ww * 1.6 * LEV, ww * 1.15 * LEV, [
+      s('path', { class: 't25c-grip', d: `M${f1(-3.4 * u)} ${f1(-80 * u)}L${f1(-3.4 * u)} ${f1(-100 * u)}Q0 ${f1(-104 * u)} ${f1(3.4 * u)} ${f1(-100 * u)}L${f1(3.4 * u)} ${f1(-80 * u)}Z` }),
+      s('path', { class: 't25c-gripln', d: [84, 88, 92, 96].map((y) => stroke([[-3.4 * u, -y * u], [3.4 * u, -(y + 2) * u]], 0.8 * u, 0.1, 0.1, 0.6)).join('') }))
+    const Q = (deg: number, rr: number): Pt => [Math.sin((deg * Math.PI) / 180) * rr * u, (-24 - Math.cos((deg * Math.PI) / 180) * rr) * u]
+    const arc = (r0: number, r1: number, a0: number, a1: number) => {
+      const o2 = Array.from({ length: 13 }, (_, i) => Q(lerp(a0, a1, i / 12), r1)), n = Array.from({ length: 13 }, (_, i) => Q(lerp(a1, a0, i / 12), r0))
+      return `M${[...o2, ...n].map(PT).join('L')}Z`
+    }
+    const notches = [-34, 0, 34].map((d) => `M${PT(Q(d - 3.4, 47))}L${PT(Q(d, 41.5))}L${PT(Q(d + 3.4, 47))}Z`).join('')
+    const quadrant = s('g', { class: 't25c-quad' },
+      s('path', { class: 't25c-wood', d: arc(36, 47, -46, 46), filter: 'url(#ink-rough)' }),
+      s('path', { class: 't25c-woodlt', d: arc(45, 47, -46, 46) }),
+      s('path', { class: 't25c-notch', d: notches }),
+      s('path', { class: 't25c-wood', d: [-46, 46].map((d) => { const [x, y] = Q(d, 38); return `M${f1(x - 2.2 * u)} ${f1(-18 * u)}L${f1(x - 2.2 * u)} ${f1(y)}L${f1(x + 2.2 * u)} ${f1(y)}L${f1(x + 2.2 * u)} ${f1(-18 * u)}Z` }).join('') }))
+    // the words: all three on a wide frame, the two ends on a phone (the middle notch speaks through the slider's value)
+    const words = (g.land ? [K.calm, K.neutral, K.desperate] : [K.calm, '', K.desperate]).map((w, i) => w ? s('text', { class: `t25c-carve t25c-carve-${i}`, x: f1((i - 1) * (g.land ? 82 : 48)), y: -5.4, 'text-anchor': 'middle' }, w) : null)
+    levArt.replaceChildren(
+      s('ellipse', { class: 't25c-levsh', cx: -10, cy: 1, rx: PL + 8, ry: 6 }),
+      quadrant,
+      s('path', { class: 't25c-post', d: `M${-PL} 0L${-(PL - 1)} -17L${PL - 1} -18L${PL} 0Z`, filter: 'url(#ink-rough)' }),
+      s('path', { class: 't25c-postdk', d: `M${-PL} 0L${-(PL - 1)} -17L${-(PL - 8)} -17.2L${-(PL - 7.5)} 0Z` }),
+      s('path', { class: 't25c-postlt', d: `M${-(PL - 1)} -17L${PL - 1} -18L${PL - 4} -22L${-(PL - 4)} -21Z` }),
+      ...words.filter((w): w is SVGTextElement => !!w),
       arm,
-      // the pivot block: a squat stone, lit top, mid face, dark left side; the axle pin; a small seal
-      s('path', { class: 't25c-post', d: `M${f1(-14 * u)} 0L${f1(-13 * u)} ${f1(-26 * u)}L${f1(13 * u)} ${f1(-27 * u)}L${f1(14 * u)} 0Z`, filter: 'url(#ink-rough)' }),
-      s('path', { class: 't25c-postdk', d: `M${f1(-14 * u)} 0L${f1(-13 * u)} ${f1(-26 * u)}L${f1(-7 * u)} ${f1(-26.3 * u)}L${f1(-7.5 * u)} 0Z` }),
-      s('path', { class: 't25c-postlt', d: `M${f1(-13 * u)} ${f1(-26 * u)}L${f1(13 * u)} ${f1(-27 * u)}L${f1(11 * u)} ${f1(-31 * u)}L${f1(-11 * u)} ${f1(-30 * u)}Z` }),
-      s('circle', { class: 't25c-axle', cx: 0, cy: f1(-22 * u), r: f1(2.6 * u) }),
-    ], 't25c-leverpost', lever))
-    levP = lev
+      s('path', { class: 't25c-postdk', d: 'M-7 -20L-6 -29L6 -29L7 -20Z' }),
+      s('path', { class: 't25c-postlt', d: 'M-6 -29L6 -29L5 -31L-5 -31Z' }),
+      s('circle', { class: 't25c-axle', cx: 0, cy: -25, r: 2.4 }))
+    knobAt(mood)
     armEl = arm
     // words pinned to their things (screen layer: never hidden behind a reed, never smaller than they can be read)
     pins.length = 0
     pins.push({ el: boardEl, p: board, up: 0, ax: 0.5, ay: 1, w: 0 }, { el: lanternEl, p: lamp, up: 0, ax: 0.5, ay: 1, w: 0 })
     stakes.forEach((p, i) => pins.push({ el: flagEls[i], p, up: stakeH[i] * 0.97, ax: 0, ay: 0, w: 0, flip: true }))
-    // (portrait: above the flags on the stakes by the short landing)
-    g.landing.forEach((p, i) => pins.push({ el: tallies[i], p, up: ww * (g.land ? 0.35 : 1.5), ax: 0.5, ay: 1, w: 0 }))
-    ;[gateA, gateB].forEach((p, i) => {
-      lintels[i].style.minWidth = `${f1(ww * 1.12 * 1.28 * kAt(p))}px` // as wide as the gate
-      pins.push({ el: lintels[i], p, up: ww * 0.63, ax: 0.5, ay: 1, w: 0 })
-    })
-    // the boat that carries the AI's calm sentence, moored above the fork: the sentence is on its paper sail
+    pins.push({ el: levBox, p: lev, up: 0, ax: 0.5, ay: 0.985, w: 0 })
+    // the counts float just above the moored boats at each landing
+    g.landing.forEach((p, i) => pins.push({ el: tallies[i], p, up: 0, ax: 0.5, ay: 0, w: 0 }))
+    // the boat that carries the AI's calm sentence, moored above the fork (its words hang from the mooring post)
     const hk = ww / (g.land ? 34 : 30)
     boatEl(hk, hero, false)
     hero.style.transform = `translate3d(${f1(g.piv[0])}px, ${f1(g.piv[1])}px, 0)`
-    const sw = g.land ? 176 : 142
-    Object.assign(strip.style, { left: `${f1(g.piv[0] - sw / 2)}px`, width: `${sw}px`, bottom: `${f1(PD - g.piv[1] + 6 * hk - 1)}px` })
-    strip.style.setProperty('--eddy', `${f1(ww * 0.8)}px`) // looking down, the sail stands just beyond the eddy
-    Object.assign(calmNote.style, { left: `${f1(g.piv[0] - 90)}px`, width: '180px', bottom: `${f1(PD - g.piv[1] - ww * 0.5)}px` })
-    plane.replaceChildren(water, flowsEl, banks, ...props, hero, strip, calmNote)
+    const sw = g.land ? 176 : 172, poleH = ww * (g.land ? 1.55 : 1.4)
+    strip.classList.toggle('flip', postSide < 0)
+    Object.assign(strip.style, { left: `${f1(postSide > 0 ? post[0] - 2 : post[0] - sw + 2)}px`, width: `${sw}px`, height: `${f1(poleH)}px`, bottom: `${f1(PD - post[1])}px` })
+    plane.replaceChildren(water, flowsEl, banks, ...props, hero, strip)
     boats.forEach((b) => plane.append(b.el))
     parked.forEach((l) => (l.length = 0))
     const counts = [...piles] as [number, number]
@@ -910,14 +1021,14 @@ export function currentScene(ctx: SceneCtx) {
     apply()
     pins.forEach((pn) => (pn.w = pn.el.offsetWidth)) // one read for all the pinned words
     apply()
-    gd.refresh() // the lever is in place: the groove and the count find it
+    gd.refresh() // the lever is in place: the dot and the count find it
     yield
 
     // ── reeds right in front of us, out of focus (pre-blurred at high, never animated)
     near.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     near.replaceChildren(
       reeds(W * 0.03, H * 1.04, H * (g.land ? 0.46 : 0.3), 2690, 11),
-      reeds(W * (g.land ? 0.98 : 0.96), H * 1.04, H * (g.land ? 0.36 : 0.24), 2691, 8))
+      ...(g.land ? [] : [reeds(W * 0.96, H * 1.04, H * 0.24, 2691, 8)]))
   }
 
   root.dataset.mood = '1'

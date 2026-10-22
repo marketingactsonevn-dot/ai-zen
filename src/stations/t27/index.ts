@@ -10,10 +10,10 @@ const S = C.scenes
 const station: StationModule = {
   content: C,
   scenes: [
-    { label: S.faces.label, mount: facesScene },
-    lampScene,
-    { label: S.flatter.label, mount: flatterScene },
-    pathScene,
+    { label: S.faces.label, text: 'br', mount: facesScene },
+    { ...lampScene, text: 'br' },
+    { label: S.flatter.label, text: 'bl', mount: flatterScene },
+    { ...pathScene, text: 'br' },
   ],
 }
 export default station

@@ -4,6 +4,7 @@ import { fill, h } from '../../core/dom'
 import type { Fact } from '../../core/content'
 import { onPrefs } from '../../core/prefs'
 import { onDigit, rng } from '../../ui/part2/ink'
+import { guide } from '../../ui/part2/guide'
 import { inkGlsl, inkStage, type InkKit, type InkLamp } from '../../ui/part2/stage3d'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-26.json'
@@ -598,6 +599,14 @@ export function lampsScene(ctx: SceneCtx) {
   // the lit lantern's name hangs on the sand below it (a zero-size anchor, the words below it)
   const tags = K.lamps.map((l, i) => h('div', { class: `t26l-tag${i === 0 || i === n - 1 ? ' up' : ''}`, 'aria-hidden': 'true' }, h('p', null, h('span', { class: 't26l-tname' }, l.name), h('span', { class: 't26l-ten' }, l.en))))
   const side = h('div', { class: 't26l-side', hidden: true })
+  // guidance (audit v3 26-1): a vermilion dot on each unlit lantern's paper window, the count carved under the plinth from
+  // the start, a faint curved arrow under the tray for walking round the statue; six seconds still, the nearest unlit
+  // lantern flares like a struck match
+  const dotHosts = K.lamps.map(() => h('div', { class: 't26l-dothost', 'aria-hidden': 'true' }))
+  const countEl = h('p', { class: 't26l-count' }, fill(K.count, { n: 0, total: n }))
+  const gd = guide(ctx)
+  const dots = dotHosts.map((el) => gd.dot(el))
+  const orbit = gd.gesture('rotate', () => [ctx.art.clientWidth * 0.5, ctx.art.clientHeight * (tall ? 0.9 : 0.88)], { r: 52 })
   let flyMat: THREE.ShaderMaterial | null = null
   let pineMat: THREE.ShaderMaterial | null = null
 
@@ -655,7 +664,7 @@ export function lampsScene(ctx: SceneCtx) {
   const view = { yaw: 0.14, pitch: tall ? 0.14 : 0.2 }
   const stage = inkStage(ctx, ctx.art, {
     label: K.art, hint: K.hint, idle: 0, sway: false, dpr: [1.75, 1.25], fallback: flat,
-    view: { ...view, yawRange: [view.yaw - 0.61, view.yaw + 0.61], pitchRange: [0.2, 0.62], fit: tall ? [4.7, 3.0] : [5.6, 2.7], target: [0, tall ? 0.9 : 0.7, 0.45], shift: tall ? 0.2 : 0.03, zoomRange: [0.72, 1.3] },
+    view: { ...view, yawRange: [view.yaw - 0.61, view.yaw + 0.61], pitchRange: [0.2, 0.62], fit: tall ? [4.4, 2.8] : [5.6, 2.7], target: [0, tall ? 0.9 : 0.7, 0.45], shift: tall ? 0.08 : 0.03, zoomRange: [0.72, 1.3] },
   }, function* (k) {
     const low = k.low
     k.uniforms.uKey.value.set(-0.62, 0.6, 0.5).normalize()
@@ -792,7 +801,9 @@ export function lampsScene(ctx: SceneCtx) {
       const top = new THREE.Box3().setFromObject(g).max.y
       // the outer lanterns carry their names above them (open sand), the inner ones below (clear of the statue)
       k.label(g, tags[i], [0, tags[i].classList.contains('up') ? 0.08 : -top, 0])
+      k.label(g, dotHosts[i], [0, (i < 3 ? FLAME[i] : 0.95) - top, 0])
     })
+    k.label(plinth, countEl, tall ? [0, -0.36, 2.15] : [0, -0.36, 0.6]) // tall: on the sand in front, clear of the lanterns
   })
   ctx.prompt(K.prompt)
 
@@ -836,11 +847,26 @@ export function lampsScene(ctx: SceneCtx) {
     kit.animate(step)
   }
 
+  const onIdle = () => {
+    const i = [...Array(n).keys()].find((j) => !lit.has(j))
+    if (i == null || !kit || ctx.reduced) return
+    kNow[i] = Math.max(kNow[i], 0.45) // the match flares, then the window goes dark again
+    run()
+  }
+  ctx.el.addEventListener('p2:idle', onIdle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
+  let tm = 0
+  ctx.onCleanup(() => clearTimeout(tm))
+
   function light(i: number) {
     const k = kit
     if (!k) return
     const first = !lit.has(i)
     lit.add(i)
+    dots[i].done()
+    countEl.textContent = fill(K.count, { n: lit.size, total: n })
+    if (!countEl.hasAttribute('aria-live')) countEl.setAttribute('aria-live', 'polite')
+    if (lit.size >= 2) orbit.done()
     const all = lit.size === n
     for (let j = 0; j < n; j++) kTo[j] = all ? 0.9 : j === i ? 1 : lit.has(j) ? EMBER : 0
     if (first) {
@@ -864,6 +890,9 @@ export function lampsScene(ctx: SceneCtx) {
     if (all && !done) {
       done = true
       ctx.insight(F(K.insight), F(K.detail))
+      // one text at the end: the lamp's words give way to the insight
+      tm = window.setTimeout(() => side.classList.add('gone'), ctx.reduced ? 0 : 3200)
+      countEl.replaceChildren() // (the label's own fade sets opacity inline, so empty it rather than fade it)
       // step back to the front, where all four shadows stand side by side on the screen
       k.fly(null, 0, view.pitch + 0.05, 1.6)
     }

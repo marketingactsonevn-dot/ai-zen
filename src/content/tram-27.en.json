@@ -20,9 +20,9 @@
   "scenes": {
     "faces": {
       "label": "A stone with a face",
-      "art": "A corner of the night garden at eye level, in seven layers: dark grass and a pine bough right at your eye, a big moss rock with a crack, a lit stone lantern with a warm pool on the sand, a small stele sunk in shadow under a pine, a long cloud across the moon, mountains in mist, sky and moon. Each thing hides a face torn across several layers: two near seed heads and the crack in the rock, the lantern's two windows and a drooping pine twig, two dark seas on the moon and a strand of cloud. Stand in the right place and the pieces line up into a face. Find all three and the stele lights a green screen like an old computer: ELIZA, 1966.",
+      "art": "A corner of the night garden at eye level, in seven layers: dark grass and a pine bough right at your eye, a big moss rock with a crack, a lit stone lantern with a warm pool on the sand, a small stele sunk in shadow under a pine, a long cloud across the moon, mountains in mist, sky and moon. Each thing hides a face torn across several layers: two near seed heads and the crack in the rock, the lantern's two windows and a drooping pine twig, two dark seas on the moon and a strand of cloud. An ink eye with a vermilion dot marks where you stand; from the right place the pieces line up into a face, and the light tightens on them for a moment. Find all three and the stele lights a green screen like an old computer: ELIZA, 1966.",
       "view": "Move the mouse, drag or tilt the phone to change where you stand; each face only comes whole from one spot. Tab to each thing, Enter to step to the right spot.",
-      "prompt": "Move the mouse (or drag) — find the hidden face",
+      "prompt": "Drag the eye (or move the mouse) — find the hidden face",
       "left": "{n} faces still hidden",
       "things": [
         {
@@ -72,62 +72,44 @@
             "source": "weizenbaum-1976"
           }
         }
-      ]
+      ],
+      "count": "Seen {n}/{total}",
+      "promptLow": "Tap the rock, the moon or the lantern — find the hidden face",
+      "promptTouch": "Drag the eye — find the hidden face"
     },
     "lamp": {
       "label": "The lamp at your side",
-      "art": "A night almost fully dark under an old pine: the trunk leans in from the lower left, one long branch reaches across the top. From its tip hangs a round paper lantern with the question written on it; like a pendulum it always leans toward whoever comes near. Below lies dark moss with surface roots and four equal stones on an even arc. Bring the lantern to a stone and the side facing it glows, and its words appear on the ground.",
-      "prompt": "Tap each stone — hear the good and the bad",
+      "art": "Night under an old pine: the trunk leans in from the lower left, one long branch reaches across the top. A round paper lantern with a question written on it hangs from the branch; its cord ring slides along it. At the pine's foot three real people sit round a tea tray on the moss: a friend, your mother, a colleague. In front, you sit alone at the other end of the branch. Pull the lantern toward you: your spot warms, and the three sink into the dark. Push it away: they are lit again.",
+      "prompt": "Pull the lantern close to you",
+      "promptBack": "Now push the lantern away",
+      "aria": "The paper lantern on the pine branch: right arrow pulls it close to you, left arrow pushes it toward the three people",
+      "ticks": [
+        "far",
+        "middle",
+        "close"
+      ],
+      "people": "Three real people near you: a friend, your mother, a colleague",
       "question": "A support, or a place to hide?",
-      "opener": "72% of US teens have chatted with an “AI companion” — an AI app that plays a friend.",
-      "insight": {
-        "text": "The bright side: 39% of teen users say they took social skills practised with AI into real life.",
+      "opener": {
+        "text": "72% of US teens have chatted with an “AI companion” — an AI app that plays a friend.",
         "asOf": "2026-10-19",
         "source": "commonsense-2025"
       },
-      "perspectives": {
-        "stones": [
-          {
-            "who": "US teens in a 2025 survey",
-            "view": {
-              "text": "80% of teen users still spend more time with real friends than with AI.",
-              "asOf": "2026-10-15",
-              "source": "commonsense-2025"
-            }
-          },
-          {
-            "who": "MIT Media Lab & OpenAI (2025)",
-            "view": {
-              "text": "A 4-week trial, 981 people: those who chose to use it more tended to be lonelier and more dependent. Which causes which is unclear.",
-              "asOf": "2026-10-15",
-              "source": "fang-2025"
-            }
-          },
-          {
-            "who": "Anthropic (Claude.ai data, 2025)",
-            "view": {
-              "text": "Only 2.9% of Claude.ai conversations are about feelings or personal troubles; asking it to play a friend or partner, under 0.5%.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-affective-2025",
-              "claimBy": "Anthropic"
-            }
-          },
-          {
-            "who": "Common Sense Media, a children’s advocacy group",
-            "view": {
-              "text": "Under-18s should not use AI companions yet, until there are better safeguards.",
-              "asOf": "2026-10-15",
-              "source": "commonsense-2025",
-              "kind": "opinion"
-            }
-          }
-        ],
-        "common": {
-          "text": "AI companions can help somewhat; whether it helps or harms depends on how much you use them, and whether real people are near.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
-        }
+      "near": {
+        "text": "A 4-week trial, 981 people: those who chose to use it more tended to be lonelier. Which causes which is unclear.",
+        "asOf": "2026-10-15",
+        "source": "fang-2025"
+      },
+      "insight": {
+        "text": "The lamp really does warm — but pull it too close and it hides the real people beside you.",
+        "asOf": "2026-10-22",
+        "source": "editorial",
+        "kind": "opinion"
+      },
+      "detail": {
+        "text": "The bright side: 39% of teens who use AI companions say they took social skills practised with AI into real life. Common Sense Media still advises under-18s not to use them yet.",
+        "asOf": "2026-10-19",
+        "source": "commonsense-2025"
       }
     },
     "flatter": {
@@ -168,7 +150,7 @@
     },
     "path": {
       "label": "Healthy habits",
-      "art": "A frame within a frame: from inside a hillside hut, behind someone hunched at a cold blue screen, you look through an open sliding door down a steep stone stair across the moon garden to a house in the valley, its paper doors glowing yellow with a few people sitting round a meal. Four slabs lie scattered at the threshold; beside each step stands a small unlit stone lantern.",
+      "art": "A frame within a frame: from inside a hillside hut, behind someone hunched at a cold blue screen, you look through an open sliding door down a steep stone stair across the moon garden to a house in the valley, its paper doors glowing yellow with a few people sitting round a meal. Four natural slabs of different shapes lie scattered at the threshold; beside each step stands a small unlit stone lantern hung with a wooden tag naming a moment: before you open it, while you chat, before a big decision, when you close it. Once the path is done, the take-away is a sheet of paper pasted on the house’s paper door.",
       "prompt": "Put each stone on the step that suits it",
       "keys": "Keys 1–4 set the stones in order",
       "stoneAria": "Place the stone “{label}”",
@@ -204,7 +186,19 @@
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
-      }
+      },
+      "marks": [
+        "before you open it",
+        "while you chat",
+        "before a big decision",
+        "when you close it"
+      ],
+      "prompts": [
+        "Drag a stone onto the nearest step",
+        "Step 2: while you chat",
+        "Step 3: before a big decision",
+        "Last step: when you close it"
+      ]
     }
   },
   "sources": {

@@ -29,9 +29,11 @@
 .t25l-st-u3 { stop-color: color-mix(in srgb, var(--water) 55%, var(--mist)); }
 .t25l-st-f0 { stop-color: var(--mist); }
 .t25l-st-s0 { stop-color: #fff; }
+/* light: the underside stays a shade darker than the sky (water is never lighter than the sky) */
+:root[data-theme='light'] .t25l-surf rect[fill='url(#t25l-silver)'] { opacity: 0.45; }
 .t25l-st-dim { stop-color: var(--wash); }
-.t25l-w0 { stop-color: #fff; }
-.t25l-w1 { stop-color: #fff; stop-opacity: 0; }
+.t25l-w0 { stop-color: var(--paper); }
+.t25l-w1 { stop-color: var(--paper); stop-opacity: 0; }
 /* dark: near-black water, the window and the shafts the brightest things in it */
 :root[data-theme='dark'] .t25l-st-u0 { stop-color: color-mix(in srgb, var(--water) 66%, var(--mist)); }
 :root[data-theme='dark'] .t25l-st-u1 { stop-color: color-mix(in srgb, var(--water) 86%, var(--mist)); }
@@ -79,6 +81,40 @@
 :root[data-theme='dark'] .t25l-weedp { fill: color-mix(in srgb, var(--mist) 30%, var(--water)); opacity: 0.95; }
 :root[data-theme='dark'] .t25l-weedp.far { opacity: 0.55; }
 .t25l-motes { fill: #fff; opacity: 0.5; }
+.t25l-raydust { fill: #fff; opacity: 0.55; }
+:root[data-theme='dark'] .t25l-raydust { fill: var(--moon); opacity: 0.4; }
+/* the deep: banks of mist light and dark in turn, the last weeds fading through them */
+.t25l-bank.lt { opacity: 0.8; }
+.t25l-bank.dk { opacity: 0.35; }
+:root[data-theme='dark'] .t25l-bank.lt { opacity: 0.5; }
+:root[data-theme='dark'] .t25l-bank.dk { opacity: 0.9; }
+.t25l-deepweed { fill: var(--wash); opacity: 0.16; }
+:root[data-theme='dark'] .t25l-deepweed { fill: color-mix(in srgb, var(--mist) 30%, var(--water)); opacity: 0.6; }
+/* the next pebble's way down: a dotted ink arc; standing still, its ink runs once */
+.t25l-trail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+.t25l-trail path {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 0.012 0.022;
+  opacity: 0.55;
+}
+.t25l.trail-off .t25l-trail { opacity: 0; }
+.scene.is-idle .t25l-trail path { animation: t25l-run 1.6s ease-in-out 1; }
+@keyframes t25l-run {
+  from { stroke-dashoffset: 0.4; opacity: 0.9; }
+  to { stroke-dashoffset: 0; opacity: 0.55; }
+}
 :root[data-theme='dark'] .t25l-motes { fill: var(--mist); opacity: 0.45; }
 /* the slab: three tones, moss, ink edge, moonlit back edge, a wet line and contact shadow, its ripple reflection */
 .t25l-slab-under { fill: var(--umbra); opacity: 0.3; }
@@ -209,20 +245,26 @@
 .t25l-lab small { white-space: nowrap; }
 .t25l:not(.land) .t25l-lab p::after { width: 2.4em; }
 
-/* a reached layer: the line it teaches, etched under its name (small; the slide's one insight sits in the frame) */
-.t25l-lab p.t25l-line {
-  display: block;
+/* a reached layer: the line it teaches (small; one at a time; the slide's one sentence sits in the frame at the end) */
+.t25l-say {
+  position: absolute;
+  z-index: 1;
   max-width: 19em;
-  margin-top: 5px;
+  margin: 0;
   font: 400 13px/1.4 var(--serif);
   color: var(--ink-2);
-  white-space: normal;
   text-wrap: balance;
-  animation: p2-fade 0.9s ease-out both;
+  text-shadow: 0 1px 0 color-mix(in srgb, #fff 45%, transparent);
+  opacity: 0;
+  transition: opacity 0.7s;
+  pointer-events: none;
 }
-.t25l-lab p.t25l-line::after { content: none; }
-.t25l-lab p.t25l-line[hidden] { display: none; }
-.t25l:not(.land) .t25l-lab p.t25l-line { font-size: 12px; max-width: 15em; }
+.t25l-say.is-on { opacity: 1; pointer-events: auto; }
+.t25l-say[hidden] { display: none; }
+:root[data-theme='dark'] .t25l-say { text-shadow: 0 1px 0 color-mix(in srgb, #000 70%, transparent); }
+.t25l-lab small { transition: opacity 0.4s; }
+.t25l-lab.has-line small { opacity: 0; }
+.t25l:not(.land) .t25l-say { font-size: 12.5px; max-width: none; }
 /* the word carved on each pebble */
 .t25l-mark {
   position: absolute;
@@ -230,7 +272,7 @@
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  font: 500 11px/1 var(--serif);
+  font: 500 12.5px/1 var(--serif);
   letter-spacing: 0.04em;
   color: var(--umbra);
   text-align: center;

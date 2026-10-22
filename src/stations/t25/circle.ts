@@ -9,6 +9,7 @@ import type { Perspectives } from '../../ui/part2/types'
 import { hills, mist, moon, reeds, ridge } from '../../ui/part2/paint'
 import type { SceneCtx, SceneDef } from '../types'
 import C from '../../content/tram-25.json'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { f1, lerp, project } from './art'
 import { broken } from './kit'
 
@@ -96,13 +97,15 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
   const reflG = s('g', { class: 't25o-reflg' }) // the far shore upside down in the water: slides with the hills
   const view = h('div', { class: 't25o-view' }, ground, water)
   const shore = s('svg', { class: 't25o-shore', 'aria-hidden': 'true' }) // grass on the water's edge, mist on the far bank
-  host.append(h('p', { class: 'visually-hidden' }, S.art), back, view, shore)
+  // the speaking slab already lies on the near bank before anyone speaks (the card's words land on it later)
+  const slab0 = h('div', { class: 't25o-slab0', 'aria-hidden': 'true' })
+  host.append(h('p', { class: 'visually-hidden' }, S.art), back, view, shore, slab0)
 
   let G: { W: number; H: number; cx: number; cy: number; Rp: number; Rs: number; Rb: number; P: number; py: number; tz: number; kFar: number; lift: number } | null = null
   let phi = 0, goal = 0, tilt = T0, tiltGoal = T0
   const theta = (k: number) => (-90 + (k * 360) / n) * DEG // where stone k stands on the bank (clockwise from the far side)
   const stopOf = (k: number) => Math.PI / 2 - theta(k) + 0.58 // stand behind it, a step to its right: it looms at the left edge
-  phi = goal = stopOf(0) + Math.PI / n // start between two stones
+  phi = goal = stopOf(0) // start on the bank behind the first stone: it looms in the left third, the pond lies open
 
   const place = () => {
     if (!G) return
@@ -127,8 +130,9 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
       // the same real size on every bank; the one we stand behind grows into a dark mass cropped by the corner
       const near = clamp((sc - 1.25) / 0.5, 0, 1) * (1 - down)
       const want = G!.Rp * lerp(0.4, 0.3, down) * sc * (1 + near * 1.5)
-      b.style.transform = `translate(${f1(x - near * W * 0.05)}px, ${f1(y + near * G!.H * 0.1)}px) scale(${(want / bw).toFixed(3)})`
+      b.style.transform = `translate(${f1(x - near * W * (G!.W > G!.H ? 0.09 : 0.05))}px, ${f1(y + near * G!.H * 0.1)}px) scale(${(want / bw).toFixed(3)})`
       b.style.zIndex = String(Math.round(sc * 100))
+      b.style.setProperty('--inv', (bw / want).toFixed(3)) // its guide dot keeps one size whatever the stone's
       b.style.setProperty('--near', near.toFixed(2))
       // its reflection shows only while it stands across the water
       const a = theta(k) + phi
@@ -202,7 +206,7 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
     // a big pond, its near bank in front of us (the slab lies there), the stone we stand behind looms over it, the far one is small
     const Rp = land ? Math.min(W * 0.27, H * 0.64) : Math.min(W * 0.42, H * 0.27)
     const Rs = Rp * 1.24, Rb = Rp * 1.75
-    const cx = W / 2, cy = H * (land ? 0.41 : 0.4)
+    const cx = W * (land ? 0.54 : 0.5), cy = H * (land ? 0.41 : 0.45)
     const P = Rs * 1.9, py = H * 0.26
     // from straight above the circle of stones must fit: pull the ground back by tz, and bring its centre down to the
     // middle of the frame under the question (lift, in pre-perspective px)
@@ -221,12 +225,17 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
     job = sliced(paint(W, H, Rp, Rs, Rb, cx, land), { sync: ctx.reduced || !first })
     first = false
     place()
+    gd?.refresh() // the walking arrow finds the near bank now that it is known
   }
   let job: { cancel(): void } | null = null
   let first = true
+  let gd: ReturnType<typeof guide> | null = null
   ctx.onCleanup(() => job?.cancel())
   ctx.onCleanup(onSize(host, layout))
   api.onLayout(() => place())
+  // walking the bank is optional but unguessable: a faint two-way ink arrow along the near bank until all are heard
+  gd = guide(ctx)
+  let walk: Mark | null = gd.gesture('drag-h', () => (G ? (G.W > G.H ? [G.W * 0.37, G.H * 0.9] : [G.W * 0.5, G.H * 0.6]) : [0, 0]), { r: 54 })
 
   function* paint(W: number, H: number, Rp: number, Rs: number, Rb: number, cx: number, land: boolean) {
     const r = rng(2590)
@@ -292,8 +301,23 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
       const kk = 1 + (b - 2.5) * 0.009
       enso += broken(Array.from({ length: 16 }, (_, j) => at(-70 + 55 * 5.2 + j * 2.6 - 10, kk)), Rp * (0.008 + r() * 0.008), 2655 + b, 0.7, 4)
     }
+    let outer = ''
+    for (let i = 0; i < 16; i++) {
+      const rr = Rb * (0.95 + i * 0.16)
+      outer += broken(Array.from({ length: 73 }, (_, j) => [Math.cos((j / 72) * Math.PI * 2) * rr, Math.sin((j / 72) * Math.PI * 2) * rr] as Pt), 1.3 + r() * 1.1, 2700 + i, 0.8, 9)
+    }
+    let tufts = ''
+    for (let i = 0; i < 26; i++) {
+      const a = r() * Math.PI * 2, d = Rb * (1.1 + r() * 2), x = Math.cos(a) * d, y = Math.sin(a) * d
+      tufts += blob(x, y, Rp * (0.12 + r() * 0.2), Rp * (0.08 + r() * 0.12), 2730 + i, 0.3, 12)
+    }
     ground.replaceChildren(
       s('defs', null, s('radialGradient', { id: 't25o-sand' }, s('stop', { offset: 0.5, class: 't25o-sand0' }), s('stop', { offset: 1, class: 't25o-sand1' }))),
+      // beyond the garden's own circle: the same sand and its rake running on (it fades in as the view rises)
+      s('g', { class: 't25o-outer' },
+        s('rect', { class: 't25o-field', x: f1(-Rb * 3.6), y: f1(-Rb * 3.6), width: f1(Rb * 7.2), height: f1(Rb * 7.2) }),
+        s('path', { class: 't25o-rake', d: outer }),
+        s('path', { class: 't25o-moss', d: tufts, filter: 'url(#ink-wash)' })),
       s('circle', { r: f1(Rb), fill: 'url(#t25o-sand)' }),
       s('path', { class: 't25o-rake', d: rake }),
       s('path', { class: 't25o-moss', d: moss, filter: 'url(#ink-wash)' }),
@@ -320,21 +344,26 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
       skin += stroke([[x0 - len / 2, y], [x0, y + (r() - 0.5) * 3], [x0 + len / 2, y]], Rp * (0.006 + r() * 0.01), 0.3, 0.3, 0.1)
     }
     const roadX = clamp(toPlaneX(mx), -Rp * 0.55, Rp * 0.55) // the road starts under the moon
+    const roadC = (t: number) => lerp(roadX, 0, Math.pow(t, 0.85))
+    // the streak: one tapered pull of the brush, dry (the filter breaks it), thin under the moon and wide at our feet
+    const spine = Array.from({ length: 30 }, (_, i) => {
+      const t = i / 29
+      return [roadC(t), -Rp * 0.94 + t * Rp * 1.9] as Pt
+    })
+    const streak = (k: number) => {
+      const L = spine.map(([x, y], i) => [x - Rp * (0.012 + (i / 29) * 0.17) * k, y] as Pt), R = spine.map(([x, y], i) => [x + Rp * (0.012 + (i / 29) * 0.17) * k, y] as Pt)
+      return `M${L.map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}L${R.reverse().map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}Z`
+    }
     let road = ''
-    for (let y = -Rp * 0.94; y < Rp * 0.97; ) {
-      const t = (y + Rp) / (Rp * 2), c = lerp(roadX, 0, Math.pow(t, 0.85)), half = Rp * (0.025 + t * 0.2)
-      const strokes = 1 + Math.floor(r() * (1 + t * 3))
-      for (let q = 0; q < strokes; q++) {
-        if (r() < 0.22) continue
-        const len = Rp * (0.04 + t * 0.26) * (0.35 + r() * 0.9), x = c + (r() - 0.5) * half * 2
-        // a dry stroke: two or three bits of one pull with gaps between
-        const bits = 1 + Math.floor(r() * 3)
-        for (let b = 0; b < bits; b++) {
-          const a0 = x - len / 2 + (len * b) / bits, a1 = a0 + (len / bits) * (0.55 + r() * 0.35)
-          road += stroke([[a0, y + (r() - 0.5) * 2], [a1, y + (r() - 0.5) * 3]], Rp * (0.008 + t * 0.03) * (0.6 + r() * 0.6), 0.25, 0.35, 0.12)
-        }
+    for (let y = -Rp * 0.94; y < Rp * 0.95; ) {
+      const t = (y + Rp) / (Rp * 2), c = roadC(t), half = Rp * (0.02 + t * 0.14)
+      // glints packed close where the moon is, thinning and spreading as the road comes to us
+      for (let q = 0, m = 1 + Math.floor(r() * (2 + t * 2)); q < m; q++) {
+        if (r() < t * 0.45) continue
+        const len = Rp * (0.03 + t * 0.18) * (0.5 + r() * 0.8), x = c + (r() - 0.5) * half * 2
+        road += stroke([[x - len / 2, y + (r() - 0.5) * 2], [x + len / 2, y + (r() - 0.5) * 3]], Rp * (0.005 + t * 0.016) * (0.6 + r() * 0.6), 0.25, 0.35, 0.12)
       }
-      y += Rp * (0.018 + r() * 0.03) * (1 + t * 1.2)
+      y += Rp * (0.016 + r() * 0.024) * (1 + t * 1.6)
     }
     let still = '' // the moon's reflection from above: a few rings of calm round it
     for (let i = 0; i < 3; i++) still += broken(Array.from({ length: 41 }, (_, j) => [Math.cos((j / 40) * Math.PI * 2) * Rp * (0.22 + i * 0.12), Math.sin((j / 40) * Math.PI * 2) * Rp * (0.22 + i * 0.12)] as Pt), Rp * 0.006, 2680 + i, 0.55, 4)
@@ -346,12 +375,17 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
       s('defs', null,
         s('clipPath', { id: 't25o-pondclip' }, s('circle', { r: f1(Rp) })),
         s('linearGradient', { id: 't25o-depth', gradientUnits: 'userSpaceOnUse', x1: 0, y1: f1(-Rp), x2: 0, y2: f1(Rp) }, s('stop', { offset: 0, class: 't25o-d0' }), s('stop', { offset: 0.4, class: 't25o-d1' }), s('stop', { offset: 1, class: 't25o-d2' })),
-        s('radialGradient', { id: 't25o-halo' }, s('stop', { offset: 0, class: 't25o-h0' }), s('stop', { offset: 1, class: 't25o-h1' }))),
+        s('radialGradient', { id: 't25o-halo' }, s('stop', { offset: 0, class: 't25o-h0' }), s('stop', { offset: 1, class: 't25o-h1' })),
+        s('linearGradient', { id: 't25o-roadfade', gradientUnits: 'userSpaceOnUse', x1: 0, y1: f1(-Rp), x2: 0, y2: f1(Rp) }, s('stop', { offset: 0, class: 't25o-rf0' }), s('stop', { offset: 0.55, class: 't25o-rf1' }), s('stop', { offset: 1, class: 't25o-rf2' }))),
       s('circle', { r: f1(Rp), fill: 'url(#t25o-depth)' }),
       s('circle', { class: 't25o-calm', r: f1(Rp) }), // from above: one even, still water
       s('g', { 'clip-path': 'url(#t25o-pondclip)' },
         s('g', { class: 't25o-reflwrap' }, reflG, s('path', { class: 't25o-skin', d: skin })),
-        s('g', { class: 't25o-roadg' }, s('path', { class: 't25o-road', d: road })),
+        // the sky held in the water: a pale glow under the moon, lighter toward us than the far bank's dark
+        s('ellipse', { class: 't25o-skyrefl', cx: f1(roadX), cy: f1(-Rp * 0.55), rx: f1(Rp * 0.55), ry: f1(Rp * 0.5), fill: 'url(#t25o-halo)' }),
+        s('g', { class: 't25o-roadg' },
+          s('path', { class: 't25o-streak', d: streak(1.2), fill: 'url(#t25o-roadfade)', filter: 'url(#ink-wash)' }),
+          s('path', { class: 't25o-road', d: road })),
         s('g', { class: 't25o-still' },
           s('circle', { r: f1(Rp * 0.42), fill: 'url(#t25o-halo)' }),
           s('path', { class: 't25o-stillring', d: still }),
@@ -376,6 +410,8 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
     })
     shore.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     shore.replaceChildren(
+      // portrait: the near bank fills the foot of the frame from the start — reeds at both corners
+      ...(land ? [] : [reeds(W * 0.06, H * 0.99, H * 0.13, 2597, 9), reeds(W * 0.95, H * 0.985, H * 0.11, 2598, 8)]),
       mist(W * 0.5, farW[1] - H * 0.01, W * 0.62, H * 0.045),
       s('path', { class: 't25o-grass far', d: grassFar }),
       s('path', { class: 't25o-grass', d: grass, filter: 'url(#ink-rough)' }))
@@ -387,11 +423,21 @@ function stage(ctx: SceneCtx, host: HTMLElement, api: CircleApi) {
       walkTo(k)
     },
     all() {
+      walk?.done()
+      walk = null
       tiltGoal = T1
       goal = phi
       go()
     },
   }
+}
+
+/** the top of stone k's crown (stone units): where its guide dot sits, on the stone's edge */
+const crown = (k: number): Pt => {
+  const w = [96, 70, 88, 80][k % 4], hh = [52, 76, 44, 64][k % 4]
+  const top = rock(w, hh, 2660 + k * 7).top
+  const p = top.reduce((b, q) => (q[1] < b[1] ? q : b), top[0])
+  return [p[0], p[1] + 1]
 }
 
 let current: { hear(k: number): void; all(): void } | null = null
@@ -415,7 +461,9 @@ const def = perspectiveCircle(S.perspectives as Perspectives, {
   stone: (k, _g, i) => s('g', null,
     s('path', { class: 't25o-mossdot', d: blob(0, -4, 30, 12, 2650 + k, 0.3, 12) }),
     s('g', { class: 't25o-stone' }, ...stone3([96, 70, 88, 80][k % 4], [52, 76, 44, 64][k % 4], 2660 + k * 7)),
-    s('text', { class: 't25o-stance', x: 0, y: f1(-[52, 76, 44, 64][k % 4] * 0.42), 'text-anchor': 'middle' }, S.stances[i] ?? '')),
+    s('text', { class: 't25o-stance', x: 0, y: f1(-[52, 76, 44, 64][k % 4] * 0.42), 'text-anchor': 'middle' }, S.stances[i] ?? ''),
+    // H1: not heard yet — a vermilion dot on its crown, breathing (gone once heard)
+    s('g', { transform: `translate(${crown(k).map(f1).join(' ')})` }, s('g', { class: 't25o-vdot' }, s('circle', { class: 't25o-vring', r: 9 }), s('circle', { r: 4.6 })))),
   onHear: (k) => {
     current?.hear(k)
     heard.add(k)

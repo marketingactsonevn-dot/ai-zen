@@ -87,7 +87,7 @@
     },
     "current": {
       "label": "Emotion signals inside the AI",
-      "art": "A slanting view from the bank of a moonlit stream that splits around a reed bed. The long branch winds far to a jetty with a lit stone lantern; the short branch cuts straight through the reeds to a row of bamboo stakes with paper flags. A wooden board at the source names the task; two stone sluice gates are carved “calm” and “desperate”, a three-notch wooden lever between them. Each landing counts the paper boats that come in. A paper boat is moored at the fork, its paper sail carrying a calm answer. Seen slanting, the water is a mirror for the moon; drag the water down until you look straight at it and the mirror clears to show the ink current under the boat.",
+      "art": "A slanting view from the bank of a moonlit stream that splits around a reed bed. The long branch winds far to a jetty with a lit stone lantern; the short branch cuts straight through the reeds to a row of bamboo stakes with paper flags. A wooden board at the source names the task, a plaque is nailed to the lantern’s post, and at the shortcut’s landing a paper banner hangs from a bamboo pole. Just past the fork stand two wooden sluice gates; on the near bank in front, in the moonlight, a three-notch wooden lever on a stone plinth carved “calm · normal · desperate”. Each landing counts the paper boats that come in. A paper boat is moored at the fork, its paper sail carrying a calm answer. Seen slanting, the water is a mirror for the moon; drag the water down until you look straight at it and the mirror clears to show the ink current under the boat.",
       "prompts": [
         "Pull the lever to “desperate”, watch the boats turn",
         "Now back to “calm”",
@@ -156,7 +156,7 @@
     },
     "mirror": {
       "label": "Water mirror",
-      "art": "Kneeling over a stone wash basin (tsukubai) under the moon. A speckled granite rim, moss in its cracks, a bamboo spout on the left dripping now and then, a bamboo ladle resting on the right. The water has three depths: maple leaves and petals afloat on the skin, pebbles and old coins on the bottom, and deeper than the bottom the reflection: the moon, a bamboo sprig, the shadow of someone leaning over, and a kind reply. Stirred, the reply dissolves into hundreds of different words of comfort, hand-written by people, spiralling into the eddy; as the water stills they settle and come together as the reply.",
+      "art": "Kneeling over a stone wash basin (tsukubai) under the moon. The basin sits in a ring of river pebbles on a moss ground, its shadow falling to the lower left; stepping stones lead to the kneeling stone at the bottom edge, a bamboo leans in at the top right. A speckled granite rim, moss in its cracks, a bamboo spout on the left standing on a flat stone and dripping now and then, a bamboo ladle resting on the right. The water has three depths: maple leaves and petals afloat on the skin, pebbles and old coins on the bottom, and deeper than the bottom the reflection: the moon, a bamboo sprig, the shadow of someone leaning over, and a kind reply. Stirred, the reply dissolves into hundreds of different words of comfort, hand-written by people, spiralling into the eddy; as the water stills they settle and come together as the reply.",
       "prompt": "Stir the water — see where this comfort was learned",
       "userLine": "“I feel so sad today.”",
       "aiLine": "“I’m sorry you’re feeling sad. Would you like to tell me more?”",

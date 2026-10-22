@@ -1,10 +1,11 @@
-import { h } from '../../core/dom'
+import { h, s as s3 } from '../../core/dom'
 import type { Fact } from '../../core/content'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
 import { blob, clamp, curve, onDigit, onSize, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
 import type { SceneCtx } from '../types'
+import { guide } from '../../ui/part2/guide'
 import C from '../../content/tram-26.json'
 
 /**
@@ -464,15 +465,19 @@ export function introspectScene(ctx: SceneCtx) {
     for (let x = -20; x <= x1 + 1; x += 8) edge.push([x, top(x)])
     const bk = new Path2D(`M-20 ${H + 10}L${edge.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join('L')}Q${x1 + 30} ${H * 0.98} ${x1 + 50} ${H + 10}Z`)
     const bgr = g.createLinearGradient(0, y0, 0, H)
-    bgr.addColorStop(0, rgba(inkC, p.dark ? 0.92 : 0.62))
-    bgr.addColorStop(1, rgba(inkC, p.dark ? 0.98 : 0.8))
+    // a bank of dark rock, not a hole: mid stone along the moonlit top, deepening into the water's shadow below
+    bgr.addColorStop(0, p.dark ? mix(p.rockMid, p.umbra, 0.3) : rgba(inkC, 0.36))
+    bgr.addColorStop(0.25, p.dark ? mix(p.rockLo, p.umbra, 0.3) : rgba(inkC, 0.5))
+    bgr.addColorStop(1, p.dark ? mix(p.rockLo, p.umbra, 0.7) : rgba(inkC, 0.68))
     g.fillStyle = bgr
     g.fill(bk)
     g.save()
     g.clip(bk)
-    for (let i = 0; i < 26; i++) {
-      const x = r() * x1, y = top(x) + 6 + r() * (H - y0) * 0.6, len = 12 + r() * 40
-      fillD(g, stroke([[x, y], [x + len * 0.5, y - 1], [x + len, y + 0.5]], 1 + r() * 2, 0.2, 0.6, 0.15), rgba(p.dark ? p.mist : p.card, p.dark ? 0.05 : 0.1))
+    for (let i = 0; i < 60; i++) {
+      const x = r() * x1, y = top(x) + 6 + r() * (H - y0) * 0.7, len = 12 + r() * 46
+      fillD(g, stroke([[x, y], [x + len * 0.5, y - 1], [x + len, y + 0.5]], 1 + r() * 2.4, 0.2, 0.6, 0.15), rgba(p.dark ? p.moon : p.card, p.dark ? 0.06 + r() * 0.05 : 0.12))
+      // cracks in the stone, darker
+      if (r() < 0.4) fillD(g, stroke([[x, y + 4], [x + (r() - 0.5) * 12, y + 14 + r() * 20]], 1 + r(), 0.2, 0.5, 0.2), rgba(p.dark ? '#000' : p.wash, 0.35))
     }
     g.restore()
     fillD(g, stroke(edge, 1.6, 0.05, 0.3, 0.3), p.dark ? rgba(p.moon, 0.32) : rgba(p.card, 0.8))
@@ -520,8 +525,8 @@ export function introspectScene(ctx: SceneCtx) {
     const sleevePath = `M${Q2(L(-1.5, -0.42))}C${Q2(L(-1.0, -0.36))} ${Q2(L(-0.45, -0.22))} ${Q2(L(0, -0.12))}` +
       `Q${Q2(L(0.05, -0.01))} ${Q2(L(0.02, 0.1))}C${Q2(L(0.03, 0.32))} ${Q2(L(-0.02, 0.5))} ${Q2(L(-0.16, 0.54))}` +
       `C${Q2(L(-0.5, 0.6))} ${Q2(L(-1.0, 0.46))} ${Q2(L(-1.5, 0.4))}Z`
-    const clothHi = p.dark ? mix(p.rockMid, p.umbra, 0.3) : mix(p.rockMid, p.wash, 0.4)
-    const clothLo = p.dark ? mix(p.rockLo, p.umbra, 0.65) : mix(p.wash, p.rockLo, 0.18)
+    const clothHi = p.dark ? mix(p.rockMid, p.moon, 0.14) : mix(p.rockMid, p.wash, 0.32)
+    const clothLo = p.dark ? mix(p.rockLo, p.umbra, 0.4) : mix(p.wash, p.rockLo, 0.22)
     const cg = g.createLinearGradient(W0[0], W0[1] - su * 0.35, W0[0] - su * 0.2, W0[1] + su * 0.55)
     cg.addColorStop(0, clothHi)
     cg.addColorStop(0.5, mix(clothHi, clothLo, 0.55))
@@ -535,7 +540,7 @@ export function introspectScene(ctx: SceneCtx) {
     const folds: [number, number, number, number][] = [[-1.32, -0.37, -1.2, 0.44], [-1.05, -0.33, -0.9, 0.5], [-0.7, -0.26, -0.58, 0.55], [-0.5, -0.21, -0.3, 0.56], [-0.26, -0.16, -0.14, 0.48]]
     for (const [ax, ay, bx2, by2] of folds) {
       const f0 = L(ax, ay + 0.06), f1 = L(bx2, by2), fm = L((ax + bx2) / 2 + 0.1, (ay + by2) / 2)
-      fillD(g, stroke(curve(f0, fm, f1, 14), su * (0.07 + r() * 0.035), 0.4, 0.3, 0.15), rgba(p.dark ? '#000' : p.wash, p.dark ? 0.32 : 0.22))
+      fillD(g, stroke(curve(f0, fm, f1, 14), su * (0.09 + r() * 0.04), 0.5, 0.5, 0.1), rgba(p.dark ? '#000' : p.wash, p.dark ? 0.2 : 0.15))
       // a pale ridge on some folds only, broken like a dry brush
       if (r() < 0.6) fillD(g, stroke(curve([f0[0] + su * 0.07, f0[1] + su * 0.1], [fm[0] + su * 0.06, fm[1]], [f1[0] + su * 0.05, f1[1] - su * 0.12], 14), su * (0.01 + r() * 0.01), 0.4, 0.5, 0.05), p.dark ? rgba(p.moon, 0.1) : rgba(p.card, 0.22))
     }
@@ -565,6 +570,10 @@ export function introspectScene(ctx: SceneCtx) {
     hgr.addColorStop(0, skin)
     hgr.addColorStop(1, skinLo)
     fillD(g, back, hgr)
+    // a fine ink contour round the back of the hand (drawn, not modelled)
+    g.strokeStyle = line
+    g.lineWidth = Math.max(0.8, hs * 0.005)
+    g.stroke(new Path2D(back))
     // fingers: index on top, then middle, ring, little — each a rounded segment across the front of the handle
     const fingers: [number, number, number][] = [[-0.06, 0.036, 0.034], [-0.025, 0.04, 0.032], [0.01, 0.036, 0.029], [0.042, 0.03, 0.024]]
     for (const [dy, len, fw] of fingers) {
@@ -688,7 +697,7 @@ export function introspectScene(ctx: SceneCtx) {
     et = Math.min(land ? Hs * 0.44 : Hs * 0.3, W * (land ? 0.3 : 0.56))
     ex = W * (land ? 0.68 : 0.72)
     fy = hz + (Hs - hz) * (land ? 0.17 : 0.1)
-    mx0 = W * (land ? 0.3 : 0.22)
+    mx0 = W * (land ? 0.4 : 0.22)
     my0 = hz * (land ? 0.42 : 0.6)
     if (!night) moon = [mx0, my0]
     tx = W * (land ? 0.25 : 0.33)
@@ -696,8 +705,11 @@ export function introspectScene(ctx: SceneCtx) {
     target = [ex - et * 0.02, fy + et * 0.36]
     // the arm, hand and brush come to about a sixth of the frame
     arm = clamp(land ? Math.min(W * 0.15, Hs * 0.34) : W * 0.34, 80, 220)
-    bank = land ? { x1: W * 0.46, y0: Hs * 0.8, y1: Hs * 0.95 } : { x1: W * 0.76, y0: Hs * 0.86, y1: Hs * 0.97 }
-    stone = land ? { x: W * 0.14, y: Hs * 0.875, w: clamp(W * 0.12, 120, 190) } : { x: W * 0.25, y: Hs * 0.92, w: clamp(W * 0.36, 112, 150) }
+    // wide: the bank rises at the left into a ledge right under the brush, the inkstone on it (audit v3 26-2: hand → drop →
+    // reflection → pebbles down the bank, one diagonal)
+    bank = land ? { x1: W * 0.5, y0: Hs * 0.6, y1: Hs * 0.96 } : { x1: W * 0.76, y0: Hs * 0.86, y1: Hs * 0.97 }
+    const bankTop = (x: number) => bank.y0 + (bank.y1 - bank.y0) * Math.max(0, x / bank.x1) ** 1.6
+    stone = land ? { x: W * 0.16, y: bankTop(W * 0.16) + Hs * 0.035, w: clamp(W * 0.13, 130, 200) } : { x: W * 0.25, y: Hs * 0.92, w: clamp(W * 0.36, 112, 150) }
     // five pebbles on the bank beside the inkstone keep the score of the five nights
     const pr = Math.max(6, Math.min(W, H) * 0.012)
     const p0 = stone.x + stone.w * 0.62 + pr * 2, p1 = bank.x1 * (land ? 0.9 : 0.94)
@@ -710,7 +722,7 @@ export function introspectScene(ctx: SceneCtx) {
     for (let i = 0; i < 14; i++) blots.push([r() * W, hz + (H - hz) * r(), 40 + r() * W * 0.12])
     // words and controls
     const cw = Math.min(W - 32, 420)
-    Object.assign(concept.style, { left: `${(land ? W * 0.5 : W / 2) - cw / 2}px`, top: `${land ? Hs * 0.05 : 6}px`, width: `${cw}px` })
+    Object.assign(concept.style, { left: `${(land ? W * 0.6 : W / 2) - cw / 2}px`, top: `${land ? Hs * 0.05 : 6}px`, width: `${cw}px` })
     Object.assign(egretBtn.style, { left: `${ex - et * 0.32}px`, top: `${fy - et * 0.86}px`, width: `${et * 0.62}px`, height: `${et * 0.88}px` })
     Object.assign(tip.style, { left: `${tx - 26}px`, top: `${ty - 30}px` })
     // the three strengths are three drops lying on the inkstone's flat
@@ -750,6 +762,7 @@ export function introspectScene(ctx: SceneCtx) {
     if (hold) {
       hold.u = Math.min(1.65, hold.u + dt)
       showLv(Math.min(2, Math.floor(hold.u / 0.55)))
+      ring.fill(hold.u / 1.65)
     }
     if (fall) {
       fall.u = Math.min(1, fall.u + dt / 0.75)
@@ -793,11 +806,22 @@ export function introspectScene(ctx: SceneCtx) {
     const lv = Math.min(2, Math.floor((performance.now() - held) / 550))
     hold = null
     root.classList.remove('holding')
+    ring.fill(0)
     drop(lv)
   }
   tip.addEventListener('pointerup', release)
   tip.addEventListener('pointercancel', release)
   ctx.onCleanup(onDigit((d) => d <= 3 && drop(d - 1)))
+
+  // guidance: a dot on the drop to try (first the middle one), on the egret once a drop has fallen; a ring round the brush
+  // tip that fills through three marks while held; the count of strengths tried by the inkstone; a faint ring on the
+  // water where the drop will land
+  const gd = guide(ctx)
+  const dot = gd.dot(lvBtns[1], { dir: [0, -1] })
+  const ring = gd.gesture('hold', tip, { r: 30 })
+  ring.el.append(s3('svg', { class: 't26i-ticks', viewBox: '-42 -42 84 84', 'aria-hidden': 'true' }, s3('path', { d: [0, 1, 2].map((k) => { const a = -Math.PI / 2 + ((k + 1) / 3) * Math.PI * 2; return `M${(Math.cos(a) * 26).toFixed(1)} ${(Math.sin(a) * 26).toFixed(1)}L${(Math.cos(a) * 35).toFixed(1)} ${(Math.sin(a) * 35).toFixed(1)}` }).join('') })))
+  const tried = gd.count(K.count, 3, () => [stone.x + par[0], stone.y + stone.w * 0.2 + 16])
+  const aim = gd.drop(() => [target[0], target[1]], { w: 76, h: 22 })
   // show the level reached while holding (on the three words under the brush)
   let shown = -1
   const showLv = (lv: number) => {
@@ -831,14 +855,21 @@ export function introspectScene(ctx: SceneCtx) {
     if (f.auto) return
     egretBtn.setAttribute('aria-disabled', 'false')
     root.classList.add('dropped')
+    dot.at(egretBtn)
     ctx.prompt(K.ask)
   }
 
   // ── asking the egret
+  // one text at a time: once the insight is written, the egret's answer fades from the water (read first, ~3 s)
+  let fadeT = 0
+  ctx.onCleanup(() => clearTimeout(fadeT))
+  const fadeSaid = () => void (fadeT = window.setTimeout(() => said.classList.add('faded'), 3200))
   function ask() {
     if (lastLv < 0 || fall || night) return
     const lv = lastLv
     said.hidden = false
+    said.classList.remove('faded')
+    clearTimeout(fadeT)
     out.textContent = ''
     root.classList.remove('asked')
     void root.offsetWidth
@@ -854,14 +885,22 @@ export function introspectScene(ctx: SceneCtx) {
     out.textContent = K.outcomes[KEYS[lv]]
     if (!out.hasAttribute('aria-live')) out.setAttribute('aria-live', 'polite')
     asked.add(lv)
+    tried.set(asked.size)
+    aim.done()
+    // the dot goes on to a strength not tried yet (the middle one first), or away once all three are
+    const next = asked.has(1) ? [0, 2].find((k) => !asked.has(k)) : 1
+    if (next == null) dot.done()
+    else dot.at(lvBtns[next])
     ctx.chime(lv === 1 ? 'ok' : 'soft')
     if (lv === 1) tally.hidden = false
     if (lv === 1 && !firstInsight) {
       firstInsight = true
       ctx.insight(F(K.insights[0]), F(K.insights[0].detail))
+      fadeSaid()
     } else if (asked.size === 3 && firstInsight && !secondInsight) {
       secondInsight = true
       ctx.insight(F(K.insights[1]))
+      fadeSaid()
     }
     // a too light or too dark drop is not a dead end: say which strength to try next
     if (!secondInsight && lv !== 1 && !asked.has(1)) ctx.prompt(K.tryMid)
@@ -876,7 +915,7 @@ export function introspectScene(ctx: SceneCtx) {
     if (k !== n.k || n.u < dt + 1e-6) {
       if (k !== n.k) n.k = k
       const a = (k + 0.5) / NIGHTS
-      moon = [W * (0.12 + a * 0.76), hz * (0.62 - Math.sin(a * Math.PI) * 0.4)]
+      moon = [W * (0.12 + a * 0.76), hz * (0.74 - Math.sin(a * Math.PI) * 0.26)] // below the words in the sky
       fall = { u: still ? 1 : 0.2, lv: 1, from: [tx + par[0], ty + 6 + par[1]], auto: true }
       if (still) land1()
     }

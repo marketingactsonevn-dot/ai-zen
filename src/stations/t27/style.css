@@ -72,25 +72,28 @@
 .t27f.is-low .t27f-L { will-change: auto; }
 .t27f-svg, .t27f-fx { position: absolute; left: 0; top: 0; overflow: visible; }
 .t27f-fx { width: 100%; height: 100%; pointer-events: none; opacity: 0; will-change: transform, opacity; }
-.t27f-fx.kept { opacity: 0.34; }
-.t27f-fx.kept .t27f-fx-jaw { opacity: 0; transition: opacity 0.6s; }
-.t27f.is-low .t27f-fx.kept { opacity: 0.7; transition: opacity 0.2s; }
-.t27f-fx-v { fill: var(--vermilion); }
-.t27f-fx-jaw { fill: var(--vermilion); opacity: 0.35; }
-.t27f.is-low .t27f-fx.kept .t27f-fx-jaw { opacity: 0; }
+.t27f-fx-warm { fill: var(--lantern); opacity: 0.9; }
 .t27f-hits { position: absolute; inset: 0; pointer-events: none; }
-.t27f.is-low .t27f-fx.kept .t27f-fx-v { fill: var(--wash); }
-:root[data-theme='dark'] .t27f.is-low .t27f-fx.kept .t27f-fx-v { fill: var(--ink); }
 
 .t27f-skyglow { opacity: 0.55; }
 :root[data-theme='dark'] .t27f-skyglow { opacity: 1; }
-.t27f-maria { fill: var(--umbra); opacity: 0.1; }
-.t27f-eyes { opacity: 0.2; }
-:root[data-theme='dark'] .t27f-maria { fill: var(--rock-lo); opacity: 0.32; }
-:root[data-theme='dark'] .t27f-eyes { opacity: 0.55; }
+.t27f-maria { fill: var(--umbra); opacity: 0.12; }
+:root[data-theme='dark'] .t27f-maria { fill: var(--rock-lo); opacity: 0.34; }
+.t27f-crater { fill: var(--umbra); opacity: 0.08; }
+:root[data-theme='dark'] .t27f-crater { fill: var(--rock-lo); opacity: 0.22; }
+.t27f-halo { opacity: 0.7; }
 .t27f-moonrim { fill: none; stroke: var(--moon-rim); stroke-width: 1.2; filter: url(#ink-rough); }
 
 .t27f-cloud { fill: var(--card); opacity: 0.92; }
+.t27f { --t27-cloud-hi: #fff; --t27-cloud: var(--card); --t27-cloud-lo: color-mix(in srgb, var(--card) 70%, var(--wash) 30%); }
+:root[data-theme='dark'] .t27f { --t27-cloud-hi: color-mix(in srgb, var(--paper-2) 55%, var(--moon) 30%); --t27-cloud: color-mix(in srgb, var(--paper-2) 75%, var(--rock-lo)); --t27-cloud-lo: color-mix(in srgb, var(--paper) 60%, var(--umbra)); }
+.t27f-puff { opacity: 0.9; }
+:root[data-theme='dark'] .t27f-puff { opacity: 0.94; }
+.t27f-cloud-haze { fill: var(--t27-cloud); opacity: 0.35; }
+.t27f-cloud-core { fill: var(--wash); opacity: 0.16; }
+:root[data-theme='dark'] .t27f-cloud-core { fill: var(--umbra); opacity: 0.5; }
+.t27f-cloud-rim { fill: #fff; opacity: 0.9; }
+:root[data-theme='dark'] .t27f-cloud-rim { fill: var(--moon); opacity: 0.75; }
 :root[data-theme='dark'] .t27f-cloud { fill: color-mix(in srgb, var(--paper-2) 70%, var(--rock-lo)); opacity: 0.96; }
 .t27f-cloud-belly { fill: var(--wash); opacity: 0.1; }
 :root[data-theme='dark'] .t27f-cloud-belly { fill: var(--umbra); opacity: 0.45; }
@@ -121,7 +124,7 @@
 :root[data-theme='dark'] .t27f-pine { opacity: 0.7; }
 /* the stele sits in the pine's shade: dark slate in both themes, so the phosphor in its letters can glow */
 .t27f-slab-shade { fill: var(--umbra); opacity: 0.26; }
-:root[data-theme='dark'] .t27f-slab-shade { opacity: 0.45; }
+:root[data-theme='dark'] .t27f-slab-shade { opacity: 0.22; }
 .t27f-groove { fill: var(--umbra); opacity: 0.55; transition: opacity 1.4s; }
 .t27f-groove-lip { fill: var(--rock-hi); opacity: 0.35; transition: opacity 1.4s; }
 :root[data-theme='dark'] .t27f-groove-lip { opacity: 0.25; }
@@ -143,7 +146,10 @@
 .t27f-needle { opacity: 0.8; }
 .t27f-bough { opacity: 0.9; }
 .t27f-head { fill: var(--wash); opacity: 0.92; }
-:root[data-theme='dark'] :is(.t27f-blade, .t27f-bough, .t27f-pad, .t27f-needle, .t27f-head) { fill: color-mix(in srgb, var(--umbra) 55%, var(--paper)); }
+:root[data-theme='dark'] :is(.t27f-blade, .t27f-bough, .t27f-pad, .t27f-needle, .t27f-head) { fill: color-mix(in srgb, var(--umbra) 40%, var(--paper)); }
+/* out of focus at the eye: soft and a little see-through, not black sticks (audit v3 27-1) */
+:root[data-theme='dark'] .t27f-blade { opacity: 0.55; }
+:root[data-theme='dark'] .t27f-head { opacity: 0.85; }
 .t27f-nearrim, .t27f-needlelit { fill: var(--moon); opacity: 0; }
 :root[data-theme='dark'] .t27f-needlelit { opacity: 0.35; }
 :root[data-theme='dark'] .t27f-nearrim { opacity: 0.4; }
@@ -160,12 +166,40 @@
   pointer-events: auto;
 }
 .t27f-hit:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 4px; }
-.t27f-seal { position: absolute; display: block; opacity: 0; transform: scale(1.7) rotate(-14deg); transition: opacity 0.35s, transform 0.45s cubic-bezier(0.3, 1.4, 0.5, 1); }
-.t27f-seal svg { display: block; width: 100%; height: 100%; }
-.t27f-seal-ink { fill: var(--vermilion); filter: url(#ink-rough); }
-.t27f-seal-cut { fill: var(--paper); }
-.t27f-seal.on { opacity: 0.88; transform: rotate(-5deg); }
+.t27f-seal { position: absolute; display: block; opacity: 0; transform: scale(1.6); transition: opacity 0.35s, transform 0.45s cubic-bezier(0.3, 1.4, 0.5, 1); }
+.t27f-seal svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.t27f-seal-ink { fill: var(--ink); filter: url(#ink-rough); }
+.t27f-seal.on { opacity: 0.8; transform: none; }
 :root[data-reduced] .t27f-seal { transition: opacity 0.2s; }
+
+/* H4: three ink rings carved in the sky, filled as faces are found */
+.t27f-count {
+  position: absolute;
+  left: clamp(14px, 3%, 44px);
+  top: clamp(12px, 4%, 36px);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  font: 400 clamp(0.92rem, 1.4vw, 1.08rem) / 1 var(--serif);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper);
+  pointer-events: none;
+}
+.t27f-count svg { width: 66px; height: 20px; overflow: visible; }
+.t27f-ring-c { fill: var(--ink-2); opacity: 0.75; filter: url(#ink-rough); }
+.t27f-ring-f { fill: var(--ink); opacity: 0; transform: scale(0.4); transform-box: fill-box; transform-origin: center; transition: opacity 0.4s, transform 0.5s cubic-bezier(0.3, 1.4, 0.5, 1); }
+.t27f-ring-f.on { opacity: 0.85; transform: none; }
+
+/* H1: the eye is where you stand; it follows the mouse, rides under a finger, its vermilion dot breathes */
+.t27f-eye { position: absolute; left: -32px; top: -20px; width: 64px; height: 40px; pointer-events: none; will-change: transform; }
+.t27f-eye svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.t27f-eye-white { fill: var(--paper); opacity: 0.55; }
+:root[data-theme='dark'] .t27f-eye-white { fill: var(--moon); opacity: 0.16; }
+.t27f-eye-ink, .t27f-eye-iris { fill: var(--ink); opacity: 0.85; }
+.t27f-eye .p2g-dot.ride { top: 50%; }
+.t27f.all .t27f-eye { opacity: 0.45; transition: opacity 1s; }
 
 /* ELIZA's words cut into the stele: the phosphor glows in the letters (faint scanlines over them), no screen */
 .t27f-screen {
@@ -223,129 +257,129 @@
 :root[data-quality='high'] .t27f.live .t27f-drift { animation-play-state: running; }
 @keyframes t27f-drift { to { transform: translateX(42px); } }
 
-/* 2 · lamp: an old pine at night (canvas), a paper lantern that leans after you, four stones lit on the side it is */
-.t27l { touch-action: none; }
-.t27l .p2c-own { overflow: visible; }
-.t27l-cv {
+/* 2 · lamp at your side: an old pine at night (canvas), three people at its foot, you at the other end of the branch;
+   a paper lantern whose cord ring slides along the branch */
+.t27l { position: absolute; inset: 0; overflow: hidden; touch-action: none; --lp: 1; --lm: 0; --ld: 0; }
+.t27l-cv, .t27l-figs {
   position: absolute;
   left: 0;
   top: 0;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 88%, transparent);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 88%, transparent);
-  mask-composite: intersect;
-  /* dusk in both themes (the warm pool must carry the scene), heavier at the edges; the moon's cold glow top right */
-  --t27l-moon: color-mix(in srgb, var(--moon) 32%, transparent);
-  background:
-    radial-gradient(circle at 86% 13%, var(--t27l-moon), transparent 34%),
-    radial-gradient(ellipse 75% 75% at 56% 45%, transparent 30%, color-mix(in srgb, var(--wash) var(--t27l-vig, 40%), transparent)),
-    linear-gradient(to bottom, color-mix(in srgb, var(--wash) var(--t27l-d0, 60%), transparent), color-mix(in srgb, var(--wash) var(--t27l-d1, 50%), transparent) 50%, color-mix(in srgb, var(--wash) var(--t27l-d2, 62%), transparent));
 }
-:root[data-theme='dark'] .t27l-cv { --t27l-vig: 70%; --t27l-d0: 30%; --t27l-d1: 25%; --t27l-d2: 45%; --t27l-moon: color-mix(in srgb, var(--moon) 30%, transparent); }
+.t27l-cv {
+  /* night in both themes and full bleed (audit v3 27-2: no dark box floating in a light page) */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 2.5%, #000 97.5%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 2.5%, #000 97.5%, transparent), linear-gradient(to bottom, transparent, #000 3%, #000 97%, transparent);
+  mask-composite: intersect;
+  --t27l-moon: color-mix(in srgb, var(--moon) 30%, transparent);
+  background:
+    radial-gradient(circle at 87% 12%, var(--t27l-moon), transparent 30%),
+    radial-gradient(ellipse 80% 80% at 45% 50%, transparent 35%, color-mix(in srgb, var(--wash) var(--t27l-vig, 45%), transparent)),
+    linear-gradient(to bottom, color-mix(in srgb, var(--wash) var(--t27l-d0, 78%), var(--paper)), color-mix(in srgb, var(--wash) var(--t27l-d1, 64%), var(--paper)) 52%, color-mix(in srgb, var(--wash) var(--t27l-d2, 80%), var(--paper)));
+}
+:root[data-theme='dark'] .t27l-cv { --t27l-vig: 70%; --t27l-d0: 30%; --t27l-d1: 22%; --t27l-d2: 45%; }
 .t27l-pool {
   position: absolute;
   left: 0;
   top: 0;
   border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 62%, transparent), color-mix(in srgb, var(--lantern) 20%, transparent) 55%, transparent);
-  pointer-events: none;
-  will-change: transform, opacity;
-  transform-origin: 50% 50%;
-}
-:root[data-theme='light'] .t27l-pool { background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 48%, transparent), color-mix(in srgb, var(--lantern) 14%, transparent) 55%, transparent); }
-.t27l.is-calm .t27l-pool, .t27l.is-calm .t27l-lamp { transition: transform 0.6s var(--ease), opacity 0.6s; }
-:root[data-reduced] .t27l .t27l-pool { transition: none; }
-.t27l-lamp {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform-origin: 50% 0;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 58%, transparent), color-mix(in srgb, var(--lantern) 18%, transparent) 55%, transparent);
   pointer-events: none;
   will-change: transform;
-  z-index: 1;
 }
-.t27l-cord { position: absolute; left: 50%; top: 0; width: 1.2px; height: var(--rope); background: var(--wash); opacity: 0.7; }
-:root[data-theme='dark'] .t27l-cord { background: var(--ink-3); }
-.t27l-paper { position: absolute; left: 0; top: var(--rope); width: var(--lw); height: var(--lh); display: grid; place-items: center; }
-.t27l-body { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.t27l-halo { opacity: calc(0.35 + var(--glow, 0.7) * 0.65); }
-.t27l-halo-in { opacity: calc(0.4 + var(--glow, 0.7) * 0.6); }
-.t27l-core { opacity: calc(0.45 + var(--glow, 0.7) * 0.55); }
+.t27l.is-calm :is(.t27l-pool, .t27l-lamp) { transition: transform 0.6s var(--ease); }
+:root[data-reduced] .t27l :is(.t27l-pool, .t27l-lamp) { transition: none; }
+.t27l-lamp { position: absolute; left: 0; top: 0; transform-origin: 50% 0; pointer-events: none; will-change: transform; z-index: 2; }
+.t27l-cord { position: absolute; left: 50%; top: 0; width: 1.4px; height: var(--rope); background: var(--ink-3); opacity: 0.85; }
+/* the ring round the branch the cord hangs from: it is what slides */
+.t27l-ring { position: absolute; left: calc(50% - 6px); top: -7px; width: 12px; height: 9px; border: 2px solid var(--ink-3); border-radius: 50%; }
+.t27l-paper { position: absolute; left: 0; top: var(--rope); width: var(--lw); height: var(--lh); display: grid; place-items: center; pointer-events: auto; cursor: grab; touch-action: none; border-radius: 45%; }
+.t27l.is-drag .t27l-paper { cursor: grabbing; }
+.t27l-paper:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 6px; }
+.t27l-handle { position: absolute; left: 50%; bottom: -6px; width: 0; height: 0; }
+.t27l-body { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.t27l-halo { opacity: 1; }
 .t27l-frame { fill: var(--umbra); opacity: 0.16; }
 .t27l-band { fill: color-mix(in srgb, var(--lantern) 45%, var(--umbra)); opacity: 0.22; }
 .t27l-seam { fill: color-mix(in srgb, var(--lantern) 50%, var(--umbra)); opacity: 0.16; }
 .t27l-rib { fill: color-mix(in srgb, var(--lantern) 35%, var(--umbra)); opacity: 0.55; }
 .t27l-limb { fill: var(--umbra); opacity: 0.1; }
-.t27l-cap { fill: var(--wash); opacity: 0.92; }
+.t27l-cap { fill: #10131f; opacity: 0.92; }
 .t27l-caphi { fill: var(--moon); opacity: 0.45; }
 .t27l-rimline { fill: var(--moon); opacity: 0.6; }
 .t27l-q {
   position: relative;
   margin: 0;
-  width: 76%;
+  width: 74%;
   font: 400 clamp(0.74rem, 1vw, 0.9rem)/1.2 var(--serif);
-  color: color-mix(in srgb, var(--wash) 85%, var(--lantern));
+  color: #2a2117;
   text-align: center;
   text-wrap: balance;
-  opacity: 0.86;
+  opacity: 0.88;
+  pointer-events: none;
 }
-/* the stones: dark by night; four washes of lamplight (left, right, top, the face toward you) mixed by where the pool is */
-.t27l .p2c-halo, .t27l .p2c-ring, .t27l .p2c-num { display: none; }
-.t27l .p2c-stone { animation-duration: 0.8s; }
-.t27l .p2c-stone-art { overflow: visible; }
-.t27l-st-base { fill: color-mix(in srgb, var(--rock-lo) 85%, var(--wash)); }
-:root[data-theme='light'] .t27l-st-base { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash)); }
-.t27l-st-l { opacity: var(--l, 0); }
-.t27l-st-r { opacity: var(--r, 0); }
-.t27l-st-t { opacity: var(--t, 0); }
-.t27l-st-f { opacity: var(--f, 0); }
-.t27l-st-sh {
-  fill: var(--umbra);
-  opacity: calc(0.25 + var(--sl, 0) * 0.3);
-  filter: url(#ink-wash);
-  transform: translate(calc(var(--sx, 0) * 1px), calc(var(--sy, 0) * 1px)) scale(calc(1 + var(--sl, 0) * 0.5), calc(1 + var(--sl, 0) * 0.3));
-  transform-box: fill-box;
-  transform-origin: center;
+/* the people: ink silhouettes on the moss; the lantern's light on their crowns and shoulders while it is over them */
+.t27l-cast { opacity: 0.9; }
+.t27l-contact { fill: #000; opacity: 0.55; }
+.t27l-fig-body { fill: color-mix(in srgb, var(--wash) 70%, #000); }
+.t27l-fig-hair { fill: #07090f; opacity: 0.9; }
+.t27l-fig-fold { fill: #000; opacity: 0.45; }
+.t27l-fig-moon { fill: var(--moon); opacity: 0.35; }
+.t27l-fig .t27l-fig-lit { opacity: calc(var(--lp) * 0.6); }
+.t27l-fig .t27l-fig-warm { fill: var(--lantern); opacity: calc(var(--lp) * 0.9); }
+.t27l-me .t27l-fig-lit { opacity: calc(var(--lm) * 0.6); }
+.t27l-me .t27l-fig-warm { fill: var(--lantern); opacity: calc(var(--lm) * 0.9); }
+/* pulled close, the light leaves them: the three sink into the dark (darkened, never see-through) */
+.t27l-fig-dim { fill: #04050a; opacity: calc(var(--ld) * 0.55); }
+.t27l-fig .t27l-fig-moon { opacity: calc(0.35 - var(--ld) * 0.2); }
+.t27l-tray { fill: #16110f; }
+.t27l-tray-things { fill: #0b0d14; }
+.t27l-tray-lit { fill: var(--lantern); opacity: calc(var(--lp) * 0.35); }
+/* the words: light ink with a dark breath round it on the night (both themes) */
+.t27l-text {
+  position: absolute;
+  margin: 0;
+  font: 400 clamp(0.88rem, 1.15vw, 1.02rem)/1.45 var(--serif);
+  color: #e9e3d2;
+  text-wrap: balance;
+  text-shadow: 0 0 10px #0b0e1a, 0 0 3px #0b0e1a;
+  transition: opacity 0.8s var(--ease), visibility 0s 0.8s;
+  --ink: #e9e3d2;
+  --ink-2: #d9d2bf;
+  --ink-3: #b9b3a3;
 }
-.t27l-st-contact { fill: var(--umbra); opacity: 0.6; }
-.t27l-st-cun { fill: var(--umbra); opacity: 0.35; }
-.t27l-st-moss { fill: var(--moss-a); opacity: 0.85; }
-.t27l-st-rim { fill: var(--moon); opacity: 0.5; }
-:root[data-theme='light'] .t27l-st-rim { opacity: 0.75; }
-.t27l-st-ink { fill: var(--wash); opacity: 0.6; }
-/* the words lie on the moss under the pool, no card: light ink with a dark breath round it (the ground is dark in both themes) */
-.t27l .p2c-card {
-  --ink: var(--t27l-ink);
-  --ink-2: color-mix(in srgb, var(--t27l-ink) 82%, var(--wash));
-  --ink-3: color-mix(in srgb, var(--t27l-ink) 70%, var(--wash));
-  padding: 0;
-  background: none;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  text-align: center;
-  overflow: visible;
-  transform-origin: 50% 0;
-  text-shadow: 0 0 10px var(--wash), 0 0 3px var(--wash);
+.t27l-opener { font-style: normal; }
+.t27l.is-near .t27l-opener, .t27l.is-done .t27l-opener { opacity: 0; visibility: hidden; }
+.t27l-near { opacity: 0; visibility: hidden; }
+.t27l.is-near .t27l-near { opacity: 1; visibility: visible; transition: opacity 0.8s var(--ease) 0.2s, visibility 0s; }
+.t27l :is(.t27l-text) :is(button, a) { pointer-events: auto; }
+@media (max-width: 720px) {
+  .t27l-text { font-size: 0.86rem; line-height: 1.4; text-align: left; }
 }
-.t27l { --t27l-ink: var(--ink); }
-:root[data-theme='light'] .t27l { --t27l-ink: var(--card); }
-.t27l .p2c-who { justify-items: center; font-size: 0.86rem; margin-bottom: 0.3em; }
-.t27l .p2c-who-label { font-size: 0.66rem; }
-.t27l .p2c-view { margin-bottom: 0.35em; font-size: clamp(0.84rem, 1.05vw, 0.95rem); line-height: 1.42; font-weight: 400; text-wrap: balance; }
-.t27l .p2c-count { justify-content: center; font-size: 0.7rem; }
+/* the insight's zone lies on the night here, in both themes: light words on a dark breath, not a paper glow */
+.t27l ~ .scene-zone::before, .t27g ~ .scene-zone::before { inset: -14% -8%; }
+.t27l ~ .scene-zone::before { background: radial-gradient(closest-side, color-mix(in srgb, #0b0e1a 70%, transparent), color-mix(in srgb, #0b0e1a 35%, transparent) 60%, transparent); }
+.t27l ~ .scene-zone { --ink: #ece6d6; --ink-2: #ddd6c4; --ink-3: #bdb7a8; color: var(--ink); }
+.t27l ~ .scene-zone .insight-text { color: #ece6d6; text-shadow: 0 0 12px #0b0e1a, 0 0 3px #0b0e1a; }
+/* the notches cut in the branch where the ring stops (far · middle · close): a carved slit with a moonlit lip, the name
+   just under the bark; passed ones catch the lantern's light */
+.t27l-notch { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 1; pointer-events: none; }
+.t27l-notch i { position: absolute; left: -1.5px; top: calc(var(--bw) * -0.5); width: 3px; height: var(--bw); border-radius: 2px; background: #05060b; box-shadow: 1.5px 0 0 color-mix(in srgb, var(--moon) 45%, transparent); }
+.t27l-notch span { position: absolute; left: 7px; top: calc(var(--bw) * 0.5 + 3px); font: 400 0.82rem/1 var(--serif); color: #d9d2bf; white-space: nowrap; text-shadow: 0 0 6px #0b0e1a, 0 0 2px #0b0e1a; }
+.t27l-notch.on i { box-shadow: 1.5px 0 0 color-mix(in srgb, var(--lantern) 80%, transparent), 0 0 6px color-mix(in srgb, var(--lantern) 60%, transparent); }
+.t27l.notched .t27l-notch span { opacity: 0.5; transition: opacity 1s; }
 
-/* 3 · flatter: a lacquer tray on tatami at 55°, built in CSS 3D; two mirrors with real thickness, lifted and turned over.
-   The tray lies on the far half of the plane: a held mirror stands at the plane's pivot depth (z = 0), at its own size. */
+/* 3 · flatter: a lacquer tray filling the lower two thirds, seen from a low seat; two hand mirrors lie face down,
+   their handles seated in small wooden stands, and are turned up to stand facing you (audit v3 27-3) */
 .t27g {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  --thick: max(6px, calc(var(--D) * 0.05));
   --t27-lac: color-mix(in srgb, var(--vermilion) 20%, #0d0506);
   --t27-lac-hi: color-mix(in srgb, var(--vermilion) 34%, #170809);
   --t27-lac-lo: #0b0405;
+  --t27-lac-rim: #1a0a0a;
   --t27-gold: color-mix(in srgb, var(--lantern) 78%, #7a5418);
   --t27-gold-hi: color-mix(in srgb, var(--lantern) 45%, #fff3c8);
   --t27-gold-lo: #4a300c;
@@ -358,149 +392,85 @@
   --t27-glass: #2b3330;
   --t27-glass-hi: #6f7a74;
   --t27-glass-lo: #0b0f0e;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 92%, transparent);
+  --t27-wall: color-mix(in srgb, var(--wash) 55%, var(--paper));
+  --t27-wall-hi: color-mix(in srgb, var(--wash) 40%, var(--paper));
+  --t27-mat: color-mix(in srgb, #b9ad84 55%, var(--paper));
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 94%, transparent);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, #000 94%, transparent);
   mask-composite: intersect;
 }
-.t27g-view { position: absolute; inset: 0; transition: transform 1.6s cubic-bezier(0.45, 0, 0.2, 1) 0.4s; }
-/* both seen: the camera tilts up a little, the insight takes the foot of the frame */
-.t27g.done .t27g-view { transform: translateY(var(--pan, 0px)); }
-.t27g.is-calm .t27g-view { transition: none; }
-.t27g-plane { position: absolute; transform-style: preserve-3d; transform-origin: 50% 50%; transform: rotateX(55deg); }
-.t27g-tatami, .t27g-beam { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.t27g-beam { transform: translateZ(calc(var(--th) + 1.4px)); }
-/* tatami: woven igusa (a pattern), mats a shade warmer or cooler, dark cloth borders with a fine light thread */
-.t27g-mat { fill: color-mix(in srgb, var(--paper-2) 62%, var(--moss-c) 30%); }
-:root[data-theme='dark'] .t27g-mat { fill: color-mix(in srgb, var(--paper-2) 78%, var(--moss-b) 22%); }
-.t27g-mat-warm { fill: var(--lantern); opacity: 0.06; }
-.t27g-mat-cool { fill: var(--wash); opacity: 0.05; }
-.t27g-igusa-a { fill: var(--wash); opacity: 0.12; }
-.t27g-igusa-b { fill: var(--card); opacity: 0.28; }
-:root[data-theme='dark'] .t27g-igusa-a { fill: #000; opacity: 0.4; }
-:root[data-theme='dark'] .t27g-igusa-b { fill: var(--moon); opacity: 0.05; }
-.t27g-heri { fill: color-mix(in srgb, var(--wash) 80%, var(--moss-b)); opacity: 0.32; }
-:root[data-theme='dark'] .t27g-heri { fill: #000; opacity: 0.45; }
-.t27g-heri-line { fill: none; stroke: var(--moon); stroke-width: 0.8; stroke-dasharray: 3 3; opacity: 0.22; }
-.t27g-beamlight { opacity: 0.5; }
-.t27g-beamcore { opacity: 0.25; }
-:root[data-theme='dark'] .t27g-beamlight { opacity: 0.26; }
-:root[data-theme='dark'] .t27g-beamcore { opacity: 0.16; }
-.t27g-lattice { fill: none; stroke: var(--umbra); opacity: 0.32; }
-:root[data-theme='dark'] .t27g-lattice { opacity: 0.7; }
-
-.t27g-tray {
-  position: absolute;
-  left: calc(50% - var(--tw) / 2);
-  top: calc(50% - var(--td) / 2 + var(--ty, 0px));
-  width: var(--tw);
-  height: var(--td);
-  transform-style: preserve-3d;
-  transition: transform 1.8s cubic-bezier(0.3, 0, 0.2, 1);
-}
-.t27g-tray::before {
-  /* its shadow on the mats */
-  content: '';
-  position: absolute;
-  inset: -4% -6% -10% -2%;
-  border-radius: 6%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 55%, transparent), transparent);
-  transform: translate(-3%, 4%);
-}
-/* both seen and both down: the tray turns its gilded mirror toward your hand (not on a phone, not while one is held) */
-@media (min-aspect-ratio: 1/1) { .t27g.done:not(.is-calm):not([data-up='bronze']):not([data-up='gilded']) .t27g-tray { transform: rotateZ(-13deg) translate(4%, 2%); } }
-.t27g-topwrap { position: absolute; inset: 0; transform: translateZ(var(--th)); }
-.t27g-top { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.t27g-wall { position: absolute; background: linear-gradient(to bottom, #050203, color-mix(in srgb, var(--vermilion) 18%, #080304)); }
-.t27g-wall-front { left: 0; top: 100%; width: 100%; height: var(--th); transform-origin: 50% 0; transform: rotateX(90deg); }
-.t27g-wall-left, .t27g-wall-right { top: 0; width: var(--th); height: 100%; transform-origin: 0 50%; transform: rotateY(-90deg); }
-.t27g-wall-left { left: 0; }
-.t27g-wall-right { left: 100%; }
-.t27g-rim { fill: #070304; }
-.t27g-inner { fill: none; stroke: #000; stroke-opacity: 0.6; stroke-width: 3; }
-.t27g-makie { fill: var(--t27-gold); opacity: 0.85; }
-.t27g-rimhi { fill: var(--moon); opacity: 0.45; }
-:root[data-theme='light'] .t27g-rimhi { fill: #fff; opacity: 0.6; }
-
-.t27g-msh {
-  position: absolute;
-  top: calc(var(--td) * 0.12);
-  width: var(--Dt);
-  height: calc(var(--Dt) * 1.3);
-  border-radius: 46%;
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.3) 60%, transparent);
-  transition: transform 0.95s cubic-bezier(0.3, 0, 0.2, 1), opacity 0.95s;
-}
-.t27g-msh0 { left: calc(var(--tw) * var(--mx0, 0.27) - var(--Dt) / 2 + 6px); }
-.t27g-msh1 { left: calc(var(--tw) * var(--mx1, 0.73) - var(--Dt) / 2 + 6px); }
-
-/* a mirror: handle, five rings of rim (its thickness), the decorated back up, the glass face down. Its box is the size
-   it is held at (--D); lying on the tray it is scaled down about the handle's end, which stays where it lay. */
+:root[data-theme='dark'] .t27g { --t27-wall: color-mix(in srgb, var(--paper) 70%, #000); --t27-wall-hi: color-mix(in srgb, var(--paper) 85%, var(--moon) 5%); --t27-mat: color-mix(in srgb, #8a8060 30%, var(--paper)); }
+.t27g-scene { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.t27g-shoji { fill: color-mix(in srgb, var(--moon) 55%, var(--paper)); opacity: 0.85; }
+:root[data-theme='dark'] .t27g-shoji { fill: color-mix(in srgb, var(--moon) 40%, var(--paper)); opacity: 0.7; }
+.t27g-shoji-lat { fill: none; stroke: color-mix(in srgb, var(--wash) 70%, #000); stroke-width: 2; opacity: 0.75; }
+.t27g-shoji-frame { fill: none; stroke: color-mix(in srgb, var(--wash) 80%, #000); stroke-width: 5; }
+.t27g-rail { fill: color-mix(in srgb, var(--wash) 80%, #000); opacity: 0.8; }
+.t27g-beam { opacity: 0.9; }
+:root[data-theme='light'] .t27g-beam { opacity: 0.55; }
+/* the mats under the tray: fill comes from the wall gradient's end, tones per mat, the weave, cloth borders */
+.t27g-scene { background: linear-gradient(to bottom, transparent 0, var(--t27-mat) 0); }
+.t27g-mat-tone { fill: #000; opacity: 0.06; }
+:root[data-theme='dark'] .t27g-mat-tone { opacity: 0.16; }
+.t27g-weave { fill: none; stroke: #000; stroke-width: 0.7; opacity: 0.12; }
+:root[data-theme='dark'] .t27g-weave { opacity: 0.25; }
+.t27g-heri { fill: color-mix(in srgb, var(--wash) 85%, #000); opacity: 0.8; }
+.t27g-trayshadow { fill: #000; opacity: 0.45; }
+.t27g-rim { fill: #0a0606; }
+.t27g-inner { fill: none; stroke: #000; stroke-opacity: 0.6; stroke-width: 1.5; }
+.t27g-makie { fill: color-mix(in srgb, var(--lantern) 70%, #c99a40); opacity: 0.85; }
+.t27g-front { opacity: 1; }
+.t27g-side { fill: #050303; }
+.t27g-rimhi { fill: var(--moon); opacity: 0.35; }
+.t27g-stand, .t27g-standlip { fill: #4a3020; }
+.t27g-standfront { position: absolute; pointer-events: none; overflow: visible; }
+.t27g-standhi { fill: #c49a6a; opacity: 0.5; }
+.t27g-slipshadow { fill: #000; opacity: 0.45; filter: blur(3px); }
+.t27g-standslot { stroke: #120a06; stroke-width: 2; }
+/* a mirror's shadow on the lacquer */
+.t27g-msh { position: absolute; left: 0; top: 0; width: var(--D); height: var(--D); border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), transparent); pointer-events: none; will-change: transform; transition: transform 0.9s cubic-bezier(0.3, 0, 0.2, 1); }
+/* a mirror: a card turning about its foot (the handle's end in its stand): its face on one side, its back on the other */
 .t27g-m {
   position: absolute;
-  top: calc(var(--td) * 0.1 + (var(--Dt) - var(--D)) * 1.42);
   width: var(--D);
-  height: calc(var(--D) * 1.42);
+  height: calc(var(--D) + var(--hd));
   margin: 0;
   padding: 0;
   border: 0;
   background: none;
-  transform-style: preserve-3d;
   transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
   cursor: grab;
   touch-action: none;
-  transition: transform 0.95s cubic-bezier(0.3, 0, 0.2, 1);
-  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.9s cubic-bezier(0.3, 0, 0.2, 1);
 }
-.t27g-m0 { left: calc(var(--tw) * var(--mx0, 0.27) - var(--D) / 2); }
-.t27g-m1 { left: calc(var(--tw) * var(--mx1, 0.73) - var(--D) / 2); }
-@media (max-aspect-ratio: 1/1) { .t27g { --mx0: 0.26; --mx1: 0.74; } }
 .t27g.drag .t27g-m, .t27g.drag .t27g-msh { transition: none; }
-/* only the disc and the handle take a touch: the button's empty corners (it is a D × 1.42D box) must never sit over the
-   other mirror (audit v3 27-3, "gương che gương") */
-.t27g-m { pointer-events: none; }
-.t27g-m > * { pointer-events: auto; }
+.t27g.is-calm .t27g-m, .t27g.is-calm .t27g-msh { transition: transform 0.25s; }
+:root[data-reduced] .t27g :is(.t27g-m, .t27g-msh) { transition: none; }
 .t27g-m:focus-visible { outline: none; }
-.t27g-m:focus-visible .t27g-disc { outline: 2px solid var(--vermilion); outline-offset: 4px; border-radius: 50%; }
-.t27g-ring, .t27g-disc, .t27g-front { position: absolute; left: 0; top: 0; width: var(--D); height: var(--D); border-radius: 50%; }
-.t27g-ring { transform: translateZ(calc(var(--thick) * var(--k) / 4)); background: radial-gradient(closest-side, transparent 88%, #2a1c0e 90%, #120a04); }
-.t27g-m0 .t27g-ring { background: radial-gradient(closest-side, transparent 86%, #7a5418 89%, #3a2408); }
-.t27g-disc { transform: translateZ(var(--thick)); backface-visibility: hidden; }
-.t27g-back { width: 100%; height: 100%; overflow: visible; }
-.t27g-front { transform: rotateY(180deg); backface-visibility: hidden; overflow: hidden; display: grid; place-items: center; text-align: center; }
-.t27g-facesvg { position: absolute; inset: 0; width: 100%; height: 100%; }
-/* the handle: a wooden core wrapped in cord (two close tones, a cylinder's light across it), a metal collar, an end cap */
+.t27g-m:focus-visible .t27g-front, .t27g-m:focus-visible .t27g-rear { outline: 2px solid var(--vermilion); outline-offset: 4px; border-radius: 50% 50% 8px 8px; }
+.t27g-card { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
+.t27g-front, .t27g-rear { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.t27g-rear { transform: rotateX(180deg); }
+.t27g-facesvg, .t27g-backsvg { position: absolute; left: 0; top: 0; width: var(--D); height: var(--D); }
+.t27g-rear .t27g-backsvg { top: var(--hd); }
+.t27g-front { display: grid; place-items: start center; text-align: center; }
+/* the handle: wood wrapped in cord, a metal collar */
 .t27g-handle {
   position: absolute;
-  left: calc(50% - var(--D) * 0.068);
-  top: calc(var(--D) * 0.93);
-  width: calc(var(--D) * 0.136);
-  height: calc(var(--D) * 0.49);
-  border-radius: calc(var(--D) * 0.03) calc(var(--D) * 0.03) calc(var(--D) * 0.05) calc(var(--D) * 0.05);
-  transform: translateZ(calc(var(--thick) * 0.5));
-  background: var(--t27-cord-b);
-  overflow: hidden;
-  --t27-cord-a: #4a2a1e;
-  --t27-cord-b: #33190f;
-}
-.t27g-m1 .t27g-handle { --t27-cord-a: #2f3433; --t27-cord-b: #1e2221; }
-.t27g-cord {
-  position: absolute;
-  inset: 14% 0 9%;
+  left: calc(50% - var(--D) * 0.065);
+  top: calc(var(--D) * 0.96);
+  width: calc(var(--D) * 0.13);
+  height: calc(var(--hd) + var(--D) * 0.02);
+  border-radius: 3px 3px 5px 5px;
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(255, 240, 220, 0.16) 34%, rgba(255, 240, 220, 0.05) 52%, rgba(0, 0, 0, 0.6)),
-    repeating-linear-gradient(166deg, var(--t27-cord-a) 0 2.2px, var(--t27-cord-b) 2.2px 3px);
+    repeating-linear-gradient(166deg, var(--t27-cord-a, #4a2a1e) 0 2.2px, var(--t27-cord-b, #33190f) 2.2px 3px);
 }
-.t27g-handle::before, .t27g-handle::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  background: linear-gradient(90deg, var(--t27-cord-lo, #2a1a08), var(--t27-cord-hi, #c49a4a) 38%, var(--t27-cord-lo, #2a1a08));
-}
-.t27g-handle::before { top: 0; height: 14%; }
-.t27g-handle::after { bottom: 0; height: 9%; border-radius: 0 0 40% 40%; }
-.t27g-m1 .t27g-handle { --t27-cord-hi: #a08a6a; --t27-cord-lo: #1e1810; }
+.t27g-rear .t27g-handle { top: calc(var(--hd) * -0.02); }
+.t27g-m1 .t27g-handle { --t27-cord-a: #2f3433; --t27-cord-b: #1e2221; }
 .t27g-gold { fill: var(--t27-gold); }
 .t27g-gold-in { fill: color-mix(in srgb, var(--t27-gold) 70%, #3a2408); }
 .t27g-gold-hi { fill: color-mix(in srgb, var(--lantern) 60%, #fff3c8); opacity: 0.9; }
@@ -508,110 +478,72 @@
 .t27g-bronze-in { fill: color-mix(in srgb, var(--t27-bronze) 75%, #1a120a); }
 .t27g-patina { fill: #5f8f7d; opacity: 0.55; }
 .t27g-knob { fill: #e8d9b8; opacity: 0.55; }
-.t27g-shine { fill: #fff; opacity: 0.5; }
 .t27g-bevel-in { stroke: #000; stroke-opacity: 0.45; stroke-width: 1.2; }
 .t27g-bevel-out { stroke: #000; stroke-opacity: 0.55; stroke-width: 1.4; }
-.t27g-streak { opacity: 0.9; }
-.t27g-streak2 { opacity: 0.6; }
-/* the glass: the slip of paper reflected (mirror-written, softened and framed by the glass's own dark), the answer */
-.t27g-front::after { content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
+/* the grip: the rim you take hold of (top of the disc = the edge nearest you while it lies) */
+.t27g-grip { position: absolute; left: calc(50% - 26px); top: -10px; width: 52px; height: 30px; }
+/* the glass: the question slip reflected (mirror-written, soft), the answer */
+.t27g-front::after { content: ''; position: absolute; left: 0; top: 0; width: var(--D); height: var(--D); border-radius: 50%; pointer-events: none; }
 .t27g-m0 .t27g-front::after { background: radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--lantern) 34%, transparent), transparent 66%); }
 .t27g-refl {
   position: absolute;
   left: 50%;
-  top: 11%;
+  top: 9%;
   width: 46%;
-  padding: 0.35em 0.45em;
+  padding: 0.3em 0.4em;
   background: color-mix(in srgb, #efe6d2 50%, transparent);
-  transform: translateX(-50%) scaleX(-1) perspective(300px) rotateX(-14deg);
+  transform: translateX(-50%) scaleX(-1);
   filter: blur(0.7px);
-  opacity: 0.55;
+  opacity: 0.5;
   -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent);
   mask-image: radial-gradient(closest-side, #000 55%, transparent);
 }
 .t27g-refl p { margin: 0; font: 400 0.5rem/1.3 var(--serif); color: #2b2418; }
-.t27g-m0 .t27g-refl { width: 64%; top: 6%; filter: blur(1.4px); background: color-mix(in srgb, #ffe2a0 60%, transparent); opacity: 0.7; }
-.t27g-m0 .t27g-refl p { font-size: 0.66rem; }
-.t27g-ans { position: relative; margin: 26% 14% 0; font: 400 clamp(0.92rem, 1.15vw, 1.04rem)/1.34 var(--serif); text-wrap: balance; }
-.t27g-m0 .t27g-ans { color: #ffd98a; text-shadow: 0 0 10px rgba(255, 196, 90, 0.75); font-size: clamp(1rem, 1.35vw, 1.18rem); }
-.t27g-m1 .t27g-ans { color: #f1ece0; margin-top: 24%; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
-@media (max-aspect-ratio: 1/1) {
-  .t27g-ans { margin: 25% 13% 0; font-size: 0.8rem; line-height: 1.28; }
-  .t27g-m0 .t27g-ans { font-size: 0.92rem; margin-top: 32%; }
-  .t27g-m1 .t27g-ans { margin-top: 23%; }
-  .t27g-refl { top: 8%; width: 42%; }
-  .t27g-refl p { font-size: 0.42rem; }
-}
-.t27g-sweep { position: absolute; left: -10%; top: -20%; width: 40%; height: 140%; background: linear-gradient(90deg, transparent, rgba(255, 250, 230, 0.55), transparent); opacity: 0; pointer-events: none; }
-
-/* the question on a folded slip standing between them, the take-away folded under the bronze one */
+.t27g-m0 .t27g-refl { width: 62%; top: 5%; filter: blur(1.4px); background: color-mix(in srgb, #ffe2a0 60%, transparent); opacity: 0.65; }
+.t27g-ans { position: relative; width: 78%; margin: calc(var(--D) * 0.22) 0 0; font: 400 calc(var(--D) * 0.064)/1.32 var(--serif); text-wrap: balance; }
+.t27g-m0 .t27g-ans { color: #ffd98a; text-shadow: 0 0 10px rgba(255, 196, 90, 0.75); font-size: calc(var(--D) * 0.078); margin-top: calc(var(--D) * 0.3); }
+.t27g-m1 .t27g-ans { color: #f1ece0; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
+.t27g-sweep { position: absolute; left: -10%; top: -20%; width: 40%; height: calc(var(--D) * 1.2); background: linear-gradient(90deg, transparent, rgba(255, 250, 230, 0.55), transparent); opacity: 0; pointer-events: none; }
+/* the question on folded paper at the back of the tray, never under a mirror; the honesty note joins it once a mirror speaks */
 .t27g-slip {
   position: absolute;
-  left: calc(50% - var(--sw) / 2);
-  top: calc(var(--td) * 0.16);
-  width: var(--sw);
-  --sw: min(calc(var(--tw) * 0.26), 220px);
-  padding: 0.7em 0.8em;
+  padding: 0.6em 0.75em 0.55em;
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .05' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .5 0 0 0 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    #efe8d8;
-  box-shadow: 0 6px 10px -6px rgba(0, 0, 0, 0.6);
-  transform-origin: 50% 100%;
-  transform: translateZ(calc(var(--th) + 1px)) rotateX(-48deg);
+    linear-gradient(to bottom, #f3ecdc 0 49%, #e2d9c4 51% 100%);
+  box-shadow: 0 8px 12px -8px rgba(0, 0, 0, 0.75), 2px 3px 0 -1px rgba(0, 0, 0, 0.25);
+  clip-path: polygon(0 3%, 100% 0, 99% 97%, 1% 100%);
   pointer-events: none;
+  z-index: 1;
 }
-@media (max-aspect-ratio: 1/1) { .t27g-slip { --sw: calc(var(--tw) * 0.36); top: calc(var(--td) * 0.12); } }
-.t27g-slip p { margin: 0; font: 400 clamp(0.8rem, 1.15vw, 0.95rem)/1.4 var(--serif); color: #1a2240; text-align: center; text-wrap: balance; }
-/* the take-away: where the bronze mirror lay, it stands up facing you (wide); on a phone it stands on the mat in front, right */
-.t27g-fold {
-  position: absolute;
-  left: calc(var(--tw) * 0.77 - var(--fw) / 2);
-  bottom: calc(var(--td) * 0.9 - var(--Dt) * 0.95);
-  width: var(--fw);
-  --fw: min(calc(var(--Dt) * 0.9), calc(var(--tw) * 0.26));
-  padding: 0.7em 0.6em 0.6em;
-  background: #efe8d8;
-  box-shadow: 0 6px 10px -6px rgba(0, 0, 0, 0.6);
-  text-align: center;
-  transform-origin: 50% 100%;
-  transform: translateZ(calc(var(--th) + 1px)) rotateX(0deg);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: transform 1s cubic-bezier(0.3, 0, 0.2, 1) 0.3s, opacity 0.6s 0.3s, visibility 0s 0.3s;
-}
-.t27g.done[data-up='bronze'] .t27g-fold { opacity: 1; visibility: visible; transform: translateZ(calc(var(--th) + 1px)) rotateX(-55deg); pointer-events: auto; }
-/* wide: the bronze mirror is held up on its own side, over where it lay, so the card stands at the tray's front middle */
-@media (min-aspect-ratio: 1/1) { .t27g-fold { left: calc(var(--tw) * 0.5 - var(--fw) / 2); bottom: calc(var(--td) * 0.08); } }
-@media (max-aspect-ratio: 1/1) {
-  .t27g-fold { left: calc(var(--tw) * 0.55); bottom: calc(var(--td) * -0.5); --fw: calc(var(--tw) * 0.4); }
-  .t27g.done[data-up='bronze'] .t27g-fold { transform: translateZ(1px) rotateX(-55deg); }
-}
-.t27g-take { margin: 0; padding: 0.35em 0.6em; border: 1px solid #1a224055; border-radius: 3px; background: none; font: 500 0.92rem/1.3 var(--serif); color: #1a2240; cursor: pointer; }
-.t27g-take:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
-.t27g-see { margin: 0.4em 0 0; font: 400 0.78rem/1.3 var(--sans); color: #555e7a; }
-@media (max-aspect-ratio: 1/1) { .t27g-take { font-size: 0.8rem; } .t27g-see { font-size: 0.68rem; } }
-.t27g-note { position: absolute; left: 0; right: 0; bottom: 2px; text-align: center; opacity: 0; visibility: hidden; transition: opacity 0.8s 0.6s, visibility 0s 0.6s; pointer-events: none; }
-.t27g-note .fact { margin: 0; }
-.t27g-notep { font: 400 0.78rem/1.4 var(--sans); color: var(--ink-3); }
+.t27g-slip-q { margin: 0; font: 400 clamp(0.8rem, 1.1vw, 0.95rem)/1.4 var(--serif); color: #1a2240; text-align: center; text-wrap: balance; }
+.t27g-note { margin: 0; max-height: 0; overflow: hidden; opacity: 0; transition: opacity 0.8s 0.5s, max-height 0.6s 0.4s; text-align: center; }
+.t27g.noted .t27g-note { max-height: 4em; opacity: 1; }
+.t27g-note.fact, .t27g-note { font: 400 0.7rem/1.3 var(--sans); color: #4a5068; }
 .t27g-note :is(button, a) { pointer-events: auto; }
-.t27g-note.on { opacity: 1; visibility: visible; }
-.t27g-sheet {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  overflow: auto;
-  background: color-mix(in srgb, var(--paper) 94%, transparent);
-  animation: p2-fade 0.4s ease-out both;
-}
-.t27g-sheet[hidden] { display: none; }
-.t27g-close { align-self: flex-end; min-height: 40px; padding: 0.45em 1.1em; border: 1px solid var(--line-2); border-radius: 999px; background: var(--card); color: var(--ink); font: 500 0.86rem/1.2 var(--sans); cursor: pointer; }
-.t27g.is-calm .t27g-m, .t27g.is-calm .t27g-msh { transition: none; }
+.t27g-note { --ink: #1a2240; --ink-2: #2b3350; --ink-3: #4a5068; --line-2: #1a224033; }
+/* the take-away: a folded paper where the bronze mirror lay, seen once it stands */
+.t27g-fold { position: absolute; z-index: 2; display: grid; justify-items: center; opacity: 0; visibility: hidden; transition: opacity 0.8s 0.6s, visibility 0s 0.6s; --ink: #f1ece0; --ink-2: #ddd6c4; --ink-3: #bdb7a8; --line-2: #f1ece055; }
+.t27g.fold-on .t27g-fold { opacity: 1; visibility: visible; }
+.t27g-fold .p2k-fold { flex-direction: column-reverse; }
+.t27g-fold .p2k-panel { position: absolute; bottom: 100%; width: min(560px, 92vw); max-height: 60vh; background: var(--card); border-radius: 4px; color: var(--ink); --ink: var(--ink-0, #1a2240); }
+.t27g-fold .p2k-slip-title { color: #f1ece0; text-shadow: 0 0 6px #000; }
+.t27g-fold .p2-eyebrow { color: #ddd6c4; }
+/* the insight's zone lies on the dark lacquer: light words on a dark breath, in both themes */
+.t27g ~ .scene-zone::before { background: radial-gradient(closest-side, color-mix(in srgb, #0b0506 70%, transparent), color-mix(in srgb, #0b0506 35%, transparent) 60%, transparent); }
+.t27g ~ .scene-zone { --ink: #f1ece0; --ink-2: #ddd6c4; --ink-3: #bdb7a8; color: var(--ink); }
+.t27g ~ .scene-zone .insight-text { color: #f1ece0; text-shadow: 0 0 12px #0b0506, 0 0 3px #0b0506; }
+/* tall: the slip is a note pasted on the wall, top right */
+.t27g-slip.on-wall { box-shadow: 0 3px 6px -3px rgba(0, 0, 0, 0.5); transform: rotate(1.2deg); }
+.t27g-up { position: absolute; width: 40px; height: 76px; overflow: visible; pointer-events: none; transition: opacity 0.5s; }
+.t27g-up path { fill: #f1ece0; opacity: 0.55; }
+:root[data-theme='light'] .t27g-up path { fill: #1a2240; opacity: 0.5; }
+.t27g-up.out, .t27g.drag .t27g-up { opacity: 0; }
+/* the lift's arc shows only while a mirror is being lifted */
+.t27g ~ .p2g .p2g-track-box { opacity: 0; transition: opacity 0.3s; }
+.t27g.drag ~ .p2g .p2g-track-box { opacity: 1; }
+.t27g ~ .p2g .p2g-groove { stroke: #f1ece0; }
+.t27g-see { margin: 0.1em 0 0; font: 400 0.74rem/1.3 var(--sans); color: #c9c2b0; text-shadow: 0 0 6px #000; }
 
 /* 4 · path: frame in frame — from inside a screen-lit hut, down the moonlit steps to a house where people sit together */
 .t27p { --t27-screen: #7fb2e8; --p: 0; }
@@ -664,11 +596,14 @@
 .t27p-bed { fill: var(--t27-gravel); opacity: 0.38; }
 .t27p-grit { fill: var(--wash); opacity: 0.22; }
 :root[data-theme='dark'] .t27p-grit { fill: #000; opacity: 0.4; }
-.t27p-hollow { fill: color-mix(in srgb, var(--moss-b) 55%, var(--umbra)); opacity: 0.3; }
+.t27p-hollow { fill: color-mix(in srgb, var(--moss-b) 55%, var(--umbra)); opacity: 0.5; }
+/* light theme: the valley mist thinner over the slope, so the path and its hollows keep their ink */
+:root[data-theme='light'] .t27p .p2s-scape .p2p-mist { opacity: 0.45; }
+:root[data-theme='light'] .t27p-bed { fill: color-mix(in srgb, var(--t27-gravel) 75%, var(--wash)); opacity: 0.32; }
 :root[data-theme='dark'] .t27p-hollow { fill: color-mix(in srgb, var(--moss-b) 40%, #000); opacity: 0.5; }
 .t27p-hollow-moss { fill: var(--moss-a); opacity: 0.4; }
 :root[data-theme='dark'] .t27p-hollow-moss { fill: var(--moss-c); opacity: 0.22; }
-.t27p-hollow-back { fill: var(--umbra); opacity: 0.3; }
+.t27p-hollow-back { fill: var(--umbra); opacity: 0.48; }
 :root[data-theme='dark'] .t27p-hollow-back { fill: #000; opacity: 0.5; }
 .t27p-hollow-lip { fill: var(--rake-hi); }
 :root[data-theme='dark'] .t27p-hollow-lip { fill: var(--moon); opacity: 0.3; }
@@ -715,7 +650,7 @@
 .t27p .p2s-stone { justify-content: center; }
 /* the words are cut into the slab: dark letters with a light lower lip (light theme), pale letters sunk in shade (dark) */
 .t27p .p2s-stone { padding: 6px 16px; }
-.t27p .p2s-label { font: 600 0.92em/1.18 var(--serif); color: color-mix(in srgb, var(--stone-text) 92%, var(--umbra)); text-align: center; text-shadow: 0 1px 0 color-mix(in srgb, #fff 55%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent); }
+.t27p .p2s-label { font: 500 0.88em/1.18 var(--serif); opacity: 0.88; color: color-mix(in srgb, var(--stone-text) 92%, var(--umbra)); text-align: center; text-shadow: 0 1px 0 color-mix(in srgb, #fff 55%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent); }
 :root[data-theme='dark'] .t27p .p2s-label { color: color-mix(in srgb, var(--ink) 92%, var(--moon)); text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75), 0 1px 0 color-mix(in srgb, var(--moon) 14%, transparent), 0 0 6px rgba(0, 0, 0, 0.45); }
 .t27p-slab-mid { fill: var(--rock-mid); }
 .t27p-slab-lit { fill: var(--rock-hi); }
@@ -728,45 +663,37 @@
 :root[data-theme='dark'] .t27p-slab-rim { fill: var(--moon); opacity: 0.45; }
 .t27p .p2s-note { color: var(--ink); text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper); }
 .t27p .p2s-ink { opacity: 0.18; }
-/* the take-away: a paper card under the veranda lamp, its own scroll; the lamp hangs on a cord above it, glowing */
-.t27p .p2s-sheet {
-  overflow: visible;
-  padding: 0;
-  background: none;
-  box-shadow: none;
-  border-radius: 0;
-  display: flex;
-  flex-direction: column;
-}
-.t27p .p2s-sheet::before {
-  content: '';
+/* each step's lantern has a wooden tag hung from its eave with its moment carved in (smaller with distance) */
+.t27p-tag {
   position: absolute;
-  left: 50%;
-  top: -46px;
-  width: 22px;
-  height: 28px;
-  margin-left: -11px;
-  border-radius: 48%;
-  background: radial-gradient(circle at 50% 60%, var(--moon), var(--lantern) 55%, color-mix(in srgb, var(--lantern) 60%, var(--umbra)));
-  box-shadow: 0 0 18px 6px color-mix(in srgb, var(--lantern) 55%, transparent), 0 0 70px 30px color-mix(in srgb, var(--lantern) 22%, transparent);
-}
-.t27p .p2s-sheet::after { content: ''; position: absolute; left: 50%; top: -80px; width: 1px; height: 36px; background: var(--ink-3); opacity: 0.6; }
-.t27p .p2s-sheet > * { position: relative; }
-.t27p .p2s-done {
   margin: 0;
-  padding: 10px 40px 6px;
-  background: color-mix(in srgb, var(--card) 96%, var(--lantern));
-  border-radius: 6px 6px 0 0;
-  color: var(--ink-2);
-  box-shadow: 0 -10px 40px -10px color-mix(in srgb, var(--lantern) 45%, transparent);
+  padding: 0.28em 0.5em 0.32em;
+  font: 500 calc(0.8rem * (0.55 + var(--k, 1) * 0.45))/1.15 var(--serif);
+  color: #2a1d12;
+  white-space: nowrap;
+  background: linear-gradient(to bottom, #c9a678, #a9845a);
+  border-radius: 2px;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 240, 210, 0.45);
+  text-shadow: 0 1px 0 rgba(255, 235, 200, 0.45);
+  pointer-events: none;
+  transition: box-shadow 0.8s, background 0.8s;
 }
+/* the path done, the stones carry their words: the tags step back (one text block at the end) */
+.t27p.lit .t27p-tag { opacity: 0; transition: opacity 1.2s 0.6s; }
+.t27p-tag.on-post { translate: -50% 0; white-space: normal; width: max-content; max-width: 6.2em; text-align: center; font-size: calc(0.74rem * (0.6 + var(--k, 1) * 0.4)); }
+.t27p-tag.on-post::before { left: 50%; }
+/* the cord it hangs by, up to the lantern's firebox */
+.t27p-tag::before { content: ''; position: absolute; left: 0.5em; bottom: 100%; width: 1px; height: 0.7em; background: #2a1d12; opacity: 0.8; }
+:root[data-theme='dark'] .t27p-tag { background: linear-gradient(to bottom, #8a6c4a, #6a5036); color: #f3e6cf; text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6); }
+.t27p-tag.on { background: linear-gradient(to bottom, #f1cf94, #d4a868); color: #2a1d12; box-shadow: 0 0 14px 2px color-mix(in srgb, var(--lantern) 55%, transparent), 0 2px 4px -1px rgba(0, 0, 0, 0.5); text-shadow: none; }
+.t27p-pool { fill: color-mix(in srgb, var(--water) 80%, #000); opacity: 0.8; }
+.t27p-glint { fill: var(--moon); opacity: 0.75; }
+/* the take-away: a sheet of paper pasted on the house's paper door; touched, the card opens below it over the garden */
+.t27p .p2s-sheet { overflow: visible; padding: 0; background: none; box-shadow: none; border-radius: 0; }
+.t27p .p2s-done { display: none; }
+.t27p .p2s-sheet .p2k-fold { position: absolute; left: 0; top: 0; }
+.t27p .p2s-sheet .p2k-slip { padding: 2px; min-height: 44px; min-width: 44px; }
+.t27p .p2s-sheet .p2k-slip-art { width: calc(var(--hh, 30px)); height: auto; }
+.t27p .p2s-sheet .p2k-slip-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.t27p .p2s-sheet .p2k-panel { position: absolute; top: 100%; right: -40px; width: min(440px, 88vw); max-height: 60vh; background: var(--card); border-radius: 4px; box-shadow: 0 18px 40px -16px var(--umbra); }
 .t27p .p2s-close { z-index: 1; top: 2px; right: 2px; }
-.t27p .p2s-sheet .p2k-body { max-height: none; overflow: visible; font-size: 0.84rem; line-height: 1.5; }
-.t27p .p2s-sheet .p2k {
-  min-height: 0;
-  overflow-y: auto;
-  border-radius: 0 0 14px 14px;
-  border-top: 0;
-  background: radial-gradient(120% 50% at 50% 0%, color-mix(in srgb, var(--lantern) 18%, transparent), transparent 70%), var(--card);
-  box-shadow: 0 18px 40px -16px var(--umbra), 0 0 60px -20px color-mix(in srgb, var(--lantern) 50%, transparent);
-}

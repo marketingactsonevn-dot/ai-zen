@@ -4,7 +4,7 @@ import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onDigit, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, moon, pine, reeds } from '../../ui/part2/paint'
-import { guide, type Mark } from '../../ui/part2/guide'
+import { guide, type Drop, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-25.json'
 import { broken, cursive, glyph, leaf } from './kit'
@@ -132,30 +132,61 @@ export function layersScene(ctx: SceneCtx) {
   // the layer names, etched into the glass; a sunk layer gets a small ink seal (its words stay for screen readers)
   const seal = (i: number) => s('svg', { class: 't25l-seal', viewBox: '0 0 16 16', 'aria-hidden': 'true' },
     s('path', { class: 't25l-seal-b', d: blob(8, 8, 7, 7, 2590 + i, 0.12, 8) }), s('path', { class: 't25l-seal-g', d: glyph(3.2, 3.2, 9.6, 2595 + i, 1.5) }))
-  // under each name, the line that layer teaches, etched when its pebble reaches it (audit v3 25-1: one big insight only)
+  // the line each layer teaches, etched when its pebble reaches it: one at a time (under its name on a wide frame, in
+  // the clear mist on a phone), and gone once the slide's one sentence comes (audit v3 25-1: one block of words at the end)
   const lines = K.layers.map((l) => {
-    const el = ctx.fact(F(l.line), 'p', 't25l-line')
+    const el = ctx.fact(F(l.line), 'p', 't25l-say')
     el.hidden = true
     return el
   })
-  const labs = K.layers.map((l, i) => h('div', { class: 't25l-lab' }, h('p', null, l.label, seal(i)), h('small', null, l.sub), lines[i], h('span', { class: 'visually-hidden t25l-sunk', hidden: true }, K.sunk)))
+  const labs = K.layers.map((l, i) => h('div', { class: 't25l-lab' }, h('p', null, l.label, seal(i)), h('small', null, l.sub), h('span', { class: 'visually-hidden t25l-sunk', hidden: true }, K.sunk)))
   // each pebble carries a small carved word, so it is clear which one goes to which layer
   const pebbles = K.layers.map((l, i) => h('button', { class: `t25l-pebble t25l-pebble-${i}`, type: 'button', 'aria-label': l.aria },
     s('svg', { viewBox: '-30 -26 60 50', 'aria-hidden': 'true' }), h('span', { class: 't25l-mark', 'aria-hidden': 'true' }, l.mark)))
   const root = frame(ctx, 't25l', K.art, [K.insight], layout)
-  root.append(world, ...labs, ...pebbles)
+  // the way in for the next pebble: a dotted ink arc from the slab down to the water under the moon
+  const trail = s('svg', { class: 't25l-trail', 'aria-hidden': 'true' }, s('path', { pathLength: 1 }))
+  root.append(world, trail, ...labs, ...lines, ...pebbles)
   // guidance: the next pebble's dot, a count of the layers reached, a prompt per pebble (flat → egg → heavy)
   const gd = guide(ctx)
   const count = gd.count(K.count, n, () => (G ? (G.land ? [G.W * 0.12, G.H * 0.06] : [G.W * 0.5, G.H * 0.04]) : [0, 0]))
   let dot: Mark | null = null
+  let target: Drop | null = null
+  let wait = 0
+  ctx.onCleanup(() => clearTimeout(wait))
+  /** the next pebble still on the slab, or -1 */
+  const nextK = () => [0, 1, 2].find((j) => !sunk.has(j)) ?? -1
   function next() {
     dot?.done()
     dot = null
-    const k = [0, 1, 2].find((j) => !sunk.has(j))
-    if (k === undefined) return
+    const k = nextK()
+    if (k < 0) return
     dot = gd.dot(pebbles[k], { dir: [0.4, 1] })
     ctx.prompt(K.prompts[k])
   }
+  /** the way down and its target show only while nothing is falling */
+  function invite() {
+    if (tracks.length) return void (wait = window.setTimeout(invite, 400)) // something still falling: a moment later
+    trailTo()
+    if (nextK() >= 0 && !target) target = gd.drop(() => (G ? aim() : [0, 0]), { w: 96, h: 30, round: true })
+  }
+  /** where the trail lands: the skin of the water just before the moon's window */
+  const aim = (): Pt => [Math.max(G!.win[0] - G!.win[1] * 1.6, (slab?.x1 ?? 0) + G!.W * 0.07), G!.wl + 2]
+  function trailTo() {
+    const k = nextK()
+    root.classList.toggle('trail-off', k < 0 || !G)
+    if (k < 0 || !G) return
+    const [x0, y0] = G.home[k], [x1, y1] = aim()
+    trail.firstElementChild!.setAttribute('d', `M${f1(x0 + G.r)} ${f1(y0 - G.r * 0.4)}Q${f1(lerp(x0, x1, 0.55))} ${f1(Math.min(y0, y1) - G.H * 0.09)} ${f1(x1)} ${f1(y1 - 6)}`)
+  }
+  // idle: the next pebble nudges ~10 px along its trail, and the trail's ink runs once (CSS on .is-idle)
+  const nudge = () => {
+    const k = nextK()
+    if (k < 0 || ctx.reduced) return
+    pebbles[k].animate([{ translate: '0 0' }, { translate: '10px -4px' }, { translate: '0 0' }], { duration: 700, easing: 'ease-in-out', composite: 'add' })
+  }
+  ctx.el.addEventListener('p2:idle', nudge)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', nudge))
   next()
 
   // ── animation: one loop runs the tracks (skips, tumble, the dive); asleep when none is left
@@ -164,7 +195,10 @@ export function layersScene(ctx: SceneCtx) {
   const camSet = (c: number) => {
     for (const k of Object.keys(RATE) as Layer[]) layers[k].style.transform = c ? `translateY(${f1(-c * RATE[k])}px)` : ''
     labs.forEach((l, i) => (l.style.transform = c ? `translateY(${f1(-c * (i ? RATE.mid : RATE.surf))}px)` : ''))
-    pebbles.forEach((el, i) => (el.style.translate = c && !sunk.has(i) ? `0 ${f1(-c * RATE.silt)}px` : ''))
+    if (G?.land) lines.forEach((l, i) => i < 2 && (l.style.translate = c ? `0 ${f1(-c * (i ? RATE.mid : RATE.surf))}px` : ''))
+    // the pebbles still on the slab go with the bank; the ones already in the water with their layer (the diving one is
+    // placed by its own track)
+    pebbles.forEach((el, i) => i < 2 && (el.style.translate = c ? `0 ${f1(-c * (!sunk.has(i) ? RATE.silt : i ? RATE.mid : RATE.surf))}px` : ''))
   }
   const loop = createLoop(root, (_t, dt) => {
     for (let i = tracks.length - 1; i >= 0; i--) {
@@ -180,6 +214,7 @@ export function layersScene(ctx: SceneCtx) {
     return tracks.length > 0
   })
   ctx.onCleanup(() => loop.dispose())
+  invite()
   const put = (el: HTMLElement, x: number, y: number, rot = 0, o = 1) => {
     el.style.transform = `translate(${f1(x)}px, ${f1(y)}px) rotate(${rot.toFixed(1)}deg)`
     el.style.opacity = o.toFixed(2)
@@ -193,6 +228,10 @@ export function layersScene(ctx: SceneCtx) {
     if (sunk.has(i)) return
     sunk.add(i)
     next()
+    // while it falls, the way down and its target step aside
+    root.classList.add('trail-off')
+    target?.done()
+    target = null
     el.classList.add('in')
     el.setAttribute('aria-disabled', 'true')
     ctx.chime('tap')
@@ -241,6 +280,7 @@ export function layersScene(ctx: SceneCtx) {
           const c = clamp(y - H * 0.55, 0, camMax)
           camSet(c)
           put(el, x0 + Math.sin(u * 7) * 3, y - c * RATE.mid, u * 30, 1 - ease(u) * 0.85)
+          if (u > 0.7) say(2) // in the mist, where it never lands, the words come
         }, () => tracks.push(track(2.4, (u) => {
           const c = camMax * (1 - ease(u))
           camSet(c)
@@ -264,7 +304,7 @@ export function layersScene(ctx: SceneCtx) {
     const { W, H, wl, tiers } = G!
     if (i === 0) return [G!.win[0] + G!.win[1] * 0.55, wl + H * 0.06, 6, 0.85]
     if (i === 1) return [clamp(x0 + W * 0.26, 0, W * 0.9), (tiers[1] + tiers[2]) / 2, 40, 0.8]
-    return [x0, H * 0.97, 30, 0.18] // in the mist at the foot of the frame: lost, not landed
+    return [G!.win[0] - G!.win[1] * 0.5, H * 0.84, 30, 0.38] // in the mist under the shafts: still sinking, never landed
   }
   /** rings on the skin of the water; for the skipping stone they turn into strokes of script */
   function splash(x: number, script: boolean, k = 0) {
@@ -276,21 +316,33 @@ export function layersScene(ctx: SceneCtx) {
     if (script && Math.abs(x - win[0]) < win[1] * 1.1) g.append(s('path', { class: 't25l-written', d: cursive(x, wl + H * 0.012, H * (0.04 - k * 0.006), H * 0.016, 2570 + k, H * 0.0032, 0.6) }))
     fx.append(g)
   }
+  /** show layer i's line (and only it); its name's small subtitle steps aside for it */
+  function say(i: number) {
+    lines.forEach((l, j) => {
+      const on = j === i
+      if (on && l.hidden) l.hidden = false
+      l.classList.toggle('is-on', on)
+      labs[j].classList.toggle('has-line', on && !!G?.land)
+    })
+  }
   const told = new Set<number>()
   function reveal(i: number) {
     if (told.has(i)) return
     told.add(i)
     labs[i].querySelector<HTMLElement>('.t25l-sunk')!.hidden = false
     labs[i].classList.add('is-sunk')
-    lines[i].hidden = false
+    say(i)
     root.classList.add(`is-sunk-${i}`) // its ghost stays on the slab
     count.set(told.size)
     if (told.size === n) {
-      // all three reached: the one sentence of the slide
+      // all three reached: the one sentence of the slide; the layer's own line steps back (kept for screen readers)
       ctx.chime('ok')
       ctx.insight(F(K.insight), F(K.detail))
-    }
+      say(-1)
+      root.classList.add('is-done')
+    } else wait = window.setTimeout(invite, ctx.reduced ? 0 : 900)
   }
+
 
   // drag a pebble off the slab into the water (a tap drops it on its usual line)
   pebbles.forEach((el, i) => {
@@ -309,12 +361,14 @@ export function layersScene(ctx: SceneCtx) {
       if (!d.moved && Math.hypot(dx, dy) < 6) return
       d.moved = true
       el.classList.add('held')
+      target?.lift(true)
       put(el, d.ox + dx, d.oy + dy)
     })
     const up = (e: PointerEvent) => {
       if (!d || e.pointerId !== d.id) return
       const moved = d.moved
       el.classList.remove('held')
+      target?.lift(false)
       const x = e.clientX - box!.left, y = e.clientY - box!.top
       const home = G!.home[i]
       d = null
@@ -341,7 +395,7 @@ export function layersScene(ctx: SceneCtx) {
     const land = W / H > 1.05
     const wl = H * (land ? 0.34 : 0.27)
     const tiers = [wl, wl + H * (land ? 0.2 : 0.17), wl + H * (land ? 0.43 : 0.38)]
-    const r = Math.max(13, Math.min(W * 0.026, H * 0.04))
+    const r = Math.max(15, Math.min(W * 0.031, H * 0.048))
     // the slab on the near bank (left): a thin lit top plane over a front face; the pebbles sit on the top
     const sx0 = -W * 0.01, sx1 = W * (land ? 0.3 : 0.56), sy = wl - H * (land ? 0.07 : 0.055)
     slab = slabGeo(sx0, sx1, sy, wl, H * (land ? 0.026 : 0.022))
@@ -367,8 +421,15 @@ export function layersScene(ctx: SceneCtx) {
       }
     })
     // etched on the glass at the left edge, in clear water: under the slab's foot, above the ribbon, in the mist
-    const labTop = [wl + H * (land ? 0.075 : 0.05), tiers[1] + H * (land ? 0.004 : 0.004), tiers[2] + H * (land ? 0.05 : 0.045)]
-    labs.forEach((l, i) => Object.assign(l.style, { left: `${f1(Math.max(16, W * 0.035))}px`, top: `${f1(labTop[i])}px` }))
+    const labTop = [wl + H * (land ? 0.075 : 0.05), tiers[1] - H * (land ? 0.01 : 0.004), tiers[2] + H * (land ? 0.05 : 0.045)]
+    const lx = Math.max(16, W * 0.035)
+    labs.forEach((l, i) => Object.assign(l.style, { left: `${f1(lx)}px`, top: `${f1(labTop[i])}px` }))
+    // wide: each line takes its name's subtitle place; phone: one caption place in the clear mist under the last name
+    lines.forEach((l, i) => Object.assign(l.style, land
+      ? { left: `${f1(lx)}px`, top: `${f1(labTop[i] + 24)}px`, width: '' }
+      : { left: `${f1(lx)}px`, top: `${f1(labTop[2] + H * 0.11)}px`, width: `${f1(W * 0.62)}px` }))
+    trail.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
+    trailTo()
     job?.cancel()
     job = sliced(paint(W, H, WH, wl, tiers, land, sx0, sx1), { sync: ctx.reduced || !first })
     first = false
@@ -388,6 +449,8 @@ export function layersScene(ctx: SceneCtx) {
       grad('t25l-silver', [[0, 's0', 0.95], [0.35, 's0', 0.35], [1, 's0', 0]], true),
       grad('t25l-ray', [[0, 's0', 0.62], [0.25, 's0', 0.3], [1, 's0', 0]], true),
       s('radialGradient', { id: 't25l-window' }, s('stop', { offset: 0, class: 't25l-w0' }), s('stop', { offset: 0.62, class: 't25l-w0', style: 'stop-opacity:.82' }), s('stop', { offset: 0.86, class: 't25l-w0', style: 'stop-opacity:.5' }), s('stop', { offset: 1, class: 't25l-w1' })),
+      s('radialGradient', { id: 't25l-ltg' }, s('stop', { offset: 0, class: 't25l-st-f0', style: 'stop-opacity:.7' }), s('stop', { offset: 1, class: 't25l-st-f0', style: 'stop-opacity:0' })),
+      s('radialGradient', { id: 't25l-dkg' }, s('stop', { offset: 0, class: 't25l-st-dim', style: 'stop-opacity:.45' }), s('stop', { offset: 1, class: 't25l-st-dim', style: 'stop-opacity:0' })),
       s('radialGradient', { id: 't25l-dim' }, s('stop', { offset: 0.45, class: 't25l-st-dim', style: 'stop-opacity:.5' }), s('stop', { offset: 1, class: 't25l-st-dim', style: 'stop-opacity:0' })),
       s('linearGradient', { id: 't25l-face', x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, style: 'stop-color:var(--rock-lo)' }), s('stop', { offset: 0.35, style: 'stop-color:var(--rock-mid)' }), s('stop', { offset: 0.9, style: 'stop-color:var(--rock-mid)' }), s('stop', { offset: 1, style: 'stop-color:var(--rock-hi)' })),
       s('linearGradient', { id: 't25l-top', x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, style: 'stop-color:var(--rock-mid)' }), s('stop', { offset: 0.35, style: 'stop-color:var(--rock-hi)' })),
@@ -444,18 +507,27 @@ export function layersScene(ctx: SceneCtx) {
 
     // shafts of moonlight slanting down from the window (light comes from the moon, upper right)
     // their feet are on the window's rim and inside it; they fan out a little as they fall
+    // each shaft is three nested beams (a soft edge without a blur filter), with dust hanging in it
+    let motes = ''
     const rays = Array.from({ length: 6 }, (_, i) => {
       const u = (i - 2.5) / 2.5, x = mx + u * wrx * 0.78 + (r() - 0.5) * wrx * 0.12, y = wy + Math.sqrt(1 - u * u * 0.6) * wry * 0.6
-      const w = wrx * (0.07 + r() * 0.1), len = H * (0.45 + r() * 0.4), dx = -len * (0.3 - u * 0.07)
-      return s('path', { d: `M${f1(x - w)} ${f1(y)}L${f1(x + w)} ${f1(y)}L${f1(x + w * 3 + dx)} ${f1(y + len)}L${f1(x - w * 1.6 + dx)} ${f1(y + len)}Z`, fill: 'url(#t25l-ray)', style: `opacity:${(0.4 + r() * 0.45).toFixed(2)}` })
+      const w = wrx * (0.07 + r() * 0.1), len = H * (0.45 + r() * 0.4), dx = -len * (0.3 - u * 0.07), o = 0.4 + r() * 0.45
+      for (let k = 0; k < 7; k++) {
+        const f = r() * 0.8, px = lerp(x, x + dx + w * 0.7, f) + (r() - 0.5) * w * (1 + f * 2)
+        motes += blob(px, y + len * f, 0.7 + r() * 1.2, 0.7 + r() * 1.2, 2700 + i * 9 + k, 0.2, 6)
+      }
+      return s('g', { style: `opacity:${o.toFixed(2)}` }, ...[1.9, 1.35, 0.8].map((k, j) => s('path', {
+        d: `M${f1(x - w * k)} ${f1(y)}L${f1(x + w * k)} ${f1(y)}L${f1(x + w * 3 * k + dx)} ${f1(y + len)}L${f1(x - w * 1.6 * k + dx)} ${f1(y + len)}Z`,
+        fill: 'url(#t25l-ray)', style: `opacity:${[0.22, 0.38, 0.6][j]}`,
+      })))
     })
-    layers.rays.replaceChildren(s('g', { class: 't25l-rays' }, ...rays))
+    layers.rays.replaceChildren(s('g', { class: 't25l-rays' }, ...rays), s('path', { class: 't25l-raydust', d: motes }))
     yield
 
     // the current: a silk ribbon of ink drifting across (drawn over two widths so it can slide), threads, leaves, dust
     // it rides low in its tier (clear water above for the label); narrower on a phone
     const bs = land ? 0.9 : 0.74
-    const cy = lerp(tiers[1], tiers[2], land ? 0.62 : 0.66), cb = (tiers[2] - tiers[1]) * bs
+    const cy = lerp(tiers[1], tiers[2], land ? 0.7 : 0.72), cb = (tiers[2] - tiers[1]) * bs
     const band = (dy: number, ph: number, amp = cb * 0.18): Pt[] => Array.from({ length: 65 }, (_, i) => {
       const x = -W + (3 * W * i) / 64
       return [x, cy + dy + Math.sin((x / W) * Math.PI * 2 + ph) * amp + Math.sin((x / W) * Math.PI * 6 + ph * 2) * cb * 0.03]
@@ -487,9 +559,29 @@ export function layersScene(ctx: SceneCtx) {
       s('path', { class: 't25l-thread', d: threads }),
       s('path', { class: 't25l-dust', d: dust }),
       ...leaves)
+    // the deep: three banks of mist, light and dark in turn, with the last weeds fading in and out of them (what the
+    // camera finds when it follows the heavy pebble down: never a floor)
+    // a bank of mist: a few soft clouds strung across the frame (radial washes, no hard edge)
+    const bank = (y: number, k: number, seed: number, cls: string) => {
+      const q = rng(seed)
+      return Array.from({ length: 5 }, (_, i) => s('ellipse', { class: `t25l-bank ${cls}`, cx: f1(W * (i / 4) + (q() - 0.5) * W * 0.12), cy: f1(y + (q() - 0.5) * H * 0.05), rx: f1(W * (0.22 + q() * 0.1)), ry: f1(H * k * (0.7 + q() * 0.5)), fill: `url(#t25l-${cls}g)` }))
+    }
+    const deepWeeds = (() => {
+      const q = rng(2552)
+      let d = ''
+      for (let i = 0; i < (land ? 8 : 5); i++) {
+        const x = W * (0.08 + (i / (land ? 8 : 5)) * 0.9 + (q() - 0.5) * 0.06), base = tiers[2] + H * (1.1 + q() * 0.3), hh = H * (0.28 + q() * 0.22)
+        const ph = q() * 6, amp = W * (0.006 + q() * 0.01)
+        d += stroke(Array.from({ length: 18 }, (_, j) => [x + Math.sin((j / 17) * 6 + ph) * amp * (0.4 + j / 17), base - hh * (j / 17)] as Pt), 5 + q() * 6, 0.3, 0.6, 0.12)
+      }
+      return d
+    })()
     layers.mid.replaceChildren(drift,
       // the mist that thickens with depth: there is no floor, only this
-      s('rect', { y: f1(tiers[2] - H * 0.05), width: f1(W), height: f1(WH - tiers[2] + H * 0.05), fill: 'url(#t25l-fog)' }))
+      s('rect', { y: f1(tiers[2] - H * 0.05), width: f1(W), height: f1(WH - tiers[2] + H * 0.05), fill: 'url(#t25l-fog)' }),
+      s('path', { class: 't25l-deepweed', d: deepWeeds, filter: 'url(#ink-wash)' }),
+      ...bank(tiers[2] + H * 0.62, 0.14, 2553, 'lt'), ...bank(tiers[2] + H * 0.88, 0.12, 2554, 'dk'),
+      ...bank(tiers[2] + H * 1.12, 0.16, 2555, 'lt'), ...bank(tiers[2] + H * 1.34, 0.1, 2556, 'dk'))
     yield
 
     // weeds and roots rising out of nothing (their feet fade), two depths

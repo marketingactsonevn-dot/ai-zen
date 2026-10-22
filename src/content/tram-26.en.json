@@ -23,6 +23,7 @@
       "art": "A moonlit night on a mossy mound: in the middle of a tray of raked sand stands a small faceless stone statue — an AI — on a mossy plinth. Behind it, a two-panel paper screen dusted with gold; in front, in an arc, four stone lanterns of different makes. Light one and the statue's shadow stretches across the sand and climbs the screen, a different shape for each lantern: a whole human figure, a faded figure as if looking back at itself, or only the shadow of a stone. Walk around it and the statue is still just stone.",
       "prompt": "Tap a stone lantern",
       "promptNext": "Light the {n} other lanterns — watch the shadow change",
+      "count": "Lit {n}/{total} lamps",
       "eyebrow": "{i}/{n} · {name} ({en})",
       "decode": "A person’s shadow: by this lantern, AI could be conscious · A stone’s shadow: it cannot",
       "hint": "Drag to walk around the statue. Keys 1 to 4 light each lantern.",
@@ -104,6 +105,7 @@
         "medium",
         "strong"
       ],
+      "count": "Tried {n}/{total} strengths",
       "ask": "Tap the egret to ask",
       "askAria": "Ask the model: do you notice any unusual thought?",
       "question": "“Do you notice any unusual thought?”",
@@ -143,20 +145,18 @@
     },
     "rule": {
       "label": "Milestones of a policy",
-      "art": "Looking down from high above at an iris marsh at night: a plank bridge zig-zags like lightning from the near bank into the mist. The moon’s reflection slides along the bridge with a paper figure walking beside it; at each bend a little stone lantern lights by a milestone: a scroll, a bamboo gate ajar, a door with a bar to close it, a stone tablet carved with the policy. The bridge ends in mist. Then, at the foot of the tablet, five paper slips with situations fall from the moon, waiting to be sorted into two bamboo baskets.",
-      "prompt": "Drag the moon’s reflection along the bridge, past each milestone",
+      "art": "Looking down from high above at an iris marsh at night, the water holding the whole sky and a broad glow round the moon’s reflection: a plank bridge zig-zags from the lower left up into the mist at the upper right. The moon’s reflection slides along the bridge with a paper figure walking beside it; at three bends, on a flat stone in the water, stand three milestones, each with a little stone lantern and its date carved beside it: a bamboo gate ajar (04/2025), a door with a bar to close it (08/2025), a stone tablet carved with the policy (10/2026). At today stands a boundary stone tied with a cord, then the bridge melts into the mist. What each milestone says appears on the open water at the lower right.",
+      "prompt": "Drag the moon’s reflection along the bridge to the first milestone",
       "sliderAria": "The moon in the marsh: drag it along the bridge past each milestone",
+      "promptNext": "Keep going along the bridge — {n} milestones to today",
+      "ticks": [
+        "04/2025",
+        "08/2025",
+        "10/2026",
+        "Today"
+      ],
       "tide": {
         "milestones": [
-          {
-            "date": "2024-11",
-            "label": "A call to take “AI welfare” seriously",
-            "fact": {
-              "text": "A group of philosophers and scientists (including David Chalmers) asked AI companies to start looking at whether AI can be harmed.",
-              "asOf": "2026-10-15",
-              "source": "long-sebo-2024"
-            }
-          },
           {
             "date": "2025-04",
             "label": "A “can AI be harmed?” research team",
@@ -206,6 +206,7 @@
       "sort": {
         "label": "Two bamboo baskets",
         "pill": "Drag the slip into a basket",
+        "count": "{n}/{total} slips",
         "prompt": "Is this something the new policy targets?",
         "yes": "Targeted",
         "no": "Doesn’t count",
@@ -260,9 +261,23 @@
     },
     "circle": {
       "label": "Should there be a policy like this?",
-      "art": "Lying under an open pavilion and looking straight up: the rafters fan out toward a closed smoke hole in the middle, four posts stand at the corners, and the question is written in a ring round the hole. Four paper lanterns hang at the roof's four corners, all alike. Light one and that corner of the roof warms while a paper strip hangs down with one person's view. Each strip says whether that person urges caution or stays sceptical. Light all four and the cover slides off the hole: the moon is right overhead.",
-      "prompt": "Light each paper lantern — hear each person’s reason",
+      "art": "Sitting under an open pavilion and looking up: the rafters fan out toward a closed smoke hole, and the question is written in a ring on the roof boards round it. Through the far beams lies the night outside: hills in mist, a low moon and its road on the pond. A bamboo balance beam hangs under the smoke hole, “urge caution” at one end, “stay sceptical” at the other. Four bamboo-ribbed paper lanterns hang under the side beams, unlit. Light one and a paper strip unrolls under it with one person’s reason, then the lantern is hung on the end that reason belongs to; the beam tips, and levels again at two and two. Light all four and the cover slides off the smoke hole.",
+      "prompt": "Tap a paper lantern — hear that person’s reason",
       "question": "Ban abusing an AI that may not feel anything — yes or no?",
+      "promptNext": "{n} left — each reason hangs on one end of the beam",
+      "ends": [
+        "Urge caution",
+        "Stay sceptical"
+      ],
+      "sides": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "lampAria": "Paper lantern {n}: hear the reason",
+      "lampHeard": "Paper lantern {n} — {who}",
+      "count": "Heard {n}/{total}",
       "perspectives": {
         "stones": [
           {

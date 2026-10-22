@@ -2,14 +2,15 @@ import { h, s } from '../../core/dom'
 import { blob, clamp, curve, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, pine, toro } from '../../ui/part2/paint'
 import { stepPath, type SlotGeo } from '../../ui/part2/steps'
+import { guide, type Drop, type Mark } from '../../ui/part2/guide'
 import type { StepPath } from '../../ui/part2/types'
 import type { SceneCtx } from '../types'
 import C from '../../content/tram-27.json'
-import { F, f1, P } from './ink27'
+import { F, f1, invite, nudge, P } from './ink27'
 
 const S = C.scenes.path
 const SCALE = [1, 0.88, 0.77, 0.68] // near steps big, far steps small
-const PILE_K = { land: [0.96, 1.04, 0.93, 1.02], tall: [0.86, 0.84, 1, 0.98] } // loose slabs: the nearer, the bigger
+const PILE_K = { land: [0.86, 1.08, 0.8, 1.02], tall: [0.78, 0.86, 0.98, 0.94] } // loose slabs: the nearer, the bigger
 
 /** Where the path, the house and the hut's doorway are (px in the scene), from the circle of the component's own sizes. */
 interface Geo { w: number; h: number; land: boolean; size: Pt; slots: Pt[]; pile: Pt[]; door: number; lintel: number; sill: number; house: Pt; hh: number; moon: Pt }
@@ -24,7 +25,8 @@ function geo(g: SlotGeo): Geo {
       : ([w * (0.56 + 0.07 * Math.sin(Math.PI * t * 1.4) - 0.03 * t), H * (0.53 - 0.31 * t)] as Pt)
   })
   // the loose slabs lie scattered on the boards at the threshold, nearer ones bigger (PILE_K)
-  const pile: Pt[] = (land ? [[0.31, 0.875], [0.5, 0.905], [0.675, 0.86], [0.86, 0.9]] : [[0.29, 0.735], [0.72, 0.765], [0.3, 0.9], [0.75, 0.915]])
+  // the loose slabs lie where they were dropped on the boards: at different depths and sizes, one nudging another
+  const pile: Pt[] = (land ? [[0.33, 0.835], [0.47, 0.925], [0.66, 0.845], [0.83, 0.915]] : [[0.27, 0.72], [0.66, 0.765], [0.38, 0.895], [0.78, 0.875]])
     .map(([x, y]) => [w * x, H * y] as Pt)
   return {
     w, h: H, land, size, slots, pile,
@@ -84,6 +86,12 @@ function house(g: Geo): SVGElement[] {
   ]
 }
 
+/** Where the small stone lantern of step i stands (foot x, y; its height). */
+function lampAt(g: Geo, i: number): [number, number, number] {
+  const [x, y] = g.slots[i], k = SCALE[i], { size } = g
+  return [x + (g.land ? size[0] * 0.62 * k : (i % 2 ? -1 : 1) * size[0] * 0.66 * k), y + size[1] * 0.35 * k, size[1] * 1.5 * k]
+}
+
 /** The near garden down the slope (in the component's own art layer): the hillside, a gravel bed under the path, pines, a small lantern beside every step. */
 function slope(g: Geo, lamps: SVGGElement[]): SVGElement[] {
   const { w, h: H, slots, size } = g
@@ -113,11 +121,14 @@ function slope(g: Geo, lamps: SVGGElement[]): SVGElement[] {
   }
   // the hollows waiting for the slabs, sized by distance: shallow dips lined with moss, shade at their back lip,
   // moonlight on their front lip, a ring of tufts round each
-  let hollows = '', mossy = '', lips = '', backs = '', ring = ''
+  let hollows = '', mossy = '', lips = '', backs = '', ring = '', pools = '', glints = ''
   slots.forEach(([x, y], i) => {
     const k = SCALE[i], rx = size[0] * 0.5 * k, ry = size[1] * 0.42 * k, cy = y + size[1] * 0.08 * k
     hollows += blob(x, cy, rx, ry, 2799 + i, 0.08, 20)
     mossy += blob(x + rx * 0.06, cy + ry * 0.12, rx * 0.86, ry * 0.7, 2803 + i, 0.12, 16)
+    // a little rain water left in each hollow, the moon in it
+    pools += blob(x + rx * 0.1, cy + ry * 0.1, rx * 0.5, ry * 0.34, 2810 + i, 0.15, 14)
+    glints += stroke([[x + rx * 0.02, cy + ry * 0.06], [x + rx * 0.24, cy + ry * 0.02]], 1.2 + k, 0.3, 0.3, 0.1)
     const arc = (a0: number, a1: number, s0: number) => Array.from({ length: 13 }, (_, j) => {
       const a = Math.PI * (a0 + (j / 12) * (a1 - a0))
       return [x + Math.cos(a) * rx * s0, cy + Math.sin(a) * ry * s0] as Pt
@@ -134,10 +145,8 @@ function slope(g: Geo, lamps: SVGGElement[]): SVGElement[] {
     pine(g.land ? w * 0.3 : w * 0.2, top + H * 0.1, H * (g.land ? 0.3 : 0.18), 2795, 1),
   ]
   // a small stone lantern beside each step, dark until its stone is set
-  slots.forEach(([x, y], i) => {
-    const k = SCALE[i]
-    const lx = x + (g.land ? size[0] * 0.62 * k : (i % 2 ? -1 : 1) * size[0] * 0.66 * k), ly = y + size[1] * 0.35 * k
-    const lh = size[1] * 1.5 * k
+  slots.forEach((_, i) => {
+    const [lx, ly, lh] = lampAt(g, i)
     lamps[i].replaceChildren(
       s('circle', { class: 't27p-lamphalo', cx: f1(lx), cy: f1(ly - lh * 0.62), r: f1(lh * 0.9), fill: 'url(#p2-lamp)' }),
       s('ellipse', { class: 't27p-lamppool', cx: f1(lx), cy: f1(ly + 2), rx: f1(lh * 0.9), ry: f1(lh * 0.16), fill: 'url(#p2-lamp)' }),
@@ -157,6 +166,8 @@ function slope(g: Geo, lamps: SVGGElement[]): SVGElement[] {
     s('path', { class: 't27p-hollow-moss', d: mossy, filter: 'url(#ink-wash)' }),
     s('path', { class: 't27p-hollow-back', d: backs, filter: 'url(#ink-wash)' }),
     s('path', { class: 't27p-hollow-lip', d: lips }),
+    s('path', { class: 't27p-pool', d: pools }),
+    s('path', { class: 't27p-glint', d: glints }),
     s('path', { class: 't27p-tuft', d: ring }),
     ...pines,
     ...lamps,
@@ -339,17 +350,51 @@ export const pathScene = {
     const hutL = h('div', { class: 't27p-L t27p-hut' }, hutSvg)
     let G: Geo | null = null
     let root: HTMLElement | null = null
+    // a wooden tag hung on each step's lantern names its moment, so the order can be read from the picture (audit v3 27-4)
+    const tags = S.marks.map((m, i) => h('p', { class: `t27p-tag t27p-tag${i}` }, m))
+    const placeTags = (g: Geo) => tags.forEach((el, i) => {
+      const [lx, ly, lh] = lampAt(g, i)
+      el.style.setProperty('--k', String(SCALE[i]))
+      // wide: low on the lantern's open side (right), level with its own hollow (not the next one up the slope) (the last one, by the house, on its path side); tall: hung on
+      // the post under the firebox, so it never leaves the frame or crosses the hut
+      const mode = g.land ? '' : 'on-post'
+      Object.assign(el.style, g.land
+        ? { left: `${f1(lx + lh * 0.2)}px`, top: `${f1(ly - lh * 0.4)}px` }
+        : { left: `${f1(lx)}px`, top: `${f1(ly - lh * 0.5)}px` })
+      el.classList.toggle('on-post', mode === 'on-post')
+    })
+    let next: Drop | null = null
+    const dots: Mark[] = []
+    let gd: ReturnType<typeof guide> | null = null
+    let placed = 0
     const step = (k: number) => {
       root?.style.setProperty('--p', String((k + 1) / 4))
       lamps[k].classList.add('on')
+      tags[k].classList.add('on')
+      placed = k + 1
+      next?.hit()
+      next = null
+      if (placed < 4) {
+        ctx.prompt(S.prompts[placed]) // H5: the next step's moment
+        const slot = root?.querySelectorAll<HTMLElement>('.p2s-slot')[placed]
+        const g = G as Geo | null
+        if (slot && gd && g) next = gd.drop(slot, { w: g.size[0] * SCALE[placed] * 1.1, h: g.size[1] * SCALE[placed] * 0.95 })
+      }
     }
     const def = stepPath(S.steps as StepPath, {
-      label: S.label, prompt: S.prompt, insight: F(S.insight),
+      label: S.label, prompt: S.prompts[0], insight: F(S.insight),
       slots: (g) => (G = geo(g)).slots,
       pile: (g) => (G ?? geo(g)).pile,
       piece: (i, g) => slab(i, g),
+      onWrong: (_step, slot) => {
+        // that step's lantern shows its moment again
+        const tag = tags[slot]
+        if (tag && !ctx.reduced) tag.animate([{ scale: '1' }, { scale: '1.18' }, { scale: '1' }], { duration: 700, easing: 'ease-out' })
+        return S.steps.steps[slot]?.why || S.wrong
+      },
       onPlace: (k) => {
         step(k)
+        root?.querySelectorAll<HTMLElement>('.p2s-stone.placed .p2g-dot').forEach((d) => d.remove())
         // a placed slab is drawn (not boxed) at its step's distance: its art and words shrink, its button stays put
         root?.querySelectorAll<HTMLElement>('.p2s-stone.placed').forEach((el) => el.style.setProperty('--k', String(SCALE[+(el.querySelector('.p2s-key')?.textContent ?? 1) - 1] ?? 1)))
       },
@@ -363,13 +408,19 @@ export const pathScene = {
         houseSvg.replaceChildren(...house(g))
         hutSvg.replaceChildren(...hut(g))
         houseL.style.transformOrigin = `${f1(g.house[0])}px ${f1(g.house[1])}px`
+        placeTags(g)
+        // H3: the next hollow breathes (sized to its distance); laid out here, once the steps have their places
+        const slotEl = root.querySelectorAll<HTMLElement>('.p2s-slot')[placed]
+        if (placed < 4 && gd && slotEl) {
+          next?.done()
+          next = gd.drop(slotEl, { w: g.size[0] * SCALE[placed] * 1.1, h: g.size[1] * SCALE[placed] * 0.95 })
+        }
         // loose slabs: nearer ones a little bigger (their key is their pile place until they are set)
         root.querySelectorAll<HTMLElement>('.p2s-stone:not(.placed)').forEach((el) => el.style.setProperty('--k', String((g.land ? PILE_K.land : PILE_K.tall)[+(el.querySelector('.p2s-key')?.textContent ?? 1) - 1] ?? 1)))
-        // the take-away: a paper card under the veranda lamp (right, below the house; on a phone across the foot), scrolling inside
+        // the take-away: a sheet of paper pasted on the house's paper door (right-hand panels), opened only when touched
         const sheet = root.querySelector<HTMLElement>('.p2s-sheet')
-        if (sheet) Object.assign(sheet.style, g.land
-          ? { left: 'auto', right: `${f1(g.w * 0.035)}px`, top: `${f1(g.h * 0.44)}px`, bottom: 'auto', width: `${f1(Math.min(400, g.w * 0.34))}px`, maxHeight: `${f1(g.h * 0.54)}px` }
-          : { left: '6px', right: '6px', top: `${f1(g.h * 0.5)}px`, bottom: 'auto', width: 'auto', maxHeight: `${f1(g.h * 0.49)}px` })
+        const hw = g.hh * 1.8, wall = g.hh * 0.5
+        if (sheet) Object.assign(sheet.style, { left: `${f1(g.house[0] + hw * 0.18)}px`, right: 'auto', top: `${f1(g.house[1] - wall * 0.9)}px`, bottom: 'auto', width: '1px', maxHeight: 'none' })
         // the hint line sits between the path and the stones at the sill
         const note = root.querySelector<HTMLElement>('.p2s-note')
         if (note) Object.assign(note.style, g.land ? { top: `${f1(g.h * 0.71)}px`, left: `${f1(g.door + 12)}px`, width: `${f1(g.w - g.door - 24)}px`, textAlign: 'center' } : { top: `${f1(g.h * 0.585)}px`, left: '4px', width: `${f1(g.w - 8)}px`, textAlign: 'center' })
@@ -381,10 +432,21 @@ export const pathScene = {
     if (root) {
       root.classList.add('t27p')
       if (ctx.quality === 'low') root.classList.add('is-calm')
-      // far + house behind the component's art, the hut in front of the path but under the stones
+      // far + house behind the component's art; the lantern tags, then the hut in front of the path (it hides what it
+      // stands before until it slides away) but under the stones
       root.prepend(farL, houseL)
-      root.querySelector('.p2s-line')?.after(deckL, hutL)
+      root.querySelector('.p2s-line')?.after(...tags, deckL, hutL)
+      // H1 a dot on every loose slab, H3 the next hollow breathing
+      gd = guide(ctx)
+      root.querySelectorAll<HTMLElement>('.p2s-stone').forEach((el) => dots.push(gd!.dot(el, { dir: [0.4, -1] })))
     }
+    // H7: standing still, the slab that belongs on the next step shifts toward it
+    invite(ctx, () => {
+      if (placed >= 4 || !root) return
+      const want = S.steps.steps[placed].label
+      const el = [...root.querySelectorAll<HTMLElement>('.p2s-stone:not(.placed)')].find((s2) => s2.querySelector('.p2s-label')?.textContent === want)
+      if (el) nudge(ctx, el, 0, -10)
+    })
     return off
   },
 }
