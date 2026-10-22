@@ -26,7 +26,7 @@ function fade(css: string, a: number) {
 }
 
 /** One stone on the flat: world depth z (or on the mountain's flank: up > 0), lateral offset, size, kind, the stop that raises it. */
-interface Stone { z: number; dx: number; up: number; w: number; hh: number; seed: number; stop: number; kind: 'stone' | 'fence' | 'today'; at: number; sx: number; sy: number; sk: number; big?: boolean }
+interface Stone { z: number; dx: number; up: number; w: number; hh: number; seed: number; stop: number; kind: 'stone' | 'fence' | 'today'; at: number; sx: number; sy: number; sk: number }
 
 /**
  * The stones of the tide, from near to far: ChatGPT alone in the lower-left third (the way in), GPT-4 further out,
@@ -95,15 +95,26 @@ export function tideScene(ctx: SceneCtx) {
   const gd = guide(ctx)
   const moonDot = gd.dot(moonEl, { dir: [1, -0.3] })
   const way = gd.track(() => samples.length ? samples.filter((_, k) => k % 4 === 0) : [[0, 0], [1, 0]], { labels: S.ticks })
+  const tickLabels = way.el.querySelectorAll('.p2g-tick-label')
+  // H7: idle 6 s → the moon slides a few px along its arc and back (no loop: one WAAPI run per invite)
+  const invite = () => {
+    if (ctx.reduced || low || dragging || at >= n) return
+    const [x0, y0] = arc(tt), [x1, y1] = arc(Math.min(1, tt + 8 / arcLen))
+    moonEl.animate([{ translate: '0 0' }, { translate: `${f1(x1 - x0)}px ${f1(y1 - y0)}px`, offset: 0.4 }, { translate: '0 0' }], { duration: 900, easing: 'ease-in-out' })
+  }
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', invite))
 
   let W = 0, H = 0, dpr = 1
   let tallF = false
+  let peakK = 1, peakK2 = 1
   let hy = 0, f = 1, hc = 1, pa = 0, pb = 0, cx = 0 // the ground plane's projection
   let tt = 0 // the moon: 0 first launch … 1 today
   let at = -1
   let reached = false
   let arc: (t: number) => [number, number] = () => [0, 0]
   let samples: [number, number][] = []
+  let arcLen = 1
   let bg: HTMLCanvasElement | null = null
   let waterCv: HTMLCanvasElement | null = null, wetCv: HTMLCanvasElement | null = null, roadCv: HTMLCanvasElement | null = null, veilCv: HTMLCanvasElement | null = null
   let moonX = 0, moonY = 0
@@ -151,9 +162,10 @@ export function tideScene(ctx: SceneCtx) {
     const hit = sprites.get(key)
     if (hit) return hit
     const r = rng(st.seed)
-    const SW = st.big ? 380 : 150
+    // baked at the size it is drawn (crisp on a phone's near stone, small for the far ones)
+    const SW = clamp(Math.ceil(((st.w * (f / st.z) * (st.up ? 1.7 : 1)) / 0.78) * dpr), 96, 420)
     const bodyW = SW * 0.78
-    const bodyH = st.kind === 'today' ? SW * 0.62 : bodyW * (st.hh / st.w) * (st.big ? 0.82 : 0.95)
+    const bodyH = st.kind === 'today' ? SW * 0.62 : bodyW * (st.hh / st.w) * 0.95
     const SH = Math.ceil(bodyH * 1.25 + SW * 0.12)
     const base = bodyH * 1.1
     const c = h('canvas')
@@ -216,7 +228,7 @@ export function tideScene(ctx: SceneCtx) {
     }
     g.globalAlpha = col.dark ? 0.55 : 0.7
     g.fillStyle = col.moss
-    for (let k = 0; k < (st.big ? 9 : 4); k++) {
+    for (let k = 0; k < 4; k++) {
       const i = Math.floor(outline.length * (0.3 + r() * 0.45))
       const [x, y] = outline[i]
       g.beginPath()
@@ -225,7 +237,7 @@ export function tideScene(ctx: SceneCtx) {
     }
     g.globalAlpha = col.dark ? 0.35 : 0.25
     g.fillStyle = col.dark ? '#000' : col.wash
-    for (let k = 0; k < (st.big ? 10 : 4); k++) {
+    for (let k = 0; k < 4; k++) {
       const x = bx + (r() - 0.5) * bodyW * 0.85
       const len = bodyH * (0.12 + r() * 0.25)
       g.fillRect(x, base - len, SW * (0.004 + r() * 0.006), len)
@@ -285,6 +297,14 @@ export function tideScene(ctx: SceneCtx) {
       g.stroke()
       g.globalAlpha = 1
     }
+    // depth falloff: the farther the stone, the more of the night's mist lies over it (baked once, nothing per frame)
+    const fog = st.up ? 0.5 : clamp((st.z - 4) / 22, 0, 1) * 0.55
+    if (fog > 0) {
+      g.globalCompositeOperation = 'source-atop'
+      g.fillStyle = fade(col.dark ? col.mist : col.paper, fog * (col.dark ? 0.55 : 1))
+      g.fillRect(0, 0, SW, SH)
+      g.globalCompositeOperation = 'source-over'
+    }
     // the silhouette laid down as a ground shadow: base along the top edge, the crown at the bottom, fading away
     const sc = h('canvas')
     const SSH = Math.ceil(bodyH)
@@ -335,16 +355,16 @@ export function tideScene(ctx: SceneCtx) {
     yield
     // the mountain the flat runs to: a tall ink peak, its feet in the water, cloud on its crown
     const [mx, my] = proj(pathX(26), 26)
-    const mw = Math.min(W * 0.62, H * 0.9), mh = Math.min(H * 0.42, my - H * 0.04)
-    g.beginPath()
-    g.moveTo(mx - mw * 0.6, hy + 2)
+    const mw = tallF ? W * 0.56 : Math.min(W * 0.62, H * 0.9), mh = Math.min(H * 0.42, my - H * 0.04) * peakK
+    const ridge: [number, number][] = []
     for (let i = 0; i <= 60; i++) {
       const u = i / 60
-      const x = mx - mw * 0.6 + mw * 1.2 * u
       const d = Math.abs(u - 0.47) / 0.53
-      const y = hy - mh * Math.pow(1 - Math.min(1, d), 1.6) * (1 + 0.08 * Math.sin(u * 37 + 1) + 0.05 * Math.sin(u * 91))
-      g.lineTo(x, y)
+      ridge.push([mx - mw * 0.6 + mw * 1.2 * u, hy - mh * Math.pow(1 - Math.min(1, d), 1.6) * (1 + 0.08 * Math.sin(u * 37 + 1) + 0.05 * Math.sin(u * 91))])
     }
+    g.beginPath()
+    g.moveTo(mx - mw * 0.6, hy + 2)
+    for (const [x, y] of ridge) g.lineTo(x, y)
     g.lineTo(mx + mw * 0.6, hy + 2)
     g.closePath()
     const mg = g.createLinearGradient(0, hy - mh, 0, hy)
@@ -387,6 +407,7 @@ export function tideScene(ctx: SceneCtx) {
     cloud(g, W * 0.5, hy - H * 0.01, W * 0.7, H * 0.035, ca * 0.8)
     yield
     // the dry flat: silver sand with a grain, darker toward the eye
+    const near = stones.filter((st) => st.stop <= 2) // the sparse stones near the eye get raked rings
     const silver = col.dark ? fade(col.mist, 0.4) : col.sand
     const sg = g.createLinearGradient(0, hy, 0, H)
     sg.addColorStop(0, col.dark ? fade(col.mist, 0.3) : col.mist)
@@ -398,18 +419,42 @@ export function tideScene(ctx: SceneCtx) {
     g.strokeStyle = col.dark ? col.mist : col.wash
     for (let k = -26; k <= 26; k++) {
       const c0 = k * 0.26 + (r() - 0.5) * 0.05
-      g.globalAlpha = col.dark ? 0.1 : 0.1
-      g.beginPath()
-      let first = true
-      for (let z = 1.3; z <= 27; z *= 1.08) {
-        const X = pathX(z) + c0 + Math.sin(z * 0.55 + k) * 0.05 * Math.min(1, z / 6)
-        const [x, y, kk] = proj(X, z)
-        g.lineWidth = Math.max(0.4, kk * 0.006)
-        if (first) g.moveTo(x, y), (first = false)
-        else g.lineTo(x, y)
+      for (const [dy, a, c] of [[0, col.dark ? 0.22 : 0.16, col.dark ? '#000' : col.wash], [-1.2, col.dark ? 0.12 : 0.5, col.dark ? col.mist : col.paper]] as const) {
+        g.globalAlpha = a
+        g.strokeStyle = c
+        g.beginPath()
+        let first = true
+        for (let z = 1.3; z <= 27; z *= 1.08) {
+          // the furrows swing round the stones of the near flat, as a rake goes round a rock
+          let X = pathX(z) + c0 + Math.sin(z * 0.55 + k) * 0.05 * Math.min(1, z / 6)
+          for (const st of near) {
+            const dz = (z - st.z) / (st.w * 1.6), dxs = X - (pathX(st.z) + st.dx)
+            if (Math.abs(dz) < 1 && Math.abs(dxs) < st.w * 1.6) X += Math.sign(dxs || 1) * (st.w * 1.6 - Math.abs(dxs)) * Math.cos(dz * Math.PI / 2) ** 2
+          }
+          const [x, y, kk] = proj(X, z)
+          g.lineWidth = Math.max(0.4, kk * 0.006)
+          if (first) g.moveTo(x, y + dy), (first = false)
+          else g.lineTo(x, y + dy)
+        }
+        g.stroke()
       }
-      g.stroke()
       if (k % 6 === 0) yield
+    }
+    // rings raked round each near stone, foreshortened by depth (ry / rx = eye height / depth)
+    for (const st of near) {
+      const [x, y, kk] = proj(pathX(st.z) + st.dx, st.z)
+      const sq = hc / st.z
+      for (let j = 0; j < 3; j++) {
+        const rx = (st.w * 0.62 + j * st.w * 0.3) * kk
+        for (const [dy, a, c] of [[0, col.dark ? 0.24 : 0.18, col.dark ? '#000' : col.wash], [-1, col.dark ? 0.12 : 0.5, col.dark ? col.mist : col.paper]] as const) {
+          g.globalAlpha = a
+          g.strokeStyle = c
+          g.lineWidth = Math.max(0.5, kk * 0.006)
+          g.beginPath()
+          g.ellipse(x, y + dy + rx * sq * 0.15, rx, rx * sq, 0, 0, Math.PI * 2)
+          g.stroke()
+        }
+      }
     }
     g.globalAlpha = 1
     bg = c
@@ -441,6 +486,32 @@ export function tideScene(ctx: SceneCtx) {
     wg.globalAlpha = 1
     wg.fillStyle = refl
     wg.fillRect(0, hy - 1, W, H - hy + 1)
+    wg.beginPath()
+    wg.moveTo(ridge[0][0], hy)
+    for (const [x, y] of ridge) wg.lineTo(x, hy + (hy - y) * 0.8)
+    wg.lineTo(ridge[ridge.length - 1][0], hy)
+    wg.closePath()
+    // the foot dissolves in mist above the line, so its mirror does too; the summit's mirror lies deepest, then the ripples take it
+    const mr = wg.createLinearGradient(0, hy, 0, hy + mh * 0.8)
+    mr.addColorStop(0, fade(col.dark ? '#000' : col.wash, 0))
+    mr.addColorStop(0.5, fade(col.dark ? '#000' : col.wash, col.dark ? 0.42 : 0.26))
+    mr.addColorStop(1, fade(col.dark ? '#000' : col.wash, col.dark ? 0.2 : 0.1))
+    wg.fillStyle = mr
+    wg.fill()
+    // the summit's cloud, mirrored low and smeared
+    for (let i = 0; i < 4; i++) cloud(wg, mx + (r() - 0.5) * mw * 0.5, hy + mh * (0.62 + i * 0.05), mw * (0.15 + r() * 0.1), mh * 0.025, col.dark ? 0.16 : 0.3)
+    // ripples: thin bands of bare water across the mirror
+    wg.fillStyle = col.water
+    for (let i = 0; i < 26; i++) {
+      const y = hy + 3 + Math.pow(i / 26, 1.6) * (H - hy) * 0.7
+      wg.globalAlpha = col.dark ? 0.4 : 0.3
+      for (let x = -20 + r() * 60; x < W; x += 40 + r() * 160) {
+        const len = 30 + r() * 220
+        wg.fillRect(x, y, len, 0.6 + (i / 26) * 2)
+        x += len
+      }
+    }
+    wg.globalAlpha = 1
     waterCv = wc
     // wet sand: dark and glossy just behind the water's edge, fading toward the eye
     const wetH = (H - hy) * 0.3
@@ -451,6 +522,11 @@ export function tideScene(ctx: SceneCtx) {
     wet.addColorStop(1, fade(col.dark ? '#000' : col.water, 0))
     tg.fillStyle = wet
     tg.fillRect(0, 0, W, wetH)
+    const sheen = tg.createLinearGradient(0, 0, 0, wetH * 0.7)
+    sheen.addColorStop(0, fade(col.dark ? col.mist : col.paper, col.dark ? 0.16 : 0.4))
+    sheen.addColorStop(1, fade(col.dark ? col.mist : col.paper, 0))
+    tg.fillStyle = sheen
+    tg.fillRect(0, 0, W, wetH * 0.7)
     wetCv = tc
     // the moon's broken road: short dry strokes, longer toward the eye
     const rw = Math.min(W * 0.5, 360)
@@ -532,15 +608,15 @@ export function tideScene(ctx: SceneCtx) {
     if (wetCv) g.drawImage(wetCv, 0, wy, W, wetH)
     if (roadCv && wy < H) {
       const rw = roadCv.width / dpr
-      g.globalAlpha = 0.45
-      g.drawImage(roadCv, 0, 0, roadCv.width, Math.min(roadCv.height, wetH * 0.6 * dpr), mxs - rw / 2, wy, rw, wetH * 0.6)
+      g.globalAlpha = 0.7
+      g.drawImage(roadCv, 0, 0, roadCv.width, Math.min(roadCv.height, wetH * 0.8 * dpr), mxs - rw / 2, wy, rw, wetH * 0.8)
       g.globalAlpha = 1
     }
     for (const i of order) {
       const st = stones[i]
       if (st.up || st.at < 0 || st.sy < wy || st.sy > wy + wetH * 0.8) continue
       const sp = sprite(st)
-      const w = (st.w * st.sk * (st.big && tallF ? 0.58 : 1)) / 0.78
+      const w = (st.w * st.sk) / 0.78
       const sh = w * (sp.sh / sp.sw)
       g.save()
       g.globalAlpha = 0.22 * (1 - (st.sy - wy) / (wetH * 0.8))
@@ -586,9 +662,9 @@ export function tideScene(ctx: SceneCtx) {
         if (!up && !low) rings.push({ x: st.sx, y: st.sy, k: st.sk, t0: now })
       }
       const sp = sprite(st)
-      const k = st.sk * (up ? 1.7 : st.big && tallF ? 0.58 : 1) // the flank's steps drawn a little larger: each a stone, not a dot
+      const k = st.sk * (up ? 1.7 : 1) // the flank's steps drawn a little larger: each a stone, not a dot
       const x = st.sx
-      const y = st.sy - st.up * st.sk
+      const y = st.sy - st.up * st.sk * peakK2
       const w = (st.w * k) / 0.78
       const sh = w * (sp.sh / sp.sw)
       const rise = low || ctx.reduced ? 1 : clamp((now - st.at) / 0.7, 0, 1)
@@ -642,6 +718,7 @@ export function tideScene(ctx: SceneCtx) {
     at = i
     moonEl.setAttribute('aria-valuenow', String(i))
     moonEl.setAttribute('aria-valuetext', valueText(i))
+    tickLabels.forEach((l, k) => l.classList.toggle('t19t-under-moon', k === i))
     const m = ms[i]
     read.replaceChildren(h('p', { class: 'p2-eyebrow' }, `${viDate(m.date)} · ${m.label}`), ctx.fact(m.fact, 'p', 't19t-fact'))
     if (!read.hasAttribute('aria-live')) read.setAttribute('aria-live', 'polite')
@@ -659,6 +736,8 @@ export function tideScene(ctx: SceneCtx) {
         reached = true
         moonDot.done()
         ctx.insight(S.insight as Fact, S.detail)
+        // step 2 (desk): the prediction waits in the summit's cloud; on the phone the insight takes the prompt's place
+        if (!tallF) ctx.prompt(S.promptToday)
       }
     }
   }
@@ -717,26 +796,29 @@ export function tideScene(ctx: SceneCtx) {
   function placeLabels() {
     const a = stones.find((st) => st.stop === 1)!
     const [ax, ay, ak] = proj(pathX(a.z) + a.dx, a.z)
-    cmpA.style.transform = `translate(${f1(tallF ? ax - ak * 0.1 : ax + ak * 0.5)}px, ${f1(ay + ak * 0.4)}px)`
+    // beside the GPT-4 stone, above its base line (its shadow lies below it)
+    cmpA.style.transform = tallF ? `translate(${f1(ax - ak * 0.45)}px, ${f1(ay - ak * 0.1)}px)` : `translate(${f1(ax + ak * 0.32)}px, ${f1(ay - ak * 0.06)}px)`
     const foot = stones.filter((st) => st.stop === 3 && !st.up)
     const z = foot.reduce((s0, st) => s0 + st.z, 0) / foot.length
     const [bx, by, bk] = proj(pathX(z), z)
-    cmpB.style.transform = tallF ? `translate(${f1(Math.min(W - 8, bx + bk * 2.6))}px, ${f1(by + bk * 1.5)}px)` : `translate(${f1(bx - bk * 0.4)}px, ${f1(by + bk * 1.3)}px)`
+    // on bare sand right of the foot's cluster: desk under the reading, phone at the frame's right edge
+    cmpB.style.transform = tallF ? `translate(${f1(W - 10)}px, ${f1(by - bk * 1.1)}px)` : `translate(${f1(Math.min(bx + W * 0.07, W * 0.7))}px, ${f1(hy + H * 0.25)}px)`
     if (!tallF && at >= 0) {
-      // the reading sits beside the stop's stone (the foot's middle one for the thirty): right of the near ones; for the far
-      // ones, left of the chain on the water just above the horizon, under the moon's arc
+      // the reading sits beside the stop's stone (the foot's middle one for the thirty): right of the near ones, under the
+      // shoreline; for the far ones, on the bare sand right of the chain, below the horizon (the insight comes under it)
       const of = stones.filter((st) => st.stop === at)
       const st = of[Math.floor(of.length / 2)]
-      const x = st.sx, y = st.sy - st.up * st.sk, k = st.sk
+      const x = st.sx, y = st.sy - st.up * st.sk * peakK2, k = st.sk
       const near = x < W * 0.5
-      words.classList.toggle('flip', !near)
-      words.style.transform = near ? `translate(${f1(x + k * 0.5)}px, ${f1(Math.max(y - k * 0.25, hy + (hc * f) / waterZ(tt) + 10))}px)` : `translate(${f1(x - W * 0.05)}px, ${f1(hy - H * 0.02)}px)`
+      words.classList.toggle('far', !near)
+      words.style.transform = near ? `translate(${f1(x + k * 0.5)}px, ${f1(Math.max(y - k * 0.25, hy + (hc * f) / waterZ(tt) + 10))}px)` : `translate(${f1(Math.min(x + W * 0.07, W * 0.7))}px, ${f1(Math.max(y, hy + H * 0.1))}px)`
     }
-    const [mx] = proj(pathX(26), 26)
-    // the prediction: desk on the mountain's right shoulder, clear of the arc and its ticks
+    const [mx, my] = proj(pathX(26), 26)
+    // the prediction: desk in the summit's cloud (the arc now sets left of it); phone on the bare sand right of the chain
+    const mh = Math.min(H * 0.42, my - H * 0.04) * peakK
     fore.style.transform = W / H < 1
-      ? `translate(${f1(W - 12)}px, ${f1(hy + (H - hy) * 0.36)}px)` // phone: on the empty sand right of the chain, clear of words and arc
-      : `translate(${f1(mx + Math.min(W * 0.62, H * 0.9) * 0.3)}px, ${f1(hy - H * 0.05)}px)`
+      ? `translate(${f1(W - 12)}px, ${f1(hy + (H - hy) * 0.47)}px)`
+      : `translate(${f1(mx + W * 0.04)}px, ${f1(hy - mh * 0.55)}px)`
   }
 
   let job: ReturnType<typeof sliced> | null = null
@@ -747,6 +829,10 @@ export function tideScene(ctx: SceneCtx) {
     root.style.height = `${f1(H)}px`
     const tall = W / H < 1
     tallF = tall
+    // phone: the words fill the top band, so the moon's arc runs just under them and the mountain is lower, its summit
+    // under the arc (the moon never passes in front of it); the flank's steps climb in proportion
+    peakK = tall ? 0.38 : 1
+    peakK2 = tall ? 0.6 : 1
     root.classList.toggle('tall', tall)
     dpr = Math.min(devicePixelRatio || 1, low ? 1 : 1.5)
     cv.width = Math.round(W * dpr)
@@ -765,7 +851,7 @@ export function tideScene(ctx: SceneCtx) {
     pa = A0 - pb * zc
     // the moon's arc across the sky, rising on the left and setting over the mountain (tall: low, under the words),
     // walked by arc length so the six ticks of the groove sit on the six stops
-    const ax0 = W * (tall ? 0.14 : 0.42), ax1 = W * (tall ? 0.86 : 0.9), ay = H * (tall ? 0.44 : 0.28), lift = H * (tall ? 0.11 : 0.2)
+    const ax0 = W * 0.14, ax1 = W * (tall ? 0.86 : 0.54), ay = H * (tall ? 0.35 : 0.3), lift = H * (tall ? 0.06 : 0.19)
     const raw = (t: number): [number, number] => [ax0 + (ax1 - ax0) * t, ay - Math.sin(Math.PI * (0.15 + 0.7 * t)) * lift]
     const dense = Array.from({ length: 97 }, (_, k) => raw(k / 96))
     const cum = [0]
@@ -778,8 +864,9 @@ export function tideScene(ctx: SceneCtx) {
       return [dense[k - 1][0] + (dense[k][0] - dense[k - 1][0]) * u, dense[k - 1][1] + (dense[k][1] - dense[k - 1][1]) * u]
     }
     samples = Array.from({ length: 97 }, (_, k) => arc(k / 96))
+    arcLen = cum[96]
     way.at([0, 0]) // re-read the groove along the new arc
-    for (const st of stones) [st.sx, st.sy, st.sk] = proj(pathX(st.z) + st.dx * (tall && st.big ? 0.4 : 1), st.z)
+    for (const st of stones) [st.sx, st.sy, st.sk] = proj(pathX(st.z) + st.dx * (tall && st.up ? 0.35 : 1), st.z)
     readPal()
     sprites.clear()
     job?.cancel()

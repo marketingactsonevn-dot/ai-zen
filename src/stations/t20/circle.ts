@@ -9,17 +9,20 @@ import type { PondGeo } from '../../ui/part2/perspectives'
 import { perspectiveCircle } from '../../ui/part2/perspectives'
 import { clamp, rng, type Pt } from '../../ui/part2/ink'
 import { mist, moon } from '../../ui/part2/paint'
+import { guide } from '../../ui/part2/guide'
 import { brush, canvas, col, dprOf, fit, glow, mix, mossDots, paintRock, palette, poly, range, sprite, type Pal, type RGB } from './ink2d'
 
 const S = raw.scenes.circle
 const P = S.perspectives as Perspectives
 const TAU = Math.PI * 2
-// the frame square on and wider than deep: two chimes hang from the front beam (near, inside), two from the back beam
-// (far, outside, on longer cords so they show under the front beam) — four apart, left to right in key order
-const FX = 1.6, FZ = 1.4 // the frame's half width, half depth (× Rw): its posts stand clear of the curb
-const HX = [-0.95, -0.3, 0.3, 0.95] // chime k along its beam (× FX)
-const FAR = [true, false, false, true]
+// the frame square on and wider than deep: two chimes hang from the front beam (near, outside, bigger), two from the back
+// beam (far, inside, on longer cords so they show under the front beam) — four apart, left to right in key order
+const FZ = 1.4 // the frame's half depth (× Rw); its half width FX is set per layout (wide 2, tall 1.45)
+const SIDE = [-1, -1, 1, 1], FAR = [false, true, true, false]
+const HR = 0.38, OH = 0.08, OV = 0.12 // the roof: ridge above the beams, eave past the front beam, verge past the posts (× Rw)
+const SHX = -0.9, SHZ = 0.3 // a shadow's run per unit of height: the moon is up right, a little behind — shadows fall left, over half the well
 const TRAIN = 4.2 // seconds a ripple train runs before it holds still
+const KEEP = 16 // seconds a struck chime keeps swaying gently before it hangs still
 type V3 = [number, number, number]
 
 /**
@@ -38,7 +41,8 @@ export const circleScene: SceneDef = {
     const low = ctx.quality === 'low'
     const still = low || ctx.reduced
     // ── geometry (stage px), set in place() each layout ──
-    let sw = 0, sh = 0, Rw = 0, F = 0, cx0 = 0, cy0 = 0, wide = true
+    let sw = 0, sh = 0, Rw = 0, F = 0, cx0 = 0, cy0 = 0, wide = true, FX = 2
+    let NEAR_X = 0.65, FAR_X = 0.27 // where a chime hangs along its beam (× FX); tall: the far pair wider apart (touch boxes ≥ 56 px)
     let C: V3 = [0, 0, 0], fwd: V3 = [0, 0, 1], up: V3 = [0, 1, 0]
     let SX = 0, SY = 0, SZ = 1
     const proj = (x: number, y: number, z: number) => {
@@ -62,7 +66,7 @@ export const circleScene: SceneDef = {
     /** beam k's top (× Rw): two beams lie on top, the other two lap under them through the posts */
     const beamTop = (k: number) => (k % 2 ? HP - BH * 1.05 : HP)
     // each chime hangs under the front (near) or back (far) beam
-    const hang = (k: number): V3 => [HX[k] * FX * Rw, Rw * (HP - BH), (FAR[k] ? -FZ : FZ) * Rw]
+    const hang = (k: number): V3 => [SIDE[k] * (FAR[k] ? FAR_X : NEAR_X) * FX * Rw, Rw * (HP - BH), (FAR[k] ? -FZ : FZ) * Rw]
     let rootEl: HTMLElement | null = null
     const rootOf = () => (rootEl ??= ctx.art.querySelector<HTMLElement>('.p2c')) // the component's root (it lays out before mount returns)
     function setGeo(w: number, hh: number) {
@@ -72,6 +76,9 @@ export const circleScene: SceneDef = {
       sw = w
       sh = hh
       Rw = wide ? Math.min(w * 0.17, hh * 0.19) : Math.min(w * 0.13, hh * 0.15)
+      FX = wide ? 2 : 1.6
+      NEAR_X = wide ? 0.65 : 0.68
+      FAR_X = wide ? 0.27 : 0.38
       C = [0, Rw * 3.1, Rw * 5.6] // a little above the beams: we see their tops and joints
       const T = [0, Rw * 1.05, 0]
       const d = [T[0] - C[0], T[1] - C[1], T[2] - C[2]]
@@ -79,14 +86,14 @@ export const circleScene: SceneDef = {
       fwd = [d[0] / L, d[1] / L, d[2] / L]
       up = [0, -fwd[2], fwd[1]] // right (1, 0, 0) × forward
       // the well and its frame are the hero: ~65% of the frame's height on wide screens, 90% of the width on tall ones
-      F = wide ? hh * 1.5 : Math.min(w * 1.1, hh * 1.2)
+      F = wide ? hh * 1.22 : Math.min(w * 1.04, hh * 0.95)
       cx0 = w * 0.5
-      cy0 = hh * (wide ? 0.66 : 0.56)
+      cy0 = hh * (wide ? 0.52 : 0.65) // (wide: the count and the words fit under the well, clear of the insight)
     }
     /** the stage's height: the component's on wide screens; on tall ones most of the art (the strip hangs inside it) */
     const stageH = (g: PondGeo) => {
       const r = rootOf()
-      return !r || r.classList.contains('wide') ? g.h : Math.min(parseFloat(r.style.height) * 0.86, g.w * 1.5)
+      return !r || r.classList.contains('wide') ? g.h : Math.min(parseFloat(r.style.height) * 0.94, g.w * 2.2)
     }
 
     // ── state ──
@@ -101,14 +108,17 @@ export const circleScene: SceneDef = {
     let job: ReturnType<typeof sliced> | null = null
     let host: HTMLElement | null = null
     const back = s('svg', { class: 't20c-back', 'aria-hidden': 'true' })
+    const ropes = P.stones.map(() => h('span', { class: 't20c-rope', 'aria-hidden': 'true' })) // where each chime's dot rides
     const base = canvas('t20c-base'), fx = canvas('t20c-fx'), front = canvas('t20c-front')
     let g: CanvasRenderingContext2D | null = null
+    let shWater: Path2D | null = null
 
     const def = perspectiveCircle(P, {
       label: S.label, prompt: S.prompt, // the three questions are the common line on screen (audit v3 20-4)
+      countOut: true, // "heard 0/4" from the start, at the well's foot (H4)
       stage(el, api) {
         host = el
-        el.append(back, base, fx, front)
+        el.append(back, base, fx, front, ...ropes)
         api.onLayout((geo) => layout(geo))
       },
       place(k, _n, geo) {
@@ -122,6 +132,7 @@ export const circleScene: SceneDef = {
         if (t0[k] < 0) t0[k] = now
         else t0[k] = now - 0.01 // struck again: the swing restarts (its train stays)
         swing[k] = now
+        dots[k]?.done()
         hangStrip()
         if (t0.every((v) => v >= 0) && allAt < 0) allAt = now + 0.9
         loop.start()
@@ -129,22 +140,37 @@ export const circleScene: SceneDef = {
       },
     })
     const swing = new Float32Array(n).fill(-9)
+    const nudge = new Float32Array(n).fill(-9) // when an unstruck chime was stirred by the idle invite
     def.mount(ctx)
     const root = rootOf()!
     root.classList.add('t20c')
     root.prepend(h('p', { class: 'visually-hidden' }, S.art))
     const card = root.querySelector<HTMLElement>('.p2c-card')!
+    const count = root.querySelector<HTMLElement>('.p2c-count-out')!
     let stageLeft = 0
+    // H1: a dot on each chime's cord, gone once that chime has rung
+    const gd = guide(ctx)
+    const dots = ropes.map((r) => gd.dot(r, { dir: [0, -1] }))
+    // H7: standing still, the chimes not yet struck stir a little on their cords
+    const idle = () => {
+      if (still) return
+      for (let k = 0; k < n; k++) if (t0[k] < 0) nudge[k] = now
+      loop.start()
+      loop.wake()
+    }
+    ctx.el.addEventListener('p2:idle', idle)
+    ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', idle))
 
     /** the words are written on the water (audit v3 20-4: no card beside the frame), over the near half of the well */
     function hangStrip() {
       if (!sw) return
       const W = root.clientWidth
-      // (tall: the water is too small for the words, they are written on the ground just under the well)
-      if (wide) proj(0, Rw * WATER, Rw * 0.35)
-      else proj(0, 0, Rw * FZ * 1.15)
-      const cw = Math.min(wide ? 440 : W - 24, W - 24)
-      Object.assign(card.style, { width: `${cw}px`, maxHeight: '', transform: wide ? 'translate(-50%, -50%)' : 'translateX(-50%)', left: `${(stageLeft + SX).toFixed(1)}px`, top: `${SY.toFixed(1)}px` })
+      // the count on the ground at the well's foot, the words in a clear band just under it (no letters on the curb)
+      proj(0, 0, Rw * RO * 1.12)
+      const fx0 = stageLeft + SX, fy = SY + 6
+      Object.assign(count.style, { left: `${fx0.toFixed(1)}px`, top: `${fy.toFixed(1)}px` })
+      const cw = Math.min(wide ? 640 : W - 24, W - 24)
+      Object.assign(card.style, { width: `${cw}px`, maxHeight: '', transform: 'translateX(-50%)', left: `${fx0.toFixed(1)}px`, top: `${(fy + 28).toFixed(1)}px` })
     }
 
     /**
@@ -212,6 +238,13 @@ export const circleScene: SceneDef = {
       g.translate(padX, padY)
       fit(front, W + padX * 2, H + padY * 2, dpr).translate(padX, padY)
       hangStrip()
+      ropes.forEach((el, k) => {
+        const [x, y, z] = hang(k)
+        proj(x, y - Rw * cordOf(k) * (FAR[k] ? 0.85 : 0.35), z) // (a far cord shows only below the front beam)
+        Object.assign(el.style, { left: `${SX.toFixed(1)}px`, top: `${SY.toFixed(1)}px` })
+      })
+      gd.refresh()
+      shWater = shadow(Rw * WATER)
       job?.cancel()
       job = sliced(bake(W, H, padX, padY), { sync: ctx.reduced || ready })
       job.done.then(() => {
@@ -221,7 +254,7 @@ export const circleScene: SceneDef = {
     }
 
     /** the faces of a box (origin o, edges u, v, w) that look at the camera, each lit by the moon (up, right, toward us) */
-    function box(gx: CanvasRenderingContext2D, o: V3, u: V3, v: V3, w: V3, hi: RGB, lo: RGB, seed: number) {
+    function box(gx: CanvasRenderingContext2D, o: V3, u: V3, v: V3, w: V3, hi: RGB, lo: RGB, seed: number, beam = false) {
       const p = pal
       const add = (a: V3, b: V3, k = 1): V3 => [a[0] + b[0] * k, a[1] + b[1] * k, a[2] + b[2] * k]
       const unit = (a: V3, k: number): V3 => {
@@ -232,7 +265,8 @@ export const circleScene: SceneDef = {
       // each face: a corner, its two edges, its outward normal (u × v points along w)
       const faces: [V3, V3, V3, V3][] = [[o, u, v, unit(w, -1)], [add(o, w), u, v, unit(w, 1)], [o, v, w, unit(u, -1)], [add(o, u), v, w, unit(u, 1)], [o, u, w, unit(v, -1)], [add(o, v), u, w, unit(v, 1)]]
       const r = rng(seed)
-      for (const [f0, a, b, nrm] of faces) {
+      for (let fi = 0; fi < 6; fi++) {
+        const [f0, a, b, nrm] = faces[fi]
         const c = add(add(f0, a, 0.5), b, 0.5)
         if (nrm[0] * (C[0] - c[0]) + nrm[1] * (C[1] - c[1]) + nrm[2] * (C[2] - c[2]) <= 0) continue
         const lit = Math.max(0, nrm[0] * Lm[0] + nrm[1] * Lm[1] + nrm[2] * Lm[2])
@@ -255,6 +289,18 @@ export const circleScene: SceneDef = {
         gx.strokeStyle = col(p.dark ? p.umbra : p.wash, p.dark ? 0.85 : 0.45)
         gx.lineWidth = 1
         gx.stroke(path)
+        // a beam's end where it juts past the post (its tenon end): the end grain, growth rings round an off-centre pith
+        if (beam && fi > 1 && fi < 4) {
+          const [cx, cy] = pt(c)
+          const rr = Math.min(Math.hypot(q[1][0] - q[0][0], q[1][1] - q[0][1]), Math.hypot(q[3][0] - q[0][0], q[3][1] - q[0][1])) * 0.42
+          gx.strokeStyle = col(p.umbra, 0.5)
+          gx.lineWidth = 0.8
+          for (const k of [0.35, 0.7, 1]) {
+            gx.beginPath()
+            gx.ellipse(cx - rr * 0.15, cy + rr * 0.1, rr * k, rr * k * 0.9, 0, 0, TAU)
+            gx.stroke()
+          }
+        }
         // the moon's edge on a face that turns to it
         if (lit > 0.55 && !p.dark) {
           gx.strokeStyle = col(p['rake-hi'], 0.9)
@@ -289,21 +335,21 @@ export const circleScene: SceneDef = {
       }
       gb.globalAlpha = 1
       yield
-      // posts' long shadows to the left (the moon is up and to the right), the well's shadow and contact shade
-      for (let k = 0; k < 4; k++) {
-        const c = corner(k)
-        const a = pt([c[0], 0, c[1]]), b = pt([c[0] - Rw * 1.9, 0, c[1] - Rw * 0.5])
-        const sc = F / SZ
-        const sg = gb.createLinearGradient(a[0], a[1], b[0], b[1])
-        sg.addColorStop(0, col(p.umbra, p.dark ? 0.5 : 0.24))
-        sg.addColorStop(1, col(p.umbra, 0))
-        gb.fillStyle = sg
-        gb.fill(poly([[a[0] - Rw * 0.08 * sc, a[1]], [b[0], b[1] - Rw * 0.05 * sc], [b[0], b[1] + Rw * 0.05 * sc], [a[0] + Rw * 0.08 * sc, a[1] + 2]]))
-      }
-      proj(-Rw * 0.9, 0, Rw * 0.2)
-      glow(gb, SX, SY, Rw * 2.2 * gs, Rw * 0.36 * gs, p.umbra, p.dark ? 0.7 : 0.3, 0.6)
-      // two stones on the ground, back left and right — clear of the foot of the frame where the words go
-      for (const [x, z, w, seed] of [[-2.6, -1.2, 0.42, 2074], [2.5, 0.2, 0.34, 2075], [2.9, 0.5, 0.18, 2076]] as const) {
+      // the roof's shadow on the ground (soft), the posts' long shadows, all falling left and toward us, away from the moon
+      gb.save()
+      gb.filter = `blur(${Math.max(4, Rw * 0.14).toFixed(1)}px)`
+      // (fading as it runs away from the frame, so it never meets the canvas's edge)
+      const s0 = pt([Rw * FX, 0, 0]), s1 = pt([Rw * (FX + SHX * HP * 1.6 - 2.4), 0, Rw * SHZ * HP])
+      const sg = gb.createLinearGradient(s0[0], s0[1], s1[0], s1[1])
+      sg.addColorStop(0, col(p.umbra, p.dark ? 0.5 : 0.16))
+      sg.addColorStop(1, col(p.umbra, 0))
+      gb.fillStyle = sg
+      gb.fill(shadow(0))
+      gb.restore()
+      proj(-Rw * 0.9, 0, Rw * 0.15)
+      glow(gb, SX, SY, Rw * 2.0 * gs, Rw * 0.36 * gs, p.umbra, p.dark ? 0.7 : 0.3, 0.6)
+      // stones on the ground: back left and right, and a few in the foreground, clear of the well's foot where the count is
+      for (const [x, z, w, seed] of [[-2.9, -1.2, 0.42, 2074], [2.7, 0.2, 0.34, 2075], [3.1, 0.5, 0.18, 2076], [-2.7, 2.4, 0.46, 2078], [2.5, 2.7, 0.36, 2079], [2.95, 2.5, 0.17, 2081]] as const) {
         proj(x * Rw, 0, z * Rw)
         const ww = Rw * w * (F / SZ)
         paintRock(gb, p, SX, SY, ww, ww * 0.52, seed, { light: 1, cast: 0.8, moss: 0.6 })
@@ -311,7 +357,7 @@ export const circleScene: SceneDef = {
       yield
       // the frame, far half: posts and beams behind the well, far first
       const pieces = frame()
-      for (const pc of pieces.filter((q) => !q.near)) box(gb, pc.o, pc.u, pc.v, pc.w, pc.hi, pc.lo, pc.seed)
+      for (const pc of pieces.filter((q) => !q.near)) box(gb, pc.o, pc.u, pc.v, pc.w, pc.hi, pc.lo, pc.seed, pc.beam)
       yield
       // the well: its outer face of uneven stacked stone (near half), the curb's capstones, the far inner wall
       const ring = (rr: number, y: number, from: number, to: number, out: Pt[]) => {
@@ -411,9 +457,34 @@ export const circleScene: SceneDef = {
       const lip: Pt[] = []
       ring(Rw * 1.004, RIM * Rw, Math.PI * 1.06, Math.PI * 1.94, lip)
       brush(gb, lip, Math.max(1.2, Rw * 0.018 * gs), col(p.dark ? p.moon : p['rake-hi'], p.dark ? 0.45 : 0.95), 0.2, 0.2, 0.2)
+      // the roof's shadow across the curb (the water gets its share each frame)
+      const annulus = new Path2D()
+      annulus.addPath(poly(ring(Rw * RO * 1.06, RIM * Rw, 0, TAU, [])))
+      annulus.addPath(poly(ring(Rw * 0.99, RIM * Rw, 0, TAU, [])))
+      gb.save()
+      gb.clip(annulus, 'evenodd')
+      gb.filter = `blur(${Math.max(1.5, Rw * 0.025).toFixed(1)}px)`
+      gb.fillStyle = col(p.umbra, p.dark ? 0.55 : 0.3)
+      gb.fill(shadow(RIM * Rw))
+      gb.restore()
       yield
       // the frame's near half (in front of the chimes on the far beams), on the front canvas
-      for (const pc of pieces.filter((q) => q.near)) box(gf, pc.o, pc.u, pc.v, pc.w, pc.hi, pc.lo, pc.seed)
+      for (const pc of pieces.filter((q) => q.near)) box(gf, pc.o, pc.u, pc.v, pc.w, pc.hi, pc.lo, pc.seed, pc.beam)
+      // the pegs that lock the front beam onto the posts' tenons
+      for (const sx of [-1, 1]) {
+        const [x, y] = pt([sx * FX * Rw, (HP - BH * 0.74) * Rw, (FZ + BW / 2) * Rw])
+        const r0 = Math.max(1.5, Rw * 0.026 * (F / SZ))
+        gf.fillStyle = col(p.umbra, 0.85)
+        gf.beginPath()
+        gf.arc(x, y, r0, 0, TAU)
+        gf.fill()
+        gf.strokeStyle = col(p.dark ? p.moon : p['rake-hi'], p.dark ? 0.4 : 0.8)
+        gf.lineWidth = 1
+        gf.beginPath()
+        gf.arc(x, y, r0, 0.2, Math.PI - 0.2)
+        gf.stroke()
+      }
+      roof(gf)
       yield
       // the chimes: one thick polished black L-stone each, baked once (swung by rotation)
       chimes = P.stones.map((_, k) => {
@@ -424,19 +495,162 @@ export const circleScene: SceneDef = {
       })
     }
 
+    // weathered cedar: the step tones warmed a touch toward the wood's own red-brown
+    const wood = (p: Pal): [RGB, RGB] => [
+      mix(p.dark ? mix(p['step-lo'], p['step-mid'], 0.55) : mix(p['step-mid'], p['step-hi'], 0.35), p.lantern, p.dark ? 0.22 : 0.2),
+      mix(p.dark ? mix(p['step-lo'], p.umbra, 0.6) : mix(p['step-lo'], p.umbra, 0.5), p.lantern, 0.08),
+    ]
+
+    /** the roof's shadow on the level plane y (stage units): its six corners carried along the moonlight (SHX, SHZ) */
+    function shadow(y: number) {
+      const X = (FX + OV) * Rw, zE = (FZ + OH) * Rw, yE = (HP - (HR * OH) / FZ) * Rw, yR = (HP + HR) * Rw
+      const at = (x: number, yy: number, z: number) => pt([x + SHX * (yy - y), y, z + SHZ * (yy - y)])
+      const out = poly([at(-X, yE, zE), at(X, yE, zE), at(X, yR, 0), at(X, yE, -zE), at(-X, yE, -zE), at(-X, yR, 0)])
+      // and each post's, a long strip from where the post meets the plane
+      const hw = PS * Rw * 0.5, top = HP * Rw - Math.max(0, y)
+      for (let k = 0; k < 4; k++) {
+        const [x, z] = corner(k)
+        out.addPath(poly([pt([x, y, z - hw]), pt([x, y, z + hw]), pt([x + SHX * top, y, z + hw + SHZ * top]), pt([x + SHX * top, y, z - hw + SHZ * top])]))
+      }
+      return out
+    }
+
+    /**
+     * The small tiled roof, a gable over the frame: its front slope rests on the front beam (the eave just past it) and runs
+     * up to a ridge over the frame's middle (the back slope rests on the back beam, out of sight behind the ridge: the
+     * camera is below it). Rows of round cover tiles with their ends along the eave, course lines, verge boards, the
+     * fascia under the eave, a ridge cap with the moon along it.
+     */
+    function roof(gx: CanvasRenderingContext2D) {
+      const p = pal
+      const [woodHi, woodLo] = wood(p)
+      const X = (FX + OV) * Rw, zE = (FZ + OH) * Rw, yb = HP * Rw, hr = HR * Rw, zF = FZ * Rw
+      // the slope, its eave turned up a little toward both corners (more toward the eave, none at the ridge)
+      const lift = (x: number, z: number) => Rw * 0.035 * (Math.abs(x) / X) ** 4 * (z / zE)
+      const P3 = (x: number, z: number, dy = 0) => pt([x, yb + hr * (1 - z / zF) + lift(x, z) + dy, z])
+      proj(0, yb, zF)
+      const px = (F / SZ) * Rw // px per Rw at the eave
+      const tile = p.dark ? mix(p['rock-lo'], p.wash, 0.4) : mix(p['rock-mid'], p.wash, 0.5)
+      const lit = p.dark ? mix(p['rock-mid'], p.moon, 0.25) : mix(p['rock-hi'], p.paper, 0.3)
+      const line = (x0: number, x1: number, z: number, dy = 0) => Array.from({ length: 17 }, (_, i) => P3(x0 + ((x1 - x0) * i) / 16, z, dy))
+      const eave = line(-X, X, zE), rL = P3(-X, 0), rR = P3(X, 0)
+      const slope = poly([...eave, rR, rL])
+      const r = rng(2069)
+      // the fascia: the roof's thickness along the eave, on the beam
+      const T = Rw * 0.035
+      gx.fillStyle = col(mix(woodLo, p.umbra, 0.35))
+      gx.fill(poly([...eave, ...line(-X, X, zE, -T).reverse()]))
+      const lg = gx.createLinearGradient(0, rL[1], 0, eave[8][1])
+      lg.addColorStop(0, col(mix(tile, lit, 0.5)))
+      lg.addColorStop(1, col(mix(tile, p.umbra, 0.2)))
+      gx.fillStyle = lg
+      gx.fill(slope)
+      gx.save()
+      gx.clip(slope)
+      // course lines (each tile's lower lip), every row its own weathering — a band a touch darker or lighter, the lip
+      // not quite straight — so the slope reads as laid tiles, not a sheet
+      const rows: number[] = []
+      for (let z = zE - Rw * 0.11; z > 0; z -= Rw * 0.16) rows.push(z)
+      rows.forEach((z, j) => {
+        const z1 = j ? rows[j - 1] : zE
+        gx.fillStyle = col(r() < 0.5 ? p.umbra : lit, 0.03 + r() * 0.07)
+        gx.fill(poly([...line(-X, X, z), ...line(-X, X, z1).reverse()]))
+        gx.strokeStyle = col(p.umbra, (p.dark ? 0.4 : 0.22) + r() * 0.15)
+        gx.lineWidth = 1
+        gx.beginPath()
+        for (let i = 0; i <= 24; i++) {
+          const [x, y] = P3(-X + (2 * X * i) / 24, z + Rw * (r() - 0.5) * 0.012)
+          if (i) gx.lineTo(x, y)
+          else gx.moveTo(x, y)
+        }
+        gx.stroke()
+      })
+      // the cover tiles, each row its own tone: a dark joint, then the round back lit on its right (the moon is up right)
+      const cols = Math.max(8, Math.round((2 * X) / (Rw * 0.17)))
+      for (let i = 0; i <= cols; i++) {
+        const x = -X + (2 * X * i) / cols
+        const a = P3(x, zE), b = P3(x, 0), a2 = P3(x + Rw * 0.035, zE), b2 = P3(x + Rw * 0.035, 0)
+        if (i < cols) {
+          const c0 = P3(x + Rw * 0.05, zE), c1 = P3(x + (2 * X) / cols - Rw * 0.01, zE), c2 = P3(x + (2 * X) / cols - Rw * 0.01, 0), c3 = P3(x + Rw * 0.05, 0)
+          gx.fillStyle = col(r() < 0.5 ? p.umbra : lit, 0.04 + r() * 0.08)
+          gx.fill(poly([c0, c1, c2, c3]))
+        }
+        gx.strokeStyle = col(p.umbra, p.dark ? 0.55 : 0.35)
+        gx.lineWidth = Math.max(1, px * 0.02)
+        gx.beginPath()
+        gx.moveTo(a[0], a[1])
+        gx.lineTo(b[0], b[1])
+        gx.stroke()
+        gx.strokeStyle = col(lit, p.dark ? 0.2 : 0.35)
+        gx.lineWidth = Math.max(1, px * 0.014)
+        gx.beginPath()
+        gx.moveTo(a2[0], a2[1])
+        gx.lineTo(b2[0], b2[1])
+        gx.stroke()
+      }
+      gx.restore()
+      // the tile ends along the eave, round, each with its lit lip
+      for (let i = 0; i < cols; i++) {
+        const [x, y] = P3(-X + (2 * X * (i + 0.5 + (r() - 0.5) * 0.12)) / cols, zE, -T * (0.4 + r() * 0.25))
+        const r0 = Math.max(1.6, px * 0.04 * (0.85 + r() * 0.3))
+        gx.fillStyle = col(mix(tile, p.umbra, 0.35))
+        gx.beginPath()
+        gx.arc(x, y, r0, 0, TAU)
+        gx.fill()
+        gx.strokeStyle = col(lit, p.dark ? 0.6 : 0.85)
+        gx.lineWidth = 1
+        gx.beginPath()
+        gx.arc(x, y, r0 * 0.7, Math.PI * 1.1, Math.PI * 1.9)
+        gx.stroke()
+      }
+      // verge boards down both sides (the right one takes the moon), then the ridge cap, its ends curled up
+      gx.lineCap = 'round'
+      for (const [a, b, rim] of [[eave[0], rL, false], [eave[16], rR, true]] as const) {
+        gx.strokeStyle = col(mix(woodLo, woodHi, 0.4))
+        gx.lineWidth = Math.max(2, px * 0.06)
+        gx.beginPath()
+        gx.moveTo(a[0], a[1])
+        gx.lineTo(b[0], b[1])
+        gx.stroke()
+        if (!rim) continue
+        gx.strokeStyle = col(p.dark ? p.moon : p['rake-hi'], p.dark ? 0.5 : 0.9)
+        gx.lineWidth = 1
+        gx.beginPath()
+        gx.moveTo(a[0] + 1, a[1])
+        gx.lineTo(b[0] + 1, b[1])
+        gx.stroke()
+      }
+      const k0 = P3(-X, 0, Rw * 0.03), k1 = P3(X, 0, Rw * 0.03)
+      const c0 = P3(-X - Rw * 0.12, 0, Rw * 0.13), c1 = P3(X + Rw * 0.12, 0, Rw * 0.13)
+      gx.strokeStyle = col(mix(tile, p.umbra, 0.3))
+      gx.lineWidth = Math.max(3, px * 0.09)
+      gx.lineJoin = 'round'
+      gx.beginPath()
+      gx.moveTo(c0[0], c0[1])
+      gx.quadraticCurveTo(k0[0], k0[1], k0[0] + (k1[0] - k0[0]) * 0.05, k0[1])
+      gx.lineTo(k1[0] - (k1[0] - k0[0]) * 0.05, k1[1])
+      gx.quadraticCurveTo(k1[0], k1[1], c1[0], c1[1])
+      gx.stroke()
+      gx.strokeStyle = col(p.dark ? p.moon : p['rake-hi'], p.dark ? 0.3 : 0.7)
+      gx.lineWidth = Math.max(1, px * 0.018)
+      gx.beginPath()
+      gx.moveTo(k0[0], k0[1] - px * 0.035)
+      gx.lineTo(k1[0], k1[1] - px * 0.035)
+      gx.stroke()
+      gx.lineCap = 'butt'
+    }
+
     /** the four posts and four beams as boxes (× Rw), each marked near (front canvas) or far, sorted far → near */
     function frame() {
       const p = pal
-      // weathered cedar: the step tones warmed a touch toward the wood's own red-brown
-      const woodHi = mix(p.dark ? mix(p['step-lo'], p['step-mid'], 0.55) : mix(p['step-mid'], p['step-hi'], 0.35), p.lantern, p.dark ? 0.22 : 0.2)
-      const woodLo = mix(p.dark ? mix(p['step-lo'], p.umbra, 0.6) : mix(p['step-lo'], p.umbra, 0.5), p.lantern, 0.08)
+      const [woodHi, woodLo] = wood(p)
       const ca = 1, sa = 0 // posts square to the frame
-      const out: { o: V3; u: V3; v: V3; w: V3; hi: RGB; lo: RGB; seed: number; near: boolean; d: number }[] = []
+      const out: { o: V3; u: V3; v: V3; w: V3; hi: RGB; lo: RGB; seed: number; near: boolean; d: number; beam: boolean }[] = []
       const s0 = PS * Rw
       for (let k = 0; k < 4; k++) {
         const [x, z] = corner(k)
         const u: V3 = [ca * s0, 0, sa * s0], w: V3 = [-sa * s0, 0, ca * s0]
-        out.push({ o: [x - u[0] / 2 - w[0] / 2, 0, z - u[2] / 2 - w[2] / 2], u, v: [0, HP * Rw, 0], w, hi: woodHi, lo: woodLo, seed: 2090 + k, near: z > Rw * 0.3, d: Math.hypot(x - C[0], z - C[2]) })
+        out.push({ o: [x - u[0] / 2 - w[0] / 2, 0, z - u[2] / 2 - w[2] / 2], u, v: [0, HP * Rw, 0], w, hi: woodHi, lo: woodLo, seed: 2090 + k, near: z > Rw * 0.3, d: Math.hypot(x - C[0], z - C[2]), beam: false })
       }
       for (let k = 0; k < 4; k++) {
         const a = corner(k), b = corner(k + 1)
@@ -445,7 +659,7 @@ export const circleScene: SceneDef = {
         const u: V3 = [dx * (L + over * 2), 0, dz * (L + over * 2)], w: V3 = [-dz * BW * Rw, 0, dx * BW * Rw]
         const yT = beamTop(k) * Rw
         const mz = (a[1] + b[1]) / 2, mx = (a[0] + b[0]) / 2
-        out.push({ o: [a[0] - dx * over - w[0] / 2, yT - BH * Rw, a[1] - dz * over - w[2] / 2], u, v: [0, BH * Rw, 0], w, hi: woodHi, lo: woodLo, seed: 2095 + k, near: mz > 0, d: Math.hypot(mx - C[0], mz - C[2]) - (k % 2 ? 0 : 0.01) })
+        out.push({ o: [a[0] - dx * over - w[0] / 2, yT - BH * Rw, a[1] - dz * over - w[2] / 2], u, v: [0, BH * Rw, 0], w, hi: woodHi, lo: woodLo, seed: 2095 + k, near: mz > 0 || k % 2 === 1, d: Math.hypot(mx - C[0], mz - C[2]) - (k % 2 ? 0 : 0.01), beam: true })
       }
       return out.sort((p0, p1) => p1.d - p0.d)
     }
@@ -556,12 +770,17 @@ export const circleScene: SceneDef = {
       g.clip()
       proj(0, wy, -Rw * 0.4)
       glow(g, SX, SY, Rw * 1.1 * (F / SZ), Rw * 0.3 * (F / SZ), p.mist, p.dark ? 0.12 : 0.35, 0.5)
+      // the roof's shadow on the water
+      if (shWater) {
+        g.fillStyle = col(p.umbra, p.dark ? 0.3 : 0.22)
+        g.fill(shWater)
+      }
       // how stirred the water is: trains running, then held; all four heard → they meet and cancel
       const settle = allAt < 0 ? 0 : clamp((now - allAt) / 2.4, 0, 1)
       const calm = still ? (allAt >= 0 ? 1 : 0) : settle
       const heardN = t0.reduce((a, v) => a + (v >= 0 ? 1 : 0), 0)
       // the moon's reflection: flakes scattered by the trains, gathering into one bright disc as they cancel
-      proj(Rw * 0.22, wy, -Rw * 0.55) // far half: the words take the near half
+      proj(Rw * 0.48, wy, -Rw * 0.5) // far half, in the light: the words take the near half
       const mx = SX, my = SY, ms = (F / SZ) * Rw * 0.9
       const spread = (1 - calm) * Math.min(1, 0.35 + heardN * 0.18)
       g.globalCompositeOperation = p.dark ? 'lighter' : 'source-over'
@@ -581,6 +800,14 @@ export const circleScene: SceneDef = {
           g.fillRect(mx - half + off, my + q * ms * 0.019 * (1 + spread), half * 2, ms * 0.012 + 1)
         }
         g.globalAlpha = 1
+      }
+      // the water is never quite still: a few faint rings round the reflection
+      g.strokeStyle = col(p.moon, p.dark ? 0.16 : 0.3)
+      g.lineWidth = 1
+      for (let i = 1; i <= 3; i++) {
+        g.beginPath()
+        g.ellipse(mx, my, ms * (0.36 + i * 0.22), ms * (0.13 + i * 0.08), 0, Math.PI * 0.1, Math.PI * 0.9)
+        g.stroke()
       }
       // each heard chime's train: crests (moonlit) and troughs (dark) running in from the water's edge on its side;
       // where trains cross, the crests add up — the interference shows as brighter knots
@@ -611,6 +838,23 @@ export const circleScene: SceneDef = {
           }
         }
       }
+      // once the water has stilled, each voice still keeps one faint ring on it
+      if (calm > 0)
+        for (let k = 0; k < n; k++) {
+          if (t0[k] < 0) continue
+          const [hx, , hz] = hang(k)
+          const a = Math.atan2(hz, hx)
+          g.strokeStyle = col(p.moon, (p.dark ? 0.3 : 0.5) * calm)
+          g.lineWidth = 1.2
+          g.beginPath()
+          for (let i = 0; i <= 40; i++) {
+            const b = (i / 40) * TAU
+            proj(Math.cos(a) * Rw * 0.6 + Math.cos(b) * Rw * 0.28, wy, Math.sin(a) * Rw * 0.6 + Math.sin(b) * Rw * 0.28)
+            if (i) g.lineTo(SX, SY)
+            else g.moveTo(SX, SY)
+          }
+          g.stroke()
+        }
       g.globalAlpha = 1
       // when the four trains meet: a bright still ring of moonlight closing on the whole moon
       if (allAt >= 0 && calm > 0 && calm < 1) {
@@ -630,8 +874,14 @@ export const circleScene: SceneDef = {
         const [x, y, z] = hang(k)
         proj(x, y, z)
         const hx = SX, hy = SY
-        const age = now - swing[k]
-        const th = still ? (t0[k] >= 0 ? 0.08 : 0.03) * (k % 2 ? 1 : -1) : age < 6 ? 0.3 * Math.exp(-age * 0.7) * Math.sin(age * 5.2) : 0
+        const age = now - swing[k], ag2 = now - nudge[k]
+        let th = 0
+        if (still) th = (t0[k] >= 0 ? 0.08 : 0.03) * SIDE[k]
+        else {
+          if (age < 6) th += 0.3 * Math.exp(-age * 0.7) * Math.sin(age * 5.2) // struck: a damped swing
+          if (t0[k] >= 0 && age < KEEP) th += 0.035 * Math.sin(now * 1.7 + k) * Math.min(1, age / 3, (KEEP - age) / 3) // then gently on
+          if (ag2 < 3.5) th += 0.06 * Math.sin(ag2 * 3.4) * (1 - ag2 / 3.5) // stirred by the idle invite
+        }
         const cord = Rw * cordOf(k) * (F / SZ)
         g.strokeStyle = col(p.dark ? p['ink-3'] : p.wash, 0.8)
         g.lineWidth = 1
@@ -642,6 +892,7 @@ export const circleScene: SceneDef = {
         g.save()
         g.translate(hx, hy)
         g.rotate(th)
+        if (SIDE[k] < 0) g.scale(-1, 1) // the left pair mirrored: each long arm points out
         const cw = chimes[k].width / dpr, ch = chimes[k].height / dpr
         if (t0[k] >= 0 && allAt < 0) glow(g, 0, cord + ch * 0.3, cw * 0.5, ch * 0.4, p.moon, p.dark ? 0.18 : 0.3)
         g.drawImage(chimes[k], -cw / 2, cord - ch * 0.06, cw, ch)
@@ -649,13 +900,13 @@ export const circleScene: SceneDef = {
       }
     }
     // far chimes first (drawn under the near ones)
-    const order = [0, 3, 1, 2]
+    const order = [1, 2, 0, 3]
 
     const loop = createLoop(root, (_t, dt) => {
       now += dt
       draw()
       let busy = false
-      for (let k = 0; k < n; k++) if ((t0[k] >= 0 && now - t0[k] < TRAIN + 0.5) || now - swing[k] < 6) busy = true
+      for (let k = 0; k < n; k++) if ((t0[k] >= 0 && now - t0[k] < TRAIN + 0.5) || now - swing[k] < (t0[k] >= 0 ? KEEP : 6) || now - nudge[k] < 3.5) busy = true
       if (allAt >= 0 && now - allAt < 3) busy = true
       return busy
     })

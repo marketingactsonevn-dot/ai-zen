@@ -1,11 +1,11 @@
 {
  "meta": {
-  "date": "2026-10-22T07:13:14.277Z",
+  "date": "2026-10-22T09:06:39.967Z",
   "profile": "mobile",
   "label": "Moto G Power (giả lập) · 412×823 @1.75x · cảm ứng · CPU 4× · Fast 4G",
   "ablate": [],
   "trace": false,
-  "commit": "03026d0+dirty",
+  "commit": "c295b80+dirty",
   "browser": "Chromium 156.0.8078.4",
   "host": "darwin arm64",
   "quality": "low"
@@ -25,34 +25,34 @@
    {
     "id": 19,
     "pass": 1,
-    "latency": 272,
+    "latency": 287,
     "entry": {
      "ms": 4203,
-     "frames": 249,
-     "fps": 59.2,
+     "frames": 246,
+     "fps": 58.5,
      "medianFps": 60,
-     "maxFrame": 33,
+     "maxFrame": 67,
      "p95Frame": 17,
-     "over50": 0,
-     "longTasks": 0,
-     "longTaskMax": 0,
-     "longTaskTotal": 0,
+     "over50": 1,
+     "longTasks": 2,
+     "longTaskMax": 67,
+     "longTaskTotal": 118,
      "maxGl": 1,
      "maxStages": 1,
      "maxLoops": 3,
      "maxTicking": 1,
-     "heapMB": 12.2
+     "heapMB": 9
     },
     "scenes": [
      {
       "scene": 2,
       "label": "Thuỷ triều ra mắt",
       "transition": {
-       "ms": 1610,
-       "frames": 96,
-       "fps": 59.6,
+       "ms": 1606,
+       "frames": 95,
+       "fps": 59.2,
        "medianFps": 60,
-       "maxFrame": 17,
+       "maxFrame": 33,
        "p95Frame": 17,
        "over50": 0,
        "longTasks": 0,
@@ -60,14 +60,14 @@
        "longTaskTotal": 0,
        "maxGl": 1,
        "maxStages": 1,
-       "maxLoops": 3,
+       "maxLoops": 4,
        "maxTicking": 1,
-       "heapMB": 12.8
+       "heapMB": 9.7
       },
       "idle": {
-       "ms": 1002,
+       "ms": 1001,
        "frames": 60,
-       "fps": 59.9,
+       "fps": 60,
        "medianFps": 60,
        "maxFrame": 17,
        "p95Frame": 17,
@@ -79,7 +79,7 @@
        "maxStages": 0,
        "maxLoops": 0,
        "maxTicking": 0,
-       "heapMB": 12.9
+       "heapMB": 9.8
       }
      },
      {
@@ -100,233 +100,6 @@
        "maxStages": 0,
        "maxLoops": 2,
        "maxTicking": 0,
-       "heapMB": 12.7
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 12.8
-      }
-     },
-     {
-      "scene": 4,
-      "label": "Ai nói gì",
-      "transition": {
-       "ms": 1607,
-       "frames": 96,
-       "fps": 59.7,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 11.6
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 11.7
-      }
-     },
-     {
-      "scene": 5,
-      "label": "Đọc bia đá không bị lừa",
-      "transition": {
-       "ms": 1607,
-       "frames": 95,
-       "fps": 59.1,
-       "medianFps": 60,
-       "maxFrame": 33,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 2,
-       "maxTicking": 0,
-       "heapMB": 14.2
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 14.2
-      }
-     },
-     {
-      "scene": 6,
-      "label": "Câu hỏi nhỏ",
-      "transition": {
-       "ms": 1605,
-       "frames": 96,
-       "fps": 59.8,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 15
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 15.1
-      }
-     },
-     {
-      "scene": 7,
-      "label": "Tóm lại trong 1 câu",
-      "transition": {
-       "ms": 1607,
-       "frames": 96,
-       "fps": 59.7,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 14.1
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 14.2
-      }
-     }
-    ],
-    "trace": null,
-    "settled": {
-     "heapMB": 6.7,
-     "glAlive": 0,
-     "glMade": 1,
-     "stages": 0,
-     "loops": 1,
-     "loopsAlive": 0,
-     "loopsTicking": 0,
-     "loopNames": [
-      "u"
-     ]
-    }
-   },
-   {
-    "id": 20,
-    "pass": 1,
-    "latency": 66,
-    "entry": {
-     "ms": 4200,
-     "frames": 249,
-     "fps": 59.3,
-     "medianFps": 60,
-     "maxFrame": 50,
-     "p95Frame": 17,
-     "over50": 0,
-     "longTasks": 1,
-     "longTaskMax": 50,
-     "longTaskTotal": 50,
-     "maxGl": 0,
-     "maxStages": 0,
-     "maxLoops": 3,
-     "maxTicking": 1,
-     "heapMB": 9
-    },
-    "scenes": [
-     {
-      "scene": 2,
-      "label": "Dòng nước nổ tung",
-      "transition": {
-       "ms": 1606,
-       "frames": 97,
-       "fps": 60.4,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 4,
-       "maxTicking": 1,
        "heapMB": 9.5
       },
       "idle": {
@@ -348,11 +121,28 @@
       }
      },
      {
-      "scene": 3,
-      "label": "Người thợ đá kiểm từng bậc",
+      "scene": 4,
+      "label": "Ai nói gì",
       "transition": {
-       "ms": 1604,
+       "ms": 1607,
        "frames": 96,
+       "fps": 59.7,
+       "medianFps": 60,
+       "maxFrame": 33,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 8.3
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
        "fps": 59.9,
        "medianFps": 60,
        "maxFrame": 17,
@@ -363,12 +153,184 @@
        "longTaskTotal": 0,
        "maxGl": 0,
        "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 8.4
+      }
+     },
+     {
+      "scene": 5,
+      "label": "Đọc bia đá không bị lừa",
+      "transition": {
+       "ms": 1607,
+       "frames": 94,
+       "fps": 58.5,
+       "medianFps": 60,
+       "maxFrame": 50,
+       "p95Frame": 17,
+       "over50": 1,
+       "longTasks": 1,
+       "longTaskMax": 53,
+       "longTaskTotal": 53,
+       "maxGl": 0,
+       "maxStages": 0,
        "maxLoops": 2,
        "maxTicking": 0,
-       "heapMB": 9.9
+       "heapMB": 14.4
+      },
+      "idle": {
+       "ms": 1003,
+       "frames": 60,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 14.1
+      }
+     },
+     {
+      "scene": 6,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1606,
+       "frames": 96,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 13.9
       },
       "idle": {
        "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 13.9
+      }
+     },
+     {
+      "scene": 7,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1606,
+       "frames": 97,
+       "fps": 60.4,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 14.6
+      },
+      "idle": {
+       "ms": 1003,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 14.8
+      }
+     }
+    ],
+    "trace": null,
+    "settled": {
+     "heapMB": 6.8,
+     "glAlive": 0,
+     "glMade": 1,
+     "stages": 0,
+     "loops": 1,
+     "loopsAlive": 0,
+     "loopsTicking": 0,
+     "loopNames": [
+      "u"
+     ]
+    }
+   },
+   {
+    "id": 20,
+    "pass": 1,
+    "latency": 53,
+    "entry": {
+     "ms": 4202,
+     "frames": 250,
+     "fps": 59.5,
+     "medianFps": 60,
+     "maxFrame": 33,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 0,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "maxTicking": 1,
+     "heapMB": 9.3
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Dòng nước nổ tung",
+      "transition": {
+       "ms": 1607,
+       "frames": 97,
+       "fps": 60.4,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 4,
+       "maxTicking": 1,
+       "heapMB": 9.5
+      },
+      "idle": {
+       "ms": 1001,
        "frames": 60,
        "fps": 59.9,
        "medianFps": 60,
@@ -386,10 +348,225 @@
       }
      },
      {
+      "scene": 3,
+      "label": "Người thợ đá kiểm từng bậc",
+      "transition": {
+       "ms": 1605,
+       "frames": 96,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 2,
+       "maxTicking": 0,
+       "heapMB": 9.8
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 9.8
+      }
+     },
+     {
       "scene": 4,
       "label": "Bốn tiếng khánh",
       "transition": {
-       "ms": 1607,
+       "ms": 1608,
+       "frames": 97,
+       "fps": 60.3,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 2,
+       "maxTicking": 1,
+       "heapMB": 10.7
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 10.3
+      }
+     },
+     {
+      "scene": 5,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1605,
+       "frames": 96,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 10.9
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 10.9
+      }
+     },
+     {
+      "scene": 6,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1606,
+       "frames": 96,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 10.6
+      },
+      "idle": {
+       "ms": 1003,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 10.7
+      }
+     }
+    ],
+    "trace": null
+   },
+   {
+    "id": 21,
+    "pass": 1,
+    "latency": 56,
+    "entry": {
+     "ms": 4201,
+     "frames": 250,
+     "fps": 59.5,
+     "medianFps": 60,
+     "maxFrame": 33,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 0,
+     "maxStages": 0,
+     "maxLoops": 4,
+     "maxTicking": 1,
+     "heapMB": 11.6
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Tự đi hay được giật dây",
+      "transition": {
+       "ms": 1606,
+       "frames": 96,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 3,
+       "maxTicking": 1,
+       "heapMB": 9.9
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 9.9
+      }
+     },
+     {
+      "scene": 3,
+      "label": "Núi chữ và giỏ cử động",
+      "transition": {
+       "ms": 1606,
        "frames": 97,
        "fps": 60.4,
        "medianFps": 60,
@@ -401,9 +578,47 @@
        "longTaskTotal": 0,
        "maxGl": 0,
        "maxStages": 0,
+       "maxLoops": 2,
+       "maxTicking": 0,
+       "heapMB": 10.1
+      },
+      "idle": {
+       "ms": 1003,
+       "frames": 60,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 10.1
+      }
+     },
+     {
+      "scene": 4,
+      "label": "Có cần hình người?",
+      "transition": {
+       "ms": 1608,
+       "frames": 96,
+       "fps": 59.7,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
        "maxLoops": 1,
-       "maxTicking": 1,
-       "heapMB": 10.4
+       "maxTicking": 0,
+       "heapMB": 10.6
       },
       "idle": {
        "ms": 1002,
@@ -427,9 +642,9 @@
       "scene": 5,
       "label": "Câu hỏi nhỏ",
       "transition": {
-       "ms": 1605,
+       "ms": 1607,
        "frames": 96,
-       "fps": 59.8,
+       "fps": 59.7,
        "medianFps": 60,
        "maxFrame": 17,
        "p95Frame": 17,
@@ -465,148 +680,9 @@
       "scene": 6,
       "label": "Tóm lại trong 1 câu",
       "transition": {
-       "ms": 1606,
-       "frames": 96,
-       "fps": 59.8,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 10.3
-      },
-      "idle": {
-       "ms": 1001,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 10.4
-      }
-     }
-    ],
-    "trace": null
-   },
-   {
-    "id": 21,
-    "pass": 1,
-    "latency": 58,
-    "entry": {
-     "ms": 4200,
-     "frames": 250,
-     "fps": 59.5,
-     "medianFps": 60,
-     "maxFrame": 33,
-     "p95Frame": 17,
-     "over50": 0,
-     "longTasks": 0,
-     "longTaskMax": 0,
-     "longTaskTotal": 0,
-     "maxGl": 0,
-     "maxStages": 0,
-     "maxLoops": 4,
-     "maxTicking": 1,
-     "heapMB": 11.1
-    },
-    "scenes": [
-     {
-      "scene": 2,
-      "label": "Tự đi hay được giật dây",
-      "transition": {
-       "ms": 1606,
-       "frames": 96,
-       "fps": 59.8,
-       "medianFps": 60,
-       "maxFrame": 33,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 4,
-       "maxTicking": 1,
-       "heapMB": 9.8
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 9.9
-      }
-     },
-     {
-      "scene": 3,
-      "label": "Núi chữ và giỏ cử động",
-      "transition": {
        "ms": 1607,
        "frames": 96,
-       "fps": 59.8,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 2,
-       "maxTicking": 0,
-       "heapMB": 10
-      },
-      "idle": {
-       "ms": 1003,
-       "frames": 61,
-       "fps": 60.8,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 10.1
-      }
-     },
-     {
-      "scene": 4,
-      "label": "Có cần hình người?",
-      "transition": {
-       "ms": 1606,
-       "frames": 96,
-       "fps": 59.8,
+       "fps": 59.7,
        "medianFps": 60,
        "maxFrame": 17,
        "p95Frame": 17,
@@ -633,91 +709,15 @@
        "longTaskTotal": 0,
        "maxGl": 0,
        "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 9.8
-      }
-     },
-     {
-      "scene": 5,
-      "label": "Câu hỏi nhỏ",
-      "transition": {
-       "ms": 1608,
-       "frames": 97,
-       "fps": 60.3,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
        "maxLoops": 1,
        "maxTicking": 0,
        "heapMB": 10.5
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 10.5
-      }
-     },
-     {
-      "scene": 6,
-      "label": "Tóm lại trong 1 câu",
-      "transition": {
-       "ms": 1606,
-       "frames": 96,
-       "fps": 59.8,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 10.2
-      },
-      "idle": {
-       "ms": 1004,
-       "frames": 61,
-       "fps": 60.8,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 10.3
       }
      }
     ],
     "trace": null,
     "settled": {
-     "heapMB": 8.5,
+     "heapMB": 8.7,
      "glAlive": 0,
      "glMade": 1,
      "stages": 0,
@@ -732,11 +732,11 @@
    {
     "id": 19,
     "pass": 2,
-    "latency": 136,
+    "latency": 121,
     "entry": {
-     "ms": 4202,
-     "frames": 250,
-     "fps": 59.5,
+     "ms": 4201,
+     "frames": 251,
+     "fps": 59.7,
      "medianFps": 60,
      "maxFrame": 33,
      "p95Frame": 17,
@@ -748,16 +748,16 @@
      "maxStages": 1,
      "maxLoops": 3,
      "maxTicking": 1,
-     "heapMB": 13
+     "heapMB": 13.1
     },
     "scenes": [
      {
       "scene": 2,
       "label": "Thuỷ triều ra mắt",
       "transition": {
-       "ms": 1612,
+       "ms": 1604,
        "frames": 96,
-       "fps": 59.6,
+       "fps": 59.8,
        "medianFps": 60,
        "maxFrame": 17,
        "p95Frame": 17,
@@ -767,14 +767,14 @@
        "longTaskTotal": 0,
        "maxGl": 1,
        "maxStages": 1,
-       "maxLoops": 3,
+       "maxLoops": 4,
        "maxTicking": 1,
        "heapMB": 11.7
       },
       "idle": {
-       "ms": 1003,
+       "ms": 1002,
        "frames": 60,
-       "fps": 59.8,
+       "fps": 59.9,
        "medianFps": 60,
        "maxFrame": 17,
        "p95Frame": 17,
@@ -786,16 +786,16 @@
        "maxStages": 0,
        "maxLoops": 0,
        "maxTicking": 0,
-       "heapMB": 11.7
+       "heapMB": 11.8
       }
      },
      {
       "scene": 3,
       "label": "Đỉnh núi có rào",
       "transition": {
-       "ms": 1608,
-       "frames": 96,
-       "fps": 59.7,
+       "ms": 1605,
+       "frames": 97,
+       "fps": 60.4,
        "medianFps": 60,
        "maxFrame": 17,
        "p95Frame": 17,
@@ -807,12 +807,50 @@
        "maxStages": 0,
        "maxLoops": 2,
        "maxTicking": 0,
-       "heapMB": 12.7
+       "heapMB": 12.9
       },
       "idle": {
        "ms": 1002,
        "frames": 60,
        "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 12.9
+      }
+     },
+     {
+      "scene": 4,
+      "label": "Ai nói gì",
+      "transition": {
+       "ms": 1607,
+       "frames": 96,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 12.7
+      },
+      "idle": {
+       "ms": 1003,
+       "frames": 61,
+       "fps": 60.8,
        "medianFps": 60,
        "maxFrame": 17,
        "p95Frame": 17,
@@ -825,44 +863,6 @@
        "maxLoops": 0,
        "maxTicking": 0,
        "heapMB": 12.8
-      }
-     },
-     {
-      "scene": 4,
-      "label": "Ai nói gì",
-      "transition": {
-       "ms": 1606,
-       "frames": 97,
-       "fps": 60.4,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 12.6
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 12.7
       }
      },
      {
@@ -883,7 +883,158 @@
        "maxStages": 0,
        "maxLoops": 2,
        "maxTicking": 0,
-       "heapMB": 16.8
+       "heapMB": 16.7
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 16.7
+      }
+     },
+     {
+      "scene": 6,
+      "label": "Câu hỏi nhỏ",
+      "transition": {
+       "ms": 1606,
+       "frames": 97,
+       "fps": 60.4,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 17.4
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 17.5
+      }
+     },
+     {
+      "scene": 7,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1605,
+       "frames": 96,
+       "fps": 59.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 17.9
+      },
+      "idle": {
+       "ms": 1001,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 18
+      }
+     }
+    ],
+    "trace": null,
+    "settled": {
+     "heapMB": 9,
+     "glAlive": 0,
+     "glMade": 2,
+     "stages": 0,
+     "loops": 1,
+     "loopsAlive": 0,
+     "loopsTicking": 0,
+     "loopNames": [
+      "u"
+     ]
+    }
+   },
+   {
+    "id": 20,
+    "pass": 2,
+    "latency": 27,
+    "entry": {
+     "ms": 4202,
+     "frames": 252,
+     "fps": 60,
+     "medianFps": 60,
+     "maxFrame": 17,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 0,
+     "maxStages": 0,
+     "maxLoops": 3,
+     "maxTicking": 1,
+     "heapMB": 11.1
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Dòng nước nổ tung",
+      "transition": {
+       "ms": 1606,
+       "frames": 97,
+       "fps": 60.4,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 4,
+       "maxTicking": 1,
+       "heapMB": 12.1
       },
       "idle": {
        "ms": 1003,
@@ -900,165 +1051,14 @@
        "maxStages": 0,
        "maxLoops": 0,
        "maxTicking": 0,
-       "heapMB": 16.9
-      }
-     },
-     {
-      "scene": 6,
-      "label": "Câu hỏi nhỏ",
-      "transition": {
-       "ms": 1606,
-       "frames": 96,
-       "fps": 59.8,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 17.5
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 16.3
-      }
-     },
-     {
-      "scene": 7,
-      "label": "Tóm lại trong 1 câu",
-      "transition": {
-       "ms": 1607,
-       "frames": 97,
-       "fps": 60.4,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 16.8
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 16.9
-      }
-     }
-    ],
-    "trace": null,
-    "settled": {
-     "heapMB": 8.9,
-     "glAlive": 0,
-     "glMade": 2,
-     "stages": 0,
-     "loops": 1,
-     "loopsAlive": 0,
-     "loopsTicking": 0,
-     "loopNames": [
-      "u"
-     ]
-    }
-   },
-   {
-    "id": 20,
-    "pass": 2,
-    "latency": 23,
-    "entry": {
-     "ms": 4201,
-     "frames": 252,
-     "fps": 60,
-     "medianFps": 60,
-     "maxFrame": 17,
-     "p95Frame": 17,
-     "over50": 0,
-     "longTasks": 0,
-     "longTaskMax": 0,
-     "longTaskTotal": 0,
-     "maxGl": 0,
-     "maxStages": 0,
-     "maxLoops": 3,
-     "maxTicking": 1,
-     "heapMB": 10.9
-    },
-    "scenes": [
-     {
-      "scene": 2,
-      "label": "Dòng nước nổ tung",
-      "transition": {
-       "ms": 1606,
-       "frames": 96,
-       "fps": 59.8,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 4,
-       "maxTicking": 1,
-       "heapMB": 11.1
-      },
-      "idle": {
-       "ms": 1001,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 11.1
+       "heapMB": 12.1
       }
      },
      {
       "scene": 3,
       "label": "Người thợ đá kiểm từng bậc",
       "transition": {
-       "ms": 1604,
+       "ms": 1606,
        "frames": 96,
        "fps": 59.8,
        "medianFps": 60,
@@ -1072,7 +1072,45 @@
        "maxStages": 0,
        "maxLoops": 2,
        "maxTicking": 0,
-       "heapMB": 11
+       "heapMB": 12.1
+      },
+      "idle": {
+       "ms": 1003,
+       "frames": 61,
+       "fps": 60.8,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 12.2
+      }
+     },
+     {
+      "scene": 4,
+      "label": "Bốn tiếng khánh",
+      "transition": {
+       "ms": 1608,
+       "frames": 96,
+       "fps": 59.7,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 2,
+       "maxTicking": 1,
+       "heapMB": 11.7
       },
       "idle": {
        "ms": 1001,
@@ -1089,18 +1127,18 @@
        "maxStages": 0,
        "maxLoops": 0,
        "maxTicking": 0,
-       "heapMB": 11.1
+       "heapMB": 11.8
       }
      },
      {
-      "scene": 4,
-      "label": "Bốn tiếng khánh",
+      "scene": 5,
+      "label": "Câu hỏi nhỏ",
       "transition": {
-       "ms": 1608,
-       "frames": 97,
-       "fps": 60.3,
+       "ms": 1605,
+       "frames": 96,
+       "fps": 59.8,
        "medianFps": 60,
-       "maxFrame": 17,
+       "maxFrame": 33,
        "p95Frame": 17,
        "over50": 0,
        "longTasks": 0,
@@ -1109,8 +1147,8 @@
        "maxGl": 0,
        "maxStages": 0,
        "maxLoops": 1,
-       "maxTicking": 1,
-       "heapMB": 11.4
+       "maxTicking": 0,
+       "heapMB": 12.5
       },
       "idle": {
        "ms": 1002,
@@ -1127,14 +1165,14 @@
        "maxStages": 0,
        "maxLoops": 0,
        "maxTicking": 0,
-       "heapMB": 11.5
+       "heapMB": 12.5
       }
      },
      {
-      "scene": 5,
-      "label": "Câu hỏi nhỏ",
+      "scene": 6,
+      "label": "Tóm lại trong 1 câu",
       "transition": {
-       "ms": 1605,
+       "ms": 1604,
        "frames": 96,
        "fps": 59.8,
        "medianFps": 60,
@@ -1148,7 +1186,70 @@
        "maxStages": 0,
        "maxLoops": 1,
        "maxTicking": 0,
-       "heapMB": 12.2
+       "heapMB": 13
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 13.1
+      }
+     }
+    ],
+    "trace": null
+   },
+   {
+    "id": 21,
+    "pass": 2,
+    "latency": 52,
+    "entry": {
+     "ms": 4203,
+     "frames": 251,
+     "fps": 59.7,
+     "medianFps": 60,
+     "maxFrame": 33,
+     "p95Frame": 17,
+     "over50": 0,
+     "longTasks": 0,
+     "longTaskMax": 0,
+     "longTaskTotal": 0,
+     "maxGl": 0,
+     "maxStages": 0,
+     "maxLoops": 4,
+     "maxTicking": 1,
+     "heapMB": 14.3
+    },
+    "scenes": [
+     {
+      "scene": 2,
+      "label": "Tự đi hay được giật dây",
+      "transition": {
+       "ms": 1607,
+       "frames": 96,
+       "fps": 59.7,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 4,
+       "maxTicking": 1,
+       "heapMB": 11.7
       },
       "idle": {
        "ms": 1001,
@@ -1165,108 +1266,7 @@
        "maxStages": 0,
        "maxLoops": 0,
        "maxTicking": 0,
-       "heapMB": 12.2
-      }
-     },
-     {
-      "scene": 6,
-      "label": "Tóm lại trong 1 câu",
-      "transition": {
-       "ms": 1605,
-       "frames": 97,
-       "fps": 60.4,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 12.7
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 12.8
-      }
-     }
-    ],
-    "trace": null
-   },
-   {
-    "id": 21,
-    "pass": 2,
-    "latency": 50,
-    "entry": {
-     "ms": 4202,
-     "frames": 251,
-     "fps": 59.7,
-     "medianFps": 60,
-     "maxFrame": 33,
-     "p95Frame": 17,
-     "over50": 0,
-     "longTasks": 0,
-     "longTaskMax": 0,
-     "longTaskTotal": 0,
-     "maxGl": 0,
-     "maxStages": 0,
-     "maxLoops": 4,
-     "maxTicking": 1,
-     "heapMB": 11.8
-    },
-    "scenes": [
-     {
-      "scene": 2,
-      "label": "Tự đi hay được giật dây",
-      "transition": {
-       "ms": 1606,
-       "frames": 97,
-       "fps": 60.4,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 4,
-       "maxTicking": 1,
-       "heapMB": 11.5
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 11.6
+       "heapMB": 11.8
       }
      },
      {
@@ -1287,7 +1287,7 @@
        "maxStages": 0,
        "maxLoops": 2,
        "maxTicking": 0,
-       "heapMB": 11.3
+       "heapMB": 11.5
       },
       "idle": {
        "ms": 1002,
@@ -1304,7 +1304,7 @@
        "maxStages": 0,
        "maxLoops": 0,
        "maxTicking": 0,
-       "heapMB": 11.4
+       "heapMB": 11.6
       }
      },
      {
@@ -1312,8 +1312,8 @@
       "label": "Có cần hình người?",
       "transition": {
        "ms": 1607,
-       "frames": 96,
-       "fps": 59.7,
+       "frames": 97,
+       "fps": 60.4,
        "medianFps": 60,
        "maxFrame": 17,
        "p95Frame": 17,
@@ -1325,7 +1325,7 @@
        "maxStages": 0,
        "maxLoops": 1,
        "maxTicking": 0,
-       "heapMB": 10.8
+       "heapMB": 11
       },
       "idle": {
        "ms": 1002,
@@ -1342,7 +1342,7 @@
        "maxStages": 0,
        "maxLoops": 0,
        "maxTicking": 0,
-       "heapMB": 10.9
+       "heapMB": 11.1
       }
      },
      {
@@ -1350,44 +1350,6 @@
       "label": "Câu hỏi nhỏ",
       "transition": {
        "ms": 1607,
-       "frames": 96,
-       "fps": 59.7,
-       "medianFps": 60,
-       "maxFrame": 33,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 1,
-       "maxTicking": 0,
-       "heapMB": 11.6
-      },
-      "idle": {
-       "ms": 1002,
-       "frames": 60,
-       "fps": 59.9,
-       "medianFps": 60,
-       "maxFrame": 17,
-       "p95Frame": 17,
-       "over50": 0,
-       "longTasks": 0,
-       "longTaskMax": 0,
-       "longTaskTotal": 0,
-       "maxGl": 0,
-       "maxStages": 0,
-       "maxLoops": 0,
-       "maxTicking": 0,
-       "heapMB": 11.6
-      }
-     },
-     {
-      "scene": 6,
-      "label": "Tóm lại trong 1 câu",
-      "transition": {
-       "ms": 1606,
        "frames": 96,
        "fps": 59.8,
        "medianFps": 60,
@@ -1401,12 +1363,33 @@
        "maxStages": 0,
        "maxLoops": 1,
        "maxTicking": 0,
-       "heapMB": 12.1
+       "heapMB": 11.7
       },
       "idle": {
        "ms": 1001,
-       "frames": 59,
-       "fps": 58.9,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 0,
+       "maxTicking": 0,
+       "heapMB": 11.8
+      }
+     },
+     {
+      "scene": 6,
+      "label": "Tóm lại trong 1 câu",
+      "transition": {
+       "ms": 1609,
+       "frames": 97,
+       "fps": 60.3,
        "medianFps": 60,
        "maxFrame": 17,
        "p95Frame": 17,
@@ -1419,12 +1402,29 @@
        "maxLoops": 1,
        "maxTicking": 0,
        "heapMB": 12.2
+      },
+      "idle": {
+       "ms": 1002,
+       "frames": 60,
+       "fps": 59.9,
+       "medianFps": 60,
+       "maxFrame": 17,
+       "p95Frame": 17,
+       "over50": 0,
+       "longTasks": 0,
+       "longTaskMax": 0,
+       "longTaskTotal": 0,
+       "maxGl": 0,
+       "maxStages": 0,
+       "maxLoops": 1,
+       "maxTicking": 0,
+       "heapMB": 12.3
       }
      }
     ],
     "trace": null,
     "settled": {
-     "heapMB": 9.3,
+     "heapMB": 9.5,
      "glAlive": 0,
      "glMade": 2,
      "stages": 0,
@@ -1438,7 +1438,7 @@
    }
   ],
   "mapEnd": {
-   "heapMB": 8.4,
+   "heapMB": 8.6,
    "glAlive": 0,
    "glMade": 1,
    "stages": 0,
@@ -1449,7 +1449,7 @@
   },
   "mapEnds": [
    {
-    "heapMB": 8.4,
+    "heapMB": 8.6,
     "glAlive": 0,
     "glMade": 1,
     "stages": 0,
@@ -1459,7 +1459,7 @@
     "loopNames": []
    },
    {
-    "heapMB": 9.3,
+    "heapMB": 9.4,
     "glAlive": 0,
     "glMade": 2,
     "stages": 0,

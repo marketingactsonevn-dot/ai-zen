@@ -186,7 +186,7 @@
     },
     "circle": {
       "label": "Four chimes",
-      "art": "A stone well with a thick curb, the moon in its water; above it a square frame of wooden posts, four polished black stone chimes hanging from its front and back beams. Strike a chime and it swings, rings and sends a train of ripples across the well; the speaker's words appear on the water. When all four have rung, the ripples meet in the middle and cancel, the water stills and holds the whole moon.",
+      "art": "A stone well with a thick curb, the moon in its water; above it a square frame of wooden posts, four polished black stone chimes hanging from its front and back beams. Strike a chime and it swings, rings and sends a train of ripples across the well; the speaker's words appear at the foot of the well. When all four have rung, the ripples meet in the middle and cancel, the water stills and holds the whole moon.",
       "prompt": "Strike each stone chime",
       "stoneAria": "Hear the view of {who}",
       "perspectives": {

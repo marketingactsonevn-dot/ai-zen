@@ -1217,7 +1217,8 @@
   transition: opacity 0.6s ease;
   pointer-events: none;
 }
-.t19t-cmp-b, .t19t.tall .t19t-cmp-a { translate: -100% 0; }
+.t19t.tall :is(.t19t-cmp-a, .t19t-cmp-b) { translate: -100% 0; }
+.t19t.tall .t19t-cmp-b { white-space: normal; width: 5.2rem; text-align: right; }
 .t19t.tall .t19t-cmp { font-size: 0.75rem; }
 .t19t.cmp .t19t-cmp { opacity: 1; }
 .t19t-fore {
@@ -1238,11 +1239,10 @@
   gap: 6px;
   transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.2, 1);
 }
-.t19t:not(.tall) .t19t-words.flip { translate: -100% -100%; text-align: right; }
-/* near: just under the shoreline, wide and short so it ends before the frame's soft foot */
-.t19t:not(.tall) .t19t-words:not(.flip) { width: min(27rem, 33%); }
-/* the legend (what a stone stands for) is said once, by the first stone */
-.t19t:not(.tall) .t19t-words.flip .t19t-q { display: none; }
+.t19t:not(.tall) .t19t-words:not(.far) { width: min(27rem, 33%); } /* near: just under the shoreline, wide and short */
+.t19t:not(.tall) .t19t-words.far .t19t-q { display: none; } /* the legend is said once, by the first stone */
+/* the current stop's tick label would sit under the moon disc: it steps aside (the reading says the date) */
+.p2g-track-box .p2g-tick-label.t19t-under-moon { opacity: 0; }
 .t19t:not(.tall) .t19t-q { font-size: 0.8rem; }
 .t19t:not(.tall) .t19t-fact { font-size: 0.95rem; }
 /* tall: date · label · fact in the sky band at the top, the foot of the frame left to the sand and the near stone */

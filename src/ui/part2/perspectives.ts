@@ -35,6 +35,9 @@ export interface PerspectiveOpts {
   /** the station's own stage behind the stones (a diorama, a canvas) instead of the painted pond, in a host that fills the
    *  stage; returns its cleanup. api.pick(k) hears stone k; api.onLayout(fn) gets the pond geometry and the stones' feet */
   stage?: (host: HTMLElement, api: CircleApi) => (() => void) | void
+  /** opt-in: the "heard n/total" line lives on the root (class p2c-count-out) from the start instead of inside the card
+   *  that appears on the first touch; the station places it with CSS. Default false: unchanged */
+  countOut?: boolean
 }
 
 export interface CircleApi {
@@ -80,9 +83,10 @@ export function perspectiveCircle(data: Perspectives, o: PerspectiveOpts): Scene
       const card = h('div', { class: 'p2c-card' },
         o.question ? h('p', { class: 'p2-question' }, o.question) : null,
         body,
-        count)
+        o.countOut ? null : count)
       card.hidden = !o.question
-      const root = h('div', { class: 'p2c p2-astir' }, stage, card)
+      if (o.countOut) count.classList.add('p2c-count-out')
+      const root = h('div', { class: 'p2c p2-astir' }, stage, card, o.countOut ? count : null)
       ctx.art.append(root)
       ctx.prompt(o.prompt ?? L.perspectivesPrompt)
 

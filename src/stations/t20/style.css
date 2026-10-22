@@ -164,7 +164,6 @@
 .t20m-back, .t20m-hill:not(.t20m-front) { -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
 .t20m.wide .t20m-hill:not(.t20m-front) { -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(#000 82%, transparent 99%); -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(#000 82%, transparent 99%); mask-composite: intersect; }
 .t20m.wide .t20m-lampwrap { margin-top: -170px; }
-.t20m.wide .t20m-scroll::before { top: -50px; height: 50px; }
 .t20m-slope-ink { fill: var(--wash); opacity: 0.55; }
 :root[data-theme='dark'] .t20m-slope-ink { fill: var(--moon); opacity: 0.22; }
 .t20m-tuft, .t20m-blade { fill: var(--moss-b); opacity: 0.9; }
@@ -212,7 +211,7 @@
     linear-gradient(100deg, color-mix(in srgb, var(--moon) 14%, transparent), transparent 45%),
     var(--tex-riser, linear-gradient(180deg, var(--rock-mid), var(--rock-lo)));
   background-size: 100% 100%, 100% 100%, 200% 100%;
-  background-position: 0 0, 0 0, calc(var(--i) * 31%) 0;
+  background-position: 0 0, 0 0, calc(var(--i) * 23%) 0;
 }
 :root[data-theme='dark'] .t20m-face { background-color: var(--rock-lo); }
 .t20m-step:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; }
@@ -236,7 +235,7 @@
     linear-gradient(90deg, color-mix(in srgb, var(--moon) 36%, transparent), color-mix(in srgb, var(--moon) 10%, transparent) 70%),
     var(--tex-tread, linear-gradient(0deg, var(--step-mid), var(--step-hi)));
   background-size: 100% 100%, 100% 100%, 200% 100%;
-  background-position: 0 0, 0 0, calc(var(--i) * 27%) 0;
+  background-position: 0 0, 0 0, calc(var(--i) * 22%) 0;
 }
 .t20m-flank {
   width: var(--db);
@@ -245,7 +244,7 @@
     linear-gradient(180deg, transparent 45%, color-mix(in srgb, var(--umbra) 55%, transparent)),
     var(--tex-flank, linear-gradient(90deg, var(--rock-mid), var(--rock-lo)));
   background-size: 100% 100%, 200% 100%;
-  background-position: 0 0, calc(var(--i) * 40%) 0;
+  background-position: 0 0, calc(var(--i) * 24%) 0;
 }
 :root[data-theme='dark'] .t20m-flank { background-color: var(--rock-lo); }
 .t20m-flank.r { left: var(--wb); transform-origin: 0 0; transform: rotateY(90deg); }
@@ -307,7 +306,7 @@
 .t20m-mason { position: absolute; left: 0; top: 0; width: 92px; height: 141px; margin: -136px 0 0 -46px; pointer-events: none; }
 .t20m-mason svg { display: block; width: 100%; height: 100%; max-width: none; overflow: visible; }
 .t20m-mason-ink { fill: var(--wash); opacity: 0.94; }
-:root[data-theme='dark'] .t20m-mason-ink { fill: color-mix(in srgb, var(--wash) 55%, var(--rock-lo)); opacity: 1; }
+:root[data-theme='dark'] .t20m-mason-ink { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--rock-mid)); opacity: 1; }
 .t20m-mason-rim { fill: var(--rake-hi); }
 :root[data-theme='dark'] .t20m-mason-rim { fill: var(--moon); opacity: 0.6; }
 .t20m-mason-sh { fill: var(--umbra); opacity: 0.4; }
@@ -317,6 +316,7 @@
 /* the sign on the landing: two posts and a board with the problem as written for the machine */
 .t20m-sign { position: absolute; left: 0; top: 0; width: 300px; height: 200px; margin: -200px 0 0 -150px; pointer-events: none; }
 .t20m-sign { --wood: color-mix(in srgb, var(--step-mid) 62%, var(--lantern)); --wood-lo: color-mix(in srgb, color-mix(in srgb, var(--step-lo) 70%, var(--umbra)) 80%, var(--lantern)); }
+.t20m-post::after { content: ''; position: absolute; left: -9px; right: -9px; bottom: -4px; height: 8px; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 70%, transparent), transparent); } /* planted: the contact shade at its foot */
 .t20m-post { position: absolute; bottom: 0; width: 13px; height: 100%; background: linear-gradient(90deg, var(--wood-lo), var(--wood) 70%, color-mix(in srgb, var(--wood) 70%, var(--moon))); box-shadow: 0 0 0 1px color-mix(in srgb, var(--umbra) 50%, transparent); }
 .t20m-post.l { left: 34px; }
 .t20m-post.r { right: 34px; }
@@ -336,7 +336,7 @@
     radial-gradient(circle at calc(100% - 16px) 13px, var(--umbra) 0 2.4px, color-mix(in srgb, var(--moon) 40%, transparent) 2.8px, transparent 4px),
     radial-gradient(circle at 16px calc(100% - 13px), var(--umbra) 0 2.4px, color-mix(in srgb, var(--moon) 40%, transparent) 2.8px, transparent 4px),
     radial-gradient(circle at calc(100% - 16px) calc(100% - 13px), var(--umbra) 0 2.4px, color-mix(in srgb, var(--moon) 40%, transparent) 2.8px, transparent 4px),
-    radial-gradient(ellipse 70% 90% at 12% 0%, color-mix(in srgb, var(--lantern) 42%, transparent), transparent 70%),
+    radial-gradient(ellipse 70% 90% at var(--lamp-x, 88%) 0%, color-mix(in srgb, var(--lantern) 42%, transparent), transparent 70%),
     repeating-linear-gradient(180deg, transparent 0 40px, color-mix(in srgb, var(--umbra) 55%, transparent) 40px 42px, color-mix(in srgb, var(--moon) 12%, transparent) 42px 43px),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='124'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .28' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .1 0 0 0 0 .06 1.1 0 0 0 -.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
     linear-gradient(180deg, var(--wood), var(--wood-lo));
@@ -349,20 +349,29 @@
 .t20m.compared .t20m-orig { color: color-mix(in srgb, var(--ink) 55%, transparent); }
 .t20m.compared .t20m-odd { color: var(--vermilion); text-shadow: 0 0 10px color-mix(in srgb, var(--vermilion) 45%, transparent), 0 0 2px var(--card); }
 .t20m-lampwrap { position: absolute; left: 0; top: 0; width: 450px; height: 220px; margin: -360px 0 0 -150px; pointer-events: none; }
-.t20m-scroll::before { content: ''; position: absolute; left: 50%; top: -90px; height: 90px; border-left: 1.5px solid color-mix(in srgb, var(--ink-3) 70%, transparent); }
+.t20m-scroll::before { content: ''; position: absolute; left: 50%; top: -50px; height: 50px; border-left: 1.5px solid color-mix(in srgb, var(--ink-3) 70%, transparent); }
 .t20m-scroll::after { content: ''; position: absolute; left: 50%; top: -10px; width: 46px; height: 12px; translate: -50% 0; border: 1.5px solid color-mix(in srgb, var(--ink-3) 80%, transparent); border-bottom: 0; border-radius: 50% 50% 0 0; }
 .t20m.compared .t20m-scroll::before, .t20m.compared .t20m-scroll::after, .t20m-scroll.drag::before { opacity: 0; }
 .t20m-lamp { display: block; width: 100%; height: 100%; max-width: none; overflow: visible; }
 .t20m-bough { fill: var(--wash); opacity: 0.85; }
 :root[data-theme='dark'] .t20m-bough { fill: color-mix(in srgb, var(--wash) 60%, var(--moss-b)); opacity: 1; }
+/* the ink pine: dark wood, flat pads of needles with a moonlit top and a fringe of needles */
+.t20m-pine-wood { fill: var(--wash); opacity: 0.92; }
+:root[data-theme='dark'] .t20m-pine-wood { fill: color-mix(in srgb, var(--rock-lo) 55%, var(--moon)); opacity: 0.55; }
+.t20m-pad { fill: color-mix(in srgb, var(--wash) 78%, var(--moss-a)); opacity: 0.9; }
+:root[data-theme='dark'] .t20m-pad { fill: color-mix(in srgb, var(--moss-a) 45%, #04060d); opacity: 1; }
+.t20m-pad-top { fill: color-mix(in srgb, var(--moss-b) 55%, var(--wash)); opacity: 0.55; }
+:root[data-theme='dark'] .t20m-pad-top { fill: color-mix(in srgb, var(--moss-b) 60%, var(--moon)); opacity: 0.35; }
+.t20m-needle { fill: none; stroke: color-mix(in srgb, var(--wash) 78%, var(--moss-a)); stroke-width: 1.1; stroke-linecap: round; opacity: 0.8; }
+:root[data-theme='dark'] .t20m-needle { stroke: color-mix(in srgb, var(--moss-b) 50%, var(--moon)); opacity: 0.45; }
 /* the original problem's scroll: rolled until every step rings true, then dragged up to the sign */
 .t20m-scroll {
   position: absolute;
   left: 0;
   top: 0;
-  width: 284px;
+  width: 236px;
   height: 76px;
-  margin: -178px 0 0 -142px;
+  margin: -178px 0 0 -118px;
   padding: 0;
   border: 0;
   background: none;
@@ -375,31 +384,53 @@
 .t20m.ok .t20m-scroll { cursor: grab; }
 .t20m-scroll.drag { transition: none; cursor: grabbing; z-index: 3; }
 .t20m-scroll:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 4px; }
-.t20m-rod { position: absolute; left: 0; right: 0; top: 0; height: 9px; border-radius: 5px; background: linear-gradient(180deg, color-mix(in srgb, color-mix(in srgb, var(--step-lo) 70%, var(--lantern)) 80%, var(--moon)), color-mix(in srgb, color-mix(in srgb, var(--step-lo) 50%, var(--umbra)) 85%, var(--lantern))); box-shadow: 0 2px 4px -1px var(--umbra), inset 6px 0 0 -2px var(--umbra), inset -6px 0 0 -2px var(--umbra); }
-.t20m-rod.b { top: 66px; transform: translateY(-58px); transition: transform 1s var(--ease); }
+/* the scroll swings from its cord (idle invite, early touch) */
+.t20m-hang { position: absolute; inset: 0; transform-origin: 50% -50px; }
+/* two wooden rods with turned knobs at both ends; the paper between them */
+.t20m-rod {
+  --rod: color-mix(in srgb, color-mix(in srgb, var(--step-lo) 70%, var(--lantern)) 80%, var(--moon));
+  --rod-lo: color-mix(in srgb, color-mix(in srgb, var(--step-lo) 50%, var(--umbra)) 85%, var(--lantern));
+  position: absolute; left: 4px; right: 4px; top: 0; height: 7px; border-radius: 4px;
+  background: linear-gradient(180deg, var(--rod), var(--rod-lo));
+  box-shadow: 0 2px 4px -1px var(--umbra);
+}
+.t20m-rod::before, .t20m-rod::after { content: ''; position: absolute; top: -2px; width: 9px; height: 11px; border-radius: 45%; background: radial-gradient(circle at 40% 35%, var(--rod), var(--rod-lo) 70%); box-shadow: 0 1px 2px var(--umbra); }
+.t20m-rod::before { left: -6px; }
+.t20m-rod::after { right: -6px; }
+/* rolled: the bottom rod sits just under the top one, the paper wound round it — a fat roll of dó, shaded as a cylinder */
+.t20m-rod.b {
+  top: 74px; height: 9px; transform: translateY(-46px);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--card) 86%, var(--lantern)), color-mix(in srgb, var(--card) 70%, var(--umbra)));
+  box-shadow: 0 3px 5px -2px var(--umbra), inset 0 1px 0 color-mix(in srgb, var(--moon) 40%, transparent);
+  transition: transform 1s var(--ease), height 1s var(--ease), background 0.6s 0.6s;
+}
+.t20m:not(.ok) .t20m-rod.b { height: 15px; transform: translateY(-48px); } /* the roll, under a strip of blank paper */
+.t20m.ok .t20m-rod.b { background: linear-gradient(180deg, var(--rod), var(--rod-lo)); }
 .t20m-paper {
   position: absolute;
   left: 10px;
   right: 10px;
   top: 6px;
-  height: 62px;
+  height: 70px;
   display: flex;
   align-items: center;
   padding: 6px 16px;
   text-align: left;
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.04 .9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .3 0 0 0 0 .35 .25 0 0 0 -.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    color-mix(in srgb, var(--card) 86%, var(--lantern)); /* dó paper, warm */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='120'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.35 .012' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 .5 0 0 0 -.28'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, color-mix(in srgb, var(--umbra) 10%, transparent), transparent 12%, transparent 88%, color-mix(in srgb, var(--umbra) 10%, transparent)),
+    color-mix(in srgb, var(--card) 86%, var(--lantern)); /* dó paper, warm, long fibres in it */
   box-shadow: 0 6px 14px -8px var(--umbra);
   transform-origin: 50% 0;
-  transform: scaleY(0.12);
+  transform: scaleY(0.3);
   transition: transform 1s var(--ease), background-color 0.8s;
 }
 .t20m-orig { display: block; font: 400 17px/1.3 var(--serif); color: var(--ink); opacity: 0; transition: opacity 0.6s 0.6s, color 0.8s 0.5s; }
 .t20m.ok .t20m-paper { transform: none; }
 .t20m.ok .t20m-rod.b { transform: none; }
 .t20m.ok .t20m-orig { opacity: 1; }
-.t20m.compared .t20m-paper { background: color-mix(in srgb, var(--card) 72%, transparent); box-shadow: 0 0 34px -4px color-mix(in srgb, var(--lantern) 60%, transparent); }
+.t20m.compared .t20m-paper { background-color: color-mix(in srgb, color-mix(in srgb, var(--card) 70%, var(--lantern)) 62%, transparent); box-shadow: 0 0 34px -4px color-mix(in srgb, var(--lantern) 60%, transparent), inset 0 0 22px color-mix(in srgb, var(--lantern) 35%, transparent); } /* the lantern behind it: the dó turns translucent, the sign shows through */
 .t20m-tag { position: absolute; left: 50%; top: 100%; translate: -50% 8px; white-space: nowrap; font: 500 13px/1.2 var(--sans); color: var(--ink-2); text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper); opacity: 0; transition: opacity 0.6s 1s; }
 .t20m.ok:not(.compared) .t20m-tag { opacity: 1; }
 .t20m-mismatch {
@@ -419,18 +450,20 @@
 }
 .t20m.compared .t20m-mismatch { opacity: 1; }
 .t20m-isabelle { opacity: 0; transition: opacity 2.4s 1.2s; }
-.t20m.compared .t20m-isabelle { opacity: 0.6; }
-.t20m-far-stair { fill: var(--rock-lo); opacity: 0.5; }
+.t20m.compared .t20m-isabelle { opacity: 0.8; }
+.t20m-far-stair { fill: var(--rock-lo); opacity: 0.75; }
+.t20m-far-lip { fill: none; stroke: var(--rock-hi); stroke-width: 1.2; opacity: 0.8; }
+:root[data-theme='dark'] .t20m-far-lip { stroke: var(--moon); opacity: 0.45; }
 .t20m-far-mason { fill: var(--wash); }
 :root[data-theme='dark'] .t20m-far-mason { fill: var(--moon); opacity: 0.6; }
 /* the folded card, handed once the scroll has been compared (top left, clear of the stair) */
 .t20m-card { position: absolute; left: 8px; top: 8px; z-index: 3; }
-.t20m:not(.wide) .t20m-line { font-size: 13.5px; }
-.t20m:not(.wide) .t20m-step { padding: 8px 22px 4px 12px; }
-.t20m:not(.wide) .t20m-sign { scale: 0.72; transform-origin: 50% 100%; }
-.t20m:not(.wide) .t20m-scroll { scale: 0.72; transform-origin: 50% 178px; /* the same anchor as the sign, so it lands square on the board */ }
-.t20m:not(.wide) .t20m-lampwrap { scale: 0.6; transform-origin: 33% 100%; }
-.t20m:not(.wide) .t20m-mason { scale: 0.74; transform-origin: 50% 100%; }
+.t20m:not(.wide) .t20m-line { font-size: 13px; }
+.t20m:not(.wide) .t20m-step { padding: 8px 12px 4px 10px; }
+.t20m-sign { transform-origin: 50% 100%; }
+.t20m-scroll { transform-origin: 50% 178px; } /* its anchor: tall scales it about here (mason.ts) */
+.t20m:not(.wide) .t20m-lampwrap { scale: 0.6; transform-origin: 33% 100%; margin-top: -287px; }
+.t20m-mason { transform-origin: 50% 136px; }
 .t20m:not(.wide) .t20m-mismatch { left: 16px; right: 16px; top: auto; bottom: 0; width: auto; translate: none; text-align: left; font-size: 14px; }
 .t20m.still .t20m-stage,
 .t20m.still .t20m-back { transform: none; transition: none; }
@@ -494,7 +527,7 @@
 .t20c .p2c-num { display: none; } /* a chime is told by the sign cut into it; its key and its name stay (aria, 1–4) */
 .t20c .p2c-stone { animation: none; border-radius: 30%; }
 .t20c .p2c-stone:hover .p2c-stone-art { transform: none; }
-/* the words written on the water of the well, the ink lifted by a breath of the water's own dark (no card, no strip) */
+/* the words written on the ground at the well's foot, under the count, lifted by a breath of mist (no card, no strip) */
 .t20c .p2c-card {
   max-height: none;
   overflow: visible;
@@ -516,3 +549,24 @@
 .t20c:not(.wide) .p2c-view { font-size: 0.98rem; line-height: 1.4; }
 .t20c:not(.wide) .p2c-who { font-size: 0.84rem; }
 .t20c.is-all .p2c-card { opacity: 0.9; }
+/* where each chime's dot rides (on its cord), and the count at the well's foot from the start */
+.t20c-rope { position: absolute; width: 0; height: 0; pointer-events: none; }
+.t20c .p2c-count-out {
+  position: absolute;
+  z-index: 2;
+  translate: -50% 0;
+  white-space: nowrap;
+  font: 400 0.95rem/1.3 var(--serif);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  text-shadow: 0 0 6px var(--paper), 0 0 12px var(--paper);
+  pointer-events: none;
+}
+
+/* the landing: a broad flagstone, deeper than a tread, its lit top the floor of the sign and the lantern */
+.t20m-landing .t20m-tread { top: calc(var(--db) * -1.8); height: calc(var(--db) * 1.8); }
+.t20m-landing .t20m-flank { width: calc(var(--db) * 1.8); }
+.t20m-landing .t20m-flank.l { left: calc(var(--db) * -1.8); }
+.t20m:not(.wide) .t20m-board { --lamp-x: 50%; } /* tall: the lantern hangs above the sign */
+.t20m.wide .t20m-mismatch { translate: 0 0; text-align: left; width: 260px; }
+.t20c-base { -webkit-mask-image: linear-gradient(#000 82%, transparent); mask-image: linear-gradient(#000 82%, transparent); } /* the ground fades out, no edge where the canvas ends */

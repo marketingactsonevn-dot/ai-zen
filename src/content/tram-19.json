@@ -189,7 +189,8 @@
     "tide": {
       "label": "Thuỷ triều ra mắt",
       "art": "Nằm sát mép nước ở đầu một bãi triều dài chạy chéo vào sâu, tới một ngọn núi có mây quấn đỉnh: thời gian chạy vào chiều sâu. Triều đang lên, mặt nước phủ cả bãi, đường trăng vỡ chạy về phía người xem. Kéo vầng trăng trên trời thì nước rút về phía núi, từng hòn đá nổi lên theo ngày: gần thì thưa, tới chân núi thì chen nhau rồi leo sườn như bậc thang.",
-      "prompt": "Kéo trăng: xem mô hình lớn mọc lên theo năm",
+      "prompt": "Kéo trăng sang phải",
+      "promptToday": "Nhìn lên đỉnh núi trong mây",
       "moonAria": "Kéo vầng trăng, hoặc dùng phím ← → để đi qua các mốc",
       "ticks": ["2022", "2023", "2024", "2025", "04/2026", "nay"],
       "stones": "Mỗi hòn đá: một mô hình AI cỡ GPT-4 trở lên (Epoch AI đếm)",
