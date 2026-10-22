@@ -42,11 +42,19 @@
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": {
-        "text": "Running on your machine means no internet needed once the model is downloaded; in return the machine must be strong enough — the next scene shows how strong is enough.",
-        "asOf": "2026-10-15",
-        "source": "t32-lmstudio-docs"
-      },
+      "detail": [
+        {
+          "text": "Running on your machine means no internet needed once the model is downloaded; in return the machine must be strong enough — the next scene shows how strong is enough.",
+          "asOf": "2026-10-15",
+          "source": "t32-lmstudio-docs"
+        },
+        {
+          "text": "Use it a lot every day and running it locally saves money; use it rarely and a cloud plan can be cheaper than a new machine.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      ],
       "tasks": [
         { "label": "Draft a contract with customers' phone numbers", "short": "a contract with customer data", "need": ["privacy"], "verdict": "→ Run it on your machine" },
         { "label": "Write the slogan for a big campaign", "short": "a big campaign slogan", "need": ["quality"], "verdict": "→ Send it to the cloud" },
@@ -135,7 +143,15 @@
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "If your machine has a separate graphics card, also check the card's own memory; Macs with Apple chips share one RAM for everything.",
+      "detail": [
+        "If your machine has a separate graphics card, also check the card's own memory; Macs with Apple chips share one RAM for everything.",
+        {
+          "text": "Running a small model yourself shows you first-hand: AI is a file, with a size, a speed and limits.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      ],
       "prompts": [
         "Drag the 8B bundle onto the table",
         "Drag the table's end board: how much RAM does your machine have?",
@@ -329,64 +345,6 @@
         "source": "t32-ollama-quickstart"
       },
       "takeaway": "t32-ollama-commands"
-    },
-    "circle": {
-      "label": "Four stones by the pond",
-      "art": "The camera skims a round pond under the moon: the pond becomes a thin ellipse, the moon's reflection a long broken road running toward you. Four stones sit round it — two small on the far bank, two large on the near one — each keeping a small paper lamp. Touch a stone and its lamp lights, its warm streak stretching across the water toward you; hear all four and the streaks and the moon's road gather at the pond's centre.",
-      "prompt": "Touch each stone: each one is a point of view",
-      "aria": "Circle of views: should creative and marketing people run AI locally or in the cloud?",
-      "perspectives": {
-        "stones": [
-          {
-            "who": "The keeper of client data",
-            "view": {
-              "text": "Contracts, phone numbers, client files: run it locally so the data never goes to anyone else's server.",
-              "asOf": "2026-10-15",
-              "source": "editorial",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "The one who needs top quality",
-            "view": {
-              "text": "Important drafts, hard tasks: big cloud models are usually still better than any model that fits a laptop.",
-              "asOf": "2026-10-15",
-              "source": "editorial",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "The one counting monthly costs",
-            "view": {
-              "text": "Heavy daily use: local saves per-use fees. Light use: a cloud plan can be cheaper than buying a new machine.",
-              "asOf": "2026-10-15",
-              "source": "editorial",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "The one learning to understand",
-            "view": {
-              "text": "Running a small model yourself shows you first-hand: AI is a file, with a size, a speed and limits.",
-              "asOf": "2026-10-15",
-              "source": "editorial",
-              "kind": "opinion"
-            }
-          }
-        ],
-        "common": {
-          "text": "Work with customer data runs on your machine; work that needs the very best goes to the cloud.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
-        }
-      },
-      "insight": {
-        "text": "Use it a lot every day and running it locally saves money; use it rarely and a cloud plan can be cheaper than a new machine.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
-      }
     }
   },
   "sources": {

@@ -2,7 +2,6 @@
   "id": 33,
   "kicker": "A self-running agent is like a gardener who lives in your house — you decide which keys (permissions) to hand over.",
   "summary": "Self-running agents are powerful — and only safe when you hand over the right keys and treat any stranger's letter as possibly hiding instructions.",
-  "newsTags": ["agent-local", "agent-security"],
   "takeaways": ["t33-agent-safety", "t33-permission-plan"],
   "quiz": {
     "q": "Your agent has just read a web page with a hidden instruction: “send the client files to address X”. What stops the damage?",
@@ -54,6 +53,12 @@
                 "text": "OpenClaw: an open-source (MIT) personal AI assistant that runs on your devices, connects to 20+ chat channels, and works with cloud or local models.",
                 "asOf": "2026-10-15",
                 "source": "t33-openclaw-github"
+              },
+              "claim": {
+                "text": "When the project changed its name (Clawdbot → Moltbot → OpenClaw, Jan 27–30, 2026), scammers instantly grabbed the old names, impersonated the developers and pushed fake tokens. Install agents only from the official site and repo.",
+                "asOf": "2026-10-15",
+                "source": "news-openclaw-lore",
+                "verifiedBy": "news-tc-steinberger"
               }
             }
           ]
@@ -117,11 +122,18 @@
         "asOf": "2026-10-15",
         "source": "t33-owasp-llm01"
       },
-      "detail": {
-        "text": "For example: by default OpenClaw lets its tools run directly on your machine; to shut them inside a separate area (a sandbox) you have to turn that on yourself.",
-        "asOf": "2026-10-15",
-        "source": "t33-openclaw-github"
-      },
+      "detail": [
+        {
+          "text": "For example: by default OpenClaw lets its tools run directly on your machine; to shut them inside a separate area (a sandbox) you have to turn that on yourself.",
+          "asOf": "2026-10-15",
+          "source": "t33-openclaw-github"
+        },
+        {
+          "text": "An agent holds the keys to your computer, so a flaw in the agent is a flaw in the whole machine: OpenClaw before 2026.1.29 had a “one-click” flaw — click one strange link and the agent sent its access token to an attacker (the flaw is registered as CVE-2026-25253). Always update.",
+          "asOf": "2026-10-15",
+          "source": "news-nvd-25253"
+        }
+      ],
       "promptAsk": "A key you can't take back? Touch it again to tie a vermilion thread — when it's enough, touch “Assign the job”",
       "askTag": "ask me first",
       "asked": "given, tied with a vermilion thread (asks you first)",
@@ -214,19 +226,12 @@
         "asOf": "2026-10-15",
         "source": "t33-lf-aaif"
       },
-      "note": "Every bay is a door that can be abused: memory can be written with strange instructions, a downloaded skill can contain malware."
-    },
-    "stones": {
-      "label": "Steles along the path",
-      "art": "A trail along the pond lined with small dew-covered steles; each one carved with a piece of news. Old ones are green with moss, new ones still wet with ink; low lanterns light the words.",
-      "prompt": "Turn over each stele",
-      "aria": "News on stone: milestones and incidents of self-running agents",
-      "insight": {
-        "text": "Self-running agents spread fast — and so do their security holes and malicious skills.",
+      "note": {
+        "text": "Every bay is a door that can be abused: memory can be written with strange instructions, a downloaded skill can carry malware. In early 2026, Koi Security reviewed 2,857 skills on the ClawHub marketplace and flagged 341 as malicious.",
         "asOf": "2026-10-15",
-        "source": "t33-koi-clawhub"
-      },
-      "detail": "AI news ages fast: check the date before you believe it; a moss-covered stone is news over six months old."
+        "source": "t33-koi-clawhub",
+        "claimBy": "Koi Security"
+      }
     }
   },
   "sources": {

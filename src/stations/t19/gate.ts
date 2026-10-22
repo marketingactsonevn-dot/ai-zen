@@ -1,7 +1,7 @@
 import raw from '../../content/tram-19.json'
-import { h, nextId, s } from '../../core/dom'
-import type { Fact } from '../../core/content'
-import type { SceneCtx } from '../types'
+import { fill, h, nextId, s } from '../../core/dom'
+import { L, type Fact } from '../../core/content'
+import type { Detail, SceneCtx } from '../types'
 import { blob, clamp, curve, onSize, p2Defs, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { grass, hills, mist, moon, paperLantern, toro, wash } from '../../ui/part2/paint'
 import { guide } from '../../ui/part2/guide'
@@ -99,6 +99,39 @@ function wicketArt(kw: number, kh: number): SVGElement[] {
 }
 
 /**
+ * A wooden tag hung on the fence by a cord (viewBox -22 -8 44 64, cord knot at 0 0), its sign carved in (audit v3 19-2,
+ * the voices of 19-3 folded in): 0 · a stone course with a pale fresh seam of mortar (Mozilla: 271 bugs fixed), 1 · a single
+ * notch (VulnCheck: one published flaw), 2 · a smaller fenced ring (OpenAI: another lab fencing its own model).
+ */
+function tagArt(i: number): SVGElement[] {
+  const board = 'M-15 13L0 5.5L15 13L15.6 50Q0 52.5 -15.6 50Z'
+  let cut = '', seam = ''
+  if (i === 0) {
+    cut = stroke([[-9, 25], [9, 24.6]], 1.6, 0.1, 0.1, 0.6) + stroke([[-9, 38], [9, 38.4]], 1.6, 0.1, 0.1, 0.6) + stroke([[-1, 25], [-1.4, 38]], 1.4, 0.1, 0.1, 0.6)
+    seam = stroke([[-10, 31.5], [-5, 29.6], [0, 32], [5, 30], [10, 31.8]], 2.4, 0.15, 0.15, 0.5)
+  } else if (i === 1) {
+    cut = 'M-2.6 20L2.6 20L0.5 42L-0.5 42Z'
+  } else {
+    for (let k = 0; k < 9; k++) {
+      const a = (k / 9) * Math.PI * 2
+      const x = Math.cos(a) * 8.5, y = 35 + Math.sin(a) * 3.4
+      cut += stroke([[x, y], [x + 0.2, y - 7 - (k % 2) * 1.6]], 1.5, 0.05, 0.05, 0.6)
+    }
+    cut += stroke(Array.from({ length: 11 }, (_, k) => [Math.cos((k / 10) * Math.PI) * 8.8, 35 + Math.sin((k / 10) * Math.PI) * 3.4 - 5.6] as Pt), 1, 0.05, 0.05, 0.6)
+  }
+  return [
+    s('path', { class: 't19g-tag-cord', d: 'M0 0L-6 9M0 0L6 9M0 0V-8' }),
+    s('path', { class: 't19g-tag-wood', d: board, filter: 'url(#ink-rough)' }),
+    s('path', { class: 't19g-tag-grain', d: stroke([[-10, 16], [-11, 48]], 0.7, 0.3, 0.3, 0.2) + stroke([[7, 14], [8, 47]], 0.7, 0.3, 0.3, 0.2) }),
+    s('path', { class: 't19g-tag-lit', d: stroke([[-14.6, 13.4], [-0.2, 6.2]], 1.2, 0.1, 0.1, 0.4) }),
+    s('path', { class: 't19g-tag-lip', d: cut, transform: 'translate(0.7 0.9)' }),
+    s('path', { class: 't19g-tag-cut', d: cut }),
+    s('path', { class: 't19g-tag-seam', d: seam }),
+    s('circle', { class: 't19g-tag-peg', cx: 0, cy: 9.5, r: 1.6 }),
+  ]
+}
+
+/**
  * Scene 2 · the fenced summit (EYE, macro, 2.5D). Eye-level against the bamboo fence: five painted flats at depth — blurred
  * bamboo in front, the fence (culms of every height, leaning, tied, fading into the mist at both ends) and its plank-and-
  * lattice gate, the compound glimpsed through it (a curved wall of dressed stone with lines of code cut into each block, a
@@ -107,7 +140,9 @@ function wicketArt(kw: number, kh: number): SVGElement[] {
  * Audit v3 19-2 (P1: opening the gate yourself said the opposite of "not released to everyone"): the bolt is stuck — it
  * gives a few px and the gate shudders, "this gate is not open to you". Then the man with the lantern at the small wicket
  * on the left (a software fixer) is let in: the wicket swings, his lantern goes in, the crack is lit and patched, and the
- * reason hangs on the fence as a plain sign with who got in first.
+ * reason hangs on the fence as a plain sign with who got in first. Then (19-3 "who says what" folded in) three carved tags on the
+ * right-hand fence speak, one at a time on the forecourt under them: Mozilla, VulnCheck, OpenAI; Anthropic's own claim and the
+ * project's name wait in the insight's "more". All three heard: the shared line.
  */
 export function gateScene(ctx: SceneCtx) {
   p2Defs()
@@ -141,14 +176,28 @@ export function gateScene(ctx: SceneCtx) {
       ctx.fact(G.reason as Fact, 'p', 't19g-reason'),
       h('p', { class: 't19g-allowed' }, G.allowed)))
   board.inert = true
+  // the three carved tags on the fence (they swing in once he is in) and the words of the last one heard, on the forecourt
+  const V = G.voices
+  const tagDotAt = V.map(() => h('span', { class: 't19g-tag-dot', 'aria-hidden': 'true' }))
+  const tags = V.map((v, i) => {
+    const b = h('button', { class: 't19g-tag', type: 'button', style: `--i:${i}`, 'aria-pressed': 'false', 'aria-label': fill(G.markAria, { who: v.who }) },
+      s('svg', { class: 't19g-tag-svg', viewBox: '-22 -8 44 64', 'aria-hidden': 'true' }, ...tagArt(i)), tagDotAt[i])
+    b.disabled = true
+    b.addEventListener('click', () => hear(i))
+    return b
+  })
+  const voice = h('div', { class: 't19g-voice', 'aria-live': 'polite' })
   // the picture is one role="img"; the fence layer (it holds the bolt, the only control) sits outside it, stacked by z-index
   const scene = h('div', { class: 't19g-scene', role: 'img', 'aria-label': G.art }, sky.el, peak.el, inner.el, fg.el)
-  const root = h('div', { class: `t19g${deep ? ' deep' : ''}` }, scene, fence.el, keeper, board)
-  ctx.art.append(root)
+  const root = h('div', { class: `t19g${deep ? ' deep' : ''}` }, scene, fence.el, keeper, board, ...tags)
+  ctx.art.append(root, voice) // the words sit outside the painting's soft lower edge
   ctx.prompt(G.prompt)
   const g = guide(ctx)
   const boltDot = g.dot(boltGrip, { dir: [1, 0] })
   let keeperDot: { done(): void } | null = null
+  let tagDots: ({ done(): void } | null)[] = []
+  let count: { set(n: number): void } | null = null
+  let countPt: Pt = [0, 0]
 
   let W = 0, H = 0
   let slide = 0, maxSlide = 1
@@ -381,6 +430,21 @@ export function gateScene(ctx: SceneCtx) {
     wicket.replaceChildren(...wicketArt(kw, kh))
     keeperDotAt.style.left = `${f1(kh * 0.49)}px`
     keeperDotAt.style.top = `${f1(kh * 0.24)}px`
+    // the three tags hang from the upper rail of the right-hand fence, in step with the board on the left (tall: no room
+    // there, and the board hangs over the beam, so they are tied to the stuck bolt); their words go on the forecourt below
+    const tw = Math.max(44, tall ? 44 : clamp(GW * 0.22, 44, 78)), th = tw * (64 / 44) // never under 44 px to touch
+    const right = postsL.filter((p) => p.x > gpR + pw)
+    const railAt = (x: number) => railY(right.reduce((a, b) => (Math.abs(b.x - x) < Math.abs(a.x - x) ? b : a)), 0.72)
+    const tagPts: Pt[] = tall || !right.length
+      ? [-0.28, 0, 0.28].map((k) => [gx + GW * k, gy - DH * 0.48 + bh * 0.3] as Pt)
+      : [0.2, 0.42, 0.64].map((k) => { const x = gpR + pw * 2 + (W - gpR) * k; return [x, railAt(x)] as Pt })
+    tagPts.forEach(([x, y], i) => Object.assign(tags[i].style, { left: `${f1(x - tw / 2)}px`, top: `${f1(y - th / 8)}px`, width: `${f1(tw)}px`, height: `${f1(th)}px` }))
+    // the count is carved on the clear gravel under the tags, as the first line over the words (never over the fence)
+    const vx = tall ? 14 : tagPts[0][0] - tw, vy = gy + H * 0.03
+    countPt = [vx + 64, vy + 10]
+    Object.assign(voice.style, tall
+      ? { left: `${f1(vx)}px`, width: `${f1(W - 28)}px`, top: `${f1(vy + 26)}px` }
+      : { left: `${f1(vx)}px`, width: `${f1(Math.min(W * 0.97 - vx, 416))}px`, top: `${f1(vy + 26)}px` })
 
     // 1 · out of focus in front: two bamboo culms at the left edge, one at the right, a few leaves
     const fw = clamp(W * 0.045, 22, 64)
@@ -395,6 +459,7 @@ export function gateScene(ctx: SceneCtx) {
         s('path', { class: 't19g-fg', d: c1.body + c2.body + c3.body + leaves }),
         s('path', { class: 't19g-fg-node', d: c1.nodes + c2.nodes + c3.nodes }),
         s('path', { class: 't19g-fg-rim', d: c1.rim + c2.rim + c3.rim })))
+    g.refresh() // the count is placed from this layout's numbers
   }
 
   /** the compound inside the fence: a dressed-stone wall with volume and code cut into it, the crack, masons, lamps */
@@ -662,7 +727,8 @@ export function gateScene(ctx: SceneCtx) {
   let nextT = 0
   ctx.onCleanup(() => clearTimeout(nextT))
 
-  /** the small gate opens for him: his lantern goes in, lights the crack, the masons fill it; the reason is hung up */
+  /** the small gate opens for him: his lantern goes in, lights the crack, the masons fill it; the reason is hung up, the tags
+   *  swing in on the right-hand fence */
   function letIn() {
     if (opened || !jammed) return
     opened = true
@@ -672,12 +738,49 @@ export function gateScene(ctx: SceneCtx) {
     root.classList.add('let')
     board.inert = false
     ctx.chime('soft')
-    const t = setTimeout(() => ctx.insight(G.insight as Fact, G.detail as Fact), ctx.reduced ? 0 : low ? 1400 : 2400)
-    ctx.onCleanup(() => clearTimeout(t))
+    nextT = window.setTimeout(() => {
+      ctx.prompt(G.steps[1])
+      tags.forEach((b) => (b.disabled = false))
+      tagDots = tagDotAt.map((el) => g.dot(el, { dir: [0, 1] }))
+      count = g.count(L.heard, V.length, () => countPt)
+    }, ctx.reduced ? 0 : low ? 1400 : 2600)
+  }
+
+  /** a tag speaks: its words on the forecourt (only the last one heard is written out); all three: the shared line */
+  const heard = new Set<number>()
+  let finT = 0
+  ctx.onCleanup(() => clearTimeout(finT))
+  function hear(i: number) {
+    if (!opened) return
+    const first = !heard.has(i)
+    heard.add(i)
+    tags.forEach((b, k) => b.classList.toggle('on', k === i))
+    tags[i].classList.add('heard')
+    tags[i].setAttribute('aria-pressed', 'true')
+    tagDots[i]?.done()
+    tagDots[i] = null
+    voice.replaceChildren(h('p', { class: 't19g-who' }, V[i].who), ctx.fact(V[i].view as Fact, 'p', 't19g-view'))
+    voice.classList.add('in')
+    if (!ctx.reduced) voice.animate([{ opacity: 0, translate: '0 6px' }, { opacity: 1, translate: '0 0' }], { duration: 600, easing: 'ease-out' })
+    ctx.chime('soft')
+    if (!first) return
+    count?.set(heard.size)
+    if (heard.size < V.length) return
+    // the last words stay a moment, then give way to the shared line (one block of words at a time)
+    finT = window.setTimeout(() => {
+      voice.classList.remove('in')
+      tags.forEach((b) => b.classList.remove('on'))
+      ctx.insight(G.insight as Fact, G.detail as Detail)
+      ctx.chime('ok')
+    }, low || ctx.reduced ? 2400 : 3200)
   }
   keeper.addEventListener('click', letIn)
-  // H7: standing still before the bolt was tried, it gives a small nudge to the right
-  const idle = () => !jammed && !ctx.reduced && boltArt.animate([{ translate: '0 0' }, { translate: '2px 0' }, { translate: '0 0' }], { duration: 600, iterations: 2 })
+  // H7: standing still before the bolt was tried, it gives a small nudge to the right; later the tags not yet heard sway
+  const idle = () => {
+    if (ctx.reduced) return
+    if (!jammed) boltArt.animate([{ translate: '0 0' }, { translate: '2px 0' }, { translate: '0 0' }], { duration: 600, iterations: 2 })
+    else if (count && heard.size < V.length) tags.forEach((b, k) => heard.has(k) || b.firstElementChild!.animate([{ rotate: '0deg' }, { rotate: '5deg' }, { rotate: '-4deg' }, { rotate: '0deg' }], { duration: 1200, easing: 'ease-in-out' }))
+  }
   ctx.el.addEventListener('p2:idle', idle)
   ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', idle))
 

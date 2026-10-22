@@ -460,7 +460,8 @@ export function houseScene(ctx: SceneCtx) {
   const low = ctx.quality === 'low'
   const lit = new Set<number>()
   const reading = live('t33h-read')
-  const note = h('p', { class: 't33h-note t33-ink', hidden: true }, K.note)
+  const note = ctx.fact(K.note as Fact, 'p', 't33h-note t33-ink')
+  note.hidden = true
   const short = (k: number) => K.rooms[k].name.split(/\s*=\s*/)
   const night = s('svg', { class: 't33-night t33h-night', 'aria-hidden': 'true' })
   const cam = h('div', { class: 't33h-cam' })

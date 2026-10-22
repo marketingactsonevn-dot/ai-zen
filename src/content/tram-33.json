@@ -2,10 +2,6 @@
   "id": 33,
   "kicker": "Agent tự chạy như người giữ vườn ở luôn trong nhà — bạn quyết định trao chìa (quyền) nào.",
   "summary": "Agent tự chạy rất mạnh — chỉ an toàn khi bạn trao đúng chìa và coi thư lạ là có thể chứa lệnh ẩn.",
-  "newsTags": [
-    "agent-local",
-    "agent-security"
-  ],
   "takeaways": [
     "t33-agent-safety",
     "t33-permission-plan"
@@ -60,6 +56,12 @@
                 "text": "OpenClaw: trợ lý AI cá nhân mã nguồn mở (MIT), chạy trên thiết bị của bạn, nối với hơn 20 kênh chat; dùng được model trên mây hoặc trên máy.",
                 "asOf": "2026-10-15",
                 "source": "t33-openclaw-github"
+              },
+              "claim": {
+                "text": "Khi dự án đổi tên (Clawdbot → Moltbot → OpenClaw, 27–30/01/2026), kẻ gian lập tức chiếm tên cũ, mạo danh nhóm phát triển, tung token giả. Chỉ cài agent từ trang và repo chính thức.",
+                "asOf": "2026-10-15",
+                "source": "news-openclaw-lore",
+                "verifiedBy": "news-tc-steinberger"
               }
             }
           ]
@@ -160,11 +162,18 @@
         "asOf": "2026-10-15",
         "source": "t33-owasp-llm01"
       },
-      "detail": {
-        "text": "Ví dụ: OpenClaw mặc định cho công cụ chạy thẳng trên máy bạn; muốn nhốt nó trong một khu riêng (sandbox) thì bạn phải tự bật.",
-        "asOf": "2026-10-15",
-        "source": "t33-openclaw-github"
-      },
+      "detail": [
+        {
+          "text": "Ví dụ: OpenClaw mặc định cho công cụ chạy thẳng trên máy bạn; muốn nhốt nó trong một khu riêng (sandbox) thì bạn phải tự bật.",
+          "asOf": "2026-10-15",
+          "source": "t33-openclaw-github"
+        },
+        {
+          "text": "Agent giữ chìa máy bạn, nên lỗ hổng của agent là lỗ hổng của cả máy: OpenClaw bản trước 2026.1.29 có lỗi “một cú nhấp” — bấm một link lạ là agent tự gửi mã truy cập cho kẻ gian (lỗ hổng đã được đăng ký mã số CVE-2026-25253). Luôn cập nhật bản mới.",
+          "asOf": "2026-10-15",
+          "source": "news-nvd-25253"
+        }
+      ],
       "promptAsk": "Chìa nào không rút lại được thì chạm lần nữa để buộc chỉ son — đủ rồi thì chạm “Giao việc”",
       "askTag": "hỏi tôi trước",
       "asked": "trao, có buộc chỉ son (hỏi bạn trước)",
@@ -260,19 +269,12 @@
         "asOf": "2026-10-15",
         "source": "t33-lf-aaif"
       },
-      "note": "Mỗi gian là một cửa có thể bị lợi dụng: trí nhớ có thể bị ghi lệnh lạ, skill tải về có thể chứa mã độc."
-    },
-    "stones": {
-      "label": "Bia đá dọc lối",
-      "art": "Một lối mòn ven hồ, hai bên dựng những tấm bia đá nhỏ phủ sương; mỗi bia khắc một tin. Bia cũ đã xanh rêu, bia mới còn ướt mực; đèn lồng treo thấp soi chữ.",
-      "prompt": "Lật từng tấm bia",
-      "aria": "Bảng tin trên đá: các mốc và sự cố của agent tự chạy",
-      "insight": {
-        "text": "Agent tự chạy lan nhanh — lỗ hổng và skill độc hại cũng lan nhanh như thế.",
+      "note": {
+        "text": "Mỗi gian là một cửa có thể bị lợi dụng: trí nhớ bị ghi lệnh lạ, skill tải về chứa mã độc. Đầu 2026, Koi Security rà 2.857 skill trên chợ ClawHub, gắn cờ 341 skill độc hại.",
         "asOf": "2026-10-15",
-        "source": "t33-koi-clawhub"
-      },
-      "detail": "Tin AI mau cũ: xem ngày trước khi tin; bia phủ rêu là tin đã quá sáu tháng."
+        "source": "t33-koi-clawhub",
+        "claimBy": "Koi Security"
+      }
     }
   },
   "sources": {

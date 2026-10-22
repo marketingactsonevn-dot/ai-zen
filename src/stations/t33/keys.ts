@@ -6,7 +6,7 @@ import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onSize, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, toro } from '../../ui/part2/paint'
 import { guide } from '../../ui/part2/guide'
-import type { SceneCtx } from '../types'
+import type { Detail, SceneCtx } from '../types'
 import './keys.css'
 import { cardSheet, f1, guard, live, P, parallax, t33Defs } from './kit'
 
@@ -667,7 +667,7 @@ export function keysScene(ctx: SceneCtx) {
     solved = true
     dot.done()
     g.ok(check)
-    ctx.insight(K.insight as Fact, K.detail as Fact)
+    ctx.insight(K.insight as Fact, K.detail as Detail)
     sheet.show()
   })
   label()

@@ -6,7 +6,6 @@ import { scalingScene } from './scaling'
 import { moatScene } from './moat'
 import { goldrushScene } from './goldrush'
 import { wheelScene } from './wheel'
-import { voicesScene } from './voices'
 
 const S = C.scenes
 const station: StationModule = {
@@ -18,7 +17,6 @@ const station: StationModule = {
     { label: S.scaling.label, text: 'br', mount: scalingScene },
     { label: S.moat.label, text: 'bl', mount: moatScene },
     { label: S.loop.label, mount: wheelScene },
-    { label: S.loop.circleLabel, mount: voicesScene },
   ],
 }
 export default station

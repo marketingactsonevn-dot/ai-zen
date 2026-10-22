@@ -5,7 +5,7 @@ import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
 import { blob, curve, rng, type Pt } from '../../ui/part2/ink'
-import type { SceneCtx } from '../types'
+import type { Detail, SceneCtx } from '../types'
 import { guide, type Mark } from '../../ui/part2/guide'
 import { brush, camera, cardSheet, clamp, ease, easeOut, fit, fitCamera, flatEllipse, flatSprite, grainOver, live, mix, palette, poly, polyClip, rgba, softPool, stageSize, type Cam, type Pal, type RGB, type V3 } from './kit'
 
@@ -1241,7 +1241,7 @@ export function tableScene(ctx: SceneCtx) {
   function tell(what: 'fit' | 'press') {
     if (told.has(what)) return
     told.add(what)
-    ctx.insight((what === 'fit' ? K.insightFit : K.insightPress) as Fact, K.detail)
+    ctx.insight((what === 'fit' ? K.insightFit : K.insightPress) as Fact, K.detail as Detail)
     root.classList.add('told') // one block of words: the rule board's text fades (the insight says it)
   }
   function labelModels() {

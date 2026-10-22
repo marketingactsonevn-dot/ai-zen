@@ -51,11 +51,14 @@
     },
     "gate": {
       "label": "The fenced summit",
-      "art": "Eye level, right against the bamboo fence on the highest summit. A few blurred bamboo stalks at the edges; in the middle a gate of two latticed wooden doors, barred by a wooden bolt. Through the lattice, lamplight inside: a wall laid in lines of code, a red crack, two workers patching it, two stone lanterns, twelve small lamps along the wall and, further off, a faint band of lights. Behind the wall rise the summit, the moon and the mist. On the left, by a small wicket in the fence, a man with a lantern waits.",
+      "art": "Eye level, right against the bamboo fence on the highest summit. A few blurred bamboo stalks at the edges; in the middle a gate of two latticed wooden doors, barred by a wooden bolt. Through the lattice, lamplight inside: a wall laid in lines of code, a red crack, two workers patching it, two stone lanterns, twelve small lamps along the wall and, further off, a faint band of lights. Behind the wall rise the summit, the moon and the mist. On the left, by a small wicket in the fence, a man with a lantern waits. On the right, three carved wooden tags hang on the fence: a fresh seam of mortar, a single notch, a small fenced ring.",
       "prompt": "Try sliding the bolt to the right",
       "gateAria": "Try sliding the wooden bolt to the right to open the gate (or press Enter)",
       "jammed": "This gate is not open to you.",
-      "steps": ["Look at the small gate: who gets in?"],
+      "steps": [
+        "Look at the small gate: who gets in?",
+        "Touch each carved tag on the fence: who says what?"
+      ],
       "keeper": "A software fixer",
       "keeperAria": "The man with the lantern at the small gate: see who gets in",
       "allowed": "In first: Apple, AWS, the Linux Foundation and more than 40 organisations that maintain critical software",
@@ -66,65 +69,54 @@
         "source": "anthropic-glasswing",
         "claimBy": "Anthropic"
       },
-      "debateTitle": "Who says what",
-      "courtPrompt": "Touch the lantern bearer at each gate",
-      "courtArt": "Looking down on the fenced summit floating in the sea of cloud, like a temple ground plan. A raked gravel court in the middle, four gates at the four quarters. Outside each gate stand a lantern bearer and a carved sign: the gate itself, a stone with fresh mortar, a stone with a single notch, a smaller fenced ring. Open a gate and its bearer walks to the middle of the court, leaving footprints.",
-      "perspectives": {
-        "stones": [
-          {
-            "who": "Anthropic · the model's maker (04/2026)",
-            "view": {
-              "text": "The company says Mythos found thousands of flaws nobody knew about, in every major operating system and browser.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-glasswing",
-              "claimBy": "Anthropic"
-            }
-          },
-          {
-            "who": "Mozilla · maker of the Firefox browser (05/2026)",
-            "view": {
-              "text": "Mozilla confirms: it fixed 271 bugs found by Mythos, 180 of them urgent.",
-              "asOf": "2026-10-15",
-              "source": "mozilla-mythos"
-            }
-          },
-          {
-            "who": "VulnCheck · a vulnerability-data company (04/2026)",
-            "view": {
-              "text": "In mid-April, before Mozilla's report, VulnCheck could count only 1 officially published flaw tied to the project.",
-              "asOf": "2026-10-15",
-              "source": "cso-glasswing",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "OpenAI · another company (09/2026)",
-            "view": {
-              "text": "OpenAI is also opening GPT-6 Astra only gradually, first to selected customers, because it worries about the model's hacking ability.",
-              "asOf": "2026-10-15",
-              "source": "bleeping-gpt6",
-              "claimBy": "OpenAI"
-            }
+      "markAria": "Carved tag on the fence: hear {who}",
+      "voices": [
+        {
+          "who": "Mozilla · maker of the Firefox browser (05/2026)",
+          "view": {
+            "text": "Mozilla confirms: it fixed 271 bugs found by Mythos, 180 of them urgent.",
+            "asOf": "2026-10-15",
+            "source": "mozilla-mythos"
           }
-        ],
-        "common": {
-          "text": "Everyone sees AI has become very good at finding flaws. Still argued: who gets to use it first, and who checks the company's word.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
+        },
+        {
+          "who": "VulnCheck · a vulnerability-data company (04/2026)",
+          "view": {
+            "text": "In mid-April, before Mozilla's report, VulnCheck could count only 1 officially published flaw tied to the project.",
+            "asOf": "2026-10-15",
+            "source": "cso-glasswing",
+            "kind": "opinion"
+          }
+        },
+        {
+          "who": "OpenAI · another company (09/2026)",
+          "view": {
+            "text": "OpenAI is also opening GPT-6 Astra only gradually, first to selected customers, because it worries about the model's hacking ability.",
+            "asOf": "2026-10-15",
+            "source": "bleeping-gpt6",
+            "claimBy": "OpenAI"
+          }
         }
-      },
+      ],
       "insight": {
-        "text": "In 2026, some AI models are not released to everyone. The company hands them first to the people who fix software flaws.",
+        "text": "Everyone sees AI has become very good at finding flaws. Still argued: who gets to use it first, and who checks the company's word.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": {
-        "text": "The project is called Glasswing, announced 7 April 2026. The vulnerability counts come from the company and its partners themselves.",
-        "asOf": "2026-10-15",
-        "source": "anthropic-glasswing"
-      }
+      "detail": [
+        {
+          "text": "04/2026: Anthropic says Mythos found thousands of flaws nobody knew about, in every major operating system and browser.",
+          "asOf": "2026-10-15",
+          "source": "anthropic-glasswing",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "The project is called Glasswing, announced 7 April 2026. The vulnerability counts come from the company and its partners themselves.",
+          "asOf": "2026-10-15",
+          "source": "anthropic-glasswing"
+        }
+      ]
     },
     "stele": {
       "label": "Reading the stele without being fooled",

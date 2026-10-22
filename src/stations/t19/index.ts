@@ -2,7 +2,6 @@ import './style.css'
 import raw from '../../content/tram-19.json'
 import type { StationContent } from '../../core/content'
 import type { StationModule } from '../types'
-import { courtScene } from './court'
 import { gateScene } from './gate'
 import { peaksScene } from './peaks'
 import { steleScene } from './stele'
@@ -17,7 +16,6 @@ const station: StationModule = {
     // audit v3: the launch tide is the context ("why the news comes so fast"), so it comes second, before the fence
     { label: S.tide.label, text: 'br', mount: tideScene },
     { label: S.gate.label, mount: gateScene },
-    courtScene(),
     { label: S.stele.label, mount: steleScene },
   ],
 }

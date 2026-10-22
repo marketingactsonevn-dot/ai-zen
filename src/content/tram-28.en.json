@@ -226,7 +226,7 @@
     },
     "loop": {
       "label": "The money loop",
-      "art": "Looking up from below the axle at a great wooden waterwheel beside NVIDIA's stone mill, against the moon. A stone flume carries water, the money, from the wheel's tail round the lake past the AI company's island (a pavilion with a lamp) and the data centre's (a row of stone lanterns), then over the mill roof back onto the wheel. At the last step two water marks appear on the mill wall: $22 and $51 billion.",
+      "art": "Looking up from below the axle at a great wooden waterwheel beside NVIDIA's stone mill, against the moon. A stone flume carries water, the money, from the wheel's tail round the lake past the AI company's island (a pavilion with a lamp) and the data centre's (a row of stone lanterns), then over the mill roof back onto the wheel. At the last step two water marks appear on the mill wall: $22 and $51 billion. Once the wheel turns by itself, tilt the lake: to the left the water curls into a bright moat round the NVIDIA mill; to the right it swells into a trembling dome, the moon stretched on it. On each side the plank in the water carries two comments.",
       "prompt": "Tap or drag the waterwheel round, the way the arrow points",
       "flowLabel": "Money flowing in a loop",
       "wheelAria": "The waterwheel: tap it, drag it round its axle, or press Enter, to turn it a quarter",
@@ -235,7 +235,6 @@
         "AI company",
         "Data centre"
       ],
-      "circleLabel": "Four voices by the lake",
       "flow": [
         "NVIDIA invests in an AI company",
         "The AI company builds data centres",
@@ -260,55 +259,67 @@
           "source": "t28-nvda-10q"
         }
       ],
-      "perspectives": {
-        "stones": [
-          {
-            "who": "Wedbush, a US brokerage",
-            "view": {
-              "text": "It is circular investment, true, but if it works, customers will be tied tightly to NVIDIA.",
-              "asOf": "2026-10-15",
-              "source": "t28-benzinga",
-              "kind": "opinion"
+      "sides": [
+        {
+          "name": "Keeping customers",
+          "voices": [
+            {
+              "who": "Wedbush, a US brokerage",
+              "view": {
+                "text": "It is circular investment, true, but if it works, customers will be tied tightly to NVIDIA.",
+                "asOf": "2026-10-15",
+                "source": "t28-benzinga",
+                "kind": "opinion"
+              }
+            },
+            {
+              "who": "Jensen Huang, NVIDIA CEO",
+              "view": {
+                "text": "NVIDIA's money is only part of what customers raise; calling it “circular” is baseless.",
+                "asOf": "2026-10-15",
+                "source": "t28-asiae",
+                "kind": "opinion",
+                "claimBy": "NVIDIA"
+              }
             }
-          },
-          {
-            "who": "Global X, an investment fund",
-            "view": {
-              "text": "NVIDIA sells the chips and also promises to repay its chip buyers' debt; that makes it all the more contested.",
-              "asOf": "2026-10-15",
-              "source": "t28-asiae",
-              "kind": "opinion"
+          ]
+        },
+        {
+          "name": "A bubble",
+          "voices": [
+            {
+              "who": "Bank of England",
+              "view": {
+                "text": "Oct 2025: AI companies' share prices look too high; the risk of a sharp fall is growing.",
+                "asOf": "2026-10-15",
+                "source": "t28-boe",
+                "kind": "opinion"
+              }
+            },
+            {
+              "who": "Global X, an investment fund",
+              "view": {
+                "text": "NVIDIA sells the chips and also promises to repay its chip buyers' debt; that makes it all the more contested.",
+                "asOf": "2026-10-15",
+                "source": "t28-asiae",
+                "kind": "opinion"
+              }
             }
-          },
-          {
-            "who": "Jensen Huang, NVIDIA CEO",
-            "view": {
-              "text": "NVIDIA's money is only part of what customers raise; calling it “circular” is baseless.",
-              "asOf": "2026-10-15",
-              "source": "t28-asiae",
-              "kind": "opinion",
-              "claimBy": "NVIDIA"
-            }
-          },
-          {
-            "who": "Bank of England",
-            "view": {
-              "text": "Oct 2025: AI companies' share prices look too high; the risk of a sharp fall is growing.",
-              "asOf": "2026-10-15",
-              "source": "t28-boe",
-              "kind": "opinion"
-            }
-          }
-        ],
-        "common": {
-          "text": "The money really does go round. The debate: does it keep customers loyal, or inflate a value that could burst?",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
+          ]
         }
-      },
+      ],
+      "tiltPrompt": "The wheel turns by itself. Now tilt the lake left, then right",
+      "tiltNext": [
+        "Now tilt it right: a bubble?",
+        "Now tilt it left: keeping customers?"
+      ],
+      "tiltCount": "Seen {n}/{total} sides",
+      "tiltAria": [
+        "Tilt the lake to the left: keeping customers",
+        "Tilt the lake to the right: a bubble"
+      ],
       "insight": {
-        "text": "The money NVIDIA puts into customers comes back as money spent on NVIDIA chips. The faster the wheel turns, the bigger the revenue.",
+        "text": "The money really does go round. The debate: does it keep customers loyal, or inflate a value that could burst?",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -318,13 +329,20 @@
         "$22 billion",
         "$51 billion\nin stakes"
       ],
-      "circlePrompt": "Tap each stone: keeping customers, or a bubble?",
-      "detail": {
-        "text": "When you read “NVIDIA invests in X”, ask: does X buy NVIDIA chips?",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
-      }
+      "detail": [
+        {
+          "text": "The money NVIDIA puts into customers comes back as money spent on NVIDIA chips. The faster the wheel turns, the bigger the revenue.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        },
+        {
+          "text": "When you read “NVIDIA invests in X”, ask: does X buy NVIDIA chips?",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      ]
     }
   },
   "sources": {

@@ -5,7 +5,6 @@ import { keeperScene } from './keeper'
 import { keysScene } from './keys'
 import { whisperScene } from './whisper'
 import { houseScene } from './house'
-import { stonesScene } from './stones'
 
 const S = raw.scenes
 
@@ -17,7 +16,6 @@ const station: StationModule = {
     { label: S.house.label, text: 'tr', mount: houseScene },
     { label: S.keys.label, mount: keysScene },
     { label: S.whisper.label, mount: whisperScene },
-    { label: S.stones.label, mount: stonesScene },
   ],
 }
 export default station

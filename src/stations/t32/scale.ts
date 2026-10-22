@@ -5,7 +5,7 @@ import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
 import { blob, curve, rng, rock, stroke, type Pt } from '../../ui/part2/ink'
-import type { SceneCtx } from '../types'
+import type { Detail, SceneCtx } from '../types'
 import { guide, type Mark } from '../../ui/part2/guide'
 import { brush, clamp, fit, grainOver, live, mix, palette, rgba, stageSize, type Pal, type RGB } from './kit'
 
@@ -899,7 +899,7 @@ export function scaleScene(ctx: SceneCtx) {
     }
     done = true
     root.classList.add('is-done')
-    ctx.insight(K.insight as Fact, K.detail as Fact)
+    ctx.insight(K.insight as Fact, K.detail as Detail)
     ctx.chime('ok')
   }
   const home = (k: number) => {

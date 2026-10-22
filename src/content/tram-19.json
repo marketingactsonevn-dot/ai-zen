@@ -51,11 +51,14 @@
     },
     "gate": {
       "label": "Đỉnh núi có rào",
-      "art": "Đứng sát hàng rào tre trên đỉnh núi cao nhất, ngang tầm mắt. Vài thân tre mờ ở mép khung; giữa rào là cổng gỗ hai cánh mắt cáo, cài một then gỗ ngang. Qua mắt cáo thấy ánh đèn bên trong: một bức tường xây bằng những dòng mã, một vết nứt đỏ, hai người thợ đang trát, hai đèn đá, mười hai ngọn đèn nhỏ dọc tường và xa hơn một dải đèn mờ. Sau tường là đỉnh núi, trăng và sương. Bên trái, trước một cổng nhỏ trên rào, một người cầm đèn lồng đứng chờ.",
+      "art": "Đứng sát hàng rào tre trên đỉnh núi cao nhất, ngang tầm mắt. Vài thân tre mờ ở mép khung; giữa rào là cổng gỗ hai cánh mắt cáo, cài một then gỗ ngang. Qua mắt cáo thấy ánh đèn bên trong: một bức tường xây bằng những dòng mã, một vết nứt đỏ, hai người thợ đang trát, hai đèn đá, mười hai ngọn đèn nhỏ dọc tường và xa hơn một dải đèn mờ. Sau tường là đỉnh núi, trăng và sương. Bên trái, trước một cổng nhỏ trên rào, một người cầm đèn lồng đứng chờ. Bên phải, trên rào treo ba thẻ gỗ khắc dấu: một vết vữa mới, một khấc, một vòng rào nhỏ.",
       "prompt": "Thử kéo then cửa sang phải",
       "gateAria": "Thử kéo then cửa sang phải để mở cổng (hoặc nhấn Enter)",
       "jammed": "Cổng này chưa mở cho bạn.",
-      "steps": ["Nhìn sang cổng nhỏ: ai được vào?"],
+      "steps": [
+        "Nhìn sang cổng nhỏ: ai được vào?",
+        "Chạm từng thẻ khắc trên rào: ai nói gì?"
+      ],
       "keeper": "Người vá lỗi phần mềm",
       "keeperAria": "Người cầm đèn đứng ở cổng nhỏ: xem ai được vào",
       "allowed": "Được vào trước: Apple, AWS, Linux Foundation và hơn 40 tổ chức giữ phần mềm quan trọng",
@@ -66,65 +69,54 @@
         "source": "anthropic-glasswing",
         "claimBy": "Anthropic"
       },
-      "debateTitle": "Ai nói gì",
-      "courtPrompt": "Chạm người cầm đèn ở mỗi cổng",
-      "courtArt": "Nhìn từ trên xuống khu đỉnh có rào nổi giữa biển mây, như một bản vẽ mặt bằng chùa. Giữa là sân sỏi cào, bốn cổng ở bốn hướng. Ngoài mỗi cổng có một người cầm đèn và một dấu khắc: cái cổng, hòn đá có mạch vữa mới, hòn đá một khấc, một khu rào nhỏ hơn. Mở cổng nào thì người cầm đèn đi vào giữa sân, để lại vết chân.",
-      "perspectives": {
-        "stones": [
-          {
-            "who": "Anthropic · hãng làm mô hình (04/2026)",
-            "view": {
-              "text": "Hãng nói Mythos tìm ra hàng nghìn lỗ hổng chưa ai biết, trong mọi hệ điều hành và trình duyệt lớn.",
-              "asOf": "2026-10-15",
-              "source": "anthropic-glasswing",
-              "claimBy": "Anthropic"
-            }
-          },
-          {
-            "who": "Mozilla · làm trình duyệt Firefox (05/2026)",
-            "view": {
-              "text": "Mozilla xác nhận: đã vá 271 lỗi do Mythos tìm ra, 180 lỗi cần vá gấp.",
-              "asOf": "2026-10-15",
-              "source": "mozilla-mythos"
-            }
-          },
-          {
-            "who": "VulnCheck · công ty dữ liệu lỗ hổng (04/2026)",
-            "view": {
-              "text": "Giữa tháng 4, trước báo cáo của Mozilla, VulnCheck mới đếm được 1 lỗi được công bố chính thức gắn với dự án.",
-              "asOf": "2026-10-15",
-              "source": "cso-glasswing",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "OpenAI · một hãng khác (09/2026)",
-            "view": {
-              "text": "OpenAI cũng chỉ mở GPT-6 Astra dần, trước hết cho khách hàng chọn lọc, vì lo năng lực tấn công mạng của nó.",
-              "asOf": "2026-10-15",
-              "source": "bleeping-gpt6",
-              "claimBy": "OpenAI"
-            }
+      "markAria": "Thẻ khắc trên rào: nghe {who}",
+      "voices": [
+        {
+          "who": "Mozilla · làm trình duyệt Firefox (05/2026)",
+          "view": {
+            "text": "Mozilla xác nhận: đã vá 271 lỗi do Mythos tìm ra, 180 lỗi cần vá gấp.",
+            "asOf": "2026-10-15",
+            "source": "mozilla-mythos"
           }
-        ],
-        "common": {
-          "text": "Ai cũng thấy AI tìm lỗi đã rất giỏi. Câu còn cãi: ai được dùng trước, và ai kiểm lời hãng.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
+        },
+        {
+          "who": "VulnCheck · công ty dữ liệu lỗ hổng (04/2026)",
+          "view": {
+            "text": "Giữa tháng 4, trước báo cáo của Mozilla, VulnCheck mới đếm được 1 lỗi được công bố chính thức gắn với dự án.",
+            "asOf": "2026-10-15",
+            "source": "cso-glasswing",
+            "kind": "opinion"
+          }
+        },
+        {
+          "who": "OpenAI · một hãng khác (09/2026)",
+          "view": {
+            "text": "OpenAI cũng chỉ mở GPT-6 Astra dần, trước hết cho khách hàng chọn lọc, vì lo năng lực tấn công mạng của nó.",
+            "asOf": "2026-10-15",
+            "source": "bleeping-gpt6",
+            "claimBy": "OpenAI"
+          }
         }
-      },
+      ],
       "insight": {
-        "text": "Năm 2026, có mô hình AI không ra cho mọi người. Hãng trao nó trước cho người vá lỗi phần mềm.",
+        "text": "Ai cũng thấy AI tìm lỗi đã rất giỏi. Câu còn cãi: ai được dùng trước, và ai kiểm lời hãng.",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": {
-        "text": "Dự án tên Glasswing, công bố 07/04/2026. Các con số lỗ hổng do hãng và đối tác tự nêu.",
-        "asOf": "2026-10-15",
-        "source": "anthropic-glasswing"
-      }
+      "detail": [
+        {
+          "text": "04/2026: Anthropic nói Mythos tìm ra hàng nghìn lỗ hổng chưa ai biết, trong mọi hệ điều hành và trình duyệt lớn.",
+          "asOf": "2026-10-15",
+          "source": "anthropic-glasswing",
+          "claimBy": "Anthropic"
+        },
+        {
+          "text": "Dự án tên Glasswing, công bố 07/04/2026. Các con số lỗ hổng do hãng và đối tác tự nêu.",
+          "asOf": "2026-10-15",
+          "source": "anthropic-glasswing"
+        }
+      ]
     },
     "stele": {
       "label": "Đọc bia đá không bị lừa",

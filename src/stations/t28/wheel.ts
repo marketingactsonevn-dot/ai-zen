@@ -1,7 +1,7 @@
 import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import type { Fact } from '../../core/content'
-import type { SceneCtx } from '../types'
+import type { Detail, SceneCtx } from '../types'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { hills, mist, moon, pine, reeds, toro, wash, water } from '../../ui/part2/paint'
 import { C } from './data'
@@ -34,6 +34,9 @@ const bez = (a: Pt, c: Pt, b: Pt, n = 24) => curve(a, c, b, n)
  * (a pavilion with a lamp) and the data centre's (a row of stone lanterns like racks), and back over the mill onto the
  * wheel. Turn the wheel a quarter at a time (drag, ← →, Enter): each quarter lights the next run of water and cuts its
  * line into a plank by the flume. After one round it keeps turning by itself, faster each round, the water rising.
+ * Audit v3 28-6 folded in: then tilt the lake. Left, the water curls into a bright moat round the NVIDIA mill and the plank
+ * moves to the left shallows with two comments for "it keeps customers"; right, the water under the moon swells into a
+ * trembling dome, the moon stretched on it, and the plank carries the two for "a bubble". Both seen: the shared line.
  */
 export function wheelScene(ctx: SceneCtx) {
   p2Defs()
@@ -60,7 +63,13 @@ export function wheelScene(ctx: SceneCtx) {
   const board = h('div', { class: 't28w-board' }, h('div', { class: 't28w-face' }, plank, slip), h('i', { class: 't28w-wet', 'aria-hidden': 'true' }))
   const wheel = h('div', { class: 't28w-hit', role: 'slider', tabindex: '0', 'aria-label': G.flowLabel, 'aria-valuemin': '0', 'aria-valuemax': String(G.flow.length), 'aria-valuenow': '0', 'aria-description': G.wheelAria })
   const islandTags = G.islands.map((n) => h('span', { class: 't28w-isle', 'data-t': n }, n)) // written on the water, with its reflection
-  const root = h('div', { class: 't28w', role: 'group', 'aria-label': G.art }, sky, back, wheelSvg, near, ...islandTags, wheel)
+  // once the wheel turns by itself: the two halves of the lake below it tilt it that way
+  const tilts = G.tiltAria.map((a, k) => {
+    const b = h('button', { class: 't28w-tilt', type: 'button', 'aria-label': a, onClick: () => tilt(k) })
+    b.disabled = true
+    return b
+  })
+  const root = h('div', { class: 't28w', role: 'group', 'aria-label': G.art }, sky, back, wheelSvg, near, ...islandTags, wheel, ...tilts)
   ctx.art.append(root, board) // the board sits outside the painting's soft edges
 
   let geo = { cx: 0, cy: 0, R: 1, sx: 0.88, dx: 0, dy: 0 }
@@ -109,10 +118,52 @@ export function wheelScene(ctx: SceneCtx) {
       dot.done()
       steps.done()
       root.classList.add('round')
-      ctx.insight(G.insight as Fact, G.detail as Fact)
       ctx.chime('ok')
       if (!still) (spin = 0.9), loop.start()
+      // the wheel turns by itself: now tilt the lake (a dot on each bank, a count of the sides from the start)
+      const t = window.setTimeout(() => {
+        ctx.prompt(G.tiltPrompt)
+        tilts.forEach((b) => (b.disabled = false))
+        sideDots = [0, 1].map((k) => gd.dot(() => bankPt[k], { dir: [k ? 1 : -1, 0.5] }))
+        sides = gd.count(G.tiltCount, 2, () => countPt)
+      }, ctx.reduced ? 0 : 1800)
+      ctx.onCleanup(() => clearTimeout(t))
     } else ctx.chime('soft')
+  }
+
+  // ── the tilt: the plank moves to that bank with its two comments, the lake takes that shape
+  let bankPt: Pt[] = [[0, 0], [0, 0]], countPt: Pt = [0, 0]
+  let sideDots: ({ done(): void } | null)[] = []
+  let sides: { set(n: number): void } | null = null
+  let side = -1
+  const seen = new Set<number>()
+  let boardAt: Partial<CSSStyleDeclaration>[] = []
+  let lakeface: SVGGElement | null = null
+  function tilt(k: number) {
+    if (!done) return
+    side = k
+    root.classList.toggle('tilt-l', k === 0)
+    root.classList.toggle('tilt-r', k === 1)
+    if (boardAt[k]) Object.assign(board.style, boardAt[k])
+    const sd = G.sides[k]
+    plank.textContent = sd.name
+    slip.replaceChildren(...sd.voices.map((v) => h('p', { class: 't28w-fact t28w-voice' }, h('span', { class: 't28w-who' }, `${v.who}: `), ctx.fact(v.view as Fact, 'span'))))
+    slip.classList.add('open')
+    board.classList.remove('in')
+    void board.offsetWidth
+    board.classList.add('in')
+    ctx.chime('soft')
+    if (seen.has(k)) return
+    seen.add(k)
+    sideDots[k]?.done()
+    sideDots[k] = null
+    sides?.set(seen.size)
+    if (seen.size < 2) return void ctx.prompt(G.tiltNext[k])
+    const t = window.setTimeout(() => {
+      ctx.insight(G.insight as Fact, G.detail as Detail)
+      ctx.chime('ok')
+    }, ctx.reduced ? 0 : 1200)
+    ctx.onCleanup(() => clearTimeout(t))
   }
 
   // ── one loop: the wheel eases to its target, then (after a round) turns by itself, faster each round, for a while
@@ -206,9 +257,13 @@ export function wheelScene(ctx: SceneCtx) {
     if (step < G.flow.length) advance()
     turnTo((Math.round(target / (Math.PI / 2)) + 1) * (Math.PI / 2))
   }
-  // H7: the wheel nudges 8° on and back
+  // H7: the wheel nudges 8° on and back; once it turns by itself, the lake rocks a little
   const invite = () => {
-    if (done || still) return
+    if (still) return
+    if (done) {
+      if (sides && seen.size < 2) lakeface?.animate([{ rotate: '0deg' }, { rotate: '-0.9deg' }, { rotate: '0.9deg' }, { rotate: '0deg' }], { duration: 1600, easing: 'ease-in-out' })
+      return
+    }
     turnTo(target + 0.14)
     const tm = window.setTimeout(() => turnTo(target - 0.14), 450)
     ctx.onCleanup(() => clearTimeout(tm))
@@ -253,8 +308,8 @@ export function wheelScene(ctx: SceneCtx) {
       water(-W * 0.05, hz, W * 1.05, H, 2860, cx + R * 0.12),
       mist(W * 0.5, hz + 2, W * 0.8, H * 0.03))
     // ── the islands and the stone channel, in perspective (far = thin, pale)
-    const isleAI: Pt = wide ? [W * 0.12, hz + H * 0.035] : [W * 0.2, H * 0.55]
-    const isleDC: Pt = wide ? [W * 0.86, hz + H * 0.03] : [W * 0.76, H * 0.585]
+    const isleAI: Pt = wide ? [W * 0.12, hz + H * 0.035] : [W * 0.2, H * 0.49]
+    const isleDC: Pt = wide ? [W * 0.86, hz + H * 0.03] : [W * 0.76, H * 0.52]
     const millX = cx + R * sx * 1.04 + dx * 0.4, millW = wide ? R * 0.92 : R * 0.78, sideW = R * (wide ? 0.24 : 0.16)
     const tail: Pt = [cx - R * 0.45, wl + R * 0.04]
     const head: Pt = [cx + R * 0.3, cy - R * 1.06] // where the trough pours onto the wheel
@@ -422,6 +477,25 @@ export function wheelScene(ctx: SceneCtx) {
       }
       return d
     }
+    // the lake tilted: left, a bright moat of money curling round the mill (it keeps customers); right, the water under the
+    // moon swelling into a dome, the moon stretched long on it (a bubble). Hidden until that side is tilted.
+    const tiltFx = () => {
+      const mx = millX + (millW + sideW) * 0.5, my = wl + R * 0.04, mrx = (millW + sideW) * 0.95, mry = R * 0.12
+      const ring = (k: number) => blob(mx, my, mrx * (1 + k * 0.14), mry * (1 + k * 0.2), 2883 + Math.round(k * 2), 0.025, 28)
+      const dx0 = cx + R * 0.12, yb = wl + R * 0.4, hw = R * 0.95 * sx, rise = R * 0.28
+      const dome = `M${P([dx0 - hw, yb])}Q${P([dx0, yb - rise * 2])} ${P([dx0 + hw, yb])}Q${P([dx0, yb + rise * 0.4])} ${P([dx0 - hw, yb])}Z`
+      const sheen = `M${P([dx0 - hw * 0.66, yb - rise * 0.45])}Q${P([dx0 - hw * 0.2, yb - rise * 1.02])} ${P([dx0 + hw * 0.4, yb - rise * 0.85])}`
+      return s('g', { class: 't28w-tiltfx' },
+        s('defs', null, s('radialGradient', { id: 't28w-dg', cx: 0.42, cy: 0.35, r: 0.7 },
+          s('stop', { offset: 0, class: 't28w-dg0' }), s('stop', { offset: 0.55, class: 't28w-dg1' }), s('stop', { offset: 1, class: 't28w-dg2' }))),
+        s('g', { class: 't28w-moat' },
+          s('path', { class: 't28w-band', d: ring(0) + ring(1), 'fill-rule': 'evenodd' }),
+          s('path', { class: 't28w-bandflow', d: ring(0.5), pathLength: 1 })),
+        s('g', { class: 't28w-dome' },
+          s('path', { class: 't28w-domebody', d: dome, fill: 'url(#t28w-dg)' }),
+          s('path', { class: 't28w-sheen', d: sheen }),
+          s('ellipse', { class: 't28w-domemoon', cx: f1(dx0 - hw * 0.08), cy: f1(yb - rise * 0.62), rx: f1(R * 0.028), ry: f1(rise * 0.75) })))
+    }
     let drops = ''
     for (let i = 0; i < 26; i++) {
       const a = Math.PI * (0.2 + r() * 0.6), x = cx + Math.cos(a) * R * 1.05 * sx + dx * r(), y0 = cy + Math.sin(a) * R * 1.02
@@ -444,12 +518,14 @@ export function wheelScene(ctx: SceneCtx) {
       s('path', { class: 't28w-spray', d: spray }),
       // the wheel and the mill in the water below: still rings and the wall, broken by the ripples (rings do not show
       // the turning, so the reflection needs no redraw)
-      s('g', { class: 't28w-refl', 'clip-path': `url(#t28w-rc)` },
-        s('clipPath', { id: 't28w-rc' }, s('rect', { x: 0, y: f1(wl + R * 0.06), width: f1(W), height: f1(H) })),
-        s('path', { d: reflDash() }),
-        s('path', { class: 't28w-refl-moon', d: blob(cx + R * 0.12, 2 * wl - cy + R * 0.1, R * 0.6 * sx, R * 0.5, 2863, 0.2) })),
-      // the mill tower's reflection: dark ink broken into horizontal ripples, shorter and thinner as it goes down
-      s('path', { class: 't28w-refl-mill', d: millRefl(), 'clip-path': 'url(#t28w-rc)' }),
+      (lakeface = s('g', { class: 't28w-lakeface', style: `transform-origin:${f1(cx)}px ${f1(wl)}px` },
+        s('g', { class: 't28w-refl', 'clip-path': `url(#t28w-rc)` },
+          s('clipPath', { id: 't28w-rc' }, s('rect', { x: 0, y: f1(wl + R * 0.06), width: f1(W), height: f1(H) })),
+          s('path', { d: reflDash() }),
+          s('path', { class: 't28w-refl-moon', d: blob(cx + R * 0.12, 2 * wl - cy + R * 0.1, R * 0.6 * sx, R * 0.5, 2863, 0.2) })),
+        // the mill tower's reflection: dark ink broken into horizontal ripples, shorter and thinner as it goes down
+        s('path', { class: 't28w-refl-mill', d: millRefl(), 'clip-path': 'url(#t28w-rc)' }))),
+      tiltFx(),
       mist(cx, wl + R * 0.02, R * 1.3, R * 0.16),
       wash(blob(cx, wl + R * 0.14, R * 1.15, R * 0.12, 2856, 0.2), 0.3, 'p2p-wash t28w-reflect'),
       // wet reeds and foreground rushes fill the low frame, cut by its edges
@@ -467,10 +543,22 @@ export function wheelScene(ctx: SceneCtx) {
     tag(islandTags[2], wide ? [isleDC[0] + iw * 0.2, isleDC[1]] : isleDC)
     islandTags[0].hidden = true // NVIDIA is cut into the mill wall
     // the board stands in the shallows at the front right (wide: the insight takes the left) / under the wheel's race (tall): never on the wheel or mill
-    Object.assign(board.style, wide
-      ? { left: `${f1(W * 0.965 - Math.min(360, W * 0.27))}px`, top: `${f1(Math.min(H * 0.7, wl + R * 0.28))}px`, width: `${f1(Math.min(360, W * 0.27))}px`, transform: '' }
+    // (the tilt moves it to the left shallows for the left bank's comments; tall: it stays put, only its words change)
+    const bdw = Math.min(360, W * 0.27), btop = `${f1(Math.min(H * 0.7, wl + R * 0.28))}px`
+    // (left: wider and so shorter, standing below the AI company's island and its name, clear of the insight under it)
+    const bdwL = Math.min(580, W * 0.4), btopL = `${f1(Math.max(Math.min(H * 0.7, wl + R * 0.28), isleAI[1] + iw * 0.12 + 34))}px`
+    boardAt = wide
+      ? [{ left: `${f1(W * 0.03)}px`, top: btopL, width: `${f1(bdwL)}px`, transform: '' }, { left: `${f1(W * 0.965 - bdw)}px`, top: btop, width: `${f1(bdw)}px`, transform: '' }]
       // (tall: hung from its foot, so a longer text grows up into the water, never down into the insight)
-      : { left: `${f1(W * 0.06)}px`, top: `${f1(H - 46)}px`, width: `${f1(W * 0.88)}px`, transform: 'translateY(-100%)' })
+      : [0, 1].map(() => ({ left: `${f1(W * 0.06)}px`, top: `${f1(H - 46)}px`, width: `${f1(W * 0.88)}px`, transform: 'translateY(-100%)' }))
+    Object.assign(board.style, boardAt[side === 0 ? 0 : 1])
+    // a dot on each bank's water edge, a wide touch area round it (never under the plank); the count on the water between
+    bankPt = [[Math.max(40, cx - R * 1.25), wl + R * 0.42], [Math.min(W - 40, cx + R * 1.5), wl + R * 0.42]]
+    const tw2 = wide ? R * 0.9 : Math.min(130, W * 0.34), th2 = wide ? R * 0.6 : 100
+    bankPt.forEach(([x, y], k) => Object.assign(tilts[k].style, { left: `${f1(clamp(x - tw2 / 2, 0, W - tw2))}px`, top: `${f1(y - th2 / 2)}px`, width: `${f1(tw2)}px`, height: `${f1(th2)}px` }))
+    // (tall: the plank fills the low water, so the count sits between its stakes)
+    countPt = wide ? [cx + R * 0.6, wl + R * 0.66] : [W * 0.5, H - 20]
+    board.classList.toggle('tall', !wide)
     Object.assign(wheel.style, { left: `${f1(cx - R * 1.05)}px`, top: `${f1(cy - R * 1.05)}px`, width: `${f1(R * 2.1)}px`, height: `${f1(R * 2.1)}px` })
     place()
     gd.refresh()

@@ -223,7 +223,7 @@
     },
     "loop": {
       "label": "Vòng tiền tuần hoàn",
-      "art": "Nhìn từ dưới trục lên một guồng nước gỗ lớn cạnh cối đá NVIDIA, in trên nền trăng. Một máng đá dẫn nước, tức dòng tiền, từ đuôi guồng vòng quanh hồ qua đảo Công ty AI (đình có đèn) và đảo Trung tâm dữ liệu (hàng đèn đá), rồi theo máng trên mái cối đổ lại lên chính guồng. Ở bước cuối, tường cối hiện hai vạch mực nước 22 và 51 tỷ USD.",
+      "art": "Nhìn từ dưới trục lên một guồng nước gỗ lớn cạnh cối đá NVIDIA, in trên nền trăng. Một máng đá dẫn nước, tức dòng tiền, từ đuôi guồng vòng quanh hồ qua đảo Công ty AI (đình có đèn) và đảo Trung tâm dữ liệu (hàng đèn đá), rồi theo máng trên mái cối đổ lại lên chính guồng. Ở bước cuối, tường cối hiện hai vạch mực nước 22 và 51 tỷ USD. Khi guồng đã tự quay, nghiêng mặt hồ: sang trái, nước cuộn thành vòng hào sáng quanh cối NVIDIA; sang phải, nước phồng thành vòm rung, bóng trăng bị kéo giãn. Mỗi phía, tấm ván dưới nước ghi hai lời bình.",
       "prompt": "Chạm hoặc kéo xoay guồng nước theo chiều mũi tên",
       "flowLabel": "Dòng tiền chảy vòng",
       "wheelAria": "Guồng nước: chạm, kéo vòng quanh trục, hoặc nhấn Enter, để quay một phần tư vòng",
@@ -232,7 +232,6 @@
         "Công ty AI",
         "Trung tâm dữ liệu"
       ],
-      "circleLabel": "Bốn lời bình bên hồ",
       "flow": [
         "NVIDIA rót vốn vào công ty AI",
         "Công ty AI xây trung tâm dữ liệu",
@@ -257,55 +256,67 @@
           "source": "t28-nvda-10q"
         }
       ],
-      "perspectives": {
-        "stones": [
-          {
-            "who": "Wedbush, công ty chứng khoán Mỹ",
-            "view": {
-              "text": "Đúng là đầu tư vòng tròn, nhưng nếu thành công, khách sẽ gắn chặt với NVIDIA.",
-              "asOf": "2026-10-15",
-              "source": "t28-benzinga",
-              "kind": "opinion"
+      "sides": [
+        {
+          "name": "Giữ chân khách",
+          "voices": [
+            {
+              "who": "Wedbush, công ty chứng khoán Mỹ",
+              "view": {
+                "text": "Đúng là đầu tư vòng tròn, nhưng nếu thành công, khách sẽ gắn chặt với NVIDIA.",
+                "asOf": "2026-10-15",
+                "source": "t28-benzinga",
+                "kind": "opinion"
+              }
+            },
+            {
+              "who": "Jensen Huang, CEO NVIDIA",
+              "view": {
+                "text": "Tiền NVIDIA chỉ là một phần vốn khách hàng huy động; gọi là “vòng tròn” là vô căn cứ.",
+                "asOf": "2026-10-15",
+                "source": "t28-asiae",
+                "kind": "opinion",
+                "claimBy": "NVIDIA"
+              }
             }
-          },
-          {
-            "who": "Global X, quỹ đầu tư",
-            "view": {
-              "text": "NVIDIA vừa bán chip vừa hứa trả nợ thay cho khách mua chip; chuyện này càng gây tranh cãi.",
-              "asOf": "2026-10-15",
-              "source": "t28-asiae",
-              "kind": "opinion"
+          ]
+        },
+        {
+          "name": "Bong bóng",
+          "voices": [
+            {
+              "who": "Ngân hàng Trung ương Anh",
+              "view": {
+                "text": "10/2025: giá cổ phiếu công ty AI có vẻ quá cao; nguy cơ giá rơi mạnh đang tăng.",
+                "asOf": "2026-10-15",
+                "source": "t28-boe",
+                "kind": "opinion"
+              }
+            },
+            {
+              "who": "Global X, quỹ đầu tư",
+              "view": {
+                "text": "NVIDIA vừa bán chip vừa hứa trả nợ thay cho khách mua chip; chuyện này càng gây tranh cãi.",
+                "asOf": "2026-10-15",
+                "source": "t28-asiae",
+                "kind": "opinion"
+              }
             }
-          },
-          {
-            "who": "Jensen Huang, CEO NVIDIA",
-            "view": {
-              "text": "Tiền NVIDIA chỉ là một phần vốn khách hàng huy động; gọi là “vòng tròn” là vô căn cứ.",
-              "asOf": "2026-10-15",
-              "source": "t28-asiae",
-              "kind": "opinion",
-              "claimBy": "NVIDIA"
-            }
-          },
-          {
-            "who": "Ngân hàng Trung ương Anh",
-            "view": {
-              "text": "10/2025: giá cổ phiếu công ty AI có vẻ quá cao; nguy cơ giá rơi mạnh đang tăng.",
-              "asOf": "2026-10-15",
-              "source": "t28-boe",
-              "kind": "opinion"
-            }
-          }
-        ],
-        "common": {
-          "text": "Tiền chảy vòng là thật. Còn tranh cãi: nó giữ chân khách hàng, hay đang thổi phồng giá trị có thể vỡ?",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
+          ]
         }
-      },
+      ],
+      "tiltPrompt": "Guồng đã tự quay. Giờ nghiêng mặt hồ sang trái, rồi sang phải",
+      "tiltNext": [
+        "Giờ nghiêng sang phải: bong bóng?",
+        "Giờ nghiêng sang trái: giữ chân khách?"
+      ],
+      "tiltCount": "Đã xem {n}/{total} phía",
+      "tiltAria": [
+        "Nghiêng mặt hồ sang trái: giữ chân khách",
+        "Nghiêng mặt hồ sang phải: bong bóng"
+      ],
       "insight": {
-        "text": "Tiền NVIDIA rót cho khách quay về thành tiền mua chip NVIDIA. Guồng càng quay, doanh thu càng lớn.",
+        "text": "Tiền chảy vòng là thật. Còn tranh cãi: nó giữ chân khách hàng, hay đang thổi phồng giá trị có thể vỡ?",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"
@@ -315,13 +326,20 @@
         "22 tỷ USD",
         "51 tỷ USD\ncổ phần"
       ],
-      "circlePrompt": "Chạm từng hòn đá: giữ chân khách, hay bong bóng?",
-      "detail": {
-        "text": "Đọc tin “NVIDIA đầu tư vào X”, hãy hỏi: X có mua chip NVIDIA không?",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
-      }
+      "detail": [
+        {
+          "text": "Tiền NVIDIA rót cho khách quay về thành tiền mua chip NVIDIA. Guồng càng quay, doanh thu càng lớn.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        },
+        {
+          "text": "Đọc tin “NVIDIA đầu tư vào X”, hãy hỏi: X có mua chip NVIDIA không?",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      ]
     }
   },
   "sources": {

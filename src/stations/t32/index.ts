@@ -7,7 +7,6 @@ import { tableScene } from './table'
 import { lampsScene } from './lamps'
 import { scrollScene } from './scroll'
 import { firstLamp } from './path'
-import { circleScene } from './circle'
 
 const S = raw.scenes
 
@@ -19,7 +18,6 @@ const station: StationModule = {
     { label: S.lamps.label, mount: lampsScene },
     firstLamp(),
     { label: S.scroll.label, mount: scrollScene },
-    circleScene(),
   ],
 }
 export default station

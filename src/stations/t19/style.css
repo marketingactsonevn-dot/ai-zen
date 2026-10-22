@@ -645,246 +645,50 @@
 /* inside: his lantern lights the crack, the masons fill it */
 .t19g-workglow { opacity: 0.35; transition: opacity 1.4s ease 1.2s; }
 .t19g.let .t19g-workglow { opacity: 1; }
-
-/* ── court (2.5D): the fenced summit's plan at 55° on a sea of cloud, four tam quan gates, lantern bearers ───────────────────── */
-.t19c {
-  --t19c-cloud-hi: var(--card);
-  --t19c-cloud: color-mix(in srgb, var(--mist) 70%, var(--paper-2));
-  --t19c-cloud-lo: color-mix(in srgb, var(--paper-2) 55%, var(--water));
-}
-:root[data-theme='dark'] .t19c {
-  --t19c-cloud-hi: color-mix(in srgb, var(--mist) 42%, var(--paper));
-  --t19c-cloud: color-mix(in srgb, var(--mist) 24%, var(--paper));
-  --t19c-cloud-lo: color-mix(in srgb, var(--paper) 80%, var(--water));
-}
-/* gates are known by their signs, not by numbers (the digit keys and the aria stay) */
-.t19c .p2c-halo,
-.t19c .p2c-ring,
-.t19c .p2c-num {
-  display: none;
-}
-.t19c .p2c-stone:hover .p2c-stone-art { transform: translateY(-3px); }
-.t19c .p2c-stone[aria-pressed='true'] .t19c-sign { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--lantern) 60%, transparent)); }
-.t19c .p2c-stage {
-  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
-}
-.t19c-sea, .t19c-cliff, .t19c-fence {
+/* the three carved tags on the right-hand fence (19-3 folded in): they swing in once he is in; a tag heard warms */
+.t19g-tag {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-/* the sea of cloud: banks of billows, lit heads, shaded bellies */
-.t19c-bank { transition: opacity 2s ease; }
-.t19c-bank-far { opacity: 0.55; }
-.t19c-bank-back { opacity: 0.8; }
-.t19c-bank-mid { opacity: 0.92; }
-.t19c-bank-front { opacity: 0.97; }
-:root[data-quality='high'] .t19c-bank { filter: var(--t19c-soft); }
-/* all four heard: the cloud round the summit stills into a mirror */
-.t19c.is-all .t19c-bank-mid { opacity: 0.3; }
-.t19c.is-all .t19c-bank-front { opacity: 0.4; }
-.t19c-mirror { opacity: 0; transition: opacity 2.2s ease 0.4s; }
-.t19c.is-all .t19c-mirror { opacity: 1; }
-.t19c-mirror-img { opacity: 0.4; }
-.t19c-mirror-rim { fill: color-mix(in srgb, var(--rock-mid) 60%, var(--t19c-cloud)); }
-.t19c-mirror-fence { fill: color-mix(in srgb, var(--step-lo) 50%, var(--t19c-cloud)); }
-/* the cliff: three tones, a wandering terminator, clefts, a lit lip */
-.t19c-cliff-lo { fill: color-mix(in srgb, var(--rock-lo) 80%, var(--wash)); }
-.t19c-cliff-mid { fill: color-mix(in srgb, var(--rock-mid) 75%, var(--rock-lo)); }
-.t19c-cliff-hi { fill: var(--rock-hi); opacity: 0.35; }
-:root[data-theme='dark'] .t19c-cliff-lo { fill: color-mix(in srgb, var(--rock-lo) 70%, #000); }
-:root[data-theme='dark'] .t19c-cliff-mid { fill: color-mix(in srgb, var(--rock-mid) 55%, var(--rock-lo)); }
-:root[data-theme='dark'] .t19c-cliff-hi { fill: color-mix(in srgb, var(--rock-hi) 70%, var(--moon)); opacity: 0.2; }
-.t19c-cleft { fill: var(--wash); opacity: 0.42; }
-:root[data-theme='dark'] .t19c-cleft { fill: #000; opacity: 0.55; }
-.t19c-ledge { fill: var(--rock-hi); opacity: 0.6; }
-:root[data-theme='dark'] .t19c-ledge { fill: var(--moon); opacity: 0.25; }
-.t19c-rimlit { fill: var(--rock-hi); }
-:root[data-theme='dark'] .t19c-rimlit { fill: var(--moon); opacity: 0.55; }
-.t19c-tilt {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.t19c-plan {
-  position: absolute;
-  transform: rotateX(55deg);
-}
-.t19c-plan-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-.t19c-top { fill: var(--rock-mid); }
-:root[data-theme='dark'] .t19c-top { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--rock-lo)); }
-.t19c-moss { fill: var(--moss-b); }
-.t19c-gravel { fill: var(--paper-2); stroke: var(--wash); stroke-opacity: 0.25; stroke-width: 2; }
-:root[data-theme='dark'] .t19c-gravel { fill: color-mix(in srgb, var(--rock-mid) 55%, var(--paper)); }
-.t19c-rake { fill: var(--rake); }
-:root[data-theme='dark'] .t19c-rake { fill: var(--rake-hi); }
-.t19c-heart { fill: var(--rock-mid); stroke: var(--wash); stroke-opacity: 0.5; }
-/* left, right, left: older prints fainter */
-.t19c-prints { fill: var(--wash); }
-.t19c-prints-0 { opacity: 0.2; }
-.t19c-prints-1 { opacity: 0.36; }
-.t19c-prints-2 { opacity: 0.55; }
-:root[data-theme='dark'] .t19c-prints { fill: #000; }
-.t19c-reveal {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 40;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 2.2s linear;
-}
-.t19c.is-heard-0 .t19c-reveal-0,
-.t19c.is-heard-1 .t19c-reveal-1,
-.t19c.is-heard-2 .t19c-reveal-2,
-.t19c.is-heard-3 .t19c-reveal-3 {
-  stroke-dashoffset: 0;
-}
-/* the raked cross that joins the four paths */
-.t19c-cross {
-  fill: none;
-  stroke: var(--wash);
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  opacity: 0.45;
-  transition: stroke-dashoffset 2.4s ease 0.6s;
-}
-:root[data-theme='dark'] .t19c-cross { stroke: var(--moon); opacity: 0.4; }
-.t19c.is-all .t19c-cross { stroke-dashoffset: 0; }
-/* who it is, written on the gravel in the quarter by its gate (lies on the court, foreshortened with it) */
-.t19c-word {
-  position: absolute;
-  translate: -50% -50%;
-  margin: 0;
-  font-family: var(--serif);
-  font-weight: 600;
-  color: var(--ink);
-  white-space: nowrap;
-  text-shadow: 0 0 6px var(--paper-2), 0 0 6px var(--paper-2), 0 0 2px var(--paper-2);
-  opacity: 0;
-  transition: opacity 1.2s ease 1.6s;
-}
-:root[data-theme='dark'] .t19c-word { text-shadow: 0 0 6px var(--paper), 0 0 6px var(--paper), 0 0 2px var(--paper); }
-.t19c-word:not(:empty) { opacity: 1; }
-/* the fence: low bamboo in the step and moss tones */
-.t19c-culm { fill: color-mix(in srgb, var(--step-lo) 55%, var(--moss-b)); }
-.t19c-culm-far { opacity: 0.85; }
-:root[data-theme='dark'] .t19c-culm { fill: color-mix(in srgb, var(--step-lo) 60%, var(--moss-b)); }
-.t19c-culm-rim { fill: var(--step-hi); opacity: 0.6; }
-:root[data-theme='dark'] .t19c-culm-rim { fill: var(--moon); opacity: 0.35; }
-.t19c-node { fill: var(--wash); opacity: 0.45; }
-.t19c-rail { fill: color-mix(in srgb, var(--step-lo) 45%, var(--wash)); }
-.t19c-men {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.t19c-bearer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 0;
-  height: 0;
-  transition: transform 2.2s cubic-bezier(0.45, 0.05, 0.35, 1);
-}
-.t19c-bearer-svg {
-  position: absolute;
-  left: calc(var(--s, 60px) * -0.39);
-  bottom: calc(var(--s, 60px) * -0.21);
-  width: var(--s, 60px);
-  max-width: none;
-  height: calc(var(--s, 60px) * 0.78);
-  overflow: visible;
-}
-.t19c-man { fill: var(--wash); }
-:root[data-theme='dark'] .t19c-man { fill: #05070f; }
-.t19c-man-rim { fill: var(--rock-hi); opacity: 0.45; }
-:root[data-theme='dark'] .t19c-man-rim { fill: var(--moon); opacity: 0.4; }
-.t19c-glow { fill: var(--lantern); opacity: 0.32; }
-.t19c-lamp { fill: var(--lantern); }
-/* the lantern's warm pool on the gravel round the bearer */
-.t19c-pool { fill: url(#p2-lamp); opacity: 0.75; }
-:root[data-theme='dark'] .t19c-pool { opacity: 1; }
-.t19c-sh { fill: var(--umbra); opacity: 0.25; }
-/* the tam quan */
-.t19c-post { fill: color-mix(in srgb, var(--step-lo) 55%, var(--wash)); }
-.t19c-roof { fill: var(--wash); opacity: 0.9; }
-.t19c-tiles { fill: var(--rock-hi); opacity: 0.4; }
-:root[data-theme='dark'] .t19c-tiles { fill: var(--moon); opacity: 0.25; }
-.t19c-side { fill: color-mix(in srgb, var(--wash) 75%, var(--rock-lo)); opacity: 0.8; }
-.t19c-leaf { fill: var(--step-mid); stroke: var(--wash); stroke-opacity: 0.6; stroke-width: 0.8; }
-:root[data-theme='dark'] .t19c-leaf { fill: var(--step-lo); }
-.t19c-leaf-ink { fill: var(--wash); opacity: 0.45; }
-.t19c-door { transform-box: fill-box; transition: transform 1s cubic-bezier(0.4, 0.1, 0.25, 1); }
-.t19c-door-l { transform-origin: 0 50%; }
-.t19c-door-r { transform-origin: 100% 50%; }
-.p2c-stone[data-heard] .t19c-door { transform: scaleX(0.16); }
-/* the signs: carved stones, large enough to know the gate by */
-.t19c-emblem { fill: url(#p2-rock); stroke: var(--wash); stroke-opacity: 0.55; stroke-width: 0.9; }
-.t19c-emblem-shade { fill: url(#p2-shade); }
-.t19c-cut { fill: var(--wash); opacity: 0.75; }
-.t19c-seam { fill: var(--card); opacity: 0.95; }
-:root[data-theme='dark'] .t19c-seam { fill: var(--moon); opacity: 0.85; }
-.t19c-mini { fill: color-mix(in srgb, var(--step-lo) 55%, var(--moss-b)); }
-.t19c-mini-floor { fill: var(--paper-2); stroke: var(--wash); stroke-opacity: 0.4; }
-/* what they say: a strip of paper hung from the gate on a cord, not a card */
-.t19c .p2c-card {
+  z-index: 6;
+  padding: 0;
   border: 0;
-  border-radius: 1px;
-  padding: 22px 20px 24px;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .52 0 0 0 0 .6 0 0 0 .35 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    var(--card);
-  box-shadow: 0 1px 0 var(--line), 0 18px 26px -20px var(--umbra);
-  clip-path: polygon(0 0, 100% 0, 100% 97%, 94% 100%, 88% 97.5%, 79% 100%, 70% 98%, 61% 100%, 50% 97.6%, 41% 100%, 32% 98%, 22% 100%, 12% 97.8%, 5% 100%, 0 97%);
-  rotate: 0.8deg;
-  transform-origin: 50% 0;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.8s ease calc(2.2s + var(--i) * 0.18s), transform 1s cubic-bezier(0.3, 0.7, 0.2, 1) calc(2.1s + var(--i) * 0.18s);
+  pointer-events: none;
 }
-:root[data-theme='dark'] .t19c .p2c-card {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .8 0 0 0 0 .82 0 0 0 0 .9 0 0 0 .2 -.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    color-mix(in srgb, var(--card) 85%, var(--mist));
-}
-/* the rod it hangs from, and the cord up to the gate */
-.t19c.wide .p2c-card {
-  width: min(330px, 30vw) !important;
-  max-height: 70% !important;
-  top: 16% !important;
-  transform: none !important;
-}
-.t19c .p2c-card::before {
-  content: '';
+.t19g.let .t19g-tag { opacity: 1; transform: none; pointer-events: auto; }
+.t19g-tag:disabled { cursor: default; }
+.t19g-tag:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 2px; }
+.t19g-tag-svg { position: absolute; left: 0; top: 0; width: 100%; height: auto; aspect-ratio: 44 / 64; overflow: visible; transform-origin: 50% 12.5%; }
+.t19g-tag-dot { position: absolute; left: 50%; top: 84%; width: 0; height: 0; }
+.t19g-tag-cord { fill: none; stroke: color-mix(in srgb, var(--ink) 70%, var(--step-lo)); stroke-width: 1.2; stroke-linecap: round; }
+.t19g-tag-wood { fill: color-mix(in srgb, var(--step-mid) 70%, var(--step-hi)); stroke: var(--wash); stroke-width: 0.8; }
+:root[data-theme='dark'] .t19g-tag-wood { fill: color-mix(in srgb, var(--step-mid) 55%, var(--rock-hi)); }
+.t19g-tag-grain { fill: var(--wash); opacity: 0.35; }
+.t19g-tag-lit { fill: var(--moon); opacity: 0.5; }
+.t19g-tag-peg { fill: var(--wash); }
+.t19g-tag-cut { fill: color-mix(in srgb, var(--umbra) 70%, var(--wash)); transition: fill 0.8s ease; }
+.t19g-tag-lip { fill: var(--step-hi); opacity: 0.55; }
+:root[data-theme='dark'] .t19g-tag-lip { fill: var(--moon); opacity: 0.18; }
+.t19g-tag-seam { fill: color-mix(in srgb, var(--moon) 60%, var(--paper)); opacity: 0.85; }
+.t19g-tag.heard .t19g-tag-cut { fill: var(--lantern); }
+.t19g-tag.on .t19g-tag-svg { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--lantern) 70%, transparent)); }
+/* the words of the tag last heard, written on the raked forecourt under the tags: no box, ink with a halo of mist */
+.t19g-voice {
   position: absolute;
-  left: -6px;
-  right: -6px;
-  top: 0;
-  height: 7px;
-  border-radius: 4px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--step-hi) 60%, var(--moss-c)), color-mix(in srgb, var(--step-lo) 70%, var(--moss-b)));
-  box-shadow: 0 2px 2px -1px color-mix(in srgb, var(--umbra) 40%, transparent);
+  z-index: 6;
+  margin: 0;
+  text-shadow: 0 0 10px var(--paper), 0 0 18px var(--paper), 0 0 3px var(--paper);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease, visibility 0s linear 0.6s;
 }
-.t19c .p2c-who { font-size: 1rem; }
-.t19c .p2c-view { font-size: clamp(0.98rem, 1.35vw, 1.08rem); font-weight: 400; }
-/* tall: a narrower strip, the court above takes nine-tenths of the width */
-.t19c:not(.wide) .p2c-card {
-  left: 12px !important;
-  width: calc(100% - 24px) !important;
-  padding: 18px 16px 24px;
-  overflow-y: auto;
-}
-.t19c:not(.wide) .p2c-view { font-size: 0.9rem; line-height: 1.45; margin-bottom: 0.5em; }
-.t19c:not(.wide) .p2c-who { font-size: 0.9rem; margin-bottom: 0.3em; }
+.t19g-voice.in { opacity: 1; visibility: visible; transition: opacity 0.6s ease; }
+.t19g-who { margin: 0 0 4px; font: italic 400 0.85rem/1.3 var(--serif); color: var(--ink-2); }
+.t19g-view { margin: 0; font: 400 1.02rem/1.5 var(--serif); color: var(--ink); }
+:root[data-quality='low'] .t19g-tag.on .t19g-tag-svg { filter: none; }
 
 /* ── stele (canvas): a polished black stele under tiled eaves, read by a lantern's raking light ───────────────────── */
 .t19s {
@@ -1255,6 +1059,3 @@
 }
 .t19t.tall .t19t-q { font-size: 0.8rem; }
 .t19t.tall .t19t-fact { font-size: 0.95rem; }
-:root[data-quality='low'] :is(.t19c-bearer, .t19c-reveal, .t19c-word) {
-  transition: none;
-}

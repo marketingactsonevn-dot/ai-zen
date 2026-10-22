@@ -84,11 +84,19 @@
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": {
-        "text": "Chạy trên máy thì sau khi tải model không cần mạng nữa; đổi lại máy phải đủ mạnh — cảnh sau cho biết bao nhiêu là đủ.",
-        "asOf": "2026-10-15",
-        "source": "t32-lmstudio-docs"
-      },
+      "detail": [
+        {
+          "text": "Chạy trên máy thì sau khi tải model không cần mạng nữa; đổi lại máy phải đủ mạnh — cảnh sau cho biết bao nhiêu là đủ.",
+          "asOf": "2026-10-15",
+          "source": "t32-lmstudio-docs"
+        },
+        {
+          "text": "Dùng nhiều mỗi ngày thì chạy trên máy đỡ tiền; dùng thưa thì gói trên mây có khi rẻ hơn mua máy mới.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      ],
       "tasks": [
         {
           "label": "Soạn hợp đồng có số điện thoại khách",
@@ -198,7 +206,15 @@
         "source": "editorial",
         "kind": "opinion"
       },
-      "detail": "Máy có card đồ hoạ rời thì xem thêm bộ nhớ riêng của card; Mac chip Apple dùng chung RAM cho mọi việc.",
+      "detail": [
+        "Máy có card đồ hoạ rời thì xem thêm bộ nhớ riêng của card; Mac chip Apple dùng chung RAM cho mọi việc.",
+        {
+          "text": "Tự chạy một model nhỏ giúp thấy tận mắt: AI là một file, có kích thước, có tốc độ, có giới hạn.",
+          "asOf": "2026-10-15",
+          "source": "editorial",
+          "kind": "opinion"
+        }
+      ],
       "prompts": [
         "Kéo bó 8B lên bàn",
         "Kéo tấm ván cuối bàn: máy bạn bao nhiêu RAM?",
@@ -392,64 +408,6 @@
         "source": "t32-ollama-quickstart"
       },
       "takeaway": "t32-ollama-commands"
-    },
-    "circle": {
-      "label": "Bốn hòn đá bên hồ",
-      "art": "Máy quay lướt sát mặt hồ tròn dưới trăng: hồ thành một elip mảnh, bóng trăng thành con đường dài vỡ ánh chạy về phía bạn. Bốn hòn đá ngồi quanh hồ — hai hòn nhỏ ở bờ xa, hai hòn lớn ở bờ gần — mỗi hòn giữ một ngọn đèn giấy nhỏ. Chạm vào một hòn, đèn thắp và vệt sáng ấm của nó kéo dài trên nước về phía bạn; nghe đủ bốn hòn, các vệt sáng và đường trăng cùng hội về giữa hồ.",
-      "prompt": "Chạm từng hòn đá: mỗi hòn là một góc nhìn",
-      "aria": "Vòng đá góc nhìn: người làm sáng tạo, marketing nên chạy AI trên máy hay trên mây?",
-      "perspectives": {
-        "stones": [
-          {
-            "who": "Người giữ dữ liệu khách hàng",
-            "view": {
-              "text": "Hợp đồng, số điện thoại, hồ sơ khách: chạy trên máy để dữ liệu không phải gửi lên máy chủ của ai khác.",
-              "asOf": "2026-10-15",
-              "source": "editorial",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "Người cần chất lượng cao nhất",
-            "view": {
-              "text": "Bản thảo quan trọng, việc khó: model lớn trên mây thường vẫn giỏi hơn model vừa với một chiếc laptop.",
-              "asOf": "2026-10-15",
-              "source": "editorial",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "Người tính chi phí theo tháng",
-            "view": {
-              "text": "Dùng nhiều mỗi ngày thì chạy trên máy đỡ phí theo lượt; dùng thưa thì gói trên mây có khi rẻ hơn mua máy mới.",
-              "asOf": "2026-10-15",
-              "source": "editorial",
-              "kind": "opinion"
-            }
-          },
-          {
-            "who": "Người học để hiểu",
-            "view": {
-              "text": "Tự chạy một model nhỏ giúp thấy tận mắt: AI là một file, có kích thước, có tốc độ, có giới hạn.",
-              "asOf": "2026-10-15",
-              "source": "editorial",
-              "kind": "opinion"
-            }
-          }
-        ],
-        "common": {
-          "text": "Việc có dữ liệu khách thì chạy trên máy; việc cần hay nhất thì gửi lên mây.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "opinion"
-        }
-      },
-      "insight": {
-        "text": "Dùng nhiều mỗi ngày thì chạy trên máy đỡ tiền; dùng thưa thì gói trên mây có khi rẻ hơn mua máy mới.",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
-      }
     }
   },
   "sources": {
