@@ -21,6 +21,7 @@
       "art": "Midnight; the main house is dark. A gardener carries a lantern round the pond. A wind chime hangs from the porch post, and every incoming message makes it ring softly; the gardener writes each one in the thick notebook always at hand.",
       "prompt": "Touch the wind chime to message the gardener — your agent",
       "promptMoon": "Drag the moon to morning — see what the agent does at night",
+      "promptStudy": "Touch the study: how is a coding agent different?",
       "aria": "Compare an always-on agent with a coding agent. Send a sample message to see what the always-on agent does",
       "message": "“Every morning at 7, summarise my new email and message me on Telegram.”",
       "reply": "“Noted in my book. I'll message you at 7 tomorrow.”",
@@ -168,6 +169,8 @@
       "prompt": "Light each room to see what an agent is made of",
       "aria": "The five parts of a self-running agent. Light each bay to read about it",
       "roomAria": "Light the bay: {name}",
+      "count": "{n}/{total} bays lit",
+      "promptNext": "Next, light this bay: {name}",
       "turnAria": "Drag or use the arrow keys to turn the model; keys 1–5 light each bay.",
       "seeStation": "Revisit Station {n}",
       "rooms": [

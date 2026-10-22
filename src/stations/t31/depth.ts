@@ -2,137 +2,175 @@ import raw from '../../content/tram-31.json'
 import { fill, h, s, viDate } from '../../core/dom'
 import { L, type Fact } from '../../core/content'
 import type { SceneDef } from '../types'
-import type { Tide } from '../../ui/part2/types'
 import { clamp, onSize, p2Defs, stableHeight } from '../../ui/part2/ink'
-import { mist, moon, paperLantern } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
+import { grass as tuft, hills, mist, moon, paperLantern, pine, toro, wash } from '../../ui/part2/paint'
 import { blob, live, rng, stroke, type Pt } from './kit'
+import './depth.css'
 
 const S = raw.scenes.depth
-const T = S.tide as Tide
+const ms = S.tide.milestones
 const f1 = (n: number) => (Math.round(n * 10) / 10).toString()
 
-/** the scroll and the well painted on it, in scene px */
+/** the cut-open well in scene px */
 type Geo = {
   W: number; H: number; tall: boolean
-  sx: number; sy: number; sw0: number; sh: number // the whole mount
-  x0: number; x1: number; top: number; bot: number // the painting
   cx: number; a: number; b: number; sw: number; ct: number // the shaft: centre, inner walls, width, lining thickness
-  gy: number; F: number; levels: number[]; fog: number // ground, the floor (the deep below it), water levels, the deep's centre
+  gy: number; F: number; levels: number[] // the ground (the cut's top edge), the floor, the water level at each milestone
 }
 
-/** how open a ring of the shaft looks at y: the eye is at the mouth, so deeper rings are seen more from above */
-const bowAt = (G: Geo, y: number) => G.sw * (0.1 + 0.16 * clamp((y - G.gy) / (G.bot - G.gy), 0, 1))
-/** the far half of the ring at y as points, φ from −π/2 (left wall) to π/2 (right wall) */
+/** how open a ring of the shaft looks at y: the eye is a little above the mouth, so deeper rings are seen more from above */
+const bowAt = (G: Geo, y: number) => G.sw * (0.08 + 0.12 * clamp((y - G.gy) / (G.F - G.gy), 0, 1))
+/** the far half of the ring at y, φ from −π/2 (left wall) to π/2 (right wall) */
 const ringPt = (G: Geo, y: number, ph: number): Pt => [G.cx + (Math.sin(ph) * G.sw) / 2, y - Math.cos(ph) * bowAt(G, y)]
-
-/** where the moon's reflection is at t: on the water up to today, then sinking into the deep (the forecast) */
+/** the water level at t (0 = the first milestone … 1 = today), piecewise through the middle milestone */
 const at = (G: Geo, t: number): number => {
   const [a, b, c] = G.levels
-  if (t <= 1 / 3) return a + (b - a) * t * 3
-  if (t <= 2 / 3) return b + (c - b) * (t - 1 / 3) * 3
-  return c + (G.fog - c) * (t - 2 / 3) * 3
+  return t <= 0.5 ? a + (b - a) * t * 2 : b + (c - b) * (t - 0.5) * 2
+}
+
+/** a small clay jar floating at (x, y = its waterline), k ≈ height / 13: body, neck, a pale paper label, a moonlit side */
+function jar(x: number, y: number, k: number, seed: number): SVGGElement {
+  const r = rng(seed)
+  const w = 5 + r() * 1.2
+  const body = `M${f1(x - w * k)} ${f1(y)}C${f1(x - (w + 2.6) * k)} ${f1(y - 6 * k)} ${f1(x - w * k)} ${f1(y - 10 * k)} ${f1(x - 2.3 * k)} ${f1(y - 10.6 * k)}L${f1(x - 2.3 * k)} ${f1(y - 12.4 * k)}L${f1(x + 2.3 * k)} ${f1(y - 12.4 * k)}L${f1(x + 2.3 * k)} ${f1(y - 10.6 * k)}C${f1(x + w * k)} ${f1(y - 10 * k)} ${f1(x + (w + 2.6) * k)} ${f1(y - 6 * k)} ${f1(x + w * k)} ${f1(y)}Z`
+  return s('g', { class: 't31d4-jar' },
+    s('ellipse', { class: 't31d4-jar-ring', cx: f1(x), cy: f1(y + 0.6 * k), rx: f1((w + 3.5) * k), ry: f1(1.6 * k) }),
+    s('path', { class: 'g11-clay', d: body }),
+    s('path', { class: 't31d4-jar-sh', d: body }),
+    s('path', { class: 'g11-label', d: `M${f1(x - 2.8 * k)} ${f1(y - 8.2 * k)}l${f1(5.4 * k)} -0.3l0.2 ${f1(4.4 * k)}l${f1(-5.4 * k)} 0.3Z` }),
+    s('path', { class: 't31d4-jar-lit', d: stroke([[x + (w + 0.6) * k, y - 3 * k], [x + (w - 0.6) * k, y - 8 * k], [x + 2.6 * k, y - 9.8 * k]], 1.1 * k, 0.2, 0.3, 0.2) }))
 }
 
 /**
- * Scene 2 — a well cut open from top to bottom, painted on a tall hanging scroll (kakemono) off-centre on a moonlit wall,
- * the reading in the margin beside it. The round mouth opens to the moon; a cone of moonlight falls down the shaft; the
- * stone courses curve round its back wall, each stone lit on top and dark below, darker going down. The water column is
- * the number of public models: drag the moon's reflection on it up through the years (the water rises with it, the
- * milestone stones light as it passes) to today, under the real moon; then on down into the misty deep below the floor,
- * where the dotted courses go on: the forecast.
+ * Scene 2 — a well cut open from the ground to its floor, a cross-section through the night: the moon over the mouth and a
+ * cone of its light down the shaft (dust turning in it), the back wall's stone courses curving and darkening with depth,
+ * the earth outside the cut in strata to the frame's edges, a pine and a stone lantern on the bank above. The water column
+ * is the number of public models: drag the moon's reflection on it up (a carved groove right of the shaft marks the three
+ * dates); the water rises, clay jars (models) bob up thicker and thicker, the milestone stones on the left wall light as
+ * it passes, the reading is written beside the stone. At today the jars cover the surface: the insight.
  */
 export function depthScene(): SceneDef {
   return {
     label: S.label,
+    text: 'tr',
     mount(ctx) {
       p2Defs()
-      const ms = T.milestones
-      const n = ms.length // stops 0…n-1 milestones, n = the horizon (the deep)
-      const today = viDate(T.horizon.asOf)
+      const n = ms.length // stops 0 … n-1; n-1 = today
+      const cmp = ms[n - 1].compare
       const stableH = stableHeight(ctx, [S.insight as Fact])
-      const valueText = (i: number) => (i < n ? fill(L.tideValue, { date: viDate(ms[i].date), label: ms[i].label }) : `${L.today} · ${today} → ${L.horizon}`)
+      const valueText = (i: number) => fill(L.tideValue, { date: viDate(ms[i].date), label: ms[i].label })
 
-      const art = s('svg', { class: 't31d3-art', 'aria-hidden': 'true' })
-      const glint = s('svg', { class: 't31d3-glint', viewBox: '-50 -20 100 40', 'aria-hidden': 'true' },
-        s('ellipse', { class: 't31d3-ring r1', cx: 0, cy: 0, rx: 30, ry: 7 }),
-        s('ellipse', { class: 't31d3-ring r2', cx: 0, cy: 0, rx: 42, ry: 10 }),
-        s('ellipse', { class: 't31d3-halo', cx: 0, cy: 0, rx: 34, ry: 12, fill: 'url(#p2-halo)' }),
-        s('ellipse', { class: 't31d3-disc', cx: 0, cy: 0, rx: 15, ry: 4.6 }),
-        s('path', { class: 't31d3-disc', d: stroke([[-27, 5], [-10, 5.6]], 1.6, 0.3, 0.3, 0.2) + stroke([[8, 6.2], [24, 5.6]], 1.6, 0.3, 0.3, 0.2) + stroke([[-14, 9], [6, 9.4]], 1.1, 0.3, 0.3, 0.2) }))
+      const art = s('svg', { class: 't31d4-art', 'aria-hidden': 'true' })
+      const lead = s('path', { class: 't31d4-lead' })
+      const leadSvg = s('svg', { class: 't31d4-art t31d4-leads', 'aria-hidden': 'true' }, lead)
+      const glint = s('svg', { class: 't31d4-glint', viewBox: '-50 -20 100 40', 'aria-hidden': 'true' },
+        s('ellipse', { class: 't31d4-halo', cx: 0, cy: 0, rx: 40, ry: 13, fill: 'url(#p2-halo)' }),
+        s('ellipse', { class: 't31d4-ring r1', cx: 0, cy: 0, rx: 30, ry: 6.5 }),
+        s('ellipse', { class: 't31d4-ring r2', cx: 0, cy: 0, rx: 42, ry: 9 }),
+        s('ellipse', { class: 't31d4-disc', cx: 0, cy: 0, rx: 15, ry: 4 }),
+        s('path', { class: 't31d4-disc', d: stroke([[-27, 4.6], [-10, 5.2]], 1.6, 0.3, 0.3, 0.2) + stroke([[8, 5.8], [24, 5.2]], 1.6, 0.3, 0.3, 0.2) }))
       const thumb = h('div', {
-        class: 't31d3-moon', role: 'slider', tabindex: '0', 'aria-label': S.aria, 'aria-orientation': 'vertical',
-        'aria-valuemin': '0', 'aria-valuemax': String(n), 'aria-valuenow': '0', 'aria-valuetext': valueText(0),
+        class: 't31d4-moon', role: 'slider', tabindex: '0', 'aria-label': S.aria, 'aria-orientation': 'vertical',
+        'aria-valuemin': '0', 'aria-valuemax': String(n - 1), 'aria-valuenow': '0', 'aria-valuetext': valueText(0),
       }, glint)
-      const hit = h('div', { class: 't31d3-hit', 'aria-hidden': 'true' })
-      const card = live('t31d3-card')
-      const root = h('div', { class: 't31d3' }, h('p', { class: 'visually-hidden' }, S.art), art, hit, thumb, card)
+      const hit = h('div', { class: 't31d4-hit', 'aria-hidden': 'true' })
+      const card = live('t31d4-read')
+      const root = h('div', { class: 't31d4' }, h('p', { class: 'visually-hidden' }, S.art), art, leadSvg, hit, thumb, card)
       ctx.art.append(root)
       ctx.prompt(S.prompt)
+      // H1: the vermilion dot rides on the reflection until today is reached
+      let dot: Mark | null = guide(ctx).dot(thumb, { dir: [0, -1] })
 
       let G: Geo | null = null
       let water: SVGGElement | null = null
-      let warm: SVGGElement | null = null
-      let deep: SVGGElement | null = null
+      let groove: SVGPathElement | null = null
       let stones: SVGGElement[] = []
+      let ticks: SVGGElement[] = []
+      let jars: { el: SVGGElement; t: number }[] = []
       let lamp: SVGGElement | null = null
-      let at_ = -1, tt = 0, reached = false
+      let at_ = -1, tt = 0, reached = false, moved = false
 
+      /** the reading beside the milestone stone (one block); at today it gives way to the insight */
       function show(i: number) {
         if (i === at_) return
         at_ = i
         thumb.setAttribute('aria-valuenow', String(i))
         thumb.setAttribute('aria-valuetext', valueText(i))
-        if (i < n) {
-          const m = ms[i]
-          card.say(h('p', { class: 'p2-eyebrow' }, `${viDate(m.date)} · ${m.label}`), ctx.fact(m.fact, 'p', 'p2t-fact'), m.compare ? compare(m.compare) : '')
-        } else card.say(h('p', { class: 'p2-eyebrow' }, `${L.today} · ${today}  →  ${L.horizon}`), ctx.fact(T.horizon, 'p', 'p2t-fact t31d3-mist'))
-        card.classList.toggle('mist', i === n)
-        // today, under the real moon: the insight; the deep holds the forecast (its detail stays one tap away)
+        if (i < n - 1) card.say(h('p', { class: 'p2-eyebrow' }, `${viDate(ms[i].date)} · ${ms[i].label}`), ctx.fact(ms[i].fact as Fact, 'p', 't31d4-fact'))
+        else card.replaceChildren()
+        card.hidden = i >= n - 1
+        lead.style.opacity = i >= n - 1 ? '0' : ''
+        place()
+        if (i > 0 && !moved) (moved = true), ctx.prompt(S.next)
         if (i >= n - 1 && !reached) {
           reached = true
-          ctx.insight(S.insight as Fact, S.detail)
+          dot?.done()
+          dot = null
+          ctx.insight(S.insight as Fact, S.detail as Fact)
         }
+      }
+      /** the reading block and its thread to the stone */
+      function place() {
+        if (!G || at_ < 0 || at_ >= n - 1) return
+        const y = G.levels[at_]
+        const jy = y - Math.max(13, G.sw * 0.05) / 2
+        if (G.tall) {
+          // phone: the reading sits in the sky band; its thread drops to the stone along the bank
+          lead.setAttribute('d', '')
+          return
+        }
+        const right = G.a - G.ct - G.W * 0.035
+        card.style.top = `${f1(jy)}px`
+        lead.setAttribute('d', stroke([[right + 10, jy], [G.a - G.ct - 4, jy + 0.5], [G.a + G.sw * 0.08, jy + 1]], 1, 0.1, 0.1, 0.4))
       }
       function moveTo(t: number, snap: boolean) {
         if (!G) return
         tt = clamp(t, 0, 1)
-        const near = Math.round(tt * n)
-        if (snap) tt = near / n
+        const near = Math.round(tt * (n - 1))
+        if (snap) tt = near / (n - 1)
+        const y = at(G, tt)
         thumb.classList.toggle('snap', snap)
-        thumb.classList.toggle('sunk', tt > (n - 1) / n + 0.01)
-        thumb.style.transform = `translate(${f1(G.cx)}px, ${f1(at(G, tt))}px)`
-        if (water) water.style.transform = `translateY(${f1(at(G, Math.min(tt, (n - 1) / n)) - G.levels[2])}px)`
-        stones.forEach((st, k) => st.classList.toggle('on', tt >= k / n - 0.02))
-        lamp?.classList.toggle('on', tt >= 1 / n - 0.02)
-        warm?.classList.toggle('on', tt >= (n - 1) / n - 0.02)
-        deep?.classList.toggle('on', near === n)
+        thumb.style.transform = `translate(${f1(G.cx)}px, ${f1(y)}px)`
+        if (water) water.style.transform = `translateY(${f1(y - G.levels[n - 1])}px)`
+        if (groove) groove.style.transform = `scaleY(${(tt + 0.0001).toFixed(3)})`
+        stones.forEach((st, k) => st.classList.toggle('on', tt >= k / (n - 1) - 0.02))
+        ticks.forEach((st, k) => st.classList.toggle('on', tt >= k / (n - 1) - 0.02))
+        for (const j of jars) j.el.classList.toggle('on', tt >= j.t)
+        lamp?.classList.toggle('on', tt >= 1 / (n - 1) - 0.02)
         show(near)
       }
-      /** the pointer's height as t: up the water column through the years; anywhere in the deep is the forecast */
+      /** the pointer's height as t, through the middle milestone */
       function tAt(y: number) {
-        const g2 = G!
-        if (y > g2.F + (g2.bot - g2.F) * 0.2) return 1
-        const [l0, , l3] = g2.levels
-        const u = clamp((l0 - y) / Math.max(1, l0 - l3), 0, 1) // 0 at 1 million … 1 at today
-        const l1u = (l0 - g2.levels[1]) / Math.max(1, l0 - l3)
-        return u <= l1u ? (u / l1u) / 3 : 1 / 3 + ((u - l1u) / (1 - l1u)) / 3
+        const [l0, l1, l3] = G!.levels
+        return y >= l1 ? clamp((l0 - y) / Math.max(1, l0 - l1), 0, 1) / 2 : 0.5 + clamp((l1 - y) / Math.max(1, l1 - l3), 0, 1) / 2
       }
 
-      // drag anywhere on the painting (or the reflection itself)
-      let drag = false, top0 = 0
+      // drag the reflection (or anywhere on the water column); a tap that does not move steps one date toward the finger
+      let drag = false, top0 = 0, y0 = 0, slid = false
       const down = (e: PointerEvent) => {
         if (e.button) return
         drag = true
+        slid = e.currentTarget === thumb
         top0 = root.getBoundingClientRect().top
+        y0 = e.clientY
         ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
         thumb.focus({ preventScroll: true })
-        moveTo(tAt(e.clientY - top0), false)
         ctx.chime('soft')
       }
-      const move = (e: PointerEvent) => drag && moveTo(tAt(e.clientY - top0), false)
-      const up = () => {
+      const move = (e: PointerEvent) => {
+        if (!drag) return
+        if (!slid && Math.abs(e.clientY - y0) < 6) return
+        slid = true
+        moveTo(tAt(e.clientY - top0), false)
+      }
+      const up = (e: PointerEvent) => {
         if (!drag) return
         drag = false
+        if (!slid && G) {
+          const y = e.clientY - top0
+          return moveTo(clamp(at_ + (y < at(G, tt) ? 1 : -1), 0, n - 1) / (n - 1), true)
+        }
         moveTo(tt, true)
       }
       for (const el of [hit, thumb]) {
@@ -143,221 +181,314 @@ export function depthScene(): SceneDef {
       }
       thumb.addEventListener('keydown', (e) => {
         const k = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1 }[e.key]
-        const to = k ? clamp(at_ + k, 0, n) : e.key === 'Home' ? 0 : e.key === 'End' ? n : -1
+        const to = k ? clamp(at_ + k, 0, n - 1) : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : -1
         if (to < 0) return
         e.preventDefault()
-        moveTo(to / n, true)
+        moveTo(to / (n - 1), true)
       })
+      // H7: standing still 6 s, the reflection lifts ~10 px up the shaft and settles back
+      const nudge = () => {
+        if (ctx.reduced || reached || drag) return
+        glint.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-10px)', offset: 0.45 }, { transform: 'translateY(0)' }], { duration: 1300, easing: 'ease-in-out' })
+      }
+      ctx.el.addEventListener('p2:idle', nudge)
+      ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', nudge))
 
       function layout() {
         const W = ctx.art.clientWidth
-        const H = stableH(ctx.art.clientHeight)
+        const tall = W < ctx.art.clientHeight * 0.8
+        const H = tall ? stableH(ctx.art.clientHeight) : ctx.art.clientHeight
         if (W < 60 || H < 60) return
         root.style.height = `${f1(H)}px`
-        const tall = W < H * 0.8
-        // the scroll: ~1 : 2.5, nearly the stage's height, off centre; the reading in the margin beside it
-        const sh = H * (tall ? 0.95 : 0.94)
-        const sw0 = tall ? Math.min(sh / 2.5, W * 0.56) : clamp(sh / 2.5, 160, 300)
-        const sx = tall ? 4 : Math.max(16, W * 0.33 - sw0 / 2)
-        const sy = (H - sh) * 0.4
-        const m = sw0 * 0.075
-        const x0 = sx + m, x1 = sx + sw0 - m, top = sy + sh * 0.075, bot = sy + sh * 0.9
-        const kw = x1 - x0, ph = bot - top
-        const cx = (x0 + x1) / 2, sw = kw * (tall ? 0.66 : 0.62)
-        const gy = top + ph * 0.16
-        const F = top + ph * 0.8 // the floor; the deep (the forecast) goes on below it into the mist
+        const cx = W / 2
+        const sw = tall ? W * 0.48 : clamp(W * 0.2, 190, 330)
+        const ct = Math.max(7, sw * 0.075)
+        const gy = H * (tall ? 0.31 : 0.25)
+        const F = H * (tall ? 0.88 : 0.87)
         const l3 = gy + (F - gy) * 0.2 // today's water line
-        const hc = F - l3
-        const l0 = F - hc / (ms[2].compare?.ratio ?? 3.16) // 1 million: the ratio sets the geometry
-        const l1 = l0 + (l3 - l0) * 0.68 // 02/2026 sits between by date (an illustration: no count is claimed for it)
-        G = { W, H, tall, sx, sy, sw0, sh, x0, x1, top, bot, cx, a: cx - sw / 2, b: cx + sw / 2, sw, ct: Math.max(5, sw * 0.08), gy, F, levels: [l0, l1, l3], fog: F + (bot - F) * 0.5 }
-        art.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
+        const l0 = F - (F - l3) / (cmp?.ratio ?? 3.16) // 1 million: the ratio sets the geometry
+        const l1 = l0 + (l3 - l0) * 0.68 // 02/2026 by date (no count is claimed for it)
+        G = { W, H, tall, cx, a: cx - sw / 2, b: cx + sw / 2, sw, ct, gy, F, levels: [l0, l1, l3] }
+        for (const el of [art, leadSvg]) el.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
         art.replaceChildren(...paint(G))
-        Object.assign(hit.style, { left: `${f1(x0)}px`, top: `${f1(top)}px`, width: `${f1(kw)}px`, height: `${f1(ph)}px` })
-        Object.assign(thumb.style, { width: `${f1(sw * 0.9)}px`, height: `${f1(sw * 0.36)}px`, marginLeft: `${f1(-sw * 0.45)}px`, marginTop: `${f1(-sw * 0.18)}px` })
-        // the reading: in the margin right of the scroll
-        const cl = sx + sw0 + (tall ? 10 : clamp(W * 0.04, 28, 64))
-        Object.assign(card.style, { left: `${f1(cl)}px`, width: `${f1(Math.min(tall ? 999 : 440, W - cl - (tall ? 2 : 24)))}px`, top: `${f1(tall ? sy + sh * 0.1 : sy + sh * 0.22)}px`, maxHeight: `${f1(H - (tall ? sy + sh * 0.1 : sy + sh * 0.22) - 8)}px` })
+        const top = l3 - sw * 0.2
+        Object.assign(hit.style, { left: `${f1(G.a)}px`, top: `${f1(top)}px`, width: `${f1(sw)}px`, height: `${f1(F - top)}px` })
+        Object.assign(thumb.style, { width: `${f1(sw * 0.62)}px`, height: `${f1(Math.max(52, sw * 0.26))}px`, marginLeft: `${f1(-sw * 0.31)}px`, marginTop: `${f1(-Math.max(52, sw * 0.26) / 2)}px` })
+        if (tall) Object.assign(card.style, { left: '2px', top: `${f1(H * 0.015)}px`, width: `${f1(W * 0.64)}px` })
+        else {
+          const right = G.a - ct - W * 0.035
+          const left = Math.max(W * 0.035, right - 420)
+          Object.assign(card.style, { left: `${f1(left)}px`, width: `${f1(right - left)}px` })
+        }
         root.classList.toggle('tall', tall)
-        moveTo(at_ < 0 ? 0 : at_ / n, true)
+        moveTo(at_ < 0 ? 0 : at_ / (n - 1), true)
+        place()
       }
 
-      /** the wall, the mount and the painting */
+      /** the night, the bank and the cut-open well */
       function paint(G: Geo): SVGElement[] {
-        const { sx, sy, sw0, sh, x0, x1, top, bot, cx, a, b, sw, ct, gy, F, levels } = G
+        const { W, H, tall, cx, a, b, sw, ct, gy, F, levels } = G
         const seed = 3131
         const r = rng(seed)
-        const kw = x1 - x0
-        const id = 't31d3'
-        // ── the mount: the cord on its nail, the hanging stick, brocade, the two thin gold bands, the roller and its knobs
-        const knob = Math.max(5, sw0 * 0.045)
-        const mount = [
-          s('ellipse', { class: 't31d3-wallglow', cx: f1(sx + sw0 / 2), cy: f1(sy + sh * 0.3), rx: f1(sw0 * 2.2), ry: f1(sh * 0.62), fill: 'url(#p2-halo)' }),
-          s('rect', { class: 't31d3-shadow', x: f1(sx + 8), y: f1(sy + 10), width: f1(sw0), height: f1(sh), rx: 3, filter: 'url(#ink-wash)' }),
-          s('path', { class: 't31d3-cord', d: `M${f1(sx + sw0 * 0.18)} ${f1(sy + 2)}L${f1(sx + sw0 / 2)} ${f1(sy - Math.min(26, sy * 0.9))}L${f1(sx + sw0 * 0.82)} ${f1(sy + 2)}` }),
-          s('circle', { class: 't31d3-nail', cx: f1(sx + sw0 / 2), cy: f1(sy - Math.min(26, sy * 0.9)), r: 2.4 }),
-          s('rect', { class: 't31d3-silk', x: f1(sx), y: f1(sy), width: f1(sw0), height: f1(sh) }),
-          s('rect', { class: 't31d3-silk2', x: f1(sx + sw0 * 0.03), y: f1(top - sh * 0.03), width: f1(sw0 * 0.94), height: f1(bot - top + sh * 0.06) }),
-          s('rect', { class: 't31d3-gold', x: f1(sx + sw0 * 0.03), y: f1(top - sh * 0.012), width: f1(sw0 * 0.94), height: f1(sh * 0.008) }),
-          s('rect', { class: 't31d3-gold', x: f1(sx + sw0 * 0.03), y: f1(bot + sh * 0.004), width: f1(sw0 * 0.94), height: f1(sh * 0.008) }),
-          s('rect', { class: 't31d3-stick', x: f1(sx - 2), y: f1(sy - 3), width: f1(sw0 + 4), height: f1(Math.max(5, sh * 0.011)), rx: 1.5 }),
-          s('rect', { class: 't31d3-roller', x: f1(sx - 3), y: f1(sy + sh - knob * 0.9), width: f1(sw0 + 6), height: f1(knob * 1.4), rx: f1(knob * 0.5) }),
-          s('rect', { class: 't31d3-knob', x: f1(sx - knob * 1.6), y: f1(sy + sh - knob * 1.1), width: f1(knob * 1.4), height: f1(knob * 1.8), rx: f1(knob * 0.5) }),
-          s('rect', { class: 't31d3-knob', x: f1(sx + sw0 + knob * 0.2), y: f1(sy + sh - knob * 1.1), width: f1(knob * 1.4), height: f1(knob * 1.8), rx: f1(knob * 0.5) }),
+        const id = 't31d4'
+        const ring = (y: number, p0: number, p1: number, k = 6): Pt[] => Array.from({ length: k + 1 }, (_, i) => ringPt(G, y, p0 + ((p1 - p0) * i) / k))
+        const pts = (p: Pt[]) => p.map((q) => `${f1(q[0])} ${f1(q[1])}`).join('L')
+
+        // ── sky: the moon over the mouth, far ranges melting into mist at the ground
+        const mr = tall ? clamp(W * 0.06, 15, 24) : clamp(H * 0.045, 18, 34)
+        const mx = tall ? W * 0.84 : cx + sw * 0.22, my = tall ? gy * 0.26 : gy * 0.4
+        const sky = [
+          moon(mx, my, mr, seed + 7, true),
+          hills(-W * 0.1, W * 1.1, gy - H * 0.02, H * (tall ? 0.1 : 0.12), seed + 1, 0.92, 6),
+          mist(W * 0.5, gy - H * 0.05, W * 0.7, H * 0.05),
+          hills(-W * 0.05, W * 0.6, gy - H * 0.012, H * (tall ? 0.05 : 0.065), seed + 2, 0.6, 3),
+          hills(W * 0.45, W * 1.08, gy - H * 0.01, H * (tall ? 0.04 : 0.05), seed + 3, 0.66, 2),
+          mist(W * 0.5, gy - H * 0.012, W * 0.8, H * 0.03),
         ]
-        // ── earth outside the lining: strata with pebbles, roots under the grass
-        let strata = '', pebbles = '', roots = '', grass = ''
-        for (let k = 0, y = gy + 6; y < bot; k++) {
-          const hh = 12 + r() * 24
-          const pts: Pt[] = []
-          for (let x = x0; x <= x1 + 1; x += kw / 10) pts.push([x, y + hh + (r() - 0.5) * 6])
-          if (k % 2) strata += `M${f1(x0)} ${f1(y)}L${pts.map((p) => `${f1(p[0])} ${f1(p[1])}`).join('L')}L${f1(x1)} ${f1(y)}Z`
-          for (let j = 0; j < 4; j++) {
-            const px = r() < 0.5 ? x0 + r() * (a - ct - x0) : b + ct + r() * (x1 - b - ct)
-            pebbles += blob(px, y + r() * hh, 1.4 + r() * 2.6, 1 + r() * 1.8, seed + k * 9 + j, 0.2, 8)
+
+        // ── the bank: the ground's top seen a little from above, its cut edge lit by the moon, grass along it
+        const gs = H * 0.035
+        const far: Pt[] = []
+        for (let x = 0; x <= W; x += W / 24) far.push([x, gy - gs + (r() - 0.5) * gs * 0.5])
+        const bankTop = `M${pts(far)}L${f1(W)} ${f1(gy)}L0 ${f1(gy)}Z`
+        let grassD = ''
+        for (let x = 2; x < W - 2; x += 3 + r() * 5) {
+          if (x > a - ct * 1.6 && x < b + ct * 1.6) continue
+          grassD += stroke([[x, gy + 0.5], [x + (r() - 0.5) * 4, gy - 3 - r() * (tall ? 6 : 9)]], 0.9, 0.05, 0.8, 0.1)
+        }
+        // the pine on the left bank, the stone lantern by the mouth; their shadows fall left, away from the moon
+        const px = tall ? W * 0.9 : W * 0.13, ph = tall ? H * 0.17 : H * 0.27
+        const tx = tall ? W * 0.12 : a - ct - W * 0.07, th = tall ? H * 0.075 : H * 0.11
+        const bank = [
+          s('path', { class: 't31d4-banktop', d: bankTop, filter: 'url(#ink-wash)' }),
+          wash(blob(px - ph * 0.22, gy - gs * 0.3, ph * 0.3, gs * 0.28, seed + 4, 0.2), 0.35, 'p2p-wash t31d4-cast'),
+          wash(blob(tx - th * 0.4, gy - gs * 0.25, th * 0.55, gs * 0.22, seed + 5, 0.2), 0.35, 'p2p-wash t31d4-cast'),
+          s('ellipse', { class: 't31d4-pool', cx: f1(tx), cy: f1(gy - gs * 0.35), rx: f1(th * 1.4), ry: f1(gs * 0.5), fill: 'url(#p2-lamp)' }),
+          pine(px, gy - gs * 0.35, ph, seed + 6, tall ? -1 : 1),
+          toro(tx, gy - gs * 0.3, th, true),
+        ]
+
+        // ── the earth in section, to the frame's edges: strata with ink grain, pebbles, buried boulders, the pine's roots,
+        // a band of wet gravel on the right seeping into the shaft (where its water comes from)
+        let pebbles = '', roots = '', boulders = '', seep = '', seams = ''
+        const strata = ['', '', '']
+        // soft wavy boundaries with a gentle tilt; the bands between them in three washes, a dry seam along part of each
+        const edgeAt = (y: number) => {
+          const ph = r() * 6, amp = 3 + r() * (tall ? 5 : 9), tilt = (r() - 0.5) * 0.03
+          return Array.from({ length: 25 }, (_, i) => { const x = -10 + ((W + 20) * i) / 24; return [x, y + Math.sin(ph + x / (W * 0.16)) * amp + (x - W / 2) * tilt] as Pt })
+        }
+        let prev = edgeAt(gy + 2)
+        for (let k = 0, y = gy + 4; y < H + 20; k++) {
+          const hh = (tall ? 16 : 22) + r() * 34
+          const next = edgeAt(y + hh)
+          const tone = Math.floor(r() * 3.4) // 3 = the plain earth shows through
+          if (tone < 3) strata[tone] += `M${pts(prev)}L${pts([...next].reverse())}Z`
+          const i0 = Math.floor(r() * 18), i1 = i0 + 3 + Math.floor(r() * 4)
+          seams += stroke(next.slice(i0, Math.min(25, i1)), 1.6 + r() * 1.8, 0.2, 0.6, 0.15)
+          prev = next
+          for (let j = 0; j < (tall ? 6 : 14); j++) {
+            const x = r() * W
+            if (x > a - ct - 6 && x < b + ct + 6) continue
+            pebbles += blob(x, y + r() * hh, 1.6 + r() * 3.2, 1.1 + r() * 2.2, seed + k * 17 + j, 0.2, 8)
           }
           y += hh
         }
-        for (let j = 0; j < 6; j++) {
-          const px = r() < 0.5 ? x0 + r() * (a - ct - x0 - 4) : b + ct + 4 + r() * (x1 - b - ct - 4)
-          roots += stroke([[px, gy + 3], [px + (r() - 0.5) * 8, gy + 12 + r() * 10], [px + (r() - 0.5) * 14, gy + 20 + r() * 22]], 1.1, 0.2, 0.7, 0.1)
+        const boulder = (x: number, y: number, w: number) => (boulders += blob(x, y, w, w * 0.55, seed + Math.round(x), 0.16, 14))
+        if (tall) boulder(W * 0.1, H * 0.66, W * 0.06)
+        else (boulder(W * 0.06, H * 0.82, W * 0.045), boulder(W * 0.93, H * 0.5, W * 0.035), boulder(W * 0.3, H * 0.93, W * 0.03))
+        for (let j = 0; j < 9; j++) {
+          // the pine's roots: wandering, forking, thinning down into the earth
+          const x0 = px + (r() - 0.5) * ph * 0.12
+          let x = x0, y = gy + 1
+          const dir = (r() - 0.5) * 2, pts2: Pt[] = [[x, y]]
+          for (let q = 0; q < 4; q++) pts2.push([(x += dir * ph * (0.05 + r() * 0.07) + (r() - 0.5) * ph * 0.05), (y += ph * (0.04 + r() * 0.06))])
+          roots += stroke(pts2, 2.6 - j * 0.18, 0.3, 0.9, 0.12)
         }
-        for (let x = x0 + 1; x < x1 - 1; x += 2.5 + r() * 3) if (x < a - ct - 4 || x > b + ct + 4) grass += stroke([[x, gy + 1], [x + (r() - 0.5) * 4, gy - 3 - r() * 6]], 0.9, 0.05, 0.8, 0.1)
-        // ── the back wall: each course the far half of a ring, opening as it goes down; every stone its own quad, lit on
-        // its top edge where the moon reaches, dark at its foot, darker toward the turning sides and with depth
-        const rh = clamp((F - gy) / 13, 9, 26)
+        const gtop = levels[0] - (F - levels[0]) * 0.2, gbot = levels[0] + (F - levels[0]) * 0.35
+        const gravel: Pt[] = []
+        for (let x = b + ct; x <= W + 20; x += (W - b) / 10) gravel.push([x, gtop + (r() - 0.5) * 6 + (x - b) * 0.06])
+        const gravelD = `M${pts(gravel)}L${f1(W + 20)} ${f1(gbot + (W - b) * 0.06)}L${f1(b + ct)} ${f1(gbot)}Z`
+        let gstones = ''
+        for (let j = 0; j < (tall ? 18 : 40); j++) {
+          const x = b + ct + r() * (W - b - ct), y = gtop + (x - b) * 0.06 + 3 + r() * (gbot - gtop - 6)
+          gstones += blob(x, y, 1.6 + r() * 2.6, 1.2 + r() * 1.6, seed + 300 + j, 0.22, 7)
+        }
+        for (let j = 0; j < 4; j++) {
+          const y = gtop + (gbot - gtop) * (0.3 + j * 0.15)
+          seep += stroke([[b + ct + 2, y], [b + ct - 3 - j, y + 3 + j], [b - 1, y + 9 + j * 2]], 1.1, 0.2, 0.4, 0.2)
+        }
+
+        // ── the back wall: each course the far half of a ring, opening as it goes down; each stone lit on top, dark at its
+        // foot, darker toward the sides and with depth (the moon reaches the upper middle only)
+        const rh = clamp((F - gy) / (tall ? 12 : 14), 9, 30)
+        const cop = H * (tall ? 0.03 : 0.04) // how high the coping stands over the ground
         const shade = ['', '', '', '', '']
-        let foot = '', lit = '', dim = '', dotted = ''
-        const ring = (y: number, p0: number, p1: number, k = 6): Pt[] => Array.from({ length: k + 1 }, (_, i) => ringPt(G, y, p0 + ((p1 - p0) * i) / k))
-        for (let y = gy + 3, row = 0; y < bot + rh; y += rh, row++) {
-          const nSt = 7
+        let foot = '', lit = '', dim = ''
+        for (let y = gy - cop, row = 0; y < F; y += rh, row++) {
+          const nSt = tall ? 6 : 8
           const off = (row % 2) * 0.5
           for (let k = -1; k < nSt; k++) {
             const p0 = clamp(-Math.PI / 2 + ((k + off) / nSt) * Math.PI, -Math.PI / 2, Math.PI / 2)
             const p1 = clamp(-Math.PI / 2 + ((k + 1 + off) / nSt) * Math.PI, -Math.PI / 2, Math.PI / 2)
             if (p1 - p0 < 0.05) continue
-            const g0 = p0 + 0.025, g1 = p1 - 0.025 // a mortar gap between stones
-            const topA = ring(y + 1, g0, g1), botA = ring(y + rh - 1.2, g0, g1)
-            if (y > F) {
-              // the deep: the courses go on as dotted lines in the mist
-              if (k >= 0) dotted += stroke(ring(y, p0, p1), 1, 0.1, 0.1, 0.4)
-              continue
-            }
-            const quad = `M${topA.map((p) => `${f1(p[0])} ${f1(p[1])}`).join('L')}L${botA.reverse().map((p) => `${f1(p[0])} ${f1(p[1])}`).join('L')}Z`
+            const g0 = p0 + 0.025, g1 = p1 - 0.025
+            const yb = Math.min(F, y + rh - 1.2)
+            const topA = ring(y + 1, g0, g1), botA = ring(yb, g0, g1)
+            const quad = `M${pts(topA)}L${pts(botA.reverse())}Z`
             const side = Math.abs(Math.sin((p0 + p1) / 2)), depth = clamp((y - gy) / (F - gy), 0, 1)
-            shade[clamp(Math.round((0.1 + depth * 0.5 + side * side * 0.7) * 4 - 0.5 + (r() - 0.5) * 0.8), 0, 4)] += quad
-            foot += stroke(ring(y + rh - rh * 0.3, g0 + 0.02, g1 - 0.02, 4), rh * 0.5, 0.12, 0.12, 0.5)
-            const inCone = side < 0.55 && depth < 0.75
-            const edge = stroke(ring(y + 1.6, g0 + 0.03, g1 - 0.03, 4), Math.max(1, rh * 0.11), 0.25, 0.3, 0.2)
-            if (inCone) lit += edge
+            shade[clamp(Math.round((0.05 + depth * 0.62 + side * side * 0.6) * 4 - 0.5 + (r() - 0.5) * 0.8), 0, 4)] += quad
+            foot += stroke(ring(y + rh * 0.72, g0 + 0.02, g1 - 0.02, 4), rh * 0.45, 0.12, 0.12, 0.5)
+            const edge = stroke(ring(y + 1.8, g0 + 0.03, g1 - 0.03, 4), Math.max(1, rh * 0.11), 0.25, 0.3, 0.2)
+            if (side < 0.6 && depth < 0.7) lit += edge
             else dim += edge
           }
         }
-        // ── the lining cut in section on both sides, and the back half of the mouth's stone ring
-        let cut = '', cutLit = ''
+        // the floor: the far half of its ring, gravel on it
+        const floorD = `M${pts(ring(F, -Math.PI / 2, Math.PI / 2, 16))}Z`
+        let floorStones = ''
+        for (let j = 0; j < 16; j++) {
+          const ph2 = -1.3 + r() * 2.6
+          const p = ringPt(G, F, ph2)
+          floorStones += blob(p[0], F - (F - p[1]) * r(), 2 + r() * 4, 1.4 + r() * 2, seed + 500 + j, 0.2, 8)
+        }
+
+        // ── the lining cut in section on both sides (rising above the ground as the coping), the floor slab, and the back
+        // half of the coping ring round the mouth
+        let cut = '', cutLit = '', cutJoint = ''
         for (const [u, v] of [[a - ct, a], [b, b + ct]]) {
-          for (let y = gy - 4, k = 0; y < F; y += rh * 0.92, k++) {
-            cut += `M${f1(u + 0.6)} ${f1(y + 0.8)}h${f1(v - u - 1.2)}v${f1(rh * 0.92 - 1.6)}h${f1(u - v + 1.2)}Z`
+          for (let y = gy - cop, k = 0; y < F; y += rh * 0.92, k++) {
+            const y1 = Math.min(F + ct, y + rh * 0.92)
+            cut += `M${f1(u + 0.6)} ${f1(y + 0.8)}h${f1(v - u - 1.2)}V${f1(y1 - 0.8)}h${f1(u - v + 1.2)}Z`
             cutLit += stroke([[u + 1, y + 1.4], [v - 1, y + 1.4]], 1, 0.2, 0.2, 0.3)
           }
         }
-        const mouth: Pt[] = Array.from({ length: 25 }, (_, i) => { const ph = -Math.PI / 2 + (i / 24) * Math.PI; return [cx + (Math.sin(ph) * (sw + ct * 2)) / 2, gy - 2 - Math.cos(ph) * (bowAt(G, gy) + ct * 0.6)] as Pt })
-        // ── milestones: a stone jutting from the left wall at each water level, its date cut on its face; the lamp let
-        // down to 02/2026; the two flood marks (1 million, 3.16 million) carved on small tablets on the right wall
-        const jw = sw * 0.46, jh = Math.max(13, rh * 0.85)
-        const fs = clamp(jw / 5.6, 8.5, 12)
-        stones = levels.map((y, k) => s('g', { class: 't31d3-stone' },
-          s('path', { class: 't31d3-jut-sh', d: blob(a + jw * 0.55, y + jh * 0.2, jw * 0.5, jh * 0.32, seed + 60 + k, 0.15, 10) }),
-          s('path', { class: 't31d3-jut', d: `M${f1(a - 2)} ${f1(y - jh)}L${f1(a + jw)} ${f1(y - jh + 1.5)}Q${f1(a + jw + 3)} ${f1(y - jh / 2)} ${f1(a + jw - 1)} ${f1(y - 1)}L${f1(a - 2)} ${f1(y)}Z`, fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }),
-          s('path', { class: 't31d3-jut-top', d: stroke([[a, y - jh + 0.8], [a + jw - 2, y - jh + 2]], 1.6, 0.1, 0.2, 0.3) }),
-          s('text', { class: 't31d3-date', x: f1(a + 4), y: f1(y - jh * 0.3), 'font-size': f1(fs) }, viDate(ms[k].date))))
-        lamp = s('g', { class: 't31d3-lamp' },
-          s('path', { class: 't31d3-rope', d: `M${f1(a + jw * 0.8)} ${f1(gy - 4)}L${f1(a + jw * 0.8)} ${f1(levels[1] - jh - 22)}` }),
-          paperLantern(a + jw * 0.8, levels[1] - jh - 22, Math.max(5, sw * 0.05), seed + 50, 2))
-        const cmp = ms[2].compare!
-        const tw = sw * 0.42
-        const marks = s('g', { class: 't31d3-marks' },
-          ...[[levels[0], cmp.before], [levels[2], cmp.after]].flatMap(([y, txt], k) => [
-            s('path', { class: 't31d3-notch', d: stroke([[b - tw - 3, +y], [b + ct, +y + 0.6]], 1.6, 0.05, 0.05, 0.4) }),
-            s('path', { class: 't31d3-tablet', d: `M${f1(b - tw)} ${f1(+y + 2)}L${f1(b + 1)} ${f1(+y + 2.5)}L${f1(b + 1)} ${f1(+y + 2 + jh * 0.95)}L${f1(b - tw + 1)} ${f1(+y + 1.5 + jh * 0.95)}Z`, fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }),
-            s('text', { class: `t31d3-val${k ? ' now' : ''}`, x: f1(b - 3), y: f1(+y + 2 + jh * 0.68), 'text-anchor': 'end', 'font-size': f1(fs) }, String(txt)),
-          ]))
-        // ── the water: one column moved by the slider; its surface is the far half of a ring: a lit rim, a meniscus at
-        // the cut, a lighter skin; a warm band of GGUF models just under today's surface (~211 thousand of ~3.16 million)
-        const l3 = levels[2]
-        const surf = ring(l3, -Math.PI / 2, Math.PI / 2, 16)
-        const gh = Math.max(3, (F - l3) * 0.067)
-        warm = s('g', { class: 't31d3-gguf' },
-          s('rect', { x: f1(a), y: f1(l3 + 1), width: f1(sw), height: f1(gh), fill: `url(#${id}-g)` }),
-          s('path', { d: stroke([[a + 1, l3 + 1 + gh], [cx, l3 + 1.5 + gh], [b - 1, l3 + 1 + gh]], 1, 0.1, 0.1, 0.3) }))
-        water = s('g', { class: 't31d3-water' },
-          s('rect', { class: 't31d3-body', x: f1(a), y: f1(l3), width: f1(sw), height: f1(F - l3 + (F - levels[0]) + 20), fill: `url(#${id}-w)` }),
-          s('path', { class: 't31d3-skin', d: `M${surf.map((p) => `${f1(p[0])} ${f1(p[1])}`).join('L')}Z` }),
-          warm,
-          s('path', { class: 't31d3-rim', d: stroke(surf, 2, 0.05, 0.05, 0.5) }),
-          s('path', { class: 't31d3-meniscus', d: stroke([[a, l3 + 0.4], [cx, l3 + 0.8], [b, l3 + 0.4]], 1.4, 0.05, 0.05, 0.5) }),
-          s('path', { class: 't31d3-sparkle', d: stroke([[a + sw * 0.12, l3 - bowAt(G, l3) * 0.4], [a + sw * 0.3, l3 - bowAt(G, l3) * 0.62]], 1.1, 0.3, 0.3, 0.2) + stroke([[a + sw * 0.66, l3 - bowAt(G, l3) * 0.66], [a + sw * 0.86, l3 - bowAt(G, l3) * 0.45]], 1.1, 0.3, 0.3, 0.2) }))
-        // ── the deep below the floor: mist, the dotted courses going on, the forecast's open ring
-        deep = s('g', { class: 't31d3-deep' },
-          s('rect', { class: 't31d3-fog', x: f1(a - ct), y: f1(F - (F - l3) * 0.25), width: f1(sw + ct * 2), height: f1(bot - F + (F - l3) * 0.25 + 4), fill: `url(#${id}-f)` }),
-          s('path', { class: 't31d3-dotted', d: dotted }),
-          mist(cx, G.fog, sw * 0.6, (bot - F) * 0.42),
-          s('ellipse', { class: 't31d3-o', cx: f1(cx), cy: f1(G.fog + (bot - F) * 0.22), rx: f1(sw * 0.07), ry: f1(sw * 0.07) }))
-        // the moon over the mouth, and its cone down the shaft (it pools where it meets today's water)
-        const mr = clamp(Math.min(kw * 0.1, (gy - top) * 0.26), 8, 26)
-        const my = top + (gy - top) * 0.42
-        const cone = `M${f1(cx - sw * 0.2)} ${f1(gy - 4)}L${f1(cx + sw * 0.2)} ${f1(gy - 4)}L${f1(cx + sw * 0.44)} ${f1(F)}L${f1(cx - sw * 0.44)} ${f1(F)}Z`
-        const clip = `${id}-clip`
+        for (let x = a - ct, k = 0; x < b + ct; x += sw * 0.16, k++) cutJoint += stroke([[x, F + 1], [x, F + ct - 1]], 1, 0.1, 0.1, 0.4)
+        const slab = `M${f1(a - ct)} ${f1(F)}H${f1(b + ct)}V${f1(F + ct)}H${f1(a - ct)}Z`
+        // the coping: the back half of its ring seen from a little above, a band between the outer and inner edges (its
+        // top), the inner wall's courses starting right under its inner edge; joints across the band
+        const y0 = gy - cop, bw0 = bowAt(G, y0)
+        const arcAt = (rx: number, ry: number, k = 24): Pt[] => Array.from({ length: k + 1 }, (_, i) => { const p = -Math.PI / 2 + (i / k) * Math.PI; return [cx + Math.sin(p) * rx, y0 - Math.cos(p) * ry] as Pt })
+        const outer = arcAt(sw / 2 + ct, bw0 * (1 + (2 * ct) / sw) + ct * 0.35), inner = arcAt(sw / 2, bw0)
+        const copingTop = `M${pts(outer)}L${pts([...inner].reverse())}Z`
+        let copingJoints = ''
+        for (let i = 2; i < 24; i += 3) copingJoints += stroke([outer[i], inner[i]], 1, 0.1, 0.1, 0.4)
+        const copingLit = stroke(outer.slice(3, 22), Math.max(1.2, ct * 0.18), 0.2, 0.2, 0.3)
+
+        // ── milestones: a stone jutting from the left wall at each water level; the paper lamp let down on a rope tied to
+        // the coping, to 02/2026; a groove carved right of the shaft with a tick and a carved date at each level
+        const jw = sw * 0.3, jh = Math.max(13, sw * 0.05)
+        stones = levels.map((y, k) => s('g', { class: 't31d4-stone' },
+          s('path', { class: 't31d4-jut-sh', d: blob(a + jw * 0.5, y + jh * 0.25, jw * 0.45, jh * 0.3, seed + 60 + k, 0.15, 10) }),
+          s('path', { class: 't31d4-jut', d: `M${f1(a - 2)} ${f1(y - jh)}L${f1(a + jw)} ${f1(y - jh + 1.5)}Q${f1(a + jw + 3)} ${f1(y - jh / 2)} ${f1(a + jw - 1)} ${f1(y - 1)}L${f1(a - 2)} ${f1(y)}Z`, fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }),
+          s('path', { class: 't31d4-jut-top', d: stroke([[a, y - jh + 0.8], [a + jw - 2, y - jh + 2]], 1.6, 0.1, 0.2, 0.3) })))
+        // the lamp let down on its rope stops above today's water (it never drowns); it lights once the water passes 02/2026
+        const lx = a + jw * 0.75, lr = Math.max(5, sw * 0.045), ly = levels[n - 1] - bowAt(G, levels[n - 1]) - lr * 4.2
+        lamp = s('g', { class: 't31d4-lamp' },
+          s('path', { class: 't31d4-rope', d: `M${f1(lx)} ${f1(y0 - Math.sqrt(Math.max(0, 1 - ((lx - cx) / (sw / 2)) ** 2)) * bw0 - ct * 0.3)}L${f1(lx)} ${f1(ly)}` }),
+          paperLantern(lx, ly, lr, seed + 50, lr * 0.6))
+        const gx = b + ct + Math.max(14, sw * 0.08)
+        const fs = tall ? 10 : clamp(sw * 0.048, 11, 14)
+        const labels = [cmp ? `${viDate(ms[0].date)} · ${cmp.before}` : viDate(ms[0].date), viDate(ms[1].date), cmp ? `${viDate(ms[n - 1].date)} · ${cmp.after}` : viDate(ms[n - 1].date)]
+        ticks = levels.map((y, k) => s('g', { class: 't31d4-tick' },
+          s('path', { class: 't31d4-notch', d: stroke([[gx - 6, y], [gx + 7, y + 0.4]], 2, 0.05, 0.05, 0.5) }),
+          tall && k === 1 ? '' : s('text', { class: 't31d4-date', x: f1(gx + 11), y: f1(y + fs * 0.36), 'font-size': f1(fs) }, tall ? viDate(ms[k].date) : labels[k])))
+        groove = s('path', { class: 't31d4-groove-fill', d: stroke([[gx, levels[0]], [gx + 0.4, (levels[0] + levels[2]) / 2], [gx, levels[2]]], 2.2, 0.05, 0.05, 0.6) })
+        groove.style.transformOrigin = `${f1(gx)}px ${f1(levels[0])}px`
+
+        // ── the water: one column moved by the slider; a lit far rim, a bright meniscus at the cut; jars floating on it
+        const l3 = levels[n - 1]
+        const surf = ring(l3, -Math.PI / 2, Math.PI / 2, 18)
+        const bw = bowAt(G, l3)
+        const R = rng(seed + 900)
+        // jar spots on the surface crescent, clear of the reflection in the middle; at today they cover it
+        const spots: Pt[] = []
+        for (let tries = 0; spots.length < (tall ? 14 : 20) && tries < 400; tries++) {
+          const u = R() * 2 - 1
+          if (Math.abs(u) < 0.2) continue
+          const x = cx + (u * sw) / 2 * 0.9
+          const back = l3 - Math.sqrt(Math.max(0, 1 - u * u)) * bw
+          const y = back + (l3 - back) * (0.25 + R() * 0.8) + 2
+          if (spots.some((q) => Math.abs(q[0] - x) < sw * 0.07 && Math.abs(q[1] - y) < bw * 0.45)) continue
+          spots.push([x, y])
+        }
+        spots.sort((p, q) => p[1] - q[1])
+        const jk = clamp(sw / 150, 1.1, 1.9)
+        const order = spots.map((_, i) => i).sort((i, j) => Math.abs(spots[i][0] - cx) - Math.abs(spots[j][0] - cx))
+        jars = spots.map((p, i) => ({ el: jar(p[0], p[1], jk * (0.85 + ((p[1] - (l3 - bw)) / (bw + 4)) * 0.25), seed + 700 + i), t: Math.max(0, order.indexOf(i) - 2) / (spots.length - 3) - 0.001 }))
+        water = s('g', { class: 't31d4-water' },
+          s('rect', { class: 't31d4-body', x: f1(a), y: f1(l3), width: f1(sw), height: f1(F - levels[0] + (F - l3) + 10), fill: `url(#${id}-w)` }),
+          s('path', { class: 't31d4-skin', d: `M${pts(surf)}Z` }),
+          s('path', { class: 't31d4-rim', d: stroke(surf, 2, 0.05, 0.05, 0.5) }),
+          s('path', { class: 't31d4-meniscus', d: stroke([[a, l3 + 0.4], [cx, l3 + 0.9], [b, l3 + 0.4]], 1.6, 0.05, 0.05, 0.5) }),
+          s('path', { class: 't31d4-sparkle', d: stroke([[a + sw * 0.1, l3 - bw * 0.4], [a + sw * 0.24, l3 - bw * 0.62]], 1.1, 0.3, 0.3, 0.2) + stroke([[a + sw * 0.72, l3 - bw * 0.66], [a + sw * 0.88, l3 - bw * 0.45]], 1.1, 0.3, 0.3, 0.2) }),
+          ...jars.map((j) => j.el))
+
+        // the moon's cone down the shaft, dust turning in it
+        const cone = `M${f1(cx - sw * 0.22)} ${f1(gy - cop)}L${f1(cx + sw * 0.26)} ${f1(gy - cop)}L${f1(cx + sw * 0.45)} ${f1(F)}L${f1(cx - sw * 0.38)} ${f1(F)}Z`
+        let dust = ''
+        for (let j = 0; j < (tall ? 26 : 44); j++) {
+          const v = R(), y = gy + (F - gy) * v * 0.9, half = sw * (0.24 + 0.17 * v) * (R() * 2 - 1)
+          const rr = 0.5 + R() * 1.1
+          dust += `M${f1(cx + sw * 0.03 + half)} ${f1(y)}m-${f1(rr)} 0a${f1(rr)} ${f1(rr)} 0 1 0 ${f1(rr * 2)} 0a${f1(rr)} ${f1(rr)} 0 1 0 -${f1(rr * 2)} 0`
+        }
         return [
           s('defs', null,
-            s('clipPath', { id: clip }, s('rect', { x: f1(x0), y: f1(top), width: f1(kw), height: f1(bot - top) })),
-            s('linearGradient', { id: `${id}-w`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 't31d3-w0' }), s('stop', { offset: 0.35, class: 't31d3-w1' }), s('stop', { offset: 1, class: 't31d3-w2' })),
-            s('linearGradient', { id: `${id}-c`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 't31d3-c0' }), s('stop', { offset: 0.6, class: 't31d3-c1' }), s('stop', { offset: 1, class: 't31d3-c2' })),
-            s('linearGradient', { id: `${id}-g`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 't31d3-g0' }), s('stop', { offset: 1, class: 't31d3-g1' })),
-            s('linearGradient', { id: `${id}-f`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 't31d3-f0' }), s('stop', { offset: 0.35, class: 't31d3-f1' }), s('stop', { offset: 1, class: 't31d3-f2' })),
-            s('linearGradient', { id: `${id}-s`, x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, class: 't31d3-s0' }), s('stop', { offset: 0.28, class: 't31d3-s1' }), s('stop', { offset: 0.72, class: 't31d3-s1' }), s('stop', { offset: 1, class: 't31d3-s0' }))),
-          ...mount,
-          s('g', { 'clip-path': `url(#${clip})` },
-            s('rect', { class: 't31d3-panel', x: f1(x0), y: f1(top), width: f1(kw), height: f1(bot - top) }),
-            s('rect', { class: 't31d3-sky', x: f1(x0), y: f1(top), width: f1(kw), height: f1(gy - top + 4) }),
-            moon(cx, my, mr, seed + 7, true),
-            mist(cx, gy - 6, kw * 0.55, 10),
-            s('rect', { class: 't31d3-earth', x: f1(x0), y: f1(gy), width: f1(kw), height: f1(bot - gy) }),
-            s('path', { class: 't31d3-strata', d: strata, filter: 'url(#ink-wash)' }),
-            s('path', { class: 't31d3-pebble', d: pebbles }),
-            s('path', { class: 'g11-wash t31d3-root', d: roots }),
-            // the shaft: mortar-dark behind, the stones by shade, their dark feet and lit tops, the turn of the wall
-            s('rect', { class: 't31d3-mortar', x: f1(a), y: f1(gy - 2), width: f1(sw), height: f1(bot - gy + 4) }),
-            ...shade.map((d, k) => s('path', { class: `t31d3-st t31d3-st${k}`, d })),
-            s('path', { class: 't31d3-foot', d: foot }),
-            s('path', { class: 't31d3-lit', d: lit }),
-            s('path', { class: 't31d3-dim', d: dim }),
-            s('rect', { x: f1(a), y: f1(gy - 2), width: f1(sw), height: f1(bot - gy + 4), fill: `url(#${id}-s)` }),
-            s('path', { class: 't31d3-cone', d: cone, fill: `url(#${id}-c)` }),
-            water,
-            deep,
-            s('path', { class: 't31d3-cut', d: cut, fill: 'url(#p2-rock)' }),
-            s('path', { class: 't31d3-cutlit', d: cutLit }),
-            s('path', { class: 'g11-wash t31d3-cutline', d: stroke([[a, gy - 6], [a, F]], 1.3, 0.02, 0.1, 0.5) + stroke([[b, gy - 6], [b, F]], 1.3, 0.02, 0.1, 0.5) }),
-            s('path', { class: 't31d3-mouth', d: stroke(mouth, ct * 1.4, 0.05, 0.05, 0.7), fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }),
-            s('path', { class: 't31d3-mouthlit', d: stroke(mouth.slice(3, 22), Math.max(1.2, ct * 0.3), 0.2, 0.2, 0.3) }),
-            s('path', { class: 'g11-wash t31d3-grass', d: grass }),
-            marks, ...stones, lamp),
+            s('linearGradient', { id: `${id}-w`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 't31d4-w0' }), s('stop', { offset: 0.3, class: 't31d4-w1' }), s('stop', { offset: 1, class: 't31d4-w2' })),
+            s('linearGradient', { id: `${id}-c`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 't31d4-c0' }), s('stop', { offset: 0.55, class: 't31d4-c1' }), s('stop', { offset: 1, class: 't31d4-c2' })),
+            s('linearGradient', { id: `${id}-e`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 't31d4-e0' }), s('stop', { offset: 0.82, class: 't31d4-e1' }), s('stop', { offset: 1, class: 't31d4-e2' })),
+            // the earth dissolves into the paper at the frame's sides and under the foot of the picture (luminance masks)
+            s('linearGradient', { id: `${id}-gx`, x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, 'stop-color': '#000' }), s('stop', { offset: 0.035, 'stop-color': '#fff' }), s('stop', { offset: 0.965, 'stop-color': '#fff' }), s('stop', { offset: 1, 'stop-color': '#000' })),
+            s('linearGradient', { id: `${id}-gy`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, 'stop-color': '#fff' }), s('stop', { offset: 0.92, 'stop-color': '#fff' }), s('stop', { offset: 1, 'stop-color': '#000' })),
+            s('mask', { id: `${id}-mx`, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: f1(W), height: f1(H) }, s('rect', { x: 0, y: 0, width: f1(W), height: f1(H), fill: `url(#${id}-gx)` })),
+            s('mask', { id: `${id}-my`, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: f1(W), height: f1(H) }, s('rect', { x: 0, y: 0, width: f1(W), height: f1(H), fill: `url(#${id}-gy)` })),
+            s('clipPath', { id: `${id}-clip` }, s('rect', { x: f1(a), y: f1(gy - cop - bowAt(G, gy) * 2), width: f1(sw), height: f1(F - gy + cop + bowAt(G, gy) * 2) })),
+            s('linearGradient', { id: `${id}-s`, x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, class: 't31d4-s0' }), s('stop', { offset: 0.3, class: 't31d4-s1' }), s('stop', { offset: 0.7, class: 't31d4-s1' }), s('stop', { offset: 1, class: 't31d4-s0' }))),
+          ...sky,
+          // the earth: one body to the frame's edges, dissolving into the paper at the sides and the foot
+          s('g', { mask: `url(#${id}-my)` }, s('g', { mask: `url(#${id}-mx)` },
+          s('rect', { class: 't31d4-earth', x: 0, y: f1(gy), width: f1(W), height: f1(H - gy), fill: `url(#${id}-e)` }),
+          ...strata.map((d, k) => s('path', { class: `t31d4-strata t31d4-sa${k}`, d, filter: 'url(#ink-wash)' })),
+          s('path', { class: 'g11-wash t31d4-seam', d: seams }),
+          s('path', { class: 't31d4-gravel', d: gravelD, filter: 'url(#ink-wash)' }),
+          s('path', { class: 't31d4-gstone', d: gstones }),
+          s('path', { class: 't31d4-pebble', d: pebbles }),
+          s('path', { class: 't31d4-boulder', d: boulders, fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }),
+          s('path', { class: 'g11-wash t31d4-root', d: roots }),
+          s('path', { class: 't31d4-seep', d: seep }),
+          ...bank,
+          s('path', { class: 'g11-moonlit t31d4-cutedge', d: stroke([[-20, gy + 0.5], [a - ct, gy + 1]], 1.4, 0.05, 0.05, 0.4) + stroke([[b + ct, gy + 1], [W + 20, gy + 0.5]], 1.4, 0.05, 0.05, 0.4) }),
+          s('path', { class: 'g11-wash t31d4-grass', d: grassD }),
+          tuft(tx + th * 0.45, gy - gs * 0.2, th * 0.6, seed + 8),
+          // the shaft: mortar-dark behind, the stones by shade, their dark feet and lit tops, the turn of the wall
+          s('path', { class: 't31d4-mortar', d: `M${pts(inner)}L${f1(b)} ${f1(F)}L${f1(a)} ${f1(F)}Z` }),
+          ...shade.map((d, k) => s('path', { class: `t31d4-st t31d4-st${k}`, d })),
+          s('path', { class: 't31d4-foot', d: foot }),
+          s('path', { class: 't31d4-lit', d: lit }),
+          s('path', { class: 't31d4-dim', d: dim }),
+          s('path', { class: 't31d4-floor', d: floorD }),
+          s('path', { class: 't31d4-floorst', d: floorStones }),
+          s('rect', { x: f1(a), y: f1(gy - cop), width: f1(sw), height: f1(F - gy + cop), fill: `url(#${id}-s)` }),
+          s('path', { class: 't31d4-cone', d: cone, fill: `url(#${id}-c)` }),
+          s('path', { class: 't31d4-dust', d: dust }),
+          lamp,
+          s('g', { 'clip-path': `url(#${id}-clip)` }, water),
+          s('path', { class: 't31d4-cut', d: cut + slab, fill: 'url(#p2-rock)' }),
+          s('path', { class: 'g11-wash t31d4-cutjoint', d: cutJoint }),
+          s('path', { class: 't31d4-cutlit', d: cutLit }),
+          s('path', { class: 'g11-wash t31d4-cutline', d: stroke([[a, gy - cop], [a, F]], 1.3, 0.02, 0.1, 0.5) + stroke([[b, gy - cop], [b, F]], 1.3, 0.02, 0.1, 0.5) + stroke([[a - ct, F + ct], [b + ct, F + ct]], 1.6, 0.05, 0.05, 0.5) }),
+          s('path', { class: 't31d4-coping', d: copingTop, fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }),
+          s('path', { class: 'g11-wash t31d4-copedge', d: stroke(inner, 1.4, 0.05, 0.05, 0.5) + stroke(outer, 1.6, 0.05, 0.05, 0.5) }),
+          s('path', { class: 'g11-wash t31d4-copjoint', d: copingJoints }),
+          s('path', { class: 't31d4-copinglit', d: copingLit }),
+          ...stones,
+          s('path', { class: 't31d4-groove', d: stroke([[gx, levels[0] + 6], [gx + 0.4, (levels[0] + levels[2]) / 2], [gx, levels[2] - 6]], 3.4, 0.1, 0.1, 0.6) }),
+          groove,
+          ...ticks,
+          )),
         ]
       }
 
       ctx.onCleanup(onSize(ctx.art, layout))
     },
   }
-}
-
-/** Two numbers as brushed ink bars, long and short, stacked to fit a narrow margin. */
-function compare(c: NonNullable<Tide['milestones'][number]['compare']>): HTMLElement {
-  const r = c.ratio && c.ratio > 0 ? c.ratio : 1
-  const row = (label: string | undefined, value: string, k: number, cls: string) =>
-    h('div', { class: 't31d3-cmp' },
-      h('span', { class: 't31d3-cmp-l' }, label ?? ''), h('b', null, value),
-      s('svg', { class: `t31d3-bar ${cls}`, viewBox: '0 0 200 14', preserveAspectRatio: 'none', style: `width:${f1(Math.max(4, k * 100))}%`, 'aria-hidden': 'true' },
-        s('path', { d: stroke([[2, 7.5], [100, 6.6], [198, 7.2]], 11, 0.04, 0.12, 0.5) })))
-  return h('div', { class: 't31d3-compare' }, row(c.beforeLabel, c.before, r >= 1 ? 1 / r : 1, 'before'), row(c.afterLabel, c.after, r >= 1 ? 1 : r, 'after'))
 }

@@ -102,7 +102,7 @@
     {
       "id": "t31-safe-download",
       "station": 31,
-      "title": "Lọc nước: thứ tự an toàn khi tải model hoặc code",
+      "title": "Ba lớp lọc trước khi tải model hoặc code (và thứ tự kiểm đầy đủ)",
       "type": "checklist",
       "body": "1. Tìm đúng nguồn gốc: trang chính thức của tác giả, theo link từ chính trang đó.\n2. Đọc model card / README: giấy phép, giới hạn.\n3. Chọn định dạng an toàn hơn: safetensors hoặc GGUF; tránh file pickle của người lạ.\n4. Xem kết quả quét bảo mật trên trang file; có cảnh báo thì dừng.\n5. Tải qua app quen thuộc (LM Studio, Ollama) hoặc trang chính thức; không chạy lệnh “cài nhanh” dán từ diễn đàn.\n6. Lần đầu chỉ thử với dữ liệu không nhạy cảm.",
       "source": "t31-hf-pickle",

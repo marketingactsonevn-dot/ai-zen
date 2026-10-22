@@ -16,6 +16,12 @@
 .t33y-hlat { fill: var(--t33-wood-lo); opacity: 0.7; }
 .t33y-hpost { fill: var(--t33-wood-lo); }
 .t33y-hsill { fill: var(--t33-wood-hi); }
+.t33y-hfoot { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--rock-lo)); }
+.t33y-hstep { fill: var(--rock-mid); opacity: 0.8; }
+/* the garden floor */
+.t33y-ground { fill: color-mix(in srgb, var(--t33-sand) 80%, var(--wash)); }
+:root[data-theme='dark'] .t33y-ground { fill: color-mix(in srgb, var(--t33-sand) 55%, var(--umbra)); }
+.t33y-grake { fill: var(--rake); opacity: 0.55; }
 
 /* a door in focus: hidden until its key is given — then the room behind it, painted in its lamp light */
 .t33y-open { opacity: 0; transition: opacity 0.9s var(--ease); }
@@ -83,6 +89,8 @@
 .t33y-risk { position: absolute; margin: 0; transform: translateX(-50%); font: 400 0.84rem/1.4 var(--serif); text-align: center; color: var(--ink-2); opacity: 0; transition: opacity 0.8s var(--ease) 0.3s; }
 /* only the newest key's risk is written out; the older ones fold to a vermilion dot under their door */
 .t33y-risk.on { opacity: 1; }
+/* once the job is handed over, the verdict alone speaks */
+.t33y.right .t33y-risk { opacity: 0 !important; }
 .t33y-risk.old { opacity: 1; font-size: 0; transition: none; }
 .t33y-risk.old::before { content: ''; position: absolute; left: calc(50% + var(--o, 0) * 12px); top: 4px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--vermilion); opacity: 0.8; }
 
@@ -92,8 +100,8 @@
 .t33y-chisel { fill: var(--wash); opacity: 0.25; }
 .t33y-moonedge { fill: var(--moon); opacity: 0.6; }
 :root[data-theme='light'] .t33y-moonedge { fill: #fff; opacity: 0.85; }
-.t33y-cord { fill: none; stroke: var(--wash); stroke-width: 2; opacity: 0.85; }
-:root[data-theme='dark'] .t33y-cord { stroke: var(--rock-hi); opacity: 0.6; }
+.t33y-hook { fill: color-mix(in srgb, var(--wash) 85%, var(--t33-bronze)); }
+:root[data-theme='dark'] .t33y-hook { fill: color-mix(in srgb, #000 70%, var(--t33-bronze)); }
 .t33y-ring {
   position: absolute;
   left: -15px;
@@ -131,7 +139,7 @@
 .t33y-key.ask .t33y-thread { opacity: 0.95; }
 .t33y-ask { display: none; font: italic 400 0.72rem/1.2 var(--serif); color: var(--vermilion); }
 .t33y-key.ask .t33y-ask { display: block; }
-.t33y-key.ask .t33y-tagp { box-shadow: inset 3px 0 0 var(--vermilion), inset 0 0 0 999px color-mix(in srgb, var(--lantern) 18%, transparent), 0 8px 14px -10px var(--umbra); }
+.t33y-key.ask .t33y-tagp { box-shadow: inset 3px 0 0 var(--vermilion), inset 0 0 0 999px color-mix(in srgb, var(--lantern) 16%, transparent); }
 /* in the hand the tags stand in a column (placed by JS): no string */
 .t33y-key[aria-pressed='true'] .t33y-string { display: none; }
 .t33y-palm { position: absolute; pointer-events: none; }
@@ -148,7 +156,7 @@
 /* the tags hang from the bit on strings of two lengths (--row), so neighbours sit at different heights */
 .t33y-tag { --sl: calc(10px + var(--row, 0) * 58px + var(--lift, 0px)); position: absolute; left: 50%; top: calc(var(--kw) * 2.9); width: 0; height: 0; transform-origin: 0 0; }
 .t33y-key[aria-pressed='true'] .t33y-tag { --sl: 6px; }
-.t33y-string { position: absolute; left: -0.5px; top: 0; width: 1px; height: var(--sl); background: color-mix(in srgb, var(--ink) 55%, transparent); }
+.t33y-string { position: absolute; left: -0.75px; top: 0; width: 1.5px; height: var(--sl); background: var(--vermilion); opacity: 0.85; }
 .t33y-tagp {
   position: absolute;
   top: var(--sl);
@@ -162,40 +170,40 @@
   border-radius: 2px 3px 3px 2px;
   transform: translateX(-50%) rotate(calc((var(--row, 0) - 0.5) * 3deg));
   font: 500 0.86rem/1.25 var(--serif);
-  color: var(--ink);
+  color: #1a2240;
   text-align: center;
-  background: var(--t33-fibre), linear-gradient(175deg, var(--card), color-mix(in srgb, var(--card) 84%, var(--paper-2)));
-  box-shadow: 0 8px 14px -10px var(--umbra), inset 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent);
+  background: var(--t33-fibre), radial-gradient(120% 80% at 30% 10%, rgba(255, 255, 255, 0.35), transparent 70%), linear-gradient(175deg, #f3eedf, #e0d6be);
+  /* washi torn along its foot */
+  clip-path: polygon(0 0, 100% 0, 100% 88%, 92% 100%, 80% 93%, 66% 100%, 52% 94%, 38% 100%, 24% 94%, 10% 100%, 0 92%);
+  filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.35));
 }
-.t33y-tagp::before { content: ''; position: absolute; left: 50%; top: 4px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: color-mix(in srgb, var(--ink) 30%, transparent); }
-.t33y-key[aria-pressed='true'] .t33y-tagp { box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--lantern) 18%, transparent), 0 8px 14px -10px var(--umbra); }
+:root[data-theme='dark'] .t33y-tagp { background: var(--t33-fibre), radial-gradient(120% 80% at 70% 10%, color-mix(in srgb, var(--moon) 30%, transparent), transparent 70%), linear-gradient(175deg, #d8d0bb, #b9b09a); }
+/* the thread's knot through the slip */
+.t33y-tagp::before { content: ''; position: absolute; left: 50%; top: 3px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: var(--vermilion); box-shadow: 0 0 0 1.5px rgba(255, 246, 230, 0.5); }
+.t33y-key[aria-pressed='true'] .t33y-tagp { box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--lantern) 16%, transparent); }
 
 /* the open hand: placed by JS inside the frame; the sleeve melts into the night toward the corner */
 .t33y-handbox {
   position: absolute;
   z-index: 2;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to right, #000 74%, transparent 97%), linear-gradient(to bottom, #000 84%, transparent 99%);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to right, #000 74%, transparent 97%), linear-gradient(to bottom, #000 84%, transparent 99%);
-  mask-composite: intersect;
 }
 .t33y-hand { display: block; width: 100%; height: 100%; overflow: visible; }
-.t33y-skin { fill: url(#t33y-skin); }
-.t33y-thumb { filter: brightness(0.94); }
-.t33y-hollow { fill: #3a1e10; opacity: 0.14; }
-:root[data-theme='dark'] .t33y-hollow { fill: #000; opacity: 0.26; }
-.t33y-pad { fill: color-mix(in srgb, #ffe6cc 70%, var(--lantern)); opacity: 0.32; }
-:root[data-theme='dark'] .t33y-pad { opacity: 0.2; }
-.t33y-shade { fill: #4a2614; opacity: 0.32; }
-:root[data-theme='dark'] .t33y-shade { fill: #000; opacity: 0.45; }
-.t33y-lit { fill: color-mix(in srgb, var(--lantern) 60%, #fff); opacity: 0.55; }
-.t33y-crease { fill: #5a2e18; opacity: 0.4; }
+/* the hand in ink: one muted skin wash, brush outlines, a few dry creases, the moon on its upper edge */
+.t33y-skin { fill: color-mix(in srgb, #b98e6c 46%, var(--rock-hi)); }
+:root[data-theme='dark'] .t33y-skin { fill: color-mix(in srgb, #a07a5c 48%, var(--rock-hi)); }
+.t33y-line { fill: none; stroke: var(--wash); stroke-width: 1.8; opacity: 0.75; }
+:root[data-theme='dark'] .t33y-line { stroke: #000; opacity: 0.85; }
+.t33y-hollow { fill: var(--wash); opacity: 0.08; }
+:root[data-theme='dark'] .t33y-hollow { fill: #000; opacity: 0.14; }
+.t33y-shade { fill: var(--wash); opacity: 0.18; }
+:root[data-theme='dark'] .t33y-shade { fill: #000; opacity: 0.35; }
+.t33y-crease { fill: var(--wash); opacity: 0.4; }
 :root[data-theme='dark'] .t33y-crease { fill: #000; opacity: 0.5; }
+.t33y-sleeverim { fill: var(--moon); opacity: 0.4; }
+:root[data-theme='light'] .t33y-sleeverim { fill: #fff; opacity: 0.6; }
 .t33y-handink { fill: #3a1e10; opacity: 0.55; }
 :root[data-theme='dark'] .t33y-handink { fill: #000; opacity: 0.7; }
-.t33y-handsh { fill: var(--umbra); opacity: 0.22; }
-:root[data-theme='dark'] .t33y-handsh { opacity: 0.5; }
 .t33y-handrim { fill: var(--moon); opacity: 0.5; }
 :root[data-theme='light'] .t33y-handrim { fill: #fff; opacity: 0.75; }
 .t33y-sleeve { fill: color-mix(in srgb, var(--wash) 72%, var(--moss-b)); }
@@ -207,26 +215,45 @@
 .t33y-flame { fill: color-mix(in srgb, var(--moon) 60%, var(--lantern)); }
 .t33y-moss { fill: var(--moss-a); opacity: 0.55; }
 
-/* "Giao việc": a wooden plaque hung on a cord */
+/* "Giao việc": a small bronze bell on a cord from the roof's corner, the words carved on the wooden strip under it */
 .t33y-plaque {
   position: absolute;
   left: 4%;
   top: 30%;
   z-index: 4;
-  min-height: 44px;
-  padding: 10px 18px 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
   border: 0;
-  border-radius: 3px 3px 6px 6px;
-  color: #f6eedb;
-  font: 500 1rem/1.1 var(--serif);
+  background: none;
   cursor: pointer;
-  text-shadow: 0 -1px 0 color-mix(in srgb, #000 50%, transparent);
-  background: var(--t33-grain), linear-gradient(170deg, color-mix(in srgb, #8a6440 80%, var(--t33-wood-hi)), color-mix(in srgb, #5a3e24 80%, var(--t33-wood)) 60%, #3a2614);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--moon) 30%, transparent), inset 0 -3px 0 color-mix(in srgb, #000 25%, transparent), 0 10px 18px -10px var(--umbra);
-  transform: rotate(1.5deg);
+  translate: -50% 0;
+  transform-origin: 50% 0;
 }
-.t33y-plaque:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; }
-.t33y-plaque:active { transform: rotate(1.5deg) translateY(1px); }
+.t33y-bell { display: block; width: 40px; height: 44px; overflow: visible; }
+.t33y-bellcord { fill: none; stroke: var(--wash); stroke-width: 1.4; }
+:root[data-theme='dark'] .t33y-bellcord { stroke: var(--rock-hi); opacity: 0.7; }
+.t33y-bellb { fill: url(#t33y-bronze); }
+.t33y-bellrim { stroke: var(--moon); stroke-width: 1.6; opacity: 0.7; }
+:root[data-theme='light'] .t33y-bellrim { stroke: #fff; }
+.t33y-bellband { fill: color-mix(in srgb, #2a1a0c 70%, var(--t33-bronze)); }
+.t33y-plaque span {
+  margin-top: -1px;
+  padding: 7px 10px 8px;
+  border-radius: 1px 1px 3px 3px;
+  color: #efe3c4;
+  font: 600 0.92rem/1.1 var(--serif);
+  white-space: nowrap;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 236, 196, 0.18);
+  background: var(--t33-grain), linear-gradient(180deg, color-mix(in srgb, var(--t33-wood) 75%, #000), color-mix(in srgb, var(--t33-wood-lo) 85%, #000));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--moon) 35%, transparent), 0 6px 10px -6px #000;
+}
+.t33y-plaque:focus-visible { outline: none; }
+.t33y-plaque:focus-visible span { outline: 2px solid var(--vermilion); outline-offset: 3px; }
+.t33y-plaque:active { rotate: 3deg; }
+.t33y.right .t33y-plaque { animation: t33y-ring 1.4s ease-in-out; }
+@keyframes t33y-ring { 20% { rotate: 7deg; } 45% { rotate: -5deg; } 70% { rotate: 2deg; } }
 
 /* words in the sky */
 .t33y-task { position: absolute; left: 40%; right: 3%; top: 3%; margin: 0; text-align: center; font: 400 clamp(1rem, 1.6vw, 1.2rem) / 1.45 var(--serif); color: var(--ink-2); }
@@ -246,4 +273,5 @@
   /* once the job is handed over, the keys left on the ring step back so the sealed doors behind them show */
   .t33y.right .t33y-key[aria-pressed='false'] .t33y-tag { opacity: 0.22; transition: opacity 0.6s var(--ease); }
   .t33y .t33-take { left: 50%; right: auto; bottom: auto; translate: -50% 0; }
+  .t33y.right ~ .p2g .p2g-count { opacity: 0; transition: opacity 0.4s; }
 }

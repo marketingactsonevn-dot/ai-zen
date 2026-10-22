@@ -4,7 +4,8 @@ import type { Fact } from '../../core/content'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import { blob, clamp, curve, onDigit, onSize, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
-import { hills, mist, moon, pine } from '../../ui/part2/paint'
+import { hills, mist, moon, pine, reeds, toro } from '../../ui/part2/paint'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import './house.css'
 import { f1, lantern, live, P, t33Defs } from './kit'
@@ -167,7 +168,7 @@ function sand(Wp: number, Dp: number, B: number, house: [number, number, number,
   kids.push(s('path', { class: 't33h-contact', d: rect(hx - 3, hv + hd - 2, hw + 6, B * 0.08), filter: 'url(#ink-wash)' }))
   // stepping stones out of the gate toward the front edge
   for (let i = 0; i < 3; i++) {
-    const cx = gate + (r() - 0.5) * B * 0.18 + i * B * 0.08, cy = hv + hd + B * (0.24 + i * 0.3)
+    const cx = gate + (r() - 0.5) * B * 0.18 + i * B * 0.08, cy = hv + hd + B * (0.18 + i * 0.2)
     const rx = B * (0.17 + r() * 0.04), ry = rx * 0.7
     kids.push(
       s('path', { class: 't33h-cast', d: blob(cx + rx * 0.3, cy - ry * 0.2, rx * 1.1, ry, seed + 9 + i, 0.12), filter: 'url(#ink-wash)' }),
@@ -290,6 +291,27 @@ function thatchTop(w: number, L: number, B: number, seed: number) {
     s('rect', { class: 't33h-thatchsh', width: f1(w), height: f1(L) }),
     s('path', { class: 't33h-moss', d: blob(w * 0.22, L * 0.4, w * 0.08, L * 0.25, seed, 0.4, 12) + blob(w * 0.7, L * 0.3, w * 0.05, L * 0.2, seed + 1, 0.4, 10), filter: 'url(#ink-wash)' }),
     s('path', { class: 't33h-moonlit', d: stroke([[B * 0.1, 1.5], [w * 0.7, 1.5]], Math.max(1.2, B * 0.02), 0.1, 0.4, 0.2) }))
+}
+
+/**
+ * The near slope with its thatch taken off (px w × L, ridge at the top): the bare rafters running down from the ridge to rest
+ * on the front beam (a short overhang past it), the bamboo battens tied across them, the eave board at their feet. Open between.
+ */
+function rafters(w: number, L: number, B: number, onBeam: number) {
+  let raf = '', bat = '', lit = ''
+  const rw = Math.max(3, B * 0.045)
+  for (let x = B * 0.08; x < w; x += B * 0.36) {
+    raf += stroke([[x, 0], [x + 0.5, L]], rw, 0.02, 0.02, 0.85)
+    lit += stroke([[x - rw * 0.3, 2], [x - rw * 0.3, L - 2]], Math.max(0.8, rw * 0.22), 0.1, 0.2, 0.2)
+  }
+  for (const f of [0.22, 0.46, 0.7]) bat += stroke([[0, L * f], [w, L * f + 0.6]], Math.max(1.6, B * 0.022), 0.02, 0.02, 0.7)
+  // where the rafters sit on the beam: a wall plate shadow across them; the eave board along their feet
+  const plate = stroke([[0, onBeam], [w, onBeam]], Math.max(3, B * 0.05), 0.01, 0.01, 0.9)
+  const eave = stroke([[0, L - B * 0.025], [w, L - B * 0.025]], Math.max(3, B * 0.05), 0.01, 0.01, 0.9)
+  return svg(w, L,
+    s('path', { class: 't33h-batten', d: bat }),
+    s('path', { class: 't33h-rafter', d: raf + plate + eave, filter: 'url(#ink-rough)' }),
+    s('path', { class: 't33h-moonlit', d: lit }))
 }
 
 /** Crossed ridge sticks (karasu-odori) standing along the ridge (px w × hh, feet at the bottom). */
@@ -439,6 +461,7 @@ export function houseScene(ctx: SceneCtx) {
   const lit = new Set<number>()
   const reading = live('t33h-read')
   const note = h('p', { class: 't33h-note t33-ink', hidden: true }, K.note)
+  const short = (k: number) => K.rooms[k].name.split(/\s*=\s*/)
   const night = s('svg', { class: 't33-night t33h-night', 'aria-hidden': 'true' })
   const cam = h('div', { class: 't33h-cam' })
   const turnId = 't33h-turn'
@@ -451,13 +474,19 @@ export function houseScene(ctx: SceneCtx) {
     h('div', { class: 't33h-foot' }, reading, note))
   ctx.art.append(root)
   ctx.prompt(K.prompt)
+  // guide: a dot on the next bay's lantern, the count of lit bays, a curved ink arrow under the plinth (turn me) until the first turn
+  const g = guide(ctx)
+  const count = g.count(K.count, K.rooms.length, () => geo.countAt)
+  let next: Mark | null = null
+  let turnHint: Mark | null = low ? null : g.gesture('rotate', () => geo.turnAt, { r: 30 })
+  const lamps: HTMLElement[] = []
 
   // the bay buttons persist across layouts (focus survives a resize); the planes around them are rebuilt
   const bays = K.rooms.map((r, i) => h('button', { class: `t33h-bay t33h-b${i}`, type: 'button', 'aria-pressed': 'false', 'aria-label': fill(K.roomAria, { name: r.name }), onClick: () => !dragged && light(i) }))
   let shaded: Shaded[] = []
   const view = { yaw: HOME.yaw, pitch: HOME.pitch }
   const tgt = { ...view }
-  let geo = { B: 0, cy: 0, lift: 0 }
+  let geo = { B: 0, cy: 0, lift: 0, countAt: [0, 0] as Pt, turnAt: [0, 0] as Pt }
 
   const applyCam = () => void (cam.style.transform = `translate3d(0,${f1(geo.lift)}px,0) rotateX(${(-view.pitch).toFixed(2)}deg) rotateY(${view.yaw.toFixed(2)}deg)`)
   /** Moon shading of every face for the current turn: once per settle, never per frame. */
@@ -483,25 +512,37 @@ export function houseScene(ctx: SceneCtx) {
     const W0 = stage.clientWidth, H0 = stage.clientHeight
     if (!W0 || !H0) return
     const mobile = W0 < 640
-    const side = mobile ? 0.3 : 1.5
-    const B = Math.round(Math.min((W0 * (mobile ? 0.78 : 0.52)) / (5 + side), H0 * (mobile ? 0.16 : 0.17)))
+    const side = mobile ? 0.3 : 1.1
+    // the house fills ~58% of a desk's width (audit 33-4: it was 30%), the whole width of a phone
+    const B = Math.round(Math.min((W0 * (mobile ? 0.84 : 0.54)) / 5, H0 * (mobile ? 0.16 : 0.175)))
     if (first && mobile) {
       // a phone looks from higher and turned a little more square-on: the house stands taller in the frame, margins at the sides
       view.yaw = tgt.yaw = 10
       view.pitch = tgt.pitch = 46
     }
-    const W = 5 * B, D = 1.35 * B, Hw = B, F = 0.12 * B, Hr = 0.95 * B, ov = 0.3 * B, sov = 0.16 * B
-    const Wp = W + side * B, Dp = D + 1.5 * B, T = 0.16 * B
-    const zc = -0.3 * B // the house sits toward the back of the plinth
+    const W = 5 * B, D = 1.35 * B, Hw = B, F = 0.12 * B, Hr = 0.95 * B, ov = 0.22 * B, sov = 0.16 * B
+    const Wp = W + side * B, Dp = D + 1.1 * B, T = 0.16 * B
+    const zc = -0.22 * B // the house sits toward the back of the plinth
     const yT = -F - Hw, yR = yT - Hr
-    const dz = D / 2 + ov, dy = Hr + 0.06 * B, th = 0.34 * B, k = 0.24
-    const gb = Hr - (D / 2) * (dy / dz) // how far the roof stands above the back wall's top
-    geo = { B, cy: H0 * (mobile ? 0.4 : 0.46), lift: B * 0.62 }
+    // the far slope runs from the ridge through the top of the back wall (its rafters sit on the wall plate) and on out to the eave
+    const dz = D / 2 + ov, dy = (Hr * dz) / (D / 2), th = 0.34 * B, k = 0.24
+    const gb = Hr - (D / 2) * (dy / dz) // = 0: no gap between the roof and the back wall
+    const camX = W0 * (mobile ? 0.5 : 0.42)
+    // a phone sets the house lower, its garden running on below it, and writes the bay's line in the sky above
+    geo = { B, cy: H0 * (mobile ? 0.5 : 0.47), lift: B * 0.62, countAt: [0, 0], turnAt: [0, 0] }
+    root.style.setProperty('--camx', `${f1(camX)}px`)
+    /** under the plinth's front edge (measured once the model is built, at the home view): the count, then the bay's line */
+    const foot = (bottom: number) => {
+      geo.countAt = mobile ? [camX, H0 * 0.05] : [camX, bottom + 12]
+      geo.turnAt = [camX + W * (mobile ? 0.36 : 0.52), bottom - B * (mobile ? 0.1 : 0.3)]
+      root.style.setProperty('--foot', `${f1(mobile ? H0 * 0.05 + 20 : bottom + 30)}px`)
+      g.refresh()
+    }
     root.style.setProperty('--B', `${B}px`)
-    cam.style.left = `${f1(W0 * (mobile ? 0.5 : 0.56))}px`
+    cam.style.left = `${f1(camX)}px`
     cam.style.top = `${f1(geo.cy)}px`
     stage.style.perspective = `${Math.round(Math.max(1300, H0 * 2.6))}px`
-    stage.style.perspectiveOrigin = `${mobile ? 50 : 56}% ${f1(geo.cy - B * 0.4)}px`
+    stage.style.perspectiveOrigin = `${f1(camX)}px ${f1(geo.cy - B * 0.4)}px`
     const bx = (k: number) => -W / 2 + (k + 0.5) * B
     const list: Shaded[] = []
     const plane = (cls: string, w: number, hh: number, at: V3, rot: string, n: V3 | null, kids: (Node | null)[] = [], two = false, k = 0.62) => {
@@ -519,22 +560,43 @@ export function houseScene(ctx: SceneCtx) {
       plane(`${cls} t33h-boxt`, w, d, [x, y - hh, z - d / 2], FLAT, UP, [top]),
     ]
 
+    let plinthFront: HTMLElement | null = null
     function* build() {
       cam.replaceChildren()
       // the night: moon high on the left (it lights the house), far ranges, mist
       night.setAttribute('viewBox', `0 0 ${W0} ${H0}`)
       night.setAttribute('preserveAspectRatio', 'none')
-      const hz = geo.cy - B * (mobile ? 0.2 : 0.55)
+      const hz = geo.cy - B * (mobile ? 0.2 : 0.75)
+      // the garden floor: raked sand from the horizon to the foot of the frame, rows closer together far away
+      let rows = ''
+      for (let y = hz + 3, i = 0; y < H0; y += 2.5 + (y - hz) * 0.05, i++) rows += stroke([[-10, y], [W0 * 0.5, y + Math.sin(i) * 0.8], [W0 + 10, y]], Math.min(1.6, 0.7 + (y - hz) * 0.002), 0.02, 0.02, 0.6)
       night.replaceChildren(
         mist(W0 * 0.5, hz - H0 * 0.12, W0 * 0.75, H0 * 0.26),
-        moon(W0 * (mobile ? 0.2 : 0.16), H0 * (mobile ? 0.1 : 0.14), Math.max(16, Math.min(W0, H0) * 0.045), 3343, true),
+        moon(W0 * (mobile ? 0.16 : 0.1), H0 * (mobile ? 0.08 : 0.11), Math.max(16, Math.min(W0, H0) * 0.042), 3343, true),
         hills(-W0 * 0.05, W0 * 1.05, hz, H0 * 0.2, 3344, 0.9, 6),
         hills(W0 * 0.45, W0 * 1.08, hz + H0 * 0.04, H0 * 0.13, 3345, 0.62, 3),
-        mist(W0 * 0.5, hz + H0 * 0.02, W0 * 0.7, H0 * 0.07))
+        s('rect', { class: 't33h-groundp', x: f1(-10), y: f1(hz), width: f1(W0 + 20), height: f1(H0 - hz + 10) }),
+        s('path', { class: 't33h-grake', d: rows }),
+        mist(W0 * 0.5, hz + H0 * 0.01, W0 * 0.7, H0 * 0.05),
+        ...(mobile ? [
+          pine(W0 * 0.97, hz + H0 * 0.02, H0 * 0.13, 3342, -1),
+          // the garden in front of the plinth: stepping stones from its foot toward us, a lit stone lantern beside them
+          s('path', { class: 't33h-pathst', d: [[0.5, 0.71, 0.09], [0.42, 0.765, 0.11], [0.5, 0.83, 0.13], [0.38, 0.9, 0.15]].map(([x, y, r], i) => blob(W0 * x, H0 * y, W0 * r, W0 * r * 0.28, 3360 + i, 0.15, 14)).join(''), filter: 'url(#ink-rough)' }),
+          s('ellipse', { class: 't33h-toropool', cx: f1(W0 * 0.8), cy: f1(H0 * 0.86), rx: f1(W0 * 0.2), ry: f1(H0 * 0.025) }),
+          s('ellipse', { class: 't33h-torocast', cx: f1(W0 * 0.82), cy: f1(H0 * 0.862), rx: f1(W0 * 0.1), ry: f1(H0 * 0.01) }),
+          toro(W0 * 0.8, H0 * 0.865, H0 * 0.19, true),
+          reeds(W0 * 0.06, H0 * 0.9, H0 * 0.12, 3365, 7),
+        ] : [
+          // a stone lantern on the garden floor, front right, and its pool of light and shadow (the frame's near layer)
+          s('ellipse', { class: 't33h-toropool', cx: f1(W0 * 0.885), cy: f1(H0 * 0.86), rx: f1(H0 * 0.13), ry: f1(H0 * 0.03) }),
+          s('ellipse', { class: 't33h-torocast', cx: f1(W0 * 0.9), cy: f1(H0 * 0.865), rx: f1(H0 * 0.07), ry: f1(H0 * 0.012) }),
+          toro(W0 * 0.885, H0 * 0.865, H0 * 0.26, true)]),
+        mist(W0 * 0.5, hz + H0 * 0.05, W0 * 0.75, H0 * 0.04))
       fog.setAttribute('viewBox', `0 0 ${W0} ${H0}`)
       fog.setAttribute('preserveAspectRatio', 'none')
+      // two layers of low mist: one drifting behind the plinth's foot, one thin in the foreground corners
       const fy = geo.cy + geo.lift + B * 0.95
-      fog.replaceChildren(mist(W0 * 0.5, fy + B * 0.25, W0 * 0.6, B * 0.45), mist(W0 * 0.16, fy + B * 0.75, W0 * 0.3, B * 0.28), mist(W0 * 0.84, fy + B * 0.55, W0 * 0.32, B * 0.28))
+      fog.replaceChildren(mist(W0 * 0.12, fy + B * 0.35, W0 * 0.22, B * 0.3), mist(W0 * 0.9, fy + B * 0.25, W0 * 0.22, B * 0.26), mist(W0 * 0.5, H0 * 1.02, W0 * 0.7, B * 0.4))
       yield
       // the plinth: raked top, four stone sides, mist pooled under it
       const rocks: Pt[] = [[Wp * 0.12, Dp * 0.8], [Wp * 0.86, Dp * 0.9]]
@@ -544,9 +606,10 @@ export function houseScene(ctx: SceneCtx) {
         s('path', { class: 't33h-seam', d: lines([[0, 2, w, 2]], 1.4) }),
         s('path', { class: 't33h-moss', d: blob(w * 0.2, hh, w * 0.12, hh * 0.5, Math.round(w), 0.3, 12), filter: 'url(#ink-wash)' }))
       cam.append(
-        plane('t33h-mistbed', Wp * 1.9, Dp * 2.2, [0, T + 2, 0], FLAT, null),
+        plane('t33h-groundbed', Wp * 3, Dp * 3.4, [0, T + 1, 0], FLAT, null),
+        plane('t33h-contactbed', Wp + B * 0.5, Dp + B * 0.5, [B * 0.08, T, B * 0.06], FLAT, null),
         plane('t33h-sand', Wp, Dp, [0, 0, 0], FLAT, UP, [sand(Wp, Dp, B, houseRect, rocks, Wp / 2 + bx(4), 3346)], false, 0.5),
-        plane('t33h-pl', Wp, T, [0, T / 2, Dp / 2], '', FRONT, [plinthSide(Wp, T)]),
+        plinthFront = plane('t33h-pl', Wp, T, [0, T / 2, Dp / 2], '', FRONT, [plinthSide(Wp, T)]),
         plane('t33h-pl', Wp, T, [0, T / 2, -Dp / 2], 'rotateY(180deg)', [0, 0, -1], [plinthSide(Wp, T)]),
         plane('t33h-pl', Dp, T, [-Wp / 2, T / 2, 0], SIDE, LEFT, [plinthSide(Dp, T)]),
         plane('t33h-pl', Dp, T, [Wp / 2, T / 2, 0], 'rotateY(90deg)', RIGHT, [plinthSide(Dp, T)]))
@@ -583,8 +646,12 @@ export function houseScene(ctx: SceneCtx) {
       }
       for (let k = 0; k <= 5; k++) post(-W / 2 + k * B + (k === 0 ? p / 2 : k === 5 ? -p / 2 : 0), zc + D / 2 - p / 2, k)
       for (let k = 1; k < 5; k++) post(-W / 2 + k * B, zc - D / 2 + part, 10 + k)
-      // no beam across the open front: a thin cord between the post tops carries each bay's lantern and its paper name tag
-      cam.append(plane('t33h-frontcord', W, Math.max(1.5, B * 0.014), [0, yT + 3, zc + D / 2 - p / 2], '', null))
+      // the front beam across the post tops (the near roof is cut away, the beam that carried it stays): the boards and lanterns hang from it
+      const bh = 0.1 * B, bw = W + p
+      const beamArt = (w: number, hh: number) => svg(w, hh, ...(wood(w, hh, 3378, 'x', 0, 't33h-woodlo').children as unknown as SVGElement[]), s('path', { class: 't33h-moonlit', d: stroke([[2, 1.2], [w * 0.6, 1.2]], Math.max(1, B * 0.012), 0.1, 0.3, 0.2) }))
+      cam.append(
+        plane('t33h-fbeam', bw, bh, [0, yT + bh / 2, zc + D / 2 + 0.5], '', FRONT, [beamArt(bw, bh)], false, 0.5),
+        plane('t33h-fbeam', bw, p, [0, yT, zc + D / 2 - p / 2], FLAT, UP, [beamArt(bw, p)], false, 0.5))
       yield
       // the far half of the roof, steep thatch seen from beneath; its cut ends; the heavy ridge
       const Lr = Math.hypot(dz, dy)
@@ -599,6 +666,9 @@ export function houseScene(ctx: SceneCtx) {
       cam.append(
         plane('t33h-roof t33h-near', rw, Lr * k, [0, yR - th + (dy * k) / 2, zc + (dz * k) / 2], `rotateX(${(-phi).toFixed(2)}deg)`, nTop, [thatchTop(rw, Lr * k, B, 3388)], false, 0.5),
         plane('t33h-thatchcut', rw, th, [0, yR - th + dy * k + th / 2, zc + dz * k], '', FRONT, [thatchCut(rw, th, B, 3387)], false, 0.4))
+      // below the cut the near slope's frame stays: rafters from the ridge down onto the front beam, a short overhang past it
+      const fz = (D / 2 + 0.07 * B) / dz, Ln = Lr * fz
+      cam.append(plane('t33h-rafters', rw, Ln, [0, yR + (dy * fz) / 2, zc + (dz * fz) / 2], `rotateX(${(-phi).toFixed(2)}deg)`, null, [rafters(rw, Ln, B, Lr * ((D / 2) / dz))]))
       // the eave's shadow along the top of the back wall
       cam.append(plane('t33h-eaveshadow', W, Hw * 0.4, [0, yT + Hw * 0.2, zc - D / 2 + 0.6], '', null))
       const rh = Math.max(12, 0.24 * B), rlen = rw + 0.1 * B
@@ -622,11 +692,10 @@ export function houseScene(ctx: SceneCtx) {
         ...box('t33h-item t33h-b1', bx(1), -F, zc - D / 2 + 0.14 * B + benchD, benchW, benchH, benchD, wood(benchW, benchH, 3391, 'x', benchH / 3, 't33h-woodhi'), benchTop(benchW, benchD, 3392), sideWood),
         ...box('t33h-item t33h-b2', bx(2), -F, zc - D / 2 + shelfD + 1, shelfW, shelfH, shelfD, shelfArt(shelfW, shelfH, 3393), wood(shelfW, shelfD, 3394, 'x', 0, 't33h-woodhi'), sideWood),
         ...box('t33h-item t33h-b3', bx(3), -F, zc - D / 2 + 0.12 * B + chestD, chestW, chestH, chestD, chestArt(chestW, chestH, 3395), notebooks(chestW, chestD, 3396), sideWood),
-        plane('t33h-item t33h-b4', 0.24 * B, 0.42 * B, [bx(4) + 0.12 * B, yT + 0.21 * B + 3, zc + D / 2 - 0.08 * B], '', null, [bellArt(0.24 * B, 0.42 * B)]),
+        plane('t33h-item t33h-b4', 0.2 * B, 0.42 * B, [bx(4) + 0.28 * B, yT + 0.1 * B + 0.2 * B + 0.21 * B, zc + D / 2 - 0.08 * B], '', null, [bellArt(0.2 * B, 0.42 * B)]),
         plane('t33h-keeper', 0.6 * B, 0.92 * B, [bx(4) + 0.36 * B, -0.46 * B, zc + D / 2 + 0.5 * B], '', null, [keeperArt(0.6 * B, 0.92 * B)]),
         plane('t33h-rock', 0.62 * B, 0.36 * B, [rocks[0][0] - Wp / 2, -0.18 * B, rocks[0][1] - Dp / 2], '', null, [svg(0.62 * B, 0.36 * B, s('g', { transform: `translate(${f1(0.31 * B)} ${f1(0.36 * B)})` }, stoneArt(0.56 * B, 0.33 * B, 3397)))]),
         plane('t33h-rock', 0.4 * B, 0.24 * B, [rocks[1][0] - Wp / 2, -0.12 * B, rocks[1][1] - Dp / 2], '', null, [svg(0.4 * B, 0.24 * B, s('g', { transform: `translate(${f1(0.2 * B)} ${f1(0.24 * B)})` }, stoneArt(0.36 * B, 0.22 * B, 3398)))]))
-      if (!mobile) cam.append(plane('t33h-pine', 1.5 * B, 2.1 * B, [Wp / 2 - 0.25 * B, -1.05 * B, -Dp / 2 + 0.3 * B], '', null, [svg(1.5 * B, 2.1 * B, s('g', { transform: `translate(${f1(1.05 * B)} ${f1(2.1 * B)})` }, pine(0, 0, 2.0 * B, 3399, -1)))]))
       yield
       // per bay: the paper lantern, the warm pool on the floor and the back wall, the light thrown out onto the sand, the button
       for (let k = 0; k < 5; k++) {
@@ -636,8 +705,9 @@ export function houseScene(ctx: SceneCtx) {
           plane(`t33h-glow t33h-gfloor t33h-b${k}`, B, D, [x, -F - 0.6, zc], FLAT, null),
           plane(`t33h-glow t33h-gwall t33h-b${k}`, B, Hw, [x, -F - Hw / 2, zc - D / 2 + 0.8], '', null),
           plane(`t33h-glow t33h-spill t33h-b${k}`, 1.5 * B, 1.15 * B, [x + 0.12 * B, -0.6, zc + D / 2 + 0.575 * B], FLAT, null),
-          plane(`t33h-lampp t33h-b${k}`, 0.22 * B, 0.35 * B, [x - (k === 4 ? 0.28 * B : 0), yT + 0.175 * B + 3, zc + D / 2 - p / 2], '', null, [lam]),
-          plane(`t33h-tagp t33h-b${k}`, 0.96 * B, 0.3 * B, [x - (k === 4 ? 0.28 * B : 0), yT + 0.5 * B, zc + D / 2 - p / 2 + 1], 'rotateZ(' + (k % 2 ? 1.5 : -1.5) + 'deg)', null, [h('span', { class: 't33h-tag', 'aria-hidden': 'true' }, K.rooms[k].name.split(/:\s*/)[0])]))
+          plane(`t33h-lampp t33h-b${k}`, 0.22 * B, 0.35 * B, [x - 0.3 * B, yT + bh + 0.2 * B + 0.175 * B, zc + D / 2 - p / 2], '', null, [lam]),
+          plane(`t33h-boardp t33h-b${k}`, 0.9 * B, 0.2 * B, [x, yT + bh + 0.1 * B + 1, zc + D / 2 + 1], '', null, [h('span', { class: 't33h-board', 'aria-hidden': 'true' }, h('b', null, short(k)[0]), short(k)[1] ? h('small', null, short(k)[1]) : null)]))
+        lamps[k] = lam
         const btn = bays[k]
         btn.style.cssText = `width:${f1(B)}px;height:${f1(Hw + F)}px;margin:${f1(-(Hw + F) / 2)}px 0 0 ${f1(-B / 2)}px;transform:translate3d(${f1(x)}px,${f1(-(Hw + F) / 2)}px,${f1(zc + D / 2 + 2)}px)`
         cam.append(btn)
@@ -657,6 +727,8 @@ export function houseScene(ctx: SceneCtx) {
       smooth.push(way[way.length - 1])
       const ring = (k: number, v: number, rx: number, ry: number) => s('ellipse', { class: 't33h-inkring', cx: f1(k * B + B * 0.5), cy: f1(D * v), rx: f1(rx), ry: f1(ry), pathLength: 1 })
       cam.append(plane('t33h-threadp', W, D, [0, -F - 1.2, zc], FLAT, null, [svg(W, D,
+        // the groove the message runs in: faint gold dots from the start, the thread itself once every bay is lit
+        s('path', { class: 't33h-groove', d: `M${smooth.map(P).join('L')}` }),
         s('path', { class: 't33h-thread', d: `M${smooth.map(P).join('L')}`, pathLength: 1 }),
         ring(3, (0.12 * B + chestD / 2) / D, chestW * 0.72, chestD * 1.05),
         ring(2, (shelfD / 2 + 0.04 * B) / D, shelfW * 0.66, shelfD * 1.5))]))
@@ -667,6 +739,16 @@ export function houseScene(ctx: SceneCtx) {
       shaded = list
       shade()
       applyCam()
+      pointNext()
+      // one read after the build (not per frame): where the plinth's front edge lands on screen
+      const edge = () => {
+        const sb = stage.getBoundingClientRect(), pb = plinthFront!.getBoundingClientRect()
+        foot(pb.bottom - sb.top)
+      }
+      edge()
+      // and once more after the scene's entrance has settled (its fade-in moves the whole art while it runs)
+      const id = setTimeout(edge, 900)
+      ctx.onCleanup(() => clearTimeout(id))
     }
     job?.cancel()
     job = sliced(build(), { sync: ctx.reduced || !first })
@@ -714,6 +796,8 @@ export function houseScene(ctx: SceneCtx) {
         dragged = true
         stage.setPointerCapture(e.pointerId)
         stage.classList.add('drag')
+        turnHint?.done()
+        turnHint = null
       }
       drag.x = e.clientX
       drag.y = e.clientY
@@ -733,6 +817,8 @@ export function houseScene(ctx: SceneCtx) {
       if (!d || (e.target as Element).closest('.t33h-read, .t33h-foot')) return
       e.preventDefault()
       turn(d[0], d[1])
+      turnHint?.done()
+      turnHint = null
     })
   }
 
@@ -743,19 +829,20 @@ export function houseScene(ctx: SceneCtx) {
     root.classList.add(`on-${i}`)
     root.dataset.cur = String(i)
     const st = (r as { station?: number }).station
-    const [a, b] = r.name.split(/:\s*/)
-    reading.say(h('div', { class: 't33h-slip t33-ink' },
-      h('p', { class: 't33h-name' }, a, b ? h('span', null, ` · ${b}`) : null),
-      h('p', { class: 't33h-what' }, r.what)),
-    st ? h('a', { class: 't33h-link', href: `#/tram/${st}` }, fill(K.seeStation, { n: st })) : '')
+    note.hidden = true
+    reading.say(h('p', { class: 't33h-slip t33-ink' },
+      h('b', { class: 't33h-name' }, r.name), ' — ', h('span', { class: 't33h-what' }, r.what),
+      st ? h('a', { class: 't33h-link', href: `#/tram/${st}` }, fill(K.seeStation, { n: st })) : null))
     if (lit.has(i)) return
     lit.add(i)
     ctx.chime('tap')
+    count.set(lit.size)
+    pointNext()
     if (lit.size === K.rooms.length) {
       root.classList.add('all')
       ctx.insight(K.insight as Fact, K.detail as Fact)
-      // after the thread has run: the moth settles on the notebooks, then the recipes
-      const steps: [number, () => void][] = [[low || ctx.reduced ? 0 : 2600, () => root.classList.add('moth1')], [low || ctx.reduced ? 0 : 2200, () => root.classList.add('moth2')], [low || ctx.reduced ? 0 : 1600, () => (note.hidden = false)]]
+      // after the thread has run: the moth settles on the notebooks, then the recipes; its warning takes the bay's line
+      const steps: [number, () => void][] = [[low || ctx.reduced ? 0 : 2600, () => root.classList.add('moth1')], [low || ctx.reduced ? 0 : 2200, () => root.classList.add('moth2')], [low || ctx.reduced ? 0 : 1600, () => (reading.say(''), (note.hidden = false))]]
       let t = 0
       for (const [dt, fn] of steps) {
         t += dt
@@ -765,4 +852,27 @@ export function houseScene(ctx: SceneCtx) {
     }
   }
   ctx.onCleanup(onDigit((d) => d <= bays.length && bays[d - 1].click()))
+
+  /** H1 + H5: the dot on the next dark bay's lantern (it rides in the model as it turns), the prompt naming that bay */
+  function pointNext() {
+    const k = K.rooms.findIndex((_, j) => !lit.has(j))
+    if (k < 0) {
+      next?.done()
+      next = null
+      return
+    }
+    if (!lamps[k]) return
+    if (next) next.at(lamps[k])
+    else next = g.dot(lamps[k], { dir: [0, 1] })
+    root.dataset.next = String(k)
+    if (lit.size) ctx.prompt(fill(K.promptNext, { name: short(k)[0] }))
+  }
+  // H7 · standing still: the next bay's lantern swings on its cord
+  const onIdle = () => {
+    const k = root.dataset.next
+    if (low || ctx.reduced || k === undefined || !lamps[+k]) return
+    lamps[+k].animate([{ rotate: '0deg' }, { rotate: '9deg', offset: 0.3 }, { rotate: '-6deg', offset: 0.65 }, { rotate: '0deg' }], { duration: 1500, easing: 'ease-in-out' })
+  }
+  ctx.el.addEventListener('p2:idle', onIdle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
 }

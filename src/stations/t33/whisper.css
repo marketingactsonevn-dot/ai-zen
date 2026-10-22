@@ -1,11 +1,25 @@
 /* Trạm 33 · whisper: a letter on a wet stone step; held up against the night, the lantern behind it shows the hidden line */
 .t33w-stage { position: absolute; inset: 0; perspective: 1100px; perspective-origin: 50% 6%; -webkit-user-select: none; user-select: none; }
+/* the stage spans the art but only the letter and the lantern catch the pointer (the gate behind it stays touchable) */
+.t33w-stage { pointer-events: none; }
+.t33w-letter, .t33w-lamp { pointer-events: auto; }
 /* the stone keeps its near edge: it melts into the page only at the sides and the very foot */
 .t33w .t33w-step, .t33w .t33w-tex {
   -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, #000 95%, transparent);
   mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(to bottom, #000 95%, transparent);
 }
 .t33w-step { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+/* the step runs a little on the diagonal */
+.t33w-step, .t33w-tex { transform: rotate(-2.4deg); transform-origin: 55% 70%; }
+/* the far bank behind the step: dark moss, a bamboo fence with the mail gate in it, stepping stones up to it */
+.t33w-bank { fill: color-mix(in srgb, var(--wash) 55%, var(--moss-b)); opacity: 0.5; }
+:root[data-theme='dark'] .t33w-bank { fill: color-mix(in srgb, #03050b 80%, var(--moss-b)); opacity: 0.92; }
+.t33w-fence { fill: color-mix(in srgb, var(--moss-b) 45%, var(--t33-wood-lo)); }
+:root[data-theme='dark'] .t33w-fence { fill: color-mix(in srgb, var(--moss-b) 35%, #0a0c10); }
+.t33w-pathst { fill: url(#p2-rock); }
+.t33w-toropool { fill: url(#t33-warm); opacity: 0.6; }
+.t33w-mstreak { fill: var(--moon); opacity: 0.55; }
+:root[data-theme='light'] .t33w-mstreak { fill: #fff; opacity: 0.8; }
 /* the stone: three flagstones with mossy joints, the step behind, the slab's own thickness at its near edge */
 .t33w-lip { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--rock-hi)); }
 .t33w-riser { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--rock-mid)); }
@@ -22,7 +36,7 @@
 .t33w-sheen { fill: url(#p2-halo); opacity: 0.3; }
 .t33w-pits { fill: var(--wash); opacity: 0.1; }
 .t33w-puddle { fill: color-mix(in srgb, var(--water) 55%, var(--rock-lo)); opacity: 0.4; }
-:root[data-theme='dark'] .t33w-puddle { fill: #02040b; opacity: 0.7; }
+:root[data-theme='dark'] .t33w-puddle { fill: color-mix(in srgb, var(--water) 70%, var(--rock-lo)); opacity: 0.55; }
 .t33w-pudrim { fill: #fff; opacity: 0.6; }
 :root[data-theme='dark'] .t33w-pudrim { fill: var(--moon); opacity: 0.35; }
 .t33w-wetp { fill: var(--umbra); opacity: 0.05; }
@@ -56,8 +70,8 @@
 /* the letter: lying on the step, then standing before the night */
 .t33w-letter {
   position: absolute;
-  left: 50%;
-  bottom: 13%;
+  left: var(--lcx, 50%);
+  bottom: 19%;
   z-index: 2;
   width: var(--lw);
   margin-left: calc(var(--lw) / -2);
@@ -65,7 +79,25 @@
   transform: rotateX(56deg) rotateZ(-3deg);
   transition: transform 1.3s var(--ease-soft);
 }
-.t33w.up .t33w-letter { transform: translateY(-8%) scale(1.16) rotateX(8deg) rotateY(-11deg) rotateZ(-1deg); }
+.t33w.up .t33w-letter { transform: scale(1.12) rotateX(6deg) rotateY(-11deg) rotateZ(-1deg); }
+/* standing, its foot is held in a split-bamboo letter stand set on the step */
+.t33w-stand {
+  position: absolute;
+  left: 28%;
+  width: 44%;
+  bottom: -10px;
+  height: 18px;
+  z-index: 4;
+  border-radius: 8px 8px 4px 4px / 9px 9px 4px 4px;
+  background:
+    linear-gradient(90deg, transparent 0 18%, rgba(0, 0, 0, 0.35) 18% 19.2%, transparent 19.2% 81%, rgba(0, 0, 0, 0.35) 81% 82.2%, transparent 82.2%),
+    linear-gradient(180deg, color-mix(in srgb, #9a8a50 70%, var(--moon)) 0 14%, color-mix(in srgb, #6c6a34 80%, #2a2a10) 40%, #2b2a14);
+  box-shadow: inset 0 2px 0 rgba(255, 250, 220, 0.25), 0 10px 14px -6px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease) 0.9s;
+}
+.t33w-stand::after { content: ''; position: absolute; left: -6%; right: -6%; bottom: -8px; height: 10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.5), transparent); }
+.t33w.up .t33w-stand { opacity: 1; }
 /* the dog-eared corner: the paper's back folded over, its shade underneath */
 .t33w-ear {
   position: absolute;
@@ -205,9 +237,9 @@
   left: 0;
   top: 0;
   z-index: 3;
-  width: 64px;
-  height: 102px;
-  margin: -102px 0 0 -32px;
+  width: 84px;
+  height: 134px;
+  margin: -134px 0 0 -42px;
   padding: 0;
   border: 0;
   background: none;
@@ -219,7 +251,14 @@
 .t33w.behind .t33w-lamp { z-index: 1; }
 .t33w.behind .t33w-sheet { --R: calc(var(--lw) * 0.38); }
 .t33w.behind .t33w-pool, .t33w.behind .t33w-refl { opacity: 0; }
-.t33w-lamp .t33-lan { position: relative; width: 100%; height: 100%; }
+.t33w-lamp .t33-lan { position: relative; width: 100%; height: 100%; transform-origin: 50% 0; }
+/* the bamboo bail it is carried by */
+.t33w-bail { position: absolute; left: 0; top: -20px; width: 100%; height: 63px; overflow: visible; pointer-events: none; }
+.t33w-bailp { fill: color-mix(in srgb, #8a7a44 60%, var(--t33-wood)); }
+:root[data-theme='dark'] .t33w-bailp { fill: color-mix(in srgb, #6a5c30 60%, var(--t33-wood-lo)); }
+.t33w-bailrim { fill: var(--moon); opacity: 0.6; }
+:root[data-theme='light'] .t33w-bailrim { fill: #fff; }
+.t33w-lamp > .p2g-dot.ride { top: -16px; }
 .t33w-lamp:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 3px; border-radius: 10px; }
 .t33w-pool {
   position: absolute;
@@ -271,10 +310,14 @@
 .t33w-cwing { fill: color-mix(in srgb, #f2e8d0 80%, var(--rock-mid)); }
 .t33w-cwing2 { fill: color-mix(in srgb, #fffaf0 90%, var(--moon)); }
 @media (max-width: 640px) {
-  .t33w-letter { bottom: 20%; }
-  .t33w.up .t33w-letter { transform: translateY(-12%) scale(1.04) rotateX(8deg) rotateY(-9deg) rotateZ(-0.8deg); }
+  .t33w-letter { bottom: 17%; }
   .t33w-line { font-size: 0.98rem; }
+  .t33w-sheet { padding-bottom: 50px; }
   .t33w-hidden { font-size: 0.92rem; }
-  .t33w-lamp { width: 52px; height: 84px; margin: -84px 0 0 -26px; }
+  .t33w-lamp { width: 60px; height: 96px; margin: -96px 0 0 -30px; }
+  .t33w-bail { top: -14px; height: 45px; }
+  .t33w.up .t33w-letter { transform: scale(0.98) rotateX(6deg) rotateY(-9deg) rotateZ(-0.8deg); }
+  /* a phone: the gate stands right of the letter, behind it in depth */
+  .t33w-gate { z-index: 0; }
   .t33w-say { left: 22%; right: 4%; top: 2%; font-size: 0.95rem; }
 }

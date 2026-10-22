@@ -1,0 +1,235 @@
+/* ── Scene 3 (canvas): an ink rubbing on a thick, low granite stele, three-quarters, on mossy gravel under a low moon ── */
+.t31c2 { display: block; overflow: hidden; }
+.t31c2 > * { position: absolute !important; }
+.t31c2-back, .t31c2-fore, .t31c2-lead { left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+
+/* the ground: mist-pale where it meets the hills, darkening toward the frame's foot */
+.t31c2-gr0 { stop-color: color-mix(in srgb, var(--mist) 60%, var(--rock-mid)); stop-opacity: 0.75; }
+.t31c2-gr1 { stop-color: color-mix(in srgb, var(--paper-2) 62%, var(--rock-mid)); }
+.t31c2-gr2 { stop-color: color-mix(in srgb, var(--paper-2) 45%, var(--rock-mid)); }
+:root[data-theme='dark'] .t31c2-gr0 { stop-color: color-mix(in srgb, var(--mist) 30%, #10162a); stop-opacity: 0.85; }
+:root[data-theme='dark'] .t31c2-gr1 { stop-color: #161d31; }
+:root[data-theme='dark'] .t31c2-gr2 { stop-color: #070a13; }
+.t31c2-nr0 { stop-color: var(--wash); stop-opacity: 0; }
+.t31c2-nr1 { stop-color: var(--wash); stop-opacity: 0.3; }
+:root[data-theme='dark'] .t31c2-nr1 { stop-color: #000; stop-opacity: 0.6; }
+.t31c2-peb { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--wash)); opacity: 0.35; }
+:root[data-theme='dark'] .t31c2-peb { fill: color-mix(in srgb, var(--rock-lo) 50%, var(--rock-mid)); opacity: 0.5; }
+.t31c2-pebsh { fill: var(--wash); opacity: 0.14; }
+:root[data-theme='dark'] .t31c2-pebsh { fill: #000; opacity: 0.55; }
+.t31c2-peblit { fill: none; stroke: #fff; stroke-width: 0.8; stroke-linecap: round; opacity: 0.55; }
+:root[data-theme='dark'] .t31c2-peblit { stroke: var(--moon); opacity: 0.4; }
+.t31c2-moss { opacity: 0.4; }
+.t31c2-shrub { fill: color-mix(in srgb, var(--wash) 75%, var(--moss-a)); opacity: 0.8; }
+:root[data-theme='dark'] .t31c2-shrub { fill: color-mix(in srgb, #05070d 80%, var(--moss-a)); opacity: 1; }
+.t31c2-shrublit { fill: #fff; opacity: 0.5; }
+:root[data-theme='dark'] .t31c2-shrublit { fill: var(--moon); opacity: 0.4; }
+:root[data-theme='dark'] .t31c2-moss { opacity: 0.45; }
+.t31c2-pool { opacity: 0.55; mix-blend-mode: screen; }
+:root[data-theme='light'] .t31c2-pool { mix-blend-mode: normal; opacity: 0.35; }
+.t31c2-cast { fill: var(--wash); opacity: 0.32; }
+:root[data-theme='dark'] .t31c2-cast { fill: #000; opacity: 0.7; }
+.t31c2-contact { fill: var(--umbra); opacity: 0.5; }
+:root[data-theme='dark'] .t31c2-contact { fill: #000; opacity: 0.85; }
+.t31c2-near { opacity: 1; }
+
+/* the stele */
+.t31c2-stage { perspective: 1000px; perspective-origin: 30% 20%; }
+.t31c2-stele { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateY(-24deg) rotateX(3deg); transform-origin: 50% 100%; }
+.t31c2-face { position: absolute; inset: 0; transform-style: preserve-3d; }
+.t31c2-stone, .t31c2-paper { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.t31c2-paper { touch-action: none; cursor: crosshair; }
+.t31c2-inking .t31c2-paper { cursor: none; }
+/* the slab's thickness: its right flank, turned back from the face's right edge; granite in shade, moss at its foot,
+   the stone lantern's warmth on its lower half */
+.t31c2-side {
+  position: absolute;
+  left: 100%;
+  top: calc(var(--fh) * 0.15);
+  width: var(--depth);
+  height: calc(var(--fh) * 0.85);
+  transform-origin: 0 50%;
+  transform: rotateY(90deg);
+  border-radius: 30% 60% 0 0 / calc(var(--fh) * 0.05) calc(var(--fh) * 0.1) 0 0;
+  background:
+    radial-gradient(90% 45% at 100% 85%, color-mix(in srgb, var(--lantern) 34%, transparent), transparent),
+    radial-gradient(60% 9% at 30% 100%, color-mix(in srgb, var(--moss-b) 85%, transparent), transparent),
+    radial-gradient(35% 14% at 80% 96%, color-mix(in srgb, var(--moss-a) 70%, transparent), transparent),
+    var(--g11-grain),
+    var(--g11-grain),
+    linear-gradient(90deg, color-mix(in srgb, var(--rock-mid) 70%, var(--rock-lo)), var(--rock-lo) 55%, color-mix(in srgb, var(--rock-lo) 70%, var(--umbra)));
+  background-size: auto, auto, auto, 160px 160px, 97px 97px, auto;
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--moon) 35%, transparent), inset 0 2px 0 color-mix(in srgb, var(--moon) 25%, transparent);
+}
+:root[data-theme='light'] .t31c2-side { box-shadow: inset 2px 0 0 rgb(255 255 255 / 0.6), inset 0 2px 0 rgb(255 255 255 / 0.5); }
+/* the cord goes round the flank to a knot with two hanging ends */
+.t31c2-sidecord {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--cord);
+  height: max(3px, calc(var(--fw) * 0.014));
+  background: repeating-linear-gradient(60deg, color-mix(in srgb, var(--rock-lo) 45%, #7a5a3c) 0 3px, color-mix(in srgb, var(--rock-lo) 30%, #a07a52) 3px 5px);
+  box-shadow: 0 2px 3px -1px rgb(0 0 0 / 0.4);
+}
+.t31c2-knot {
+  position: absolute;
+  left: 46%;
+  top: calc(var(--cord) - 3px);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--rock-lo) 40%, #7a5a3c);
+  box-shadow: 0 2px 3px rgb(0 0 0 / 0.4);
+}
+.t31c2-knot::before,
+.t31c2-knot::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  width: 2.5px;
+  height: calc(var(--fh) * 0.12);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--rock-lo) 40%, #7a5a3c);
+  box-shadow: 2px 2px 2px rgb(0 0 0 / 0.3);
+  transform-origin: 50% 0;
+}
+.t31c2-knot::before { left: 1px; transform: rotate(8deg); }
+.t31c2-knot::after { left: 5px; height: calc(var(--fh) * 0.09); transform: rotate(-6deg); }
+.t31c2-row {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  pointer-events: none;
+}
+.t31c2-row:focus { outline: none; }
+/* keyboard focus: an ink underline under the line, not a box */
+.t31c2-row:focus-visible { box-shadow: inset 0 -2px 0 var(--vermilion); }
+
+/* the tally: a notch cut in the stone's left margin per line; the next one breathes warm, the read ones hold the moon */
+.t31c2-tick {
+  position: absolute;
+  left: calc(var(--fw) * 0.016);
+  width: var(--tick);
+  height: 3px;
+  border-radius: 2px;
+  background: #05060b;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--moon) 45%, transparent);
+  pointer-events: none;
+}
+:root[data-theme='light'] .t31c2-tick { background: color-mix(in srgb, var(--wash) 85%, #000); box-shadow: 0 1px 0 rgb(255 255 255 / 0.7); }
+.t31c2-tick.next { background: color-mix(in srgb, var(--lantern) 70%, #05060b); box-shadow: 0 0 6px var(--lantern); animation: t31c2-breathe 2.4s ease-in-out infinite; }
+.t31c2-tick.on { background: var(--moon); box-shadow: 0 0 5px color-mix(in srgb, var(--moon) 70%, transparent); animation: none; }
+:root[data-theme='light'] .t31c2-tick.on { background: #fff; box-shadow: 0 0 0 1px color-mix(in srgb, var(--wash) 60%, transparent); }
+@keyframes t31c2-breathe { 50% { opacity: 0.45; } }
+:root[data-quality='low'] .t31c2-tick.next { animation: none; }
+/* the mark brushed into the rubbing beside the line's name: fine (white), stop (vermilion), check (lantern) */
+.t31c2-mark {
+  position: absolute;
+  margin: 0;
+  font: 700 1em/1 var(--serif);
+  color: #f4f1e8;
+  opacity: 0;
+  transform: scale(1.6) rotate(-8deg);
+  transition: opacity 0.4s, transform 0.5s var(--ease);
+  pointer-events: none;
+}
+.t31c2-mark[data-mark='no'] { color: var(--vermilion); text-shadow: 0 0 1px #07080d; }
+.t31c2-mark[data-mark='warn'] { color: var(--lantern); }
+.t31c2-mark.on { opacity: 1; transform: rotate(-6deg); }
+
+.t31c2-puddle { opacity: 0.97; }
+.t31c2-lead path { fill: none; stroke: var(--ink-3); stroke-width: 0.9; stroke-dasharray: 2 3; }
+.t31c2-lead circle { fill: var(--lantern); }
+
+/* the inkstone (suzuri): a dark slab in 3/4 like the stele, its well of wet ink catching the moon */
+.t31c2-suz-sh { fill: var(--umbra); opacity: 0.45; }
+:root[data-theme='dark'] .t31c2-suz-sh { fill: #000; opacity: 0.8; }
+.t31c2-suz-top { fill: color-mix(in srgb, var(--wash) 70%, var(--rock-lo)); }
+.t31c2-suz-front { fill: color-mix(in srgb, var(--wash) 88%, #000); }
+.t31c2-suz-side { fill: color-mix(in srgb, var(--wash) 95%, #000); }
+.t31c2-suz-land { fill: color-mix(in srgb, var(--wash) 82%, var(--rock-mid)); }
+.t31c2-suz-well { fill: #05060a; }
+.t31c2-suz-wet { fill: #fff; opacity: 0.55; }
+.t31c2-suz-lit { fill: #fff; opacity: 0.45; }
+:root[data-theme='dark'] .t31c2-suz-top { fill: color-mix(in srgb, var(--rock-lo) 55%, #000); }
+:root[data-theme='dark'] .t31c2-suz-land { fill: color-mix(in srgb, var(--rock-lo) 40%, #000); }
+:root[data-theme='dark'] .t31c2-suz-front { fill: #05060a; }
+:root[data-theme='dark'] .t31c2-suz-side { fill: #000; }
+:root[data-theme='dark'] .t31c2-suz-wet, :root[data-theme='dark'] .t31c2-suz-lit { fill: var(--moon); }
+
+/* the ink pad: a cloth ball tied at the neck; it rests on the inkstone, is taken up and follows the finger */
+.t31c2-pad {
+  left: 0;
+  top: 0;
+  width: var(--pad, 72px);
+  height: var(--pad, 72px);
+  margin: calc(var(--pad, 72px) / -2) 0 0 calc(var(--pad, 72px) / -2);
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.5s var(--ease);
+  z-index: 3;
+}
+.t31c2-padart { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(3px 4px 3px color-mix(in srgb, var(--umbra) 55%, transparent)); }
+.t31c2-pad > .p2g-dot { position: absolute; left: 50%; top: 38%; }
+.t31c2-inking .t31c2-pad { transition: none; pointer-events: none; cursor: none; }
+.t31c2-inking .t31c2-padart { filter: drop-shadow(8px 12px 6px color-mix(in srgb, var(--umbra) 45%, transparent)); }
+.t31c2-pad-body { fill: color-mix(in srgb, var(--card) 70%, var(--step-mid)); }
+.t31c2-pad-shade { fill: color-mix(in srgb, var(--wash) 30%, transparent); }
+.t31c2-pad-tuft { fill: color-mix(in srgb, var(--card) 55%, var(--step-mid)); stroke: color-mix(in srgb, var(--wash) 50%, transparent); stroke-width: 0.8; }
+.t31c2-pad-tuftlit, .t31c2-pad-lit { fill: #fff; opacity: 0.7; }
+.t31c2-pad-ink { fill: #07080d; }
+.t31c2-pad-fold { fill: color-mix(in srgb, var(--wash) 45%, transparent); }
+.t31c2-pad-tie { fill: color-mix(in srgb, var(--rock-lo) 40%, #7a5a3c); }
+:root[data-theme='dark'] .t31c2-pad-body { fill: color-mix(in srgb, var(--step-mid) 70%, var(--moon)); }
+:root[data-theme='dark'] .t31c2-pad-tuft { fill: color-mix(in srgb, var(--step-mid) 80%, var(--moon)); stroke: #000; }
+:root[data-theme='dark'] .t31c2-pad-shade { fill: rgb(0 0 0 / 0.45); }
+:root[data-theme='dark'] .t31c2-pad-tuftlit, :root[data-theme='dark'] .t31c2-pad-lit { fill: var(--moon); opacity: 0.8; }
+
+/* the reading: desk = the sky's top-right corner on a breath of mist (the insight takes its place at the end) */
+.t31c2-read {
+  z-index: 4;
+  padding: 2px 0 2px 14px;
+  border-left: 2px solid var(--lantern);
+}
+.t31c2-read::before {
+  content: '';
+  position: absolute;
+  inset: -24% -16%;
+  z-index: -1;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 78%, transparent), color-mix(in srgb, var(--paper) 40%, transparent) 60%, transparent);
+  pointer-events: none;
+}
+.t31c2-read > p { text-shadow: 0 0 10px var(--paper), 0 0 3px var(--paper); }
+.t31c2-read .p2-eyebrow { margin: 6px 0 4px; }
+.t31c2-task { margin: 0 0 6px; font: 500 0.78rem/1.35 var(--sans); letter-spacing: 0.02em; color: var(--ink-3); }
+.t31c2-readp { margin: 0; font: 400 clamp(0.95rem, 1.4vw, 1.05rem) / 1.5 var(--serif); color: var(--ink); }
+.t31c2-verdict { margin: 8px 0 0; font: 500 0.92rem/1.4 var(--serif); color: var(--ink); }
+.t31c2-verdict b { font-weight: 700; color: var(--moss-a); }
+:root[data-theme='light'] .t31c2-verdict b { color: color-mix(in srgb, var(--moss-a) 60%, #000); }
+.t31c2-verdict[data-mark='no'] b { color: var(--vermilion); }
+.t31c2-verdict[data-mark='warn'] b { color: color-mix(in srgb, var(--lantern) 75%, var(--ink)); }
+.t31c2.tall .t31c2-read { padding-left: 10px; }
+.t31c2.tall .t31c2-task { font-size: 0.72rem; margin-bottom: 4px; }
+.t31c2.tall .t31c2-read .p2-eyebrow { margin: 4px 0 2px; }
+.t31c2.tall .t31c2-readp { font-size: 0.9rem; line-height: 1.45; }
+.t31c2.tall .t31c2-verdict { font-size: 0.86rem; }
+/* the folded rubbing (take-away), by the inkstone on a phone, bottom right of the ground on a desk */
+.t31c2-take { z-index: 5; max-width: min(24rem, 92%); max-height: 70%; }
+@media (prefers-reduced-motion: reduce) { .t31c2-tick.next { animation: none; } .t31c2-mark { transition: none; } }
+/* the painting melts into the paper at the frame's sides and foot: no hard edge where the ground stops */
+.t31c2-back, .t31c2-fore {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(#000 88%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent), linear-gradient(#000 88%, transparent);
+  mask-composite: intersect;
+}
+.t31c2-sheen { opacity: 0.18; }
+:root[data-theme='light'] .t31c2-sheen { opacity: 0.4; }
+
+/* the brushed mark: a stroke in the current colour, 1em square */
+.t31c2-glyph { display: inline-block; width: 1em; height: 1em; vertical-align: -0.12em; overflow: visible; }
+.t31c2-glyph path { fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.t31c2-mark[data-mark='no'] .t31c2-glyph { filter: drop-shadow(0 0 1px #07080d); }

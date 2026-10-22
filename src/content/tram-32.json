@@ -346,7 +346,8 @@
         "Chạm ngọn lửa trong ống: llama.cpp"
       ],
       "jar": "GGUF: kiểu file model gọn, chạy được trên laptop",
-      "more": "Chi tiết"
+      "more": "Chi tiết",
+      "litCount": "{n}/{total} ngọn đã cháy bằng dầu này"
     },
     "scroll": {
       "label": "Cuộn lệnh",

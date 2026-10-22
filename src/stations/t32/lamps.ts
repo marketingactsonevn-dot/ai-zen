@@ -6,6 +6,7 @@ import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
 import { onDigit, rng, type Pt } from '../../ui/part2/ink'
 import type { SceneCtx } from '../types'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { clamp, ease, fitCamera, flatEllipse, grainOver, live, mix, palette, poly, polyClip, radial, rgba, stageSize, type Cam, type Pal, type RGB, type V3 } from './kit'
 
 const K = raw.scenes.lamps
@@ -42,7 +43,13 @@ export function lampsScene(ctx: SceneCtx) {
   const info = live('t32l-info')
   info.hidden = true
   // the jar's seal, and the line that says what the oil is (a GGUF model file)
-  const seal = h('span', { class: 't32l-seal', 'aria-hidden': 'true' }, 'GGUF', h('span', { class: 't32l-jar' }, K.jar))
+  // the jar's paper seal, and a tag tied to its neck: what the oil is (a GGUF model file), and how many lamps burn on it
+  const litN = h('span', { class: 't32l-count' })
+  const seal = h('span', { class: 't32l-seal', 'aria-hidden': 'true' }, h('span', null, 'GGUF'))
+  const jarTag = h('p', { class: 't32l-jar' }, h('span', null, K.jar), litN)
+  // the strips' cords and nails (outside their torn, clipped paper)
+  const infoCord = h('i', { class: 't32l-cord', 'aria-hidden': 'true', hidden: true })
+  const jarCord = h('i', { class: 't32l-cord', 'aria-hidden': 'true' })
   const btn: Record<Id, HTMLButtonElement> = {} as Record<Id, HTMLButtonElement>
   const plaque: Record<Id, HTMLElement> = {} as Record<Id, HTMLElement>
   for (const lp of K.lamps) {
@@ -64,7 +71,7 @@ export function lampsScene(ctx: SceneCtx) {
     cv,
     h('div', { class: 't32-mist', 'aria-hidden': 'true' }),
     h('p', { class: 'visually-hidden' }, K.art),
-    seal, btn.lmstudio, btn.ollama, btn.llamacpp, knob, info)
+    seal, jarCord, jarTag, infoCord, btn.lmstudio, btn.ollama, btn.llamacpp, knob, info)
   ctx.art.append(root)
 
   // ── geometry and layers ──
@@ -111,6 +118,16 @@ export function lampsScene(ctx: SceneCtx) {
     polyClip(g, cam, [[-6, 0, WALL], [6, 0, WALL], [6, 4, WALL], [-6, 4, WALL]])
     g.fillStyle = rgba(gap)
     g.fill()
+    // the moon outside: the screen's gaps glow cool on the left, where it shines through (fill light, before any lamp)
+    cam.p(S0[0] - 0.9, 1.6, WALL)
+    const mx = cam.o[0], my = cam.o[1]
+    const moonIn = g.createRadialGradient(mx, my, 0, mx, my, Math.max(W, H) * 0.55)
+    moonIn.addColorStop(0, rgba(P.moon, litOn ? 0.5 : 0.55))
+    moonIn.addColorStop(0.5, rgba(mix(P.moon, P.mist, 0.4), 0.22))
+    moonIn.addColorStop(1, rgba(P.mist, 0))
+    polyClip(g, cam, [[-6, 0, WALL], [6, 0, WALL], [6, 4, WALL], [-6, 4, WALL]])
+    g.fillStyle = moonIn
+    g.fill()
     const r = rng(3401)
     let x = -6
     for (let i = 0; x < 6; i++) {
@@ -156,6 +173,22 @@ export function lampsScene(ctx: SceneCtx) {
       }
       g.stroke()
     }
+    // the moon through the screen falls in pale stripes on the floor in front of it
+    g.save()
+    g.fillStyle = rgba(mix(P.moon, P.mist, 0.3))
+    const sr = rng(3409)
+    for (let sx = -3.2; sx < -0.4; sx += 0.13 + sr() * 0.08) {
+      // fainter away from the moon's side, and each stripe fading as it reaches into the room
+      const k = clamp((sx + 3.4) / 3, 0, 1)
+      g.globalAlpha = (P.dark ? 0.13 : 0.16) * (1 - k * 0.7)
+      const w = 0.04 + sr() * 0.05, len = 1.0 + sr() * 0.5
+      for (const [a0, a1] of [[0, 0.5], [0.5, 1]]) {
+        poly(g, cam, [[sx + a0 * len * 0.5, 0.002, WALL + 0.05 + a0 * len], [sx + w + a0 * len * 0.5, 0.002, WALL + 0.05 + a0 * len], [sx + w + a1 * len * 0.5, 0.002, WALL + 0.05 + a1 * len], [sx + a1 * len * 0.5, 0.002, WALL + 0.05 + a1 * len]])
+        g.fill()
+        g.globalAlpha *= 0.55
+      }
+    }
+    g.restore()
     if (!litOn) {
       // the moon finds the room faintly: a cool wash high on the screen, so the dark has a shape
       cam.p(S0[0] - 0.6, 2.4, WALL)
@@ -529,7 +562,7 @@ export function lampsScene(ctx: SceneCtx) {
       } else halo(cam.o[0], cam.o[1], (id === 'ollama' ? 0.3 : 0.2) * k, P.dark ? 0.6 : 0.45)
       const fh = (id === 'llamacpp' ? 0.07 : id === 'ollama' ? 0.06 + wick * 0.03 : 0.04) * k * (1 + flick * 2)
       cam.p(f[0], f[1], f[2])
-      flameShape(cam.o[0], cam.o[1], fh)
+      flameShape(cam.o[0], cam.o[1], fh, id === 'llamacpp' ? lean : 0)
     }
     if (taper?.on) {
       cam.p(taper.x, taper.y, taper.z)
@@ -572,15 +605,16 @@ export function lampsScene(ctx: SceneCtx) {
     g.drawImage(HALO, x - r, y - r, r * 2, r * 2)
     g.globalAlpha = 1
   }
-  function flameShape(x: number, y: number, hh: number) {
+  function flameShape(x: number, y: number, hh: number, lean = 0) {
     const g = c!
     const w = hh * 0.36
+    const tx = x + lean * hh * 0.7 // the tip leans (toward a lamp still dark, when the room waits)
     g.fillStyle = FLAME
     g.beginPath()
-    g.moveTo(x, y - hh)
-    g.bezierCurveTo(x + w * 0.5, y - hh * 0.55, x + w * 1.1, y - hh * 0.2, x + w * 0.7, y)
+    g.moveTo(tx, y - hh)
+    g.bezierCurveTo(x + w * 0.5 + lean * hh * 0.3, y - hh * 0.55, x + w * 1.1, y - hh * 0.2, x + w * 0.7, y)
     g.quadraticCurveTo(x, y + w * 0.5, x - w * 0.7, y)
-    g.bezierCurveTo(x - w * 1.1, y - hh * 0.2, x - w * 0.5, y - hh * 0.55, x, y - hh)
+    g.bezierCurveTo(x - w * 1.1, y - hh * 0.2, x - w * 0.5 + lean * hh * 0.3, y - hh * 0.55, tx, y - hh)
     g.fill()
     g.fillStyle = CORE
     g.beginPath()
@@ -590,6 +624,7 @@ export function lampsScene(ctx: SceneCtx) {
 
   // ── one loop: wick, taper flight, the threads, a slow breath in the flames (high, until idle) ──
   let wickT = 1, wickFrom = 1
+  let lean = 0, leanT = 1 // the far flame bows toward the near lamps (idle nudge)
   const loop = createLoop(root, (time, dt) => {
     let busy = false
     if (wickT < 1) {
@@ -610,6 +645,11 @@ export function lampsScene(ctx: SceneCtx) {
         kindle(to)
       }
     }
+    if (leanT < 1) {
+      leanT = Math.min(1, leanT + dt / 2.2)
+      lean = Math.sin(Math.PI * leanT) * Math.sin(Math.PI * leanT * 3) * -0.9
+      busy = true
+    } else lean = 0
     if (thread > 0 && thread < 1) {
       thread = still ? 1 : Math.min(1, thread + dt / 1.4)
       busy = true
@@ -648,13 +688,15 @@ export function lampsScene(ctx: SceneCtx) {
     btn[id].setAttribute('aria-pressed', 'true')
     ctx.chime('tap')
     read(id)
-    // the next lamp to bring fire to (H5)
+    // the next lamp to bring fire to (H5), its dot (H1), the count on the jar's tag (H4)
     const next = K.lamps.findIndex((lp) => !lit.has(lp.id as Id))
     if (next >= 0) ctx.prompt(K.prompts[next])
+    guideNext()
     if (lit.size === K.lamps.length) {
       thread = 0.001
       root.classList.add('all')
-      ctx.insight(K.insight as Fact, K.detail)
+      // one block of words now: the lamp's slip and the jar's tag fade, their lines go into the detail
+      ctx.insight(K.insight as Fact, [...K.lamps.map((lp) => `${lp.name}: ${lp.line}`), K.jar, K.detail])
       ctx.chime('ok')
     }
     run()
@@ -743,15 +785,32 @@ export function lampsScene(ctx: SceneCtx) {
     const hh = info.offsetHeight // one read, after the text is in
     const q = at(PROPS[shown].t)
     cam.p(q[0], TOP + PROPS[shown].hgt + 0.08, q[2])
-    let x = cam.o[0] - w / 2, y = cam.o[1] - hh - 10
     const top = H * 0.06
-    if (y < top) {
-      // no room above: to the lamp's left (wide) or the top of the frame (tall)
+    let x = cam.o[0] - w / 2, y = Math.max(top, cam.o[1] - hh - 10)
+    // never over a lamp or the jar: above it if there is room, else to its left, else its right (a phone: the top band)
+    const hits = (x0: number, y0: number) => boxes.some((b) => x0 < b[2] && x0 + w > b[0] && y0 < b[3] && y0 + hh > b[1])
+    if (hits(clamp(x, 8, W - w - 8), y)) {
+      // up in the top band, as near the lamp as it can hang without covering anything
+      const cx = x
       y = top
-      if (!tall) x = cam.o[0] - w - 70
+      let best = Infinity
+      for (let tx = 8; tx <= W - w - 8; tx += 12) if (!hits(tx, top) && Math.abs(tx - cx) < Math.abs(best - cx)) best = tx
+      x = best === Infinity ? cx : best
     }
-    Object.assign(info.style, { left: px(clamp(x, 8, W - w - 8)), top: px(y) })
+    x = clamp(x, 8, W - w - 8)
+    // the slip hangs by a cord from the bamboo rail above it
+    let rail = -1
+    for (const ry of [2.14, 1.28, 0.42]) {
+      cam.p(q[0], ry + 0.02, WALL)
+      if (cam.o[1] < y - 8) rail = Math.max(rail, cam.o[1])
+    }
+    const ry = rail >= 0 ? rail : 0
+    Object.assign(info.style, { left: px(x), top: px(y) })
+    infoCord.hidden = false
+    Object.assign(infoCord.style, { left: px(x + w / 2), top: px(ry), height: px(Math.max(6, y - ry + 2)) })
   }
+  /** each lamp's hit box and the jar's (screen px: x0, y0, x1, y1), for keeping the words off them */
+  let boxes: [number, number, number, number][] = []
   function layoutDom() {
     const dx = S1[0] - S0[0], dz = S1[2] - S0[2], dl = Math.hypot(dx, dz)
     const nx = (-dz / dl) * DEPTH * 0.5, nz = (dx / dl) * DEPTH * 0.5
@@ -763,6 +822,7 @@ export function lampsScene(ctx: SceneCtx) {
       const x0 = cam.o[0], y0 = cam.o[1]
       cam.p(q[0] + r, TOP - 0.02, q[2])
       Object.assign(btn[id].style, { left: px(x0), top: px(y0), width: px(cam.o[0] - x0), height: px(cam.o[1] - y0) })
+      boxes[K.lamps.indexOf(lp)] = [x0, y0, cam.o[0], cam.o[1]]
       // its name on a small plaque nailed to the shelf's front edge, turned with the edge
       const t = PROPS[id].t
       const a = at(Math.max(0, t - 0.04)), b = at(Math.min(1, t + 0.04))
@@ -779,6 +839,21 @@ export function lampsScene(ctx: SceneCtx) {
     const j = at(PROPS.jar.t, 0.1)
     cam.p(j[0], j[1], j[2] + 0.06)
     Object.assign(seal.style, { left: px(cam.o[0]), top: px(cam.o[1]) })
+    // the jar's tag hangs from the bamboo rail above the jar
+    const jx = cam.o[0], jy = cam.o[1]
+    cam.p(j[0], TOP + 0.26, j[2])
+    const tw = jarTag.offsetWidth, th = jarTag.offsetHeight
+    const tx = clamp(jx - tw / 2, 6, W - tw - 6), ty = cam.o[1] - th - 12
+    let rail = -1
+    for (const ry of [2.14, 1.28, 0.42]) {
+      cam.p(j[0], ry + 0.02, WALL)
+      if (cam.o[1] < ty - 8) rail = Math.max(rail, cam.o[1])
+    }
+    Object.assign(jarTag.style, { left: px(tx), top: px(ty) })
+    const jr = rail >= 0 ? rail : ty - 12
+    Object.assign(jarCord.style, { left: px(clamp(jx, tx + 8, tx + tw - 8)), top: px(jr), height: px(ty - jr + 2) })
+    boxes[3] = [tx, ty, tx + tw, jy + 20]
+    boxes.length = 4
     placeInfo()
   }
   let job: ReturnType<typeof sliced> | null = null
@@ -797,7 +872,7 @@ export function lampsScene(ctx: SceneCtx) {
     S1 = tall ? [0.52, 0, -1.15] : [1.0, 0, -1.25]
     const box: V3[] = tall ? [at(0, -0.2), at(0, 0.62), at(1, 0.4), [S0[0] - 0.18, TOP, S0[2]], [S1[0] + 0.15, TOP, S1[2]]] : [at(0, -0.3), at(1, -TOP), at(0, 0.62), at(1, 0.4), [S1[0] + 0.4, 1.5, WALL], [S0[0] - 0.2, TOP, S0[2]]]
     // a phone frames the shelf big, on the diagonal from the near lantern (low left) to the far flame (high right)
-    cam = fitCamera({ yaw: tall ? 2 : -14, pitch: tall ? 22 : 15, fov: 50, W, H, box, rect: tall ? [W * 0.04, H * 0.3, W * 0.96, H * 0.84] : [W * 0.3, H * 0.1, W * 0.98, H * 0.86] })
+    cam = fitCamera({ yaw: tall ? 2 : -14, pitch: tall ? 22 : 15, fov: 50, W, H, box, rect: tall ? [W * 0.04, H * 0.3, W * 0.96, H * 0.84] : [W * 0.1, H * 0.06, W * 0.98, H * 0.9] })
     LAN = null
     dpr = Math.min(devicePixelRatio || 1, low ? 1 : 1.25)
     cv.width = Math.round(W * dpr)
@@ -830,5 +905,26 @@ export function lampsScene(ctx: SceneCtx) {
     const lp = K.lamps[d - 1]
     if (lp) touch(lp.id as Id)
   }))
+  // ── guidance: a dot on the lamp to bring fire to next, the lamps lit counted on the jar's tag, the far flame bowing ──
+  const g = guide(ctx)
+  let dot: Mark | null = null
+  let counted = false
+  function guideNext() {
+    litN.textContent = fill(K.litCount, { n: lit.size, total: K.lamps.length })
+    if (counted && !litN.hasAttribute('aria-live')) litN.setAttribute('aria-live', 'polite')
+    counted = true
+    dot?.done()
+    const next = K.lamps.find((lp) => !lit.has(lp.id as Id))
+    dot = next ? g.dot(btn[next.id as Id], { dir: [0, -1] }) : null
+    seal.classList.toggle('full', !next)
+  }
+  guideNext()
+  const onIdle = () => {
+    if (lit.size === K.lamps.length || still) return
+    leanT = 0
+    run()
+  }
+  ctx.el.addEventListener('p2:idle', onIdle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
   ctx.prompt(K.prompt)
 }

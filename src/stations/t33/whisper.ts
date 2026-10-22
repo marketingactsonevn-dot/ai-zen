@@ -3,7 +3,7 @@ import { h, s } from '../../core/dom'
 import type { Fact } from '../../core/content'
 import { sliced } from '../../core/chunk'
 import { blob, curve, onSize, rng, stroke, type Pt } from '../../ui/part2/ink'
-import { grass, hills, mist, moon } from '../../ui/part2/paint'
+import { grass, hills, mist, moon, pine, toro } from '../../ui/part2/paint'
 import { guide, type Mark, type Track } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import './whisper.css'
@@ -17,19 +17,33 @@ const L = K.letter
  * real thickness at its near edge; the next step up shows its riser; dew drops with a bright point each, a puddle with the moon.
  * Returns the art and the slab outline (for the grain laid over the stone).
  */
-function stepArt(W: number, H: number, top: number, mobile: boolean, seed: number) {
+function stepArt(W: number, H: number, top: number, mobile: boolean, seed: number, moonX: number) {
   const r = rng(seed)
-  const near = H * (mobile ? 0.93 : 0.9), thick = H * 0.05
+  const near = H * (mobile ? 0.93 : 0.85), thick = H * 0.05
   const l0 = W * 0.13, r0 = W * 0.87, l1 = -W * 0.12, r1 = W * 1.12
   const v = (y: number) => (y - top) / (near - top)
   const xL = (y: number) => l0 + (l1 - l0) * v(y), xR = (y: number) => r0 + (r1 - r0) * v(y)
-  const slab = `M${f1(l0)} ${f1(top)}Q${f1(W / 2)} ${f1(top - 8)} ${f1(r0)} ${f1(top + 2)}L${f1(r1)} ${f1(near)}L${f1(l1)} ${f1(near)}Z`
-  // the near edge: the slab's thickness, then the dark ground below it
-  const face = `M${f1(l1)} ${f1(near)}L${f1(r1)} ${f1(near)}L${f1(r1)} ${f1(near + thick)}Q${f1(W / 2)} ${f1(near + thick + 4)} ${f1(l1)} ${f1(near + thick)}Z`
-  // the step behind, a little higher: its riser and the lip of its top
-  const rt = top - H * 0.075
-  const riser = `M${f1(l0 - 6)} ${f1(top)}Q${f1(W / 2)} ${f1(top - 10)} ${f1(r0 + 6)} ${f1(top + 2)}L${f1(r0 + 2)} ${f1(rt)}Q${f1(W / 2)} ${f1(rt - 9)} ${f1(l0 + 2)} ${f1(rt)}Z`
-  const lip = `M${f1(l0 + 2)} ${f1(rt)}Q${f1(W / 2)} ${f1(rt - 9)} ${f1(r0 + 2)} ${f1(rt)}L${f1(r0 - W * 0.02)} ${f1(rt - H * 0.05)}Q${f1(W / 2)} ${f1(rt - H * 0.058)} ${f1(l0 + W * 0.02)} ${f1(rt - H * 0.05)}Z`
+  // a hewn granite slab: its edges wander a little (chipped, worn), the back edge bowed
+  const wob = (p: Pt[], k: number) => p.map(([x, y], i) => (i && i < p.length - 1 ? [x + (r() - 0.5) * k, y + (r() - 0.5) * k] : [x, y]) as Pt)
+  const line = (a: Pt, b: Pt, n: number, bow = 0): Pt[] => Array.from({ length: n + 1 }, (_, i) => {
+    const t = i / n
+    return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t - Math.sin(t * Math.PI) * bow] as Pt
+  })
+  const back = wob(line([l0, top], [r0, top + 2], 14, 8), H * 0.008)
+  const right = wob(line([r0, top + 2], [r1, near], 8), W * 0.006)
+  const front = wob(line([r1, near], [l1, near], 16), H * 0.004)
+  const left = wob(line([l1, near], [l0, top], 8), W * 0.006)
+  const slab = `M${[...back, ...right.slice(1), ...front.slice(1), ...left.slice(1)].map(P).join('L')}Z`
+  // the near edge: the slab's thickness (chipped along its foot), then the dark ground below it
+  const foot = wob(line([r1, near + thick], [l1, near + thick], 16, -4), H * 0.01)
+  const face = `M${front.map(P).join('L')}L${foot.map(P).join('L')}Z`
+  // the stone step behind, a little higher and narrower: a rounded natural stone, its riser in shadow, its worn top
+  const rt = top - H * 0.075, b0 = l0 + W * 0.1, b1 = r0 - W * 0.08
+  const rTop = wob(line([b0 + W * 0.02, rt - H * 0.045], [b1 - W * 0.02, rt - H * 0.05], 12, 6), H * 0.008)
+  const rMid = wob(line([b1, rt], [b0, rt], 12, -5), H * 0.006)
+  const rBot = wob(line([b0 - 6, top - 2], [b1 + 6, top], 12, 7), H * 0.005)
+  const riser = `M${rBot.map(P).join('L')}L${P([b1 + 2, rt + 4])}L${rMid.map(P).join('L')}L${P([b0 - 2, rt + 4])}Z`
+  const lip = `M${P([b0, rt])}Q${f1(b0 - W * 0.01)} ${f1(rt - H * 0.03)} ${P(rTop[0])}L${rTop.map(P).join('L')}Q${f1(b1 + W * 0.01)} ${f1(rt - H * 0.03)} ${P([b1, rt])}L${[...rMid].map(P).join('L')}Z`
   // two joints run from the back edge to the near edge (wobbling), one short cross joint: three flagstones
   const joint = (f0: number, f1_: number, k: number): Pt[] => Array.from({ length: 9 }, (_, i) => {
     const y = top + ((near - top) * i) / 8
@@ -71,7 +85,7 @@ function stepArt(W: number, H: number, top: number, mobile: boolean, seed: numbe
     wetp += blob(x, y, W * (0.04 + r() * 0.06), H * (0.02 + r() * 0.03), seed + 60 + i, 0.35, 14)
   }
   let rj = ''
-  for (const f of [0.22, 0.47, 0.71]) rj += stroke([[l0 + (r0 - l0) * f, rt + 2], [l0 + (r0 - l0) * f + 2, top - 3]], 2, 0.05, 0.05, 0.6)
+  for (const f of [0.3, 0.62]) rj += stroke([[b0 + (b1 - b0) * f, rt + 4], [b0 + (b1 - b0) * f + 3, top - 4]], 2, 0.05, 0.05, 0.6)
   // the flagstones' joints run on down the near face
   let fj = ''
   for (const j of [j1, j2]) fj += stroke([[j[8][0], near], [j[8][0] + 1, near + thick]], 2.4, 0.05, 0.05, 0.6)
@@ -82,7 +96,7 @@ function stepArt(W: number, H: number, top: number, mobile: boolean, seed: numbe
       s('path', { class: 't33w-riser', d: riser, filter: 'url(#ink-rough)' }),
       s('path', { class: 't33w-risersh', d: riser }),
       s('path', { class: 't33w-joint', d: rj, filter: 'url(#ink-rough)' }),
-      s('path', { class: 't33w-moss', d: blob(l0 + (r0 - l0) * 0.3, top - 2, W * 0.05, H * 0.008, seed + 97, 0.4, 12) + blob(l0 + (r0 - l0) * 0.8, top, W * 0.04, H * 0.007, seed + 98, 0.4, 12), filter: 'url(#ink-wash)' }),
+      s('path', { class: 't33w-moss', d: blob(b0 + (b1 - b0) * 0.3, top - 2, W * 0.06, H * 0.01, seed + 97, 0.4, 12) + blob(b0 + (b1 - b0) * 0.8, top, W * 0.05, H * 0.009, seed + 98, 0.4, 12) + blob(b0 + (b1 - b0) * 0.55, rt - H * 0.04, W * 0.07, H * 0.008, seed + 99, 0.4, 12), filter: 'url(#ink-wash)' }),
       s('path', { class: 't33w-ground', d: `M${f1(l1)} ${f1(near + thick - 2)}L${f1(r1)} ${f1(near + thick - 2)}L${f1(r1)} ${f1(H + 40)}L${f1(l1)} ${f1(H + 40)}Z` }),
       s('path', { class: 't33w-face', d: face, filter: 'url(#ink-rough)' }),
       s('path', { class: 't33w-joint', d: fj, filter: 'url(#ink-rough)' }),
@@ -98,7 +112,12 @@ function stepArt(W: number, H: number, top: number, mobile: boolean, seed: numbe
       s('path', { class: 't33w-edge', d: chamfer }),
       s('path', { class: 't33w-puddle', d: pud }),
       s('path', { class: 't33w-pudrim', d: stroke(curve([pudX - W * 0.05, pudY - H * 0.012], [pudX, pudY - H * 0.03], [pudX + W * 0.05, pudY - H * 0.01], 10), 1.4, 0.2, 0.2, 0.1) }),
-      s('ellipse', { class: 't33w-sheen', cx: f1(W * 0.6), cy: f1(top + (near - top) * 0.42), rx: f1(W * 0.05), ry: f1((near - top) * 0.4) }),
+      s('ellipse', { class: 't33w-sheen', cx: f1(moonX), cy: f1(top + (near - top) * 0.45), rx: f1(W * 0.04), ry: f1((near - top) * 0.45) }),
+      // the moon lying on the wet stone: broken strokes running down from the back edge, longer toward us
+      s('path', { class: 't33w-mstreak', d: Array.from({ length: 11 }, (_, i) => {
+        const v = i / 10, y = top + 8 + (near - top - 16) * v, len = W * (0.012 + v * 0.04)
+        return stroke([[moonX - len / 2 + (r() - 0.5) * 6, y], [moonX + len / 2 + (r() - 0.5) * 6, y + 1]], 1 + v * 2.6, 0.3, 0.3, 0.1)
+      }).join('') }),
       s('path', { class: 't33w-dropsh', d: dsh }),
       s('path', { class: 't33w-drop', d: drops }),
       s('path', { class: 't33w-droplit', d: lit }),
@@ -151,8 +170,11 @@ export function whisperScene(ctx: SceneCtx) {
     h('div', { class: 't33w-wm' }, hiddenDim, hiddenLit, hiddenAll),
     h('p', { class: 't33w-seal' }, K.mock),
     h('div', { class: 't33w-sweep', 'aria-hidden': 'true' }))
-  const letter = h('div', { class: 't33w-letter' }, h('div', { class: 't33w-shadow', 'aria-hidden': 'true' }), sheet, h('div', { class: 't33w-ear', 'aria-hidden': 'true' }))
-  const lamp = h('button', { class: 't33w-lamp', type: 'button', 'aria-label': K.lanternAria }, h('span', { class: 't33w-pool', 'aria-hidden': 'true' }), h('span', { class: 't33w-refl', 'aria-hidden': 'true' }), lantern('on', 3331))
+  const letter = h('div', { class: 't33w-letter' }, h('div', { class: 't33w-shadow', 'aria-hidden': 'true' }), sheet, h('div', { class: 't33w-ear', 'aria-hidden': 'true' }), h('div', { class: 't33w-stand', 'aria-hidden': 'true' }))
+  const bail = s('svg', { class: 't33w-bail', viewBox: '0 0 40 30', 'aria-hidden': 'true' },
+    s('path', { class: 't33w-bailp', d: stroke(curve([6, 30], [20, -10], [34, 30], 16), 2.6, 0.1, 0.1, 0.7), filter: 'url(#ink-rough)' }),
+    s('path', { class: 't33w-bailrim', d: stroke(curve([8, 26], [16, 2], [24, 4], 10), 0.9, 0.2, 0.4, 0.2) }))
+  const lamp = h('button', { class: 't33w-lamp', type: 'button', 'aria-label': K.lanternAria }, h('span', { class: 't33w-pool', 'aria-hidden': 'true' }), h('span', { class: 't33w-refl', 'aria-hidden': 'true' }), bail, lantern('on', 3331))
   const tex = h('div', { class: 't33w-tex t33-fade', 'aria-hidden': 'true' })
   const say = live('t33w-say t33-ink')
   const stage = h('div', { class: 't33w-stage' }, step, tex, letter, lamp)
@@ -185,22 +207,48 @@ export function whisperScene(ctx: SceneCtx) {
     const mobile = W < 640
     G.W = W
     G.H = H
-    const lw = Math.round(mobile ? W * 0.88 : Math.min(W * 0.44, 620))
+    const lw = Math.round(mobile ? W * 0.74 : Math.min(W * 0.44, 620))
     root.style.setProperty('--lw', `${lw}px`)
     const top = H * (mobile ? 0.5 : 0.44)
-    G.home = mobile ? [W * 0.89, H * 0.925] : [W * 0.5 + lw * 0.68, H * 0.76]
-    // the gate stands on the far bank, left of the letter (a phone: high on the left, clear of the standing letter)
-    const gw = mobile ? 58 : Math.max(70, Math.min(110, W * 0.07))
-    Object.assign(gate.style, { left: `${f1(W * 0.06)}px`, top: `${f1(mobile ? H * 0.16 : top - gw * 1.15)}px`, width: `${f1(gw)}px`, height: `${f1(gw * 1.25)}px` })
+    // the letter in the middle-left third, the lantern in the right third beside it (a phone: letter centred, lantern at its foot)
+    const lcx = mobile ? W * 0.43 : W * 0.4
+    root.style.setProperty('--lcx', `${f1(lcx)}px`)
+    G.home = mobile ? [W * 0.89, H * 0.9] : [W * 0.76, H * 0.75]
+    // the far bank: a strip of dark garden between the sky (≤ 25%) and the step; the mail gate stands on it, at the end of a path
+    const hz = mobile ? H * 0.3 : H * 0.24
+    const gw = mobile ? 62 : Math.max(80, Math.min(120, W * 0.08))
+    const gx = mobile ? W * 0.81 : W * 0.07, gy = mobile ? top - H * 0.035 : top - H * 0.05 // the gate's feet
+    Object.assign(gate.style, { left: `${f1(gx)}px`, top: `${f1(gy - gw * 1.22)}px`, width: `${f1(gw)}px`, height: `${f1(gw * 1.25)}px` })
+    const moonX = mobile ? W * 0.84 : W * 0.88
     for (const g of [night, step]) g.setAttribute('viewBox', `0 0 ${W} ${H}`)
     function* draw() {
+      // a low bamboo fence along the far bank, the gate in it; a few stepping stones from the step up to the gate
+      const fy = gy - 2, fx0 = gx + gw * 0.82, fx1 = mobile ? W * 0.5 : W * 0.6
+      let fence = '', rails = ''
+      for (let x = gx - gw * 0.9; x < gx + gw * 0.1; x += gw * 0.16) fence += stroke([[x, fy], [x, fy - gw * 0.55]], 2.4, 0.05, 0.05, 0.8)
+      for (let x = fx0; x < fx1; x += gw * 0.16 + (x - fx0) * 0.004) fence += stroke([[x, fy - (x - fx0) * 0.02], [x, fy - (x - fx0) * 0.02 - gw * 0.55 * (1 - (x - fx0) / (fx1 - fx0) * 0.35)]], 2.2, 0.05, 0.05, 0.8)
+      rails += stroke([[gx - gw * 0.95, fy - gw * 0.42], [gx + gw * 0.12, fy - gw * 0.42]], 1.6, 0.05, 0.05, 0.6) + stroke([[fx0 - 2, fy - gw * 0.42], [fx1, fy - (fx1 - fx0) * 0.02 - gw * 0.36]], 1.6, 0.05, 0.05, 0.6)
+      let path = ''
+      for (let i = 0; i < 3; i++) {
+        const u = (i + 1) / 4
+        path += blob(gx + gw * 0.5 + (lcx * 0.6 - gx) * u * 0.6, gy + (top - gy) * u, gw * (0.24 + u * 0.12), H * (0.008 + u * 0.004), 3335 + i, 0.15, 12)
+      }
       night.replaceChildren(
-        mist(W * 0.5, top - H * 0.1, W * 0.6, H * 0.14),
-        moon(W * (mobile ? 0.12 : 0.86), H * (mobile ? 0.07 : 0.11), mobile ? 11 : Math.max(14, Math.min(W, H) * 0.035), 3332, true),
-        hills(-W * 0.05, W * 1.05, top - H * 0.02, H * 0.2, 3333, 0.92, 6),
-        mist(W * 0.5, top - H * 0.01, W * 0.6, H * 0.05))
+        mist(W * 0.5, hz - H * 0.06, W * 0.6, H * 0.1),
+        moon(moonX, H * (mobile ? 0.07 : 0.09), mobile ? 12 : Math.max(14, Math.min(W, H) * 0.032), 3332, true),
+        hills(-W * 0.05, W * 1.05, hz, H * 0.14, 3333, 0.92, 6),
+        mist(W * 0.5, hz + H * 0.005, W * 0.62, H * 0.04),
+        // the far bank: dark moss running from the horizon to the back of the step
+        s('path', { class: 't33w-bank', d: `M${f1(-10)} ${f1(hz)}L${f1(W + 10)} ${f1(hz)}L${f1(W + 10)} ${f1(top + 6)}L${f1(-10)} ${f1(top + 6)}Z` }),
+        pine(W * (mobile ? 0.3 : 0.26), hz + H * 0.07, H * (mobile ? 0.17 : 0.2), 3336, -1),
+        pine(W * (mobile ? 0.64 : 0.7), hz + H * 0.05, H * (mobile ? 0.12 : 0.15), 3337, 1),
+        mist(W * 0.45, hz + H * 0.06, W * 0.5, H * 0.03),
+        ...(mobile ? [] : [s('ellipse', { class: 't33w-toropool', cx: f1(W * 0.56), cy: f1(top - H * 0.035), rx: f1(H * 0.07), ry: f1(H * 0.014) }), toro(W * 0.56, top - H * 0.035, H * 0.13, true)]),
+        s('path', { class: 't33w-fence', d: fence + rails, filter: 'url(#ink-rough)' }),
+        s('path', { class: 't33w-pathst', d: path, filter: 'url(#ink-rough)' }),
+        mist(W * 0.5, top - H * 0.005, W * 0.7, H * 0.025))
       yield
-      const st = stepArt(W, H, top, mobile, 3334)
+      const st = stepArt(W, H, top, mobile, 3334, moonX)
       step.replaceChildren(...st.art)
       tex.style.clipPath = `path('${st.slab}')`
       placeLamp()
@@ -224,9 +272,9 @@ export function whisperScene(ctx: SceneCtx) {
   function placeBehind() {
     measure()
     if (!box || !rootBox) return
-    const px = box.width * 0.72, py = box.height * 0.7
+    const px = box.width * 0.72, py = box.height - lamp.offsetHeight * 0.5
     lx = box.left - rootBox.left + px
-    ly = box.top - rootBox.top + py + 58
+    ly = box.bottom - rootBox.top - 2
     lamp.style.transform = `translate(${f1(lx)}px, ${f1(ly)}px)`
     sheet.style.setProperty('--lx', `${f1(px)}px`)
     sheet.style.setProperty('--ly', `${f1(py)}px`)
@@ -326,6 +374,14 @@ export function whisperScene(ctx: SceneCtx) {
   }
   addEventListener('keydown', onKey)
   ctx.onCleanup(() => removeEventListener('keydown', onKey))
+  // H7 · standing still: the lantern leans toward the letter on its bail
+  const onIdle = () => {
+    if (quick || held || done) return
+    const lan = lamp.querySelector('.t33-lan') as SVGElement | null
+    lan?.animate([{ rotate: '0deg' }, { rotate: '-10deg', offset: 0.35 }, { rotate: '4deg', offset: 0.7 }, { rotate: '0deg' }], { duration: 1500, easing: 'ease-in-out' })
+  }
+  ctx.el.addEventListener('p2:idle', onIdle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
 
   // ── the agent's eye: one cold, even light across the whole sheet; nothing hides from it
   function sweep() {

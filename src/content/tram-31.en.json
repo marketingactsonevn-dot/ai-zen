@@ -2,7 +2,11 @@
   "id": 31,
   "kicker": "Hugging Face and GitHub are the AI village's two shared wells — anyone can draw from them, but you need to know which water is clean.",
   "summary": "Get models from Hugging Face and code from GitHub — check the source, the license and the file format before you download.",
-  "takeaways": ["t31-model-card", "t31-ask-ai-repo", "t31-safe-download"],
+  "takeaways": [
+    "t31-model-card",
+    "t31-ask-ai-repo",
+    "t31-safe-download"
+  ],
   "quiz": {
     "q": "You find two copies of the same model: one from the original author, a .gguf file with a clear license; one re-uploaded by a stranger, a .pkl file with more downloads. Which do you pick?",
     "options": [
@@ -101,8 +105,9 @@
     },
     "depth": {
       "label": "A deepening well",
-      "art": "An old well cut open from mouth to floor and hung like a scroll: the round mouth opens to the moonlit sky, a cone of moonlight falls down the shaft, the courses of stone curve round its wall, layers of earth lie outside the cut. The water column rises through the years; each milestone is a stone jutting from the wall with its date cut beside it. Drag the moon's reflection up the water to raise it past the milestones.",
+      "art": "A moonlit night and an old well cut in half from mouth to floor: the moon hangs over the mouth, a cone of moonlight full of dust falls down the shaft, the courses of stone curve round its wall and darken with depth; outside the cut lie layers of earth, pine roots and a vein of wet gravel seeping into the well. A pine and a stone lantern stand on the bank. The water column is the number of public models: drag the moon's reflection up the water, it rises past three dates carved by a groove, clay jars of models bob up thicker and thicker until, today, they cover the surface.",
       "prompt": "Drag the moon's reflection up the water",
+      "next": "Keep dragging up — the water rises to today's mark",
       "aria": "A deepening well: public models on Hugging Face over the years. Drag the moon's reflection up the water, or use the up and down arrow keys",
       "tide": {
         "milestones": [
@@ -142,13 +147,7 @@
               "afterLabel": "10/2026"
             }
           }
-        ],
-        "horizon": {
-          "text": "The well will probably keep getting deeper; knowing how to filter will matter more than knowing many names.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "prediction"
-        }
+        ]
       },
       "insight": {
         "text": "Over 3 million models — nobody can look at them all; what to learn is how to filter.",
@@ -163,8 +162,11 @@
     },
     "card": {
       "label": "Reading the well stone",
-      "art": "By the well stands a low mossy stele, seen three-quarters. A damp sheet of washi is tied over its face, hiding six carved lines. Dab the ink pad on the paper: ink takes only where the stone stands up, so each carved line comes out white on black. At its foot lie an inkstone and a puddle reflecting the stele and the moon.",
-      "prompt": "Dab ink on the paper to read each carved line",
+      "art": "On the mossy ground at the edge of the village stands a low stele, seen three-quarters under the moon, a stone lantern to its right. A damp sheet of washi is tied over its face, hiding six carved lines. Take the ink pad from the inkstone and dab the paper from the top down: ink takes only where the stone stands up, so each carved line comes out white on black. In front of the stele a puddle reflects it.",
+      "prompt": "Take the ink pad and dab the paper to read each carved line",
+      "task": "Your job: writing sales captions, on a 16 GB laptop",
+      "count": "Read {n}/{total} lines",
+      "order": "One line at a time, from the top — dab line {n} first",
       "aria": "A mock model card: six lines to read before you download a model",
       "mock": "A made-up model for learning, not a real one",
       "model": "lang-mau / vuon-trang-8B-instruct-GGUF",
@@ -174,37 +176,49 @@
           "id": "name",
           "label": "Name & author",
           "value": "lang-mau / vuon-trang-8B-instruct",
-          "read": "Who is the author, and do they have an official page? Is this the original, or someone else's copy or compressed version?"
+          "read": "Who is the author, and do they have an official page? Is this the original, or someone else's copy or compressed version?",
+          "mark": "ok",
+          "verdict": "Posted by the original author"
         },
         {
           "id": "params",
           "label": "Parameters",
           "value": "8B — about 8 billion parameters",
-          "read": "8B: 8 billion parameters — the number tells you how big the model is; the bigger, the heavier for your machine."
+          "read": "8B: 8 billion parameters — the number tells you how big the model is; the bigger, the heavier for your machine.",
+          "mark": "ok",
+          "verdict": "8B, compressed: fits a 16 GB laptop"
         },
         {
           "id": "license",
           "label": "License",
           "value": "license: other — see separate terms",
-          "read": "It decides whether you may use it commercially, change it or share it. “other” means you have to open the separate terms and read them."
+          "read": "It decides whether you may use it commercially, change it or share it. “other” means you have to open the separate terms and read them.",
+          "mark": "no",
+          "verdict": "Open the terms before using it for clients"
         },
         {
           "id": "format",
           "label": "File format",
           "value": "GGUF · Q4_K_M",
-          "read": "GGUF, 4-bit compressed: a compact kind of file that runs on a laptop."
+          "read": "GGUF, 4-bit compressed: a compact kind of file that runs on a laptop.",
+          "mark": "ok",
+          "verdict": "Runs on a laptop"
         },
         {
           "id": "downloads",
           "label": "Downloads",
           "value": "12,400 downloads last month",
-          "read": "It shows the model is popular — not that it is safe or good."
+          "read": "It shows the model is popular — not that it is safe or good.",
+          "mark": "warn",
+          "verdict": "Popular is not proof of safe"
         },
         {
           "id": "limits",
           "label": "Limits & warnings",
           "value": "Not well tested in Vietnamese; may get figures wrong",
-          "read": "A careful author says plainly where the model is weak. A stone that says nothing about limits is a sign to be wary."
+          "read": "A careful author says plainly where the model is weak. A stone that says nothing about limits is a sign to be wary.",
+          "mark": "warn",
+          "verdict": "Vietnamese captions: test it yourself first"
         }
       ],
       "insight": {
@@ -310,51 +324,60 @@
         "Touch the scroll, lamp, mailbox… to compare the houses",
         "Light the gate lamp of the house you trust"
       ],
-      "readFirst": "Compare at least two things on both houses first — touch the scroll, lamp, mailbox…"
+      "readFirst": "Compare at least two things on both houses first — touch the scroll, lamp, mailbox…",
+      "count": "Compared {n}/{total} signals",
+      "orbit": "drag to walk round"
     },
     "clean": {
       "label": "Filtering the water",
-      "art": "Seen low beside a big dark bowl: a tall bamboo spout at the back, half in mist, pours murky water down six stepped stone basins that come toward you, each nearer one bigger. Each basin waits for a numbered filter stone. In the right order the water clears step by step; with all six in, the bowl fills with clear water holding the whole moon.",
-      "prompt": "Order the six filters the way you'd do them before downloading",
-      "aria": "Stepping-stone path: the safe order for downloading a model or some code. Tap them in turn or use the number keys",
-      "stepAria": "Place step {n}: {label}",
-      "wrongHint": "This layer comes later — the water hasn't passed the one before.",
+      "art": "Seen low beside a big dark bowl: a bamboo spout at the back pours murky water down three stone basins that come toward you. Each basin holds one kind of dirt: a code scroll stamped “lang-rnau” in red, a fizzing “.pkl” jar, a license crossed out “no commercial use”. On the left bank lie three woven bamboo filters: Right author, Right format, Right license. Set the right filter in a basin and its water clears; with all three in, the bowl fills with clear water holding the whole moon.",
+      "prompt": "Drag each filter to the basin holding what it stops",
+      "aria": "Three filters before you download a model or some code. Drag each filter to the basin holding what it stops; or pick a filter, then a basin, or press 1, 2, 3 on a filter",
+      "filterAria": "Filter “{label}”: drag it to a basin, or press 1, 2, 3 to set it in that basin",
+      "basinAria": "Basin {n}: {debris}",
+      "filters": [
+        {
+          "id": "author",
+          "label": "Right author",
+          "blocks": "fake"
+        },
+        {
+          "id": "format",
+          "label": "Right format",
+          "blocks": "pkl"
+        },
+        {
+          "id": "license",
+          "label": "Right license",
+          "blocks": "nc"
+        }
+      ],
+      "debris": [
+        {
+          "id": "fake",
+          "label": "A look-alike copy “lang-rnau”"
+        },
+        {
+          "id": "pkl",
+          "label": "A .pkl file: opening it can run code"
+        },
+        {
+          "id": "nc",
+          "label": "A license saying “no commercial use”"
+        }
+      ],
+      "right": "Stopped — this basin runs clear.",
+      "wrong": "This filter can't stop that.",
+      "pickFirst": "Drag a filter to this basin — or pick a filter first",
+      "picked": "Now touch the basin holding what “{label}” stops",
+      "left": [
+        "",
+        "One murky basin left — drag the last filter",
+        "Two murky basins left — drag the next filter"
+      ],
+      "count": "{n}/{total} basins clear",
       "done": "The water is clear.",
-      "steps": {
-        "steps": [
-          {
-            "label": "Find the true source",
-            "detail": "Go to the author's or organisation's official page and follow the link from there.",
-            "why": "A renamed copy looks exactly like the original."
-          },
-          {
-            "label": "Read the license and limits",
-            "detail": "Open the model card or README; check the license allows what you plan to do.",
-            "why": "Finding out you can't use it after downloading is wasted effort."
-          },
-          {
-            "label": "Pick a safer format",
-            "detail": "Prefer .safetensors or .gguf files; avoid a stranger's .pkl file — opening it can run code.",
-            "why": "A pickle file can run code the moment it is opened."
-          },
-          {
-            "label": "Check the security scan",
-            "detail": "Hugging Face file pages show scan results; if a file is flagged, stop.",
-            "why": "Hugging Face itself says its scanner doesn't catch 100%."
-          },
-          {
-            "label": "Download with a known app",
-            "detail": "Use LM Studio, Ollama or the official page — never run odd commands pasted from a forum.",
-            "why": "“Quick install” commands are malware's favourite road."
-          },
-          {
-            "label": "Test with harmless data",
-            "detail": "At first, give it only sample content, not client documents.",
-            "why": "If something is off, nothing precious is lost."
-          }
-        ],
-        "takeaway": "t31-safe-download"
-      },
+      "takeaway": "t31-safe-download",
       "insight": {
         "text": "Three filters before you download: the right author, the right license, a .safetensors or .gguf file instead of .pkl.",
         "asOf": "2026-10-15",

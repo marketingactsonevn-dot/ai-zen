@@ -4,6 +4,7 @@ import type { Fact } from '../../core/content'
 import { grass, paperLantern, steppingStones } from '../../ui/part2/paint'
 import type { SceneCtx } from '../types'
 import { blob, cardSheet, curve, ground, live, night, plank, rng, stroke, type Pt } from './kit'
+import './repo.css'
 
 const K = raw.scenes.repo
 type Repo = (typeof K.repos)[number]

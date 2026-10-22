@@ -102,7 +102,7 @@
     {
       "id": "t31-safe-download",
       "station": 31,
-      "title": "Filtering the water: a safe order for downloading models or code",
+      "title": "Three filters before you download a model or code (and the full checking order)",
       "type": "checklist",
       "body": "1. Find the real origin: the author’s official page, following links from that page itself.\n2. Read the model card / README: license, limits.\n3. Choose the safer format: safetensors or GGUF; avoid pickle files from strangers.\n4. Check the security scan results on the file page; if there’s a warning, stop.\n5. Download through a familiar app (LM Studio, Ollama) or the official page; never run a “quick install” command pasted from a forum.\n6. The first time, test only with non-sensitive data.",
       "source": "t31-hf-pickle",

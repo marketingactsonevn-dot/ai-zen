@@ -105,8 +105,9 @@
     },
     "depth": {
       "label": "Giếng sâu dần",
-      "art": "Một giếng cổ bổ dọc từ miệng xuống đáy, treo như một bức tranh cuộn: miệng giếng tròn mở ra trời trăng, một nón ánh trăng rơi xuống lòng giếng, các hàng đá cong theo vách, ngoài vết cắt là các lớp đất. Cột nước trong giếng dâng theo năm tháng; mỗi mốc là một viên đá nhô khỏi vách, ngày khắc bên cạnh. Kéo bóng trăng trên mặt nước lên để nước dâng qua các mốc.",
+      "art": "Đêm trăng, một giếng cổ bổ đôi từ miệng xuống đáy: trăng treo trên miệng giếng, một nón ánh trăng có bụi sáng rơi xuống lòng giếng, các hàng đá cong theo vách và tối dần khi xuống sâu; ngoài vết cắt là các lớp đất, rễ thông và một mạch sỏi ướt rỉ nước vào giếng. Trên bờ có cây thông và đèn đá. Cột nước là số model công khai: kéo bóng trăng trên mặt nước lên, nước dâng qua ba mốc ngày khắc bên rãnh, hũ model nổi lên mỗi lúc một dày, tới hôm nay phủ kín mặt nước.",
       "prompt": "Kéo bóng trăng trên mặt nước lên",
+      "next": "Kéo tiếp lên — nước dâng tới vạch hôm nay",
       "aria": "Giếng sâu dần: số model công khai trên Hugging Face qua các năm. Kéo bóng trăng trên mặt nước lên, hoặc dùng phím mũi tên lên xuống",
       "tide": {
         "milestones": [
@@ -146,13 +147,7 @@
               "afterLabel": "10/2026"
             }
           }
-        ],
-        "horizon": {
-          "text": "Giếng có lẽ còn sâu thêm mỗi năm; biết lọc sẽ quý hơn biết tên nhiều model.",
-          "asOf": "2026-10-15",
-          "source": "editorial",
-          "kind": "prediction"
-        }
+        ]
       },
       "insight": {
         "text": "Hơn 3 triệu model, không ai xem hết — điều cần học là cách lọc.",
@@ -167,8 +162,11 @@
     },
     "card": {
       "label": "Đọc bia giếng",
-      "art": "Bên giếng dựng một tấm bia đá thấp phủ rêu, nhìn chéo ba phần tư. Một tờ giấy dó ẩm buộc dây áp lên mặt bia, che kín sáu dòng chữ khắc. Chấm bông mực lên giấy: mực chỉ bám chỗ đá nổi, nên từng dòng khắc hiện trắng trên nền mực. Dưới chân bia là nghiên mực và một vũng nước soi bóng bia cùng vầng trăng.",
-      "prompt": "Chấm mực lên tờ giấy để đọc từng dòng khắc",
+      "art": "Trên sân rêu đầu làng dựng một tấm bia đá thấp, nhìn chéo ba phần tư dưới trăng; bên phải có một cây đèn đá. Một tờ giấy dó ẩm buộc dây áp lên mặt bia, che kín sáu dòng chữ khắc. Cầm bông mực đặt trên nghiên, chấm lên giấy từ trên xuống: mực chỉ bám chỗ đá nổi, nên từng dòng khắc hiện trắng trên nền mực. Trước chân bia là một vũng nước soi bóng bia.",
+      "prompt": "Cầm bông mực, chấm lên tờ giấy để đọc từng dòng khắc",
+      "task": "Việc của bạn: viết caption bán hàng, trên laptop 16 GB",
+      "count": "Đã đọc {n}/{total} dòng",
+      "order": "Từng dòng một, từ trên xuống — chấm dòng {n} trước",
       "aria": "Model card giả lập: sáu dòng cần đọc trước khi tải một model",
       "mock": "Model giả lập để học, không có thật",
       "model": "lang-mau / vuon-trang-8B-instruct-GGUF",
@@ -178,37 +176,49 @@
           "id": "name",
           "label": "Tên & tác giả",
           "value": "lang-mau / vuon-trang-8B-instruct",
-          "read": "Tác giả là ai, có trang chính thức không? Đây là bản gốc hay bản người khác chép lại, nén lại?"
+          "read": "Tác giả là ai, có trang chính thức không? Đây là bản gốc hay bản người khác chép lại, nén lại?",
+          "mark": "ok",
+          "verdict": "Tác giả gốc tự đăng"
         },
         {
           "id": "params",
           "label": "Số tham số",
           "value": "8B — khoảng 8 tỷ tham số",
-          "read": "8B: 8 tỷ tham số — con số cho biết model to cỡ nào; càng to càng nặng máy."
+          "read": "8B: 8 tỷ tham số — con số cho biết model to cỡ nào; càng to càng nặng máy.",
+          "mark": "ok",
+          "verdict": "8B bản nén: vừa laptop 16 GB"
         },
         {
           "id": "license",
           "label": "Giấy phép (license)",
           "value": "license: other — xem điều khoản riêng",
-          "read": "Quyết định bạn được dùng thương mại, sửa, chia sẻ tới đâu. “other” nghĩa là phải mở điều khoản riêng ra đọc."
+          "read": "Quyết định bạn được dùng thương mại, sửa, chia sẻ tới đâu. “other” nghĩa là phải mở điều khoản riêng ra đọc.",
+          "mark": "no",
+          "verdict": "Mở điều khoản trước khi dùng cho khách"
         },
         {
           "id": "format",
           "label": "Định dạng file",
           "value": "GGUF · Q4_K_M",
-          "read": "GGUF, bản nén 4-bit: kiểu file gọn, chạy được trên laptop."
+          "read": "GGUF, bản nén 4-bit: kiểu file gọn, chạy được trên laptop.",
+          "mark": "ok",
+          "verdict": "Chạy được trên laptop"
         },
         {
           "id": "downloads",
           "label": "Lượt tải",
           "value": "12.400 lượt tải tháng trước",
-          "read": "Cho biết model phổ biến, không phải giấy chứng nhận an toàn hay chất lượng."
+          "read": "Cho biết model phổ biến, không phải giấy chứng nhận an toàn hay chất lượng.",
+          "mark": "warn",
+          "verdict": "Phổ biến chưa chắc đã an toàn"
         },
         {
           "id": "limits",
           "label": "Giới hạn & cảnh báo",
           "value": "Chưa kiểm thử kỹ với tiếng Việt; có thể sai số liệu",
-          "read": "Tác giả tử tế ghi rõ model làm kém ở đâu. Bia không ghi gì về giới hạn là tín hiệu cần dè chừng."
+          "read": "Tác giả tử tế ghi rõ model làm kém ở đâu. Bia không ghi gì về giới hạn là tín hiệu cần dè chừng.",
+          "mark": "warn",
+          "verdict": "Caption tiếng Việt: tự thử trước đã"
         }
       ],
       "insight": {
@@ -314,51 +324,60 @@
         "Chạm cuộn giấy, đèn, hòm thư… để so hai nhà",
         "Thắp đèn cổng nhà bạn tin"
       ],
-      "readFirst": "So ít nhất hai vật ở hai nhà trước đã — chạm cuộn giấy, đèn, hòm thư…"
+      "readFirst": "So ít nhất hai vật ở hai nhà trước đã — chạm cuộn giấy, đèn, hòm thư…",
+      "count": "Đã so {n}/{total} tín hiệu",
+      "orbit": "kéo để đi vòng"
     },
     "clean": {
       "label": "Lọc nước",
-      "art": "Nhìn thấp từ bên một chiếc bát men tối: ống tre cao phía sau, nửa chìm trong sương, rót nước đục xuống sáu chậu đá bậc thang đi chéo về phía người xem, chậu càng gần càng to. Mỗi chậu chờ một viên đá lọc đánh số. Đặt đúng thứ tự thì nước trong dần; đủ sáu, bát đầy nước trong và in trọn vầng trăng.",
-      "prompt": "Xếp sáu lớp lọc theo thứ tự bạn sẽ làm trước khi tải",
-      "aria": "Lối đá từng bước: thứ tự an toàn khi tải một model hoặc một đoạn code. Chạm lần lượt hoặc dùng phím số",
-      "stepAria": "Đặt bước {n}: {label}",
-      "wrongHint": "Lớp này nằm sau — nước chưa qua lớp trước.",
+      "art": "Nhìn thấp bên một chiếc bát men tối: ống tre phía sau rót nước đục xuống ba chậu đá đi chéo về phía người xem. Mỗi chậu giữ một thứ cặn: một cuộn mã đóng dấu đỏ “lang-rnau”, một hũ “.pkl” sủi bọt, một tờ giấy phép gạch chéo “cấm thương mại”. Trên bờ trái có ba tấm lọc tre đan: Đúng tác giả, Đúng định dạng, Đúng giấy phép. Đặt đúng tấm lọc vào chậu thì nước chậu đó trong lại; đủ ba, bát đầy nước trong và in trọn vầng trăng.",
+      "prompt": "Kéo mỗi tấm lọc tới chậu có thứ cần chặn",
+      "aria": "Ba lớp lọc trước khi tải một model hoặc một đoạn code. Kéo mỗi tấm lọc tới chậu có thứ nó chặn được; hoặc chọn tấm lọc rồi chọn chậu, hoặc bấm phím 1, 2, 3 khi đang ở tấm lọc",
+      "filterAria": "Tấm lọc “{label}”: kéo tới một chậu, hoặc bấm 1, 2, 3 để đặt vào chậu đó",
+      "basinAria": "Chậu {n}: {debris}",
+      "filters": [
+        {
+          "id": "author",
+          "label": "Đúng tác giả",
+          "blocks": "fake"
+        },
+        {
+          "id": "format",
+          "label": "Đúng định dạng",
+          "blocks": "pkl"
+        },
+        {
+          "id": "license",
+          "label": "Đúng giấy phép",
+          "blocks": "nc"
+        }
+      ],
+      "debris": [
+        {
+          "id": "fake",
+          "label": "Bản chép mạo danh “lang-rnau”"
+        },
+        {
+          "id": "pkl",
+          "label": "File .pkl: mở ra là có thể chạy mã"
+        },
+        {
+          "id": "nc",
+          "label": "Giấy phép ghi “cấm thương mại”"
+        }
+      ],
+      "right": "Đã chặn — nước chậu này trong lại.",
+      "wrong": "Tấm lọc này không chặn được thứ đó.",
+      "pickFirst": "Kéo một tấm lọc tới chậu này — hoặc chọn tấm lọc trước",
+      "picked": "Giờ chạm chậu có thứ mà “{label}” chặn được",
+      "left": [
+        "",
+        "Còn 1 chậu đục — kéo tấm lọc cuối",
+        "Còn 2 chậu đục — kéo tấm lọc tiếp theo"
+      ],
+      "count": "{n}/{total} chậu trong",
       "done": "Nước đã trong.",
-      "steps": {
-        "steps": [
-          {
-            "label": "Tìm đúng nguồn gốc",
-            "detail": "Vào trang chính thức của tác giả hoặc tổ chức, theo link từ chính trang đó.",
-            "why": "Bản sao đổi tên trông giống hệt bản gốc."
-          },
-          {
-            "label": "Đọc bia: giấy phép, giới hạn",
-            "detail": "Mở model card hoặc README; xem license có cho việc bạn định làm không.",
-            "why": "Tải về rồi mới biết không được dùng là phí công."
-          },
-          {
-            "label": "Chọn định dạng an toàn hơn",
-            "detail": "Ưu tiên file .safetensors hoặc .gguf; tránh file .pkl của người lạ — mở ra là có thể chạy mã.",
-            "why": "File pickle có thể chạy mã ngay lúc được mở."
-          },
-          {
-            "label": "Xem cảnh báo quét bảo mật",
-            "detail": "Trang file trên Hugging Face có kết quả quét; dòng nào bị đánh dấu thì dừng lại.",
-            "why": "Chính Hugging Face nói máy quét không bắt được 100%."
-          },
-          {
-            "label": "Tải qua app quen thuộc",
-            "detail": "Dùng LM Studio, Ollama hoặc trang chính thức, không chạy lệnh lạ dán từ diễn đàn.",
-            "why": "Lệnh “cài nhanh” là đường mã độc hay đi nhất."
-          },
-          {
-            "label": "Thử với dữ liệu không nhạy cảm",
-            "detail": "Lần đầu chỉ đưa nội dung mẫu, chưa đưa tài liệu khách hàng.",
-            "why": "Có gì bất thường thì chưa mất gì quý."
-          }
-        ],
-        "takeaway": "t31-safe-download"
-      },
+      "takeaway": "t31-safe-download",
       "insight": {
         "text": "Ba lớp lọc trước khi tải: đúng tác giả, đúng giấy phép, file .safetensors hoặc .gguf thay vì .pkl.",
         "asOf": "2026-10-15",

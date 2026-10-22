@@ -541,39 +541,131 @@ export function scaleScene(ctx: SceneCtx) {
     }
   }
 
-  /** a small house standing in the left pan: plaster, a dark roof, a window lit by an oil lamp */
-  function house(c: CanvasRenderingContext2D, x: number, y: number, rx: number) {
-    const w = rx * 0.9, hh = rx * 0.5, by = y - rx * 0.04
-    c.fillStyle = rgba(P.dark ? mix(P['rock-mid'], P.paper, 0.2) : mix(P.card, P['rock-hi'], 0.4))
-    c.fillRect(x - w / 2, by - hh, w, hh)
-    c.fillStyle = rgba(mix(P['rock-lo'], P.umbra, 0.2), 0.5)
-    c.fillRect(x + w * 0.18, by - hh, w * 0.32, hh)
-    c.fillStyle = rgba(P.lantern)
-    c.fillRect(x - w * 0.34, by - hh * 0.72, w * 0.28, hh * 0.42)
-    c.fillStyle = rgba(P.dark ? P.wash : P.ink, 0.7)
-    c.fillRect(x - w * 0.205, by - hh * 0.72, 1.2, hh * 0.42)
-    c.fillStyle = rgba(P.dark ? mix(P.wash, P['rock-lo'], 0.4) : mix(P.ink, P.wash, 0.3))
-    c.beginPath()
-    c.moveTo(x - w * 0.72, by - hh * 0.92)
-    c.quadraticCurveTo(x - w * 0.3, by - hh * 1.05, x - w * 0.12, by - hh * 1.75)
-    c.lineTo(x + w * 0.12, by - hh * 1.75)
-    c.quadraticCurveTo(x + w * 0.3, by - hh * 1.05, x + w * 0.72, by - hh * 0.92)
-    c.quadraticCurveTo(x, by - hh * 1.12, x - w * 0.72, by - hh * 0.92)
-    c.fill()
-  }
-  /** a silver cloud over half a small moon in the right pan */
-  function cloud(c: CanvasRenderingContext2D, x: number, y: number, rx: number) {
-    const m = rx * 0.26
-    c.fillStyle = rgba(P.moon)
-    c.beginPath(); c.arc(x + rx * 0.16, y - rx * 0.46, m, 0, Math.PI * 2); c.fill()
-    const silver = P.dark ? mix(P.mist, P['rock-hi'], 0.4) : mix(P.mist, P['rock-mid'], 0.35)
-    c.fillStyle = rgba(silver)
-    for (const [dx, dy, r] of [[-0.3, -0.18, 0.24], [-0.05, -0.3, 0.28], [0.22, -0.2, 0.22], [0.42, -0.12, 0.16], [0, -0.1, 0.3]] as const) {
-      c.beginPath(); c.arc(x + dx * rx, y + dy * rx, r * rx, 0, Math.PI * 2); c.fill()
+  /**
+   * The two loads, painted once per layout / theme into sprites (drawn every frame the scale moves, never rebuilt there):
+   * your house — a stone footing, plastered walls between dark posts, a lit lattice window, a thick hipped roof whose eaves
+   * rest on the wall plate and reach past it — and a soft cumulus with a moonlit rim over half a small moon.
+   */
+  let houseSp: HTMLCanvasElement | null = null, cloudSp: HTMLCanvasElement | null = null
+  function loads() {
+    const rx = G.rx
+    const dp = Math.min(devicePixelRatio || 1, low ? 1 : 1.5)
+    const mk = (w: number, hh: number) => {
+      const e = document.createElement('canvas')
+      e.width = Math.ceil(w * dp)
+      e.height = Math.ceil(hh * dp)
+      const g = e.getContext('2d')!
+      g.scale(dp, dp)
+      return [e, g] as const
     }
-    c.strokeStyle = rgba(P.dark ? P.moon : P['ink-2'], 0.4)
-    c.lineWidth = 1
-    c.beginPath(); c.arc(x - rx * 0.05, y - rx * 0.3, rx * 0.28, Math.PI * 1.1, Math.PI * 1.9); c.stroke()
+    // the house, in a box rx*1.3 wide, rx*0.95 tall; its foot at the box's bottom centre
+    {
+      const bw = rx * 1.3, bh = rx * 0.95
+      const [e, g] = mk(bw, bh)
+      const x = bw / 2, foot = bh - 1, w = rx * 0.86, wh = rx * 0.34, pl = rx * 0.05
+      const wt = foot - pl - wh, ov = rx * 0.16, rh = rx * 0.4, ey = wt + rx * 0.03
+      const x0 = x - w / 2, x1 = x + w / 2
+      g.fillStyle = rgba(P['rock-lo'])
+      g.fillRect(x0 - 3, foot - pl, w + 6, pl)
+      const wall = g.createLinearGradient(x0, 0, x1, 0)
+      wall.addColorStop(0, rgba(P.dark ? mix(P['rock-hi'], P.moon, 0.15) : mix(P.card, P['rock-hi'], 0.3)))
+      wall.addColorStop(1, rgba(P.dark ? mix(P['rock-mid'], P.umbra, 0.3) : mix(P['rock-hi'], P['rock-mid'], 0.6)))
+      g.fillStyle = wall
+      g.fillRect(x0, wt, w, wh)
+      // the window, lit by the oil lamp inside, its lattice; a door
+      const wx = x0 + w * 0.12, ww = w * 0.36, wy = wt + wh * 0.22, whh = wh * 0.5
+      const lit = g.createRadialGradient(wx + ww / 2, wy + whh / 2, 0, wx + ww / 2, wy + whh / 2, ww * 0.7)
+      lit.addColorStop(0, rgba(mix(P.lantern, P.moon, 0.5)))
+      lit.addColorStop(1, rgba(P.lantern))
+      g.fillStyle = lit
+      g.fillRect(wx, wy, ww, whh)
+      g.strokeStyle = rgba(mix(P['rock-lo'], P.umbra, 0.4), 0.9)
+      g.lineWidth = 1
+      g.beginPath()
+      for (let i = 1; i < 4; i++) g.moveTo(wx + (ww * i) / 4, wy), g.lineTo(wx + (ww * i) / 4, wy + whh)
+      g.moveTo(wx, wy + whh / 2); g.lineTo(wx + ww, wy + whh / 2)
+      g.stroke()
+      g.fillStyle = rgba(mix(P.wash, P['rock-lo'], 0.4), 0.85)
+      g.fillRect(x0 + w * 0.6, wt + wh * 0.18, w * 0.2, wh * 0.82 - 0.5)
+      // posts and the wall plate
+      g.fillStyle = rgba(P.dark ? mix(P.wash, P['rock-lo'], 0.3) : mix(P.ink, P['rock-lo'], 0.4))
+      for (const u of [0, 0.5, 1]) g.fillRect(x0 + w * u - 2, wt, 4, wh)
+      g.fillRect(x0, wt, w, 3)
+      // the eaves' shadow on the wall, the roof's underside, the roof (a lit left pitch), the ridge
+      g.fillStyle = rgba(P.umbra, 0.35)
+      g.fillRect(x0, wt, w, rx * 0.06)
+      const roof = new Path2D()
+      roof.moveTo(x0 - ov, ey)
+      roof.quadraticCurveTo(x0 - ov * 0.3, ey - rx * 0.02, x0 + w * 0.08, wt - rh * 0.6)
+      roof.lineTo(x0 + w * 0.28, wt - rh)
+      roof.lineTo(x1 - w * 0.28, wt - rh)
+      roof.lineTo(x1 - w * 0.08, wt - rh * 0.6)
+      roof.quadraticCurveTo(x1 + ov * 0.3, ey - rx * 0.02, x1 + ov, ey)
+      roof.closePath()
+      g.fillStyle = rgba(P.dark ? mix(P.wash, P['rock-lo'], 0.35) : mix(P.ink, P.wash, 0.3))
+      g.fill(roof)
+      g.save()
+      g.clip(roof)
+      g.fillStyle = rgba(P.moon, P.dark ? 0.16 : 0.2)
+      g.beginPath(); g.moveTo(x0 - ov, ey); g.lineTo(x0 + w * 0.28, wt - rh); g.lineTo(x0 + w * 0.36, wt - rh * 0.4); g.lineTo(x0 + w * 0.1, ey); g.fill()
+      // tile courses
+      g.strokeStyle = rgba(P.umbra, 0.4)
+      g.lineWidth = 0.8
+      g.beginPath()
+      for (let i = 1; i < 5; i++) { const yy = wt - rh + (rh * i) / 5 + rx * 0.01; g.moveTo(x0 - ov, yy); g.lineTo(x1 + ov, yy) }
+      g.stroke()
+      g.restore()
+      g.fillStyle = rgba(P.umbra, 0.7)
+      g.fillRect(x0 - ov * 0.8, ey - 1, w + ov * 1.6, 2.5)
+      g.strokeStyle = rgba(P.dark ? P.wash : P.ink)
+      g.lineWidth = 3
+      g.lineCap = 'round'
+      g.beginPath(); g.moveTo(x0 + w * 0.24, wt - rh - 1); g.lineTo(x1 - w * 0.24, wt - rh - 1); g.stroke()
+      houseSp = e
+    }
+    // the cloud, in a box rx*1.3 wide, rx*0.8 tall; its base at the box's bottom centre
+    {
+      const bw = rx * 1.3, bh = rx * 0.8
+      const [e, g] = mk(bw, bh)
+      const x = bw / 2, base = bh - rx * 0.04
+      g.fillStyle = rgba(P.moon)
+      g.beginPath(); g.arc(x + rx * 0.24, base - rx * 0.5, rx * 0.2, 0, Math.PI * 2); g.fill()
+      const body = P.dark ? mix(P.mist, P['rock-hi'], 0.35) : mix(P.card, P.mist, 0.35)
+      const shade = mix(body, P.umbra, P.dark ? 0.5 : 0.28)
+      // lobes from the back (low, wide) to the front (the crown), each lit from the upper left, shaded under
+      const lobes: [number, number, number][] = [[-0.38, -0.12, 0.17], [0.38, -0.13, 0.16], [-0.16, -0.27, 0.22], [0.13, -0.32, 0.23], [-0.02, -0.14, 0.28], [0.28, -0.1, 0.17], [-0.3, -0.06, 0.15]]
+      lobes.forEach(([dx, dy, r], i) => {
+        const cx = x + dx * rx, cy = base + dy * rx, rr = r * rx
+        const gr = g.createRadialGradient(cx - rr * 0.35, cy - rr * 0.45, rr * 0.1, cx, cy, rr * 1.05)
+        gr.addColorStop(0, rgba(mix(body, P.moon, P.dark ? 0.35 : 0.5)))
+        gr.addColorStop(0.6, rgba(body))
+        gr.addColorStop(1, rgba(shade))
+        g.fillStyle = gr
+        g.fill(new Path2D(blob(cx, cy, rr, rr * 0.9, 3390 + i, 0.08, 16)))
+      })
+      // a flat, shaded base where it sits in the bowl
+      const fb = g.createLinearGradient(0, base - rx * 0.12, 0, base)
+      fb.addColorStop(0, rgba(shade, 0))
+      fb.addColorStop(1, rgba(shade, 0.9))
+      g.fillStyle = fb
+      g.fillRect(x - rx * 0.56, base - rx * 0.12, rx * 1.12, rx * 0.12)
+      // the moon's rim on the crown
+      g.strokeStyle = rgba(P.moon, P.dark ? 0.75 : 0.9)
+      g.lineWidth = 1.4
+      g.lineCap = 'round'
+      g.beginPath()
+      g.arc(x - rx * 0.16, base - rx * 0.27, rx * 0.22, Math.PI * 1.05, Math.PI * 1.6)
+      g.moveTo(x + rx * 0.13 + Math.cos(Math.PI * 1.15) * rx * 0.23, base - rx * 0.32 + Math.sin(Math.PI * 1.15) * rx * 0.23)
+      g.arc(x + rx * 0.13, base - rx * 0.32, rx * 0.23, Math.PI * 1.15, Math.PI * 1.7)
+      g.stroke()
+      cloudSp = e
+    }
+  }
+  function house(c: CanvasRenderingContext2D, x: number, y: number, rx: number) {
+    if (houseSp) c.drawImage(houseSp, x - rx * 0.65, y - rx * 0.95 + rx * 0.04, rx * 1.3, rx * 0.95)
+  }
+  function cloud(c: CanvasRenderingContext2D, x: number, y: number, rx: number) {
+    if (cloudSp) c.drawImage(cloudSp, x - rx * 0.65, y - rx * 0.8 + rx * 0.06, rx * 1.3, rx * 0.8)
   }
   function stoneDot(c: CanvasRenderingContext2D, x: number, y: number, r: number, k: number) {
     const g = c.createLinearGradient(x, y - r, x, y + r * 0.6)
@@ -913,14 +1005,17 @@ export function scaleScene(ctx: SceneCtx) {
       ? { yw: H * 0.6, mx: W * 0.55, my: H * 0.2, mr: Math.min(W * 0.26, H * 0.11), px: W * 0.5, py: H * 0.21, A: W * 0.31, rx: W * 0.12, hang: H * 0.11 }
       : { yw: H * 0.62, mx: W * 0.535, my: H * 0.28, mr: H * 0.17, px: W * 0.52, py: H * 0.28, A: Math.min(W * 0.27, H * 0.62), rx: Math.min(W * 0.075, H * 0.13), hang: H * 0.16 }
     boughGeo()
+    loads()
     // the stones lie scattered in the shallows at two depths (the near ones bigger and lower), between the water line and the foot
     const artH = ctx.art.clientHeight || H * 0.86
     const band = Math.max(70, artH - G.yw - (tall ? 40 : 46))
-    const base = tall ? W * 0.3 : clamp(W * 0.11, 124, 168)
+    const base = tall ? W * 0.3 : clamp(W * 0.122, 140, 180)
+    // each river stone its own build: some low and broad, some high-domed
+    const DOME = [0.46, 0.4, 0.52, 0.44, 0.38, 0.5]
     SG = K.weights.map((_, k) => {
       const [fx, row, sc] = (tall ? SPOTS_T : SPOTS_W)[k]
       const sw = base * sc
-      return { x: fx * W, y: G.yw + band * (row ? 0.66 : 0.24) + ((k * 7) % 3) * 3, w: sw, hd: sw * (tall ? 0.46 : 0.4), hb: sw * 0.13 }
+      return { x: fx * W, y: G.yw + band * (row ? 0.66 : 0.24) + ((k * 7) % 3) * 3, w: sw, hd: sw * DOME[k] * (tall ? 1.05 : 1), hb: sw * 0.13 }
     })
     stones.forEach((b, k) => {
       const g = SG[k]
@@ -960,6 +1055,7 @@ export function scaleScene(ctx: SceneCtx) {
     const next = palette()
     if (next.key === P.key) return
     P = next
+    if (W) loads()
     if (cS && cB && cW) {
       job?.cancel()
       const sky = cS, bough = cB
@@ -971,6 +1067,19 @@ export function scaleScene(ctx: SceneCtx) {
     }
     drawLive()
   }))
+  // standing still: the stone that is the answer (or the first one) lifts out of the water and settles back (H7)
+  const onIdle = () => {
+    if (done || busyTask || still) return
+    const k = answer()
+    if (k < 0) return
+    stones[k].classList.remove('bob')
+    void stones[k].offsetWidth
+    stones[k].classList.add('bob')
+    ripples.push({ x: SG[k].x, y: SG[k].y, t: 0 })
+    run()
+  }
+  ctx.el.addEventListener('p2:idle', onIdle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
   labelAll()
   showTask()
 }

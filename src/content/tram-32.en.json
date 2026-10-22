@@ -283,7 +283,8 @@
         "Touch the flame in the glass: llama.cpp"
       ],
       "jar": "GGUF: a compact model file that runs on a laptop",
-      "more": "Details"
+      "more": "Details",
+      "litCount": "{n}/{total} lamps burning this oil"
     },
     "scroll": {
       "label": "The command scroll",

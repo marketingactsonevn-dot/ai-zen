@@ -27,6 +27,7 @@
       "art": "Nửa đêm, nhà chính đã tắt đèn; một người giữ vườn cầm đèn lồng đi tuần quanh hồ. Trên cột hiên treo chiếc chuông gió, mỗi tin nhắn đến làm chuông khẽ rung; người giữ vườn ghi vào cuốn sổ dày luôn mang bên mình.",
       "prompt": "Chạm chuông gió để gửi tin cho người giữ vườn — agent của bạn",
       "promptMoon": "Kéo trăng tới sáng — xem agent làm gì trong đêm",
+      "promptStudy": "Chạm thư phòng: agent lập trình khác gì?",
       "aria": "So sánh agent thường trực với agent lập trình. Gửi một tin nhắn mẫu để xem agent thường trực làm gì",
       "message": "“Mỗi sáng 7 giờ, tóm tắt email mới rồi nhắn mình qua Telegram nhé.”",
       "reply": "“Đã ghi vào sổ. Sáng mai 7 giờ mình nhắn.”",
@@ -214,6 +215,8 @@
       "prompt": "Thắp đèn từng gian để xem agent gồm những gì",
       "aria": "Năm thành phần của một agent tự chạy. Thắp đèn từng gian để đọc",
       "roomAria": "Thắp đèn gian: {name}",
+      "count": "Đã thắp {n}/{total} gian",
+      "promptNext": "Giờ thắp đèn gian: {name}",
       "turnAria": "Kéo hoặc dùng phím mũi tên để xoay mô hình; phím 1–5 thắp từng gian.",
       "seeStation": "Xem lại Trạm {n}",
       "rooms": [

@@ -6,6 +6,7 @@ import type { Fact } from '../../core/content'
 import { onPrefs } from '../../core/prefs'
 import { inkGlsl, inkStage, type InkKit, type V3 } from '../../ui/part2/stage3d'
 import type { SceneCtx } from '../types'
+import { guide } from '../../ui/part2/guide'
 import { cardSheet, live, rng } from './kit'
 import { repoFlat } from './repo'
 import './repo3d.css'
@@ -28,8 +29,11 @@ const HW = 1.3, HD = 1.0, FL = 0.3, Y1 = 1.34
 // the houses stand at x = ∓hx (closer on a tall screen), turned a little toward the visitor so both read square-on
 const RY = 0.12
 const PC: [number, number] = [0, -0.4] // the pond's centre
+const MOON: V3 = [-0.06, 0.07, -1] // the moon's direction (and the key light's, a little higher)
 // paper vertex colour: [glow, pattern (1 lattice · 0.3 writing), dye (0 paper · 0.4 indigo · 0.65 wood · 1 red)]
-const SHOJI: C3 = [1, 1, 0], PAPER: C3 = [0, 0, 0], WRIT: C3 = [0, 0.3, 0], INDIGO: C3 = [0, 0, 0.4], WOOD: C3 = [0, 0, 0.65], RED: C3 = [0, 0, 1], LIT: C3 = [1, 0, 0]
+// the gate signs (house-local): centre x (outer side of the walk, ∓), z, board width, height, centre height
+const SX = 0.95, SZ = HD + 1.85, SW = 1.2, SH = 0.42, SY = 0.84
+const SHOJI: C3 =[1, 1, 0], PAPER: C3 = [0, 0, 0], WRIT: C3 = [0, 0.3, 0], INDIGO: C3 = [0, 0, 0.4], WOOD: C3 = [0, 0, 0.65], RED: C3 = [0, 0, 1], LIT: C3 = [1, 0, 0]
 
 // ───────────────────────────── geometry helpers ─────────────────────────────
 const B = (w: number, hh: number, d: number, x: number, y: number, z: number, ry = 0, rz = 0, rx = 0): G => {
@@ -389,27 +393,33 @@ export function repoScene3d(ctx: SceneCtx) {
   const root = h('div', { class: 't31r3' }, h('p', { class: 'visually-hidden' }, K.art), h('p', { class: 'g11-mock t31r3-mock' }, K.mock), cap, say)
   ctx.art.append(root)
   const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
-  ctx.prompt(K.prompt)
+  ctx.prompt(K.prompts[0])
   const portrait = ctx.art.clientWidth < ctx.art.clientHeight
   // far enough apart that the twins read as two from the front, near enough to share the island
   const HX = portrait ? 2.3 : 2.75
+  // low and close: the two houses fill the middle of the frame (desk y ≈ 30–78 %), the sky band above stays for the words;
+  // a tall frame stands nearer still (the outer eaves run off it) and looks down onto the raked sand in front
+  const VIEW: { pitch: number; fit: [number, number]; target: V3 } = portrait
+    ? { pitch: 0.4, fit: [7.4, 3.0], target: [0, 0.5, 0.9] }
+    : { pitch: 0.17, fit: [7.1, 2.6], target: [0, 0.95, 1.0] }
   let tex: THREE.CanvasTexture | null = null
   let offPrefs = () => {}
   ctx.onCleanup(() => (tex?.dispose(), offPrefs()))
 
-  inkStage(ctx, root, {
+  const marks: { done(): void }[] = [] // the guide marks belong to the 3D view: gone if it never comes up
+  void inkStage(ctx, root, {
     label: K.aria, hint: K.hint, dpr: [1.75, 1.25],
     // a tall frame already looks down 0.13 more (toolkit): start lower so the moon and hills stay in it
     // a tall frame is cropped tight on the two houses (their outer eaves run off it; the gap between them stays in) and
     // looks down a little more, onto the raked sand rather than the water in front
-    view: { yaw: 0, pitch: portrait ? 0.22 : 0.27, yawRange: [-2.97, 2.97], pitchRange: [portrait ? 0.02 : 0.14, 0.87], fit: [portrait ? 6.5 : 8.3, portrait ? 2.6 : 3.0], target: [0, 1.0, portrait ? 0.9 : 0.6], zoomRange: [0.32, 1.25], shift: 0.1 },
+    view: { yaw: 0, pitch: VIEW.pitch, yawRange: [-2.97, 2.97], pitchRange: [portrait ? 0.02 : 0.1, 0.87], fit: VIEW.fit, target: VIEW.target, zoomRange: [0.32, 1.25], shift: 0.1 },
     fallback: (host) => repoFlat(ctx, host),
   }, function* (k: InkKit) {
     const low = k.low
     const ol = !low // outlines on the smaller pieces only at high
     // ── colours from the theme tokens (linear light), recomputed on a theme change
     const C = () => new THREE.Color()
-    const col = { paper: C(), dye: C(), wood: C(), woodLo: C(), woodHi: C(), tile: C(), tileLo: C(), tileHi: C(), red: C(), carve: C(), hutWall: C(), hutRoof: C(), umbra: C(), ripple: C(), dark: { value: 0 } }
+    const col = { paper: C(), dye: C(), wood: C(), woodLo: C(), woodHi: C(), tile: C(), tileLo: C(), tileHi: C(), red: C(), carve: C(), hutWall: C(), hutRoof: C(), umbra: C(), ripple: C(), pondW: C(), pondS: C(), sand: C(), dark: { value: 0 } }
     let warmMoon: THREE.Mesh | null = null
     const read = () => {
       const cs = getComputedStyle(document.documentElement)
@@ -434,6 +444,11 @@ export function repoScene3d(ctx: SceneCtx) {
       col.tile.copy(wash).lerp(lo, dark ? 0.85 : 0.6)
       col.tileHi.copy(lo).lerp(mid, dark ? 0.75 : 0.55)
       v('--umbra', col.umbra)
+      // the light theme's water is darker than its sky (it mirrors a dimmed sky), the raked sand a shade under the paper
+      const paper = v('--paper'), mist = v('--mist'), water = v('--water')
+      col.pondW.copy(water).lerp(wash, dark ? 0 : 0.3)
+      col.pondS.copy(paper).lerp(mist, dark ? 0.24 : 0.7).lerp(water, dark ? 0 : 0.5)
+      col.sand.copy(v('--paper-2')).lerp(mist, dark ? 0.05 : 0).lerp(paper, dark ? 0 : 0.6).lerp(water, dark ? 0 : 0.16)
     }
     read()
     /** ink wash in the station's own tones: warm wood (the kit's bark is cold), dark tile */
@@ -454,11 +469,13 @@ export function repoScene3d(ctx: SceneCtx) {
     offPrefs = onPrefs(() => (read(), k.render()))
 
     // ── sky, water, the island
-    U.uKey.value.set(-0.52, 0.6, -0.6).normalize() // moon high behind-left: front faces in shade, shadows fall toward the visitor
-    U.uFog.value.set(11, 42)
-    k.backdrop({ moon: [0.03, 0.06, -1], moonRise: 4, mist: low ? 0.3 : 0.45, seed: 31 })
+    // one light: the moon behind, a little left, between the two roofs — rims on the ridges and eaves, front faces in
+    // shade, shadows falling toward the visitor (and a touch right)
+    U.uKey.value.set(MOON[0] * 2.2, 0.62, -0.78).normalize()
+    U.uFog.value.set(portrait ? 18 : 12, portrait ? 58 : 44)
+    k.backdrop({ moon: MOON, moonRise: 4, mist: low ? 0.3 : 0.45, seed: 31 })
     // in the light theme the moon is a pale disc on pale paper: a warm halo round it (the kit's moon sits 80 out)
-    const md = new THREE.Vector3(0.03, 0.06, -1).normalize().multiplyScalar(79).add(new THREE.Vector3(0, 1.0, portrait ? 0.9 : 0.6))
+    const md = new THREE.Vector3(...MOON).normalize().multiplyScalar(79).add(new THREE.Vector3(...VIEW.target))
     warmMoon = k.glow([md.x, md.y, md.z], 24, 'lantern', 0.7)
     warmMoon.visible = col.dark.value === 0
     yield
@@ -466,7 +483,11 @@ export function repoScene3d(ctx: SceneCtx) {
     pond.renderOrder = -6 // under the island, which melts into it
     ;(pond.material as THREE.Material).depthWrite = false
     pond.position.y = -0.03
+    const pu = (pond.material as THREE.ShaderMaterial).uniforms
+    pu.uWater.value = col.pondW
+    pu.uSky.value = col.pondS
     const isle = k.ground({ r: 7, center: [0, 0.2] })
+    ;(isle.material as THREE.ShaderMaterial).uniforms.uSand.value = col.sand
     isle.scale.set(5.05 / 7, 5.05 / 7, 1) // cut the sand at the kerb, before it fades
     const r = rng(311)
     // the kerb: stones in clusters of one to three, mostly small with a few big ones, sunk in the sand, gaps between
@@ -536,7 +557,7 @@ export function repoScene3d(ctx: SceneCtx) {
     const P0 = house(false, low)
     k.mesh(merge(P0.wood), wood(), { parent: houseG[0], outline: ol })
     k.mesh(merge(P0.wall), k.ink('step', { moss: 0.1, rim: 0.8 }), { parent: houseG[0], outline: ol })
-    const roof0 = k.mesh(merge(P0.roof), tiles(), { parent: houseG[0] })
+    k.mesh(merge(P0.roof), tiles(), { parent: houseG[0] })
     k.mesh(merge(P0.paper), realPaper, { parent: houseG[0], outline: false })
     yield
     const facade = new THREE.Group()
@@ -546,7 +567,7 @@ export function repoScene3d(ctx: SceneCtx) {
     const back = (gs: G[]) => gs.map((g) => g.translate(0, 0, -HD))
     k.mesh(merge(back(P1.wood)), wood({ double: true }), { parent: facade, outline: ol })
     k.mesh(merge(back(P1.wall)), k.ink('step', { moss: 0.1, rim: 0.8 }), { parent: facade, outline: ol })
-    const roof1 = k.mesh(merge(back(P1.roof)), tiles(true), { parent: facade })
+    k.mesh(merge(back(P1.roof)), tiles(true), { parent: facade })
     k.mesh(merge(back(P1.paper)), paperMat(0.62), { parent: facade, outline: false })
     // the two bamboo props, each pivoting on its foot in the gravel: they go down with the front, outward, and stay in view
     const props = P1.props.map((geo, j) => {
@@ -649,7 +670,7 @@ export function repoScene3d(ctx: SceneCtx) {
     k.mesh(merge(path), k.ink('step', { moss: 0.4 }), { parent: sigGroups.forks, outline: ol })
     yield
     // Issues: a mailbox with a new letter tied in red string (answered) / a bell wrapped shut in paper (turned off)
-    const mx = -1.05, mz = HD + 1.12
+    const mx = -1.6, mz = HD + 0.9 // beside the porch corner, clear of the gate sign in front
     build('issues',
       { wood: [B(0.07, 0.96, 0.07, mx, 0.48, mz), B(0.3, 0.2, 0.22, mx, 1.03, mz), B(0.34, 0.035, 0.26, mx, 1.15, mz, 0, 0.12)], paper: [PB(0.18, 0.13, 0.012, mx + 0.02, 1.19, mz + 0.02, PAPER, 0.1), PB(0.014, 0.135, 0.016, mx + 0.03, 1.19, mz + 0.024, RED, 0.1)], step: [] },
       { wood: [B(0.07, 1.25, 0.07, -mx, 0.62, mz), B(0.34, 0.05, 0.05, -mx + 0.13, 1.22, mz), B(0.01, 0.1, 0.01, -mx + 0.26, 1.15, mz)], paper: [PE(0.1, 0.13, 0.1, -mx + 0.26, 0.99, mz, PAPER, low), PB(0.21, 0.012, 0.21, -mx + 0.26, 1.02, mz, WOOD), PB(0.012, 0.27, 0.205, -mx + 0.26, 0.99, mz, WOOD)], step: [] },
@@ -682,9 +703,13 @@ export function repoScene3d(ctx: SceneCtx) {
         c.font = `600 ${Math.floor(px * k2)}px ${fam}`
         c.fillText(t, x, y)
       }
-      line(K.repos[0].name, S / 2, S * 0.14, S * 0.9, S * 0.13)
-      line(K.repos[1].name, S / 2, S * 0.43, S * 0.9, S * 0.13)
-      line(K.repos[0].values.license, S * 0.16, S * 0.75, S * 0.26, S * 0.12)
+      // each gate sign carries its repo's name in two lines (owner / project), cut big enough to read from the shore
+      K.repos.forEach((rp, j) => {
+        const [a, b] = rp.name.split('/')
+        line(`${a}/`, S / 2, S * (0.1 + j * 0.33), S * 0.92, S * 0.14)
+        line(b, S / 2, S * (0.24 + j * 0.33), S * 0.92, S * 0.14)
+      })
+      line('MIT', S * 0.16, S * 0.83, S * 0.26, S * 0.12)
       tex!.needsUpdate = true
     }
     carve()
@@ -693,22 +718,30 @@ export function repoScene3d(ctx: SceneCtx) {
       vertexShader: VERT, fragmentShader: BOARD_FRAG, defines: { OCT: 2 },
       uniforms: { ...U, uMap: { value: tex }, uWood: { value: col.woodLo }, uWoodHi: { value: col.wood }, uCarve: { value: col.carve }, uHot: { value: 0 } },
     })
-    /** a board face showing the atlas cell [u0, v0 (top), u1, v1] */
-    /** a board face showing the atlas cell [u0, v0 (top), u1, v1]; on the real house (world) or the painted front (its own space) */
-    const face = (w: number, hh: number, x: number, y: number, z: number, cell: [number, number, number, number], real: boolean) => {
+    /** a board face showing the atlas cell [u0, v0 (top), u1, v1], placed in house i's world */
+    const face = (w: number, hh: number, x: number, y: number, z: number, cell: [number, number, number, number], i: number) => {
       const g = new THREE.PlaneGeometry(w, hh)
       const uv = g.attributes.uv as THREE.BufferAttribute
       for (let j = 0; j < uv.count; j++) uv.setXY(j, cell[0] + uv.getX(j) * (cell[2] - cell[0]), 1 - (cell[1] + (1 - uv.getY(j)) * (cell[3] - cell[1])))
-      return real ? g.translate(x, y, z).applyMatrix4(M[0]) : g.translate(x, y, z - HD)
+      return g.translate(x, y, z).applyMatrix4(M[i])
     }
     const lic = new THREE.Group()
     k.root.add(lic)
     sigGroups.license = lic
-    k.mesh(merge([face(0.62, 0.17, 0, 1.2, HD + 0.092, [0.02, 0.04, 0.98, 0.24], true), face(0.16, 0.2, 0.62, 0.6, HD + 0.021, [0.02, 0.62, 0.3, 0.88], true)]), boardMat, { parent: lic, outline: false })
-    const licCopy = k.mesh(face(0.62, 0.17, 0, 1.2, HD + 0.092, [0.02, 0.33, 0.98, 0.53], false), boardMat, { parent: lic, outline: false })
-    licCopy.matrixAutoUpdate = false
-    riders.push(licCopy)
-    sigAnch.license = [anchor(W(0, [0, 1.32, HD + 0.1])), anchor(W(1, [0, 1.32, HD + 0.1]))]
+    // the gate sign at the head of each walk: a board between two posts dug into the gravel, a cap plank resting on the
+    // post tops; the name is cut into its face (and the MIT plaque hangs by the real house's door)
+    const sign = (i: number) => {
+      const x = i ? SX : -SX, ph = SY + SH / 2 + 0.1
+      return [B(0.08, ph, 0.08, x - SW / 2 - 0.03, ph / 2, SZ), B(0.08, ph, 0.08, x + SW / 2 + 0.03, ph / 2, SZ),
+        B(SW + 0.02, SH, 0.05, x, SY, SZ + 0.02), B(SW + 0.32, 0.045, 0.15, x, ph + 0.022, SZ), B(SW + 0.02, 0.05, 0.07, x, SY - SH / 2 - 0.02, SZ)].map((g) => g.applyMatrix4(M[i]))
+    }
+    k.mesh(merge([...sign(0), ...sign(1)]), wood(), { parent: lic, outline: ol })
+    k.mesh(merge([
+      face(SW * 0.94, SH * 0.92, -SX, SY, SZ + 0.047, [0.02, 0.02, 0.98, 0.33], 0),
+      face(0.16, 0.2, 0.62, 0.6, HD + 0.021, [0.02, 0.7, 0.3, 0.96], 0),
+      face(SW * 0.94, SH * 0.92, SX, SY, SZ + 0.047, [0.02, 0.35, 0.98, 0.66], 1),
+    ]), boardMat, { parent: lic, outline: false })
+    sigAnch.license = [anchor(W(0, [-SX, SY + SH / 2 + 0.16, SZ])), anchor(W(1, [SX, SY + SH / 2 + 0.16, SZ]))]
     sigGlow.license = sigAnch.license.map((a) => {
       const q = k.glow([a.position.x, a.position.y - 0.3, a.position.z + 0.1], 1.2, 'moon', 0.7)
       q.visible = false
@@ -781,11 +814,9 @@ export function repoScene3d(ctx: SceneCtx) {
     k.mesh(tg, k.ink('step', { rim: 0, edge: 0.2 }), { outline: false }).raycast = () => {}
     yield
 
-    // ── a pine leaning over the back of the island, two stones in front (high only)
-    if (!low) {
-      k.pine({ at: [-3.4, -3.3], h: 3.5, lean: 1, seed: 9 })
-      k.rock({ at: [-4.1, 2.35], w: 0.95, h: 0.55, seed: 4, moss: 0.7 })
-    }
+    // ── a pine at the island's front-left corner leaning in over the real house: it frames the picture from the side
+    // and keeps out of the sky band where the words are (high only)
+    if (!low) k.pine({ at: portrait ? [-3.75, 1.9] : [-4.3, 1.5], h: portrait ? 2.7 : 3.1, lean: 0.7, seed: 9 })
     houseG[1].updateMatrixWorld(true)
     const ride = () => {
       facade.updateMatrixWorld(true)
@@ -795,44 +826,103 @@ export function repoScene3d(ctx: SceneCtx) {
 
     // ── interaction
     const values = (j: number) => K.repos[j].values as Record<string, string>
+    // the view that shows each signal on both houses: the front ones stay wide enough that the roofs keep under the sky
+    // band (the words live there); the back ones go round. [target, yaw, pitch, dolly]
     const views: Record<Sig, [V3, number, number, number]> = {
-      readme: [[0, 1.0, 1.1], 0, 0.2, 0.6],
-      stars: [[0, 1.25, 1.1], 0, 0.15, 0.72],
+      readme: [VIEW.target, 0, VIEW.pitch, 1],
+      stars: [VIEW.target, 0, VIEW.pitch, 1],
       forks: [[-4.8, 0.3, -5.4], 0.75, 0.56, 1.1],
-      issues: [[0, 0.9, 2.6], 0, 0.24, 0.62],
+      issues: [VIEW.target, 0, VIEW.pitch, 1],
       releases: [[0, 1.0, -1.2], 2.8, 0.32, 0.95],
-      license: [[0, 1.1, 1.6], 0, 0.1, 0.34],
+      license: [VIEW.target, 0, VIEW.pitch, 1],
     }
-    let tags: HTMLElement[] = []
+    const BACK: Sig[] = ['forks', 'releases'] // seen only from behind the houses
+    // a hit box round the slim README scrolls (≥ 44 px at the default view), invisible
+    const hitM = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, colorWrite: false })
+    for (const i of [0, 1]) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.62, 0.2), hitM)
+      m.position.set(...W(i, [-0.5, 0.96, HD + 0.12]))
+      m.rotation.y = i ? -RY : RY
+      sigGroups.readme.add(m)
+    }
+    const g = guide(ctx)
+    const W2 = () => [ctx.art.clientWidth, ctx.art.clientHeight]
+    // H1: a vermilion dot on each signal's thing at both houses, gone once that signal is read; the gate lamps get theirs
+    // when the choice opens
+    const mkDot = (cls = '') => h('div', { class: `p2g-dot t31r3-dot ${cls}`.trim(), 'aria-hidden': 'true' }, h('i'))
+    const sigDots = {} as Record<Sig, HTMLElement[]>
+    for (const sg of K.signals) {
+      const id = sg.id as Sig
+      sigDots[id] = sigAnch[id].map((a) => {
+        const d = mkDot(BACK.includes(id) ? 'back' : '')
+        k.label(a, d)
+        return d
+      })
+    }
+    let lampDots: HTMLElement[] = []
+    // H4: signals compared so far, cut small in the foreground
+    const count = g.count(K.count, K.signals.length, () => {
+      const [w, hh] = W2()
+      return portrait ? [w / 2, hh - 18] : [Math.min(150, w * 0.14), hh - 30]
+    })
+    // H2-ish: a faint curved ink arrow under the island until the first walk round
+    const arrow = g.gesture('circle', () => {
+      const [w, hh] = W2()
+      return [w / 2, hh * (portrait ? 0.8 : 0.84)]
+    }, { r: portrait ? 34 : 44 })
+    arrow.el.append(h('span', { class: 't31r3-orbit' }, K.orbit))
+    marks.push(count, arrow)
     let lit: Sig | null = null
-    // the choice waits for evidence: the gate lamps' tags show once two signals have been compared on both houses
-    const compared = new Set<string>()
     const clear = () => {
-      tags.forEach((t) => t.remove())
-      tags = []
       if (lit) sigGlow[lit].forEach((q) => (q.visible = false))
       lit = null
     }
+    // the choice waits for evidence: two signals compared on both houses, or a walk round to the back
+    const compared = new Set<string>()
+    let ready = false, sawBack = false, walked = false
+    const open = () => {
+      if (ready) return
+      ready = true
+      root.classList.add('t31r3-ready')
+      lampDots = andon.map((a) => {
+        const d = mkDot('lamp')
+        k.label(a.g, d, [0, 0.12, 0])
+        return d
+      })
+    }
+    const step = () => {
+      if (picked) return
+      if (compared.size >= 2) ctx.prompt(K.prompts[2])
+      else if (compared.size || walked) ctx.prompt(K.prompts[1])
+    }
+    /** a repo's value for a signal, under its name; the pair is laid out as the houses stand on screen */
+    const pair = (id: Sig, yaw: number) =>
+      h('div', { class: 't31r3-vals' }, ...(Math.abs(yaw) > Math.PI / 2 ? [1, 0] : [0, 1]).map((j) =>
+        h('p', { class: `t31r3-val${K.repos[j].trust ? '' : ' copy'}` }, h('small', null, K.repos[j].name), values(j)[id])))
     const signal = (sg: (typeof K.signals)[number]) => {
       const id = sg.id as Sig
       clear()
       lit = id
       sigGlow[id].forEach((q) => (q.visible = true))
-      cap.replaceChildren(h('p', { class: 't31r3-sig-name' }, sg.label), h('p', { class: 't31r3-sig-what' }, sg.what))
-      K.repos.forEach((rp2, j) => tags.push(k.label(sigAnch[id][j], h('p', { class: `t31r3-val${rp2.trust ? '' : ' copy'}` }, values(j)[id]))))
-      say.say(`${sg.label}: ${sg.what} ${K.repos.map((x, j) => `${x.name}: ${values(j)[id]}`).join('. ')}.`)
+      sigDots[id].forEach((d) => d.remove())
       const [t, yaw, pitch, z] = views[id]
-      void k.fly(t, yaw, portrait ? pitch - 0.1 : pitch, 1.3)
+      cap.replaceChildren(h('p', { class: 't31r3-sig-name' }, sg.label), h('p', { class: 't31r3-sig-what' }, sg.what), pair(id, yaw))
+      say.say(`${sg.label}: ${sg.what} ${K.repos.map((x, j) => `${x.name}: ${values(j)[id]}`).join('. ')}.`)
+      const back = BACK.includes(id) && portrait
+      void k.fly(back ? [t[0], t[1] - 0.4, t[2]] : t, yaw, back ? pitch + 0.2 : pitch, 1.3)
       k.dolly(z)
       ctx.chime('tap')
       compared.add(id)
-      if (compared.size === 1) ctx.prompt(K.prompts[1])
-      else if (compared.size === 2 && !root.classList.contains('t31r3-ready')) root.classList.add('t31r3-ready'), ctx.prompt(K.prompts[2])
+      count.set(compared.size)
+      if (compared.size >= 2) open()
+      step()
     }
     K.signals.forEach((sg) => k.tappable(sigGroups[sg.id as Sig], fill(K.signalAria, { label: sg.label }), () => signal(sg)))
 
     let picked = false
     let blown = false
+    const timers: number[] = []
+    ctx.onCleanup(() => timers.forEach(clearTimeout))
     const blow = () => {
       if (blown) return
       blown = true
@@ -850,8 +940,13 @@ export function repoScene3d(ctx: SceneCtx) {
         return t < 1
       })
     }
+    /** a repo name with the letters that tell it apart (rn / m) inked in vermilion */
+    const marked = (name: string, part: string) => {
+      const a = name.indexOf(part)
+      return h('span', { class: 't31r3-nm' }, name.slice(0, a), h('b', null, part), name.slice(a + part.length))
+    }
     const pick = (j: number) => {
-      if (compared.size < 2) return ctx.prompt(K.readFirst, 'wrong')
+      if (!ready) return ctx.prompt(K.readFirst, 'wrong')
       const rp2 = K.repos[j]
       clear()
       const a = andon[j]
@@ -863,37 +958,61 @@ export function repoScene3d(ctx: SceneCtx) {
         if (rp2.trust) realPaper.uniforms.uGlow.value = 0.62 + 0.55 * t, inside.set(0.8 + 0.2 * t)
         return t < 1
       })
-      if (rp2.trust) void k.fly([-HX, 1.0, 0.9], 0.32, portrait ? 0.16 : 0.26, 1.3), k.dolly(0.8)
-      // the front lies on its back: look down on it from the island's middle, painted roof and shōji up, nothing behind
-      // it, the whole real house beside it for comparison (and the open water out of the frame)
-      else blow(), void k.fly([HX - 0.7, 0.15, -0.35], 1.0, portrait ? 0.76 : 0.8, 1.7), k.dolly(0.74)
-      cap.replaceChildren(h('p', { class: `t31r3-verdict${rp2.trust ? '' : ' bad'}` }, h('span', { class: 't31r3-seal', 'aria-hidden': 'true' }), rp2.trust ? K.right : K.wrong))
-      root.classList.add('t31r3-picked')
       say.say(rp2.trust ? K.right : K.wrong)
       ctx.chime(rp2.trust ? 'ok' : 'low')
-      // the insight comes with the real house, not with a wrong guess (the verdict says why it was wrong)
-      if (!rp2.trust) return ctx.prompt(K.prompts[2], 'wrong')
+      if (!rp2.trust) {
+        // the front goes over backward (nothing behind it); the camera comes to the two gate signs: rn is not m
+        blow()
+        // (a tall frame comes right up to the copy's sign)
+        if (portrait) void k.fly([HX + 0.6, 0.75, SZ + 0.1], -0.2, 0.0, 1.6), k.dolly(0.38)
+        else void k.fly([0, 0.95, SZ + 0.9], 0, 0.08, 1.6), k.dolly(0.66)
+        cap.replaceChildren(
+          h('p', { class: 't31r3-verdict bad' }, h('span', { class: 't31r3-seal', 'aria-hidden': 'true' }), K.wrong),
+          h('p', { class: 't31r3-cmp', 'aria-hidden': 'true' }, marked(K.repos[1].name, 'rn'), h('span', null, ' ≠ '), marked(K.repos[0].name, 'm')))
+        root.classList.add('t31r3-picked')
+        return ctx.prompt(K.prompts[2], 'wrong')
+      }
       if (picked) return
       picked = true
-      ctx.insight(K.insight as Fact, K.detail as Fact)
-      sheet.show()
+      lampDots.forEach((d) => d.remove())
+      root.classList.add('t31r3-picked', 't31r3-done')
+      void k.fly([-HX, 1.0, 0.9], 0.32, portrait ? 0.12 : 0.22, 1.3)
+      k.dolly(0.82)
+      cap.replaceChildren(h('p', { class: 't31r3-verdict' }, h('span', { class: 't31r3-seal', 'aria-hidden': 'true' }), K.right))
+      // one text at a time: the verdict, then the insight in its place
+      timers.push(window.setTimeout(() => {
+        cap.replaceChildren()
+        count.done()
+        ctx.insight(K.insight as Fact, K.detail as Fact)
+        sheet.show()
+      }, ctx.reduced ? 1200 : 2600))
     }
     k.root.updateMatrixWorld(true)
-    andon.forEach((a, j) => {
-      k.tappable(a.g, fill(K.pickAria, { name: K.repos[j].name }), () => pick(j))
-      k.label(a.g, h('p', { class: 't31r3-tag' }, K.pick), [0, 0.06, 0]) // a paper tag tied to the lantern's cap
-    })
-    // the lamps' tags and the names read only from the front: hide them once the walk goes round the side or back
-    let behind = false
+    andon.forEach((a, j) => k.tappable(a.g, fill(K.pickAria, { name: K.repos[j].name }), () => pick(j)))
+    // where the camera stands: round the side / back (the back signals' dots show, the front ones hide), and the first
+    // walk round retires the arrow
+    const dir = new THREE.Vector3()
+    let camYaw = 0, sawBackNow = false
     k.onFrame(() => {
-      const c = k.stage!.camera.position
+      const cam = k.stage!.camera
+      const c = cam.position
+      cam.getWorldDirection(dir)
+      camYaw = Math.atan2(-dir.x, -dir.z)
       const b = c.z < Math.abs(c.x) * 1.1
-      if (b !== behind) root.classList.toggle('t31r3-back', (behind = b))
+      if (b !== sawBackNow) {
+        root.classList.toggle('t31r3-back', (sawBackNow = b))
+        if (b && !sawBack) (sawBack = true), open()
+      }
+      if (!walked && Math.abs(camYaw) > 0.35) (walked = true), arrow.done(), step()
     })
-    // the labels below measure the houses' boxes: their parents' world matrices must be current first
-    k.root.updateMatrixWorld(true)
-    // names may break after the slash on a narrow screen
-    k.label(roof0, h('p', { class: 't31r3-name' }, K.repos[0].name.replace('/', '/\u200b')), [0, 0.22, 0])
-    k.label(roof1, h('p', { class: 't31r3-name' }, K.repos[1].name.replace('/', '/\u200b')), [0, 0.22, 0])
-  })
+    // H7: standing still 6 s, the camera glides 10° round and back (the way to drag)
+    const idle = () => {
+      if (ctx.reduced || picked || walked || !k.stage) return
+      const y0 = camYaw
+      k.turn(y0 - 0.17)
+      timers.push(window.setTimeout(() => k.turn(y0), 1100))
+    }
+    ctx.el.addEventListener('p2:idle', idle)
+    ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', idle))
+  }).ready.then((kit) => kit || marks.forEach((m) => m.done()))
 }

@@ -1,0 +1,60 @@
+/* ── Scene 4: two houses ── */
+.t31r { justify-content: safe center; gap: 8px; padding: 8px 12px 52px; }
+.t31r-mock { margin: 0; }
+.t31r-row { display: flex; justify-content: center; gap: clamp(10px, 6vw, 80px); width: 100%; max-width: 900px; }
+.t31r-house {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: min(47%, 400px);
+  padding: 4px 6px 8px;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  transition: border-color 0.4s var(--ease), background 0.4s var(--ease);
+}
+.t31r-art { width: 100%; max-height: min(38vh, 320px); overflow: visible; }
+.t31r-wall { fill: color-mix(in srgb, var(--card) 70%, var(--rock-hi)); }
+:root[data-theme='dark'] .t31r-wall { fill: color-mix(in srgb, var(--rock-lo) 80%, var(--paper)); }
+.t31r-plank { opacity: 0.22; }
+.t31r-paper { fill: color-mix(in srgb, var(--card) 80%, var(--stone-2)); }
+:root[data-theme='dark'] .t31r-paper { fill: color-mix(in srgb, var(--stone-2) 70%, var(--paper)); }
+.t31r-paper.lit { fill: color-mix(in srgb, var(--lantern) 70%, var(--moon)); }
+.t31r-lattice { opacity: 0.6; }
+.t31r-jamb { opacity: 0.75; }
+.t31r-inside { fill: var(--lantern); opacity: 0.85; }
+.t31r-spill { fill: url(#p2-lamp); }
+.t31r-shut { fill: color-mix(in srgb, var(--rock-lo) 60%, #5b4330); }
+:root[data-theme='dark'] .t31r-shut { fill: color-mix(in srgb, var(--rock-lo) 70%, #3b2c22); }
+.t31r-board { fill: color-mix(in srgb, var(--rock-lo) 50%, #8a6a48); stroke: var(--wash); stroke-width: 0.8; stroke-opacity: 0.6; }
+.t31r-note { fill: var(--card); opacity: 0.9; }
+.t31r-carve { opacity: 0.7; }
+.t31r-post { opacity: 0.85; }
+.t31r-roof { fill: color-mix(in srgb, var(--wash) 85%, var(--moss-b)); opacity: 0.62; }
+:root[data-theme='dark'] .t31r-roof { opacity: 0.95; }
+.t31r-tiles { fill: var(--moon); opacity: 0.2; }
+:root[data-theme='light'] .t31r-tiles { fill: #fff; opacity: 0.42; }
+.t31r-ridge { opacity: 0.85; }
+.t31r-foot { stroke: var(--wash); stroke-width: 0.6; stroke-opacity: 0.5; }
+.t31r-broom { opacity: 0.7; }
+.t31r-web { fill: none; stroke: var(--ink); stroke-width: 0.5; opacity: 0.45; }
+:root[data-theme='dark'] .t31r-web { stroke: var(--moon); opacity: 0.4; }
+.t31r-leaf { fill: color-mix(in srgb, var(--vermilion) 35%, var(--moss-b)); opacity: 0.6; }
+.t31r-cold .p2p-lamp-halo { opacity: 0; }
+.t31r-cold .p2p-lamp-body { fill: var(--stone-2); }
+.t31r-name { margin: 0; font: 500 clamp(0.82rem, 2.4vw, 1rem) / 1.2 var(--sans); letter-spacing: 0.01em; overflow-wrap: anywhere; text-align: center; }
+.t31r-val { margin: 0; min-height: 2.6em; font: 400 italic 0.85rem/1.3 var(--serif); color: var(--ink-2); text-align: center; }
+.t31r-pick { padding: 7px 14px; min-height: 36px; font-size: 0.82rem; }
+/* the choice waits until two signals have been compared */
+.t31r:not(.t31r-ready) .t31r-pick { visibility: hidden; }
+.t31r-house.picked { background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 16%, transparent), transparent); }
+.t31r-house.picked .t31r-pick { background: var(--ink); color: var(--paper); }
+.t31r-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 560px; }
+.t31r-chip { padding: 6px 12px; min-height: 34px; font-size: 0.8rem; }
+.t31r-panel { max-width: 34rem; min-height: 2.8em; margin: 0 16px; text-align: center; font: 400 0.9rem/1.45 var(--serif); color: var(--ink-2); }
+.t31r-panel p { margin: 0; }
+.t31r-say { font-size: 0.9rem; }
+@media (max-width: 640px) {
+  .t31r { gap: 4px; }
+  .t31r-chip { padding: 5px 10px; min-height: 32px; }
+}

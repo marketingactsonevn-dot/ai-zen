@@ -28,6 +28,8 @@
 .t33h-item.t33h-b0,
 .t33h-item.t33h-b4 { backface-visibility: visible; }
 .t33h-art { display: block; overflow: visible; }
+/* the raked sand stays on its plinth */
+.t33h-sand .t33h-art { overflow: hidden; }
 /* moon shading per face (--sh is written once per settle) and a moon rim on the faces turned to it */
 .t33h-f.sq::after {
   content: '';
@@ -43,8 +45,8 @@
 .t33h-keeper::after,
 .t33h-rock::after,
 .t33h-pine::after,
-.t33h-mistbed::after,
 .t33h-threadp::after { display: none; }
+.t33h-rafters { backface-visibility: visible; }
 
 /* materials */
 .t33h-sandf { fill: var(--t33-sand); }
@@ -158,31 +160,57 @@
 :root[data-theme='dark'] .t33h-f.sq::after { opacity: calc(var(--sh, 0) * 0.72); }
 :root[data-theme='dark'] .t33h-moonlit { opacity: 0.75; }
 
-/* plinth sides, the mist bed under it */
-.t33h-mistbed { background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) calc(var(--mist-a) * 100%), transparent), transparent); opacity: 0.9; }
-:root[data-theme='dark'] .t33h-mistbed { background: radial-gradient(closest-side, color-mix(in srgb, var(--mist) 30%, transparent), transparent); }
+/* the garden floor: painted to the horizon, and a raked bed in the model under the plinth that melts into it */
+.t33h-groundp { fill: color-mix(in srgb, var(--t33-sand) 86%, var(--wash)); }
+:root[data-theme='dark'] .t33h-groundp { fill: color-mix(in srgb, var(--t33-sand) 70%, var(--umbra)); }
+.t33h-grake { fill: var(--rake); opacity: 0.6; }
+:root[data-theme='light'] .t33h-grake { opacity: 0.35; }
+.t33h-toropool { fill: url(#t33-warm); opacity: 0.7; }
+.t33h-torocast { fill: var(--umbra); opacity: 0.45; }
+.t33h-pathst { fill: url(#p2-rock); }
+/* the insight's corner stays clear of the roof's far end */
+.t33h ~ .scene-zone { width: min(22rem, 28%); }
+.t33h-groundbed {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--B) * 0.07), color-mix(in srgb, var(--rake) 80%, transparent) calc(var(--B) * 0.07) calc(var(--B) * 0.07 + 1.3px)),
+    color-mix(in srgb, var(--t33-sand) 86%, var(--wash));
+  -webkit-mask-image: radial-gradient(closest-side, #000 52%, transparent);
+  mask-image: radial-gradient(closest-side, #000 52%, transparent);
+}
+:root[data-theme='dark'] .t33h-groundbed {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 calc(var(--B) * 0.07), color-mix(in srgb, var(--rake) 80%, transparent) calc(var(--B) * 0.07) calc(var(--B) * 0.07 + 1.3px)),
+    color-mix(in srgb, var(--t33-sand) 70%, var(--umbra));
+}
+/* the plinth's contact shadow on the floor, thrown a little away from the moon */
+.t33h-contactbed { background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 55%, transparent) 70%, transparent); }
 .t33h-night { z-index: 0; }
 .t33h-fog { z-index: 2; }
 :root[data-theme='light'] .t33h-fog { opacity: 0.55; }
 
-/* the bay's name on a paper tag hanging under its lantern */
-.t33h-tagp { display: grid; place-items: start center; }
-.t33h-tagp::after { display: none; }
-.t33h-tag {
-  margin-top: 2px;
-  padding: max(2px, calc(var(--B) * 0.02)) max(5px, calc(var(--B) * 0.05));
-  border-radius: 1px 2px 2px 1px;
-  font: 500 max(11px, calc(var(--B) * 0.105)) / 1.15 var(--serif);
-  color: #1a2240;
-  max-width: calc(var(--B) * 0.94);
-  text-align: center;
-  background: var(--t33-fibre), linear-gradient(175deg, #fbf6ea, #ece2cc);
-  box-shadow: 0 3px 6px -3px color-mix(in srgb, #000 60%, transparent), inset 0 0 0 1px color-mix(in srgb, #1a2240 10%, transparent);
-  position: relative;
+/* each bay's name carved in a dark board under the front beam (hengaku): the cut letters catch the moon */
+.t33h-boardp { display: grid; }
+.t33h-boardp::after { display: none; }
+.t33h-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  border-radius: 1px 1px 3px 3px;
+  background: var(--t33-grain), linear-gradient(180deg, color-mix(in srgb, var(--t33-wood) 75%, #000), color-mix(in srgb, var(--t33-wood-lo) 85%, #000));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--moon) 35%, transparent), inset 0 -2px 3px -1px #000, 0 4px 7px -4px #000;
+  color: #efe3c4;
+  font: 600 max(9px, calc(var(--B) * 0.092)) / 1.05 var(--serif);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 236, 196, 0.18);
 }
-.t33h-tag::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1px; height: calc(var(--B) * 0.08); background: color-mix(in srgb, var(--ink) 50%, transparent); }
-.t33h-frontcord { background: color-mix(in srgb, var(--wash) 70%, var(--t33-wood-lo)); }
-.t33h-frontcord::after { display: none; }
+.t33h-board small { font: italic 400 max(8px, calc(var(--B) * 0.066)) / 1.05 var(--serif); opacity: 0.78; }
+.t33h-fbeam::after { opacity: calc(var(--sh, 0) * 0.6) !important; }
+/* the groove the message will run in: faint gold dots on the floor from the start */
+.t33h-groove { fill: none; stroke: var(--lantern); stroke-width: max(1.6px, calc(var(--B) * 0.014)); stroke-linecap: round; stroke-dasharray: 0.1px calc(var(--B) * 0.07); opacity: 0.4; }
+.t33h.all .t33h-groove { opacity: 0; transition: opacity 1s; }
 /* the roof in section: straw layers, the near thatch's top, the ridge sticks, the eave's shadow on the back wall */
 .t33h-layer { fill: var(--wash); opacity: 0.22; }
 .t33h-cutface { fill: color-mix(in srgb, #c9a96a 62%, var(--rock-mid)); }
@@ -256,25 +284,27 @@
 .t33h.moth2 .t33h-moth { transform: var(--m2); opacity: 1; }
 .t33h-moth .t33h-art { width: 100%; height: 100%; }
 
-/* the reading slip: left of the model on wide screens, under it on phones */
+/* the bay's line: one line on the ground under the house's front, centred on it */
 .t33h-foot {
   position: absolute;
-  left: max(16px, 4%);
-  top: 34%;
+  left: var(--camx, 50%);
+  top: var(--foot, 80%);
   z-index: 3;
-  width: min(30%, 22rem);
+  width: min(92%, 60rem);
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
   pointer-events: none;
 }
 .t33h-foot > * { pointer-events: auto; }
-.t33h-read { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-.t33h-slip { text-align: left; animation: p2-rise 0.6s var(--ease) both; }
-.t33h-name { font: 500 clamp(1.05rem, 1.5vw, 1.25rem) / 1.3 var(--serif); }
-.t33h-name span { font-weight: 400; color: var(--ink-2); }
-.t33h-what { margin-top: 4px !important; font: 400 clamp(0.95rem, 1.2vw, 1.05rem) / 1.5 var(--serif); color: var(--ink-2); }
+.t33h-read { display: flex; flex-direction: column; align-items: center; }
+.t33h-slip { margin: 0; text-align: center; font: 400 clamp(0.95rem, 1.2vw, 1.06rem) / 1.5 var(--serif); animation: p2-rise 0.6s var(--ease) both; }
+.t33h-name { font-weight: 600; }
+.t33h-what { color: var(--ink-2); }
+.t33h-slip .t33h-link { display: inline-block; margin-left: 10px; vertical-align: 0.05em; }
 /* "Revisit station n": a small flat stone with the words carved in */
 .t33h-link {
   padding: 5px 14px 6px;
@@ -295,8 +325,8 @@
 .t33h.low .t33h-thread { filter: none; }
 .t33h.low .t33h-moth { display: none; }
 @media (max-width: 640px) {
-  .t33h-foot { left: 50%; top: auto; bottom: 8px; width: min(92%, 30rem); transform: translateX(-50%); align-items: center; }
-  .t33h-read { align-items: center; }
-  .t33h-slip, .t33h-note { text-align: center; }
-  .t33h-what { font-size: 0.9rem; }
+  .t33h-foot { width: 92%; }
+  .t33h-slip { font-size: 0.92rem; }
+  .t33h-note { text-align: center; font-size: 0.86rem; }
+  .t33h-board small { display: none; }
 }

@@ -36,8 +36,10 @@ export function scrollScene(ctx: SceneCtx) {
         s('circle', { cx: 12, cy: 16, r: 1.4 }),
         s('path', { class: 't32x-cross', d: 'M4 1L20 17', fill: 'none' })),
       K.offline))
+  // the teacher's note in the margin: where to type the line (then, once the back door is touched, what the door is for)
+  const margin = h('p', { class: 't32x-margin' }, K.typeHere)
   const sheetIn = h('div', { class: 't32x-sheet' },
-    h('p', { class: 't32x-margin' }, K.typeHere),
+    margin,
     h('p', { class: 't32x-cmd' }, h('code', null, `${K.cmd} `), blank),
     chat)
   // the mounting: silk frame (chūmawashi) round the paper, gold bands (ichimonji) above and below it, the lower silk (chi)
@@ -52,13 +54,12 @@ export function scrollScene(ctx: SceneCtx) {
   const models = K.models.map((m) => h('button', { class: 't32x-model', type: 'button', 'aria-label': fill(K.modelAria, m) }, h('code', null, m.name), h('small', null, m.size)))
   const tray = h('div', { class: 't32x-tray' }, ...models)
   const door = h('button', { class: 't32x-door', type: 'button', 'aria-label': K.doorAria, 'aria-expanded': 'false' }, h('code', null, K.door))
-  const doorNote = h('p', { class: 't32-paper t32x-note', hidden: true }, K.doorNote)
   const fold = h('div', { class: 't32x-fold' })
   const root = h('div', { class: `t32 t32x${still ? ' still' : ''}`, role: 'group', 'aria-label': K.aria },
     cv,
     h('div', { class: 't32-mist', 'aria-hidden': 'true' }),
     h('p', { class: 'visually-hidden' }, K.art),
-    flame, hang, door, doorNote, tray, fold)
+    flame, hang, door, tray, fold)
   ctx.art.append(root)
   ctx.prompt(K.prompt)
   // guide: a dot on the first slip leaning toward the blank, the blank a dashed place to drop (H1, H3); then the back door
@@ -92,9 +93,12 @@ export function scrollScene(ctx: SceneCtx) {
     ctx.onCleanup(() => clearTimeout(id))
   }
   door.addEventListener('click', () => {
-    const open = doorNote.hidden
-    doorNote.hidden = !open
+    const open = door.getAttribute('aria-expanded') !== 'true'
+    margin.textContent = open ? K.doorNote : K.typeHere
+    margin.classList.toggle('door', open)
+    if (!margin.hasAttribute('aria-live')) margin.setAttribute('aria-live', 'polite')
     door.setAttribute('aria-expanded', String(open))
+    root.classList.toggle('door-open', open)
     if (open) dot?.done(), (dot = null), ctx.chime('tap')
   })
 
@@ -165,6 +169,30 @@ export function scrollScene(ctx: SceneCtx) {
       const x = r() * W, y = r() * floorY, l = 40 + r() * 140
       c.fill(brush([[x, y], [x + l * 0.5, y - 2 + r() * 4], [x + l, y + (r() - 0.5) * 3]], 6 + r() * 10, 0.4, 0.4, 0.05))
     }
+    // old plaster: broad mottled patches, a few darker stains low down where the damp rises, hairline cracks
+    for (let i = 0; i < 14; i++) {
+      const x = r() * W, y = r() * floorY, rr = H * (0.06 + r() * 0.12)
+      const m = c.createRadialGradient(x, y, 0, x, y, rr)
+      const dark = i % 3 !== 0
+      m.addColorStop(0, rgba(dark ? P.umbra : P.moon, dark ? (P.dark ? 0.16 : 0.06) : (P.dark ? 0.04 : 0.1)))
+      m.addColorStop(1, rgba(dark ? P.umbra : P.moon, 0))
+      c.fillStyle = m
+      c.fillRect(x - rr, y - rr, rr * 2, rr * 2)
+    }
+    const damp = c.createLinearGradient(0, floorY - H * 0.12, 0, floorY)
+    damp.addColorStop(0, rgba(P.umbra, 0))
+    damp.addColorStop(1, rgba(P.umbra, P.dark ? 0.3 : 0.1))
+    c.fillStyle = damp
+    c.fillRect(0, floorY - H * 0.12, W, H * 0.12)
+    c.strokeStyle = rgba(P.dark ? P.umbra : P.ink, P.dark ? 0.4 : 0.18)
+    c.lineWidth = 0.8
+    c.beginPath()
+    for (let i = 0; i < 5; i++) {
+      let x = r() * W, y = r() * floorY * 0.8
+      c.moveTo(x, y)
+      for (let k = 0; k < 6; k++) c.lineTo((x += (r() - 0.3) * 14), (y += 6 + r() * 10))
+    }
+    c.stroke()
     grainOver(c, W, H, P.dark ? 0.5 : 0.4)
     yield
     // the rolled top's soft shadow on the plaster just above it (the open scroll's shadow is the hang's own drop shadow)
@@ -303,32 +331,43 @@ export function scrollScene(ctx: SceneCtx) {
       c.fill()
     }
     yield
-    // the lamp: a tall wooden stand (tōdai) on the floor board, a clay dish of oil on top; its flame is DOM (it leans)
-    const lx = lamp[0], base = floorY + bh * 0.42, dy = lamp[1]
+    // the lamp: a short turned stand (tōdai) on a round foot on the floor board, a clay dish of oil on its tray; its flame
+    // is DOM (it leans). Its light climbs the plaster: the fan painted above.
+    const lx = lamp[0], base = floorY + bh * 0.45, dy = lamp[1]
+    const sc = tall ? 0.7 : 1
     c.fillStyle = rgba(P.umbra, P.dark ? 0.55 : 0.3)
-    c.beginPath(); c.ellipse(lx + 6, base + 2, W * 0.03 + 12, bh * 0.14, 0, 0, Math.PI * 2); c.fill()
-    const stand = c.createLinearGradient(lx - 6, 0, lx + 6, 0)
-    stand.addColorStop(0, rgba(mix(wood, P.umbra, 0.3)))
-    stand.addColorStop(0.6, rgba(mix(wood, P.lantern, 0.35)))
-    stand.addColorStop(1, rgba(mix(wood, P.umbra, 0.2)))
-    c.fillStyle = rgba(mix(wood, P.umbra, 0.15))
-    c.beginPath(); c.ellipse(lx, base, 22, 6, 0, 0, Math.PI * 2); c.fill()
+    c.beginPath(); c.ellipse(lx + 10 * sc, base + 2, 34 * sc, bh * 0.16, 0, 0, Math.PI * 2); c.fill()
+    const stand = c.createLinearGradient(lx - 8 * sc, 0, lx + 8 * sc, 0)
+    stand.addColorStop(0, rgba(mix(wood, P.lantern, 0.4)))
+    stand.addColorStop(0.45, rgba(mix(wood, P.lantern, 0.2)))
+    stand.addColorStop(1, rgba(mix(wood, P.umbra, 0.4)))
+    // the foot: a low drum
+    c.fillStyle = rgba(mix(wood, P.umbra, 0.35))
+    c.beginPath(); c.ellipse(lx, base, 26 * sc, 7 * sc, 0, 0, Math.PI); c.lineTo(lx - 26 * sc, base - 7 * sc); c.ellipse(lx, base - 7 * sc, 26 * sc, 7 * sc, 0, Math.PI, 0, true); c.closePath(); c.fill()
+    c.fillStyle = rgba(mix(wood, P.lantern, 0.3))
+    c.beginPath(); c.ellipse(lx, base - 7 * sc, 26 * sc, 7 * sc, 0, 0, Math.PI * 2); c.fill()
+    // the post, swelling at a turned ring halfway
     c.fillStyle = stand
-    c.fillRect(lx - 3.5, dy + 10, 7, base - dy - 10)
-    c.fillStyle = rgba(mix(wood, P.lantern, 0.2))
-    c.fillRect(lx - 14, dy + 8, 28, 4)
-    const dish = c.createLinearGradient(lx - 22, 0, lx + 22, 0)
+    c.fillRect(lx - 5 * sc, dy + 12 * sc, 10 * sc, base - 7 * sc - dy - 12 * sc)
+    c.beginPath(); c.ellipse(lx, (dy + base) / 2, 8 * sc, 4 * sc, 0, 0, Math.PI * 2); c.fill()
+    // the tray under the dish, its rim catching the flame
+    c.fillStyle = rgba(mix(wood, P.umbra, 0.25))
+    c.beginPath(); c.ellipse(lx, dy + 11 * sc, 22 * sc, 5 * sc, 0, 0, Math.PI * 2); c.fill()
+    c.strokeStyle = rgba(P.lantern, 0.8)
+    c.lineWidth = 1.2
+    c.beginPath(); c.ellipse(lx, dy + 10 * sc, 22 * sc, 5 * sc, 0, Math.PI * 1.05, Math.PI * 1.95); c.stroke()
+    const dish = c.createLinearGradient(lx - 22 * sc, 0, lx + 22 * sc, 0)
     dish.addColorStop(0, rgba(mix(P['rock-lo'], P.umbra, 0.4)))
     dish.addColorStop(0.5, rgba(mix(P['rock-mid'], P.lantern, 0.45)))
     dish.addColorStop(1, rgba(mix(P['rock-lo'], P.umbra, 0.3)))
     c.fillStyle = dish
     c.beginPath()
-    c.moveTo(lx - 20, dy)
-    c.quadraticCurveTo(lx, dy + 14, lx + 20, dy)
+    c.moveTo(lx - 18 * sc, dy)
+    c.quadraticCurveTo(lx, dy + 16 * sc, lx + 18 * sc, dy)
     c.closePath()
     c.fill()
     c.fillStyle = rgba(mix(P.lantern, P.umbra, 0.3))
-    c.beginPath(); c.ellipse(lx, dy, 20, 3.5, 0, 0, Math.PI * 2); c.fill()
+    c.beginPath(); c.ellipse(lx, dy, 18 * sc, 3.5 * sc, 0, 0, Math.PI * 2); c.fill()
   }
 
   let job: { cancel(): void } | null = null
@@ -348,22 +387,26 @@ export function scrollScene(ctx: SceneCtx) {
     const tenH = H * (tall ? 0.05 : 0.065)
     const top = H * 0.1 + tenH
     // the paper about 60 % of the height, hung open from the start
-    const full = H * (tall ? 0.5 : 0.6)
+    const full = H * (tall ? 0.46 : 0.6)
     Object.assign(hang.style, { left: `${sx}px`, top: `${top}px`, width: `${sw}px` })
     hang.style.setProperty('--ten', `${tenH.toFixed(1)}px`)
     paper.style.height = `${full}px`
     rod.style.transform = `translateY(${full.toFixed(1)}px)`
     const floorY = H * (tall ? 0.76 : 0.82)
     // the lamp stands on the floor board left of the scroll (a phone: a low one under its corner)
-    lamp = [tall ? W * 0.11 : sx - W * 0.09, floorY - H * (tall ? 0.04 : 0.22)]
+    lamp = [tall ? W * 0.1 : sx - W * 0.1, floorY - H * (tall ? 0.07 : 0.12)]
     Object.assign(flame.style, { left: `${lamp[0]}px`, top: `${lamp[1] + 1}px` })
-    // the name slips lie on the floor board right of the scroll (a phone: under it); the back door is in the side wall
-    const below = top + full + 40 // a phone: the row under the scroll (slips left, the door right; the card once done)
-    Object.assign(tray.style, tall ? { left: '12px', right: '72px', top: `${below}px`, width: 'auto' } : { left: `${sx + sw + 28}px`, right: 'auto', top: `${floorY - H * 0.2}px`, width: `${Math.min(200, W - sx - sw - 60)}px` })
-    Object.assign(door.style, tall ? { left: 'auto', right: '12px', top: `${below - 14}px` } : { left: `${W * 0.875}px`, right: 'auto', top: `${floorY - H * 0.36}px` })
-    Object.assign(doorNote.style, tall ? { left: '12px', right: '12px', top: `${top + full - 64}px`, width: 'auto' } : { left: `${sx + sw + 28}px`, right: 'auto', top: `${top + 4}px`, width: `${Math.min(220, W - sx - sw - 60)}px` })
-    // the take-away slip lies on the floor board at the right, away from the insight (a phone: where the slips were)
-    Object.assign(fold.style, tall ? { left: '12px', right: 'auto', top: `${below}px` } : { left: 'auto', right: `${W * 0.04}px`, top: `${floorY + H * 0.012}px` })
+    // the name slips lie on the floor board under the scroll, in reach of the blank (a phone: right of the lamp)
+    const bh = H * 0.065
+    Object.assign(tray.style, tall
+      ? { left: `${W * 0.2}px`, right: '8px', top: `${floorY + bh * 0.5 - 24}px`, width: 'auto' }
+      : { left: `${sx + sw / 2 - 160}px`, right: 'auto', top: `${floorY + bh * 0.5 - 26}px`, width: '320px' })
+    // the back door stands on the floor: in the side wall (wide), a low hatch under the scroll's right corner (a phone)
+    Object.assign(door.style, tall
+      ? { left: 'auto', right: '10px', top: `${floorY - 50}px`, height: '48px', width: '' }
+      : { left: `${W * 0.885}px`, right: 'auto', top: `${floorY - H * 0.4}px`, height: `${H * 0.4 + bh * 0.3}px`, width: `${Math.max(48, W * 0.05)}px` })
+    // the take-away slip lies on the floor board where the name slips were
+    Object.assign(fold.style, { left: `${tall ? W * 0.22 : W * 0.6}px`, right: 'auto', top: `${floorY + bh * 0.5 - 22}px` })
     const c = fit(cv, W, H, ctx.quality === 'low')
     job?.cancel()
     job = sliced(paint(c, sx, sw, top), { sync: ctx.reduced || painted })

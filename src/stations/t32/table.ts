@@ -6,6 +6,7 @@ import { sliced } from '../../core/chunk'
 import { onPrefs } from '../../core/prefs'
 import { blob, curve, rng, type Pt } from '../../ui/part2/ink'
 import type { SceneCtx } from '../types'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { brush, camera, cardSheet, clamp, ease, easeOut, fit, fitCamera, flatEllipse, flatSprite, grainOver, live, mix, palette, poly, polyClip, rgba, softPool, stageSize, type Cam, type Pal, type RGB, type V3 } from './kit'
 
 const K = raw.scenes.table
@@ -25,7 +26,7 @@ function room(tall: boolean) {
   // a tea room: the round window sits low (people sit on the floor), the table close under it, the camera close in
   return tall
     ? { tall, tl: 0.8, wallZ: -1.75, TY: 0.36, zB: -1.3, zF: -0.78, xR: 0.74, win: { x: -0.1, y: 1.1, r: 0.54 }, shelf: { x0: -1.0, x1: 0.98, y: 1.98, d: 0.24 }, lamp: { x: 0.66, z: -1.56 }, press: { x: 0.66, z: 0.06 }, rule: { x0: -1.02, x1: 0.98, y0: 2.2, y1: 2.62 }, yaw: 4, pitch: 25, fov: 46 }
-    : { tall, tl: 1.25, wallZ: -1.75, TY: 0.36, zB: -1.38, zF: -0.74, xR: 1.05, win: { x: -0.5, y: 1.04, r: 0.62 }, shelf: { x0: -2.15, x1: -1.2, y: 1.38, d: 0.22 }, lamp: { x: 0.86, z: -1.56 }, press: { x: 1.54, z: -1.02 }, rule: { x0: 0.38, x1: 1.34, y0: 1.06, y1: 1.56 }, yaw: 9, pitch: 18, fov: 34 }
+    : { tall, tl: 1.25, wallZ: -1.75, TY: 0.36, zB: -1.38, zF: -0.74, xR: 1.05, win: { x: -0.5, y: 1.04, r: 0.62 }, shelf: { x0: -2.3, x1: -1.28, y: 1.02, d: 0.22 }, lamp: { x: 0.86, z: -1.56 }, press: { x: 1.54, z: -1.02 }, rule: { x0: 0.38, x1: 1.34, y0: 1.06, y1: 1.56 }, yaw: 9, pitch: 18, fov: 34 }
 }
 type Room = ReturnType<typeof room>
 
@@ -180,13 +181,17 @@ export function tableScene(ctx: SceneCtx) {
   const ramText = h('span', { class: 't32t-ramn' })
   const ramEl = h('div', { class: 't32t-ram', role: 'slider', tabindex: '0', 'aria-label': K.ramLabel, 'aria-valuemin': '0', 'aria-valuemax': String(RAMS.length - 1) },
     ramText)
+  // the table's own words, burnt into its front apron: its length is your RAM
+  const apron = h('p', { class: 't32t-apron' }, K.ramLabel)
+  // the RAM notches cut into the mat's edge right under the table's front, where its end plank comes to: 8 · 16 · 32 · 64
+  const notches = RAMS.map((r) => h('span', { class: 't32t-notch', 'aria-hidden': 'true' }, String(r)))
   const pressText = h('span', { class: 't32t-pressn' })
   const pressEl = h('button', { class: 't32t-press', type: 'button', 'aria-pressed': 'true', 'aria-label': K.pressAria }, h('span', { class: 't32-wood' }, pressText))
   const root = h('div', { class: 't32 t32t', role: 'group', 'aria-label': K.aria },
     roomCv, liveCv, airCv,
     h('div', { class: 't32-mist', 'aria-hidden': 'true' }),
     h('p', { class: 'visually-hidden' }, K.art),
-    rule, shelfEl, ramEl, pressEl, str, tag)
+    rule, shelfEl, apron, ...notches, ramEl, pressEl, str, tag)
   ctx.art.append(root)
   const sheet = cardSheet(root, K.takeaway, ctx.onCleanup)
 
@@ -416,6 +421,10 @@ export function tableScene(ctx: SceneCtx) {
       cam.p(xb, 0, zz); c.lineTo(cam.o[0], cam.o[1])
     }
     c.stroke()
+    // a cloth border (heri) crossing the mats right under the table's front: the RAM notches are cut into it
+    polyClip(c, cam, [[xa, 0.001, R.zF - 0.015], [xb, 0.001, R.zF - 0.015], [xb, 0.001, R.zF + 0.07], [xa, 0.001, R.zF + 0.07]])
+    c.fillStyle = rgba(P.dark ? P.wash : mix(P.ink, P.wash, 0.4), P.dark ? 0.9 : 0.55)
+    c.fill()
     // the near floor sinks into the dark; a soft seam where it meets the walls
     cam.p(0, 0, R.zF + 0.3)
     const near = c.createLinearGradient(0, cam.o[1], 0, H)
@@ -1155,7 +1164,7 @@ export function tableScene(ctx: SceneCtx) {
     placed++
     rule.hidden = false
     // the steps: a bundle on the table → the table's end board (your RAM) → the press (the original's weight)
-    if (placed === 1 && step === 0) (step = 1), ctx.prompt(K.prompts[1])
+    if (placed === 1 && step === 0) (step = 1), ctx.prompt(K.prompts[1]), point(ramEl, [-1, 0])
     if (placed >= 3) {
       sheet.show()
       tell('fit')
@@ -1202,7 +1211,8 @@ export function tableScene(ctx: SceneCtx) {
       if (tLen === 1) lenNow = lenTo
       if (changed) settle(false)
     }
-    if (changed && step === 1) (step = 2), ctx.prompt(K.prompts[2])
+    notches.forEach((n, i) => n.classList.toggle('on', RAMS[i] <= ram))
+    if (changed && step === 1) (step = 2), ctx.prompt(K.prompts[2]), point(pressEl, [0, 1])
     run()
   }
   function setBits(on: boolean) {
@@ -1224,6 +1234,7 @@ export function tableScene(ctx: SceneCtx) {
     }
     ctx.chime('soft')
     tell('press')
+    if (step === 2) step = 3, point(null)
     run()
   }
   /** two lessons, each once, after its evidence: three bundles placed → the half-the-table rule; the press → compression */
@@ -1231,6 +1242,7 @@ export function tableScene(ctx: SceneCtx) {
     if (told.has(what)) return
     told.add(what)
     ctx.insight((what === 'fit' ? K.insightFit : K.insightPress) as Fact, K.detail)
+    root.classList.add('told') // one block of words: the rule board's text fades (the insight says it)
   }
   function labelModels() {
     K.models.forEach((m, k) => {
@@ -1362,12 +1374,15 @@ export function tableScene(ctx: SceneCtx) {
     // the state tag is tied to the bundle's front cord and hangs over the table's edge
     if (sel >= 0 && !tag.hidden) {
       const [a, b] = tablePose(lenNow)
-      cam.p(clamp(a + (b - a) / 3, xL() + 0.25, xTea() - 0.1), R.TY - 0.01, R.zF + 0.01)
+      cam.p(clamp(a + (b - a) * (tall ? 0.6 : 0.72), xL() + 0.25, xTea() - 0.12), R.TY - 0.01, R.zF + 0.01)
       tag.style.transform = str.style.transform = `translate(${px(cam.o[0])}, ${px(cam.o[1])})`
     }
     // the size burnt into the end plank's front face
     cam.p(xL() + 0.08, R.TY - 0.023, R.zF)
     ramEl.style.transform = `translate(${px(Math.max(cam.o[0], 40))}, ${px(cam.o[1])})`
+    // the apron's words, centred on the front of the table under the free top
+    cam.p((xL() + xTea()) / 2, R.TY - 0.04, R.zF)
+    apron.style.transform = `translate(${px(cam.o[0])}, ${px(cam.o[1])})`
   }
   function layoutDom() {
     const slot = (R.shelf.x1 - R.shelf.x0) / K.models.length
@@ -1389,6 +1404,14 @@ export function tableScene(ctx: SceneCtx) {
     const rx = cam.o[0], ry = cam.o[1]
     cam.p(x1, y0, R.wallZ)
     Object.assign(rule.style, { left: px(rx), top: px(ry), width: px(cam.o[0] - rx) })
+    cam.p(x0, R.tall ? 2.62 : 1.9, R.wallZ)
+    rule.style.setProperty('--cord', px(clamp(ry - cam.o[1], 8, 22))) // two short cords to their nails
+    // the notches on the mat under the table's front edge (only those inside the frame)
+    RAMS.forEach((r, i) => {
+      cam.p(R.xR - LEN(r) * R.tl + 0.03, 0.002, R.zF - 0.01)
+      notches[i].hidden = cam.o[0] < 14 || cam.o[0] > W - 14
+      notches[i].style.transform = `translate(${px(cam.o[0])}, ${px(cam.o[1])})`
+    })
     root.classList.toggle('tall', tall)
     place2dom()
   }
@@ -1426,6 +1449,7 @@ export function tableScene(ctx: SceneCtx) {
     bake = sliced(job, { sync: ctx.reduced || painted })
     painted = true
     layoutDom()
+    g.refresh()
     drawLive()
     if (airOn) loop.start() // the motes drift for a while, then everything rests
   }
@@ -1448,7 +1472,25 @@ export function tableScene(ctx: SceneCtx) {
     drawLive()
   }))
 
+  // ── guidance: one dot at a time (the 8B bundle → the end plank → the press), the plank easing out when the room waits ──
+  const g = guide(ctx)
+  let dot: Mark | null = null
+  function point(el: HTMLElement | null, dir: [number, number] = [0, 1]) {
+    dot?.done()
+    dot = el ? g.dot(el, { dir }) : null
+  }
+  const onIdle = () => {
+    if (step !== 1 || still || fly) return
+    const L0 = LEN(ram) * R.tl
+    Lfrom = Lnow, Lto = L0 + 0.08, tL = 0
+    run()
+    const id = setTimeout(() => ((Lfrom = Lnow), (Lto = L0), (tL = 0), run()), 650)
+    ctx.onCleanup(() => clearTimeout(id))
+  }
+  ctx.el.addEventListener('p2:idle', onIdle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
   setRam(RAMS.indexOf(16), false)
   pressText.textContent = K.bits[q4 ? 1 : 0].label
+  point(models[1], [1, 0.4])
   ctx.prompt(K.prompt)
 }

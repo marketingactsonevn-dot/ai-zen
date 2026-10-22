@@ -53,11 +53,11 @@ function houseArt(W: number, doors: { x: number; w: number }[], y0: number, y1: 
   const ey = y0 - (y1 - y0) * 0.16
   for (let i = 0; i < 60; i++) {
     const x = L - 30 + r() * (R - L + 60)
-    thatch += stroke([[x, ey - 2], [x - 6, ey - (y1 - y0) * (0.2 + r() * 0.35)]], 1 + r(), 0.1, 0.4, 0.1)
+    thatch += stroke([[x, ey - 2], [x - 6, ey - (y1 - y0) * (0.15 + r() * 0.3)]], 1 + r(), 0.1, 0.4, 0.1)
   }
   return [
     mist(W * 0.62, y1, W * 0.6, (y1 - y0) * 0.5),
-    s('path', { class: 't33y-hroof', d: `M${f1(L - 40)} ${f1(ey)}L${f1(R + 40)} ${f1(ey)}L${f1(R - 30)} ${f1(ey - (y1 - y0) * 0.65)}L${f1(L + 30)} ${f1(ey - (y1 - y0) * 0.65)}Z`, filter: 'url(#ink-wash)' }),
+    s('path', { class: 't33y-hroof', d: `M${f1(L - 40)} ${f1(ey)}L${f1(R + 40)} ${f1(ey)}L${f1(R - 30)} ${f1(ey - (y1 - y0) * 0.5)}L${f1(L + 30)} ${f1(ey - (y1 - y0) * 0.5)}Z`, filter: 'url(#ink-wash)' }),
     s('path', { class: 't33y-hthatch', d: thatch }),
     s('path', { class: 't33y-heave', d: rect(L - 40, ey - 4, R - L + 80, (y1 - y0) * 0.16 + 6) }),
     s('path', { class: 't33y-hwall', d: rect(L, y0 - 2, R - L, y1 - y0 + 4) }),
@@ -65,6 +65,9 @@ function houseArt(W: number, doors: { x: number; w: number }[], y0: number, y1: 
     s('path', { class: 't33y-hlat', d: lat }),
     s('path', { class: 't33y-hpost', d: doors.map((d) => rect(d.x - d.w / 2 - 5, y0, 5, y1 - y0) + rect(d.x + d.w / 2, y0, 5, y1 - y0)).join('') }),
     s('path', { class: 't33y-hsill', d: rect(L - 10, y1, R - L + 20, (y1 - y0) * 0.06) }),
+    // the veranda's edge and the stone footing under it, then two stepping stones down to the garden floor
+    s('path', { class: 't33y-hfoot', d: rect(L - 18, y1 + (y1 - y0) * 0.06, R - L + 36, (y1 - y0) * 0.1) }),
+    s('path', { class: 't33y-hstep', d: blob(doors[2].x - doors[2].w * 0.2, y1 + (y1 - y0) * 0.22, doors[2].w * 0.32, (y1 - y0) * 0.035, seed + 5, 0.15, 12) + blob(doors[3].x, y1 + (y1 - y0) * 0.3, doors[3].w * 0.26, (y1 - y0) * 0.03, seed + 6, 0.15, 12) }),
   ]
 }
 
@@ -222,31 +225,27 @@ function handArt() {
   const thumb = finger([248, 148], [168, 108], 35, 26, 8)
   const palm = 'M150 126C190 116 236 120 266 138C288 150 304 158 318 166L326 222C296 236 252 242 214 234C190 229 172 222 160 214C146 192 142 152 150 126Z'
   return s('svg', { class: 't33y-hand', viewBox: '0 0 400 300', 'aria-hidden': 'true' },
-    // the hand's shadow on the ground far below: soft, offset down-left
-    s('path', { class: 't33y-handsh', d: blob(190, 268, 150, 22, 3371, 0.15, 20), filter: 'url(#ink-wash)' }),
-    s('path', { class: 't33y-skin t33y-thumb', d: thumb.d }),
-    s('path', { class: 't33y-shade', d: thumb.shade }),
-    s('path', { class: 't33y-lit', d: thumb.lit }),
-    s('path', { class: 't33y-crease', d: thumb.creases }),
-    s('path', { class: 't33y-skin', d: palm }),
-    // the cupped hollow, the thenar pad lit, the knuckle mounts under the fingers
-    s('path', { class: 't33y-hollow', d: blob(214, 184, 38, 24, 3372, 0.15, 16), filter: 'url(#ink-wash)' }),
-    s('path', { class: 't33y-pad', d: blob(250, 160, 30, 18, 3373, 0.15, 14) + blob(178, 136, 22, 9, 3374, 0.15, 10) + blob(174, 162, 20, 9, 3375, 0.15, 10) + blob(178, 186, 18, 8, 3376, 0.15, 10), filter: 'url(#ink-wash)' }),
-    s('path', { class: 't33y-crease', d: stroke(curve([168, 150], [214, 140], [262, 154], 10), 1.6, 0.2, 0.3, 0.2) + stroke(curve([172, 176], [214, 168], [256, 184], 10), 1.5, 0.2, 0.3, 0.2) + stroke(curve([262, 146], [236, 186], [262, 226], 12), 1.6, 0.2, 0.3, 0.2) }),
+    s('path', { class: 't33y-skin t33y-thumb', d: thumb.d, filter: 'url(#ink-wash)' }),
+    s('path', { class: 't33y-shade', d: thumb.shade, filter: 'url(#ink-wash)' }),
+    s('path', { class: 't33y-line', d: thumb.d, filter: 'url(#ink-rough)' }),
+    s('path', { class: 't33y-skin', d: palm, filter: 'url(#ink-wash)' }),
+    // the cupped hollow, a single wash
+    s('path', { class: 't33y-hollow', d: blob(214, 184, 40, 26, 3372, 0.2, 16), filter: 'url(#ink-wash)' }),
+    s('path', { class: 't33y-crease', d: stroke(curve([168, 150], [214, 140], [262, 154], 10), 1.8, 0.2, 0.5, 0.2) + stroke(curve([172, 176], [214, 168], [256, 184], 10), 1.6, 0.2, 0.5, 0.2) + stroke(curve([262, 146], [236, 186], [262, 226], 12), 1.8, 0.2, 0.5, 0.2), filter: 'url(#ink-dry)' }),
     ...fingers.flatMap((f, i) => [
-      s('path', { class: `t33y-skin t33y-f${i}`, d: f.d }),
-      s('path', { class: 't33y-pad', d: f.pad }),
-      s('path', { class: 't33y-shade', d: f.shade }),
-      s('path', { class: 't33y-lit', d: f.lit }),
+      s('path', { class: `t33y-skin t33y-f${i}`, d: f.d, filter: 'url(#ink-wash)' }),
+      s('path', { class: 't33y-shade', d: f.shade, filter: 'url(#ink-wash)' }),
+      s('path', { class: 't33y-line', d: f.d, filter: 'url(#ink-rough)' }),
       s('path', { class: 't33y-crease', d: f.creases }),
     ]),
     // the outline: thicker and darker on the side away from the lantern
     s('path', { class: 't33y-handink', d: stroke(curve([160, 214], [196, 232], [252, 238], 12), 2.6, 0.1, 0.2, 0.3) + stroke(curve([252, 238], [296, 236], [326, 222], 10), 2.4, 0.1, 0.2, 0.3) + stroke(curve([92, 232], [130, 230], [164, 216], 8), 1.8, 0.2, 0.3, 0.3), filter: 'url(#ink-rough)' }),
     s('path', { class: 't33y-handrim', d: stroke(curve([170, 96], [214, 114], [262, 138], 12), 1.8, 0.2, 0.3, 0.1) + stroke(curve([60, 122], [104, 122], [150, 126], 10), 1.4, 0.2, 0.3, 0.1) }),
-    // the cuff of the gardener's sleeve, the arm going out of frame
-    s('path', { class: 't33y-sleeve', d: 'M314 150C340 140 372 136 400 138V300H330C326 270 324 244 326 222C320 196 316 172 314 150Z', filter: 'url(#ink-wash)' }),
+    // the cuff of the gardener's sleeve, the arm running on out of the frame to the right
+    s('path', { class: 't33y-sleeve', d: 'M314 150C352 140 420 150 560 186C760 236 960 300 1100 340V560H640C520 420 400 300 326 222C320 196 316 172 314 150Z', filter: 'url(#ink-wash)' }),
     s('path', { class: 't33y-sleeveink', d: stroke(curve([314, 150], [312, 190], [328, 232], 10), 4, 0.05, 0.2, 0.4) + stroke(curve([328, 232], [324, 268], [334, 300], 8), 3.2, 0.05, 0.3, 0.4), filter: 'url(#ink-rough)' }),
-    s('path', { class: 't33y-sleevefold', d: stroke(curve([346, 150], [340, 210], [356, 290], 10), 2, 0.2, 0.3, 0.2) + stroke(curve([374, 144], [366, 200], [382, 290], 10), 1.6, 0.2, 0.3, 0.2) }))
+    s('path', { class: 't33y-sleevefold', d: stroke(curve([346, 150], [340, 210], [356, 290], 10), 2, 0.2, 0.3, 0.2) + stroke(curve([374, 144], [366, 200], [382, 290], 10), 1.6, 0.2, 0.3, 0.2) + stroke(curve([420, 170], [540, 220], [700, 280], 12), 2.4, 0.2, 0.4, 0.2) + stroke(curve([420, 270], [560, 330], [760, 420], 12), 2, 0.2, 0.4, 0.2) }),
+    s('path', { class: 't33y-sleeverim', d: stroke(curve([318, 150], [430, 146], [760, 236], 14), 1.6, 0.2, 0.4, 0.1) }))
 }
 
 interface KeyState { x: number; y: number; a: number; tx: number; ty: number; ta: number; lag: number }
@@ -273,7 +272,14 @@ export function keysScene(ctx: SceneCtx) {
   blurLayer.append(riskBox)
   const say = live('t33y-say t33-ink')
   const hand = h('div', { class: 't33y-handbox' }, handArt())
-  const check = h('button', { class: 't33y-plaque', type: 'button' }, h('span', null, K.check))
+  const check = h('button', { class: 't33y-plaque', type: 'button' },
+    s('svg', { class: 't33y-bell', viewBox: '-20 -4 40 44', 'aria-hidden': 'true' },
+      s('path', { class: 't33y-bellcord', d: 'M0 -4V6' }),
+      s('path', { class: 't33y-bellb', d: 'M-15 30Q-15 6 0 5Q15 6 15 30Q16 33 13 33H-13Q-16 33 -15 30Z', filter: 'url(#ink-rough)' }),
+      s('path', { class: 't33y-bellrim', d: 'M-11 27Q-11 11 -2 9', fill: 'none' }),
+      s('path', { class: 't33y-bellband', d: 'M-14 24H14V26.5H-14Z' }),
+      s('path', { class: 't33y-bellcord', d: 'M0 33V40' })),
+    h('span', null, K.check))
   const task = h('p', { class: 't33y-task t33-ink' }, K.task)
   const keyEls = K.keys.map((k, i) => {
     const tag = h('span', { class: 't33y-tag' }, h('span', { class: 't33y-string', 'aria-hidden': 'true' }), h('span', { class: 't33y-tagp' }, k.label, h('small', { class: 't33y-ask' }, K.askTag)))
@@ -350,8 +356,9 @@ export function keysScene(ctx: SceneCtx) {
     // a wide fan: the bits (the keys' touch areas) clear each other
     G.spread = mobile ? 44 : 40
     // the hand: palm up, coming in from the lower right, kept inside the frame (its sleeve melts into the night)
-    const hs = mobile ? (W * 0.8) / 400 : Math.min((W * 0.38) / 400, (H * 0.56) / 300)
-    G.hand = mobile ? { x: W - 400 * hs + W * 0.02, y: H - 300 * hs - 36, s: hs } : { x: W - 400 * hs - W * 0.005, y: H - 300 * hs, s: hs }
+    const hs = mobile ? (W * 0.8) / 400 : Math.min((W * 0.3) / 400, (H * 0.44) / 300)
+    // a phone: the hand comes up close under the keys (no empty band between them)
+    G.hand = mobile ? { x: W - 400 * hs + W * 0.02, y: Math.min(H - 300 * hs - 36, H * 0.44), s: hs } : { x: W * 0.52, y: H * 0.5, s: hs }
     hand.style.cssText = `left:${f1(G.hand.x)}px;top:${f1(G.hand.y)}px;width:${f1(400 * hs)}px;height:${f1(300 * hs)}px`
     // where given keys lie: bows on the fingers, shafts across the palm; the first two far enough apart that their tags hang clear
     const HP = (x: number, y: number): [number, number] => [G.hand.x + x * hs, G.hand.y + y * hs]
@@ -359,10 +366,10 @@ export function keysScene(ctx: SceneCtx) {
     // the given keys' tags stand in one column left of the fingertips, one under another
     G.col = mobile ? [Math.max(48, G.hand.x + 40 * hs - 46), G.hand.y + 50 * hs] : [G.hand.x + 40 * hs - 86, G.hand.y + 40 * hs]
     // the count: under the job (wide), over the palm (phone)
-    G.countAt = mobile ? [G.hand.x + 210 * hs, G.hand.y + 40 * hs] : [W * 0.715, task.offsetTop + task.offsetHeight + 18]
+    G.countAt = mobile ? [W * 0.5, G.hand.y + 286 * hs] : [W * 0.715, task.offsetTop + task.offsetHeight + 18]
     palmZone.style.cssText = `left:${f1(G.hand.x + 70 * hs)}px;top:${f1(G.hand.y + 110 * hs)}px;width:${f1(230 * hs)}px;height:${f1(120 * hs)}px`
     // a phone stacks it: keys, then the house, then the verdict and the take-away slip just above the hand
-    let y0 = H * 0.2, y1 = H * 0.4
+    let y0 = H * 0.27, y1 = H * 0.46
     if (mobile) {
       const pillTop = G.hand.y + 92 * hs - 46
       sheet.pill.style.top = `${f1(pillTop)}px`
@@ -389,10 +396,17 @@ export function keysScene(ctx: SceneCtx) {
     ringEl.style.transform = `translate(${f1(G.ring[0])}px, ${f1(G.ring[1])}px)`
 
     function* draw() {
+      // the garden floor from the house's sill to the foot of the frame: gravel raked in rows, darker toward us
+      const gTop = y1 + (y1 - y0) * 0.14
+      let rows = ''
+      for (let y = gTop + 4, i = 0; y < H; y += 3 + (y - gTop) * 0.06, i++) rows += stroke([[-10, y], [W * 0.5, y + Math.sin(i * 1.7) * 1.2], [W + 10, y]], Math.min(1.8, 0.8 + (y - gTop) * 0.003), 0.02, 0.02, 0.6)
       back.replaceChildren(
         s('circle', { class: 't33y-moonhalo', cx: f1(W * 0.92), cy: f1(H * 0.04), r: f1(Math.min(W, H) * 0.3) }),
         mist(W * 0.6, y0 - H * 0.12, W * 0.6, H * 0.12),
-        hills(W * 0.2, W * 1.05, y0 - H * 0.04, H * 0.16, 3320, 0.95, 5))
+        hills(W * 0.2, W * 1.05, y0 - H * 0.04, H * 0.16, 3320, 0.95, 5),
+        s('rect', { class: 't33y-ground', x: -10, y: f1(gTop), width: f1(W + 20), height: f1(H - gTop + 10) }),
+        s('path', { class: 't33y-grake', d: rows }),
+        mist(W * 0.62, gTop + H * 0.02, W * 0.55, H * 0.035))
       yield
       house.replaceChildren(...houseArt(W, G.doors, y0, y1, 3321))
       doorsSvg.replaceChildren(...G.doors.map((d, i) => {
@@ -409,9 +423,9 @@ export function keysScene(ctx: SceneCtx) {
       const [rx, ry] = G.ring
       const u = mobile ? H * 0.05 : H * 0.085
       const lx = rx - 1.92 * u, ly = ry - H * 0.035 + 7.45 * u
-      // "Giao việc" hangs from the roof's other corner
-      check.style.left = `${f1(Math.max(8, lx - 1.95 * u - check.offsetWidth / 2))}px`
-      check.style.top = `${f1(ly - 7.3 * u + 22)}px`
+      // "Giao việc": the bell hangs from the roof's other corner (its cord starts at the eave)
+      check.style.left = `${f1(Math.max(8, lx - 1.82 * u))}px`
+      check.style.top = `${f1(ly - 7.3 * u)}px`
       const r = rng(3322)
       let chisel = ''
       for (let i = 0; i < 26; i++) {
@@ -425,7 +439,8 @@ export function keysScene(ctx: SceneCtx) {
         s('path', { class: 't33y-moss', d: blob(lx - 0.6 * u, ly - 8.2 * u, u * 0.9, u * 0.16, 3323, 0.4, 14) + blob(lx + 0.9 * u, ly - 7.95 * u, u * 0.5, u * 0.1, 3324, 0.4, 10), filter: 'url(#ink-wash)' }),
         s('path', { class: 't33y-flame', d: `M${f1(lx)} ${f1(ly - 5.45 * u)}q${f1(-u * 0.32)} ${f1(-u * 0.5)} 0 ${f1(-u * 1.25)}q${f1(u * 0.34)} ${f1(u * 0.75)} 0 ${f1(u * 1.25)}Z` }),
         s('path', { class: 't33y-moonedge', d: stroke(curve([lx - 1.9 * u, ly - 7.28 * u], [lx, ly - 7.45 * u], [lx + 1.9 * u, ly - 7.28 * u], 12), Math.max(1.6, u * 0.03), 0.1, 0.2, 0.2) }),
-        s('path', { class: 't33y-cord', d: `M${f1(lx + 1.82 * u)} ${f1(ly - 7.3 * u)}Q${f1(rx + 3)} ${f1((ly - 7.3 * u + ry) / 2 + 4)} ${f1(rx)} ${f1(ry - 14)}M${f1(lx - 1.82 * u)} ${f1(ly - 7.3 * u)}V${f1(ly - 7.3 * u + 22)}` }))
+        // the ring hangs on an iron hook driven under the roof's corner
+        s('path', { class: 't33y-hook', d: stroke([[lx + 1.82 * u, ly - 7.3 * u - 2], [lx + 1.82 * u, ly - 7.3 * u + 6]], 3.2, 0.05, 0.05, 0.8) + stroke(curve([lx + 1.82 * u, ly - 7.3 * u + 6], [rx + 10, (ly - 7.3 * u + ry) / 2], [rx, ry - 14], 10), 3, 0.05, 0.1, 0.6) }))
       if (first) for (let i = 0; i < N; i++) {
         const [x, y, a] = homeOf(i)
         Object.assign(keys[i], { x, y, a, tx: x, ty: y, ta: a })
@@ -441,6 +456,14 @@ export function keysScene(ctx: SceneCtx) {
   }
   ctx.onCleanup(onSize(root, layout))
   ctx.onCleanup(() => job?.cancel())
+  // H7 · standing still: the ring swings a little on its hook
+  const onIdle = () => {
+    if (still || dragKey >= 0) return
+    vel += 34
+    loop.start()
+  }
+  ctx.el.addEventListener('p2:idle', onIdle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', onIdle))
 
   // ── motion: keys ease toward their homes; the ring is a damped pendulum; one loop that stops when all is still
   function settleTargets() {
