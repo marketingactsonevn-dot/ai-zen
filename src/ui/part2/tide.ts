@@ -37,6 +37,9 @@ export interface TideOpts {
   thumb?: () => SVGElement
   /** on every move: the nearest stop i (n = today) and where the moon is, t 0…1 (move the station's own art with it) */
   onStep?: (i: number, t: number) => void
+  /** the band's own box in the art (px; W × H = the art at its stable height) instead of 60 % of the height at most
+   *  1120 × 420 — for a station whose scroll is most of the picture (22-4's shōji wall). Default unchanged */
+  band?: (W: number, H: number) => { w: number; h: number; top: number }
 }
 
 const f1 = (n: number) => n.toFixed(1)
@@ -171,9 +174,10 @@ export function progressTide(data: Tide, o: TideOpts): SceneDef {
         if (W < 60 || H < 60) return
         root.style.height = `${f1(H)}px`
         const qh = (root.querySelector('.p2t-q') as HTMLElement | null)?.offsetHeight ?? 0
-        const bw = Math.min(W, 1120)
-        const bh = clamp((H - qh) * 0.6, 160, 420)
-        const top = qh ? qh + 8 : clamp(H * 0.04, 0, 24)
+        const own = o.band?.(W, H - qh)
+        const bw = own?.w ?? Math.min(W, 1120)
+        const bh = own?.h ?? clamp((H - qh) * 0.6, 160, 420)
+        const top = own ? qh + own.top : qh ? qh + 8 : clamp(H * 0.04, 0, 24)
         Object.assign(band.style, { width: `${f1(bw)}px`, height: `${f1(bh)}px`, top: `${f1(top)}px`, left: `${f1((W - bw) / 2)}px` })
         Object.assign(read.style, { top: `${f1(top + bh + 14)}px`, maxHeight: `${f1(H - top - bh - 14)}px` })
         // stops from the left roller to "today"; the last 14 % of the scroll is mist

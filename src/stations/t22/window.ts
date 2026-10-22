@@ -1,149 +1,145 @@
+import './window.css'
 import { h, s } from '../../core/dom'
 import { sliced } from '../../core/chunk'
 import type { SceneDef } from '../types'
 import { progressTide, type TideGeo } from '../../ui/part2/tide'
-import { clamp, onSize, rng, stroke, type Pt } from '../../ui/part2/ink'
+import { clamp, onSize, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
 import { guide, type Mark, type Track } from '../../ui/part2/guide'
-import { hills, mist, pine } from '../../ui/part2/paint'
+import { hills, mist, pine, steppingStones } from '../../ui/part2/paint'
 import { C } from './data'
 import { f1 } from './kit'
 
 const S = C.scenes.window
 
-/** What each milestone's stele carries, drawn in u (about its width), standing on (0, 0): a letter → pages → a novel → a stack → a whole shelf. */
+/** One book seen from the front, standing on (x, y), w × hh: cover, a page block of dó paper on the open edge, the
+ *  spine's two bands; lying flat (flat) it shows its long edge: two boards and the pages between. */
+function book(x: number, y: number, w: number, hh: number, tone: number, flat: boolean, r: () => number) {
+  const out: SVGElement[] = []
+  const P = (pts: Pt[]) => `M${pts.map(([a, b]) => `${f1(a)} ${f1(b)}`).join('L')}Z`
+  if (flat) {
+    const b = Math.max(1.2, hh * 0.2)
+    out.push(
+      s('path', { class: `g8w3-cover b${tone % 5}`, d: P([[x, y], [x + w, y], [x + w, y - hh], [x, y - hh]]) }),
+      s('path', { class: 'g8w3-pages', d: P([[x + w * 0.04, y - b], [x + w - 1.2, y - b], [x + w - 1.2, y - hh + b], [x + w * 0.04, y - hh + b]]) }),
+      s('path', { class: 'g8w3-leaf', d: stroke([[x + w * 0.06, y - hh / 2], [x + w - 3, y - hh / 2 + (r() - 0.5) * 0.4]], 0.6, 0.1, 0.1, 0.3) }),
+      s('path', { class: 'g8w3-bshade', d: P([[x + w * 0.62, y], [x + w, y], [x + w, y - hh], [x + w * 0.62, y - hh]]) }),
+      s('path', { class: 'g8w3-bline', d: stroke([[x, y], [x, y - hh], [x + w, y - hh], [x + w, y], [x, y]], 0.8, 0.05, 0.05, 0.4) }))
+  } else {
+    out.push(
+      s('path', { class: `g8w3-cover b${tone % 5}`, d: P([[x, y], [x + w, y], [x + w, y - hh], [x, y - hh]]) }),
+      s('path', { class: 'g8w3-pages', d: P([[x + w * 0.82, y - 1], [x + w + w * 0.08, y - 2], [x + w + w * 0.08, y - hh + 2], [x + w * 0.82, y - hh + 1]]) }),
+      s('path', { class: 'g8w3-bline', d: stroke([[x, y - hh * 0.12], [x + w * 0.8, y - hh * 0.12]], 0.9, 0.1, 0.1, 0.3) + stroke([[x, y - hh * 0.88], [x + w * 0.8, y - hh * 0.88]], 0.9, 0.1, 0.1, 0.3) + stroke([[x, y], [x, y - hh], [x + w, y - hh], [x + w, y], [x, y]], 0.9, 0.05, 0.05, 0.4) }),
+      s('path', { class: 'g8w3-bshade', d: P([[x + w * 0.55, y], [x + w * 0.82, y], [x + w * 0.82, y - hh], [x + w * 0.55, y - hh]]) }))
+  }
+  return out
+}
+
+/** What a milestone's stele carries on its top, standing on (0, 0), about u wide: a slip with one sentence (2017), a few
+ *  pages (2020), a novel (2023), a stack of ten novels (today, about a million tokens), a whole shelf (the 10M claim). */
 function carried(i: number, u: number, seed: number): SVGElement[] {
   const r = rng(seed)
-  let fillP = '', inkP = '', lines = ''
-  const books: SVGElement[] = []
-  const sheet = (x: number, y: number, w: number, hh: number, a: number) => {
+  const out: SVGElement[] = []
+  const sheet = (x: number, y: number, w: number, hh: number, a: number, lines: number) => {
     const rot = ([px, py]: Pt): Pt => [x + px * Math.cos(a) - py * Math.sin(a), y + px * Math.sin(a) + py * Math.cos(a)]
-    const c = [[-w / 2, 0], [w / 2, 0], [w / 2, -hh], [-w / 2 + w * 0.08, -hh], [-w / 2, -hh + w * 0.1]].map((p) => rot(p as Pt))
-    fillP += `M${c.map(([px, py]) => `${f1(px)} ${f1(py)}`).join('L')}Z`
-    inkP += stroke([...c, c[0]], 1, 0.05, 0.05, 0.4)
-    for (let k = 1; k < 6; k++) lines += stroke([rot([-w * 0.32, -hh + (hh * k) / 6.5]), rot([w * (0.05 + r() * 0.28), -hh + (hh * k) / 6.5])], 1, 0.2, 0.3, 0.3)
+    const c = ([[-w / 2, 0], [w / 2, 0], [w / 2, -hh], [-w / 2 + w * 0.1, -hh], [-w / 2, -hh + w * 0.1]] as Pt[]).map(rot)
+    let ink = ''
+    for (let k = 1; k <= lines; k++) {
+      const yy = -hh + (hh * k) / (lines + 1.2)
+      ink += stroke([rot([-w * 0.34, yy]), rot([w * (0.1 + r() * 0.24), yy])], Math.max(0.7, w * 0.035), 0.2, 0.3, 0.3)
+    }
+    out.push(
+      s('path', { class: 'g8w3-sheet', d: `M${c.map(([px, py]) => `${f1(px)} ${f1(py)}`).join('L')}Z` }),
+      s('path', { class: 'g8w3-sheetink', d: ink }),
+      s('path', { class: 'g8w3-bline', d: stroke([...c, c[0]], 0.8, 0.05, 0.05, 0.4) }))
   }
-  const book = (x: number, y: number, w: number, hh: number, tone: number) => {
-    books.push(s('path', { class: `g8w2-book b${tone % 5}`, d: `M${f1(x)} ${f1(y)}h${f1(w)}v${f1(-hh)}h${f1(-w)}Z` }))
-    inkP += stroke([[x, y], [x, y - hh], [x + w, y - hh], [x + w, y], [x, y]], 0.9, 0.05, 0.05, 0.4)
-    lines += hh > w ? stroke([[x + w * 0.2, y - hh * 0.2], [x + w * 0.8, y - hh * 0.2]], 1, 0.1, 0.1, 0.4) : stroke([[x + w * 0.1, y - hh * 0.5], [x + w * 0.9, y - hh * 0.5]], 0.8, 0.1, 0.1, 0.4)
-  }
-  if (i === 0) {
-    // 2017: one written character on a slip
-    sheet(0, 0, u * 0.32, u * 0.5, -0.04)
-    inkP += stroke([[-u * 0.07, -u * 0.38], [u * 0.06, -u * 0.36]], 2.2, 0.2, 0.3, 0.2) + stroke([[0, -u * 0.42], [-u * 0.02, -u * 0.12]], 2.4, 0.2, 0.4, 0.2) + stroke([[-u * 0.08, -u * 0.22], [u * 0.07, -u * 0.18]], 2, 0.2, 0.3, 0.2)
-  } else if (i === 1) for (const [dx, a] of [[-u * 0.16, -0.18], [0, -0.02], [u * 0.15, 0.15]]) sheet(dx, 0, u * 0.4, u * 0.54, a)
+  if (i === 0) sheet(0, 0, u * 0.42, u * 0.62, -0.03, 1)
+  else if (i === 1) for (const [dx, a] of [[-u * 0.2, -0.16], [u * 0.02, -0.02], [u * 0.2, 0.14]] as const) sheet(dx, 0, u * 0.44, u * 0.6, a, 5)
   else if (i === 2) {
-    book(-u * 0.18, 0, u * 0.36, u * 0.74, 0)
-    sheet(u * 0.3, 0, u * 0.24, u * 0.3, 0.12)
+    out.push(...book(-u * 0.24, 0, u * 0.34, u * 0.82, 0, false, r))
+    sheet(u * 0.3, 0, u * 0.26, u * 0.34, 0.14, 3)
   } else if (i === 3) {
     let y = 0
-    // today: about ten novels' worth, a stack of ten
     for (let k = 0; k < 10; k++) {
-      const bw = u * (0.8 - k * 0.035 + r() * 0.06), bh = u * (0.085 + r() * 0.03)
-      book(-bw / 2 + (r() - 0.5) * u * 0.08, y, bw, bh, k + 1)
+      const bw = u * (0.86 - k * 0.025 + r() * 0.06), bh = u * (0.075 + r() * 0.025)
+      out.push(...book(-bw / 2 + (r() - 0.5) * u * 0.07, y, bw, bh, k + 1, true, r))
       y -= bh
     }
   } else {
-    // 2025: a whole bookshelf (10M is the maker's own claim: drawn paler)
-    const sw = u * 1.05, sh = u * 1.25, x0 = -sw / 2
-    inkP += stroke([[x0, 2], [x0, -sh]], 2.2, 0.02, 0.05, 0.6) + stroke([[x0 + sw, 2], [x0 + sw, -sh]], 2.2, 0.02, 0.05, 0.6) + stroke([[x0 - 2, -sh], [x0 + sw + 2, -sh]], 2.4, 0.05, 0.05, 0.6)
+    const sw = u * 1.05, sh = u * 1.2, x0 = -sw / 2
+    let wood = stroke([[x0, 2], [x0, -sh]], 2.2, 0.02, 0.05, 0.6) + stroke([[x0 + sw, 2], [x0 + sw, -sh]], 2.2, 0.02, 0.05, 0.6) + stroke([[x0 - 2, -sh], [x0 + sw + 2, -sh]], 2.4, 0.05, 0.05, 0.6)
     for (let k = 0; k < 3; k++) {
       const base = -k * (sh / 3)
-      inkP += stroke([[x0 - 1, base], [x0 + sw + 1, base]], 1.8, 0.05, 0.05, 0.6)
+      wood += stroke([[x0 - 1, base], [x0 + sw + 1, base]], 1.8, 0.05, 0.05, 0.6)
       for (let x = x0 + 3; x < x0 + sw - 5;) {
         const bw = u * (0.06 + r() * 0.06), bh = (sh / 3) * (0.62 + r() * 0.3)
         if (x + bw > x0 + sw - 3) break
-        book(x, base - 1.5, bw, bh, Math.floor(r() * 5))
+        out.push(s('path', { class: `g8w3-cover b${Math.floor(r() * 5)}`, d: `M${f1(x)} ${f1(base - 1.5)}h${f1(bw)}v${f1(-bh)}h${f1(-bw)}Z` }))
         x += bw + 0.6
       }
     }
+    out.push(s('path', { class: 'g8w3-shelf', d: wood }))
   }
-  return [
-    fillP ? s('path', { class: 'g8w2-sheet', d: fillP }) : null,
-    ...books,
-    s('path', { class: 'g8w2-lines', d: lines }),
-    s('path', { class: 'g8w2-ink', d: inkP, filter: 'url(#ink-rough)' }),
-  ].filter((x): x is SVGPathElement => !!x)
+  return out
 }
 
-/** A garden stele (a dressed stone slab with a low plinth), w wide, standing on (0, 0): face, shaded flank, moonlit rim. */
-function stele(w: number, hh: number): SVGElement[] {
-  const face = `M${f1(-w / 2)} 0L${f1(-w / 2)} ${f1(-hh * 0.86)}Q${f1(-w / 2)} ${f1(-hh)} ${f1(-w * 0.3)} ${f1(-hh)}L${f1(w * 0.3)} ${f1(-hh)}Q${f1(w / 2)} ${f1(-hh)} ${f1(w / 2)} ${f1(-hh * 0.86)}L${f1(w / 2)} 0Z`
+/** A dressed garden stele w × hh on a low plinth, standing on (0, 0): its face in three tones (moonlit top and left rim,
+ *  a shaded right flank), a contact shadow on the sand, and what the window could read carved into its face. */
+function stele(w: number, hh: number, carve: string, fs: number): SVGElement[] {
+  const ph = Math.max(4, hh * 0.1)
+  const face = `M${f1(-w / 2)} ${f1(-ph)}L${f1(-w / 2)} ${f1(-hh * 0.9)}Q${f1(-w / 2)} ${f1(-hh)} ${f1(-w * 0.32)} ${f1(-hh)}L${f1(w * 0.32)} ${f1(-hh)}Q${f1(w / 2)} ${f1(-hh)} ${f1(w / 2)} ${f1(-hh * 0.9)}L${f1(w / 2)} ${f1(-ph)}Z`
+  const lines = carve.split('\n')
+  const y0 = -hh * 0.56 - ((lines.length - 1) * fs * 1.15) / 2
   return [
-    s('ellipse', { class: 'g8w2-contact', cx: f1(w * 0.08), cy: 1.5, rx: f1(w * 0.8), ry: f1(Math.max(2, w * 0.12)) }),
-    s('path', { class: 'g8w2-plinth', d: `M${f1(-w * 0.68)} 2L${f1(-w * 0.62)} ${f1(-hh * 0.1)}L${f1(w * 0.62)} ${f1(-hh * 0.1)}L${f1(w * 0.68)} 2Z` }),
-    s('path', { class: 'g8w2-face', d: face, fill: 'url(#p2-rock)' }),
-    s('path', { class: 'g8w2-flank', d: `M${f1(w * 0.18)} 0L${f1(w * 0.18)} ${f1(-hh)}L${f1(w * 0.3)} ${f1(-hh)}Q${f1(w / 2)} ${f1(-hh)} ${f1(w / 2)} ${f1(-hh * 0.86)}L${f1(w / 2)} 0Z` }),
-    s('path', { class: 'g8w2-rim', d: stroke([[-w / 2 + 1, -hh * 0.2], [-w / 2 + 1, -hh * 0.86], [-w * 0.3, -hh + 1], [w * 0.2, -hh + 1]], Math.max(1.2, w * 0.05), 0.2, 0.3, 0.2) }),
+    s('ellipse', { class: 'g8w3-contact', cx: f1(w * 0.06), cy: 1, rx: f1(w * 0.86), ry: f1(Math.max(2.5, w * 0.11)) }),
+    s('path', { class: 'g8w3-plinth', d: `M${f1(-w * 0.66)} 1L${f1(-w * 0.6)} ${f1(-ph)}L${f1(w * 0.6)} ${f1(-ph)}L${f1(w * 0.66)} 1Z` }),
+    s('path', { class: 'g8w3-plinthlit', d: stroke([[-w * 0.6, -ph + 0.6], [w * 0.6, -ph + 0.6]], 1.2, 0.05, 0.05, 0.4) }),
+    s('path', { class: 'g8w3-face', d: face, fill: 'url(#p2-rock)' }),
+    s('path', { class: 'g8w3-flank', d: `M${f1(w * 0.22)} ${f1(-ph)}L${f1(w * 0.22)} ${f1(-hh)}L${f1(w * 0.32)} ${f1(-hh)}Q${f1(w / 2)} ${f1(-hh)} ${f1(w / 2)} ${f1(-hh * 0.9)}L${f1(w / 2)} ${f1(-ph)}Z` }),
+    s('path', { class: 'g8w3-rim', d: stroke([[-w / 2 + 1, -hh * 0.3], [-w / 2 + 1, -hh * 0.9], [-w * 0.32, -hh + 1], [w * 0.24, -hh + 1]], Math.max(1.2, w * 0.035), 0.2, 0.3, 0.2) }),
+    s('path', { class: 'g8w3-outline', d: face, filter: 'url(#ink-rough)' }),
+    s('text', { class: 'g8w3-carve', y: f1(y0), 'font-size': f1(fs), 'text-anchor': 'middle' }, ...lines.map((l, k) => s('tspan', { x: 0, dy: k ? f1(fs * 1.15) : 0 }, l))),
   ]
 }
 
 /**
- * Scene 4 (comp + 2.5D) — inside a tea room, facing a long shōji wall under a transom of kumiko; the moon is a glow behind
- * the transom's paper, the lattice dark across it, and it is the slider's thumb. Every milestone it passes slides one
- * panel open onto a deep garden in one-point perspective (raked sand curving to the same vanishing point as the mats),
- * where a stele rises carrying what that year's window could read: a letter, a few pages, a novel, a stack, a bookshelf,
- * and today a stack of about ten novels (1 million tokens), with the 10-million claim only a pale shelf in the mist.
- * Moonlight falls through each open panel as a long trapezoid on the tatami.
- * Beat 2 (audit v3 22-4, the main act): at today a long scroll unrolls on the mats; drag the vermilion seal ("what
- * matters") along it — the reading lamp burns bright at both ends and dims in the middle (lost in the middle) → insight.
+ * Scene 4 (comp + 2.5D, audit v3 22-4 "Làm lại") — inside a dark tea room, the shōji wall is most of the picture: a
+ * transom (ranma) of slender kumiko across the top, the moon a glow behind its paper riding a rail with four notches
+ * (the years under them), and four sliding panels below. Dragging the moon past a notch slides a panel away onto one deep
+ * garden in one-point perspective — night ranges, mist on the horizon, raked sand running to the vanishing point, and a
+ * stele rising in each opening with what that year's window could read on its top and the figure carved in its face: a
+ * sentence (2017), a few pages (2020), a novel (2023), a stack of ten novels today, the 10-million claim only a pale
+ * shelf far back in the mist. Moonlight falls in through every opening as a long trapezoid on the tatami.
+ * Beat 2: at today a long scroll unrolls on the mats; drag the vermilion seal ("what matters") along it — the reading
+ * lamp burns bright at both ends and dims in the middle (lost in the middle) → insight, written in the moonlight on the
+ * mats (text zone bottom-left), and mist settles over the middle steles.
  */
 export const windowScene: SceneDef = {
   label: S.label,
+  text: 'bl',
   mount(ctx) {
-    let panels: Element[] = [], rises: Element[] = [], beams: Element[] = []
+    let panels: Element[] = [], rises: Element[] = [], beams: Element[] = [], openEdges: number[] = []
     let scene: SVGGElement | null = null
     let glow: SVGGElement | null = null, paperGlow: SVGRadialGradientElement | null = null
     let track: ((t: number) => Pt) | null = null
-    const room = s('svg', { class: 'g8w2-room', 'aria-hidden': 'true' })
+    const room = s('svg', { class: 'g8w3-room', 'aria-hidden': 'true' })
     ctx.art.append(h('p', { class: 'visually-hidden' }, S.art), room)
     let shown = 0, lastT = 0
     const n = S.tide.milestones.length // stops 0…n-1 milestones, n = today (the tide's own last stop)
+    const wide = () => ctx.art.clientWidth > 720
 
-    /** The room's one-point perspective and today's two lines along the mat borders, shared by the garden (band px) and the room (art px). */
+    /** The shōji's lines in band px (transom rail, sill, horizon, vanishing point), and where the band sits in the art. */
     function plan(g: TideGeo) {
-      const band = ctx.art.querySelector<HTMLElement>('.p2t-band'), wrap = ctx.art.querySelector<HTMLElement>('.p2t'), card = ctx.art.querySelector<HTMLElement>('.p2t-card')
+      const band = ctx.art.querySelector<HTMLElement>('.p2t-band')
       const ox = parseFloat(band?.style.left ?? '') || 0, oy = parseFloat(band?.style.top ?? '') || 0
-      const W = 2 * ox + g.w, H = parseFloat(wrap?.style.height ?? '') || g.h + oy + 200
-      const top = 9, sill = g.ground - 4, floorY = g.ground + 6
-      const rb = top + (sill - top) * 0.28 // the transom's lower rail
-      const hz = top + (sill - top) * 0.5 // eye level: the garden's horizon
-      const vx = g.w * 0.6
-      const unit = (floorY - hz) / 1.25 // a mat's width where the floor meets the wall
-      const cardTop = parseFloat(card?.style.top ?? '') || oy + g.h + 14
-      const cw = Math.min(640, W), cx0 = (W - cw) / 2, cx1 = cx0 + cw
-      // a mat border j (…, -1, 0, 1, …) at art height y, running to the vanishing point
-      const at = (j: number, y: number) => ox + vx + (j * unit * (y - oy - hz)) / (floorY - hz)
-      const fy = oy + floorY
-      // where a line along border j can be inked on the floor: from the wall down until it meets the card, the frame's
-      // edge or the floor's foot; clear of the dates on the sill
-      // (on a tight scroll only the first date, today's and the one beside it show)
-      const tight = (g.xs[1] - g.xs[0]) < 62
-      const dates = tight ? [g.xs[0], g.xs[g.xs.length - 2], g.xs[g.xs.length - 1]] : g.xs
-      const reach = (j: number, sill = true) => {
-        let y1 = fy
-        for (let y = fy; y < H * 0.95; y += 4) {
-          const x = at(j, y)
-          if (x < 10 || x > W - 10 || (y > cardTop - 10 && x > cx0 - 14 && x < cx1 + 14)) break
-          y1 = y
-        }
-        return !sill || dates.every((x) => Math.abs(at(j, fy + 4) - (ox + x)) > 38 && Math.abs(at(j, fy + 28) - (ox + x)) > 38) ? y1 - fy : 0
-      }
-      // the pair of borders with the longest clear run for both lines, their labels inside the frame
-      let jl = 2, js = 3, best = 0
-      for (const j of [-2, 2, -3, 3, -1, 1, -4, 4]) {
-        const rl = reach(j)
-        for (const k of [j + Math.sign(j), j - Math.sign(j)]) {
-          const rs = reach(k, false), ys = fy + Math.min(rl, rs / 0.9) * 0.62, xk = at(k, ys), side = Math.sign(k - j)
-          // (both labels inside the frame and clear of the andon standing by the right wall)
-          const lamp = ox > 80 ? W - (ox - 10) * 0.5 : Infinity, xm = at(j, fy + rl * 0.5) - side * 80
-          const ok = (x: number) => x > 12 && x < W - 12 && Math.abs(x - lamp) > 40
-          const fits = ok(xk + side * 80) && ok(xk) && ok(xm) && ok(at(j, fy + rl * 0.5))
-          const score = fits ? Math.min(rl, rs * 1.3) : 0
-          if (score > best) (best = score), (jl = j), (js = k)
-        }
-      }
-      return { ox, oy, W, H, top, sill, floorY, rb, hz, vx, unit, at, fy, cardTop, jl, js, reach, ok: best > 0 }
+      const W = 2 * ox + g.w, H = Math.max(ctx.art.clientHeight, oy + g.h + 40)
+      const top = 6, sill = g.h - 5
+      const rb = clamp(g.h * 0.19, 50, 96) // the transom's lower rail
+      const rail = top + (rb - top) * 0.46 // the moon's rail
+      const hz = rb + (sill - rb) * 0.4 // eye level: the garden's horizon
+      const vx = g.w * 0.58
+      const fy = oy + g.h - 4 // the floor meets the wall
+      band?.style.setProperty('--g8w3-dy', `${f1(rail + 14)}px`)
+      return { ox, oy, W, H, top, sill, rb, rail, hz, vx, fy }
     }
 
     // the painting is built over a few frames the first time (README A.10); a re-layout builds it in one go
@@ -152,7 +148,7 @@ export const windowScene: SceneDef = {
     ctx.onCleanup(() => job?.cancel())
     function back(g: TideGeo): SVGElement[] {
       job?.cancel()
-      const sc = s('g', { class: 'g8w2-scene' })
+      const sc = s('g', { class: 'g8w3-scene' })
       scene = sc
       panels = []
       rises = []
@@ -165,16 +161,23 @@ export const windowScene: SceneDef = {
       const { w, xs, roll, seed } = g
       const r = rng(seed + 22)
       const p = plan(g)
-      const { top, sill, rb, hz, vx } = p
-      const edges = [roll + 2, ...xs.slice(1).map((x, k) => (xs[k] + x) / 2), w - roll - 2]
+      const { top, sill, rb, rail, hz, vx } = p
+      // the openings, one per stop; at the right end of the wall a pocket (tobukuro) the opened panels slide into, the
+      // edge of each left showing at its mouth, stacked a few px apart
+      const stackGap = w > 600 ? 9 : 5
+      const pocketX = Math.min(w - roll - 2 - stackGap * (n + 1) - 10, xs[n] + (xs[1] - xs[0]) * 0.62)
+      const caseX = pocketX + stackGap * (n + 1) + 4
+      const edges = [roll + 2, ...xs.slice(1).map((x, k) => (xs[k] + x) / 2), pocketX]
+      openEdges = edges
       const P = (x: number, y: number) => `${f1(x)} ${f1(y)}`
-      // where a ground line toward the vanishing point is at height y
+      // where a ground line through (x, y0) toward the vanishing point is at height y
       const toward = (x: number, y0: number, y: number) => vx + ((x - vx) * (y - hz)) / (y0 - hz)
-      const panelW = xs[1] - xs[0]
-      const base = sill - (sill - hz) * 0.24
-      const u = Math.min(panelW * 0.62, (sill - hz) * 0.62)
+      const panelW = xs[1] - xs[0], ph = sill - rb
+      const base = sill - (sill - hz) * 0.42 // the steles' feet, all at one depth, well back from the sill
+      const sw = clamp(panelW * 0.4, 52, 86), sh = Math.max(ph * 0.34, sw * 1.3)
+      const u = sw * 1.02
+      const fs = clamp(sw * 0.21, 12.5, 17)
       // ── the garden beyond: night sky, far ranges, mist on the horizon, raked sand curving in to the vanishing point
-      // the rake drawn toward the house in combed sweeps (three teeth, then a gap), swinging gently side to side
       let rake = '', rakeHi = ''
       for (let x = -w * 0.6, k = 0; x < w * 1.6; x += 5, k++) {
         if (k % 5 > 2) continue
@@ -184,103 +187,139 @@ export const windowScene: SceneDef = {
         if (k % 5 === 1) rakeHi += d
         else rake += d
       }
-      const noiseId = `g8w2-noise-${seed}`
+      const noiseId = `g8w3-noise-${seed}`
       const grain: SVGElement[] = []
       for (let k = 0; k < 18; k++) grain.push(s('circle', { cx: f1(r() * 40), cy: f1(r() * 30), r: f1(0.5 + r() * 0.9), opacity: f1(0.25 + r() * 0.6) }))
-      const shadowId = `g8w2-pine-${seed}`
+      const shadowId = `g8w3-pine-${seed}`
       sc.append(
         s('defs', null,
-          s('linearGradient', { id: `g8w2-sky-${seed}`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w2-s0' }), s('stop', { offset: 1, class: 'g8w2-s1' })),
-          s('linearGradient', { id: `g8w2-sand-${seed}`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w2-sd0' }), s('stop', { offset: 1, class: 'g8w2-sd1' })),
-          s('linearGradient', { id: `g8w2-pp-${seed}`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w2-p0' }), s('stop', { offset: 0.55, class: 'g8w2-p1' }), s('stop', { offset: 1, class: 'g8w2-p2' })),
+          s('linearGradient', { id: `g8w3-sky-${seed}`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w3-s0' }), s('stop', { offset: 1, class: 'g8w3-s1' })),
+          s('linearGradient', { id: `g8w3-sand-${seed}`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w3-sd0' }), s('stop', { offset: 1, class: 'g8w3-sd1' })),
+          s('linearGradient', { id: `g8w3-pp-${seed}`, x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w3-p0' }), s('stop', { offset: 0.55, class: 'g8w3-p1' }), s('stop', { offset: 1, class: 'g8w3-p2' })),
           // the paper glows where the moon is behind it and darkens away from it (its centre follows the moon)
-          (paperGlow = s('radialGradient', { id: `g8w2-pg-${seed}`, gradientUnits: 'userSpaceOnUse', cx: 0, cy: 0, r: f1(w * 0.42) }, s('stop', { offset: 0, class: 'g8w2-g0' }), s('stop', { offset: 0.35, class: 'g8w2-g1' }), s('stop', { offset: 1, class: 'g8w2-g2' }))),
+          (paperGlow = s('radialGradient', { id: `g8w3-pg-${seed}`, gradientUnits: 'userSpaceOnUse', cx: 0, cy: 0, r: f1(w * 0.42) }, s('stop', { offset: 0, class: 'g8w3-g0' }), s('stop', { offset: 0.35, class: 'g8w3-g1' }), s('stop', { offset: 1, class: 'g8w3-g2' }))),
           s('pattern', { id: noiseId, width: 40, height: 30, patternUnits: 'userSpaceOnUse' }, ...grain),
-          ...edges.slice(0, -1).map((a, k) => s('clipPath', { id: `g8w2-f${seed}-${k}` }, s('rect', { x: f1(a), y: f1(rb), width: f1(edges[k + 1] - a), height: f1(sill - rb) }))),
-          s('clipPath', { id: `g8w2-rm-${seed}` }, s('rect', { x: f1(edges[0]), y: top, width: f1(edges[edges.length - 1] - edges[0]), height: f1(rb - top) })),
+          s('clipPath', { id: `g8w3-f${seed}` }, s('rect', { x: f1(edges[0]), y: f1(rb), width: f1(w - roll - 2 - edges[0]), height: f1(sill - rb) })),
+          s('clipPath', { id: `g8w3-rm-${seed}` }, s('rect', { x: f1(edges[0]), y: top, width: f1(w - roll - 2 - edges[0]), height: f1(rb - top) })),
+          s('linearGradient', { id: `g8w3-psh-${seed}`, x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, class: 'g8w3-sh0' }), s('stop', { offset: 1, class: 'g8w3-sh1' })),
           // a pine outside, its moon shadow on the paper (one drawing, used by every panel so it slides with it)
-          s('g', { id: shadowId, class: 'g8w2-pineshadow' }, pine(w * 0.3, sill + (sill - top) * 0.25, (sill - top) * 1.15, seed + 31, 1), pine(w * 0.82, sill + (sill - top) * 0.4, (sill - top) * 0.9, seed + 32, -1))),
-        s('rect', { class: 'g8w2-sky', x: 0, y: top, width: f1(w), height: f1(hz - top + 2), fill: `url(#g8w2-sky-${seed})` }),
-        mist(vx, hz - (hz - top) * 0.2, w * 0.5, (hz - top) * 0.5),
-        hills(roll, w - roll, hz + 2, (hz - rb) * 0.7, seed + 4, 0.9, 6),
-        hills(w * 0.05, w * 0.42, hz + 2, (hz - rb) * 0.5, seed + 5, 0.55, 2),
-        s('rect', { class: 'g8w2-sand', x: 0, y: f1(hz), width: f1(w), height: f1(sill - hz), fill: `url(#g8w2-sand-${seed})` }),
-        s('rect', { class: 'g8w2-noise', x: 0, y: f1(hz), width: f1(w), height: f1(sill - hz), fill: `url(#${noiseId})` }),
-        s('path', { class: 'g8w2-rake', d: rake }),
-        s('path', { class: 'g8w2-rake hi', d: rakeHi }),
-        mist(vx, hz + 3, w * 0.6, (sill - hz) * 0.2),
-        mist(vx, hz - 2, w * 0.4, (sill - hz) * 0.08))
+          s('g', { id: shadowId, class: 'g8w3-pineshadow' }, pine(w * 0.3, sill + ph * 0.2, ph * 1.15, seed + 31, 1), pine(w * 0.82, sill + ph * 0.35, ph * 0.9, seed + 32, -1))),
+        s('rect', { class: 'g8w3-sky', x: 0, y: top, width: f1(w), height: f1(hz - top + 2), fill: `url(#g8w3-sky-${seed})` }),
+        mist(vx, hz - (hz - rb) * 0.3, w * 0.55, (hz - rb) * 0.6),
+        hills(roll, w - roll, hz + 2, (hz - rb) * 0.62, seed + 4, 0.9, 6),
+        hills(w * 0.02, w * 0.44, hz + 2, (hz - rb) * 0.42, seed + 5, 0.5, 2),
+        hills(w * 0.7, w * 1.02, hz + 2, (hz - rb) * 0.34, seed + 6, 0.55, 2),
+        mist(vx, hz, w * 0.7, (sill - hz) * 0.12),
+        s('rect', { class: 'g8w3-sand', x: 0, y: f1(hz), width: f1(w), height: f1(sill - hz), fill: `url(#g8w3-sand-${seed})` }),
+        s('rect', { class: 'g8w3-noise', x: 0, y: f1(hz), width: f1(w), height: f1(sill - hz), fill: `url(#${noiseId})` }),
+        s('path', { class: 'g8w3-rake', d: rake }),
+        s('path', { class: 'g8w3-rake hi', d: rakeHi }),
+        mist(vx, hz + 3, w * 0.62, (sill - hz) * 0.16))
       yield
-      // ── steles rising from the sand, each carrying what that year's window could read
-      const rise = (k: number, kids: SVGElement[]) => s('g', { class: `g8w2-rise r${k}` }, ...kids)
-      for (let k = 0; k < n; k++) {
-        rises.push(rise(k, [s('g', { transform: `translate(${f1(xs[k])} ${f1(base)})` }, ...stele(u * 0.62, u * 0.22), s('g', { transform: `translate(0 ${f1(-u * 0.2)})` }, ...carried(k, u * 0.72, seed + k * 13)))]))
-        if (k % 2) yield
+      // ── mid-ground: a pine on a mossy bank at each end of the garden (cut by the frame, it gives the depth a scale),
+      // stepping stones from the sill to today's stele, mossy rocks by the steles
+      const tx = xs[n]
+      const stones = steppingStones([vx + (tx - vx) * 0.2, sill + 8], [tx - sw * 0.2, base + 4], 6, clamp(sw * 0.5, 22, 44), seed + 41)
+      const rocks: SVGElement[] = []
+      for (let k = 0; k <= n; k++) {
+        if (k === 1 || k === n) continue
+        const side = k % 2 ? -1 : 1
+        rocks.push(s('g', { transform: `translate(${f1(xs[k] + side * sw * 0.85)} ${f1(base + 3)})` }, stoneArt(sw * 0.5, sw * 0.28, seed + 50 + k)))
       }
-      // today: about a million tokens, a stack of ten novels on its stele (not a library: that would teach the 10-million
-      // claim); the maker's own 10-million claim stands far behind in the mist, pale, with its caveat carved under it
-      const tx = xs[n], fx0 = tx - panelW * 0.28, fy0 = hz + (base - hz) * 0.3, fk = 0.42
-      rises.push(rise(n, [
-        s('g', { class: 'g8w2-claim', transform: `translate(${f1(fx0)} ${f1(fy0)}) scale(${fk})` }, ...stele(u * 0.62, u * 0.22), s('g', { transform: `translate(0 ${f1(-u * 0.2)})` }, ...carried(4, u * 0.72, seed + 77))),
-        s('text', { class: 'g8w2-claimtxt', x: f1(fx0), y: f1(fy0 + 12), 'text-anchor': 'middle' }, S.claim),
-        s('g', { transform: `translate(${f1(tx)} ${f1(base)})` }, ...stele(u * 0.62, u * 0.22), s('g', { transform: `translate(0 ${f1(-u * 0.2)})` }, ...carried(3, u * 0.72, seed + 3 * 13))),
-      ]))
+      sc.append(
+        s('g', { class: 'g8w3-bank' }, pine((xs[0] + xs[1]) / 2 + panelW * 0.12, hz + (base - hz) * 0.22, ph * 0.44, seed + 61, 1), pocketX - xs[n] < 190 ? null : pine(pocketX - panelW * 0.12, hz + (base - hz) * 0.4, ph * 0.42, seed + 62, -1)),
+        ...rocks, stones)
       yield
-      // the sand raked in rings round each stone, flattened by the distance
+      // ── steles rising from the sand, each carrying what that year's window could read, its figure carved in the face
       let rings = ''
-      for (let k = 0; k <= n; k++) for (let q = 1; q <= 3; q++) rings += `M${P(xs[k] - u * (0.35 + q * 0.16), base + 1)}a${f1(u * (0.35 + q * 0.16))} ${f1(u * (0.08 + q * 0.035))} 0 1 0 ${f1(u * (0.7 + q * 0.32))} 0`
-      sc.append(s('path', { class: 'g8w2-rake ring', d: rings }))
-      // lost in the middle: mist settles over the middle steles once the moon is past today
-      const mid = (xs[1] + xs[n - 2]) / 2, span = xs[n - 2] - xs[1]
-      // today's long line runs on past the sill, along its mat border's line, deep into the garden
-      const jl = p.jl, xl = vx + (jl * p.unit * (sill - hz)) / (p.floorY - hz)
+      for (let k = 0; k <= n; k++) for (let q = 1; q <= 3; q++) rings += `M${P(xs[k] - sw * (0.7 + q * 0.3), base + 1)}a${f1(sw * (0.7 + q * 0.3))} ${f1(sw * (0.14 + q * 0.06))} 0 1 0 ${f1(sw * (1.4 + q * 0.6))} 0`
+      sc.append(s('path', { class: 'g8w3-rake ring', d: rings }))
+      const rise = (k: number, kids: SVGElement[]) => s('g', { class: `g8w3-rise r${k}` }, ...kids)
+      const on = (x: number, k: number, it: number, sd: number) => s('g', { transform: `translate(${f1(x)} ${f1(base)})` }, ...stele(sw, sh, S.carve[k], fs), s('g', { transform: `translate(0 ${f1(-sh)})` }, ...carried(it, u, sd)))
+      for (let k = 0; k < n; k++) rises.push(rise(k, [on(xs[k], k, k, seed + k * 13)]))
+      // today: about a million tokens, a stack of ten novels (not a library: that would teach the 10-million claim); the
+      // maker's own 10-million claim stands far back in the mist, pale, its caveat written under it
+      const right = pocketX - tx, fx0 = tx + Math.min(panelW * 0.5, right * 0.56), fy0 = hz + (base - hz) * 0.22, fk = 0.38
+      const claim = S.claim.split(' · ')
+      rises.push(rise(n, [
+        s('g', { class: 'g8w3-claim', transform: `translate(${f1(fx0)} ${f1(fy0)}) scale(${fk})` }, ...stele(sw, sh, '', fs).slice(0, -1), s('g', { transform: `translate(0 ${f1(-sh)})` }, ...carried(4, u, seed + 77))),
+        mist(fx0, fy0 - sh * 0.15, panelW * 0.5, sh * 0.25),
+        // (no room beside it on a phone: its caveat in the sky over it, flush with the panel's edge, clear of the stack)
+        right < 190
+          ? s('text', { class: 'g8w3-claimtxt', y: f1(fy0 - (sh + u * 1.2) * fk - 22), 'text-anchor': 'end' }, ...claim.map((l, k) => s('tspan', { x: f1(pocketX - 6), dy: k ? 13 : 0 }, l)))
+          : s('text', { class: 'g8w3-claimtxt', x: f1(fx0), y: f1(fy0 + 15), 'text-anchor': 'middle' }, S.claim),
+        on(tx, n, 3, seed + 3 * 13),
+      ]))
+      // lost in the middle: once the seal has been along the scroll, mist settles over the middle steles
+      const mid = (xs[1] + xs[n - 1]) / 2, span = xs[n - 1] - xs[1]
       sc.append(...rises,
-        s('g', { class: 'g8w2-lost' }, mist(mid, base - u * 0.5, span * 0.62 + panelW * 0.5, u * 0.62), mist(mid, base - u * 0.35, span * 0.5 + panelW * 0.4, u * 0.42)),
-        mist(w - roll - panelW * 0.6, (hz + sill) / 2, panelW * 1.3, (sill - top) * 0.5),
-        p.ok ? s('g', { class: 'g8w2-cmp' }, s('path', { class: 'g8w2-cline long', d: stroke([[xl, sill + 2], [toward(xl, sill, hz + 4), hz + 4]], 4, 0.02, 0.5, 0.1) })) : '')
+        s('g', { class: 'g8w3-lost' },
+          s('defs', null, s('radialGradient', { id: `g8w3-fog-${seed}` }, s('stop', { offset: 0, class: 'g8w3-fg0' }), s('stop', { offset: 0.6, class: 'g8w3-fg1' }), s('stop', { offset: 1, class: 'g8w3-fg2' }))),
+          s('ellipse', { cx: f1(mid), cy: f1(base - sh * 0.75), rx: f1(span * 0.5 + panelW * 0.5), ry: f1(sh * 1.05), fill: `url(#g8w3-fog-${seed})` })))
       yield
-      // ── the shōji: under the transom, one sliding panel per stop, each clipped to its own frame so it slides away
-      // behind the post; thin warm kumiko (many light rails, few stiles), the paper lit where the moon is behind it
+      // ── the shōji: one sliding panel per stop on the sill's grooves; opened, a panel slides right across the others into
+      // the pocket and stops with its edge (stile, a strip of paper) showing at the mouth, its shadow on the one under it.
+      // Thin kumiko (many light rails, few stiles), the paper lit where the moon is behind it
       panels = edges.slice(0, -1).map((a, k) => {
         const b = edges[k + 1]
         let lat = ''
-        const cols = Math.max(2, Math.round((b - a) / 34))
+        const cols = Math.max(2, Math.round((b - a) / 36))
         for (let c = 1; c < cols; c++) {
           const x = a + ((b - a) * c) / cols + (r() - 0.5) * 0.6
           lat += `M${P(x, rb)}L${P(x + (r() - 0.5) * 0.5, sill)}`
         }
-        for (let y = rb + 16; y < sill - 6; y += 19 + r() * 1.5) lat += `M${P(a, y)}L${P(b, y + (r() - 0.5) * 0.6)}`
-        return s('g', { 'clip-path': `url(#g8w2-f${seed}-${k})` },
-          s('g', { class: `g8w2-panel p${k}` },
-            s('rect', { class: 'g8w2-paper', x: f1(a), y: f1(rb), width: f1(b - a), height: f1(sill - rb), fill: `url(#g8w2-pp-${seed})` }),
-            s('rect', { class: 'g8w2-paperglow', x: f1(a), y: f1(rb), width: f1(b - a), height: f1(sill - rb), fill: `url(#g8w2-pg-${seed})` }),
-            s('use', { href: `#${shadowId}`, class: 'g8w2-pineuse' }),
-            s('path', { class: 'g8w2-kumiko', d: lat })))
+        for (let y = rb + 20; y < sill - 8; y += 22 + r() * 1.5) lat += `M${P(a, y)}L${P(b, y + (r() - 0.5) * 0.6)}`
+        // the panel's own frame (kamachi) and its finger pull
+        const fr = stroke([[a + 2, rb + 1], [a + 2, sill - 1]], 3.2, 0.01, 0.01, 0.8) + stroke([[b - 2, rb + 1], [b - 2, sill - 1]], 3.2, 0.01, 0.01, 0.8) + stroke([[a, sill - 8], [b, sill - 8]], 5, 0.01, 0.01, 0.8)
+        return s('g', null,
+          s('g', { class: `g8w3-panel p${k}`, style: `--to:${f1(pocketX + stackGap * (n - k) - a)}px` },
+            s('rect', { class: 'g8w3-pshade', x: f1(a - 10), y: f1(rb), width: 10, height: f1(sill - rb), fill: `url(#g8w3-psh-${seed})` }),
+            // (the paper, the pine's shadow on it and the lattice clipped to the panel itself, moving with it)
+            s('clipPath', { id: `g8w3-pc${seed}-${k}` }, s('rect', { x: f1(a), y: f1(rb), width: f1(b - a), height: f1(sill - rb) })),
+            s('g', { 'clip-path': `url(#g8w3-pc${seed}-${k})` },
+              s('rect', { class: 'g8w3-paper', x: f1(a), y: f1(rb), width: f1(b - a), height: f1(sill - rb), fill: `url(#g8w3-pp-${seed})` }),
+              s('rect', { class: 'g8w3-paperglow', x: f1(a), y: f1(rb), width: f1(b - a), height: f1(sill - rb), fill: `url(#g8w3-pg-${seed})` }),
+              s('use', { href: `#${shadowId}`, class: 'g8w3-pineuse' }),
+              s('path', { class: 'g8w3-kumiko', d: lat })),
+            s('path', { class: 'g8w3-wood', d: fr }),
+            s('ellipse', { class: 'g8w3-pull', cx: f1(a + 12), cy: f1(rb + ph * 0.55), rx: 3, ry: 7 })))
       })
-      // the transom: fixed washi under a diagonal kumiko; the moon glows behind it, the lattice dark across the glow
+      // the transom: fixed washi under slender slats; the moon glows behind it, the lattice dark across the glow; a rail
+      // groove along it with a notch at each year (the dates sit under the notches)
       let ranma = ''
-      const rx0 = edges[0], rx1 = edges[edges.length - 1], rh = rb - top
-      // slender slats with a rail through them: the moon's glow comes through barred by their shadows
+      const rx0 = edges[0], rx1 = w - roll - 2, rh = rb - top
       for (let x = rx0 + 5; x < rx1; x += 9) ranma += `M${P(x, top)}L${P(x, rb)}`
-      ranma += `M${P(rx0, top + rh * 0.36)}L${P(rx1, top + rh * 0.36)}M${P(rx0, top + rh * 0.42)}L${P(rx1, top + rh * 0.42)}`
+      ranma += `M${P(rx0, top + rh * 0.2)}L${P(rx1, top + rh * 0.2)}`
       for (const a of edges) ranma += `M${P(a, top)}L${P(a, rb)}`
-      glow = s('g', { class: 'g8w2-moon' },
-        s('circle', { class: 'g8w2-halo', r: f1(Math.min(90, rh * 1.5)), fill: 'url(#g8w2-mglow)' }),
-        s('circle', { class: 'g8w2-disc', r: f1(Math.min(15, rh * 0.32)), fill: 'url(#g8w2-mdisc)' }))
+      glow = s('g', { class: 'g8w3-moon' },
+        s('circle', { class: 'g8w3-halo', r: f1(Math.min(110, rh * 1.6)), fill: 'url(#g8w3-mglow)' }),
+        s('circle', { class: 'g8w3-disc', r: f1(Math.min(17, rh * 0.3)), fill: 'url(#g8w3-mdisc)' }))
+      let notches = ''
+      for (const x of xs) notches += `M${P(x, rail - 7)}L${P(x, rail + 7)}`
       let posts = ''
-      edges.forEach((x, k) => void (posts += stroke([[x, rb], [x + (r() - 0.5) * 0.6, (rb + sill) / 2], [x, sill + 3]], k === 0 || k === edges.length - 1 ? 3.4 : 2.2, 0.01, 0.02, 0.8)))
-      sc.append(...panels,
+      // (no posts between the openings: the panels run on one track; a post at each end of the wall)
+      for (const x of [edges[0], w - roll - 2]) posts += stroke([[x, top], [x + (r() - 0.5) * 0.6, (rb + sill) / 2], [x, sill]], 5, 0.01, 0.02, 0.8)
+      sc.append(
+        // the pocket's dark mouth, the panels (the first to open on top: it slides across the others), the casing's face
+        s('rect', { class: 'g8w3-mouth', x: f1(pocketX), y: f1(rb), width: f1(caseX - pocketX), height: f1(sill - rb) }),
+        s('g', { 'clip-path': `url(#g8w3-f${seed})` }, ...[...panels].reverse()),
+        s('path', { class: 'g8w3-wood', d: `M${P(caseX, rb)}L${P(w - roll - 2, rb)}L${P(w - roll - 2, sill)}L${P(caseX, sill)}Z` }),
+        s('path', { class: 'g8w3-woodlit', d: stroke([[caseX + 1, rb + 2], [caseX + 1, sill - 2]], 1.2, 0.02, 0.02, 0.6) }),
         s('defs', null,
-          s('radialGradient', { id: 'g8w2-mglow' }, s('stop', { offset: 0, class: 'g8w2-m0' }), s('stop', { offset: 0.3, class: 'g8w2-m1' }), s('stop', { offset: 1, class: 'g8w2-m2' })),
-          s('radialGradient', { id: 'g8w2-mdisc' }, s('stop', { offset: 0, class: 'g8w2-d0' }), s('stop', { offset: 0.7, class: 'g8w2-d1' }), s('stop', { offset: 1, class: 'g8w2-d2' }))),
-        s('g', { 'clip-path': `url(#g8w2-rm-${seed})` },
-          s('rect', { class: 'g8w2-ranma', x: f1(rx0), y: top, width: f1(rx1 - rx0), height: f1(rh) }),
+          s('radialGradient', { id: 'g8w3-mglow' }, s('stop', { offset: 0, class: 'g8w3-m0' }), s('stop', { offset: 0.3, class: 'g8w3-m1' }), s('stop', { offset: 1, class: 'g8w3-m2' })),
+          s('radialGradient', { id: 'g8w3-mdisc' }, s('stop', { offset: 0, class: 'g8w3-d0' }), s('stop', { offset: 0.7, class: 'g8w3-d1' }), s('stop', { offset: 1, class: 'g8w3-d2' }))),
+        s('g', { 'clip-path': `url(#g8w3-rm-${seed})` },
+          s('rect', { class: 'g8w3-ranma', x: f1(rx0), y: top, width: f1(rx1 - rx0), height: f1(rh) }),
           glow,
-          s('path', { class: 'g8w2-kumiko ranma', d: ranma })),
-        s('path', { class: 'g8w2-post', d: posts }),
-        s('path', { class: 'g8w2-wood', d: stroke([[roll, top + 2], [w / 2, top + 2.5], [w - roll, top + 2]], 5, 0.01, 0.01, 0.7) + stroke([[roll, rb], [w / 2, rb + 0.5], [w - roll, rb]], 5.5, 0.01, 0.01, 0.7) + stroke([[roll, sill + 2], [w / 2, sill + 2.5], [w - roll, sill + 2]], 6, 0.01, 0.01, 0.7) }),
-        s('path', { class: 'g8w2-woodlit', d: stroke([[roll, rb - 2], [w - roll, rb - 2]], 1, 0.02, 0.02, 0.6) + stroke([[roll, sill], [w - roll, sill]], 1, 0.02, 0.02, 0.6) }))
-      track = (t: number) => [xs[0] + (xs[xs.length - 1] - xs[0]) * t, top + rh * 0.52 - Math.sin(Math.PI * t) * rh * 0.12]
+          s('path', { class: 'g8w3-kumiko ranma', d: ranma })),
+        s('path', { class: 'g8w3-groove', d: stroke([[xs[0] - 14, rail], [xs[n] + 14, rail]], 2.6, 0.05, 0.05, 0.5) }),
+        s('path', { class: 'g8w3-notch', d: notches }),
+        s('path', { class: 'g8w3-post', d: posts }),
+        // the transom's rails and the sill (shikii): dark wood, their moonlit upper edges; the sill's two grooves
+        s('path', { class: 'g8w3-wood', d: stroke([[roll, top + 2], [w / 2, top + 2.5], [w - roll, top + 2]], 6, 0.01, 0.01, 0.7) + stroke([[roll, rb], [w / 2, rb + 0.5], [w - roll, rb]], 6.5, 0.01, 0.01, 0.7) + `M${P(roll, sill)}L${P(w - roll, sill)}L${P(w - roll, sill + 8)}L${P(roll, sill + 8)}Z` }),
+        s('path', { class: 'g8w3-woodlit', d: stroke([[roll, rb - 2.6], [w - roll, rb - 2.6]], 1, 0.02, 0.02, 0.6) + stroke([[roll, sill + 0.6], [w - roll, sill + 0.6]], 1.2, 0.02, 0.02, 0.6) }),
+        s('path', { class: 'g8w3-sillgroove', d: `M${P(roll, sill + 3)}L${P(w - roll, sill + 3)}M${P(roll, sill + 5.6)}L${P(w - roll, sill + 5.6)}` }))
+      track = (t: number) => [xs[0] + (xs[n] - xs[0]) * t, rail]
       moonAt(lastT, false)
       yield
       drawRoom(g, p)
@@ -298,105 +337,101 @@ export const windowScene: SceneDef = {
     }
 
     /**
-     * The tea room round the scroll (an SVG behind it, the whole art area): a ceiling beam and boards, plaster walls, an
-     * alcove (tokonoma) with a hanging scroll on the left, an andon's warm pool on the right; tatami with dark borders
-     * running to the garden's vanishing point; moonlight thrown in through each open panel as a long trapezoid on the mats;
-     * a low table with a teacup in the near corner; and today's two ink lines along the mat borders.
+     * The tea room round the shōji (an SVG behind it, the whole art area): the lintel (kamoi) over it with the decoding
+     * line carved in it on a wide screen, posts either side, an alcove (tokonoma) with a hanging scroll on its hook on the
+     * left, an andon standing on the mats on the right with its warm pool; tatami with dark borders and the rush's grain
+     * running to the garden's vanishing point; moonlight thrown in through each open panel as a long trapezoid.
      */
     function drawRoom(g: TideGeo, p: ReturnType<typeof plan>) {
-      const { ox, oy, W, H, fy, at } = p
+      const { ox, oy, W, H, fy } = p
       const hz = oy + p.hz, vx = ox + p.vx
       const P = (x: number, y: number) => `${f1(x)} ${f1(y)}`
       room.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
       room.style.height = `${f1(H)}px`
       const r = rng(g.seed + 7)
-      // depth on the floor: a row of mats k widths nearer than the wall meets the floor at this height
+      const at = (x: number, y: number) => vx + ((x - vx) * (y - hz)) / (fy - hz) // a line from (x, fy) to the vanishing point, at y
+      const unit = Math.max(120, (fy - hz) / 1.3) // a mat's width where the floor meets the wall
       const Z0 = 7
       const rowY = (k: number) => hz + ((fy - hz) * Z0) / (Z0 - k)
-      // tatami: the long borders (heri) as dark bands that widen toward us, the short seams staggered like a real floor
-      let heri = '', seams = ''
-      for (let j = -12; j <= 12; j++) {
-        const xa = at(j, fy), xb = at(j, H + 40)
-        if (Math.max(xa, xb) < -40 || Math.min(xa, xb) > W + 40) continue
-        const w0 = p.unit * 0.022, w1 = w0 * ((H + 40 - hz) / (fy - hz))
+      let heri = '', seams = '', weave = ''
+      for (let j = -14; j <= 14; j++) {
+        const xa = vx + j * unit, xb = at(xa, H + 40)
+        if (Math.max(xa, xb) < -60 || Math.min(xa, xb) > W + 60) continue
+        const w0 = unit * 0.02, w1 = w0 * ((H + 40 - hz) / (fy - hz))
         heri += `M${P(xa - w0, fy)}L${P(xa + w0, fy)}L${P(xb + w1, H + 40)}L${P(xb - w1, H + 40)}Z`
+        // the rush's grain: fine lines along the mat, toward the vanishing point
+        for (let q = 1; q < 10; q++) {
+          const x0 = xa + (unit * q) / 10
+          weave += `M${P(x0, fy)}L${P(at(x0, H + 40), H + 40)}`
+        }
         for (let k = (j & 1) + 1; k < Z0; k += 2) {
           const y = rowY(k)
           if (y > H + 10) break
-          seams += `M${P(at(j, y), y)}L${P(at(j + 1, y), y)}`
+          seams += `M${P(at(xa, y), y)}L${P(at(xa + unit, y), y)}`
         }
       }
-      // moonlight through each panel: from the sill, nearer and wider, a little skewed away from the moon
-      const skew = -0.32
-      beams = g.xs.length ? [...Array(g.xs.length).keys()].map((k) => {
-        const edges = [g.roll + 2, ...g.xs.slice(1).map((x, q) => (g.xs[q] + x) / 2), g.w - g.roll - 2]
-        // (inset by the posts' shadow, so each opening throws its own patch)
-        const a = ox + edges[k] + 5, b = ox + edges[k + 1] - 5, y1 = rowY(3.4)
-        const xa1 = vx + ((a - vx) * (y1 - hz)) / (fy - hz) + skew * (y1 - fy), xb1 = vx + ((b - vx) * (y1 - hz)) / (fy - hz) + skew * (y1 - fy)
-        return s('g', { class: `g8w2-beam k${k}` }, s('path', { class: 'g8w2-light', d: `M${P(a, fy)}L${P(b, fy)}L${P(xb1, y1)}L${P(xa1, y1)}Z`, fill: 'url(#g8w2-beam)' }))
-      }) : []
-      const sideW = Math.max(0, ox - 10)
-      const kam = oy + p.top - 14 // the beam over the shōji (kamoi)
-      // the low table and its teacup, in the near left corner (only where the floor is not under the card)
-      const tableOk = W > 900
-      const tx0 = W * 0.05, tx1 = W * 0.21, ty = H * 0.82, tth = H * 0.028
-      const tFar = (x: number) => vx + (x - vx) * ((ty - hz) / (ty + 40 - hz))
-      const tableTop = `M${P(tFar(tx0), ty)}L${P(tFar(tx1), ty)}L${P(tx1, ty + 40)}L${P(tx0, ty + 40)}Z`
-      const cupX = W * 0.15, cupY = ty + 24, cw = W * 0.015
-      // today's two lines along the mat borders: one stops short, the other runs to the wall (and on, in the garden)
-      const ll = Math.min(p.reach(p.jl), H - fy), ls = Math.min(p.reach(p.js, false), ll * 0.9)
-      const near = fy + Math.min(ll, ls / 0.9) // both start at the same near row
-      const lineL: Pt[] = [[at(p.jl, near), near], [at(p.jl, fy + 1), fy + 1]]
-      const shortEnd = near - (near - fy) * 0.38
-      const lineS: Pt[] = [[at(p.js, near), near], [at(p.js, shortEnd), shortEnd]]
-      const cmp = S.tide.milestones[n - 1].compare
-      const out = Math.sign(p.js - p.jl) || 1
+      // moonlight through each open panel: from the sill, nearer and wider, a little skewed away from the moon
+      const edges = openEdges
+      const y1 = Math.min(H + 20, rowY(3.6)), skew = -0.28
+      beams = edges.slice(0, -1).map((e, k) => {
+        const a = ox + e + 6, b = ox + edges[k + 1] - 6
+        const xa1 = at(a, y1) + skew * (y1 - fy), xb1 = at(b, y1) + skew * (y1 - fy)
+        return s('g', { class: `g8w3-beam k${k}` }, s('path', { class: 'g8w3-light', d: `M${P(a, fy)}L${P(b, fy)}L${P(xb1, y1)}L${P(xa1, y1)}Z`, fill: 'url(#g8w3-beam)' }))
+      })
+      const sideW = Math.max(0, ox - 14)
+      const big = sideW > 70
+      // the andon: a paper box on four legs, standing on the mats by the right wall (its legs on the floor, a contact shadow)
+      const ax = W - sideW * 0.5, aw = clamp(sideW * 0.44, 28, 46), ah = aw * 1.8, ay = fy + clamp((H - fy) * 0.22, 16, 40)
+      const andon = big ? s('g', { class: 'g8w3-andon' },
+        s('ellipse', { cx: f1(ax), cy: f1(ay - ah * 0.6), rx: f1(sideW * 1.6), ry: f1(ah * 1.4), fill: 'url(#g8w3-andon)' }),
+        s('ellipse', { class: 'g8w3-ashadow', cx: f1(ax + 4), cy: f1(ay + 2), rx: f1(aw * 0.8), ry: 4 }),
+        s('rect', { class: 'g8w3-andon-box', x: f1(ax - aw / 2), y: f1(ay - ah), width: f1(aw), height: f1(ah * 0.78) }),
+        s('path', { class: 'g8w3-andon-frame', d: `M${P(ax - aw / 2 - 2, ay - ah)}h${f1(aw + 4)}M${P(ax - aw / 2 - 2, ay - ah * 0.22)}h${f1(aw + 4)}M${P(ax - aw / 2, ay - ah)}V${f1(ay)}M${P(ax + aw / 2, ay - ah)}V${f1(ay)}M${P(ax, ay - ah)}v${f1(ah * 0.78)}` })) : null
+      // the tokonoma: a recess, its post, a hanging scroll on a cord from a hook under the lintel, a stone on the floor board
+      const kam = Math.max(0, oy - 4)
+      const scrollW = sideW * 0.46, sx = sideW * 0.5, sTop = kam + 26, sBot = fy - (fy - kam) * 0.2
+      const toko = big ? s('g', { class: 'g8w3-toko' },
+        s('rect', { class: 'g8w3-toko-in', x: 8, y: f1(kam + 6), width: f1(sideW - 16), height: f1(fy - kam + 2) }),
+        s('path', { class: 'g8w3-cord', d: `M${P(sx, kam + 10)}L${P(sx - scrollW * 0.4, sTop)}M${P(sx, kam + 10)}L${P(sx + scrollW * 0.4, sTop)}` }),
+        s('circle', { class: 'g8w3-hook', cx: f1(sx), cy: f1(kam + 10), r: 2.2 }),
+        s('rect', { class: 'g8w3-kake-silk', x: f1(sx - scrollW / 2), y: f1(sTop), width: f1(scrollW), height: f1(sBot - sTop) }),
+        s('rect', { class: 'g8w3-kake-paper', x: f1(sx - scrollW * 0.38), y: f1(sTop + 12), width: f1(scrollW * 0.76), height: f1((sBot - sTop) * 0.74) }),
+        hills(sx - scrollW * 0.36, sx + scrollW * 0.36, sTop + 12 + (sBot - sTop) * 0.6, (sBot - sTop) * 0.3, g.seed + 9, 0.3, 2),
+        s('path', { class: 'g8w3-kake-rod', d: stroke([[sx - scrollW * 0.62, sBot], [sx + scrollW * 0.62, sBot]], 4, 0.05, 0.05, 0.6) + stroke([[sx - scrollW * 0.55, sTop], [sx + scrollW * 0.55, sTop]], 3, 0.05, 0.05, 0.6) }),
+        s('rect', { class: 'g8w3-tokoboard', x: 8, y: f1(fy - 8), width: f1(sideW - 16), height: 10 }),
+        s('g', { transform: `translate(${f1(sideW * 0.62)} ${f1(fy - 8)})` }, stoneArt(sideW * 0.3, sideW * 0.16, g.seed + 19))) : null
+      // the lintel (kamoi) wall to wall over the shōji, posts either side down to the floor
+      const decodeOnLintel = wide() && oy >= 26
+      const lintel = `M0 0L${f1(W)} 0L${f1(W)} ${f1(oy + 7)}L0 ${f1(oy + 7)}Z`
+      const postL = sideW > 10 ? `M${P(ox - 14, oy)}L${P(ox + 4, oy)}L${P(ox + 4, fy + 2)}L${P(ox - 14, fy + 2)}Z` : ''
+      const postR = sideW > 10 ? `M${P(ox + g.w - 4, oy)}L${P(ox + g.w + 14, oy)}L${P(ox + g.w + 14, fy + 2)}L${P(ox + g.w - 4, fy + 2)}Z` : ''
+      let grainW = ''
+      for (let k = 0; k < 5; k++) {
+        const y = (oy + 4) * (0.2 + k * 0.16) + (r() - 0.5) * 2
+        grainW += stroke([[r() * W * 0.2, y], [W * (0.5 + r() * 0.5), y + (r() - 0.5) * 1.2]], 0.8, 0.2, 0.3, 0.2)
+      }
       room.replaceChildren(...[
         s('defs', null,
-          s('linearGradient', { id: 'g8w2-beam', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w2-b0' }), s('stop', { offset: 1, class: 'g8w2-b1' })),
-          s('linearGradient', { id: 'g8w2-floor', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w2-fl0' }), s('stop', { offset: 1, class: 'g8w2-fl1' })),
-          s('linearGradient', { id: 'g8w2-wallg', x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, class: 'g8w2-wl0' }), s('stop', { offset: 0.5, class: 'g8w2-wl1' }), s('stop', { offset: 1, class: 'g8w2-wl0' })),
-          s('radialGradient', { id: 'g8w2-andon' }, s('stop', { offset: 0, class: 'g8w2-a0' }), s('stop', { offset: 1, class: 'g8w2-a1' }))),
-        s('rect', { class: 'g8w2-wall', width: f1(W), height: f1(fy + 2), fill: 'url(#g8w2-wallg)' }),
-        s('rect', { class: 'g8w2-floor', y: f1(fy), width: f1(W), height: f1(H - fy + 2), fill: 'url(#g8w2-floor)' }),
-        s('path', { class: 'g8w2-mats', d: seams }),
-        s('path', { class: 'g8w2-heri', d: heri }),
+          s('linearGradient', { id: 'g8w3-beam', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w3-b0' }), s('stop', { offset: 1, class: 'g8w3-b1' })),
+          s('linearGradient', { id: 'g8w3-floor', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8w3-fl0' }), s('stop', { offset: 1, class: 'g8w3-fl1' })),
+          s('linearGradient', { id: 'g8w3-wallg', x1: 0, y1: 0, x2: 1, y2: 0 }, s('stop', { offset: 0, class: 'g8w3-wl0' }), s('stop', { offset: 0.5, class: 'g8w3-wl1' }), s('stop', { offset: 1, class: 'g8w3-wl0' })),
+          s('radialGradient', { id: 'g8w3-andon' }, s('stop', { offset: 0, class: 'g8w3-a0' }), s('stop', { offset: 1, class: 'g8w3-a1' }))),
+        s('rect', { class: 'g8w3-wall', width: f1(W), height: f1(fy + 2), fill: 'url(#g8w3-wallg)' }),
+        s('rect', { class: 'g8w3-floor', y: f1(fy), width: f1(W), height: f1(H - fy + 2), fill: 'url(#g8w3-floor)' }),
+        s('path', { class: 'g8w3-weave', d: weave }),
+        s('path', { class: 'g8w3-mats', d: seams }),
+        s('path', { class: 'g8w3-heri', d: heri }),
         ...beams,
-        // the andon on the right: its warm pool on the mats and the wall, a rim of its light on the nearest border
-        s('g', { class: 'g8w2-andon' },
-          s('ellipse', { cx: f1(W - Math.max(sideW, 60) * 0.5), cy: f1(fy + (H - fy) * 0.25), rx: f1(Math.max(sideW, 120) * 1.8), ry: f1((H - fy) * 0.55), fill: 'url(#g8w2-andon)' }),
-          sideW > 70 ? s('ellipse', { cx: f1(W - sideW * 0.5), cy: f1(fy - (fy - oy) * 0.2), rx: f1(sideW * 0.9), ry: f1((fy - oy) * 0.55), fill: 'url(#g8w2-andon)' }) : null,
-          sideW > 70 ? s('rect', { class: 'g8w2-andon-box', x: f1(W - sideW * 0.5 - 16), y: f1(fy + (H - fy) * 0.12 - 58), width: 32, height: 52, rx: 2 }) : null,
-          sideW > 70 ? s('path', { class: 'g8w2-andon-frame', d: `M${P(W - sideW * 0.5 - 18, fy + (H - fy) * 0.12 - 60)}h36M${P(W - sideW * 0.5 - 18, fy + (H - fy) * 0.12 - 6)}h36M${P(W - sideW * 0.5 - 15, fy + (H - fy) * 0.12 - 6)}v10M${P(W - sideW * 0.5 + 15, fy + (H - fy) * 0.12 - 6)}v10M${P(W - sideW * 0.5, fy + (H - fy) * 0.12 - 60)}v54` }) : null),
-        // the alcove on the left: a recess, its post, the hanging scroll of a mountain, a stone on its floor
-        sideW > 80 ? s('g', { class: 'g8w2-toko' },
-          s('rect', { class: 'g8w2-toko-in', x: 6, y: f1(kam + 18), width: f1(sideW - 14), height: f1(fy - kam - 14) }),
-          s('rect', { class: 'g8w2-kake-silk', x: f1(sideW * 0.26), y: f1(kam + 30), width: f1(sideW * 0.42), height: f1((fy - kam) * 0.66) }),
-          s('rect', { class: 'g8w2-kake-paper', x: f1(sideW * 0.3), y: f1(kam + 42), width: f1(sideW * 0.34), height: f1((fy - kam) * 0.5) }),
-          hills(sideW * 0.31, sideW * 0.63, kam + 42 + (fy - kam) * 0.42, (fy - kam) * 0.2, g.seed + 9, 0.3, 2),
-          s('path', { class: 'g8w2-kake-rod', d: stroke([[sideW * 0.22, kam + 30 + (fy - kam) * 0.66], [sideW * 0.72, kam + 30 + (fy - kam) * 0.66]], 4, 0.05, 0.05, 0.6) }),
-          s('path', { class: 'g8w2-toko-post', d: stroke([[sideW - 8, kam], [sideW - 9 + (r() - 0.5) * 2, (kam + fy) / 2], [sideW - 8, fy + 4]], 9, 0.01, 0.01, 0.8) })) : null,
-        // ceiling boards and the beam over the shōji, wall to wall; posts either side
-        s('rect', { class: 'g8w2-ceil', width: f1(W), height: f1(Math.max(0, kam)) }),
-        s('path', { class: 'g8w2-woodrm', d: `M0 ${f1(kam)}L${f1(W)} ${f1(kam)}L${f1(W)} ${f1(oy + p.top + 3)}L0 ${f1(oy + p.top + 3)}Z` + (sideW > 10 ? `M${P(ox - 12, kam)}L${P(ox + 2, kam)}L${P(ox + 2, fy)}L${P(ox - 12, fy)}Z` + `M${P(ox + g.w - 2, kam)}L${P(ox + g.w + 12, kam)}L${P(ox + g.w + 12, fy)}L${P(ox + g.w - 2, fy)}Z` : '') }),
-        s('path', { class: 'g8w2-woodhi', d: stroke([[0, kam + 1.5], [W, kam + 1.5]], 1.4, 0.02, 0.02, 0.5) + (sideW > 10 ? stroke([[ox - 11, kam + 2], [ox - 11, fy]], 1.2, 0.02, 0.02, 0.5) : '') }),
-        // the low table in the near corner, black lacquer with a moonlit edge, a teacup steaming on it
-        tableOk ? s('g', { class: 'g8w2-table' },
-          s('ellipse', { class: 'g8w2-tshadow', cx: f1((tx0 + tx1) / 2), cy: f1(ty + 46 + tth), rx: f1((tx1 - tx0) * 0.6), ry: f1(tth * 1.2) }),
-          s('path', { class: 'g8w2-tside', d: `M${P(tx0, ty + 40)}L${P(tx1, ty + 40)}L${P(tx1, ty + 40 + tth)}L${P(tx0, ty + 40 + tth)}Z` + `M${P(tx0 + 6, ty + 40 + tth)}h8v${f1(tth * 0.9)}h-8Z` + `M${P(tx1 - 14, ty + 40 + tth)}h8v${f1(tth * 0.9)}h-8Z` }),
-          s('path', { class: 'g8w2-ttop', d: tableTop }),
-          s('path', { class: 'g8w2-tedge', d: stroke([[tFar(tx0), ty], [tFar(tx1), ty]], 1.6, 0.05, 0.05, 0.5) + stroke([[tx0, ty + 40], [tx1, ty + 40]], 2, 0.05, 0.05, 0.5) }),
-          s('ellipse', { class: 'g8w2-cupsh', cx: f1(cupX + cw * 0.3), cy: f1(cupY + cw * 0.95), rx: f1(cw * 1.3), ry: f1(cw * 0.3) }),
-          s('path', { class: 'g8w2-cup', d: `M${P(cupX - cw, cupY)}Q${P(cupX - cw * 0.95, cupY + cw * 1.1)} ${P(cupX, cupY + cw * 1.05)}Q${P(cupX + cw * 0.95, cupY + cw * 1.1)} ${P(cupX + cw, cupY)}Z` }),
-          s('ellipse', { class: 'g8w2-tea', cx: f1(cupX), cy: f1(cupY), rx: f1(cw), ry: f1(cw * 0.28) }),
-          s('path', { class: 'g8w2-steam', d: stroke([[cupX - cw * 0.2, cupY - 4], [cupX + cw * 0.3, cupY - cw * 1.4], [cupX - cw * 0.2, cupY - cw * 2.6], [cupX + cw * 0.2, cupY - cw * 3.6]], 2, 0.3, 0.5, 0.2) })) : null,
-        // today's two ink lines along the mat borders, and what they measure (where the floor has room for them)
-        !p.ok ? null : s('g', { class: 'g8w2-cmp' },
-          s('path', { class: 'g8w2-cline', d: stroke(lineS, 4.5, 0.05, 0.15, 0.35) }),
-          s('path', { class: 'g8w2-cline long', d: stroke(lineL, 4.5, 0.05, 0.02, 0.35) }),
-          cmp ? s('text', { class: 'g8w2-cnum', x: f1(lineS[1][0] + out * 8), y: f1(shortEnd + 4), 'text-anchor': out > 0 ? 'start' : 'end' }, cmp.before) : null,
-          cmp ? s('text', { class: 'g8w2-cnum long', x: f1(at(p.jl, (fy + near) / 2) - out * 8), y: f1((fy + near) / 2 + 4), 'text-anchor': out > 0 ? 'end' : 'start' }, cmp.after) : null),
+        s('rect', { class: 'g8w3-floorshade', y: f1(fy), width: f1(W), height: 18 }),
+        toko,
+        andon,
+        s('path', { class: 'g8w3-woodrm', d: lintel + postL + postR }),
+        s('path', { class: 'g8w3-woodgrain', d: grainW }),
+        s('path', { class: 'g8w3-woodhi', d: stroke([[0, oy + 6], [W, oy + 6]], 1.2, 0.02, 0.02, 0.5) + (sideW > 10 ? stroke([[ox - 13, oy + 8], [ox - 13, fy]], 1.2, 0.02, 0.02, 0.5) : '') }),
+        decodeOnLintel ? s('text', { class: 'g8w3-lintel', x: f1(W / 2), y: f1(oy * 0.5 + 6), 'text-anchor': 'middle' }, S.decode) : null,
       ].filter((x): x is SVGElement => !!x))
+      decode.hidden = decodeOnLintel
+      lay()
       onStep(shown, lastT)
     }
 
@@ -405,32 +440,36 @@ export const windowScene: SceneDef = {
       panels.forEach((p, k) => p.firstElementChild?.classList.toggle('open', k <= i))
       rises.forEach((p, k) => p.classList.toggle('up', k <= i))
       beams.forEach((p, k) => p.classList.toggle('open', k <= i))
-      for (const el of [scene, room]) el?.classList.toggle('cmp', i >= n)
       if (i > shown) ctx.chime(i >= n ? 'ok' : 'soft')
       shown = i
       if (i >= n) unroll()
     }
 
-    // ── beat 2: the long scroll on the mats, and the seal dragged along it (the card steps aside for it)
+    // ── beat 2: the long scroll on the mats, and the seal dragged along it
     const g = guide(ctx)
     let moonDot: Mark | null = null, sealDot: Mark | null = null, way: Track | null = null
-    const lamp = h('i', { class: 'g8w2-lamp', 'aria-hidden': 'true' })
-    const seal = h('div', { class: 'g8w2-seal', role: 'slider', tabindex: '0', 'aria-label': S.sealAria, 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '0' }, h('span', null, S.sealLabel))
-    const scroll = h('div', { class: 'g8w2-scroll', 'aria-hidden': 'true' }, h('i', { class: 'g8w2-paperstrip' }), h('i', { class: 'g8w2-rod a' }), h('i', { class: 'g8w2-rod b' }))
-    const beat = h('div', { class: 'g8w2-beat' }, scroll, lamp, seal)
-    const decode = h('p', { class: 'g8w2-decode' }, S.decode)
+    const lamp = h('i', { class: 'g8w3-lamp', 'aria-hidden': 'true' })
+    const seal = h('div', { class: 'g8w3-seal', role: 'slider', tabindex: '0', 'aria-label': S.sealAria, 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '0' }, h('span', null, S.sealLabel))
+    const scroll = h('div', { class: 'g8w3-scroll', 'aria-hidden': 'true' }, h('i', { class: 'g8w3-scrollshadow' }), h('i', { class: 'g8w3-paperstrip' }), h('i', { class: 'g8w3-fog' }), h('i', { class: 'g8w3-rod a' }), h('i', { class: 'g8w3-rod b' }))
+    const beat = h('div', { class: 'g8w3-beat' }, scroll, lamp, seal)
+    const decode = h('p', { class: 'g8w3-decode' }, S.decode)
     const sc2 = { x0: 0, x1: 0, y: 0, on: false, t: 0, mid: false, end: false, done: false }
-    /** where the scroll lies: across the near mats under the card (measured on unrolling and on resize, never in a frame) */
+    /** where the card, the decoding line and the scroll lie on the mats (from the band's inline box: no layout read) */
     function lay() {
-      const card = ctx.art.querySelector<HTMLElement>('.p2t-card')
-      if (!card || !sc2.on) return
-      const a = ctx.art.getBoundingClientRect(), b = card.getBoundingClientRect()
-      const w = Math.min(a.width - 40, Math.max(b.width, a.width * 0.6))
-      sc2.x0 = a.width / 2 - w / 2 + 28
-      sc2.x1 = a.width / 2 + w / 2 - 28
-      // under today's card (it carries today's figure), on the near mats
-      sc2.y = clamp(b.bottom - a.top + 46, 60, a.height - 44)
-      Object.assign(scroll.style, { left: `${f1(sc2.x0 - 28)}px`, top: `${f1(sc2.y - 24)}px`, width: `${f1(sc2.x1 - sc2.x0 + 56)}px` })
+      const band = ctx.art.querySelector<HTMLElement>('.p2t-band')
+      if (!band) return
+      const W = ctx.art.clientWidth, H = ctx.art.clientHeight
+      const oy = parseFloat(band.style.top) || 0, bh = parseFloat(band.style.height) || 0, fy = oy + bh
+      const wd = W > 720
+      const root = ctx.art.querySelector<HTMLElement>('.p2t')
+      // the reading: ink on the mats, bottom-left (where the insight comes later); on a phone under the decoding line
+      root?.style.setProperty('--g8w3-card', `${f1(fy + (wd ? 14 : 58))}px`)
+      decode.style.top = `${f1(fy + 8)}px`
+      const span = wd ? [W * 0.5, W - Math.max(40, (W - parseFloat(band.style.width)) / 2 + 30)] : [70, W - 44]
+      sc2.x0 = span[0]
+      sc2.x1 = span[1]
+      sc2.y = wd ? fy + Math.max(44, (H - fy) * 0.42) : Math.max(fy + 150, H - 54)
+      Object.assign(scroll.style, { left: `${f1(sc2.x0 - 30)}px`, top: `${f1(sc2.y - 24)}px`, width: `${f1(sc2.x1 - sc2.x0 + 60)}px` })
       seat(sc2.t)
       g.refresh()
     }
@@ -445,12 +484,16 @@ export const windowScene: SceneDef = {
       seal.style.setProperty('--k', keep(sc2.t).toFixed(2))
       seal.setAttribute('aria-valuenow', String(Math.round(sc2.t * 100)))
       way?.set(sc2.t)
+      if (!sc2.on) return
       if (sc2.t > 0.38 && sc2.t < 0.62) sc2.mid = true
       if (sc2.t < 0.12 || sc2.t > 0.88) sc2.end = true
       if (sc2.mid && sc2.end && !sc2.done) {
         sc2.done = true
         sealDot?.done()
+        way?.done()
         ctx.chime('ok')
+        ctx.art.querySelector('.p2t')?.classList.add('g8w3-done')
+        scene?.classList.add('lost')
         ctx.insight(S.insight, [S.detail, S.growth])
       }
     }
@@ -458,25 +501,24 @@ export const windowScene: SceneDef = {
       if (sc2.on) return
       sc2.on = true
       moonDot?.done()
-      ctx.art.querySelector('.p2t')?.classList.add('g8w2-beat2')
+      ctx.art.querySelector('.p2t')?.classList.add('g8w3-beat2')
       ctx.art.append(beat)
       lay()
       ctx.prompt(S.prompt2)
-      way = g.track(() => [[sc2.x0, sc2.y + 30], [sc2.x1, sc2.y + 30]], { ticks: 3, labels: S.ticks })
+      way = g.track(() => [[sc2.x0, sc2.y + 34], [sc2.x1, sc2.y + 34]], { ticks: 3, labels: S.ticks })
       sealDot = g.dot(seal, { dir: [1, 0] })
       if (!ctx.reduced) scroll.animate([{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 900, easing: 'cubic-bezier(.3,.1,.2,1)' })
     }
-    ctx.onCleanup(onSize(ctx.art, lay))
-    let sid = -1
+    let sid = -1, sx0 = 0
     seal.addEventListener('pointerdown', (e) => {
       sid = e.pointerId
+      sx0 = beat.getBoundingClientRect().left // once per drag
       seal.setPointerCapture(sid)
       seal.classList.add('held')
     })
     seal.addEventListener('pointermove', (e) => {
       if (e.pointerId !== sid) return
-      const a = beat.getBoundingClientRect() // the pointer, not the frame: one read per move event
-      seat((e.clientX - a.left - sc2.x0) / Math.max(1, sc2.x1 - sc2.x0))
+      seat((e.clientX - sx0 - sc2.x0) / Math.max(1, sc2.x1 - sc2.x0))
     })
     const sup = (e: PointerEvent) => void (e.pointerId === sid && ((sid = -1), seal.classList.remove('held')))
     seal.addEventListener('pointerup', sup)
@@ -493,29 +535,26 @@ export const windowScene: SceneDef = {
     const off = progressTide(S.tide, {
       label: S.label, prompt: S.prompt, insight: S.insight, detail: S.detail,
       art: { back },
-      // the moon rides behind the transom's paper (the scene draws it there: the thumb itself is only its handle)
-      track: ({ xs, ground }) => (t) => {
-        const top = 9, rh = (ground - 4 - top) * 0.28
-        return [xs[0] + (xs[xs.length - 1] - xs[0]) * t, top + rh * 0.52 - Math.sin(Math.PI * t) * rh * 0.12]
+      // the shōji wall is most of the picture: wide, room for the alcove and the andon either side; a phone, edge to edge
+      band: (W, H) => (W > 720 ? { w: Math.min(W - 2 * Math.max(100, W * 0.085), 1180), h: H * 0.74, top: Math.max(28, H * 0.05) } : { w: W, h: H * 0.62, top: 6 }),
+      // the moon rides a rail behind the transom's paper (the scene draws it there: the thumb is only its handle)
+      track: ({ xs, h: bh }) => {
+        const rail = 6 + (clamp(bh * 0.19, 50, 96) - 6) * 0.46
+        return (t) => [xs[0] + (xs[xs.length - 1] - xs[0]) * t, rail]
       },
-      thumb: () => s('circle', { class: 'g8w2-thumb', r: 20 }),
+      thumb: () => s('circle', { class: 'g8w3-thumb', r: 22 }),
       onStep,
     }).mount({ ...ctx, insight: () => h('div'), complete: () => {} })
-    ctx.art.querySelector('.p2t')?.classList.add('g8w2')
+    ctx.art.querySelector('.p2t')?.classList.add('g8w3')
     ctx.art.append(decode)
-    // the decoding line sits on the mats just under the sill, left of the card (read on resize, never in a frame)
-    ctx.onCleanup(onSize(ctx.art, () => {
-      const band = ctx.art.querySelector<HTMLElement>('.p2t-band'), card = ctx.art.querySelector<HTMLElement>('.p2t-card')
-      if (!band || !card) return
-      const a = ctx.art.getBoundingClientRect(), b = band.getBoundingClientRect(), c = card.getBoundingClientRect()
-      const room = c.left - a.left - 40
-      decode.style.top = `${f1(b.bottom - a.top + 18)}px`
-      decode.style.maxWidth = room > 200 ? `${f1(room)}px` : ''
-      decode.classList.toggle('flat', room <= 200)
-    }))
-    // H1 on the moon (the slider), leaning the way to drag
+    ctx.onCleanup(onSize(ctx.art, lay))
+    // H1 on the moon (the slider), leaning the way to drag; H7: still for 6 s, the moon (or the seal) edges 12 px on
     const moonEl = ctx.art.querySelector<HTMLElement>('.p2t-moon')
-    if (moonEl && !sc2.on) moonDot = g.dot(moonEl, { dir: [1, 0] })
+    if (moonEl) moonDot = g.dot(moonEl, { dir: [1, 0] })
+    const nudge = (el: Element | null | undefined) => void (!ctx.reduced && el?.animate([{ translate: '0 0' }, { translate: '12px 0' }, { translate: '0 0' }], { duration: 1400, easing: 'cubic-bezier(.45,.05,.3,1)', composite: 'add' }))
+    const idle = () => (sc2.done ? null : sc2.on ? nudge(seal) : shown < n ? (nudge(moonEl?.querySelector('.p2t-moon-disc')), nudge(glow)) : null)
+    ctx.el.addEventListener('p2:idle', idle)
+    ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', idle))
     return off
   },
 }

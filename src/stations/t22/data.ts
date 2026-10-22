@@ -15,10 +15,10 @@ export interface T22 extends StationContent {
     }
     layers: {
       label: string; art: string; prompt: string; sentence: string; word: string; slider: string; ruler: string; sliderAria: string; valueText: string
-      stages: { at: string; reads: string }[]; stagesNote: Fact; insight: Fact; detail: Fact; layers96: Fact
+      stages: { at: string; reads: string }[]; steps: string[]; stagesNote: Fact; insight: Fact; detail: Fact; layers96: Fact
     }
     window: {
-      label: string; art: string; prompt: string; prompt2: string; decode: string; claim: string; sealLabel: string; sealAria: string; ticks: string[]
+      label: string; art: string; prompt: string; prompt2: string; decode: string; carve: string[]; claim: string; sealLabel: string; sealAria: string; ticks: string[]
       tide: Tide; insight: Fact; detail: Fact; growth: Fact
     }
   }

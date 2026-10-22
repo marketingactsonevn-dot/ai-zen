@@ -2,8 +2,9 @@ import { fill, h, s } from '../../core/dom'
 import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import type { SceneCtx } from '../types'
-import { onSize, p2Defs, stableHeight, stoneArt } from '../../ui/part2/ink'
+import { clamp, onSize, p2Defs, stableHeight, stoneArt } from '../../ui/part2/ink'
 import { grass, water } from '../../ui/part2/paint'
+import { guide, type Drop, type Mark } from '../../ui/part2/guide'
 import { C } from './data'
 import { blob, curve, drawIn, f1, hills, measure, mist, moon, reeds, rng, stroke, wash, type Pt } from './kit'
 
@@ -66,6 +67,7 @@ export function lanternScene(ctx: SceneCtx) {
   ctx.art.append(root)
   ctx.prompt(K.prompt)
   const lanG = s('g'), threads = s('g', { class: 'g8l2-threads' }), reflG = s('g')
+  let railWords: SVGTextElement | null = null, railEnd: SVGTSpanElement | null = null
   let lamps: Lamp[] = []
   let box = { W: 0, H: 0 }
 
@@ -77,17 +79,21 @@ export function lanternScene(ctx: SceneCtx) {
     for (const L of [sky, far, river, fore]) L.svg.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     const wide = W > H
     const r = rng(2201)
-    const yh = H * (wide ? 0.3 : 0.22) // the horizon
+    const yh = H * (wide ? 0.22 : 0.22) // the horizon: high on a wide screen, so the river's far reach fills the top third
     const depth = (y: number) => Math.max(0, (y - yh) / (H - yh)) // 1 at the frame's foot … 0 on the horizon (∝ 1 / distance)
     // the river's centreline, painted in shares of the frame: in under the bridge, an S, out to the horizon
     const ctrl: Pt[] = (wide
       ? [[0.68, 1.12], [0.58, 0.97], [0.38, 0.875], [0.2, 0.785], [0.28, 0.695], [0.58, 0.63], [0.8, 0.56], [0.68, 0.485], [0.44, 0.445], [0.3, 0.4], [0.42, 0.357], [0.56, 0.33], [0.6, 0.315], [0.56, 0.306], [0.52, 0.301]]
       : [[0.72, 1.12], [0.64, 0.97], [0.26, 0.885], [0.1, 0.8], [0.28, 0.72], [0.74, 0.66], [0.9, 0.58], [0.72, 0.5], [0.26, 0.455], [0.1, 0.395], [0.3, 0.335], [0.62, 0.29], [0.7, 0.256], [0.6, 0.232], [0.52, 0.221]]
-    ).map(([x, y]) => [x * W, y * H] as Pt)
+    ).map(([x, y]) => {
+      // (drawn for a horizon at 0.30 / 0.22: lifted to the higher one, the near end kept under the bridge)
+      const h0 = wide ? 0.3 : 0.22
+      return [x * W, (yh / H + ((y - h0) * (1.12 - yh / H)) / (1.12 - h0)) * H] as Pt
+    })
     const line = spline(ctrl, 18)
     // lanterns shrink more slowly than the river narrows, so the far words stay readable (≥ 12 px)
     const size = (y: number) => Math.pow(Math.max(0.02, depth(y)), wide ? 0.5 : 0.26)
-    const yA = H * (wide ? 0.87 : 0.86), yB = H * (wide ? 0.41 : 0.31) // "Con" … the furthest the slot after "quá" may go
+    const yA = H * (wide ? 0.79 : 0.8), yB = H * (wide ? 0.35 : 0.31) // "Con" (clear of the bridge's rail) … the furthest the slot after "quá" may go
     const hw = (y: number) => (wide ? W * 0.085 : W * 0.17) * Math.pow(depth(y), 0.9) + 2 // the river's half-width
     const bank = (side: number, k = 1) => line.map(([x, y], i) => {
       const [a, b] = [line[Math.max(0, i - 1)], line[Math.min(line.length - 1, i + 1)]]
@@ -145,14 +151,25 @@ export function lanternScene(ctx: SceneCtx) {
     const meet = (a: Lamp, b: Lamp) => Math.abs(a.x - b.x) < 0.97 * ((a.w ?? a.r) + (b.w ?? b.r)) && Math.abs(a.y - b.y) < 1.2 * (a.r + b.r)
     // where the reading goes: open water at the clause break (or just beside the river there), clear of every lantern
     // ("nó" both on the water and lifted) and inside the frame; null while there is no such room
+    // (and clear of the two strong threads, from the lifted "nó" to "mèo" and to "chuột": no thread through the words)
+    const arcs = (): Pt[] => {
+      const a = lamps[K.pivot], ax = a.x, ay = a.y - a.r * 1.2 * 1.08 - a.r * 1.3
+      return K.endings.flatMap((e) => {
+        const b = lamps[e.points], bx = b.x, by = b.y - b.r * 1.38, cy = Math.min(ay, by) - (b.r * 2.2 + Math.abs(bx - ax) * 0.16 + 16)
+        return Array.from({ length: 25 }, (_, j) => {
+          const u = j / 24
+          return [(1 - u) * (1 - u) * ax + 2 * u * (1 - u) * ((ax + bx) / 2) + u * u * bx, (1 - u) * (1 - u) * ay + 2 * u * (1 - u) * cy + u * u * by] as Pt
+        })
+      })
+    }
     const clear = (x0: number, y0: number, x1: number, y1: number) => lamps.every((L, k) => {
       const hit = (y: number) => x0 < L.x + L.r * 1.05 && L.x - L.r * 1.05 < x1 && y0 < y + L.r * 1.15 && y - L.r * 1.4 < y1
       return !hit(L.y) && !(k === K.pivot && hit(L.y - L.r * 1.3))
-    })
+    }) && arcs().every(([x, y]) => x < x0 - 4 || x > x1 + 4 || y < y0 - 4 || y > y1 + 4)
     const spotFor = (): Pt | null => {
       const i = idx((sAt(GAP - 1) + sAt(GAP)) / 2), th = tangent(i)
       const [x, y] = seg[i]
-      for (const k of wide ? [0] : [0, 0.4, -0.4, 0.8, -0.8]) {
+      for (const k of wide ? [0, 0.3, -0.3, 0.6, -0.6] : [0, 0.4, -0.4, 0.8, -0.8, 1.1, -1.1]) {
         const cx = Math.min(W - tw / 2 - 10, Math.max(tw / 2 + 10, x - Math.sin(th) * tw * k)), cy = y + Math.cos(th) * tw * k * 0.5
         if (cy > H * 0.08 && cy < H * 0.8 && clear(cx - tw / 2 - 8, cy - fsz * 0.8, cx + tw / 2 + 8, cy + fsz * 1.6)) return [cx, cy]
       }
@@ -191,11 +208,12 @@ export function lanternScene(ctx: SceneCtx) {
     while (ue < uEnd && lamps.some((L) => meet(L, E))) (ue += rN * 0.5), (E = eddyAt())
     E.tilt = -3
     lamps.push(E)
-    const mx = W * (wide ? 0.8 : 0.76), my = H * (wide ? 0.1 : 0.075), mr = Math.min(W, H) * (wide ? 0.026 : 0.034)
+    const mx = W * (wide ? 0.8 : 0.8), my = H * (wide ? 0.085 : 0.06), mr = Math.min(W, H) * (wide ? 0.034 : 0.04)
 
     // ── sky: the moon high and small, a breath of cloud, the far ranges melting into mist
     sky.svg.replaceChildren(
       mist(W * 0.5, yh - H * 0.08, W * 0.75, H * 0.16),
+      s('circle', { class: 'g8l2-bighalo', cx: f1(mx), cy: f1(my), r: f1(mr * 6), fill: 'url(#p2-halo)' }),
       moon(mx, my, mr, 23, true),
       hills(-W * 0.05, W * 1.05, yh + 2, H * (wide ? 0.13 : 0.08), 221, 0.92, Math.max(3, Math.round(W / 260))),
       mist(W * 0.5, yh - 4, W * 0.6, H * 0.035))
@@ -234,12 +252,13 @@ export function lanternScene(ctx: SceneCtx) {
       }
     }
     // the moon on the water: glints all along the river, a broken road under the moon itself
-    for (let i = 2; i < line.length; i += 2) {
+    // (denser along the S than before: the moon's light broken all the way down the river, audit 22-1)
+    for (let i = 2; i < line.length; i++) {
       const [x, y] = line[i]
       if (y < yh + 2 || y > H) continue
       const d = (y - yh) / (H - yh), w0 = hw(y)
       const under = Math.max(0, 1 - Math.abs(x - mx) / (W * 0.09))
-      if (r() > 0.32 + under * 0.6) continue
+      if (r() > 0.42 + under * 0.5) continue
       const len = w0 * (0.12 + r() * 0.35) * (1 + under)
       const gx = x + (r() - 0.5) * w0 * 1.1 - len / 2
       glints += stroke([[gx, y], [gx + len, y + (r() - 0.5)]], 0.8 + d * 2.4 + under * 1.2, 0.3, 0.3, 0.1)
@@ -285,42 +304,50 @@ export function lanternScene(ctx: SceneCtx) {
       mist(W * 0.5, yh + (H - yh) * 0.06, W * 0.55, H * 0.025),
       reflG, lanG, threads)
     yield
-    // ── the bridge we stand on: a big rail of old wood cutting across the corner, out of focus, grain and a moonlit
-    // edge; a mossy stone and reeds bottom left, soft too
-    const bx0 = W * (wide ? 0.6 : 0.5), by0 = H * 1.04, bx1 = W + 30, by1 = H * (wide ? 0.78 : 0.86), bt = H * (wide ? 0.085 : 0.06)
-    const px = W * (wide ? 0.9 : 0.88), pw = Math.max(26, W * (wide ? 0.038 : 0.08))
-    const py = by0 + ((by1 - by0) * (px - bx0)) / (bx1 - bx0)
-    const railTop: Pt[] = [[bx0, by0], [(bx0 + bx1) / 2, (by0 + by1) / 2 - bt * 0.04], [bx1, by1]]
-    const rail = `M${f1(bx0)} ${f1(by0)}L${f1(bx1)} ${f1(by1)}L${f1(bx1)} ${f1(by1 + bt)}L${f1(bx0)} ${f1(by0 + bt)}Z`
-    const post = `M${f1(px - pw / 2)} ${f1(H + 20)}L${f1(px - pw / 2)} ${f1(py - bt * 1.2)}Q${f1(px - pw * 0.1)} ${f1(py - bt * 1.75)} ${f1(px + pw / 2)} ${f1(py - bt * 1.35)}L${f1(px + pw / 2)} ${f1(H + 20)}Z`
+    // ── the bridge we stand on: its top rail of old wood across the foot of the frame, resting on two posts that run
+    // down out of it (grain, a moonlit upper edge, a dark underside); the whole sentence carved along it, the word in
+    // the last place lit. Reeds rise from the bank below at the left, two layers of ink (a soft wash, then crisp blades)
+    const ry0 = H * (wide ? 0.885 : 0.9), bt = H * (wide ? 0.07 : 0.055), foot = H + 160 // (drawn on past the scene's foot, into the art's last strip)
+    const posts = (wide ? [0.07, 0.93] : [0.05, 0.95]).map((f) => W * f)
+    const pw = Math.max(22, W * (wide ? 0.03 : 0.07))
     const rq = rng(2261)
-    let grain = '', grainHi = ''
-    for (let k = 0; k < 7; k++) {
-      const o = bt * (0.18 + k * 0.11 + (rq() - 0.5) * 0.05)
-      const a0 = rq() * 0.3, a1 = 0.5 + rq() * 0.5
-      const P = (t: number, dy: number): Pt => [bx0 + (bx1 - bx0) * t, by0 + (by1 - by0) * t + o + dy]
-      const pts = Array.from({ length: 9 }, (_, j) => P(a0 + ((a1 - a0) * j) / 8, Math.sin(j * 1.3 + k) * bt * 0.025))
+    let grain = '', grainHi = '', postD = ''
+    for (let k = 0; k < 6; k++) {
+      const o = bt * (0.2 + k * 0.13 + (rq() - 0.5) * 0.05), a0 = rq() * 0.3, a1 = 0.55 + rq() * 0.45
+      const pts = Array.from({ length: 12 }, (_, j) => [-20 + (W + 40) * (a0 + ((a1 - a0) * j) / 11), ry0 + o + Math.sin(j * 1.1 + k) * bt * 0.03] as Pt)
       if (k % 3 === 2) grainHi += stroke(pts, Math.max(1, bt * 0.03), 0.2, 0.3, 0.2)
-      else grain += stroke(pts, Math.max(1, bt * 0.04), 0.15, 0.3, 0.2)
+      else grain += stroke(pts, Math.max(1, bt * 0.035), 0.15, 0.3, 0.2)
     }
-    for (let k = 0; k < 4; k++) {
-      const x = px - pw * 0.3 + k * pw * 0.2 + (rq() - 0.5) * 3
-      grain += stroke([[x, H + 10], [x + (rq() - 0.5) * 3, py - bt * (0.6 + rq() * 0.5)]], Math.max(1, pw * 0.05), 0.1, 0.3, 0.2)
+    for (const x of posts) {
+      // a post with its rounded cap (the rails are mortised into it)
+      postD += `M${f1(x - pw / 2)} ${f1(foot)}L${f1(x - pw / 2)} ${f1(ry0 - bt * 0.45)}Q${f1(x)} ${f1(ry0 - bt * 1.15)} ${f1(x + pw / 2)} ${f1(ry0 - bt * 0.45)}L${f1(x + pw / 2)} ${f1(foot)}Z`
+      for (let k = 0; k < 3; k++) {
+        const gx = x - pw * 0.25 + k * pw * 0.25 + (rq() - 0.5) * 2
+        grain += stroke([[gx, ry0 - bt * 0.2], [gx + (rq() - 0.5) * 2, H + 10]], Math.max(1, pw * 0.05), 0.1, 0.3, 0.2)
+      }
     }
-    const knotX = bx0 + (bx1 - bx0) * 0.42, knotY = by0 + (by1 - by0) * 0.42 + bt * 0.5
+    const fsR = wide ? clamp(W * 0.0125, 14, 18) : 13
+    railWords = s('text', { class: 'g8l2-carve', x: f1(W / 2), y: f1(ry0 + bt * 0.6), 'font-size': f1(fsR), 'text-anchor': 'middle' },
+      ...K.words.map((w, i) => s('tspan', { class: i === K.pivot ? 'piv' : null }, `${w} `)), (railEnd = s('tspan', { class: 'end' }, K.endings[end].word)))
     fore.svg.replaceChildren(
       s('defs', null,
-        s('filter', { id: 'g8l2-soft', x: '-20%', y: '-20%', width: '140%', height: '140%' }, s('feGaussianBlur', { stdDeviation: wide ? 2.6 : 1.8 })),
-        s('linearGradient', { id: 'g8l2-wood', x1: 0, y1: 0, x2: 0.15, y2: 1 }, s('stop', { offset: 0, class: 'g8l2-w0' }), s('stop', { offset: 0.5, class: 'g8l2-w1' }), s('stop', { offset: 1, class: 'g8l2-w2' }))),
-      s('g', { filter: low ? null : 'url(#g8l2-soft)' },
-        s('g', { transform: `translate(${f1(W * (wide ? 0.03 : -0.02))} ${f1(H * 1.01)})` }, stoneArt(W * (wide ? 0.15 : 0.36), H * (wide ? 0.13 : 0.1), 2251)),
-        reeds(W * (wide ? 0.1 : 0.14), H * 1.0, H * (wide ? 0.3 : 0.22), 2252, 9),
-        s('path', { class: 'g8l2-rail', d: rail + post, fill: 'url(#g8l2-wood)' }),
-        s('path', { class: 'g8l2-grain', d: grain + blob(knotX, knotY, bt * 0.16, bt * 0.08, 2262, 0.2) }),
-        s('path', { class: 'g8l2-grain hi', d: grainHi }),
-        // the moon catches the rail's upper edge and the post's shoulder
-        s('path', { class: 'g8l2-rail-hi', d: stroke(railTop.map(([x, y]) => [x, y + 1.5] as Pt), Math.max(2.4, bt * 0.07), 0.04, 0.04, 0.4) + stroke([[px - pw * 0.42, H], [px - pw * 0.42, py - bt * 1.2], [px, py - bt * 1.62]], Math.max(1.8, pw * 0.09), 0.1, 0.2, 0.3) }),
-        reeds(W * (wide ? 0.97 : 0.98), H * 1.0, H * (wide ? 0.2 : 0.14), 2253, 5)))
+        s('filter', { id: 'g8l2-soft', x: '-20%', y: '-20%', width: '140%', height: '140%' }, s('feGaussianBlur', { stdDeviation: wide ? 3 : 2 })),
+        s('linearGradient', { id: 'g8l2-wood', x1: 0, y1: 0, x2: 0, y2: 1 }, s('stop', { offset: 0, class: 'g8l2-w0' }), s('stop', { offset: 0.5, class: 'g8l2-w1' }), s('stop', { offset: 1, class: 'g8l2-w2' }))),
+      // the reeds: a soft out-of-focus wash behind, crisp blades in front, cut by the frame's corner
+      s('g', { filter: low ? null : 'url(#g8l2-soft)', class: 'g8l2-reedwash' }, reeds(W * (wide ? 0.035 : 0.06), ry0 + bt * 0.3, H * (wide ? 0.34 : 0.24), 2252, 11)),
+      reeds(W * (wide ? 0.02 : 0.03), ry0 + bt * 0.4, H * (wide ? 0.28 : 0.2), 2254, 7),
+      s('ellipse', { class: 'g8l2-railshade', cx: f1(W / 2), cy: f1(ry0 - 2), rx: f1(W * 0.6), ry: f1(bt * 0.3) }),
+      s('path', { class: 'g8l2-rail', d: `M-20 ${f1(ry0)}L${f1(W + 20)} ${f1(ry0)}L${f1(W + 20)} ${f1(ry0 + bt)}L-20 ${f1(ry0 + bt)}Z`, fill: 'url(#g8l2-wood)' }),
+      s('path', { class: 'g8l2-rail-under', d: `M-20 ${f1(ry0 + bt)}L${f1(W + 20)} ${f1(ry0 + bt)}L${f1(W + 20)} ${f1(ry0 + bt * 1.25)}L-20 ${f1(ry0 + bt * 1.25)}Z` }),
+      // the lower rail (nuki) and the deck's edge below it, the river glimpsed between them
+      s('path', { class: 'g8l2-rail', d: `M-20 ${f1(ry0 + bt * 1.9)}L${f1(W + 20)} ${f1(ry0 + bt * 1.9)}L${f1(W + 20)} ${f1(ry0 + bt * 2.4)}L-20 ${f1(ry0 + bt * 2.4)}ZM-20 ${f1(ry0 + bt * 3.1)}L${f1(W + 20)} ${f1(ry0 + bt * 3.1)}L${f1(W + 20)} ${f1(foot)}L-20 ${f1(foot)}Z`, fill: 'url(#g8l2-wood)' }),
+      s('path', { class: 'g8l2-rail-hi', d: stroke([[-20, ry0 + bt * 1.9 + 1], [W + 20, ry0 + bt * 1.9 + 1]], 1.4, 0.02, 0.02, 0.4) + stroke([[-20, ry0 + bt * 3.1 + 1], [W + 20, ry0 + bt * 3.1 + 1]], 1.6, 0.02, 0.02, 0.4) }),
+      s('path', { class: 'g8l2-grain', d: grain }),
+      s('path', { class: 'g8l2-grain hi', d: grainHi }),
+      s('path', { class: 'g8l2-rail', d: postD, fill: 'url(#g8l2-wood)' }),
+      // the moon (high, to the right) catches the rail's upper edge and the posts' tops
+      s('path', { class: 'g8l2-rail-hi', d: stroke([[-20, ry0 + 1.2], [W / 2, ry0 + 0.8], [W + 20, ry0 + 1.2]], Math.max(2, bt * 0.06), 0.02, 0.02, 0.4) + posts.map((x) => stroke([[x - pw / 2, ry0 - bt * 0.33], [x + pw / 2, ry0 - bt * 0.33]], 2, 0.05, 0.05, 0.4)).join('') }),
+      railWords)
     // the reading: on the open water at the clause break, between "chuột" and "vì"
     const [rx, ry] = spot ?? seg[idx((sAt(GAP - 1) + sAt(GAP)) / 2)]
     Object.assign(says.style, { left: `${f1(rx)}px`, top: `${f1(ry)}px`, fontSize: `${f1(fsz)}px` })
@@ -487,7 +514,7 @@ export function lanternScene(ctx: SceneCtx) {
 
   function setRead() {
     const e = K.endings[end]
-    read.replaceChildren(h('span', null, e.read), h('span', { class: 'r', 'aria-hidden': 'true' }, e.read), h('span', { class: 'visually-hidden' }, ` · ${fill(K.threadAria, { word: words()[e.points] })}`))
+    read.replaceChildren(h('span', null, e.read), h('span', { class: 'visually-hidden' }, ` · ${fill(K.threadAria, { word: words()[e.points] })}`))
     delete read.dataset.off
   }
   const ariaSwap = () => eddyBtn.setAttribute('aria-label', fill(K.swapAria, { word: K.endings[1 - end].word }))
@@ -506,6 +533,10 @@ export function lanternScene(ctx: SceneCtx) {
       setRead()
       read.setAttribute('aria-live', 'polite')
       ctx.prompt(K.swapPrompt)
+      // the next thing to move: the dot goes to the eddy's lantern, and the place it goes to is ringed
+      dot?.at(eddyBtn)
+      const sr = lamps[SLOT]?.r ?? 30
+      slotRing ??= g.drop(() => (lamps[SLOT] ? [lamps[SLOT].x, lamps[SLOT].y] : [0, 0]), { w: sr * 2.5, h: sr * 2.9 })
     }
     ctx.chime('soft')
     paint()
@@ -520,6 +551,11 @@ export function lanternScene(ctx: SceneCtx) {
     busy = true
     const done = () => {
       end = 1 - end
+      if (railEnd) railEnd.textContent = K.endings[end].word
+      slotRing?.hit()
+      slotRing = null
+      dot?.done()
+      dot = null
       ariaSwap()
       busy = false
       paint()
@@ -557,6 +593,22 @@ export function lanternScene(ctx: SceneCtx) {
     }, 1320)
   }
 
+  // H1 on "nó" (it lifts), then on the eddy's lantern; H3 the place after "quá" ringed while it waits; H7 still for 6 s:
+  // "nó" bobs up 8 px, or the eddy's lantern drifts 10 px toward the end of the sentence and back
+  const g = guide(ctx)
+  let dot: Mark | null = g.dot(pivotBtn, { dir: [0, -1] })
+  let slotRing: Drop | null = null
+  const idle = () => {
+    if (swapped || still || !lamps.length) return
+    const i = lit ? EDDY : K.pivot
+    const a = lamps[i], b = lamps[SLOT], d = Math.hypot(b.x - a.x, b.y - a.y) || 1
+    const [dx, dy] = lit ? [((b.x - a.x) / d) * 10, ((b.y - a.y) / d) * 10] : [0, -8]
+    for (const el of [lanG, reflG].map((p) => p.querySelector(`[data-i="${i}"] .g8l2-bob, [data-i="${i}"] .g8l2-rf`)))
+      el?.animate([{ translate: '0 0' }, { translate: `${f1(dx)}px ${f1(dy)}px` }, { translate: '0 0' }], { duration: 1400, easing: 'cubic-bezier(.45,.05,.3,1)', composite: 'add' })
+  }
+  ctx.el.addEventListener('p2:idle', idle)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', idle))
+
   // the eddy lantern: tap it, Enter on it, or drag it to the end of the sentence
   let drag: { id: number; x: number; y: number; moved: boolean } | null = null
   eddyBtn.addEventListener('pointerdown', (e) => {
@@ -568,6 +620,7 @@ export function lanternScene(ctx: SceneCtx) {
     if (!drag || e.pointerId !== drag.id) return
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y
     if (!drag.moved && Math.hypot(dx, dy) < 6) return
+    if (!drag.moved) slotRing?.lift(true)
     drag.moved = true
     const L = lamps[EDDY]
     for (const g of [lanG, reflG].map((p) => p.querySelector<SVGGElement>(`[data-i="${EDDY}"]`))) if (g) g.style.transform = `translate(${f1(L.x + dx)}px,${f1(L.y + dy)}px)`
@@ -576,6 +629,7 @@ export function lanternScene(ctx: SceneCtx) {
     if (!drag || e.pointerId !== drag.id) return
     const d = drag
     drag = null
+    slotRing?.lift(false)
     const L = lamps[EDDY], S = lamps[SLOT]
     const near = Math.hypot(L.x + e.clientX - d.x - S.x, L.y + e.clientY - d.y - S.y) < Math.max(70, S.r * 2.6)
     if (d.moved && !near) {

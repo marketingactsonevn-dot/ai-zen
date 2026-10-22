@@ -8,15 +8,15 @@ export interface T24 extends StationContent {
       lean: string; repeat: string; swap: string; swapAria: string; scroll: string; rules: string[]; insight: Fact; detail: Fact; constitution: Fact; caiNote: Fact
     }
     flattery: {
-      label: string; art: string; prompt: string; decode: string; pruneAria: string; userSays: string; flatter: string; honest: string; flatterShort: string; honestShort: string
+      label: string; art: string; prompt1: string; likeAria: string; prompt: string; decode: string; pruneAria: string; userSays: string; flatter: string; honest: string; flatterShort: string; honestShort: string
       flatterLabel: string; honestLabel: string; insight: Fact; detail: Fact; cause: Fact
     }
     shortcut: {
-      label: string; art: string; prompt: string; task: string; decode: string; paths: { label: string; aria: string; honest: boolean; stone: string }[]
+      label: string; art: string; prompt: string; prompt2: string; count: string; lampAria: string; lampValue: string; task: string; decode: string; long: string
       bell: string; claim: string; reveal: string; insight: Fact; detail: Fact; takeaway: string
     }
     incense: {
-      label: string; bridge: string; art: string; prompt: string; decode: string; slider: string; sliderAria: string; valueText: string; short: string; long: string; notches: string[]
+      label: string; bridge: string; art: string; prompt: string; prompt2: string; decode: string; slider: string; sliderAria: string; valueText: string; ends: string[]; notches: string[]
       puzzle: string; quick: string; right: string; puzzleNote: Fact; insight: Fact; detail: Fact; far: Fact
     }
     diary: {

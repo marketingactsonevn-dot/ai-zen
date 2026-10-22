@@ -1,7 +1,8 @@
 import { h, s } from '../../core/dom'
 import type { SceneCtx } from '../types'
 import { C } from './data'
-import { alive, f1, put, rig, stage, tween } from './kit'
+import { alive, f1, invite, nudge, put, rig, stage, tween } from './kit'
+import { guide, type Mark } from '../../ui/part2/guide'
 import { blob, clamp, curve, rng, stroke, type Pt } from '../../ui/part2/ink'
 import { paperLantern, wash } from '../../ui/part2/paint'
 import { grad, spline, taper } from './brush'
@@ -38,7 +39,7 @@ export function flowersScene(ctx: SceneCtx) {
   const quick = ctx.reduced || ctx.quality === 'low'
 
   // (room for both insights at once: the second one keeps the first above it)
-  const { root } = stage(ctx, 't24f', K.art, [K.insight, `${K.insight.text} ${K.constitution.text}`], draw)
+  const { root } = stage(ctx, 't24f', K.art, [K.insight, `${K.insight.text} ${K.constitution.text}`], draw, true)
   const host = h('div', { class: 't24f-host' })
   root.append(host)
   const R = rig(ctx, host, { strength: 2 })
@@ -56,7 +57,7 @@ export function flowersScene(ctx: SceneCtx) {
   const question = h('p', { class: 't24f-q' }, K.question, h('small', { class: 't24f-decode' }, K.decode))
   const leanLabel = h('p', { class: 't24f-lean', 'aria-hidden': 'true' }, h('span', null, K.lean))
   const wallSvg = svg('t24f-wall')
-  R.layer(0.75, 't24f-l-wall').append(wallSvg, paperBox, latticeSvg, latLit, question, leanLabel)
+  R.layer(0.75, 't24f-l-wall').append(wallSvg, paperBox, latticeSvg, latLit, question)
   const floorSvg = svg('t24f-floor')
   const pool = h('div', { class: 't24f-pool' })
   R.layer(0.3, 't24f-l-floor').append(floorSvg, pool)
@@ -79,14 +80,16 @@ export function flowersScene(ctx: SceneCtx) {
   })
   const scroll = h('button', { class: 't24f-scroll', type: 'button', 'aria-label': K.swapAria, disabled: true, onClick: swap },
     h('span', { class: 't24f-cord', 'aria-hidden': 'true' }),
-    h('span', { class: 't24f-roll', 'aria-hidden': 'true' }),
-    h('span', { class: 't24f-band t24-paper', 'aria-hidden': 'true' }, K.swap),
+    h('span', { class: 't24f-roll', 'aria-hidden': 'true' }, h('i'), h('i')),
     h('span', { class: 't24f-sheet t24-paper', 'aria-hidden': 'true' }, h('span', { class: 't24f-sheet-h' }, K.scroll), ...K.rules.map((r) => h('span', { class: 't24f-rule' }, r))))
+  // the flowers take a touch too (the prompt names them): an invisible 48 px button on each
+  const blooms = K.options.map((_, i) => h('button', { class: 't24f-bloomhit', type: 'button', tabindex: '-1', 'aria-hidden': 'true', onClick: () => choose(i, true) }))
+
   const treeBox = h('div', { class: 't24f-treebox' }, youngSvg, oldSvg, rimSvg, flowerSvg, scroll)
-  const clockArt = s('svg', { class: 't24f-clockart', viewBox: '-80 -74 160 84', 'aria-hidden': 'true' })
+  const clockArt = s('svg', { class: 't24f-clockart', viewBox: '-80 -84 160 96', 'aria-hidden': 'true' })
   const clockHand = s('g', { class: 't24f-hand' })
   const clock = h('div', { class: 't24f-clock' }, clockArt, h('span', { class: 't24f-clock-t' }, K.repeat))
-  R.layer(0, 't24f-l-tree').append(potSvg, treeBox, ...tans, clock)
+  R.layer(0, 't24f-l-tree').append(potSvg, treeBox, ...tans, ...blooms, clock, leanLabel)
   // the grader: an ink sleeve and hand holding a bamboo hook, the lantern hanging from it (the lantern is what you drag)
   const handSvg = s('svg', { class: 't24f-handart', viewBox: '0 0 1 1', 'aria-hidden': 'true' }) // a point: the hand is drawn round the hook and moved whole
   const lampSvg = s('svg', { class: 't24f-lampart' })
@@ -94,6 +97,15 @@ export function flowersScene(ctx: SceneCtx) {
   R.layer(-0.18, 't24f-l-near').append(handSvg, lamp)
   ctx.prompt(K.prompt)
   alive(ctx, root)
+  const g = guide(ctx)
+  let dot: Mark | null = g.dot(lamp, { dir: [1, 0.2] })
+  // idle: the lantern sways toward the nearer flower (and once chosen, the scroll waits with its own dot)
+  invite(ctx, () => {
+    if (pick >= 0 || ruled || !G.W) return
+    const d = G.tips.map(([x, y]) => Math.hypot(LX() - x, LY() - y))
+    const [fx, fy] = G.tips[d[0] < d[1] ? 0 : 1], l = Math.min(...d) || 1
+    nudge(ctx, lamp, ((fx - LX()) / l) * 11, ((fy - LY()) / l) * 11)
+  })
 
   const G = { W: 0, H: 0, u: 0, tx: 0, soil: 0, base: 0, xs: 1, top: 0.84, wide: true, lx: 0, ly: 0, lr: 14, paper: [0, 0, 0, 0] as number[], tips: [[0, 0], [0, 0]] as Pt[], k: 1.38, sw: [92, 210] as number[] }
   const X = (x: number) => G.tx + x * G.u * G.xs // wide screens spread the two limbs apart
@@ -104,11 +116,11 @@ export function flowersScene(ctx: SceneCtx) {
 
   function* draw(W: number, H: number) {
     const wide = W / H >= 1.05
-    const u = wide ? Math.min(H * 0.62, W * 0.42) : Math.min(H * 0.54, W * 0.86)
+    const u = wide ? Math.min(H * 0.5, W * 0.36) : Math.min(H * 0.5, W * 0.86)
     const tx = W / 2
-    const base = H * (wide ? 0.86 : 0.85) // the floor line under the stone
+    const base = H * (wide ? 0.8 : 0.84) // the floor line under the stone (the pot a third up from the bottom)
     const soil = base - u * 0.22
-    Object.assign(G, { W, H, u, tx, soil, base, wide, xs: wide ? 1.3 : 0.8, top: wide ? 0.84 : 0.93, lr: clamp(u * 0.048, 12, 19), sw: wide ? [92, 214] : [76, 154] })
+    Object.assign(G, { W, H, u, tx, soil, base, wide, xs: wide ? 1.42 : 0.8, top: wide ? 0.8 : 0.9, lr: clamp(u * 0.048, 12, 19), sw: wide ? [92, 214] : [76, 154] })
     G.tips = [LIMB[0][3], LIMB[1][3]].map(([x, y]) => [X(x), Y(y)] as Pt)
     for (const el of [wallSvg, latticeSvg, latLit, shadowSvg, floorSvg, potSvg, youngSvg, oldSvg, rimSvg, flowerSvg]) el.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     R.layout(W, H, soil - u * 0.1)
@@ -127,22 +139,22 @@ export function flowersScene(ctx: SceneCtx) {
     drawTree()
     yield
     drawHand()
-    if (!G.lx) setLamp(tx - u * (wide ? 0.2 : 0.12), Y(wide ? 0.74 : 0.8), false)
+    if (!G.lx) setLamp(tx - u * (wide ? 1.05 : 0.3), Y(wide ? 0.58 : 0.84), false)
     else setLamp(G.lx, G.ly, false)
     // the moon clock: a carved stone on the floor at the right
     const cw = wide ? clamp(u * 0.5, 160, 210) : clamp(W * 0.44, 140, 160)
     clock.style.width = `${f1(cw)}px`
-    clock.style.height = `${f1(cw * 0.525)}px`
-    put(clock, wide ? tx + u * 0.48 : W - cw - 6, wide ? base - cw * 0.47 : base - cw * 0.3)
+    clock.style.height = `${f1(cw * 0.6)}px`
+    put(clock, wide ? tx + u * 0.95 : W - cw - 6, base - cw * 0.5)
     drawClock()
     // the tanzaku under each flower; the furled scroll waits on the top twig
     tans.forEach((b, i) => {
       b.style.setProperty('--sw', `${f1(G.sw[0])}px`)
       b.style.setProperty('--so', `${f1(G.sw[1])}px`)
-      b.style.setProperty('--th', `${f1(u * (i ? 0.07 : 0.05))}px`)
+      b.style.setProperty('--th', `${f1(u * (i ? 0.12 : 0.1))}px`)
     })
     const [sx, sy] = [X(TOP(G.top)[3][0]), Y(G.top)]
-    const sw = wide ? 156 : 132
+    const sw = wide ? 156 : 110
     put(scroll, sx - sw / 2, sy - 4, sw)
     const pw0 = G.paper[2] - G.paper[0]
     const [mxk, myk] = wide ? [0.78, 0.22] : [0.74, 0.16]
@@ -406,35 +418,37 @@ export function flowersScene(ctx: SceneCtx) {
     return g
   }
 
-  /** The moon clock: a squat carved stone; on its face a dial ring with twelve marks and a moon that runs round it. */
+  /**
+   * The moon-dial: a rough stone drum with a contact shadow, its top dressed flat into a dial (hour cuts round an ellipse), a
+   * bronze gnomon standing on it; the gnomon's moon-shadow is what runs round when time is sped up. The words are cut into
+   * the drum's front (HTML over it).
+   */
   function drawClock() {
-    const body = 'M-74 2C-78 -20 -74 -46 -60 -58Q-20 -70 30 -66Q66 -64 74 -46C79 -28 78 -10 73 2Q0 8 -74 2Z'
-    const top = 'M-60 -58Q-20 -70 30 -66Q66 -64 74 -46Q30 -54 -10 -54Q-40 -54 -60 -58Z'
+    const cy = -40 // the dial's plane
+    const front = `M-70 ${cy}C-73 ${cy + 14} -72 ${cy + 30} -66 ${cy + 38}Q-30 ${cy + 47} 0 ${cy + 47}Q34 ${cy + 47} 67 ${cy + 37}C72 ${cy + 28} 73 ${cy + 13} 70 ${cy}Z`
     let ticks = ''
     for (let k = 0; k < 12; k++) {
       const a = (k / 12) * Math.PI * 2
-      const r0 = k % 3 ? 15.5 : 13.5
-      ticks += stroke([[-40 + Math.cos(a) * r0, -27 + Math.sin(a) * r0], [-40 + Math.cos(a) * 19, -27 + Math.sin(a) * 19]], k % 3 ? 1.1 : 1.8, 0.1, 0.1, 0.5)
+      const r0 = k % 3 ? 0.86 : 0.78
+      ticks += stroke([[Math.cos(a) * 54 * r0, cy + Math.sin(a) * 11 * r0], [Math.cos(a) * 54, cy + Math.sin(a) * 11]], k % 3 ? 1.1 : 1.8, 0.1, 0.1, 0.5)
     }
     clockHand.replaceChildren(
-      s('circle', { cx: -40, cy: -27, r: 30, fill: 'none' }), // the turning box: centred on the dial
-      s('circle', { class: 't24f-cm-halo', cx: -40, cy: -48, r: 9, fill: 'url(#p2-halo)' }),
-      s('circle', { class: 't24f-cm', cx: -40, cy: -48, r: 4.6, fill: 'url(#p2-disc)' }),
-      s('path', { class: 't24f-cm-sea', d: blob(-41.5, -49, 1.6, 1.2, 3, 0.2, 8) + blob(-38.6, -47, 1.1, 1.4, 4, 0.2, 8) }),
-      s('circle', { class: 't24f-cm-rim', cx: -40, cy: -48, r: 4.6 }))
+      s('ellipse', { cx: 0, cy, rx: 50, ry: 11, fill: 'none' }), // the turning box: centred on the dial
+      s('path', { class: 't24f-gn-shadow', d: `M0 ${cy - 1.2}L-46 ${cy + 2}L-46 ${cy + 5.5}L0 ${cy + 1.6}Z` }))
     clockArt.replaceChildren(
-      s('ellipse', { class: 't24f-clock-sh', cx: 4, cy: 3, rx: 82, ry: 6 }),
-      s('path', { class: 't24f-clock-face', d: body, filter: 'url(#ink-rough)' }),
-      s('path', { class: 't24f-clock-shade', d: body, fill: 'url(#p2-shade)' }),
-      s('path', { class: 't24f-clock-top', d: top }),
-      s('path', { class: 't24f-clock-ink', d: stroke([[48, -62], [70, -52], [76, -28], [72, 0]], 2.2, 0.2, 0.2, 0.3) + stroke([[-74, -8], [-70, 0]], 1.6, 0.2, 0.2, 0.3), filter: 'url(#ink-rough)' }),
-      // the carved dial: a sunk ring (dark above, light below), the hour marks, the moon on its track
-      s('circle', { class: 't24f-dial-sunk', cx: -40, cy: -27, r: 21 }),
-      s('circle', { class: 't24f-dial-lo', cx: -40, cy: -26, r: 21 }),
-      s('circle', { class: 't24f-dial-hi', cx: -40, cy: -28, r: 21 }),
+      s('ellipse', { class: 't24f-clock-sh', cx: 6, cy: cy + 46, rx: 84, ry: 7 }),
+      s('path', { class: 't24f-clock-face', d: front, fill: 'url(#p2-rock)', filter: 'url(#ink-rough)' }),
+      s('path', { class: 't24f-clock-shade', d: front, fill: 'url(#p2-shade)' }),
+      s('path', { class: 't24f-clock-moss', d: blob(-48, cy + 40, 16, 3.5, 2421, 0.3, 10) + blob(40, cy + 42, 12, 3, 2422, 0.3, 10) }),
+      s('ellipse', { class: 't24f-clock-top', cx: 0, cy, rx: 70, ry: 15 }),
+      s('ellipse', { class: 't24f-dial-lo', cx: 0, cy: cy + 0.8, rx: 56, ry: 11.6 }),
+      s('ellipse', { class: 't24f-dial-hi', cx: 0, cy: cy - 0.6, rx: 56, ry: 11.6 }),
       s('path', { class: 't24f-ticks', d: ticks }),
-      s('circle', { class: 't24f-dial-pin', cx: -40, cy: -27, r: 1.8 }),
-      clockHand)
+      clockHand,
+      // the gnomon: a bronze triangle standing on the dial, its sloping edge toward the moon
+      s('path', { class: 't24f-gnomon', d: `M-2 ${cy + 1}L22 ${cy + 1}L-2 ${cy - 24}Z` }),
+      s('path', { class: 't24f-gnomon-lit', d: `M-2 ${cy - 24}L22 ${cy + 1}L19 ${cy + 1}L-2 ${cy - 20}Z` }),
+      s('path', { class: 't24f-clock-ink', d: stroke([[-70, cy], [-73, cy + 18], [-66, cy + 38]], 2, 0.2, 0.2, 0.3) + stroke([[48, cy + 41], [67, cy + 37], [72, cy + 18]], 2.4, 0.2, 0.2, 0.3), filter: 'url(#ink-rough)' }))
   }
 
   // ── the lantern: where it hangs decides the shadow, the warm light and which way the tree leans
@@ -445,7 +459,8 @@ export function flowersScene(ctx: SceneCtx) {
     const lx = LX(), ly = LY()
     const move = `translate(${f1(G.lx)}px, ${f1(G.ly)}px)`
     lamp.style.transform = move
-    handSvg.style.transform = move
+    // the arm reaches in from above on the lantern's side of the tree, so it never crosses the question or the tree
+    handSvg.style.transform = `${move} scaleX(${G.lx > G.tx ? -1 : 1})`
     lampGlow.style.transform = `translate(${f1(lx - G.paper[0])}px, ${f1(ly - G.paper[1])}px)`
     pool.style.transform = `translate(${f1(lx)}px, ${f1(G.paper[3] + (H - G.paper[3]) * 0.4)}px)`
     latLit.style.setProperty('--lx', `${f1(lx)}px`)
@@ -458,52 +473,54 @@ export function flowersScene(ctx: SceneCtx) {
   }
 
   /**
-   * The grader's hand, drawn once round the lantern's hook (it moves with the lantern): a broad ink sleeve from the upper
-   * left, the wrist, a fist round a bamboo pole with its knuckles across it and the thumb along it, the pole's curled hook.
+   * The grader's hand, drawn once round the lantern's hook (it moves with the lantern), in the same dry ink as the tree:
+   * a sleeve reaching in from the left edge (a pale wash, its edges in tapered strokes heavier on the shadow side, a few
+   * dry folds), the wrist, a loose fist round a bamboo pole (knuckle strokes, the thumb along it), the pole's curled hook.
    */
   function drawHand() {
-    const u = G.u * 1.45 // the hand is near: drawn larger than the tree's unit
+    const u = G.u * 1.3 // the hand is near: drawn larger than the tree's unit
     const E: Pt = [-u * 0.01, -u * 0.03] // the pole's end, where the hook curls down
-    const dl = Math.hypot(0.94, 0.34)
-    const d: Pt = [0.94 / dl, 0.34 / dl] // along the pole, grip → hook
+    // a desk: the arm comes down from above the frame; a phone (the question spans the top): in from the side edge
+    const dl = G.wide ? Math.hypot(0.8, 0.6) : Math.hypot(0.97, 0.24)
+    const d: Pt = G.wide ? [0.8 / dl, 0.6 / dl] : [0.97 / dl, 0.24 / dl] // along the pole, grip → hook
     const n: Pt = [-d[1], d[0]]
-    const gp: Pt = [E[0] - d[0] * u * 0.24, E[1] - d[1] * u * 0.24]
+    const gp: Pt = [E[0] - d[0] * u * 0.26, E[1] - d[1] * u * 0.26]
     const at = (a: number, b: number): Pt => [gp[0] + (d[0] * a + n[0] * b) * u, gp[1] + (d[1] * a + n[1] * b) * u]
-    // the bamboo: butt above the hand to the end, nodes, a lit edge; the curl of the hook
-    const pole = stroke([at(-0.1, 0), E], u * 0.02, 0.02, 0.04, 0.7)
-    const hook = stroke([E, [E[0] + u * 0.02, E[1] + u * 0.002], [E[0] + u * 0.026, E[1] + u * 0.018], [E[0] + u * 0.014, E[1] + u * 0.03], [E[0] + u * 0.006, E[1] + u * 0.026]], u * 0.009, 0.05, 0.4, 0.4)
+    // the bamboo: from behind the fist to the end, nodes, a lit edge; the curl of the hook
+    const pole = stroke([at(-0.12, 0), E], u * 0.018, 0.02, 0.04, 0.7)
+    const hook = stroke([E, [E[0] + u * 0.02, E[1] + u * 0.002], [E[0] + u * 0.026, E[1] + u * 0.018], [E[0] + u * 0.014, E[1] + u * 0.03], [E[0] + u * 0.006, E[1] + u * 0.026]], u * 0.008, 0.05, 0.4, 0.4)
     let nodes = ''
-    for (const a of [-0.07, 0.07, 0.17]) nodes += stroke([at(a, -0.012), at(a + 0.003, 0.012)], u * 0.006, 0.2, 0.2, 0.4)
-    const poleLit = stroke([at(-0.09, -0.007), at(0.23, -0.007)], u * 0.004, 0.2, 0.3, 0.2)
-    // the sleeve: from the cuff round the wrist out past the frame, up and to the left
-    const A: Pt = [-0.85, -0.53], m: Pt = [-A[1], A[0]]
-    const cuff: Pt = [gp[0] + A[0] * u * 0.075, gp[1] + A[1] * u * 0.075]
-    const far: Pt = [cuff[0] + A[0] * u * 1.1, cuff[1] + A[1] * u * 1.1]
+    for (const a of [0.08, 0.16, 0.23]) nodes += stroke([at(a, -0.011), at(a + 0.003, 0.011)], u * 0.005, 0.2, 0.2, 0.4)
+    const poleLit = stroke([at(0.05, -0.007), at(0.25, -0.007)], u * 0.004, 0.2, 0.3, 0.2)
+    // the sleeve: from the cuff out past the left edge, widening, sagging a little under its own weight
+    const A: Pt = G.wide ? [-0.16, -0.99] : [-0.98, -0.16], m: Pt = [-A[1], A[0]]
     const off = (p: Pt, v: Pt, k: number): Pt => [p[0] + v[0] * k * u, p[1] + v[1] * k * u]
-    const cL = off(cuff, m, 0.06), cR = off(cuff, m, -0.055), fL = off(far, m, 0.22), fR = off(far, m, -0.2)
-    const bulge = off(cuff, A, -0.03)
-    const sleeve = `M${f1(cL[0])} ${f1(cL[1])}Q${f1(bulge[0])} ${f1(bulge[1])} ${f1(cR[0])} ${f1(cR[1])}Q${f1((cR[0] + fR[0]) / 2 - m[0] * u * 0.05)} ${f1((cR[1] + fR[1]) / 2 - m[1] * u * 0.05)} ${f1(fR[0])} ${f1(fR[1])}L${f1(fL[0])} ${f1(fL[1])}Q${f1((cL[0] + fL[0]) / 2 + m[0] * u * 0.02)} ${f1((cL[1] + fL[1]) / 2 + m[1] * u * 0.02)} ${f1(cL[0])} ${f1(cL[1])}Z`
-    const hem = stroke([cL, bulge, cR], u * 0.013, 0.1, 0.1, 0.4) + stroke([off(cL, A, 0.04), off(off(cuff, A, 0.016), m, 0.008), off(cR, A, 0.05)], u * 0.006, 0.2, 0.3, 0.3)
+    const cuff = off(gp, A, 0.07)
+    const far = off(cuff, A, 1.5)
+    const top = curve(off(cuff, m, 0.055), off(off(cuff, A, 0.7), m, 0.12), off(far, m, 0.2), 16)
+    const bot = curve(off(cuff, m, -0.05), off(off(cuff, A, 0.7), m, -0.17), off(far, m, -0.24), 16)
+    const sleeve = `M${[...top, ...[...bot].reverse()].map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}Z`
+    const edges = stroke(top, u * 0.012, 0.05, 0.5, 0.3) + stroke(bot, u * 0.022, 0.04, 0.5, 0.3) + stroke(curve(off(cuff, m, 0.06), off(off(cuff, A, -0.02), m, 0), off(cuff, m, -0.055), 8), u * 0.016, 0.1, 0.1, 0.4)
     let folds = ''
-    for (const [k0, k1, sd] of [[0.1, 0.55, 0.025], [0.16, 0.8, -0.04], [0.3, 0.95, 0.1]] as const)
-      folds += stroke(curve(off(off(cuff, A, k0), m, sd), off(off(cuff, A, (k0 + k1) / 2), m, sd + 0.035), off(off(cuff, A, k1), m, sd - 0.02), 8), u * 0.01, 0.15, 0.4, 0.2)
-    // wrist and fist (the back of the hand toward us); the thumb over the pole, creases where the fingers fold under
-    const wrist = stroke([off(cuff, A, -0.008), at(-0.012, -0.004)], u * 0.042, 0.1, 0.1, 0.8)
-    const ang = (Math.atan2(d[1], d[0]) * 180) / Math.PI
-    const back = stroke(curve(at(-0.045, -0.02), at(-0.005, -0.05), at(0.04, -0.022), 10), u * 0.011, 0.1, 0.25, 0.3)
-    const thumb = stroke(curve(at(-0.022, -0.012), at(0.02, -0.03), at(0.052, -0.012), 8), u * 0.016, 0.1, 0.5, 0.3)
-    let creases = ''
-    for (let k = 0; k < 3; k++) creases += stroke(curve(at(-0.02 + k * 0.022, 0.016), at(-0.012 + k * 0.022, 0.026), at(-0.004 + k * 0.022, 0.02), 4), u * 0.005, 0.2, 0.2, 0.3)
+    for (const [k0, k1, sd] of [[0.08, 0.5, 0.02], [0.16, 0.8, -0.07], [0.32, 1.1, 0.1], [0.5, 1.3, -0.14]] as const)
+      folds += stroke(curve(off(off(cuff, A, k0), m, sd), off(off(cuff, A, (k0 + k1) / 2), m, sd + 0.04), off(off(cuff, A, k1), m, sd - 0.02), 10), u * 0.009, 0.15, 0.45, 0.2)
+    // wrist and loose fist: a pale wash for the skin, then the ink: wrist lines, the back of the hand, knuckles, folded fingers under the pole, the thumb along it
+    const skin = `M${[at(-0.06, -0.035), at(-0.02, -0.05), at(0.03, -0.042), at(0.05, -0.01), at(0.045, 0.03), at(0.0, 0.042), at(-0.05, 0.03), at(-0.075, 0.0)].map(([x, y]) => `${f1(x)} ${f1(y)}`).join('L')}Z`
+    const wrist = stroke([off(cuff, m, 0.035), at(-0.06, -0.035)], u * 0.007, 0.2, 0.3, 0.3) + stroke([off(cuff, m, -0.035), at(-0.055, 0.03)], u * 0.009, 0.2, 0.3, 0.3)
+    const back = stroke(curve(at(-0.06, -0.036), at(-0.02, -0.056), at(0.032, -0.042), 10), u * 0.008, 0.1, 0.3, 0.3)
+    let knuckles = ''
+    for (let k = 0; k < 4; k++) knuckles += stroke(curve(at(-0.02 + k * 0.018, 0.012), at(-0.012 + k * 0.018, 0.03), at(-0.002 + k * 0.018, 0.024), 5), u * 0.006, 0.2, 0.3, 0.3)
+    const thumb = stroke(curve(at(-0.03, -0.02), at(0.012, -0.03), at(0.05, -0.012), 8), u * 0.012, 0.1, 0.55, 0.3)
     handSvg.replaceChildren(
       s('path', { class: 't24f-pole', d: pole, filter: 'url(#ink-rough)' }),
       s('path', { class: 't24f-pole-lit', d: poleLit }),
       s('path', { class: 't24f-pole-node', d: nodes + hook }),
       s('path', { class: 't24f-sleeve', d: sleeve, filter: 'url(#ink-wash)' }),
-      s('path', { class: 't24f-folds', d: folds + hem, filter: 'url(#ink-rough)' }),
-      s('path', { class: 't24f-skin', d: wrist }),
-      s('path', { class: 't24f-skin', d: blob(at(0.004, 0)[0], at(0.004, 0)[1], u * 0.05, u * 0.036, 2409, 0.1, 14), transform: `rotate(${f1(ang)} ${f1(at(0.004, 0)[0])} ${f1(at(0.004, 0)[1])})` }),
-      s('path', { class: 't24f-skin-lit', d: stroke(curve(at(0.04, -0.018), at(0.054, 0.002), at(0.04, 0.026), 6), u * 0.008, 0.2, 0.2, 0.2) }),
-      s('path', { class: 't24f-knuckles', d: back + creases + stroke(curve(at(-0.04, 0.026), at(0.0, 0.04), at(0.044, 0.024), 8), u * 0.008, 0.2, 0.2, 0.3), filter: 'url(#ink-rough)' }),
+      s('path', { class: 't24f-sleeve-ink', d: edges, filter: 'url(#ink-dry)' }),
+      s('path', { class: 't24f-folds', d: folds, filter: 'url(#ink-dry)' }),
+      s('path', { class: 't24f-skin', d: skin, filter: 'url(#ink-wash)' }),
+      s('path', { class: 't24f-skin-lit', d: stroke(curve(at(0.035, -0.03), at(0.052, -0.005), at(0.04, 0.025), 6), u * 0.006, 0.2, 0.2, 0.2) }),
+      s('path', { class: 't24f-knuckles', d: wrist + back + knuckles, filter: 'url(#ink-rough)' }),
       s('path', { class: 't24f-thumb', d: thumb }))
     // the lantern under the hook
     const r = G.lr
@@ -525,13 +542,15 @@ export function flowersScene(ctx: SceneCtx) {
       tans[i].style.transform = `translate(${f1(x)}px, ${f1(y)}px)`
       // opened, the slip is wider: slide it along so it stays in the frame
       tans[i].style.setProperty('--ox', `${f1(clamp(x, G.sw[1] / 2 + 6, G.W - G.sw[1] / 2 - 6) - x)}px`)
+      // the flower's own touch area turns with the tree
+      const bx = G.tips[i][0] + (i === pick ? (pick ? 1 : -1) * grown * G.u * 0.05 : 0) - G.tx, by = G.tips[i][1] - G.soil
+      blooms[i].style.transform = `translate(${f1(G.tx + bx * ca - by * sa)}px, ${f1(G.soil + bx * sa + by * ca)}px)`
     }
     scroll.style.transform = `rotate(${(-lean).toFixed(2)}deg)`
-    // the lean is written on the paper where the shadow leans (away from the lantern)
-    const away = G.lx < G.tx ? 1 : -1
-    const { paper, wide, W } = G
-    leanLabel.style.left = `${f1(wide ? G.tx + away * G.u * 0.95 : W / 2 + away * W * 0.27)}px`
-    leanLabel.style.top = `${f1(wide ? paper[1] + (paper[3] - paper[1]) * 0.6 : paper[1] + (paper[3] - paper[1]) * 0.17)}px`
+    // the lean is written right by the trunk, on the side of the chosen flower
+    const side = pick === 0 ? -1 : 1
+    leanLabel.style.left = `${f1(G.tx + side * G.u * (G.wide ? 0.25 : 0.2))}px`
+    leanLabel.style.top = `${f1(G.wide ? G.soil - G.u * 0.2 : G.base + 10)}px` // a phone: on the floor in front, the slips fill the sides
     for (let i = 0; i < flowerEls.length; i++) flowerEls[i].classList.toggle('near', Math.hypot(LX() - G.tips[i][0], LY() - G.tips[i][1]) < G.u * 0.3 && !ruled)
   }
 
@@ -600,6 +619,8 @@ export function flowersScene(ctx: SceneCtx) {
     if (ruled) return
     const again = pick >= 0
     pick = i
+    dot?.done()
+    dot = null
     tans.forEach((b, k) => {
       b.setAttribute('aria-pressed', String(k === i))
       b.classList.toggle('dim', k !== i)
@@ -610,7 +631,7 @@ export function flowersScene(ctx: SceneCtx) {
     const tx0 = G.lx, ty0 = G.ly
     // the lantern comes to hang just above and outside the flower
     const toX = fx + (i ? 1 : -1) * G.u * 0.1, toY = fy - G.u * 0.1 - G.lr * 2.2
-    const L = G.wide ? 7 : 3 // half the final lean (degrees): less on a narrow screen, the flowers must stay in the frame
+    const L = G.wide ? 10 : 5 // half the final lean (degrees): about 20° in the end (audit g08 24-1); less on a phone
     const lean0 = lean, lean1 = (i ? 1 : -1) * L
     const g0 = again ? 0 : grown
     grown = 0
@@ -637,7 +658,13 @@ export function flowersScene(ctx: SceneCtx) {
         root.classList.add('leaned')
         passes.cancel()
         scroll.disabled = false
-        if (!again) ctx.insight(K.insight, K.detail), ctx.prompt(K.prompt2)
+        dot?.done()
+        // a phone has no room for the pill beside the insight in its foot: there the step is said by the scroll itself
+        dot = g.dot(scroll.querySelector('.t24f-roll') as HTMLElement, { dir: [0, 1], label: G.wide ? undefined : K.prompt2 })
+        if (!again) {
+          ctx.insight(K.insight, K.detail)
+          if (G.wide) ctx.prompt(K.prompt2)
+        }
       })
     })
   }
@@ -650,10 +677,12 @@ export function flowersScene(ctx: SceneCtx) {
     tans.forEach((b) => b.classList.remove('dim'))
     ctx.chime('ok')
     // the hand and lantern withdraw; the scroll's own light hangs above the tree, so the shadow falls short and straight
-    const tx0 = G.lx, ty0 = G.ly, l0 = lean
-    tween(ctx, R, 1200, (k) => {
+    dot?.done()
+    dot = null
+    const tx0 = G.lx, ty0 = G.ly, l0 = lean, l1 = -(G.wide ? 7 : 4) // toward the answer with the worked example
+    tween(ctx, R, 1600, (k) => {
       setLamp(tx0 + (G.tx - tx0) * k, ty0 + (Y(1.08) - ty0) * k, false)
-      lean = l0 * (1 - k * 0.75)
+      lean = l0 + (l1 - l0) * k
       applyLean()
     })
     // the principles' insight comes under the judge's one, which stays (the second does not erase the first)

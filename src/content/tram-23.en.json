@@ -18,6 +18,9 @@
       "label": "The concept stone",
       "art": "Looking almost straight down into a round pond held by a thick ring of mossy stones, like a koi painting. Under the clear water a slab on the bottom is carved with a suspension bridge. A paper lantern hangs from a bamboo pole right above it; pull the lantern down toward the water and its pool of light closes in on the slab, the carving glows vermilion, the koi leave their free swim to hold the cable and then parade along it, and two vermilion towers appear in the reflection though nothing stands above the pond.",
       "prompt": "Drag the lantern down toward the water",
+      "prompt2": "Pull further, to the last notch",
+      "levels": ["light", "strong", "very strong"],
+      "fish": "Koi = the ideas swimming in the AI's head",
       "slider": "The dial: how strong the “Golden Gate Bridge” concept is",
       "stone": "The carved stone = a concept already sitting inside the AI",
       "sliderAria": "Drag to turn up the “Golden Gate Bridge” concept inside the model (← → keys)",
@@ -54,6 +57,7 @@
       "label": "One stem, many petals",
       "art": "The camera sits right on the night water; the moon is out of frame, only its road runs toward us. In the middle of that road stands a large white lotus bud: five petals closed into one bud on one stem, which dives into the water, where it is written “one neuron”. Flick the water and ripples spread, the petals sway and close again; with enough energy the bud bursts, and the five petals drift away as five small flowers at different distances, each carrying an ink mark and its meaning: DNA, Hebrew letters, legal text, a web request, a nutrition label. Under the water, silver threads still tie all five to one stem.",
       "prompt": "Flick the water a few times to split the bud",
+      "prompt2": "Flick again — the bud is about to open",
       "shakeAria": "Stir the water to separate the stacked meanings (or press Space)",
       "neuron": "one neuron — a tiny point inside an AI that lights up when it meets something it recognises",
       "decode": "Flicking = how researchers pull the meanings apart",
@@ -135,6 +139,8 @@
       "prompt": "Turn the tray or touch each stone to listen",
       "question": "Can we see inside AI before it grows more powerful?",
       "decode": "Looking inside = reading which concepts an AI is using as it answers",
+      "left1": "1 stone left",
+      "leftN": "{n} stones left",
       "perspectives": {
         "stones": [
           {

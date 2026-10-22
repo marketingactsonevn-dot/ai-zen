@@ -574,7 +574,8 @@ export function headsScene(ctx: SceneCtx) {
   inkStage(ctx, root, {
     label: K.aria, hint: K.hint, gyro: true, dpr: [1.75, 1.25], fallback,
     // (no higher than a little over the default: from above, the far lanterns leave the frame — audit 22-2)
-    view: { yaw: yaw0, pitch: pitch0, yawRange: [yaw0 - 1.05, yaw0 + 1.05], pitchRange: [0.21 - (tall ? 0.13 : 0), pitch0 + 0.16], fit: tall ? [6.8, 3.6] : [4.6, 2.75], target: T, shift: 0, zoomRange: [0.6, 1.4] },
+    view: { yaw: yaw0, pitch: pitch0, yawRange: [yaw0 - 1.05, yaw0 + 1.05], pitchRange: [0.21 - (tall ? 0.13 : 0), pitch0 + 0.16], fit: tall ? [6.4, 3.6] : [4.6, 2.75], target: T, shift: tall ? 0.09 : 0, // (a phone: a little closer and lower, the pond down to the prompt)
+      zoomRange: [0.6, 1.4] },
   }, build).ready.then((k) => {
     if (!k?.stage) return
     kit = k

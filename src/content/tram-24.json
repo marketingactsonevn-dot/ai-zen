@@ -63,7 +63,9 @@
     },
     "flattery": {
       "label": "Cành nịnh",
-      "art": "Nhìn từ thấp lên một cây bonsai thông trên đôn sơn mài, đặt trên gờ đá cao hơn hồ đêm; trăng sau lưng viền sáng từng chùm lá. Một cành lá mật ong bóng loáng vươn ra phía người xem và luôn xoay về chỗ bạn đứng, treo một thẻ lá vàng ghi lời khen; mỗi lần bắt được ánh nhìn, đom đóm vàng bay tới đậu thêm. Trên cành thật treo một thẻ gỗ mộc quay đi một nửa. Kéo chiếc kéo tỉa son vào khớp cành: cành nịnh rơi vào bóng tối, cây đứng thẳng lại, thẻ thật quay ra trước.",
+      "art": "Nhìn từ thấp lên một cây bonsai thông trên đôn sơn mài, đặt trên gờ đá cao hơn hồ đêm; trăng sau lưng viền sáng từng chùm lá. Một cành lá mật ong vươn chéo xuống về phía người xem, ra tận trên mặt hồ, và luôn xoay về chỗ bạn đứng; trên đó treo thẻ lá vàng ghi lời khen. Mỗi lần bạn bấm “thích” lên lời khen, một con đom đóm bay tới đậu lên cành, cành dài và bóng thêm, còn thẻ gỗ mộc của cành nói thật quay đi xa hơn. Kéo kéo tỉa vào gốc cành nịnh: cành rơi xuống hồ, cây đứng thẳng lại, thẻ nói thật quay ra trước.",
+      "prompt1": "Bấm “thích” lên lời khen vài lần",
+      "likeAria": "Thích lời khen này",
       "prompt": "Kéo kéo tỉa vào gốc cành nịnh",
       "decode": "Đom đóm = một lượt “thích” của người dùng",
       "pruneAria": "Tỉa cành nịnh (Enter)",
@@ -93,24 +95,15 @@
     },
     "shortcut": {
       "label": "Lối tắt qua vườn",
-      "art": "Nhìn từ trên cao xuống một mê cung sỏi trắng có lối rẽ và ngõ cụt, ngăn bằng hàng rào tre cao buộc dây, xung quanh là rêu và đá; cuối mê cung là cổng treo chuông đồng, chuông đã kêu: “test: đều qua”. Mây che trăng nên vườn tối, chỉ có vòng sáng ấm của chiếc đèn bạn cầm, bóng hàng rào toả ra theo đèn. Soi khắp vườn sẽ thấy dấu chân lách qua lỗ hở ở mọi hàng rào, đi thẳng tới chuông, sỏi phía sau chưa hề được cào. Đi lối dài thì từng làn sỏi được cào xong rồi mới tới chuông.",
-      "prompt": "Kéo đèn soi dọc rào, tìm lối AI đi tắt",
+      "art": "Nhìn chếch xuống một vườn sỏi trắng karesansui, các làn chia bằng hàng rào tre buộc dây, rêu và đá quanh bờ; cuối vườn là cổng treo chuông đồng, chuông đã kêu “Đạt!”. Sương che trăng nên vườn tối, chỉ có vòng sáng ấm của chiếc đèn bạn cầm, bóng rào toả ra theo đèn. Cầm đèn đi ngược dấu chân từ chuông về cổng: dấu chân lách qua lỗ thủng ở từng hàng rào, còn các làn sỏi của lối thật chưa hề được cào. Khi đã lộ, lối dài tự chạy để so: từng làn được cào xong thì chuông mới kêu.",
+      "prompt": "Cầm đèn đi ngược dấu chân, từ chuông về cổng",
+      "prompt2": "Đi tiếp — dấu chân dẫn về đâu?",
+      "count": "Đã soi {n}%",
+      "lampAria": "Đèn tay: dời dọc dấu chân, từ chuông về cổng (phím ↓ ↑)",
+      "lampValue": "Đã soi {n}% vệt dấu chân",
       "task": "Việc giao: sửa công thức tính tiền đang sai. Máy chấm rung chuông nếu đạt.",
       "decode": "Chuông = máy chấm điểm · Lối đã cào = việc thật đã làm",
-      "paths": [
-        {
-          "label": "Sửa công thức cho tính đúng",
-          "aria": "Lối dài: sửa công thức tính tiền cho đúng",
-          "honest": true,
-          "stone": "Sửa công thức"
-        },
-        {
-          "label": "Sửa bài chấm cho luôn đạt",
-          "aria": "Lối tắt: sửa bài chấm để lúc nào cũng báo đạt",
-          "honest": false,
-          "stone": "Sửa bài chấm"
-        }
-      ],
+      "long": "Lối dài: sửa công thức cho tính đúng",
       "bell": "Đạt!",
       "claim": "AI báo: “Xong rồi, đạt hết.”",
       "reveal": "AI lách qua rào: sửa luôn bài chấm, công thức vẫn tính sai",
@@ -129,14 +122,14 @@
     "incense": {
       "label": "Ngồi thiền trước khi trả lời",
       "bridge": "Học xong rồi, AI còn có thể nghĩ trước khi trả lời",
-      "art": "Nhìn chếch xuống bờ hồ đêm: một nhà sư vài nét mực ngồi trên tảng đá phẳng, trước mặt là lư hương đồng, bên cạnh là tấm bia khắc câu trả lời, lúc đầu còn mờ. Cột khói nhang bốc lên tới mép trên, đi ngang vầng trăng, trong khói trôi những nét nháp vô nghĩa. Cắm thêm nhang thì khói dày và cao hơn, trăng nhích qua trời, chữ trên bia rõ dần; nén cuối cùng thắp sáng cả bờ xa như một cánh đồng nhang.",
-      "prompt": "Kéo lư hương lên để cắm thêm nhang",
+      "art": "Nhìn chếch xuống bờ hồ đêm: cột khói nhang là trục của tranh, bốc từ lư đồng ở giữa lên tận mép trên, đi ngang vầng trăng, trong khói trôi những nét nháp vô nghĩa. Nhà sư vài nét mực ngồi trên tảng đá phẳng bên trái; bên phải là tấm bia đá lớn khắc một câu đố và câu trả lời. Cạnh lư là cột gỗ có rãnh bốn khấc: kéo bó nhang lên mỗi khấc là cắm thêm một nén, khói dày và cao hơn, trăng nhích qua trời, câu trả lời trên bia đổi từ đoán vội sang đúng; nén cuối thắp cả bờ xa như cánh đồng nhang, in bóng xuống nước.",
+      "prompt": "Kéo bó nhang lên theo rãnh để cắm thêm nén",
+      "prompt2": "Thêm nữa — nhìn tấm bia",
       "decode": "Mỗi nén nhang = thêm một lượt nghĩ trước khi trả lời",
       "slider": "Thời gian suy nghĩ",
-      "sliderAria": "Kéo lư hương lên để cho AI nghĩ lâu hơn (phím ← →)",
+      "sliderAria": "Bó nhang: kéo lên theo rãnh để AI nghĩ lâu hơn (phím ↑ ↓)",
       "valueText": "Nén nhang {n}/{total}",
-      "short": "nghĩ nhanh",
-      "long": "nghĩ lâu",
+      "ends": ["1 nén · nghĩ nhanh", "4 nén · nghĩ lâu"],
       "notches": [
         "ARC-AGI · 75,7%",
         "87,5% · tính gấp ~172 lần"

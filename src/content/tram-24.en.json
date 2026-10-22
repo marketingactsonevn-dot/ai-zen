@@ -63,7 +63,9 @@
     },
     "flattery": {
       "label": "The flattering branch",
-      "art": "Looking up at a pine bonsai on a lacquered stand, on a stone ledge above the night lake; the moon behind it rims every cluster of needles. One branch of glossy, honey-coloured needles reaches toward the viewer and always turns to where you stand, carrying a gold-leaf tag with the praise; each time it catches your eye, golden fireflies fly in and settle on it. On a real branch hangs a plain wooden tag, half turned away. Drag the vermilion pruning shears to the branch's joint: the flattering branch falls into the dark, the tree straightens and the honest tag turns to face you.",
+      "art": "Looking up from below at a pine bonsai on a lacquered stand, on a stone ledge above a night lake; the moon behind it rims every tuft. One honey-glossed branch reaches diagonally down toward you, out over the water, always turning to where you stand; a gold-leaf tag of praise hangs on it. Each time you tap “like” on the praise, a firefly flies over and perches on it, the branch grows longer and glossier, and the plain wooden tag of the honest branch turns further away. Drag the shears onto the flattering branch’s root: it drops into the lake, the tree straightens, and the honest tag turns to face you.",
+      "prompt1": "Tap “like” on the praise a few times",
+      "likeAria": "Like this praise",
       "prompt": "Drag the shears to the base of the flattering branch",
       "decode": "A firefly = one “like” from a user",
       "pruneAria": "Prune the flattering branch (Enter)",
@@ -93,24 +95,15 @@
     },
     "shortcut": {
       "label": "A shortcut through the garden",
-      "art": "Looking down from high above at a maze of white gravel with turns and dead ends, divided by tall bamboo fences bound with cord, moss and rocks all round; at its far end a gate holds a bronze bell, and the bell has already rung: “tests: all pass”. Clouds hide the moon, so the garden is dark except for the warm circle of the lantern you carry, the fences’ shadows fanning out from it. Search the garden and you find footprints slipping through a gap in every fence, straight to the bell, the gravel behind them never raked. The long way rakes every lane before it reaches the bell.",
-      "prompt": "Drag the lantern along the fences to find where the AI cut through",
+      "art": "Looking obliquely down on a karesansui of white gravel, its lanes divided by bamboo fences bound with cord, moss and rocks round its edge; at the far end a gate holds a bronze bell, and it has already rung “Pass!”. Mist hides the moon, so the garden is dark but for the warm circle of the lantern you carry, the fences’ shadows fanning out from it. Carry the lantern back along the footprints from the bell to the gate: they slip through a hole in every fence, and the lanes of the real way were never raked. Once that shows, the long way runs by itself for comparison: every lane is raked before the bell rings.",
+      "prompt": "Carry the lantern back along the footprints, from the bell to the gate",
+      "prompt2": "Keep going — where do the footprints lead?",
+      "count": "Searched {n}%",
+      "lampAria": "Hand lantern: move it along the footprints, from the bell to the gate (↓ ↑ keys)",
+      "lampValue": "Searched {n}% of the footprints",
       "task": "The task: fix a pricing formula that’s wrong. The grader rings the bell if it passes.",
       "decode": "The bell = the grader · A raked lane = real work done",
-      "paths": [
-        {
-          "label": "Fix the formula so it’s right",
-          "aria": "The long way: fix the pricing formula properly",
-          "honest": true,
-          "stone": "Fix the formula"
-        },
-        {
-          "label": "Edit the grader so it always passes",
-          "aria": "The shortcut: edit the grader so it always reports a pass",
-          "honest": false,
-          "stone": "Edit the grader"
-        }
-      ],
+      "long": "The long way: fix the formula so it’s right",
       "bell": "Pass!",
       "claim": "The AI reports: “Done, all passing.”",
       "reveal": "The AI slipped through the fence: it edited the grader, and the formula is still wrong",
@@ -129,14 +122,14 @@
     "incense": {
       "label": "Sitting before answering",
       "bridge": "Once it has learned, an AI can also think before it answers",
-      "art": "Looking down at a lake shore at night: a monk drawn in a few ink strokes sits on a flat rock, a bronze censer before him and beside it a stele with the answer carved on it, faint at first. The incense smoke rises to the top of the frame, past the moon, and meaningless draft strokes drift in it. Add sticks and the smoke grows thicker and taller, the moon moves across the sky and the carving comes clear; the last stick lights the whole far shore like a field of incense.",
-      "prompt": "Drag the censer up to light more incense",
+      "art": "Looking down at a lake shore at night: the incense smoke is the spine of the picture, rising from a bronze censer in the middle to the top of the frame, past the moon, meaningless draft strokes drifting in it. A monk in a few ink strokes sits on a flat rock at the left; at the right stands a large stele carved with a puzzle and its answer. Beside the censer a wooden post has a groove with four notches: draw the bundle up a notch and another stick is lit, the smoke grows thicker and taller, the moon moves across the sky, and the answer on the stele changes from a hasty guess to the right one; the last stick lights the whole far shore like a field of incense, mirrored in the water.",
+      "prompt": "Draw the incense bundle up the groove to light another stick",
+      "prompt2": "More — watch the stele",
       "decode": "Each incense stick = one more round of thinking before answering",
       "slider": "Thinking time",
-      "sliderAria": "Drag the censer up to let the AI think longer (← → keys)",
+      "sliderAria": "Incense bundle: draw it up the groove to let the AI think longer (↑ ↓ keys)",
       "valueText": "Incense {n}/{total}",
-      "short": "quick",
-      "long": "long",
+      "ends": ["1 stick · quick", "4 sticks · long"],
       "notches": [
         "ARC-AGI · 75.7%",
         "87.5% · ~172× the compute"

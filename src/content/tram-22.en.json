@@ -139,6 +139,7 @@
           "reads": "“it” = Lan’s essay"
         }
       ],
+      "steps": ["2 layers to go — keep dragging down", "The deepest layer — drag to the bottom"],
       "stagesNote": {
         "text": "The three steps here are an illustration.",
         "asOf": "2026-10-15",
@@ -167,6 +168,7 @@
       "prompt": "Drag the moon through the years",
       "prompt2": "Drag the vermilion seal along the scroll",
       "decode": "The window = how much text an AI can read in one go. 1 million tokens ≈ over 700,000 words.",
+      "carve": ["whole\nsentence", "2,048\ntokens", "100,000\ntokens", "1 million\ntokens"],
       "claim": "10 million · Meta's own claim",
       "sealLabel": "what matters",
       "sealAria": "The vermilion seal “what matters”: drag it along the scroll from start to end (← → keys)",

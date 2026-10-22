@@ -51,6 +51,7 @@ progressTide(data, {
   track: (g) => (t) => [x, y],      // đường đi của tâm nút kéo (px trong band; g: TideGeo = { w, h, ground, xs, roll, seed }): cung trời, cầu zig-zag, mặt nước dâng dọc…
   thumb: () => s('ellipse', …),     // vật được kéo thay đĩa trăng (bóng trăng, đĩa chặn giấy), vẽ trong ô 50 × 50 tâm 0, 0
   onStep: (i, t) => …,              // mỗi lần nút di chuyển: mốc gần nhất i (n = hôm nay) và t liên tục — trạm cho tranh riêng chạy theo (trăng tròn dần, bóng sào dài ra)
+  band: (W, H) => ({ w, h, top }),  // hộp của cuộn trong tranh (px) thay mặc định 60 % chiều cao, tối đa 1120 × 420 — khi cuộn là phần lớn bức tranh (vách shōji 22-4)
 })
 // Kéo bám theo track (điểm gần con trỏ nhất); track dọc hơn ngang thì slider tự đặt aria-orientation="vertical".
 // Đá mốc mặc định vẫn đứng ở xs[i] trên cát; muốn vật khác thì art.mark, muốn bỏ hẳn thì CSS .p2t-ms { display: none } rồi vẽ trong art.back.

@@ -1,0 +1,225 @@
+/* ── 22-4 (comp + 2.5D): a tea room's shōji wall is most of the picture; the moon rides the transom, each panel slides
+   onto one deep garden, steles carry what each year's window could read. Colours are tokens (light/dark differ in
+   structure: the room is warm wood by day, near black at night; the garden is mist by day, ink at night). */
+.p2t.g8w3 :is(.p2t-roller, .p2t-rake, .p2t-track, .p2t-horizon, .p2t-mist, .p2t-ms, .p2t-today, .p2t-horizon-label) { display: none; }
+.p2t.g8w3 .p2t-paper { fill: none; stroke: none; }
+.p2t.g8w3 .p2t-moon::after { display: none; }
+.p2t.g8w3 .p2t-moon { --m: 56px; }
+/* the thumb is only the moon's handle (the moon itself glows behind the transom); focused from the keyboard, it glows */
+.p2t.g8w3 .g8w3-thumb { fill: transparent; }
+.p2t.g8w3 .p2t-moon:focus-visible { outline: none; box-shadow: 0 0 26px 14px color-mix(in srgb, var(--moon) 40%, transparent); }
+:root[data-theme='light'] .p2t.g8w3 .p2t-moon:focus-visible { box-shadow: 0 0 26px 14px color-mix(in srgb, #fff 85%, transparent), 0 0 46px 20px color-mix(in srgb, var(--lantern) 30%, transparent); }
+/* the years under the rail's notches, on the transom's paper; today's date said once */
+.p2t.g8w3 .p2t-date { top: var(--g8w3-dy) !important; color: var(--ink-2); font-size: 0.74rem; text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper); }
+.p2t.g8w3 .p2t-date.on { color: var(--ink); }
+.p2t.g8w3 .p2t-date.today { color: var(--vermilion); }
+.p2t.g8w3 .p2t-date.today small { display: none; }
+:root[data-theme='dark'] .p2t.g8w3 .p2t-date { text-shadow: 0 0 6px #000, 0 0 2px #000; }
+/* the reading is ink on the mats (no placard): bottom-left on a wide screen, under the decoding line on a phone */
+.p2t.g8w3 .p2t-card {
+  top: var(--g8w3-card) !important; left: 24px; width: min(36%, 30rem); max-height: none !important; transform: none;
+  overflow: visible; padding: 0; transition: opacity 0.6s var(--ease);
+}
+.p2t.g8w3 .p2t-card .p2t-fact { font-size: clamp(0.98rem, 1.3vw, 1.12rem); text-shadow: 0 0 10px var(--paper), 0 0 3px var(--paper); }
+.p2t.g8w3 .p2t-card .p2-eyebrow { text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); }
+.p2t.g8w3 .p2t-card.mist .p2-eyebrow { display: none; }
+.p2t.g8w3 .p2t-card.mist .p2t-fact { font-style: normal; color: var(--ink); }
+.p2t.g8w3.g8w3-done .p2t-card { opacity: 0; pointer-events: none; }
+@media (max-width: 720px) {
+  .p2t.g8w3 .p2t-card { left: 14px; right: 14px; width: auto; }
+}
+.g8w3-decode { position: absolute; left: 14px; right: 14px; margin: 0; font: 400 13px/1.45 var(--sans); color: var(--ink-2); text-align: center; text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); z-index: 2; pointer-events: none; }
+
+/* the transom, the moon behind its paper */
+.p2t.g8w3 .g8w3-ranma { fill: color-mix(in srgb, var(--card) 70%, var(--rock-mid)); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-ranma { fill: color-mix(in srgb, var(--moon) 14%, #191c2b); }
+.p2t.g8w3 .g8w3-m0 { stop-color: var(--moon); stop-opacity: 0.95; }
+.p2t.g8w3 .g8w3-m1 { stop-color: var(--moon); stop-opacity: 0.42; }
+.p2t.g8w3 .g8w3-m2 { stop-color: var(--moon); stop-opacity: 0; }
+:root[data-theme='light'] .p2t.g8w3 .g8w3-m0 { stop-color: #fff; }
+:root[data-theme='light'] .p2t.g8w3 .g8w3-m1 { stop-color: #fff8e6; stop-opacity: 0.65; }
+:root[data-theme='light'] .p2t.g8w3 .g8w3-m2 { stop-color: #fff8e6; }
+.p2t.g8w3 .g8w3-d0 { stop-color: #fff; stop-opacity: 1; }
+.p2t.g8w3 .g8w3-d1 { stop-color: var(--moon); stop-opacity: 0.9; }
+.p2t.g8w3 .g8w3-d2 { stop-color: var(--moon); stop-opacity: 0; }
+.p2t.g8w3 .g8w3-groove { fill: var(--umbra); opacity: 0.55; }
+.p2t.g8w3 .g8w3-notch { fill: none; stroke: var(--umbra); stroke-width: 2; opacity: 0.7; }
+:root[data-theme='dark'] .p2t.g8w3 :is(.g8w3-groove, .g8w3-notch) { fill: #000; stroke: color-mix(in srgb, var(--moon) 45%, #000); opacity: 0.85; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-groove { fill: color-mix(in srgb, var(--moon) 30%, #000); }
+
+/* the garden beyond */
+.p2t.g8w3 .g8w3-s0 { stop-color: color-mix(in srgb, var(--wash) 32%, var(--paper)); }
+.p2t.g8w3 .g8w3-s1 { stop-color: color-mix(in srgb, var(--moon) 26%, var(--paper)); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-s0 { stop-color: color-mix(in srgb, #000 30%, var(--paper)); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-s1 { stop-color: color-mix(in srgb, var(--mist) 26%, var(--paper)); }
+.p2t.g8w3 .g8w3-sd0 { stop-color: color-mix(in srgb, var(--paper-2) 70%, var(--mist)); }
+.p2t.g8w3 .g8w3-sd1 { stop-color: color-mix(in srgb, var(--paper-2) 82%, var(--moon)); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-sd0 { stop-color: color-mix(in srgb, var(--mist) 16%, var(--paper)); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-sd1 { stop-color: color-mix(in srgb, var(--mist) 28%, var(--paper-2)); }
+.p2t.g8w3 .g8w3-noise { fill: var(--wash); opacity: 0.1; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-noise { fill: var(--mist); opacity: 0.12; }
+.p2t.g8w3 .g8w3-rake { fill: none; stroke: var(--wash); stroke-width: 0.7; opacity: 0.16; }
+.p2t.g8w3 .g8w3-rake.hi { stroke: #fff; opacity: 0.55; }
+.p2t.g8w3 .g8w3-rake.ring { stroke-width: 1; opacity: 0.26; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-rake { stroke: #000; opacity: 0.32; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-rake.hi { stroke: var(--mist); opacity: 0.16; }
+.p2t.g8w3 .g8w3-bank :is(.p2p-trunk, .p2p-bark) { fill: var(--wash); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-bank { opacity: 0.9; }
+/* steles: dressed stone, the figure carved (a dark cut with a light lower lip), a moonlit rim, a contact shadow */
+.p2t.g8w3 .g8w3-face { filter: none; }
+.p2t.g8w3 .g8w3-flank { fill: var(--umbra); opacity: 0.26; }
+.p2t.g8w3 .g8w3-plinth { fill: var(--rock-lo); }
+.p2t.g8w3 .g8w3-plinthlit { fill: #fff; opacity: 0.35; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-plinthlit { fill: var(--moon); opacity: 0.3; }
+.p2t.g8w3 .g8w3-rim { fill: var(--moon-rim); opacity: 0.7; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-rim { fill: var(--moon); opacity: 0.55; }
+.p2t.g8w3 .g8w3-outline { fill: none; stroke: var(--wash); stroke-width: 1; opacity: 0.5; }
+.p2t.g8w3 .g8w3-contact { fill: var(--umbra); opacity: 0.3; }
+.p2t.g8w3 .g8w3-carve { font-family: var(--serif); font-weight: 600; fill: color-mix(in srgb, var(--umbra) 70%, var(--rock-lo)); paint-order: stroke; stroke: color-mix(in srgb, #fff 45%, transparent); stroke-width: 0.6px; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-carve { fill: color-mix(in srgb, #000 75%, var(--rock-lo)); stroke: color-mix(in srgb, var(--moon) 40%, transparent); }
+.p2t.g8w3 .g8w3-sheet { fill: color-mix(in srgb, var(--card) 92%, var(--lantern)); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-sheet { fill: color-mix(in srgb, var(--moon) 62%, var(--ink-3)); }
+.p2t.g8w3 .g8w3-sheetink { fill: var(--wash); opacity: 0.6; }
+.p2t.g8w3 .g8w3-bline { fill: var(--wash); opacity: 0.7; }
+.p2t.g8w3 .g8w3-pages { fill: color-mix(in srgb, var(--card) 88%, var(--lantern)); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-pages { fill: color-mix(in srgb, var(--moon) 55%, var(--ink-3)); }
+.p2t.g8w3 .g8w3-leaf { fill: var(--wash); opacity: 0.3; }
+.p2t.g8w3 .g8w3-bshade { fill: var(--umbra); opacity: 0.22; }
+.p2t.g8w3 .g8w3-cover.b0 { fill: var(--moss-b); }
+.p2t.g8w3 .g8w3-cover.b1 { fill: color-mix(in srgb, var(--vermilion) 55%, var(--rock-lo)); }
+.p2t.g8w3 .g8w3-cover.b2 { fill: color-mix(in srgb, var(--water) 80%, var(--wash)); }
+.p2t.g8w3 .g8w3-cover.b3 { fill: var(--rock-lo); }
+.p2t.g8w3 .g8w3-cover.b4 { fill: color-mix(in srgb, var(--lantern) 45%, var(--rock-lo)); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-cover.b2 { fill: color-mix(in srgb, var(--mist) 40%, var(--rock-lo)); }
+.p2t.g8w3 .g8w3-shelf { fill: color-mix(in srgb, #6b5038 70%, var(--wash)); }
+.p2t.g8w3 .g8w3-claim { opacity: 0.55; }
+.p2t.g8w3 .g8w3-claimtxt { font: 400 12px/1 var(--sans); fill: var(--ink-2); paint-order: stroke; stroke: color-mix(in srgb, var(--paper) 70%, transparent); stroke-width: 3px; }
+.p2t.g8w3 .g8w3-rise { opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 1.1s var(--ease); }
+.p2t.g8w3 .g8w3-rise.up { opacity: 1; transform: none; }
+.p2t.g8w3 .g8w3-lost { opacity: 0; transition: opacity 2.4s var(--ease) 0.4s; }
+.p2t.g8w3 .g8w3-scene.lost .g8w3-lost { opacity: 0.95; }
+
+/* the shōji: paper lit by the moon behind it, thin kumiko, wood frames; a panel slides away behind its post */
+.p2t.g8w3 .g8w3-p0 { stop-color: color-mix(in srgb, var(--moon) 22%, var(--card)); }
+.p2t.g8w3 .g8w3-p1 { stop-color: color-mix(in srgb, var(--rock-mid) 26%, var(--card)); }
+.p2t.g8w3 .g8w3-p2 { stop-color: color-mix(in srgb, var(--rock-mid) 50%, var(--paper-2)); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-p0 { stop-color: color-mix(in srgb, var(--moon) 24%, #20253a); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-p1 { stop-color: color-mix(in srgb, var(--moon) 11%, #191d2e); }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-p2 { stop-color: #12141f; }
+.p2t.g8w3 .g8w3-g0 { stop-color: #fff; stop-opacity: 0.85; }
+.p2t.g8w3 .g8w3-g1 { stop-color: #fff8e8; stop-opacity: 0.4; }
+.p2t.g8w3 .g8w3-g2 { stop-color: #fff8e8; stop-opacity: 0; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-g0 { stop-color: var(--moon); stop-opacity: 0.5; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-g1 { stop-color: var(--moon); stop-opacity: 0.18; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-g2 { stop-color: var(--moon); stop-opacity: 0; }
+.p2t.g8w3 .g8w3-kumiko { fill: none; stroke: #8c6c4f; stroke-width: 1.1; opacity: 0.85; }
+.p2t.g8w3 .g8w3-kumiko.ranma { stroke-width: 1.6; opacity: 0.8; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-kumiko { stroke: #3a2c20; opacity: 0.95; }
+.p2t.g8w3 .g8w3-panel { transition: transform 1.5s cubic-bezier(0.45, 0.05, 0.3, 1); }
+/* opened, a panel runs across the others into the pocket at the right end; its edge stays at the mouth (--to, px) */
+.p2t.g8w3 .g8w3-panel.open { transform: translateX(var(--to)); }
+.p2t.g8w3 .g8w3-pshade { opacity: 0; transition: opacity 0.6s 0.9s; }
+.p2t.g8w3 .g8w3-panel.open .g8w3-pshade { opacity: 1; }
+.p2t.g8w3 .g8w3-sh0 { stop-color: #000; stop-opacity: 0; }
+.p2t.g8w3 .g8w3-sh1 { stop-color: #000; stop-opacity: 0.38; }
+.p2t.g8w3 .g8w3-mouth { fill: #1a130e; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-mouth { fill: #050403; }
+:root[data-quality='low'] .p2t.g8w3 .g8w3-panel { transition: none; }
+.p2t.g8w3 .g8w3-pull { fill: #5b4330; opacity: 0.55; }
+.p2t.g8w3 :is(.g8w3-post, .g8w3-wood) { fill: #7a5c42; }
+:root[data-theme='dark'] .p2t.g8w3 :is(.g8w3-post, .g8w3-wood) { fill: #33261b; }
+.p2t.g8w3 .g8w3-woodlit { fill: #f6e8d2; opacity: 0.55; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-woodlit { fill: var(--moon); opacity: 0.32; }
+.p2t.g8w3 .g8w3-sillgroove { fill: none; stroke: #000; stroke-width: 0.8; opacity: 0.35; }
+.p2t.g8w3 .g8w3-pineuse { opacity: 0.1; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-pineuse { opacity: 0.25; }
+.p2t.g8w3 .g8w3-pineshadow :is(.p2p-trunk, .p2p-bark, .p2p-pad, .p2p-needle) { fill: var(--wash); }
+
+/* the room round the shōji: lintel and posts, plaster walls, the alcove, tatami with dark borders, the andon */
+.g8w3-room { position: absolute; left: 0; top: 0; width: 100%; pointer-events: none; }
+.g8w3-room .g8w3-wl0 { stop-color: color-mix(in srgb, var(--paper-2) 72%, #b6a587); }
+.g8w3-room .g8w3-wl1 { stop-color: color-mix(in srgb, var(--paper-2) 86%, #d6c9b0); }
+:root[data-theme='dark'] .g8w3-room .g8w3-wl0 { stop-color: #120f0d; }
+:root[data-theme='dark'] .g8w3-room .g8w3-wl1 { stop-color: #1e1915; }
+.g8w3-room .g8w3-fl0 { stop-color: #c9ba92; }
+.g8w3-room .g8w3-fl1 { stop-color: #b3a275; }
+:root[data-theme='dark'] .g8w3-room .g8w3-fl0 { stop-color: #2a2119; }
+:root[data-theme='dark'] .g8w3-room .g8w3-fl1 { stop-color: #17120e; }
+.g8w3-room .g8w3-weave { fill: none; stroke: #7d6c4a; stroke-width: 0.6; opacity: 0.32; }
+:root[data-theme='dark'] .g8w3-room .g8w3-weave { stroke: #000; opacity: 0.35; }
+.g8w3-room .g8w3-mats { fill: none; stroke: #6e5d3e; stroke-width: 1.2; opacity: 0.5; }
+:root[data-theme='dark'] .g8w3-room .g8w3-mats { stroke: #000; opacity: 0.6; }
+.g8w3-room .g8w3-heri { fill: #3c4256; opacity: 0.62; }
+:root[data-theme='dark'] .g8w3-room .g8w3-heri { fill: #070608; opacity: 0.9; }
+.g8w3-room .g8w3-floorshade { fill: #000; opacity: 0.12; }
+.g8w3-room .g8w3-woodrm { fill: #6e523b; }
+:root[data-theme='dark'] .g8w3-room .g8w3-woodrm { fill: #241a12; }
+.g8w3-room .g8w3-woodgrain { fill: #000; opacity: 0.18; }
+.g8w3-room .g8w3-woodhi { fill: #f4e2c6; opacity: 0.45; }
+:root[data-theme='dark'] .g8w3-room .g8w3-woodhi { fill: var(--lantern); opacity: 0.28; }
+.g8w3-room .g8w3-lintel { font: 400 13px/1 var(--serif); fill: #f3e6cf; opacity: 0.92; paint-order: stroke; stroke: #000; stroke-opacity: 0.25; stroke-width: 1px; }
+:root[data-theme='dark'] .g8w3-room .g8w3-lintel { fill: color-mix(in srgb, var(--lantern) 55%, var(--ink-2)); opacity: 0.95; }
+.g8w3-room .g8w3-a0 { stop-color: var(--lantern); stop-opacity: 0.38; }
+.g8w3-room .g8w3-a1 { stop-color: var(--lantern); stop-opacity: 0; }
+:root[data-theme='dark'] .g8w3-room .g8w3-a0 { stop-opacity: 0.3; }
+.g8w3-room .g8w3-andon-box { fill: color-mix(in srgb, var(--lantern) 60%, #fff); }
+.g8w3-room .g8w3-andon-frame { fill: none; stroke: #4e3a2a; stroke-width: 2.6; }
+.g8w3-room .g8w3-ashadow { fill: #000; opacity: 0.3; }
+.g8w3-room .g8w3-toko-in { fill: #000; opacity: 0.08; }
+:root[data-theme='dark'] .g8w3-room .g8w3-toko-in { opacity: 0.35; }
+.g8w3-room .g8w3-tokoboard { fill: #6e523b; }
+:root[data-theme='dark'] .g8w3-room .g8w3-tokoboard { fill: #2b2017; }
+.g8w3-room .g8w3-cord { fill: none; stroke: #4a3626; stroke-width: 1; }
+.g8w3-room .g8w3-hook { fill: #2a1d14; }
+.g8w3-room .g8w3-kake-silk { fill: color-mix(in srgb, var(--moss-b) 45%, var(--rock-lo)); opacity: 0.85; }
+.g8w3-room .g8w3-kake-paper { fill: var(--card); }
+.g8w3-room .g8w3-kake-rod { fill: #4a3626; }
+:root[data-theme='dark'] .g8w3-room .g8w3-kake-silk { fill: #36413c; opacity: 1; }
+:root[data-theme='dark'] .g8w3-room .g8w3-kake-paper { fill: color-mix(in srgb, var(--lantern) 16%, #44444a); }
+:root[data-theme='dark'] .g8w3-room .g8w3-toko .p2p-hill { fill: #15161c; }
+/* moonlight through the open panels: a long pale trapezoid on the mats */
+.g8w3-room .g8w3-b0 { stop-color: #fff; stop-opacity: 0.8; }
+.g8w3-room .g8w3-b1 { stop-color: #fff; stop-opacity: 0.08; }
+:root[data-theme='dark'] .g8w3-room .g8w3-b0 { stop-color: var(--moon); stop-opacity: 0.36; }
+:root[data-theme='dark'] .g8w3-room .g8w3-b1 { stop-color: var(--moon); stop-opacity: 0.02; }
+.g8w3-room .g8w3-beam { opacity: 0; transition: opacity 1.1s var(--ease); }
+.g8w3-room .g8w3-beam.open { opacity: 1; }
+
+/* beat 2: a long scroll unrolled on the mats, the vermilion seal "what matters" dragged along it; the reading lamp
+   follows the seal, bright at both ends, dim in the middle (its opacity is set from the seal's place) */
+.g8w3-beat { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.g8w3-scroll { position: absolute; left: 0; top: 0; height: 48px; }
+.g8w3-scrollshadow { position: absolute; left: 18px; right: 10px; top: 34px; height: 16px; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, #000 40%, transparent), transparent); }
+.g8w3-paperstrip { position: absolute; inset: 6px 24px; border-radius: 2px; background:
+  repeating-linear-gradient(90deg, transparent 0 8px, color-mix(in srgb, var(--wash) 34%, transparent) 8px 9.5px, transparent 9.5px 12px, color-mix(in srgb, var(--wash) 22%, transparent) 12px 13px, transparent 13px 19px),
+  linear-gradient(180deg, color-mix(in srgb, var(--moon) 26%, var(--card)), color-mix(in srgb, var(--moon) 10%, var(--card)));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 60%, transparent); }
+:root[data-theme='dark'] .g8w3-paperstrip { background: repeating-linear-gradient(90deg, transparent 0 8px, color-mix(in srgb, var(--umbra) 45%, transparent) 8px 9.5px, transparent 9.5px 12px, color-mix(in srgb, var(--umbra) 30%, transparent) 12px 13px, transparent 13px 19px), linear-gradient(180deg, color-mix(in srgb, var(--moon) 56%, var(--ink-3)), color-mix(in srgb, var(--moon) 40%, var(--ink-3))); }
+/* once the seal has been along it, the middle of the scroll goes misty: what the reader keeps least */
+.g8w3-fog { position: absolute; inset: 6px 24px; opacity: 0; transition: opacity 1.6s var(--ease); background: linear-gradient(90deg, transparent 18%, color-mix(in srgb, var(--paper) 78%, transparent) 40%, color-mix(in srgb, var(--paper) 78%, transparent) 60%, transparent 82%); }
+.g8w3-done ~ .g8w3-beat .g8w3-fog, .g8w3-beat.done .g8w3-fog { opacity: 1; }
+.g8w3-rod { position: absolute; top: 0; bottom: 0; width: 15px; border-radius: 7px; background: linear-gradient(90deg, #2b1f16, #7a5c42 45%, #2b1f16); box-shadow: 0 3px 4px -1px rgba(0, 0, 0, 0.45); }
+.g8w3-rod.a { left: 12px; }
+.g8w3-rod.b { right: 12px; }
+.g8w3-lamp { position: absolute; left: 0; top: 0; width: 170px; height: 100px; margin: -50px 0 0 -85px; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern, #f3c47a) 75%, transparent), transparent); mix-blend-mode: screen; transition: opacity 0.25s; }
+:root[data-theme='light'] .g8w3-lamp { mix-blend-mode: multiply; background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern, #f3c47a) 55%, transparent), transparent); }
+.g8w3-seal { position: absolute; left: 0; top: 0; width: 50px; height: 50px; margin: -25px 0 0 -25px; display: grid; place-items: center; border-radius: 5px; background: var(--vermilion); box-shadow: 0 3px 5px -2px rgba(0, 0, 0, 0.5), 0 0 calc(var(--k, 1) * 22px) color-mix(in srgb, var(--lantern, #f3c47a) 70%, transparent); pointer-events: auto; cursor: grab; touch-action: none; }
+.g8w3-seal::before { content: ''; position: absolute; inset: 7px; border: 1.5px solid color-mix(in srgb, #fff 55%, transparent); border-radius: 3px; }
+.g8w3-seal.held { cursor: grabbing; }
+.g8w3-seal span { position: absolute; bottom: 100%; margin-bottom: 8px; white-space: nowrap; font: 400 14px/1 var(--serif); color: var(--ink); text-shadow: 0 0 6px var(--paper), 0 0 2px var(--paper); }
+.g8w3-seal:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .p2t.g8w3 :is(.g8w3-panel, .g8w3-rise, .g8w3-lost), .g8w3-room .g8w3-beam, .g8w3-fog { transition: none; } }
+/* the room fades into the page at its sides and foot (no hard edge) */
+.g8w3-room { -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent), linear-gradient(#000 88%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent), linear-gradient(#000 88%, transparent); mask-composite: intersect; }
+/* lost in the middle: a bank of mist over the middle steles once the seal has been along the scroll */
+.p2t.g8w3 .g8w3-fg0 { stop-color: var(--paper); stop-opacity: 0.88; }
+.p2t.g8w3 .g8w3-fg1 { stop-color: var(--paper); stop-opacity: 0.6; }
+.p2t.g8w3 .g8w3-fg2 { stop-color: var(--paper); stop-opacity: 0; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-fg0 { stop-color: color-mix(in srgb, var(--mist) 45%, var(--paper)); stop-opacity: 0.9; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-fg1 { stop-color: color-mix(in srgb, var(--mist) 35%, var(--paper)); stop-opacity: 0.6; }
+:root[data-theme='dark'] .p2t.g8w3 .g8w3-fg2 { stop-color: var(--paper); }
+:root[data-theme='dark'] .g8w3-room .g8w3-b0 { stop-opacity: 0.5; }
+:root[data-theme='dark'] .p2t.g8w3 .p2t-date.today { text-shadow: 0 0 3px #000, 0 0 8px #000, 0 0 14px #000; }
+/* the reading and the decoding line lie on a soft glow of paper, so no tatami border runs through the letters */
+.g8w3-decode, .p2t.g8w3 .p2t-card { background: color-mix(in srgb, var(--paper) 86%, transparent); box-shadow: 0 0 14px 12px color-mix(in srgb, var(--paper) 86%, transparent); border-radius: 14px; }
+.g8w3-decode[hidden] { display: none; }

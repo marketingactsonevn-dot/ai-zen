@@ -107,14 +107,15 @@
 :root[data-theme='dark'] .t24t .t24t-nm { fill: var(--moss-a); }
 :root[data-theme='dark'] .t24t .t24t-nr { fill: color-mix(in srgb, var(--moon) 72%, var(--moss-c)); opacity: 0.95; }
 /* the flattering branch: honey lacquer that shines more with every like */
-.t24t .t24t-hbelly { fill: color-mix(in srgb, var(--lantern) 42%, var(--wash)); opacity: 0.9; }
-.t24t .t24t-hnd { fill: color-mix(in srgb, var(--lantern) 62%, var(--wash)); }
-.t24t .t24t-hnm { fill: var(--lantern); }
-.t24t .t24t-hnr { fill: color-mix(in srgb, #fff 50%, var(--lantern)); }
-:root[data-theme='dark'] .t24t .t24t-hbelly { fill: color-mix(in srgb, var(--lantern) 34%, var(--umbra)); }
-:root[data-theme='dark'] .t24t .t24t-hnd { fill: color-mix(in srgb, var(--lantern) 55%, var(--umbra)); }
+.t24t .t24t-hbelly { fill: color-mix(in srgb, var(--lantern) 30%, var(--moss-b)); opacity: 0.95; }
+.t24t .t24t-hnd { fill: color-mix(in srgb, var(--lantern) 45%, var(--moss-b)); }
+.t24t .t24t-hnm { fill: color-mix(in srgb, var(--lantern) 50%, var(--moss-b)); }
+.t24t .t24t-hnr { fill: color-mix(in srgb, var(--moon) 35%, var(--lantern)); opacity: 0.85; }
+:root[data-theme='dark'] .t24t .t24t-hnm { fill: color-mix(in srgb, var(--lantern) 48%, color-mix(in srgb, var(--moss-b) 60%, var(--umbra))); }
+:root[data-theme='dark'] .t24t .t24t-hbelly { fill: color-mix(in srgb, var(--lantern) 26%, color-mix(in srgb, var(--moss-b) 50%, var(--umbra))); }
+:root[data-theme='dark'] .t24t .t24t-hnd { fill: color-mix(in srgb, var(--lantern) 40%, color-mix(in srgb, var(--moss-b) 60%, var(--umbra))); }
 .t24t .t24t-hwood-lit { fill: color-mix(in srgb, #fff 40%, var(--lantern)); opacity: 0.8; }
-.t24t .t24t-gloss { fill: #fff; opacity: var(--shine, 0.55); }
+.t24t .t24t-gloss { fill: color-mix(in srgb, #fff 60%, var(--lantern)); opacity: calc(var(--shine, 0.45) * 0.8); }
 .t24t-glossart { will-change: transform; }
 .t24t .t24t-drip { fill: var(--lantern); }
 /* the ledge from below: lip against the sky, the dark overhang, the face, moss, the stand's moon shadow */
@@ -124,8 +125,8 @@
 :root[data-theme='dark'] .t24t .t24t-fc0 { stop-color: color-mix(in srgb, var(--rock-lo) 60%, var(--umbra)); }
 :root[data-theme='dark'] .t24t .t24t-fc1 { stop-color: var(--rock-lo); }
 :root[data-theme='dark'] .t24t .t24t-fc2 { stop-color: var(--umbra); }
-.t24t .t24t-plane { fill: var(--rock-mid); opacity: 0.32; }
-:root[data-theme='dark'] .t24t .t24t-plane { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--moon)); opacity: 0.22; }
+.t24t .t24t-plane { fill: var(--rock-mid); opacity: 0.18; }
+:root[data-theme='dark'] .t24t .t24t-plane { fill: color-mix(in srgb, var(--rock-mid) 70%, var(--moon)); opacity: 0.12; }
 .t24t .t24t-boulder .p2-stone-face { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--wash)); }
 :root[data-theme='dark'] .t24t .t24t-boulder .p2-stone-face { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--umbra)); }
 .t24t .t24t-crack { fill: var(--wash); opacity: 0.45; }
@@ -204,7 +205,7 @@
   background: color-mix(in srgb, var(--umbra) 50%, transparent);
 }
 .t24t-full { display: none; }
-.t24t-tag:is(:hover, :focus-visible, [aria-expanded='true']) .t24t-plate { width: 196px; text-align: left; text-wrap: pretty; translate: calc(-50% + var(--ox, 0px)) 0; }
+.t24t-tag:is(:hover, :focus-visible, [aria-expanded='true']) .t24t-plate { width: 228px; text-align: left; text-wrap: pretty; translate: calc(-50% + var(--ox, 0px)) 0; }
 .t24t-tag:is(:hover, :focus-visible, [aria-expanded='true']) .t24t-short { display: none; }
 .t24t-tag:is(:hover, :focus-visible, [aria-expanded='true']) .t24t-full { display: block; }
 .t24t-tag.gold .t24t-plate {
@@ -221,7 +222,14 @@
     repeating-linear-gradient(92deg, transparent 0 7px, color-mix(in srgb, var(--umbra) 6%, transparent) 7px 8px, transparent 8px 19px),
     linear-gradient(175deg, var(--step-hi), var(--step-mid));
 }
-.t24t-tag.real.turned { transform: rotateY(68deg); }
+.t24t-tag.real.turned { transform: rotateY(calc(62deg + var(--wilt, 0) * 6deg)); }
+.t24t-tag.real.turned .t24t-plate { opacity: calc(1 - var(--wilt, 0) * 0.08); transition: opacity 0.8s; }
+/* the lake where the cut branch fell: rings spreading on still water */
+.t24t-splash { position: absolute; z-index: 1; width: 0; height: 0; pointer-events: none; opacity: 0; }
+.t24t-splash i { position: absolute; left: -90px; top: -14px; width: 180px; height: 28px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--moon) 55%, transparent); }
+.t24t-splash i:nth-child(2) { left: -130px; top: -21px; width: 260px; height: 42px; opacity: 0.6; }
+.t24t-splash i:nth-child(3) { left: -50px; top: -8px; width: 100px; height: 16px; }
+:root[data-theme='light'] .t24t-splash i { border-color: color-mix(in srgb, #fff 75%, transparent); }
 .t24t.cut .t24t-tag.real .t24t-plate { transition: width 0.5s 1.6s; }
 @media (prefers-reduced-motion: reduce) { .t24t-tag.real { transition: none; } }
 .t24t-label {
@@ -236,24 +244,25 @@
 .t24.narrow .t24t-k { display: block; margin-bottom: 2px; }
 .t24.narrow .t24t-label { display: none; }
 .t24t.cut .t24t-label.honest { color: var(--ink); }
-/* the viewer's words: a paper slip pinned under a pebble on the lip, hanging down the rock face */
-.t24t-slip {
+/* the viewer's words: a wooden tag hung by a cord from the bonsai stand, dangling over the ledge's lip */
+.t24t-qtag {
   position: absolute;
   box-sizing: border-box;
-  margin: 0;
-  padding: 16px 15px 12px;
-  border-radius: 1px 1px 4px 2px;
-  rotate: -0.6deg;
+  translate: -50% 0;
+  padding: 16px 13px 11px;
+  border-radius: 14px 14px 3px 3px / 8px 8px 3px 3px;
   font: 400 15px/1.45 var(--serif);
-  color: var(--ink);
-  box-shadow: 0 14px 18px -12px color-mix(in srgb, var(--umbra) 60%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--umbra) 10%, transparent);
+  color: var(--stone-text);
+  background:
+    repeating-linear-gradient(92deg, transparent 0 7px, color-mix(in srgb, var(--umbra) 6%, transparent) 7px 8px, transparent 8px 19px),
+    linear-gradient(175deg, var(--step-hi), var(--step-mid));
+  box-shadow: 0 14px 18px -12px color-mix(in srgb, var(--umbra) 70%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--umbra) 14%, transparent);
+  rotate: 1deg;
 }
-:root[data-theme='dark'] .t24t-slip { color: var(--stone-text); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .7 0 0 0 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), linear-gradient(180deg, color-mix(in srgb, var(--moon) 66%, var(--card)), color-mix(in srgb, var(--moon) 48%, var(--card))); }
-.t24t-slip p { margin: 0; }
-/* the strip that lies on the lip (seen edge-on from below) and the fold where it bends over */
-.t24t-fold { position: absolute; left: 0; right: 0; top: 0; height: 8px; background: linear-gradient(180deg, color-mix(in srgb, var(--umbra) 22%, transparent), transparent); }
-.t24t-pebble { position: absolute; right: 16px; top: -21px; width: 72px; height: 31px; overflow: visible; }
-.t24t-slip { overflow: visible; }
+.t24t-qtag::before { content: ''; position: absolute; left: 50%; top: 6px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: color-mix(in srgb, var(--umbra) 50%, transparent); }
+.t24t-qtag p { margin: 0; }
+.t24t-qcord { position: absolute; left: 50%; bottom: calc(100% - 9px); width: 1.4px; height: calc(var(--cl, 20px) + 9px); margin-left: -0.7px; transform-origin: 50% 100%; rotate: var(--ca, 0rad); background: color-mix(in srgb, var(--ink-2) 75%, transparent); }
+.t24.narrow .t24t-qtag { font-size: 13.5px; padding: 14px 10px 9px; }
 /* the shears: an object on the ledge, dragged onto the joint (or pressed) */
 .t24t-shears {
   position: absolute;
@@ -302,7 +311,7 @@
 :root[data-theme='light'] .t24t-fly { box-shadow: 0 0 0 1px color-mix(in srgb, var(--wash) 30%, transparent), 0 0 12px 5px color-mix(in srgb, var(--firefly) 70%, transparent), 0 0 30px 10px color-mix(in srgb, #fff 50%, transparent); }
 :root[data-quality='high'] .t24t.is-live .t24t-fly { animation: t24t-blink 3.4s ease-in-out var(--d, 0s) infinite; }
 @keyframes t24t-blink { 50% { opacity: 0.5; } }
-.t24.narrow .t24t-slip { font-size: 14px; padding: 14px 12px 10px; }
+.t24.narrow .t24t-nearpine { display: none; }
 
 /* ───────── scene 1 flowers: a sapling before a great backlit shōji, the grader's lantern ───────── */
 .t24f-host {
@@ -402,16 +411,16 @@
   text-shadow: 0 0 10px var(--pp0), 0 0 4px var(--pp0);
 }
 :root[data-theme='dark'] .t24f-q { text-shadow: 0 0 10px var(--paper), 0 0 4px var(--paper); }
+.t24f.narrow .t24f-q { white-space: normal; width: calc(100% - 28px); max-width: 340px; text-align: center; }
 .t24f-lean {
   position: absolute;
   margin: 0;
   translate: -50% 0;
   width: max-content;
-  max-width: min(46vw, 230px);
+  max-width: 132px;
   text-align: center;
-  font: 400 15px/1.35 var(--serif);
+  font: 400 14px/1.3 var(--serif);
   color: var(--ink-2);
-  rotate: -2deg;
   opacity: 0;
   transition: opacity 1s 0.3s;
 }
@@ -498,6 +507,11 @@
 :root[data-theme='dark'] .t24f .t24f-bg0 { stop-color: var(--moon); stop-opacity: 0.85; }
 .t24f .t24f-fl-halo { opacity: 0; transition: opacity 0.6s; }
 .t24f .t24f-fl.near .t24f-fl-halo { opacity: 0.5; }
+/* the two targets wait with a faint glow until one is chosen; the flowers take a touch of their own */
+.t24f:not([data-pick]) .t24f-fl-halo { opacity: 0.3; }
+.t24f:not([data-pick]) .t24f-strip { filter: drop-shadow(0 10px 10px color-mix(in srgb, var(--umbra) 24%, transparent)) drop-shadow(0 0 7px color-mix(in srgb, var(--lantern) 35%, transparent)); }
+.t24f-bloomhit { position: absolute; left: 0; top: 0; width: 52px; height: 52px; margin: -26px 0 0 -26px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+.t24f.ruled .t24f-bloomhit { pointer-events: none; }
 .t24f[data-pick='0'] .f0 .t24f-fl-halo, .t24f[data-pick='1'] .f1 .t24f-fl-halo { opacity: 1; }
 .t24f .t24f-bloom { transition: transform 0.9s cubic-bezier(0.3, 1.4, 0.5, 1); }
 .t24f[data-pick='0'] .f0 .t24f-bloom, .t24f[data-pick='1'] .f1 .t24f-bloom { transform: scale(1.4); }
@@ -537,8 +551,8 @@
   display: block;
   box-sizing: border-box;
   width: var(--sw, 92px);
-  min-height: calc(var(--sw, 92px) * 2.35);
-  padding: 22px 9px 16px;
+  min-height: calc(var(--sw, 92px) * 1.42);
+  padding: 20px 9px 12px;
   font: 400 14px/1.45 var(--serif);
   color: var(--ink);
   text-align: center;
@@ -596,12 +610,21 @@
 :root[data-quality='high'] .t24f.is-live.leaned:not(.ruled) .t24f-roll { animation: t24f-glow 2.6s ease-in-out infinite; }
 @keyframes t24f-glow { 50% { box-shadow: 0 0 18px 4px color-mix(in srgb, var(--moon) 55%, transparent); } }
 .t24f-roll {
-  width: 86%;
-  height: 12px;
-  border-radius: 6px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--moon) 40%, var(--card)), var(--step-mid) 60%, var(--step-lo));
-  box-shadow: 0 6px 10px -6px var(--umbra), -6px 0 0 -2px var(--wood), 6px 0 0 -2px var(--wood);
+  position: relative;
+  width: 78%;
+  height: 17px;
+  border-radius: 8px / 9px;
+  background: linear-gradient(180deg, color-mix(in srgb, #fff 55%, var(--card)), var(--card) 35%, color-mix(in srgb, var(--step-mid) 70%, var(--card)) 70%, var(--step-lo));
+  box-shadow: 0 6px 10px -6px var(--umbra), inset 0 -2px 0 color-mix(in srgb, var(--umbra) 12%, transparent);
 }
+/* the rolled paper's wooden end knobs, and the cord tied round it */
+.t24f-roll i { position: absolute; top: 2px; width: 9px; height: 13px; border-radius: 3px; background: linear-gradient(90deg, color-mix(in srgb, var(--step-lo) 60%, var(--lantern)), color-mix(in srgb, var(--umbra) 70%, var(--lantern))); }
+.t24f-roll i:first-child { left: -8px; }
+.t24f-roll i:last-child { right: -8px; }
+.t24f-roll::after { content: ''; position: absolute; left: 46%; top: -1px; width: 4px; height: 19px; border-radius: 2px; background: color-mix(in srgb, var(--vermilion) 30%, var(--wash)); }
+.t24f.ruled .t24f-roll::after { display: none; }
+.t24f-roll > .p2g-dot { position: absolute; left: 50%; top: 50%; }
+.t24f-roll .p2g-label { left: -84px; top: 18px; width: 168px; white-space: normal; text-align: center; font-size: 13px; }
 .t24f-band {
   width: 70%;
   margin-top: 3px;
@@ -624,6 +647,8 @@
   transition: transform 1.2s cubic-bezier(0.3, 0.1, 0.2, 1) 0.4s, box-shadow 1.2s 0.9s;
 }
 .t24f-sheet-h { font-size: 14px; color: var(--vermilion); }
+.t24f.narrow .t24f-sheet { gap: 0; padding: 7px 6px 9px; font-size: 13.5px; line-height: 1.4; }
+.t24f.narrow .t24f-sheet-h { font-size: 12.5px; }
 .t24f.ruled .t24f-band { display: none; }
 .t24f.ruled .t24f-sheet {
   transform: none;
@@ -650,31 +675,38 @@
 .t24f .t24f-cm-sea { fill: var(--umbra); opacity: 0.12; }
 .t24f-clock-t {
   position: absolute;
-  left: 49%;
-  right: 5%;
-  top: 22%;
-  font: 400 14px/1.22 var(--serif);
+  left: 14%;
+  right: 14%;
+  top: 58%;
+  text-align: center;
+  font: 400 13.5px/1.2 var(--serif);
   color: var(--stone-text);
   text-shadow: 0 1px 0 color-mix(in srgb, #fff 45%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent);
   text-wrap: balance;
 }
-.t24f.narrow .t24f-clock-t { left: 40%; right: 3%; }
+.t24f.narrow .t24f-clock-t { left: 10%; right: 10%; top: 56%; font-size: 12.5px; }
+.t24f .t24f-gnomon { fill: color-mix(in srgb, var(--lantern) 35%, var(--rock-lo)); stroke: color-mix(in srgb, var(--umbra) 50%, transparent); stroke-width: 0.8; }
+.t24f .t24f-gnomon-lit { fill: color-mix(in srgb, var(--moon) 60%, var(--lantern)); opacity: 0.7; }
+.t24f .t24f-gn-shadow { fill: var(--umbra); opacity: 0.45; }
+.t24f .t24f-clock-moss { fill: var(--moss-a); opacity: 0.8; }
 /* the grader's sleeve, hand, bamboo hook and lantern */
 .t24f .t24f-pole { fill: color-mix(in srgb, var(--moss-b) 35%, var(--step-mid)); }
 :root[data-theme='dark'] .t24f .t24f-pole { fill: color-mix(in srgb, var(--moss-a) 45%, var(--rock-mid)); }
 .t24f .t24f-pole-lit { fill: var(--lantern); opacity: 0.6; }
 .t24f .t24f-pole-node { fill: var(--wash); opacity: 0.6; }
 :root[data-theme='dark'] .t24f .t24f-pole-node { fill: var(--umbra); opacity: 0.8; }
-.t24f .t24f-sleeve { fill: var(--wash); opacity: 0.88; }
-:root[data-theme='dark'] .t24f .t24f-sleeve { fill: color-mix(in srgb, var(--ink-3) 22%, var(--umbra)); opacity: 1; }
-.t24f .t24f-folds { fill: var(--moon); opacity: 0.22; }
-:root[data-theme='light'] .t24f .t24f-folds { fill: #fff; opacity: 0.16; }
-.t24f .t24f-skin { fill: color-mix(in srgb, var(--card) 72%, var(--lantern)); }
+.t24f .t24f-sleeve { fill: var(--wash); opacity: 0.32; }
+:root[data-theme='dark'] .t24f .t24f-sleeve { fill: color-mix(in srgb, var(--ink-3) 30%, var(--umbra)); opacity: 0.92; }
+.t24f .t24f-sleeve-ink { fill: var(--wash); opacity: 0.9; }
+:root[data-theme='dark'] .t24f .t24f-sleeve-ink { fill: color-mix(in srgb, var(--ink-3) 55%, var(--umbra)); opacity: 1; }
+.t24f .t24f-folds { fill: var(--wash); opacity: 0.55; }
+:root[data-theme='dark'] .t24f .t24f-folds { fill: var(--moon); opacity: 0.2; }
+.t24f .t24f-skin { fill: color-mix(in srgb, var(--card) 72%, var(--lantern)); opacity: 0.9; }
 :root[data-theme='dark'] .t24f .t24f-skin { fill: color-mix(in srgb, var(--lantern) 34%, var(--rock-mid)); }
 .t24f .t24f-skin-lit { fill: var(--lantern); opacity: 0.8; }
-.t24f .t24f-knuckles { fill: var(--wash); opacity: 0.8; }
-.t24f .t24f-thumb { fill: color-mix(in srgb, var(--card) 60%, var(--lantern)); }
-:root[data-theme='dark'] .t24f .t24f-thumb { fill: color-mix(in srgb, var(--lantern) 45%, var(--rock-hi)); }
+.t24f .t24f-knuckles { fill: var(--wash); opacity: 0.85; }
+.t24f .t24f-thumb { fill: var(--wash); opacity: 0.8; }
+:root[data-theme='dark'] .t24f .t24f-thumb { fill: var(--umbra); opacity: 0.85; }
 :root[data-theme='dark'] .t24f .t24f-knuckles { fill: var(--umbra); opacity: 0.85; }
 .t24f-handart, .t24f-lamp { transition: opacity 1s, translate 1.2s cubic-bezier(0.5, 0, 0.7, 0.4); }
 .t24f-handart { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
@@ -691,254 +723,153 @@
 .t24f-lamp.held { cursor: grabbing; }
 .t24f-lampart { display: block; width: 100%; height: 100%; overflow: visible; }
 
-/* ───────── scene 3 shortcut: a gravel maze in true 3D, lit only by the viewer's lantern ───────── */
-.t24c-host {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  overflow: clip;
-  touch-action: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
-}
-.t24c-plane { position: absolute; transform-style: preserve-3d; transform-origin: 50% 50%; }
-.t24c-ground, .t24c-floor, .t24c-shadows { position: absolute; overflow: visible; max-width: none; max-height: none; }
-.t24c-floor, .t24c-shadows { inset: 0; width: 100%; height: 100%; }
-/* the ground round the bed: dark moss, a stone curb, a stepping-stone path in, fog where it meets the sky */
-.t24c .t24c-moss0 { fill: color-mix(in srgb, var(--moss-b) 55%, var(--rock-lo)); }
-.t24c .t24c-moss1 { fill: var(--moss-b); opacity: 0.5; }
-:root[data-theme='dark'] .t24c .t24c-moss0 { fill: color-mix(in srgb, var(--moss-b) 55%, var(--umbra)); }
-:root[data-theme='dark'] .t24c .t24c-moss1 { fill: var(--moss-a); opacity: 0.4; }
-.t24c .t24c-specks { fill: none; stroke: var(--moss-c); stroke-width: 1.4; opacity: 0.35; }
-.t24c .t24c-curb { fill: var(--rock-mid); }
-:root[data-theme='dark'] .t24c .t24c-curb { fill: var(--rock-lo); }
-.t24c .t24c-curb-sh { fill: var(--umbra); opacity: 0.35; }
-.t24c .t24c-steps-in { fill: var(--rock-hi); opacity: 0.85; }
-:root[data-theme='dark'] .t24c .t24c-steps-in { fill: var(--rock-mid); }
-.t24c-ground {
-  -webkit-mask-image: linear-gradient(transparent, #000 16%);
-  mask-image: linear-gradient(transparent, #000 16%);
-}
-.t24c-prop { position: absolute; transform-origin: 50% 100%; transform: rotateX(-72deg); }
-.t24c-prop svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.t24c .t24c-shrub { fill: color-mix(in srgb, var(--moss-b) 70%, var(--wash)); }
+
+/* ───────── scene 3 shortcut (audit g08 24-3, Làm lại): a karesansui seen from ~45° up, bound bamboo fences with volume,
+   the night over it with one warm hole where the lantern is carried; the footprints back from the bell ───────── */
+.t24c-host { position: absolute; inset: 0; overflow: hidden; overflow: clip; touch-action: none; }
+/* the ground: moss melting into the far mist, gravel, rakes, the trail */
+.t24c .t24c-mg0 { stop-color: var(--mist); stop-opacity: 0; }
+.t24c .t24c-mg1 { stop-color: color-mix(in srgb, var(--moss-c) 70%, var(--mist)); }
+.t24c .t24c-mg2 { stop-color: color-mix(in srgb, var(--moss-a) 80%, var(--moss-b)); }
+:root[data-theme='dark'] .t24c .t24c-mg1 { stop-color: color-mix(in srgb, var(--rock-mid) 70%, var(--moss-c)); }
+:root[data-theme='dark'] .t24c .t24c-mg2 { stop-color: color-mix(in srgb, var(--rock-mid) 55%, var(--moss-b)); }
+/* the moon's light lying on the ground, strongest toward it (far right) */
+.t24c .t24c-moonwash { opacity: 0.5; }
+.t24c .t24c-moss1 { fill: var(--moss-b); opacity: 0.55; }
+:root[data-theme='dark'] .t24c .t24c-moss1 { fill: var(--moss-c); opacity: 0.45; }
+.t24c .t24c-specks { stroke: var(--step-mid); stroke-width: 1.3; stroke-linecap: round; opacity: 0.45; fill: none; }
+.t24c .t24c-bg0 { stop-color: var(--step-hi); }
+.t24c .t24c-bg1 { stop-color: var(--step-mid); }
+:root[data-theme='dark'] .t24c .t24c-bg0 { stop-color: color-mix(in srgb, var(--step-hi) 82%, var(--moon)); }
+.t24c .t24c-bed { stroke: color-mix(in srgb, var(--umbra) 30%, transparent); stroke-width: 1; }
+.t24c .t24c-grain { stroke: var(--step-lo); stroke-width: 1; opacity: 0.55; fill: none; }
+.t24c :is(.t24c-rake, .t24c-rake-hi, .t24c-scuff) { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.t24c .t24c-rake { stroke: color-mix(in srgb, var(--step-lo) 80%, var(--umbra)); stroke-width: 1.3; opacity: 0.85; }
+.t24c .t24c-rake-hi { stroke: var(--rake-hi); stroke-width: 1; }
+:root[data-theme='dark'] .t24c .t24c-rake-hi { stroke: color-mix(in srgb, var(--moon) 45%, transparent); }
+.t24c .t24c-rake.main { stroke-dasharray: 1 1; stroke: color-mix(in srgb, var(--step-lo) 70%, var(--lantern)); stroke-width: 1.5; }
+.t24c .t24c-scuff { stroke: var(--step-lo); stroke-width: 1.3; opacity: 0.6; }
+.t24c .t24c-moonsh { fill: var(--umbra); opacity: 0; transition: opacity 2.4s 0.6s; }
+.t24c.found .t24c-moonsh { opacity: 0.28; }
+.t24c .t24c-print { fill: color-mix(in srgb, var(--step-lo) 70%, var(--umbra)); opacity: 0.55; transition: fill 0.6s, opacity 0.6s; }
+.t24c .t24c-print.seen { fill: color-mix(in srgb, var(--umbra) 75%, var(--step-lo)); opacity: 0.85; }
+.t24c .t24c-print.beckon { animation: t24c-beckon 2.4s ease-in-out 1; }
+@keyframes t24c-beckon { 30%, 70% { fill: var(--lantern); opacity: 1; } }
+.t24c .t24c-litter { fill: color-mix(in srgb, var(--step-mid) 60%, var(--lantern) 25%); }
+.t24c .t24c-curb { fill: var(--rock-mid); stroke: color-mix(in srgb, var(--umbra) 40%, transparent); stroke-width: 0.8; }
+.t24c .t24c-curb-sh, .t24c .t24c-steps-sh { fill: var(--umbra); opacity: 0.3; }
+.t24c .t24c-steps { fill: var(--step-mid); stroke: color-mix(in srgb, var(--umbra) 25%, transparent); stroke-width: 0.8; }
+.t24c .t24c-steps-side { fill: var(--step-lo); }
+.t24c .t24c-lsh { fill: var(--umbra); opacity: 0.32; }
+.t24c.found .t24c-lsh { opacity: 0.1; transition: opacity 2s; }
+/* built: split bamboo fences (face, top, canes, battens, black cord, the round rail), posts, gates, bell */
+.t24c .t24c-face { fill: color-mix(in srgb, var(--step-mid) 78%, var(--lantern)); }
+.t24c .t24c-face.t24c-lit { fill: color-mix(in srgb, var(--step-hi) 80%, var(--lantern)); }
+.t24c .t24c-face.t24c-shade { fill: color-mix(in srgb, var(--step-lo) 82%, var(--lantern)); }
+:root[data-theme='dark'] .t24c .t24c-face { fill: color-mix(in srgb, var(--step-lo) 85%, var(--lantern)); }
+:root[data-theme='dark'] .t24c .t24c-face.t24c-lit { fill: color-mix(in srgb, var(--step-mid) 80%, var(--lantern)); }
+:root[data-theme='dark'] .t24c .t24c-face.t24c-shade { fill: color-mix(in srgb, var(--rock-lo) 85%, var(--lantern)); }
+.t24c .t24c-cap { fill: color-mix(in srgb, var(--step-hi) 85%, var(--lantern)); }
+.t24c .t24c-slat { fill: none; stroke: color-mix(in srgb, var(--umbra) 40%, transparent); stroke-width: 0.9; }
+.t24c .t24c-batten { fill: color-mix(in srgb, var(--step-lo) 80%, var(--umbra)); }
+.t24c .t24c-tie { fill: var(--umbra); }
+.t24c .t24c-rail { fill: color-mix(in srgb, var(--step-lo) 70%, var(--lantern)); }
+.t24c .t24c-rail-lit { fill: none; stroke: var(--rake-hi); stroke-width: 1.2; stroke-linecap: round; }
+:root[data-theme='dark'] .t24c .t24c-rail-lit { stroke: color-mix(in srgb, var(--moon) 60%, transparent); }
+.t24c .t24c-post { fill: color-mix(in srgb, var(--step-lo) 80%, var(--umbra)); }
+.t24c .t24c-post-lit { fill: var(--step-hi); opacity: 0.45; }
+.t24c .t24c-post-cap { fill: color-mix(in srgb, var(--step-hi) 70%, var(--lantern)); stroke: color-mix(in srgb, var(--umbra) 50%, transparent); stroke-width: 0.8; }
+.t24c .t24c-beam { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--umbra)); }
+.t24c .t24c-beam-lit { fill: none; stroke: var(--rake-hi); stroke-width: 1.4; }
+:root[data-theme='dark'] .t24c .t24c-beam-lit { stroke: color-mix(in srgb, var(--moon) 55%, transparent); }
+.t24c .t24c-br0 { stop-color: color-mix(in srgb, var(--lantern) 35%, var(--rock-lo)); }
+.t24c .t24c-br1 { stop-color: color-mix(in srgb, var(--lantern) 55%, var(--rock-mid)); }
+.t24c .t24c-br2 { stop-color: color-mix(in srgb, var(--lantern) 20%, var(--umbra)); }
+.t24c .t24c-bronze { stroke: color-mix(in srgb, var(--umbra) 60%, transparent); stroke-width: 1; }
+.t24c :is(.t24c-rope, .t24c-bell-ink, .t24c-clapper) { fill: color-mix(in srgb, var(--umbra) 85%, var(--lantern)); }
+.t24c .t24c-bell-hi { fill: color-mix(in srgb, var(--lantern) 60%, #fff); opacity: 0.7; }
+.t24c .t24c-bellglow { opacity: 0.25; }
+.t24c.ring .t24c-bell { animation: t24c-swing 1.6s cubic-bezier(.3,.6,.4,1) 1; }
+.t24c.ring .t24c-bellglow { animation: t24c-flash 1.6s ease-out 1; }
+@keyframes t24c-swing { 15% { rotate: 7deg; } 40% { rotate: -5deg; } 62% { rotate: 3deg; } 82% { rotate: -1deg; } }
+@keyframes t24c-flash { 10% { opacity: 1; } }
+.t24c .t24c-shrub { fill: color-mix(in srgb, var(--moss-b) 80%, var(--umbra)); stroke: color-mix(in srgb, var(--umbra) 45%, transparent); stroke-width: 0.8; }
+.t24c .t24c-shrub-leaf { fill: color-mix(in srgb, var(--moss-a) 80%, var(--moss-c)); opacity: 0.8; }
 .t24c .t24c-shrub-lit { fill: var(--moss-a); opacity: 0.8; }
-:root[data-theme='dark'] .t24c .t24c-shrub { fill: color-mix(in srgb, var(--moss-b) 70%, var(--umbra)); }
+:root[data-theme='dark'] .t24c .t24c-shrub-lit { fill: color-mix(in srgb, var(--moss-c) 80%, var(--moon)); opacity: 0.55; }
 .t24c .t24c-shrub-sh { fill: var(--umbra); opacity: 0.35; }
-/* the gravel bed */
-.t24c .t24c-bed0 { stop-color: color-mix(in srgb, #fff 45%, var(--card)); }
-.t24c .t24c-bed1 { stop-color: var(--rock-hi); }
-.t24c .t24c-bed2 { stop-color: var(--rock-mid); }
-:root[data-theme='dark'] .t24c .t24c-bed0 { stop-color: color-mix(in srgb, var(--moon) 30%, var(--rock-mid)); }
-:root[data-theme='dark'] .t24c .t24c-bed1 { stop-color: var(--rock-mid); }
-:root[data-theme='dark'] .t24c .t24c-bed2 { stop-color: var(--rock-lo); }
-.t24c .t24c-grain { fill: none; stroke: var(--wash); stroke-width: 1.3; opacity: 0.2; }
-:root[data-theme='dark'] .t24c .t24c-grain { stroke: var(--umbra); opacity: 0.45; }
-.t24c .t24c-rake { fill: none; stroke: var(--wash); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; opacity: 0.32; }
-:root[data-theme='dark'] .t24c .t24c-rake { stroke: var(--umbra); opacity: 0.6; }
-.t24c .t24c-rake-hi { fill: none; stroke: #fff; stroke-width: 1.1; stroke-linecap: round; opacity: 0.7; }
-:root[data-theme='dark'] .t24c .t24c-rake-hi { stroke: var(--moon); opacity: 0.22; }
-.t24c .t24c-rake.main { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.t24c .t24c-scuff { fill: var(--wash); opacity: 0.25; }
-:root[data-theme='dark'] .t24c .t24c-scuff { fill: var(--umbra); opacity: 0.5; }
-.t24c .t24c-steps { fill: var(--umbra); opacity: 0.5; }
-.t24c .t24c-litter { fill: color-mix(in srgb, var(--moss-b) 55%, var(--step-mid)); opacity: 0.9; }
-.t24c .t24c-moonsh { fill: var(--umbra); opacity: 0; transition: opacity 2.6s 0.6s; }
-.t24c:is(.found, .lit) .t24c-moonsh { opacity: 0.22; }
-:root[data-theme='dark'] .t24c:is(.found, .lit) .t24c-moonsh { opacity: 0.5; }
-.t24c .t24c-trail { display: none; }
-/* the fences' shadows thrown by the lantern: strong close to it, gone a few cells away */
-.t24c-shadows {
-  -webkit-mask-image: radial-gradient(circle calc(var(--r, 100px) * 1.7) at var(--lx, 0) var(--ly, 0), #000 30%, transparent);
-  mask-image: radial-gradient(circle calc(var(--r, 100px) * 1.7) at var(--lx, 0) var(--ly, 0), #000 30%, transparent);
-  transition: opacity 1.5s;
-}
-.t24c .t24c-fshadow { fill: var(--umbra); opacity: 0.38; }
-:root[data-theme='dark'] .t24c .t24c-fshadow { opacity: 0.6; }
-.t24c:is(.found, .lit) .t24c-shadows { opacity: 0; }
-.t24c-pool {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: calc(var(--r, 100px) * 3.4);
-  aspect-ratio: 1;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 55%, transparent), color-mix(in srgb, var(--lantern) 22%, transparent) 45%, color-mix(in srgb, var(--lantern) 6%, transparent) 75%, transparent);
-  pointer-events: none;
-  transition: opacity 2s;
-}
-.t24c.found .t24c-pool, .t24c.lit .t24c-pool { opacity: 0.3; }
-/* the night: one warm hole where the lantern is, a long soft falloff; gone when the clouds drift off */
-.t24c-dark {
-  position: absolute;
-  left: 0;
-  top: 0;
-  pointer-events: none;
-  background: radial-gradient(var(--rx, 120px) var(--ry, 90px) at 50% 50%, transparent 0%, color-mix(in srgb, var(--umbra) 10%, transparent) 35%, color-mix(in srgb, var(--umbra) 42%, transparent) 70%, color-mix(in srgb, var(--umbra) 72%, transparent) 100%);
-  transition: opacity 2.6s ease;
-}
-:root[data-theme='dark'] .t24c-dark { background: radial-gradient(var(--rx, 120px) var(--ry, 90px) at 50% 50%, transparent 0%, color-mix(in srgb, var(--umbra) 18%, transparent) 35%, color-mix(in srgb, var(--umbra) 55%, transparent) 70%, color-mix(in srgb, var(--umbra) 80%, transparent) 100%); }
-.t24c.found .t24c-dark, .t24c.lit .t24c-dark { opacity: 0; }
-/* clouds over the moon, silvered on top; they drift (live) and part once the trick is found */
-.t24c .t24c-cloud { fill: color-mix(in srgb, var(--wash) 26%, var(--paper)); opacity: 0.94; }
-:root[data-theme='dark'] .t24c .t24c-cloud { fill: color-mix(in srgb, var(--rock-lo) 75%, var(--paper)); opacity: 0.97; }
-.t24c .t24c-cloud-rim { fill: #fff; opacity: 0.85; }
-:root[data-theme='dark'] .t24c .t24c-cloud-rim { fill: var(--moon); opacity: 0.55; }
-.t24c .t24c-moonglow { opacity: 0.8; }
-.t24c-cloudart { transition: transform 3.2s ease, opacity 3.2s; }
-:root[data-quality='high'] .t24c.is-live .t24c-bank { animation: t24c-drift 18s ease-in-out infinite alternate; }
-:root[data-quality='high'] .t24c.is-live .t24c-bank.b { animation-duration: 23s; animation-direction: alternate-reverse; }
-@keyframes t24c-drift { to { transform: translateX(34px); } }
-.t24c.found .t24c-cloudart, .t24c.lit .t24c-cloudart { transform: translateX(-30%); opacity: 0.2; }
-/* the viewer's lantern */
-.t24c-lantern {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 16px;
-  height: 22px;
-  margin: -22px 0 0 -8px;
-  pointer-events: none;
-  transition: opacity 1.5s;
-}
-.t24c-lantern i {
-  position: absolute;
-  inset: 0;
-  border-radius: 45% 45% 40% 40%;
-  background: radial-gradient(circle at 45% 40%, color-mix(in srgb, #fff 50%, var(--lantern)), var(--lantern) 60%, color-mix(in srgb, var(--lantern) 60%, var(--umbra)));
-  box-shadow: 0 0 26px 10px color-mix(in srgb, var(--lantern) 50%, transparent), inset 0 -3px 0 color-mix(in srgb, var(--umbra) 50%, transparent), inset 0 3px 0 color-mix(in srgb, var(--umbra) 50%, transparent);
-}
-.t24c-lantern::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1px; height: 46px; background: color-mix(in srgb, var(--ink-2) 60%, transparent); }
-.t24c.found .t24c-lantern, .t24c.lit .t24c-lantern { opacity: 0; }
-/* tall bamboo fences standing on the gravel */
-.t24c-fence { position: absolute; transform-origin: 50% 100%; }
-.t24c-fence svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.t24c .t24c-cane { fill: color-mix(in srgb, var(--moss-b) 50%, var(--step-mid)); }
-:root[data-theme='dark'] .t24c .t24c-cane { fill: color-mix(in srgb, var(--moss-a) 55%, var(--rock-mid)); }
-.t24c .t24c-cane-lit { fill: none; stroke: var(--rake-hi); stroke-width: 1.1; }
-:root[data-theme='dark'] .t24c .t24c-cane-lit { stroke: var(--moon); opacity: 0.35; }
-.t24c .t24c-node { fill: none; stroke: var(--wash); stroke-width: 1.1; opacity: 0.45; }
-.t24c .t24c-rail { fill: color-mix(in srgb, var(--wash) 70%, var(--moss-b)); }
-:root[data-theme='dark'] .t24c .t24c-rail { fill: color-mix(in srgb, var(--rock-lo) 60%, var(--umbra)); }
-.t24c .t24c-tie { fill: var(--umbra); opacity: 0.85; }
-/* the gates and the bell */
-.t24c-gate, .t24c-entry { position: absolute; transform-origin: 50% 100%; transform: rotateX(-74deg); transform-style: preserve-3d; }
-.t24c-gateart { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.t24c .t24c-post, .t24c .t24c-beam { fill: color-mix(in srgb, var(--wash) 85%, var(--vermilion)); }
-:root[data-theme='dark'] .t24c :is(.t24c-post, .t24c-beam) { fill: color-mix(in srgb, var(--rock-lo) 75%, var(--vermilion)); }
-.t24c .t24c-post-lit { fill: none; stroke: var(--rake-hi); stroke-width: 1.4; }
-:root[data-theme='dark'] .t24c .t24c-post-lit { stroke: var(--moon); opacity: 0.4; }
-.t24c .t24c-rope { fill: none; stroke: var(--vermilion); stroke-width: 1.6; }
-.t24c .t24c-br0 { stop-color: color-mix(in srgb, var(--lantern) 70%, var(--card)); }
-.t24c .t24c-br1 { stop-color: color-mix(in srgb, var(--lantern) 55%, var(--rock-lo)); }
-.t24c .t24c-br2 { stop-color: color-mix(in srgb, var(--lantern) 25%, var(--umbra)); }
-.t24c .t24c-bell-ink { fill: var(--wash); opacity: 0.7; }
-.t24c .t24c-bell-hi { fill: #fff; opacity: 0.5; }
-.t24c .t24c-clapper { fill: var(--wash); }
-.t24c .t24c-bellglow { opacity: 0; transition: opacity 0.6s; }
-.t24c:is(.ring, .rang) .t24c-bellglow { opacity: 0.9; }
-.t24c.ring .t24c-bell { animation: t24c-ring 1.6s ease-out; }
-@keyframes t24c-ring { 12% { transform: rotate(18deg); } 32% { transform: rotate(-13deg); } 52% { transform: rotate(8deg); } 72% { transform: rotate(-4deg); } }
-/* things that hang on cords at their projected points: plaque, ema, the result strip */
-.t24c-plaque, .t24c-ema, .t24c-reveal {
-  position: absolute;
-  width: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-}
-.t24c-cord { position: absolute; left: -0.6px; bottom: 0; width: 1.2px; height: var(--cl, 20px); transform-origin: 50% 100%; rotate: var(--ca, 0rad); background: color-mix(in srgb, var(--ink-2) 70%, transparent); }
-.t24c-plaque .t24c-cord { background: var(--vermilion); }
-.t24c-plaque > span, .t24c-ema > span, .t24c-reveal > span {
-  position: absolute;
-  left: 0;
-  top: 0;
-  translate: -50% 0;
-  box-sizing: border-box;
-  font: 400 14px/1.35 var(--serif);
-  text-align: center;
-  text-wrap: balance;
-}
-/* wooden plaques and ema: a pentagon of plain wood with its grain */
-.t24c-plaque > span, .t24c-ema > span {
+.t24c .t24c-bough, .t24c .t24c-bough-needle { fill: color-mix(in srgb, var(--wash) 92%, var(--moss-b)); }
+:root[data-theme='dark'] .t24c :is(.t24c-bough, .t24c-bough-needle) { fill: color-mix(in srgb, var(--moss-b) 30%, var(--umbra)); }
+.t24c .t24c-bough-rim { fill: var(--moss-c); opacity: 0.8; }
+:root[data-theme='dark'] .t24c .t24c-bough-rim { fill: color-mix(in srgb, var(--moon) 60%, var(--moss-c)); opacity: 0.6; }
+/* the sky: the veil of mist over the moon drifts off once the trick is seen */
+.t24c .t24c-veil { transition: transform 3.2s ease-in-out, opacity 3.2s; }
+.t24c.found .t24c-veil { transform: translateX(14%); opacity: 0.15; }
+.t24c .t24c-moonglow { opacity: 0.45; transition: opacity 2.4s; }
+.t24c.found .t24c-moonglow { opacity: 1; }
+:root[data-quality='high'] .t24c.is-live:not(.found) .t24c-veil > * { animation: t24-drift 14s ease-in-out infinite alternate; }
+/* the night over the garden (masked off the sky) with one warm hole; the warm pool on the gravel */
+.t24c-night { position: absolute; inset: 0; pointer-events: none; transition: opacity 2.6s ease-in-out; -webkit-mask-image: linear-gradient(transparent calc(var(--sky, 80px) - 50px), #000 calc(var(--sky, 80px) + 70px)); mask-image: linear-gradient(transparent calc(var(--sky, 80px) - 50px), #000 calc(var(--sky, 80px) + 70px)); }
+.t24c.found .t24c-night { opacity: 0; }
+.t24c-dark { position: absolute; left: 0; top: 0; background: radial-gradient(circle at 50% 50%, transparent 0, transparent calc(var(--r) * 0.45), color-mix(in srgb, var(--umbra) 36%, transparent) calc(var(--r) * 1.05), color-mix(in srgb, var(--umbra) 52%, transparent) calc(var(--r) * 1.8)); }
+:root[data-theme='light'] .t24c-dark { background: radial-gradient(circle at 50% 50%, transparent 0, transparent calc(var(--r) * 0.45), color-mix(in srgb, var(--umbra) 34%, transparent) calc(var(--r) * 1.05), color-mix(in srgb, var(--umbra) 52%, transparent) calc(var(--r) * 1.8)); }
+.t24c-pool { position: absolute; left: 0; top: 0; pointer-events: none; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 42%, transparent), color-mix(in srgb, var(--lantern) 12%, transparent) 55%, transparent); mix-blend-mode: screen; transition: opacity 2s; }
+:root[data-theme='light'] .t24c-pool { mix-blend-mode: multiply; background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 34%, transparent), color-mix(in srgb, var(--lantern) 10%, transparent) 55%, transparent); }
+.t24c.found .t24c-pool { opacity: 0.4; }
+/* the lantern you carry: a paper chōchin on a bamboo handle */
+.t24c-lamp { position: absolute; left: 0; top: 0; z-index: 5; cursor: grab; touch-action: none; transform-origin: 50% 46%; }
+.t24c-lamp.held { cursor: grabbing; }
+.t24c-lampart { display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.t24c .t24c-handle { fill: color-mix(in srgb, var(--step-lo) 70%, var(--umbra)); }
+.t24c.found .t24c-lamp { opacity: 0.85; }
+/* words hung on things: a wooden ema at the entry, a plaque at the bell, a dó note on the broken fence, the long way's tag */
+.t24c :is(.t24c-plaque, .t24c-ema, .t24c-note, .t24c-tag) { position: absolute; z-index: 4; translate: -50% 0; pointer-events: none; }
+.t24c :is(.t24c-plaque, .t24c-ema, .t24c-note, .t24c-tag) p { margin: 0; }
+.t24c-cord { position: absolute; left: 50%; bottom: 100%; width: 1.4px; height: var(--cl, 20px); margin-left: -0.7px; transform-origin: 50% 100%; rotate: var(--ca, 0rad); background: color-mix(in srgb, var(--ink-2) 80%, transparent); }
+.t24c-wood {
   color: var(--stone-text);
-  background: repeating-linear-gradient(92deg, transparent 0 7px, color-mix(in srgb, var(--umbra) 6%, transparent) 7px 8px, transparent 8px 19px), linear-gradient(175deg, var(--step-hi), var(--step-mid));
-  filter: drop-shadow(0 8px 8px color-mix(in srgb, var(--umbra) 35%, transparent));
-}
-.t24c-plaque > span { padding: 3px 9px 4px; white-space: nowrap; }
-.t24c-plaque { opacity: 0; transition: opacity 0.8s; }
-.t24c:is(.ring, .rang) .t24c-plaque { opacity: 1; }
-.t24c-ema > span { width: var(--ew, 170px); padding: 17px 10px 10px; clip-path: polygon(0 18%, 50% 0, 100% 18%, 100% 100%, 0 100%); }
-.t24c-ema.small { cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 1s 1.6s; }
-.t24c.found .t24c-ema.small { opacity: 1; pointer-events: auto; }
-.t24c-ema.task { transition: opacity 0.8s 0.8s; }
-.t24.narrow.found .t24c-ema.task { opacity: 0; }
-.t24 .t24c-ema.small:focus-visible { outline: none; }
-.t24c-ema.small:focus-visible > span { outline: 2px solid var(--vermilion); outline-offset: 3px; }
-/* the result, brushed on a paper strip hung from the gate's beam */
-.t24c-reveal > span { width: var(--rw, 128px); padding: 14px 10px 14px; color: var(--vermilion); background: inherit; }
-.t24c-reveal { opacity: 0; transition: opacity 1s 0.6s; }
-.t24c.found .t24c-reveal { opacity: 1; }
-.t24c-reveal > span:empty { display: none; }
-.t24c-reveal.t24-paper { background: none; }
-.t24c-reveal > span {
+  border-radius: 3px;
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .7 0 0 0 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    color-mix(in srgb, var(--moon) 30%, var(--card));
-  filter: drop-shadow(0 8px 8px color-mix(in srgb, var(--umbra) 30%, transparent));
+    repeating-linear-gradient(92deg, transparent 0 7px, color-mix(in srgb, var(--umbra) 7%, transparent) 7px 8px, transparent 8px 15px),
+    linear-gradient(180deg, color-mix(in srgb, var(--step-hi) 70%, var(--lantern)), color-mix(in srgb, var(--step-mid) 70%, var(--lantern)));
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--umbra) 18%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 35%, transparent), 0 6px 12px -6px color-mix(in srgb, var(--umbra) 70%, transparent);
 }
-:root[data-theme='dark'] .t24c-reveal > span { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .7 0 0 0 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), color-mix(in srgb, var(--moon) 64%, var(--card)); color: color-mix(in srgb, var(--vermilion) 55%, var(--umbra)); }
-/* the pine bough the task's ema hangs from */
-.t24c .t24c-bough-wood { fill: var(--wash); opacity: 0.85; }
-:root[data-theme='dark'] .t24c .t24c-bough-wood { fill: color-mix(in srgb, var(--rock-lo) 60%, var(--umbra)); opacity: 1; }
-.t24c .t24c-bough-needle { fill: color-mix(in srgb, var(--moss-b) 60%, var(--wash)); }
-:root[data-theme='dark'] .t24c .t24c-bough-needle { fill: color-mix(in srgb, var(--moss-a) 70%, var(--moon) 10%); }
-/* the two carved stones at the way in */
-.t24c-stone {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  min-height: 58px;
-  padding: 10px 18px 14px;
-  border: 0;
-  background: none;
-  font: 400 15px/1.2 var(--serif);
-  color: var(--stone-text);
-  text-align: center;
-  cursor: pointer;
-}
-.t24c-stone svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.t24c-stone span { position: relative; white-space: nowrap; text-shadow: 0 1px 0 color-mix(in srgb, #fff 45%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 25%, transparent); }
-.t24c-stone .p2-stone-face { fill: var(--step-mid); }
-:root[data-theme='dark'] .t24c-stone .p2-stone-face { fill: var(--step-mid); }
-.t24c-stone[aria-pressed='true'] { filter: drop-shadow(0 0 12px color-mix(in srgb, var(--lantern) 75%, transparent)); }
-.t24.narrow .t24c-stone { font-size: 14px; padding: 10px 12px 14px; }
-.t24c-sheet {
-  position: absolute;
-  inset: 8px;
-  z-index: 5;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  overflow: auto;
-  padding: 12px;
-  background: color-mix(in srgb, var(--paper) 90%, transparent);
-}
-.t24c-sheet > .p2k { width: min(520px, 100%); }
-.t24c-close {
-  position: absolute;
-  top: 4px;
-  right: 6px;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  background: transparent;
-  color: var(--ink-2);
-  font-size: 1.6rem;
-  line-height: 1;
+:root[data-theme='dark'] .t24c-wood { background: repeating-linear-gradient(92deg, transparent 0 7px, color-mix(in srgb, var(--umbra) 10%, transparent) 7px 8px, transparent 8px 15px), linear-gradient(180deg, color-mix(in srgb, var(--step-hi) 75%, var(--lantern)), color-mix(in srgb, var(--step-mid) 75%, var(--lantern))); }
+.t24c-ema { width: var(--w, 200px); padding: 18px 12px 10px; font: 400 14px/1.4 var(--serif); text-align: center; clip-path: polygon(0 16px, 50% 0, 100% 16px, 100% 100%, 0 100%); border-radius: 0 0 3px 3px; }
+.t24c-ema .t24c-cord { display: none; }
+.t24c .t24c-emacord { fill: none; stroke: color-mix(in srgb, var(--ink-2) 85%, transparent); stroke-width: 1.4; stroke-linejoin: round; }
+.t24c-ema::before { content: ''; position: absolute; left: 50%; top: 6px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: color-mix(in srgb, var(--umbra) 60%, transparent); }
+.t24c.narrow .t24c-ema { padding: 16px 9px 8px; font-size: 12.5px; line-height: 1.35; }
+.t24c.narrow .t24c-ema small { font-size: 11.5px; }
+.t24c-ema small, .t24c-plaque small { display: block; margin-top: 5px; font: 400 12px/1.35 var(--sans); opacity: 0.85; }
+/* the gate's name board between the beams: a dark lacquered frame, the grader's word in gold leaf */
+.t24c-plaque { translate: -50% -50% !important; display: grid; place-items: center; border: 2px solid color-mix(in srgb, var(--umbra) 80%, var(--lantern)); border-radius: 2px; background: color-mix(in srgb, var(--rock-lo) 70%, var(--umbra)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lantern) 35%, transparent), 0 3px 6px -3px var(--umbra); }
+.t24c-plaque b { font: 500 1em/1 var(--serif); color: color-mix(in srgb, var(--lantern) 75%, #fff); letter-spacing: 0.02em; }
+.t24c-claim p { margin: 0; }
+.t24c-claim .t24c-claim-decode { display: none; margin-top: 4px; font: 400 12.5px/1.4 var(--sans); }
+.t24c.narrow .t24c-claim .t24c-claim-decode { display: block; }
+.t24c.narrow .t24c-ema small { display: none; }
+.t24c.narrow .t24c-claim { text-align: right; }
+.t24c-claim { position: absolute; z-index: 4; margin: 0; max-width: 230px; font: 400 14px/1.4 var(--serif); color: var(--ink-2); text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper); pointer-events: none; }
+/* what the light found: written on the moss beside the bed (no card) */
+.t24c .t24c-note { translate: none; font: 400 15px/1.45 var(--serif); color: var(--ink); text-shadow: 0 0 10px var(--paper), 0 0 4px var(--paper), 0 0 2px var(--paper); opacity: 0; transition: opacity 1s 0.5s; }
+.t24c.narrow .t24c-note { font-size: 14px; }
+.t24c.found .t24c-note { opacity: 1; }
+/* the long way's sign: a small board on a bamboo stake pushed into the moss */
+.t24c .t24c-tag { translate: -50% -100%; margin-top: calc(-1 * var(--st, 30px)); padding: 5px 9px; max-width: 180px; font: 400 13px/1.3 var(--serif); text-align: center; opacity: 0; transition: opacity 0.8s; }
+.t24c-tag::after { content: ''; position: absolute; left: 50%; top: 100%; width: 4px; height: var(--st, 30px); margin-left: -2px; border-radius: 2px; background: linear-gradient(90deg, color-mix(in srgb, var(--step-lo) 80%, var(--umbra)), color-mix(in srgb, var(--step-mid) 80%, var(--lantern))); box-shadow: 3px 1px 3px -1px color-mix(in srgb, var(--umbra) 50%, transparent); }
+.t24c.long .t24c-tag { opacity: 1; }
+.t24c.narrow .t24c-note { text-align: right; }
+.t24c.narrow.found .t24c-claim { opacity: 0; transition: opacity 0.6s; }
+.t24c .t24c-gapmark { fill: none; stroke: color-mix(in srgb, var(--moon) 75%, var(--lantern)); stroke-width: 1.6; stroke-dasharray: 4 5; opacity: 0; transition: opacity 1s 0.8s; }
+:root[data-theme='light'] .t24c .t24c-gapmark { stroke: var(--ink-2); }
+.t24c.found .t24c-gapmark { opacity: 0.9; }
+.t24c-lamp:focus-visible { border-radius: 50%; outline-offset: -6px !important; }
+.t24c-slip { position: absolute; z-index: 6; opacity: 0; visibility: hidden; transition: opacity 0.9s, visibility 0s 0.9s; }
+.t24c.handed .t24c-slip { opacity: 1; visibility: visible; transition: opacity 0.9s; }
+@media (prefers-reduced-motion: reduce) {
+  .t24c :is(.t24c-night, .t24c-veil, .t24c-moonsh, .t24c-note, .t24c-tag, .t24c-slip, .t24c-pool, .t24c-print) { transition: none; }
+  .t24c.ring :is(.t24c-bell, .t24c-bellglow) { animation: none; }
 }
 
 /* ───────── scene 4 incense: the smoke column is the spine of the frame ───────── */
@@ -965,29 +896,47 @@
 .t24i .t24i-head-ink { fill: var(--wash); opacity: 0.85; }
 :root[data-theme='dark'] .t24i .t24i-head-ink { fill: var(--umbra); opacity: 0.8; }
 .t24i .t24i-warmrim { fill: var(--lantern); opacity: 0.85; }
-/* the flat stone, the scale written on its face */
+/* the flat stones: the censer's slab, the monk's seat */
 .t24i .t24i-slab-sh { fill: var(--umbra); opacity: 0.35; }
 .t24i .t24i-slab-face { fill: var(--step-mid); }
 .t24i .t24i-slab-top { fill: color-mix(in srgb, var(--lantern) 18%, var(--step-hi)); }
 :root[data-theme='dark'] .t24i .t24i-slab-top { fill: color-mix(in srgb, var(--lantern) 26%, var(--step-mid)); }
 :root[data-theme='dark'] .t24i .t24i-slab-face { fill: var(--step-lo); }
 .t24i .t24i-slab-ink { fill: var(--wash); opacity: 0.4; }
-.t24i-scale {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  font: 400 14px/1.1 var(--serif);
-  color: var(--stone-text);
-  white-space: nowrap;
-  text-shadow: 0 1px 0 color-mix(in srgb, #fff 40%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 25%, transparent);
-  pointer-events: none;
-}
-:root[data-theme='dark'] .t24i-scale { color: var(--ink); text-shadow: 0 -1px 0 var(--umbra), 0 1px 0 color-mix(in srgb, var(--moon) 25%, transparent); }
-.t24i-ticks { display: flex; gap: 7px; align-items: center; }
-.t24i-ticks i { width: 2px; height: 9px; border-radius: 1px; background: color-mix(in srgb, currentColor 55%, transparent); transition: background 0.4s, box-shadow 0.4s; }
-.t24i[data-v='1'] .t1, .t24i[data-v='2'] .t2, .t24i[data-v='3'] .t3, .t24i[data-v='4'] .t4 { background: var(--lantern); box-shadow: 0 0 6px 1px color-mix(in srgb, var(--lantern) 70%, transparent); }
+.t24i .t24i-seat-shade { opacity: 0.8; }
+.t24i .t24i-seat-moss, .t24i .t24i-stele-moss { fill: var(--moss-a); opacity: 0.85; }
+:root[data-theme='dark'] .t24i :is(.t24i-seat-moss, .t24i-stele-moss) { fill: var(--moss-c); opacity: 0.7; }
+/* the groove post: squared timber, a dark slot, four notches; the bundle that rides in it */
+.t24i .t24i-wd0 { stop-color: color-mix(in srgb, var(--step-mid) 70%, var(--lantern)); }
+.t24i .t24i-wd1 { stop-color: color-mix(in srgb, var(--step-lo) 75%, var(--lantern)); }
+.t24i .t24i-wd2 { stop-color: color-mix(in srgb, var(--step-lo) 80%, var(--umbra)); }
+:root[data-theme='dark'] .t24i .t24i-wd0 { stop-color: color-mix(in srgb, var(--step-mid) 70%, var(--lantern)); }
+:root[data-theme='dark'] .t24i .t24i-wd1 { stop-color: color-mix(in srgb, var(--step-lo) 80%, var(--lantern)); }
+:root[data-theme='dark'] .t24i .t24i-wd2 { stop-color: var(--umbra); }
+.t24i .t24i-slot { fill: var(--umbra); opacity: 0.6; }
+.t24i .t24i-cuts { fill: none; stroke: var(--umbra); stroke-width: 2; opacity: 0.75; stroke-linejoin: round; }
+.t24i .t24i-post-lit { fill: none; stroke: var(--moon); stroke-width: 1.2; opacity: 0.55; }
+:root[data-theme='light'] .t24i .t24i-post-lit { stroke: #fff; opacity: 0.8; }
+.t24i-bundle { position: absolute; z-index: 4; cursor: ns-resize; touch-action: none; transition: top 0.35s var(--ease); }
+.t24i.held .t24i-bundle { transition: top 0.12s; }
+.t24i-bundle svg { display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; filter: drop-shadow(1px 2px 2px color-mix(in srgb, var(--umbra) 55%, transparent)); }
+.t24i-bundle::before { content: ''; position: absolute; inset: -14px -16px; border-radius: 40%; background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 30%, transparent), transparent); opacity: 0; transition: opacity 0.3s; }
+.t24i-bundle:is(:hover, :focus-visible)::before, .t24i.held .t24i-bundle::before { opacity: 1; }
+.t24i .t24i-b-sticks { fill: color-mix(in srgb, var(--lantern) 30%, var(--umbra) 70%); }
+:root[data-theme='dark'] .t24i .t24i-b-sticks { fill: color-mix(in srgb, var(--lantern) 45%, var(--rock-mid)); }
+.t24i .t24i-b-tips { fill: color-mix(in srgb, var(--step-mid) 80%, var(--lantern)); }
+.t24i .t24i-b-band { fill: var(--card); stroke: color-mix(in srgb, var(--umbra) 40%, transparent); stroke-width: 0.6; }
+.t24i .t24i-b-band-hi { fill: #fff; opacity: 0.4; }
+@media (prefers-reduced-motion: reduce) { .t24i-bundle { transition: none; } }
+/* the moon's road on the water, moved with the moon */
+.t24i-road { transition: transform 1.6s cubic-bezier(0.4, 0, 0.2, 1); }
+.t24i .t24i-roadink { fill: none; stroke: var(--moon); stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
+:root[data-theme='light'] .t24i .t24i-roadink { stroke: #fff; opacity: 0.85; }
+@media (prefers-reduced-motion: reduce) { .t24i-road { transition: none; } }
+/* near and dark at the bottom-left: a boulder cut by the frame */
+.t24i .t24i-near { filter: brightness(0.75); }
+:root[data-theme='light'] .t24i .t24i-near { filter: brightness(0.82); }
+.t24i .t24i-near-moss { fill: var(--moss-b); opacity: 0.9; }
 /* the censer and its sticks */
 .t24i .t24i-censer-glow { opacity: 0.8; }
 .t24i .t24i-legs { fill: var(--wash); opacity: 0.85; }
@@ -1002,54 +951,36 @@
 .t24i .t24i-coalglow { opacity: 0.9; }
 .t24i .t24i-stick { transition: opacity 0.6s; }
 .t24i[data-v='1'] :is(.k1, .k2, .k3), .t24i[data-v='2'] :is(.k2, .k3), .t24i[data-v='3'] .k3 { opacity: 0; }
-/* the stele: the answer comes clear; notches cut in its edge, the scores written beside them */
-.t24i .t24i-stele-sh { fill: var(--umbra); opacity: 0.3; }
+/* the stele: a tall natural slab, a dressed panel where the answer is cut, grain, moss, the moon on its crown */
+.t24i .t24i-sg0 { stop-color: var(--rock-hi); }
+.t24i .t24i-sg1 { stop-color: var(--rock-mid); }
+.t24i .t24i-sg2 { stop-color: var(--rock-lo); }
+.t24i .t24i-stele-sh { fill: var(--umbra); opacity: 0.35; }
 .t24i .t24i-stele-shade { opacity: 0.9; }
-.t24i .t24i-stele-lit { fill: var(--moon); opacity: 0.5; }
-:root[data-theme='light'] .t24i .t24i-stele-lit { fill: #fff; opacity: 0.7; }
-.t24i .t24i-glyphs { fill: var(--stone-text); opacity: calc(0.07 + var(--t, 0) * 0.85); transition: opacity 1.2s; }
-.t24i .t24i-seal { fill: var(--vermilion); opacity: 0; transition: opacity 1s; }
-.t24i[data-v='4'] .t24i-seal { opacity: 0.9; }
+.t24i .t24i-panel { fill: color-mix(in srgb, var(--rock-hi) 30%, transparent); }
+.t24i .t24i-lichen { fill: color-mix(in srgb, var(--moss-c) 60%, var(--rock-hi)); opacity: 0.5; }
+:root[data-theme='dark'] .t24i .t24i-panel { fill: color-mix(in srgb, var(--rock-hi) 30%, transparent); }
+.t24i .t24i-grain { fill: var(--umbra); opacity: 0.22; }
+.t24i .t24i-stele-lit { fill: var(--moon); opacity: 0.6; }
+:root[data-theme='light'] .t24i .t24i-stele-lit { fill: #fff; opacity: 0.8; }
 .t24i .t24i-notch { fill: var(--umbra); opacity: 0; transition: opacity 1s; }
 .t24i:is([data-v='3'], [data-v='4']) .t24i-notch { opacity: 0.7; }
 .t24i-num {
   position: absolute;
-  font: 400 14px/1.2 var(--serif);
+  font: 400 13px/1.25 var(--serif);
   color: var(--stone-text);
-  white-space: nowrap;
   text-shadow: 0 1px 0 color-mix(in srgb, #fff 45%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent);
   opacity: 0;
   transition: opacity 1s 0.3s;
   pointer-events: none;
 }
 .t24i:is([data-v='3'], [data-v='4']) .t24i-num { opacity: 1; }
-/* the handle: the sticks over the censer; focus and touch warm them, no ring */
-.t24i-censer {
-  position: absolute;
-  border-radius: 40% 40% 30% 30%;
-  cursor: ns-resize;
-  touch-action: none;
-}
-.t24i-censer::after {
-  content: '';
-  position: absolute;
-  inset: -12% -30%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern) 34%, transparent), transparent);
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-.t24i-censer:is(:hover, :focus-visible)::after, .t24i.held .t24i-censer::after { opacity: 1; }
-.t24 .t24i-censer:focus-visible { outline: 1.5px dashed color-mix(in srgb, var(--lantern) 80%, var(--ink)); outline-offset: 2px; }
+.t24i.narrow .t24i-num { display: none; }
 
-/* ───────── scene 5 diary: grazing a small pond, the moon on its arc, a diary afloat ───────── */
+/* ───────── scene 5 diary (audit g08 24-5): just above a small pond, a thick dó diary afloat, its reflection, the stele ───────── */
 .t24d { -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent); mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent); }
 .t24d-art { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-/* the moon's way: a faint rim of light, only while the moon is being moved */
-.t24d .t24d-trail { fill: none; stroke: var(--moon-rim); stroke-width: 2.4; stroke-linecap: round; opacity: 0; transition: opacity 0.5s; }
-:root[data-theme='dark'] .t24d .t24d-trail { stroke: color-mix(in srgb, var(--moon) 35%, transparent); }
-.t24d.dragging .t24d-trail { opacity: 1; }
-.t24d .t24d-w0 { stop-color: color-mix(in srgb, var(--water) 50%, var(--paper)); }
+.t24d .t24d-w0 { stop-color: color-mix(in srgb, var(--water) 75%, var(--paper)); }
 .t24d .t24d-w1 { stop-color: var(--water); }
 .t24d .t24d-w2 { stop-color: color-mix(in srgb, var(--water) 80%, var(--wash)); }
 :root[data-theme='dark'] .t24d .t24d-w0 { stop-color: color-mix(in srgb, var(--mist) 20%, var(--water)); }
@@ -1058,160 +989,110 @@
 :root[data-theme='dark'] .t24d .t24d-farbank { fill: color-mix(in srgb, var(--moss-b) 50%, var(--umbra)); opacity: 0.9 !important; }
 .t24d .t24d-near { fill: color-mix(in srgb, var(--moss-b) 70%, var(--rock-lo)); }
 :root[data-theme='dark'] .t24d .t24d-near { fill: color-mix(in srgb, var(--moss-b) 55%, var(--umbra)); }
-.t24d .t24d-tuft { fill: var(--moss-a); opacity: 0.35; }
-:root[data-theme='dark'] .t24d .t24d-tuft { opacity: 0.25; }
+.t24d .t24d-tuft { fill: var(--moss-a); opacity: 0.3; }
+:root[data-theme='dark'] .t24d .t24d-tuft { opacity: 0.22; }
+.t24d .t24d-fringe { fill: color-mix(in srgb, var(--moss-a) 70%, var(--wash)); opacity: 0.85; }
+:root[data-theme='dark'] .t24d .t24d-fringe { fill: color-mix(in srgb, var(--moss-c) 60%, var(--umbra)); opacity: 0.9; }
 .t24d .t24d-wet { fill: var(--umbra); opacity: 0.35; }
 .t24d .t24d-rim { fill: var(--wash); opacity: 0.35; }
 :root[data-theme='dark'] .t24d .t24d-rim { fill: var(--moon); opacity: 0.22; }
-.t24d .t24d-rip { fill: #fff; opacity: 0.5; }
+.t24d .t24d-rip { fill: #fff; opacity: 0.45; }
 :root[data-theme='dark'] .t24d .t24d-rip { fill: var(--moon); opacity: 0.16; }
 .t24d .t24d-road-ink { fill: none; stroke: var(--moon); stroke-width: 2; stroke-linecap: round; opacity: 0.75; }
 :root[data-theme='light'] .t24d .t24d-road-ink { stroke: #fff; }
 .t24d.is-all .t24d-rip { opacity: 0.2; transition: opacity 2s; }
-/* the stones: lit by the moon above them, a soft long shadow toward us */
-.t24d .t24d-stone-glow { opacity: 0; transition: opacity 0.9s; }
-.t24d .t24d-stoneart.heard .t24d-stone-glow { opacity: 0.25; }
-.t24d .t24d-stoneart.on .t24d-stone-glow { opacity: 0.9; }
-.t24d .t24d-stone-rim { fill: var(--wash); opacity: 0.4; transition: opacity 0.9s; }
-:root[data-theme='dark'] .t24d .t24d-stone-rim { fill: var(--moon); opacity: 0.25; }
-.t24d .t24d-stoneart.on .t24d-stone-rim { opacity: 0.95; }
-:root[data-theme='light'] .t24d .t24d-stoneart.on .t24d-stone-rim { fill: #fff; }
-.t24d .t24d-sh0 { stop-color: var(--umbra); stop-opacity: 0.55; }
-.t24d .t24d-sh1 { stop-color: var(--umbra); stop-opacity: 0; }
-.t24d .t24d-shadow { opacity: 0.22; transition: opacity 0.9s; }
-.t24d .t24d-shadow.on { opacity: 0.85; }
-:root[data-theme='dark'] .t24d .t24d-shadow.on { opacity: 1; }
-/* the diary afloat; the page writes what it writes, the water shows the hint on every page */
-.t24d .t24d-paper.base, .t24d .t24d-paper.turn { fill: color-mix(in srgb, var(--moon) 28%, var(--card)); }
+/* the stele: a stone with volume, a cast shadow toward us, moss, the moon on its rim */
+.t24d .t24d-stone-glow { opacity: 0.55; }
+.t24d .t24d-stone-cast { fill: var(--umbra); opacity: 0.35; }
+.t24d .t24d-stone-moss { fill: var(--moss-b); opacity: 0.7; }
+:root[data-theme='dark'] .t24d .t24d-stone-moss { fill: var(--moss-a); opacity: 0.6; }
+.t24d .t24d-stone-rim { fill: #fff; opacity: 0.85; }
+:root[data-theme='dark'] .t24d .t24d-stone-rim { fill: var(--moon); opacity: 0.8; }
+/* the diary: a thick block of dó on a dark cover, torn fibre edges, the gutter's shadow, handwriting */
+.t24d .t24d-paper.base, .t24d .t24d-paper.turn { fill: color-mix(in srgb, var(--moon) 26%, var(--card)); }
 :root[data-theme='dark'] .t24d :is(.t24d-paper.base, .t24d-paper.turn) { fill: color-mix(in srgb, var(--moon) 62%, var(--ink-3)); }
+.t24d .t24d-cover { fill: color-mix(in srgb, var(--wash) 80%, var(--vermilion) 6%); }
+:root[data-theme='dark'] .t24d .t24d-cover { fill: color-mix(in srgb, var(--rock-lo) 70%, var(--umbra)); }
+.t24d .t24d-blockedge { fill: color-mix(in srgb, var(--stone-text) 55%, transparent); }
+:root[data-theme='dark'] .t24d .t24d-blockedge { fill: color-mix(in srgb, var(--moon) 55%, var(--ink-3)); }
+.t24d .t24d-g0 { stop-color: var(--umbra); stop-opacity: 0.16; }
+.t24d .t24d-g1 { stop-color: var(--umbra); stop-opacity: 0; }
 .t24d .t24d-turn { opacity: 0; }
-.t24d .t24d-cup { fill: var(--umbra); opacity: 0.12; }
-.t24d .t24d-edge { fill: var(--wash); opacity: 0.6; }
-.t24d .t24d-bookshadow { fill: var(--umbra); opacity: 0.3; }
-.t24d .t24d-ink { fill: var(--stone-text); opacity: 0.8; }
-.t24d .t24d-seal { fill: var(--vermilion); }
-.t24d .t24d-seal-cut { fill: color-mix(in srgb, #fff 85%, var(--vermilion)); }
-.t24d .t24d-mirror-paper { fill: color-mix(in srgb, var(--moon) 40%, var(--water)); opacity: 0.55; }
+.t24d .t24d-edge { fill: var(--wash); opacity: 0.55; }
+.t24d .t24d-bookshadow { fill: var(--umbra); opacity: 0.32; }
+.t24d .t24d-slab-shade { opacity: 0.9; }
+.t24d .t24d-slab-top { fill: color-mix(in srgb, var(--rock-hi) 70%, var(--rock-mid)); }
+:root[data-theme='dark'] .t24d .t24d-slab-top { fill: color-mix(in srgb, var(--rock-mid) 75%, var(--moon) 10%); }
+.t24d .t24d-slab-wet { fill: var(--umbra); opacity: 0.45; }
+.t24d .t24d-slab-moss { fill: var(--moss-a); opacity: 0.8; }
+:root[data-theme='dark'] .t24d .t24d-slab-moss { fill: var(--moss-b); opacity: 0.9; }
+.t24d .t24d-slab-ring { fill: #fff; opacity: 0.5; }
+:root[data-theme='dark'] .t24d .t24d-slab-ring { fill: var(--moon); opacity: 0.3; }
+.t24d .t24d-slab-mirror { fill: var(--umbra); opacity: 0.35; }
+.t24d .t24d-ink { fill: var(--stone-text); opacity: 0.72; }
+/* the hint's seal as the water shows it; the reflection of the pages, broken by ripples */
+.t24d .t24d-seal { fill: var(--vermilion); opacity: 0.82; }
+.t24d .t24d-seal-cut { fill: color-mix(in srgb, #fff 80%, var(--vermilion)); opacity: 0.9; }
+.t24d .t24d-mirror-paper { fill: color-mix(in srgb, var(--moon) 30%, var(--water)); opacity: 0.6; }
 :root[data-theme='dark'] .t24d .t24d-mirror-paper { fill: color-mix(in srgb, var(--moon) 30%, var(--water)); opacity: 0.6; }
-.t24d .t24d-mirror-ink { fill: var(--umbra); opacity: 0.3; }
-:root[data-theme='dark'] .t24d .t24d-mirror-ink { fill: var(--umbra); opacity: 0.45; }
-.t24d .t24d-cuts { fill: var(--water); opacity: 0.55; }
+.t24d .t24d-mirror-ink { fill: var(--umbra); opacity: 0.28; }
+.t24d .t24d-cuts { fill: var(--water); opacity: 0.6; }
 .t24d .t24d-under-glow { opacity: 0.8; }
-.t24d :is(.t24d-page, .t24d-under) { opacity: 0; transition: opacity 0.8s 0.25s; }
-.t24d-art[data-page='-1'] :is(.p0.t24d-page, .p0.t24d-under) { opacity: 0.5; }
-.t24d-art[data-page='0'] .p0, .t24d-art[data-page='1'] .p1, .t24d-art[data-page='2'] .p2 { opacity: 1; }
-/* the moon you drag along its arc */
-.t24d-moon {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 80px;
-  height: 80px;
-  margin: -40px 0 0 -40px;
-  border-radius: 50%;
-  cursor: grab;
-  touch-action: none;
-  z-index: 2;
-  transition: transform 0.9s var(--ease);
-}
-.t24d-moon.held { cursor: grabbing; transition: none; }
-.t24d-moon svg { width: 100%; height: 100%; overflow: visible; }
-.t24d .t24d-road { transition: transform 0.9s var(--ease); }
-.t24d.dragging .t24d-road { transition: none; }
-@media (prefers-reduced-motion: reduce) { .t24d-moon, .t24d .t24d-road { transition: none; } }
-/* the stones' own buttons (over their pictures) */
-.t24d-stones { position: absolute; inset: 0; pointer-events: none; }
-.t24d-stone { position: absolute; padding: 0; border: 0; background: none; border-radius: 40% 40% 20% 20%; cursor: pointer; pointer-events: auto; }
-/* the question, written down the left edge like the border of a hanging scroll */
-.t24d-q {
-  position: absolute;
-  left: 6px;
-  top: 4px;
-  max-height: 92%;
-  margin: 0;
-  padding: 10px 6px;
-  writing-mode: vertical-rl;
-  font: 400 15px/1.5 var(--serif);
-  color: var(--ink);
-  border-left: 1px solid color-mix(in srgb, var(--ink-3) 40%, transparent);
-  text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
-}
-/* no room down the side of a phone: the scroll's border runs along the top instead */
-.t24d-q.flat { writing-mode: horizontal-tb; left: 8px; right: 8px; top: 0; padding: 4px 6px 6px; border-left: 0; border-bottom: 1px solid color-mix(in srgb, var(--ink-3) 40%, transparent); text-align: center; }
-/* what a stone says: a strip of washi laid at the water's edge under it (on a phone, plain words under the picture) */
-.t24d-words {
-  position: absolute;
-  box-sizing: border-box;
-  padding: 12px 18px 14px;
-  color: var(--stone-text);
-  rotate: var(--tilt, 0deg);
-  opacity: 0;
-  transition: opacity 0.8s, left 0.9s var(--ease), top 0.9s var(--ease);
-  pointer-events: none;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .7 0 0 0 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    linear-gradient(180deg, color-mix(in srgb, var(--moon) 30%, var(--card)), color-mix(in srgb, var(--moon) 18%, var(--card)));
-  clip-path: polygon(0 3%, 18% 0, 52% 2%, 84% 0, 100% 4%, 99% 52%, 100% 96%, 70% 100%, 34% 97%, 0 100%, 1% 48%);
-  filter: drop-shadow(0 10px 8px color-mix(in srgb, var(--umbra) 35%, transparent));
-}
-:root[data-theme='dark'] .t24d-words:not(.flat) { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .12 0 0 0 0 .2 .7 0 0 0 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), linear-gradient(180deg, color-mix(in srgb, var(--moon) 62%, var(--card)), color-mix(in srgb, var(--moon) 50%, var(--card))); }
-:root[data-quality='low'] .t24d-words { filter: none; }
-.t24d-words.shown { opacity: 1; }
-.t24d-who { margin: 0 0 4px; font: 400 14px/1.35 var(--serif); opacity: 0.8; }
-.t24d-view { margin: 0; font: 400 15px/1.5 var(--serif); }
-.t24d-words.flat {
-  padding: 8px 2px 0;
-  color: var(--ink);
-  rotate: none;
-  background: none;
-  clip-path: none;
-  filter: none;
-  border-top: 1px solid color-mix(in srgb, var(--ink-3) 35%, transparent);
-}
-.t24d-words.flat .t24d-who { color: var(--ink-2); opacity: 1; }
-/* 24-5 (audit v3): the hint experiment — the question across the top, the pebble, the page's words, the answer stele */
-.t24d-q.flat { writing-mode: horizontal-tb; }
-.t24d-q.flat.wide { left: 14px; right: auto; max-width: 52%; border-bottom: 0; text-align: left; padding: 6px 8px; }
-.t24d-q p { margin: 0; }
-.t24d-q .t24d-decode { margin-top: 4px; font: 400 13px/1.45 var(--sans); color: var(--ink-2); }
-.t24d-pebble { position: absolute; width: 56px; height: 44px; margin: -22px 0 0 -28px; padding: 0; border: 0; background: none; cursor: grab; touch-action: none; z-index: 3; transition: left 0.7s var(--ease), top 0.7s var(--ease), opacity 0.7s; }
-.t24d-pebble.held { cursor: grabbing; transition: none; }
-.t24d-pebble svg { width: 100%; height: 100%; overflow: visible; }
-.t24d-pebble .body { fill: color-mix(in srgb, var(--vermilion) 80%, var(--umbra)); stroke: color-mix(in srgb, var(--vermilion) 50%, var(--ink)); stroke-width: 1; }
-.t24d-pebble .hi { fill: none; stroke: color-mix(in srgb, #fff 70%, var(--vermilion)); stroke-width: 1.6; stroke-linecap: round; opacity: 0.8; }
-.t24d-pebble .sh { fill: var(--umbra); opacity: 0.3; }
-.t24d-pebble.placed { opacity: 0.55; cursor: default; }
-.t24d-pebble.placed .sh { opacity: 0; }
-.t24d-text { position: absolute; margin: 0; font: italic 400 15px/1.5 var(--serif); color: var(--stone-text); cursor: pointer; }
-.t24d-flip { position: absolute; width: 60px; height: 60px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
-.t24d-flip:disabled { visibility: hidden; }
-.t24d-stele { position: absolute; text-align: center; pointer-events: none; }
-.t24d-stele p { margin: 0; color: var(--stone-text); text-shadow: 0 0 6px color-mix(in srgb, var(--paper) 60%, transparent); }
-.t24d-ans-l { font: 400 12px/1.3 var(--serif); opacity: 0.85; }
-.t24d-ans { margin-top: 6px !important; font: 500 clamp(15px, 1.6vw, 22px)/1.25 var(--serif); }
+.t24d .t24d-under { opacity: 0; transition: opacity 0.8s 0.25s; }
+.t24d-art[data-page='-1'] .p0.t24d-under { opacity: 0.6; }
+.t24d-art[data-page='0'] .p0, .t24d-art[data-page='1'] .p1, .t24d-art[data-page='2'] .p2, .t24d-art[data-page='3'] .p3 { opacity: 1; }
 .t24d .t24d-hintseal { opacity: 0; transition: opacity 0.9s 0.3s; }
 .t24d.is-hinted .t24d-hintseal { opacity: 1; }
-.t24d-art[data-page='3'] .p3 { opacity: 1; }
-.t24d-data { position: absolute; transition: opacity 1s; font: 400 13px/1.5 var(--sans); color: var(--ink-2); text-shadow: 0 0 8px var(--paper); }
+/* the question across the top-left, what the things stand for under it */
+.t24d-q { position: absolute; z-index: 3; margin: 0; font: 400 15px/1.5 var(--serif); color: var(--ink); text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper); pointer-events: none; }
+.t24d-q.flat { left: 8px; right: 8px; top: 0; padding: 4px 6px 6px; text-align: center; }
+.t24d-q.flat.wide { left: 14px; right: auto; max-width: 46%; text-align: left; padding: 6px 8px; }
+.t24d-q p { margin: 0; }
+.t24d-q .t24d-decode { margin-top: 4px; font: 400 13px/1.45 var(--sans); color: var(--ink-2); }
+/* the pebble: a smooth stone lacquered vermilion */
+.t24d-pebble { position: absolute; z-index: 3; width: 58px; height: 42px; margin: -21px 0 0 -29px; padding: 0; border: 0; background: none; cursor: grab; touch-action: none; transition: left 0.7s var(--ease), top 0.7s var(--ease), opacity 0.7s; }
+.t24d-pebble.held { cursor: grabbing; transition: none; }
+.t24d-pebble svg { width: 100%; height: 100%; overflow: visible; }
+.t24d .t24d-pb0 { stop-color: color-mix(in srgb, #fff 35%, var(--vermilion)); }
+.t24d .t24d-pb1 { stop-color: var(--vermilion); }
+.t24d .t24d-pb2 { stop-color: color-mix(in srgb, var(--vermilion) 55%, var(--umbra)); }
+.t24d-pebble .body { stroke: color-mix(in srgb, var(--vermilion) 40%, var(--umbra)); stroke-width: 0.8; }
+.t24d-pebble .hi { fill: none; stroke: color-mix(in srgb, #fff 80%, var(--vermilion)); stroke-width: 1.8; stroke-linecap: round; opacity: 0.85; }
+.t24d-pebble .lo { fill: none; stroke: color-mix(in srgb, var(--umbra) 60%, var(--vermilion)); stroke-width: 1.4; stroke-linecap: round; opacity: 0.5; }
+.t24d-pebble .sh { fill: var(--umbra); opacity: 0.4; }
+.t24d-pebble.placed { opacity: 0.6; cursor: default; }
+.t24d-pebble.placed .sh { opacity: 0; }
+/* the page's words, in ink on the right page (no italics: art direction §3.6) */
+.t24d-text { position: absolute; z-index: 2; margin: 0; font: 400 15px/1.5 var(--serif); color: var(--stone-text); cursor: pointer; }
+.t24d-flip { position: absolute; z-index: 3; width: 60px; height: 60px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+.t24d-flip:disabled { visibility: hidden; }
+.t24d-stele { position: absolute; z-index: 2; text-align: center; pointer-events: none; }
+.t24d-stele p { margin: 0; color: var(--stone-text); text-shadow: 0 1px 0 color-mix(in srgb, #fff 40%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent); }
+.t24d-ans-l { font: 400 12.5px/1.3 var(--serif); opacity: 0.9; }
+.t24d-ans { margin-top: 6px !important; font: 500 clamp(15px, 1.6vw, 22px)/1.25 var(--serif); }
+.t24d-data { position: absolute; z-index: 3; transition: opacity 1s; font: 400 13px/1.5 var(--sans); color: var(--ink-2); text-shadow: 0 0 8px var(--paper); }
 .t24d-data p { margin: 0; }
 .t24d-data[data-off] { opacity: 0; visibility: hidden; }
 /* phase 3 copy (audit v3): decoding lines said once where the object is, the real story on screen, the stele's puzzle */
 .t24f-decode { display: block; margin-top: 6px; font: 400 13px/1.45 var(--sans); color: var(--ink-2); }
-.scene-insight .t24f-before { margin: 0 0 6px; font-size: 0.82em; opacity: 0.75; }
-.t24t-decode, .t24t-real { position: absolute; left: 14px; margin: 0; max-width: min(340px, 44%); font: 400 13px/1.45 var(--sans); color: var(--ink-2); text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); z-index: 4; pointer-events: none; }
-.t24t-decode { top: 10px; }
-.t24t-real { top: 34px; color: var(--ink); transition: opacity 1s 0.6s; }
+.scene-insight .t24f-before { margin: 0 0 6px; font-size: 0.82em; opacity: 0.92; }
+.t24t-notes { position: absolute; left: 14px; top: 10px; z-index: 4; display: grid; gap: 6px; max-width: min(250px, 20%); pointer-events: none; }
+.t24.narrow .t24t-notes { left: auto; right: 12px; max-width: 44%; text-align: right; }
+.t24t-decode, .t24t-real { margin: 0; font: 400 13px/1.45 var(--sans); color: var(--ink-2); text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); }
+.t24t-real { color: var(--ink); transition: opacity 1s 0.6s; }
 .t24t-real p { margin: 0; }
 .t24t-real[data-off] { opacity: 0; visibility: hidden; }
-.t24c-ema.task small, .t24c-plaque small { display: block; margin-top: 5px; font: 400 12px/1.35 var(--sans); color: var(--stone-text); opacity: 0.85; white-space: normal; }
-.t24c-plaque small { width: max-content; max-width: 200px; }
-.t24i-top { position: absolute; left: 14px; top: 8px; max-width: min(360px, 46%); z-index: 3; pointer-events: none; }
+.t24i-top { position: absolute; left: 14px; top: 8px; max-width: min(360px, 46%); z-index: 3; pointer-events: none; transition: opacity 0.8s; }
+.t24i.done:not(.narrow) .t24i-top { opacity: 0; }
+.t24i-pnote-box { position: absolute; z-index: 3; }
+.t24i-top .t24i-pnote-box { position: static; margin-top: 4px; }
+.t24i-end { position: absolute; z-index: 3; white-space: nowrap; font: 400 13px/1.2 var(--serif); color: var(--ink-2); text-shadow: 0 0 8px var(--paper), 0 0 3px var(--paper); pointer-events: none; }
 .t24i-top p { margin: 0; text-shadow: 0 0 8px var(--paper), 0 0 2px var(--paper); }
 .t24i-bridge { font: 400 15px/1.4 var(--serif); color: var(--ink); }
 .t24i-decode { margin-top: 4px !important; font: 400 13px/1.45 var(--sans); color: var(--ink-2); }
-.t24i-puzzle { position: absolute; z-index: 2; pointer-events: none; color: var(--stone-text); font-family: var(--serif); }
+.t24i-puzzle { position: absolute; z-index: 2; pointer-events: none; color: var(--stone-text); font-family: var(--serif); text-shadow: 0 1px 0 color-mix(in srgb, #fff 40%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 35%, transparent); }
 .t24i-puzzle p { margin: 0; }
-.t24i-pq { font-size: 0.86em; line-height: 1.4; opacity: calc(0.35 + var(--t, 0) * 0.65); transition: opacity 1.2s; }
+.t24i-pq { font-size: 0.92em; line-height: 1.38; opacity: calc(0.45 + var(--t, 0) * 0.55); transition: opacity 1.2s; }
 .t24i-pa { margin-top: 0.5em !important; font-size: 1.5em; line-height: 1.1; }
 .t24i-pa s { text-decoration: none; }
 .t24i[data-v='2'] .t24i-pa s { text-decoration: line-through; opacity: 0.6; }
@@ -1219,3 +1100,11 @@
 .t24i-pa b { display: none; font-weight: 500; color: var(--vermilion); }
 .t24i:is([data-v='3'], [data-v='4']) .t24i-pa b { display: inline; }
 .t24i-pnote { margin-top: 4px !important; font: 400 12px/1.4 var(--sans); color: var(--ink-3); }
+/* a phone keeps both tags short (the full sentences are in their labels): opened, they would hang over the slip */
+.t24.narrow .t24t-tag:is(:hover, :focus-visible, [aria-expanded='true']) .t24t-plate { width: 86px; text-align: center; text-wrap: balance; translate: -50% 0; }
+.t24.narrow .t24t-tag:is(:hover, :focus-visible, [aria-expanded='true']) .t24t-short { display: inline; }
+.t24.narrow .t24t-tag:is(:hover, :focus-visible, [aria-expanded='true']) .t24t-full { display: none; }
+/* the gold tag is a like button: it keeps its short praise under the pointer (the whole sentence is its label; keys still open it) */
+.t24t-tag.gold:hover:not(:focus-visible) .t24t-plate { width: 86px; text-align: center; text-wrap: balance; translate: -50% 0; }
+.t24t-tag.gold:hover:not(:focus-visible) .t24t-short { display: inline; }
+.t24t-tag.gold:hover:not(:focus-visible) .t24t-full { display: none; }

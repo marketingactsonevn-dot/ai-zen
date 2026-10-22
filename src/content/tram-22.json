@@ -139,6 +139,7 @@
           "reads": "“nó” = bài văn của Lan"
         }
       ],
+      "steps": ["Còn 2 tầng — kéo tiếp xuống", "Tầng sâu nhất — kéo xuống đáy"],
       "stagesNote": {
         "text": "Ba nấc ở đây là minh hoạ.",
         "asOf": "2026-10-15",
@@ -167,6 +168,7 @@
       "prompt": "Kéo trăng qua các năm",
       "prompt2": "Kéo ấn son dọc cuộn thư",
       "decode": "Khung cửa = lượng chữ AI đọc được trong một lần. 1 triệu token ≈ hơn 700.000 từ.",
+      "carve": ["cả câu\nmột lúc", "2.048\ntoken", "100.000\ntoken", "1 triệu\ntoken"],
       "claim": "10 triệu · Meta tự nêu",
       "sealLabel": "điều quan trọng",
       "sealAria": "Ấn son “điều quan trọng”: kéo dọc cuộn thư từ đầu tới cuối (phím ← →)",

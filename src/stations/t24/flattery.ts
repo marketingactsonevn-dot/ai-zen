@@ -1,9 +1,10 @@
 import { h, s } from '../../core/dom'
 import type { SceneCtx } from '../types'
 import { C } from './data'
-import { alive, f1, put, rig, stage } from './kit'
+import { alive, f1, invite, nudge, put, rig, stage } from './kit'
+import { guide, type Drop, type Mark } from '../../ui/part2/guide'
 import { blob, clamp, curve, rng, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
-import { hills, mist, moon, water, wash } from '../../ui/part2/paint'
+import { hills, mist, moon, pine, water, wash } from '../../ui/part2/paint'
 import { grad, needlePad, spline, taper } from './brush'
 
 const K = C.scenes.flattery
@@ -22,9 +23,9 @@ const LIMBS: Limb[] = [
 // the flattering branch, hinged at the trunk: it reaches out of the picture toward the viewer, so it thickens and its pads
 // grow toward the tip (painted foreshortening); the last pad runs off the frame. Points: tree units, the tip past the edge.
 const JOINT: Pt = [0.07, 0.42]
-const FLAT: Pt[] = [JOINT, [0.3, 0.5], [0.66, 0.47], [1.06, 0.53], [1.55, 0.585], [2.3, 0.6]]
-// pads on short twigs above the limb: x, y, w, h, needle growth (tree units)
-const FPADS: [number, number, number, number, number][] = [[0.42, 0.55, 0.26, 0.12, 1], [0.9, 0.58, 0.44, 0.17, 1.08], [1.42, 0.665, 0.66, 0.24, 1.16], [2.12, 0.72, 0.98, 0.32, 1.25]]
+const FLAT: Pt[] = [JOINT, [0.24, 0.4], [0.44, 0.31], [0.66, 0.29], [0.86, 0.17], [1.08, 0.12], [1.3, -0.01], [1.56, -0.04], [1.86, -0.18]]
+// pads on short twigs above the limb: x, y, w, h, needle growth (tree units); they grow toward the tip (it comes at us)
+const FPADS: [number, number, number, number, number][] = [[0.42, 0.4, 0.24, 0.11, 1], [0.84, 0.27, 0.36, 0.14, 1.06], [1.28, 0.11, 0.5, 0.19, 1.12], [1.74, -0.04, 0.62, 0.24, 1.2]]
 
 /** Pruning shears lying on the ledge (viewBox 0 0 120 56): lacquered vermilion loops, steel blades with a moonlit edge. */
 function shearsArt() {
@@ -49,18 +50,19 @@ function tag(cls: string, short: string, full: string, aria: string, label: stri
 
 /**
  * Scene 2 ★ — looking up from below a stone ledge at an old pine bonsai towering against the moon. One honey-glossed branch
- * reaches out of the picture toward whoever looks at it, a gold-leaf tag of praise on it; every time it catches your eye a
- * few golden fireflies (likes) settle on it. The honest branch's plain wooden tag hangs half turned away. Prune the
- * flattering branch: it falls into the dark, the tree straightens, the honest tag turns round.
+ * reaches diagonally down toward whoever looks at it, out over the lake, a gold-leaf tag of praise on it. Beat 1: tap
+ * "like" on the praise — each like is a firefly flying in from you to perch on it; the branch grows and shines, the honest
+ * tag turns further away. Beat 2: drag the shears to the dashed ring at its root: it drops into the lake, the tree
+ * straightens, the honest tag turns round (audit g08 24-2).
  */
 export function flatteryScene(ctx: SceneCtx) {
   let cut = false
-  let catches = 0
-  const still = ctx.reduced || ctx.quality === 'low'
+  let likes = 0 // the visitor's own taps on the praise (the fireflies)
+  const LIKES = 3
   const S = 3.2 // world swing (deg) at the edge of the view
 
   const host = h('div', { class: 't24t-host' })
-  const { root } = stage(ctx, 't24t', K.art, [K.insight], draw)
+  const { root } = stage(ctx, 't24t', K.art, [K.insight], draw, true)
   root.append(host)
   const R = rig(ctx, host, { strength: S, onView })
   const svg = (cls: string) => s('svg', { class: `t24-svg ${cls}`, 'aria-hidden': 'true' })
@@ -83,44 +85,54 @@ export function flatteryScene(ctx: SceneCtx) {
 
   // the flattering branch is its own 3D plane hinged at the trunk; its gloss slides as you move; likes perch on it
   const flies = h('div', { class: 't24t-flies' })
-  const goldTag = tag('gold', K.flatterShort, K.flatter, `${K.flatterLabel}: ${K.flatter}`, K.flatterLabel)
+  const goldTag = tag('gold', K.flatterShort, K.flatter, `${K.flatterLabel}: ${K.flatter}. ${K.likeAria}`, K.flatterLabel)
   const flatLabel = h('span', { class: 't24t-label flat', 'aria-hidden': 'true' }, K.flatterLabel)
   const branch = h('div', { class: 't24t-branch' }, branchSvg, glossSvg, flies, flatLabel, goldTag)
   const realTag = tag('real turned', K.honestShort, K.honest, `${K.honestLabel}: ${K.honest}`, K.honestLabel)
   const realLabel = h('span', { class: 't24t-label honest', 'aria-hidden': 'true' }, K.honestLabel)
   const treeBox = h('div', { class: 't24t-treebox' }, treeSvg, branch, realTag, realLabel)
   treeLayer.append(standSvg, treeBox)
-  // the viewer's words on a paper slip pinned under a pebble at the ledge's lip, hanging down its face; the shears
-  const pebble = s('svg', { class: 't24t-pebble', 'aria-hidden': 'true', viewBox: '-40 -30 80 34' }, stoneArt(70, 26, 2431))
-  const slip = h('div', { class: 't24t-slip t24-paper' }, h('span', { class: 't24t-fold', 'aria-hidden': 'true' }), h('p', null, K.userSays), pebble)
+  // the viewer's words on a wooden tag hung by a cord from the front of the bonsai stand, dangling over the ledge's lip; the shears
+  const slip = h('div', { class: 't24t-qtag' }, h('i', { class: 't24t-qcord', 'aria-hidden': 'true' }), h('p', null, K.userSays))
   const shears = h('button', { class: 't24t-shears', type: 'button', 'aria-label': K.pruneAria }, shearsArt())
   nearLayer.append(ledgeSvg, slip, shears)
-  for (const t of [goldTag, realTag]) t.addEventListener('click', () => t.setAttribute('aria-expanded', String(t.getAttribute('aria-expanded') !== 'true')))
-  ctx.prompt(K.prompt)
+  realTag.addEventListener('click', () => realTag.setAttribute('aria-expanded', String(realTag.getAttribute('aria-expanded') !== 'true')))
+  // beat 1: like the praise (the gold tag) a few times; beat 2: prune
+  goldTag.removeAttribute('aria-expanded') // a like button now: it does not open (hover / focus still show the whole praise)
+  goldTag.addEventListener('click', like)
+  ctx.prompt(K.prompt1)
+  const g = guide(ctx)
+  let dot: Mark | null = g.dot(goldTag.querySelector('.t24t-plate') as HTMLElement, { dir: [0, 1] })
+  let ring: Drop | null = null
   // what the fireflies stand for, once, beside the visitor's own words; after the cut, what really happened
   const decode = h('p', { class: 't24t-decode' }, K.decode)
   const real = h('div', { class: 't24t-real', 'data-off': '' }, ctx.fact(K.detail, 'p'))
-  root.append(decode, real)
+  const splash = h('div', { class: 't24t-splash', 'aria-hidden': 'true' }, h('i'), h('i'), h('i'))
+  root.append(splash, h('div', { class: 't24t-notes' }, decode, real))
   const poke = alive(ctx, root)
 
   // geometry shared by draw / onView / prune
-  const G = { W: 0, H: 0, u: 0, tx: 0, soil: 0, ly: 0, hz: 0, jx: 0, jy: 0, xe: 0, xs: 1, bs: 1, wide: true }
+  const G = { W: 0, H: 0, u: 0, tx: 0, soil: 0, ly: 0, hz: 0, jx: 0, jy: 0, xe: 0, xs: 1, bs: 1, bys: 1, pw: 1, wide: true }
   const X = (x: number) => G.tx + x * G.u * G.xs // a narrow screen gets a more upright tree
   const BX = (x: number) => G.jx + (x - JOINT[0]) * G.u * G.bs // along the flattering branch
   const Y = (y: number) => G.soil - y * G.u
+  const BY = (y: number) => G.jy - (y - JOINT[1]) * G.u * G.bys // a phone's branch drops more steeply
 
   function* draw(W: number, H: number) {
     const wide = W / H >= 1.05
-    const hz = H * (wide ? 0.78 : 0.74) // eye level: the far shore, low in the frame (we stand low and look up)
-    const ly = H * (wide ? 0.67 : 0.66) // the ledge's lip, above eye level: we see under it, not onto it
-    const u = wide ? Math.min(H * 0.6, W * 0.3) : Math.min(H * 0.56, W * 0.86)
-    const tx = W * (wide ? 0.33 : 0.37)
+    const hz = H * (wide ? 0.78 : 0.68) // eye level: the far shore, low in the frame (we stand low and look up)
+    const ly = H * (wide ? 0.67 : 0.57) // the ledge's lip, above eye level: we see under it, not onto it
+    // a phone: a smaller tree to the left, the lake below for the flattering branch to reach down into
+    const u = wide ? Math.min(H * 0.6, W * 0.3) : Math.min(H * 0.44, W * 0.7)
+    const tx = W * (wide ? 0.33 : 0.33)
     const standH = u * 0.11, potH = u * 0.09
     const soil = ly - standH - potH * 0.55 // the trunk rises from behind the pot's rim
-    Object.assign(G, { W, H, u, tx, soil, ly, hz, wide, xs: wide ? 1 : 0.78, xe: wide ? W * 0.62 : W * 0.78 })
+    Object.assign(G, { W, H, u, tx, soil, ly, hz, wide, xs: wide ? 1 : 0.78, xe: wide ? W * 0.62 : W * 0.6 })
     G.jx = X(JOINT[0])
     G.jy = Y(JOINT[1])
-    G.bs = wide ? 1 : (W - 26 - G.jx) / ((FPADS[2][0] - JOINT[0]) * u) // the third pad just inside the right edge
+    G.bs = wide ? 1 : (W - 14 - G.jx) / ((FPADS[3][0] + FPADS[3][2] * 0.3 - JOINT[0]) * u) // the last pad just inside the right edge
+    G.bys = wide ? 1 : 1.3
+    G.pw = wide ? 1 : 0.72
     for (const el of [skySvg, farSvg, mistSvg, standSvg, treeSvg, branchSvg, glossSvg, ledgeSvg, edgeSvg]) el.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
     R.layout(W, H, hz)
 
@@ -139,7 +151,10 @@ export function flatteryScene(ctx: SceneCtx) {
       mist(W * 0.72, hz - H * 0.015, W * 0.5, H * 0.04),
       s('rect', { class: 't24t-lake', x: f1(-W * 0.2), y: f1(hz), width: f1(W * 1.4), height: f1(H - hz + H * 0.3), fill: 'url(#p2-water-v)' }),
       water(-W * 0.2, hz, W * 1.2, H * 1.1, 2428, W * 0.86, false),
-      mist(W * 0.7, hz + 3, W * 0.6, H * 0.03))
+      mist(W * 0.7, hz + 3, W * 0.6, H * 0.03),
+      // on the far shore at the right, a few pines half lost in the mist (the quiet the cut branch leaves)
+      ...(wide ? [pine(W * 0.78, hz + 2, H * 0.11, 2429, -1), pine(W * 0.86, hz + 3, H * 0.075, 2430, 1), pine(W * 0.71, hz + 3, H * 0.06, 2431, 1)] : []),
+      mist(W * 0.8, hz - H * 0.01, W * 0.3, H * 0.03))
     yield
     // 2 · the drifting band of mist between the ranges and the tree
     mistSvg.replaceChildren(
@@ -159,14 +174,17 @@ export function flatteryScene(ctx: SceneCtx) {
     yield
     drawEdge(W, H)
     // DOM pieces in the scene: the honest tag under the low left pad, its label beside it
-    const [ax, ay] = wide ? [X(-0.4), Y(0.4) + u * 0.07] : [X(-0.24), Y(0.755) + u * 0.06]
-    put(realTag, ax, ay)
+    const [ax, ay] = wide ? [X(-0.4), Y(0.4) + u * 0.07] : [X(-0.36), Y(0.4) + u * 0.06]
+    put(realTag, Math.max(ax, 52), ay)
     realTag.style.setProperty('--cl', `${f1(u * 0.05)}px`)
     put(realLabel, ax - 10, ay - 6)
-    realTag.style.setProperty('--ox', `${f1(clamp(ax, 104, W - 104) - ax)}px`) // opened, the plate is wider: keep it in the frame
-    // the slip hangs over the lip, left of the stand's legs; the shears lie on the lip to the right of the stand
-    const sw = wide ? clamp(W * 0.22, 250, 320) : Math.min(W - 40, 230)
-    put(slip, wide ? W * 0.05 : 14, ly - 4, sw)
+    realTag.style.setProperty('--ox', `${f1(clamp(ax, 120, W - 120) - ax)}px`) // opened, the plate is wider: keep it in the frame
+    // the question's tag hangs from the stand's slab (its front edge is at the lip) down over the edge; the shears lie on the lip right of the stand
+    const sw = wide ? clamp(W * 0.18, 230, 270) : Math.min(W * 0.5, 184)
+    const qa: Pt = [tx - u * (wide ? 0.25 : 0.22), ly - u * 0.11 * 0.76], qx = Math.max(qa[0], sw / 2 + 8), qy = qa[1] + (wide ? 22 : 18)
+    put(slip, qx, qy, sw)
+    slip.style.setProperty('--cl', `${f1(Math.hypot(qa[0] - qx, qa[1] - qy))}px`)
+    slip.style.setProperty('--ca', `${Math.atan2(qa[0] - qx, qy - qa[1]).toFixed(3)}rad`)
     const shW = wide ? clamp(u * 0.32, 100, 130) : 90
     shears.style.width = `${f1(shW)}px`
     put(shears, wide ? tx + u * 0.42 : Math.min(G.xe - shW * 0.4, W - shW - 8), ly - shW * 0.34)
@@ -204,8 +222,8 @@ export function flatteryScene(ctx: SceneCtx) {
   /** One pad of needles as seen from below, against the moon (honey: the flattering branch's lacquer). */
   function padArt([x, y, w, hh]: Pad, seed: number, honey: boolean, grow = 1): SVGElement[] {
     const { u } = G
-    const cx = honey ? BX(x) : X(x), cy = Y(y), pw = w * u * (honey ? Math.max(0.7, G.bs) : G.xs), ph = hh * u * (honey ? 1 : 1.75)
-    const p = needlePad(cx, cy, pw, ph, seed, grow * (honey ? 0.78 : 1.15), honey ? 0.62 : 1)
+    const cx = honey ? BX(x) : X(x), cy = honey ? BY(y) : Y(y), pw = w * u * (honey ? G.pw : G.xs), ph = hh * u * (honey ? 1.05 * Math.min(1, G.pw * 1.3) : 1.75)
+    const p = needlePad(cx, cy, pw, ph, seed, grow * 1.1, 1)
     const c = honey ? 't24t-h' : 't24t-'
     return [
       s('path', { class: `${c}belly`, d: p.belly, filter: 'url(#ink-wash)' }),
@@ -267,7 +285,7 @@ export function flatteryScene(ctx: SceneCtx) {
   /** The honey branch: thickening as it comes toward us, honey needles, drips; the gloss in its own layer; the gold tag. */
   function drawBranch() {
     const { u, W } = G
-    const pt = (p: Pt): Pt => [BX(p[0]), Y(p[1])]
+    const pt = (p: Pt): Pt => [BX(p[0]), BY(p[1])]
     const c = spline(FLAT.map(pt), 10)
     const t = taper(c, u * 0.038, u * 0.085, 0, 2470) // reversed taper: the far end (at the trunk) is the thin one
     // short twigs from the limb up into each pad
@@ -276,14 +294,14 @@ export function flatteryScene(ctx: SceneCtx) {
       const k = Math.round((0.25 + j * 0.2) * (c.length - 1))
       for (const dx of [-0.25, 0.2]) {
         const b = c[Math.min(c.length - 1, Math.max(0, k + Math.round(dx * 8)))]
-        twigs += taper(curve(b, [(b[0] + BX(x + dx * w)) / 2, b[1] - u * 0.02], [BX(x + dx * w * 0.8), Y(y - 0.02)], 6), u * (0.018 + j * 0.006), u * 0.006, 0, 2476 + j).d
+        twigs += taper(curve(b, [(b[0] + BX(x + dx * w)) / 2, b[1] - u * 0.02], [BX(x + dx * w * 0.8), BY(y - 0.02)], 6), u * (0.018 + j * 0.006), u * 0.006, 0, 2476 + j).d
       }
     })
     const pads = FPADS.flatMap(([x, y, w, hh, g], j) => padArt([x, y, w, hh], 2480 + j, true, g))
     const r = rng(2475)
     let gloss = '', drips = ''
     FPADS.forEach(([x, y, w, hh]) => {
-      const cx = BX(x), cy = Y(y), pw = w * u * Math.max(0.7, G.bs), ph = hh * u
+      const cx = BX(x), cy = BY(y), pw = w * u * G.pw, ph = hh * u
       for (let k = 0; k < 4; k++) {
         const gx = cx - pw * 0.35 + k * pw * 0.2 + (r() - 0.5) * pw * 0.05, gy = cy - ph * (0.18 + Math.sin(Math.PI * (0.15 + k * 0.2)) * 0.2)
         gloss += stroke(curve([gx - ph * 0.2, gy + ph * 0.04], [gx, gy - ph * 0.04], [gx + ph * 0.26, gy - ph * 0.01], 6), Math.max(1.2, ph * 0.03), 0.35, 0.35, 0.1)
@@ -298,15 +316,16 @@ export function flatteryScene(ctx: SceneCtx) {
     glossSvg.replaceChildren(s('path', { class: 't24t-gloss', d: gloss }))
     branch.style.transformOrigin = `${f1(G.jx)}px ${f1(G.jy)}px`
     // the gold tag hangs from the branch under the second pad; the label sits under the branch near the joint
-    const [gx, gy] = pt([G.wide ? 0.98 : 1.0, 0.51])
+    const [gx, gy] = pt(G.wide ? [0.86, 0.17] : [1.3, 0.0]) // a desk: high enough that the opened tag stays above the ledge's lip
     put(goldTag, Math.min(gx, W - 50), gy)
-    goldTag.style.setProperty('--ox', `${f1(clamp(Math.min(gx, W - 50), 104, W - 104) - Math.min(gx, W - 50))}px`)
-    goldTag.style.setProperty('--cl', `${f1(u * 0.06)}px`)
-    put(flatLabel, X(0.22), Y(0.375))
-    // the likes already perched (all of them at low / reduced: there is no viewer to catch)
+    goldTag.style.setProperty('--ox', `${f1(clamp(Math.min(gx, W - 50), 120, W - 120) - Math.min(gx, W - 50))}px`)
+    goldTag.style.setProperty('--cl', `${f1(u * 0.05)}px`)
+    put(flatLabel, BX(0.5), BY(0.2))
+    // where the cut branch meets the lake
+    Object.assign(splash.style, { left: `${f1(G.wide ? W * 0.76 : W * 0.7)}px`, top: `${f1(G.wide ? G.H * 0.88 : G.H * 0.86)}px` })
+    // the likes already given perch where they landed
     flies.replaceChildren()
-    if (still) for (let i = 0; i < 9; i++) perch(i, false)
-    else for (let i = 0; i < catches * 3; i++) perch(i, false)
+    for (let i = 0; i < likes; i++) perch(i, false)
   }
 
   /**
@@ -361,7 +380,7 @@ export function flatteryScene(ctx: SceneCtx) {
       needles += stroke([[x, y], [x + Math.cos(a) * l, y + Math.sin(a) * l * 0.35]], 1, 0.1, 0.1, 0.3)
     }
     // boulders sitting on the lip, only their tops against the sky (we are below)
-    const boulders = [[0.04, 0.2, 0.07], [0.17, 0.12, 0.05], [xe / W - 0.1, 0.16, 0.06], [xe / W - 0.03, 0.09, 0.04]].map(([x, w, hh], i) =>
+    const boulders = [[0.01, 0.16, 0.06], [xe / W - 0.1, 0.16, 0.06], [xe / W - 0.03, 0.09, 0.04]].map(([x, w, hh], i) =>
       s('g', { transform: `translate(${f1(x * W)} ${f1(ly + 3)})` }, stoneArt(w * u * 1.6, hh * H, 2437 + i, 'p2-stone t24t-boulder')))
     // the stand's moon shadow: legs and pot thrown toward us down the face, leaning right (the moon is up to the left)
     const sh0 = tx - u * 0.3, sh1 = tx + u * 0.3
@@ -383,28 +402,11 @@ export function flatteryScene(ctx: SceneCtx) {
       s('path', { class: 't24t-fallen', d: needles }))
   }
 
-  /** Out of focus at the frame's corners: bamboo leaves bottom left, a pine twig rising bottom right, needles top left. */
+  /** Out of focus at the top-right corner: pine needles hanging in, near and dark (nothing near the words at the lower left). */
   function drawEdge(W: number, H: number) {
     const r = rng(2435)
     const L0 = Math.min(W, H) * (G.wide ? 0.22 : 0.2)
-    let bamboo = '', culm = '', pine = ''
-    const leaf = (x: number, y: number, a: number, L: number) => {
-      const w = L * 0.14
-      const ex = x + Math.cos(a) * L, ey = y + Math.sin(a) * L
-      const nx = -Math.sin(a) * w, ny = Math.cos(a) * w
-      bamboo += `M${f1(x)} ${f1(y)}Q${f1(x + (ex - x) * 0.35 + nx)} ${f1(y + (ey - y) * 0.35 + ny)} ${f1(ex)} ${f1(ey)}Q${f1(x + (ex - x) * 0.4 - nx * 0.7)} ${f1(y + (ey - y) * 0.4 - ny * 0.7)} ${f1(x)} ${f1(y)}Z`
-    }
-    // bamboo: a culm rising out of the bottom-left corner, twigs and long leaves
-    const b0: Pt = [-L0 * 0.25, G.H + L0 * 0.3], b1: Pt = [L0 * 0.25, G.H - L0 * 1.4]
-    culm += stroke([b0, b1], Math.max(5, L0 * 0.08), 0.05, 0.3, 0.5)
-    for (let k = 0; k < 3; k++) {
-      const t0 = 0.35 + k * 0.25
-      const bx = b0[0] + (b1[0] - b0[0]) * t0, by = b0[1] + (b1[1] - b0[1]) * t0
-      const tw: Pt = [bx + L0 * (0.25 + r() * 0.2), by - L0 * (0.1 + r() * 0.15)]
-      culm += stroke([[bx, by], tw], Math.max(1.6, L0 * 0.022), 0.05, 0.3, 0.3)
-      for (let j = 0; j < 4; j++) leaf(tw[0], tw[1], Math.PI * (-0.2 + j * 0.13 + (r() - 0.5) * 0.08 - k * 0.04), L0 * (0.8 + r() * 0.45))
-    }
-    // pine needles: a twig rising into the bottom-right corner and a few fans hanging into the top-left one
+    let pine = ''
     const fan = (ox: number, oy: number, a0: number, a1: number, n: number, len: number) => {
       for (let k = 0; k < n; k++) {
         const a = a0 + ((a1 - a0) * k) / (n - 1) + (r() - 0.5) * 0.08
@@ -412,67 +414,61 @@ export function flatteryScene(ctx: SceneCtx) {
         pine += stroke([[ox, oy], [ox + Math.cos(a) * l, oy + Math.sin(a) * l]], Math.max(1.8, len * 0.02), 0.05, 0.6, 0.2)
       }
     }
-    pine += stroke(curve([W + L0 * 0.1, G.H + L0 * 0.2], [W - L0 * 0.4, G.H - L0 * 0.3], [W - L0 * 0.9, G.H - L0 * 0.55], 8), Math.max(3, L0 * 0.045), 0.05, 0.4, 0.4)
-    for (let f = 0; f < 4; f++) fan(W - L0 * (0.2 + f * 0.22), G.H - L0 * (0.12 + f * 0.13), Math.PI * 1.05, Math.PI * 1.75, 20, L0 * 0.7)
-    for (let f = 0; f < 2; f++) fan(-L0 * 0.05 + f * L0 * 0.25, -L0 * 0.1, Math.PI * 0.15, Math.PI * 0.6, 14, L0 * 0.55)
+    pine += stroke(curve([W + L0 * 0.2, -L0 * 0.1], [W - L0 * 0.5, L0 * 0.12], [W - L0 * 1.2, L0 * 0.08], 8), Math.max(3, L0 * 0.04), 0.05, 0.5, 0.4)
+    for (let f = 0; f < 4; f++) fan(W - L0 * (0.25 + f * 0.25), L0 * (0.12 - f * 0.01), Math.PI * 0.12, Math.PI * 0.88, 18, L0 * 0.55)
     edgeSvg.replaceChildren(
-      s('defs', null, s('filter', { id: 't24t-soft', x: '-20%', y: '-20%', width: '140%', height: '140%' }, s('feGaussianBlur', { stdDeviation: ctx.quality === 'low' ? 2 : 5 }))),
-      s('g', { class: 't24t-bamboo', filter: 'url(#t24t-soft)' }, s('path', { d: culm }), s('path', { d: bamboo })),
+      s('defs', null, s('filter', { id: 't24t-soft', x: '-20%', y: '-20%', width: '140%', height: '140%' }, s('feGaussianBlur', { stdDeviation: ctx.quality === 'low' ? 2 : 4 }))),
       s('g', { class: 't24t-nearpine', filter: 'url(#t24t-soft)' }, s('path', { d: pine })))
+    void H
   }
 
-  // ── the branch follows the viewer
-  let zone = 1, zoneT = 0
+  // ── the branch follows the viewer (a little: its tip must stay in the frame)
   function onView(x: number, y: number) {
-    if (!G.W) return
-    if (cut) return
-    const yaw = -x * 16
-    const sc = 1 + catches * 0.04
-    branch.style.transform = `rotateY(${yaw.toFixed(2)}deg) rotateX(${(-y * 6).toFixed(2)}deg) rotateZ(${(y * 3 - x * 2).toFixed(2)}deg) scale(${sc.toFixed(3)})`
+    if (!G.W || cut) return
+    const yaw = -x * 9
+    const sc = 1 + likes * 0.035
+    branch.style.transform = `rotateY(${yaw.toFixed(2)}deg) rotateX(${(-y * 4).toFixed(2)}deg) rotateZ(${(y * 2 - x * 1.5).toFixed(2)}deg) scale(${sc.toFixed(3)})`
     // the gold tag turns its face to the viewer whatever the branch does; the gloss slides over the lacquer
-    goldTag.style.transform = `rotateY(${(-yaw + x * S).toFixed(2)}deg)`
+    goldTag.style.transform = `translateZ(40px) rotateY(${(-yaw + x * S).toFixed(2)}deg)`
     flatLabel.style.transform = `rotateY(${(-yaw + x * S).toFixed(2)}deg)`
-    glossSvg.style.transform = `translate(${f1(x * G.u * 0.06)}px, ${f1(y * G.u * 0.025)}px)`
-    if (still) return
-    const z = x < -0.3 ? 0 : x > 0.3 ? 2 : 1
-    if (z !== zone) {
-      zone = z
-      clearTimeout(zoneT)
-      zoneT = window.setTimeout(() => !cut && caught(z), 650)
-    }
-  }
-  ctx.onCleanup(() => clearTimeout(zoneT))
-  // the first looks count too: it catches the eye as you arrive, and again a little later
-  if (!still) {
-    zoneT = window.setTimeout(() => !cut && caught(1), 1200)
-    const t2 = window.setTimeout(() => !cut && catches < 2 && caught(2), 3200)
-    ctx.onCleanup(() => clearTimeout(t2))
+    glossSvg.style.transform = `translate(${f1(x * G.u * 0.05)}px, ${f1(y * G.u * 0.02)}px)`
   }
 
-  /** It caught the viewer's eye from this side: a few likes fly in and perch, the branch grows and shines. */
-  function caught(side: number) {
-    if (catches >= 5) return
-    catches++
-    root.style.setProperty('--shine', String(Math.min(1, 0.5 + catches * 0.1)))
-    for (let k = 0; k < 3; k++) perch((catches - 1) * 3 + k, true, side)
+  /** A like: one firefly flies in from where you are and perches; the branch grows and shines, the honest tag turns away. */
+  function like() {
+    if (cut) return
+    if (likes >= LIKES + 3) return
+    perch(likes, true)
+    likes++
+    root.style.setProperty('--shine', String(Math.min(1, 0.45 + likes * 0.12)))
+    root.style.setProperty('--wilt', String(Math.min(LIKES, likes)))
+    root.dataset.likes = String(Math.min(LIKES, likes))
     onView(R.view.x, R.view.y)
     ctx.chime('soft')
+    if (likes === LIKES) toPrune()
+  }
+  /** beat 2: the dot moves to the shears, a dashed ring marks the joint where to cut */
+  function toPrune() {
+    dot?.done()
+    dot = g.dot(shears, { dir: [-0.7, -0.7] })
+    ring = g.drop(() => [G.jx + G.u * 0.05, G.jy + G.u * 0.02] as Pt, { w: Math.max(56, G.u * 0.2), h: Math.max(56, G.u * 0.2) })
+    ctx.prompt(K.prompt)
   }
 
-  function perch(i: number, fly: boolean, side = 1) {
+  function perch(i: number, fly: boolean) {
     const r = rng(2490 + i)
     const p = FPADS[1 + (i % 3)]
-    const x = BX(p[0] + (r() - 0.5) * p[2] * 0.6), y = Y(p[1] + p[3] * (0.1 + r() * 0.5))
+    const x = BX(p[0] + (r() - 0.5) * p[2] * 0.6 * G.pw), y = BY(p[1] + p[3] * (0.3 + r() * 0.6))
     const f = h('i', { class: 't24t-fly', style: `left:${f1(Math.min(x, G.W - 12))}px;top:${f1(y)}px;--d:${(r() * 4).toFixed(2)}s` })
     flies.append(f)
     if (!fly || ctx.reduced) return
-    const fromX = side === 0 ? -G.W * 0.6 : side === 2 ? G.W * 0.3 : (r() - 0.5) * G.W * 0.3
-    const fromY = side === 1 ? G.H * 0.6 : (r() - 0.3) * G.H * 0.4
+    const fromX = G.W * 0.5 - x + (r() - 0.5) * G.W * 0.2
+    const fromY = G.H * 1.05 - y
     f.animate([
       { transform: `translate(${f1(fromX)}px, ${f1(fromY)}px) scale(.6)`, opacity: 0 },
       { transform: `translate(${f1(fromX * 0.4)}px, ${f1(fromY * 0.25 - 40)}px) scale(1.15)`, opacity: 1, offset: 0.55 },
       { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-    ], { duration: 1300 + r() * 700, delay: (i % 3) * 160, easing: 'cubic-bezier(.3,.1,.3,1)', fill: 'backwards' })
+    ], { duration: 1300 + r() * 500, easing: 'cubic-bezier(.3,.1,.3,1)', fill: 'backwards' })
   }
 
   // ── pruning: drag the shears onto the branch's joint, or press / Enter
@@ -482,6 +478,7 @@ export function flatteryScene(ctx: SceneCtx) {
     drag = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false }
     shears.setPointerCapture(e.pointerId)
     shears.classList.add('held')
+    ring?.lift(true)
     poke()
   })
   shears.addEventListener('pointermove', (e) => {
@@ -495,12 +492,16 @@ export function flatteryScene(ctx: SceneCtx) {
     const d = drag
     drag = null
     shears.classList.remove('held')
-    if (!d.moved) return // a plain press: the click handler prunes
+    ring?.lift(false)
+    if (!d.moved) return // a plain press: the click handler shivers the shears
     const r = shears.getBoundingClientRect(), a = ctx.art.getBoundingClientRect()
     const cx = r.left + r.width * 0.2 - a.left, cy = r.top + r.height * 0.45 - a.top
     // near the joint, or anywhere along the first stretch of the branch
-    const near = Math.hypot(cx - G.jx, cy - G.jy) < G.u * 0.25 || (cx > G.jx - 20 && cx < BX(0.7) && Math.abs(cy - Y(0.48)) < G.u * 0.16)
-    if (near) prune()
+    // near the joint, or anywhere along the first stretch of the branch (joint → the first pad)
+    const ex = BX(0.64), ey = BY(0.26), lx = ex - G.jx, ly = ey - G.jy, l2 = lx * lx + ly * ly
+    const k = clamp(((cx - G.jx) * lx + (cy - G.jy) * ly) / l2, 0, 1)
+    const near = Math.hypot(cx - G.jx - lx * k, cy - G.jy - ly * k) < G.u * 0.16
+    if (near) ring?.hit(), prune()
     else shears.animate([{ translate: shears.style.translate }, { translate: '0px 0px' }], { duration: ctx.reduced ? 0 : 420, easing: 'cubic-bezier(.3,1.4,.5,1)' })
     if (!near) shears.style.translate = ''
     suppress = true
@@ -508,15 +509,30 @@ export function flatteryScene(ctx: SceneCtx) {
   let suppress = false
   shears.addEventListener('pointerup', drop)
   shears.addEventListener('pointercancel', drop)
-  shears.addEventListener('click', () => {
+  shears.addEventListener('click', (e) => {
     if (suppress) return void (suppress = false)
-    prune()
+    // Enter / Space prune at once; a tap only shivers the blades and says where to take them
+    if (e.detail === 0) return prune()
+    if (!ctx.reduced) shears.animate([{ rotate: '-8deg' }, { rotate: '-15deg' }, { rotate: '-3deg' }, { rotate: '-8deg' }], { duration: 420, easing: 'ease-out' })
+    g.wrong(K.prompt, shears)
+  })
+  // idle: beat 1 the gold tag sways toward you; beat 2 the shears open and close and edge toward the joint
+  invite(ctx, () => {
+    if (cut) return
+    if (likes < LIKES) return nudge(ctx, goldTag.querySelector('.t24t-plate')!, 0, 9)
+    const r = shears.getBoundingClientRect(), a = ctx.art.getBoundingClientRect()
+    const dx = G.jx - (r.left - a.left + r.width * 0.2), dy = G.jy - (r.top - a.top + r.height * 0.45), l = Math.hypot(dx, dy) || 1
+    nudge(ctx, shears, (dx / l) * 11, (dy / l) * 11)
+    // and the blades snip once
+    if (!ctx.reduced) shears.animate([{ rotate: '-8deg' }, { rotate: '-16deg', offset: 0.3 }, { rotate: '-8deg', offset: 0.6 }], { duration: 900, easing: 'ease-in-out' })
   })
 
   function prune() {
     if (cut) return
     cut = true
-    clearTimeout(zoneT)
+    dot?.done()
+    dot = null
+    ring?.done()
     root.classList.add('cut')
     shears.setAttribute('aria-disabled', 'true')
     goldTag.disabled = true
@@ -529,9 +545,11 @@ export function flatteryScene(ctx: SceneCtx) {
       const from = branch.style.transform || 'none'
       branch.animate([
         { transform: from, opacity: 1 },
-        { transform: `${from} translateY(${f1(G.H * 0.06)}px) rotateZ(10deg)`, opacity: 1, offset: 0.25 },
-        { transform: `${from} translateY(${f1(G.H * 0.7)}px) rotateZ(38deg)`, opacity: 0 },
-      ], { duration: 2200, easing: 'cubic-bezier(.45,0,.8,.5)', fill: 'forwards' })
+        { transform: `${from} translateY(${f1(G.H * 0.04)}px) rotateZ(6deg)`, opacity: 1, offset: 0.25 },
+        { transform: `${from} translate(${f1(G.W * 0.04)}px, ${f1(G.H * 0.32)}px) rotateZ(16deg)`, opacity: 0 },
+      ], { duration: 1900, easing: 'cubic-bezier(.45,0,.8,.5)', fill: 'forwards' })
+      // where it meets the water: rings spread on the lake (then the insight sits there, on still water)
+      splash.animate([{ opacity: 0, transform: 'scale(.3)' }, { opacity: 1, transform: 'scale(.6)', offset: 0.2 }, { opacity: 0, transform: 'scale(1.6)' }], { duration: 2600, delay: 1500, easing: 'ease-out' })
       flies.querySelectorAll<HTMLElement>('.t24t-fly').forEach((f, i) => {
         const a = (i / 7) * Math.PI * 2
         f.animate([{ transform: 'translate(0,0)', opacity: 1 }, { transform: `translate(${f1(Math.cos(a) * 160)}px, ${f1(Math.sin(a) * 90 - 120)}px)`, opacity: 0 }], { duration: 1400, delay: i * 40, easing: 'ease-out', fill: 'forwards' })

@@ -20,9 +20,11 @@ export function put(el: HTMLElement | SVGElement, x: number, y: number, w?: numb
  * Scene root at the art's stable height (no jump when the insight grows the foot). draw(W, H) runs on every resize; if it
  * returns a generator, the first draw soaks in with sliced() and later ones run in one go (README A.10).
  */
-export function stage(ctx: SceneCtx, cls: string, art: string, copies: (Fact | string | undefined)[], draw: (W: number, H: number) => void | Generator) {
+export function stage(ctx: SceneCtx, cls: string, art: string, copies: (Fact | string | undefined)[], draw: (W: number, H: number) => void | Generator, zoned = false) {
   p2Defs()
   const stableH = stableHeight(ctx, copies)
+  // a scene with a text zone (index.ts `text:`) has its insight inside the picture on wide screens: no room kept in the foot
+  const wideMq = zoned ? matchMedia(ZONES) : null
   const root = h('div', { class: `t24 ${cls}` }, h('p', { class: 'visually-hidden' }, art))
   ctx.art.append(root)
   const box = { W: 0, H: 0 }
@@ -30,7 +32,7 @@ export function stage(ctx: SceneCtx, cls: string, art: string, copies: (Fact | s
   let first = true
   const layout = () => {
     const W = ctx.art.clientWidth
-    const H = stableH(ctx.art.clientHeight)
+    const H = wideMq?.matches ? ctx.art.clientHeight : stableH(ctx.art.clientHeight)
     if (W < 40 || H < 40) return
     box.W = W
     box.H = H
@@ -44,6 +46,25 @@ export function stage(ctx: SceneCtx, cls: string, art: string, copies: (Fact | s
   ctx.onCleanup(onSize(ctx.art, layout))
   ctx.onCleanup(() => job?.cancel())
   return { root, box }
+}
+
+/** the frame's text-zone breakpoint (station.ts ZONES_MQ) */
+const ZONES = '(min-width: 721px)'
+
+/**
+ * H7 (audit g08 §1): after 6 s without input the frame fires `p2:idle`; the thing waiting for the visitor then invites by
+ * itself (nudges 8–12 px the way to drag, a footprint lights up…). fn runs once per idle spell.
+ */
+export function invite(ctx: SceneCtx, fn: () => void) {
+  const on = () => fn()
+  ctx.el.addEventListener('p2:idle', on)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', on))
+}
+
+/** a nudge of el by (dx, dy) px and back, added on top of whatever places it (no-op under reduced motion) */
+export function nudge(ctx: SceneCtx, el: Element, dx: number, dy: number) {
+  if (ctx.reduced) return
+  el.animate([{ translate: '0 0' }, { translate: `${f1(dx)}px ${f1(dy)}px`, offset: 0.4 }, { translate: '0 0' }], { duration: 1100, easing: 'cubic-bezier(.4,0,.2,1)', iterations: 2, composite: 'add' })
 }
 
 /**

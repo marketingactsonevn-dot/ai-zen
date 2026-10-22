@@ -10,9 +10,9 @@ const S = C.scenes
 const station: StationModule = {
   content: C,
   scenes: [
-    { label: S.lantern.label, mount: lanternScene },
+    { label: S.lantern.label, text: 'tl', mount: lanternScene },
     { label: S.heads.label, mount: headsScene },
-    { label: S.layers.label, mount: layersScene },
+    { label: S.layers.label, text: 'tl', mount: layersScene },
     windowScene,
   ],
 }

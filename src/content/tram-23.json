@@ -18,6 +18,9 @@
       "label": "Viên đá khái niệm",
       "art": "Nhìn gần như thẳng xuống một hồ tròn có vành đá rêu dày ôm quanh, như tranh cá koi. Dưới làn nước trong, một phiến đá dưới đáy khắc nổi hình cây cầu treo. Một chiếc đèn lồng treo trên sào tre ngay phía trên; kéo đèn xuống gần mặt nước thì quầng sáng thu lại trên phiến đá, nét khắc ánh son, đàn cá rời chỗ bơi tự do để bám rồi bơi thành đoàn theo dây cáp, và mặt nước hiện bóng hai trụ cầu son dù phía trên hồ không có gì.",
       "prompt": "Kéo đèn xuống gần mặt nước",
+      "prompt2": "Kéo thêm, tới khấc cuối",
+      "levels": ["nhẹ", "mạnh", "rất mạnh"],
+      "fish": "Cá = các ý đang bơi trong đầu AI",
       "slider": "Núm vặn: độ mạnh của khái niệm “Cầu Cổng Vàng”",
       "stone": "Phiến đá = một khái niệm nằm sẵn bên trong AI",
       "sliderAria": "Kéo để vặn mạnh khái niệm “Cầu Cổng Vàng” bên trong mô hình (phím ← →)",
@@ -54,6 +57,7 @@
       "label": "Một cuống, nhiều cánh",
       "art": "Máy quay sát mặt hồ đêm; trăng ở ngoài khung, chỉ thấy đường trăng chạy về phía mình. Giữa đường trăng là một búp sen trắng lớn: năm cánh khép thành một nụ trên một cuống, cuống lặn xuống nước, trên đó ghi “một nơ-ron”. Búng mặt nước thì gợn sóng lan ra, cánh sen rung rồi khép lại; đủ sức thì nụ bung, năm cánh trôi thành năm bông nhỏ ở các độ xa khác nhau, mỗi bông mang một nét mực và nghĩa của nó: chuỗi ADN, chữ Do Thái, văn bản luật, yêu cầu web, thông tin dinh dưỡng. Dưới nước, sợi bạc vẫn nối cả năm về một cuống.",
       "prompt": "Búng mặt nước vài lần để tách búp sen",
+      "prompt2": "Búng thêm — búp sắp bung",
       "shakeAria": "Lắc mặt nước để tách các nghĩa đang chồng lên nhau (hoặc nhấn phím cách)",
       "neuron": "một nơ-ron — một điểm nhỏ trong AI, sáng lên khi gặp thứ nó nhận ra",
       "decode": "Búng = cách nhà nghiên cứu tách các nghĩa ra",
@@ -167,6 +171,8 @@
       "prompt": "Xoay khay hoặc chạm từng hòn đá để nghe",
       "question": "Soi bên trong AI có kịp trước khi AI mạnh hơn không?",
       "decode": "Soi bên trong = đọc xem AI đang dùng khái niệm nào khi trả lời",
+      "left1": "Còn 1 hòn đá",
+      "leftN": "Còn {n} hòn đá",
       "perspectives": {
         "stones": [
           {

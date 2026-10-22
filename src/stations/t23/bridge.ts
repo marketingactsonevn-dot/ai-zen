@@ -1,4 +1,5 @@
 import { fill, h } from '../../core/dom'
+import { guide, type Mark } from '../../ui/part2/guide'
 import type { SceneCtx } from '../types'
 import { rng } from '../../ui/part2/ink'
 import { C } from './data'
@@ -63,12 +64,14 @@ export function bridgeScene(ctx: SceneCtx) {
 
   // ── persistent pieces (repositioned on layout, never rebuilt)
   const floorArt = h('div', { class: 't23b-fa' })
+  // the bridge carved in the slab: unseen in the dark at the lowest level, it shows as the lantern comes down
+  const carved = h('div', { class: 't23b-fa t23b-relief' })
   const pool = h('div', { class: 't23b-pool' })
   const caus = h('div', { class: 't23b-caus' }, h('i', { class: 'c1' }), h('i', { class: 'c2' }))
   const glow = h('div', { class: 't23b-glow' })
   const shadows = h('div', { class: 't23b-shadows' })
   const dim = h('div', { class: 't23b-dim' })
-  Lfloor.append(floorArt, pool, caus, glow, dim, shadows)
+  Lfloor.append(floorArt, carved, pool, caus, glow, dim, shadows)
   const mirArt = h('div', { class: 't23b-ma' })
   const towers = h('div', { class: 't23b-towers' })
   const lampRefl = h('div', { class: 't23b-lrefl' })
@@ -76,18 +79,21 @@ export function bridgeScene(ctx: SceneCtx) {
   Lmir.append(mirArt, stRefl, towers, lampRefl)
   const surfArt = h('div', { class: 't23b-sa' })
   const ring = h('div', { class: 't23b-ring' })
-  // the question on a small washi slip afloat near the bank; the answer is ink spreading on the open water beside it
-  const qPaper = h('div', { class: 't23b-q t23-paper' }, h('p', null, K.question))
-  const ans = h('p', { class: 't23b-ans' }, K.answers[0])
-  Lsurf.append(surfArt, ring, ans, qPaper)
+  // the words in one column on the open water, lower right: the question, then each answer as ink laid on the water;
+  // the older answers fade but stay, so the three can be compared
+  const qInk = h('p', { class: 't23b-qi' }, K.question)
+  const ans = K.answers.map((a) => h('p', { class: 't23b-ans' }, a))
+  ans.forEach((el, i) => i && (el.dataset.off = ''))
+  const col = h('div', { class: 't23b-col' }, qInk, ...ans)
+  Lsurf.append(surfArt, ring, col)
   const rimArt = h('div', { class: 't23b-ra' })
   Lrim.append(rimArt)
   const wisps = [h('i', { class: 't23b-wisp w1' }), h('i', { class: 't23b-wisp w2' })]
   Lmist.append(...wisps)
   const poleArt = h('div', { class: 't23b-pa' })
-  // what the lantern turns, on a wooden tag hanging from the pole (level, upright: easy to read)
-  const tag = h('div', { class: 't23b-tag', 'aria-hidden': 'true' }, h('span', null, K.slider))
-  Lpole.append(poleArt, tag)
+  // what the lantern turns, carved along the bamboo pole
+  const poleLab = h('div', { class: 't23b-carved t23-carve', 'aria-hidden': 'true' }, K.slider)
+  Lpole.append(poleArt, poleLab)
   const brArt = h('div', { class: 't23b-ba' })
   Lbr.append(brArt)
   const cord = h('i', { class: 't23b-cord' })
@@ -101,10 +107,29 @@ export function bridgeScene(ctx: SceneCtx) {
   over.append(cord, lamp)
   // what the carved stone stands for (once it shows), and, at the top level, that this really happened
   const stoneSays = h('p', { class: 't23-note t23b-stone', 'data-off': '' }, K.stone)
+  const fishSays = h('p', { class: 't23-note t23b-stone', 'data-off': '' }, K.fish)
   const real = h('div', { class: 't23b-real', 'data-off': '' }, ctx.fact(K.real, 'p', 't23-note'))
-  const note = h('div', { class: 't23b-note' }, ctx.fact(K.answersNote, 'p', 't23-note'), stoneSays, real)
+  const note = h('div', { class: 't23b-note' }, stoneSays, fishSays, real)
   R.root.append(note)
   ctx.prompt(K.prompt)
+  // H1 the vermilion dot rides on the lantern; H2 its cord is a groove with three notches (light · strong · very strong)
+  const gd = guide(ctx)
+  let lampDot: Mark | null = gd.dot(lamp, { dir: [0, 1] })
+  const lampAt = (z: number): [number, number] => {
+    if (!G) return [0, 0]
+    const q = R.proj(G.Lw[0], G.Lw[1], z)
+    return [q[0] - R.gut, q[1]]
+  }
+  const way = gd.track(() => (G ? [lampAt(G.lz[0]), lampAt(G.lz[1])] : [[0, 0], [0, 1]]), { ticks: K.levels.length, labels: K.levels })
+  // (its words stand clear of the lantern, which covers the groove where it hangs)
+  way.el.parentElement?.classList.add('t23b-g')
+  // six seconds of stillness: the lantern bobs 10 px down its cord, the way to pull
+  const bob = () => {
+    if (done || ctx.reduced) return
+    lamp.animate([{ translate: '0 0' }, { translate: '0 10px', offset: 0.4 }, { translate: '0 0' }], { duration: 900, iterations: 2, easing: 'ease-in-out', composite: 'add' })
+  }
+  ctx.el.addEventListener('p2:idle', bob)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', bob))
 
   // ── fish (sprites rebuilt with the palette; state kept)
   for (let i = 0; i < NF; i++) {
@@ -135,7 +160,7 @@ export function bridgeScene(ctx: SceneCtx) {
     const slab = { x: fc[0], y: fc[1] + fR * 0.05, w: sw, h: sw * 0.44 }
     const g: Geo = {
       wide, R: Rr, pc, sc: [0, 0], sR: 0, D, zF: -D * 0.5, zM: -D * 0.8, zRim: P * 0.012, zMist: P * 0.07, zPole: P * 0.33, zBr: P * 0.45, lr: Rr * (wide ? 0.11 : 0.12),
-      lz: [P * 0.26, P * 0.08], Lw: [fc[0] + fR * 0.02, slab.y - slab.h * 0.06], slab, cable: [], route: [], L: Rr * (wide ? 0.25 : 0.26), tipEnd: [0, 0],
+      lz: wide ? [P * 0.26, P * 0.06] : [P * 0.34, P * 0.02], Lw: [fc[0] + fR * 0.02, slab.y - slab.h * 0.06], slab, cable: [], route: [], L: Rr * (wide ? 0.25 : 0.26), tipEnd: [0, 0],
     }
     // the bridge in slab coordinates (0…w, 0…h), then in the world
     const bw = slab.w, bh = slab.h
@@ -163,7 +188,7 @@ export function bridgeScene(ctx: SceneCtx) {
     placeFish(true)
     // the pole reaches in from the bank, low over the water (from the left on a wide frame, the right on a phone),
     // so the tag hanging from it stays clear of the lantern
-    const ang = Math.atan2(wide ? -0.24 : -0.62, wide ? -1 : 1)
+    const ang = Math.atan2(wide ? -0.12 : -0.42, wide ? -1 : 1)
     g.tipEnd = [g.Lw[0] + Math.cos(ang) * Rr * 3.2, g.Lw[1] + Math.sin(ang) * Rr * 3.2]
     const fresh: [HTMLElement, Node[]][] = []
     const out = (el: HTMLElement, ...kids: Node[]) => (first ? el.replaceChildren(...kids) : fresh.push([el, kids]))
@@ -257,11 +282,15 @@ export function bridgeScene(ctx: SceneCtx) {
       const stt: [RGB, RGB, RGB, RGB] = p.dark
         ? [mix(p.stepMid, p.hi, 0.4), mix(p.mid, T.mid, 0.25), mix(p.lo, T.deep, 0.35), p.umbra]
         : [mix(p.stepHi, T.shallow, 0.3), mix(p.stepMid, T.mid, 0.45), mix(p.stepLo, T.deep, 0.45), mix(p.umbra, T.deep, 0.35)]
-      const sl = yield* stone({
-        w: slab.w, h: slab.h, seed: 2302, tone: stt, light: RAKE, slab: 0.08, sq: 4.5, wob: 0.05, bump: 0.05, height: 0.3, relief: (q, w, hh) => void relief(q, w, hh), reliefK: 0.42,
-        rim: p.moon, rimA: p.dark ? 0.45 : 0.35, inkA: 0.55, amb: 0.2, dry: 0.3, moss: 0.3, mossTone: [mix(p.mossC, T.mid, 0.2), mix(p.mossA, T.mid, 0.25), mix(p.mossB, T.deep, 0.3)], up: 'z',
-      }, s.d)
+      const so = {
+        w: slab.w, h: slab.h, seed: 2302, tone: stt, light: RAKE, slab: 0.08, sq: 4.5, wob: 0.05, bump: 0.05, height: 0.3,
+        rim: p.moon, rimA: p.dark ? 0.45 : 0.35, inkA: 0.55, amb: 0.2, dry: 0.12, moss: 0.3, mossTone: [mix(p.mossC, T.mid, 0.2), mix(p.mossA, T.mid, 0.25), mix(p.mossB, T.deep, 0.3)] as [RGB, RGB, RGB], up: 'z' as const,
+      }
+      const sl = yield* stone(so, s.d)
       gg.drawImage(sl, slab.x - slab.w / 2, slab.y - slab.h / 2, slab.w, slab.h)
+      const rel = yield* stone({ ...so, relief: (q, w, hh) => void relief(q, w, hh), reliefK: 0.42 }, s.d)
+      Object.assign(rel.style, { position: 'absolute', left: `${f1(slab.x - slab.w / 2)}px`, top: `${f1(slab.y - slab.h / 2)}px`, width: `${f1(slab.w)}px`, height: `${f1(slab.h)}px` })
+      out(carved, rel)
       // the bank on the moon's side throws its shadow into the water: a soft crescent inside the upper-right edge
       const sl0 = Math.hypot(SH[0], SH[1])
       for (const [k, rr, a] of [[0.26, 1.0, 0.1], [0.19, 0.99, 0.13], [0.12, 0.985, 0.17]] as [number, number, number][]) {
@@ -319,25 +348,28 @@ export function bridgeScene(ctx: SceneCtx) {
       hg.addColorStop(1, rgba(p.moon, 0))
       gg.fillStyle = hg
       gg.fillRect(mx - mr * 5, my - mr * 5, mr * 10, mr * 10)
-      const md = gg.createRadialGradient(mx, my, 0, mx, my, mr)
-      const moonC = p.dark ? p.moon : mix(p.card, p.moon, 0.5)
-      md.addColorStop(0, rgba(moonC, 1))
-      md.addColorStop(0.8, rgba(moonC, 0.95))
-      md.addColorStop(1, rgba(moonC, 0))
-      gg.fillStyle = md
-      gg.beginPath()
-      gg.ellipse(mx, my, mr, mr * 0.92, 0, 0, TAU)
-      gg.fill()
-      // ripples cut it into bands and scatter glints round it
-      // a ripple slides through it: a soft dark band, not a drawn line
-      const cut = gg.createLinearGradient(0, my - mr * 0.2, 0, my + mr * 0.25)
-      cut.addColorStop(0, rgba(T.tint, 0))
-      cut.addColorStop(0.5, rgba(T.tint, p.dark ? 0.45 : 0.3))
-      cut.addColorStop(1, rgba(T.tint, 0))
-      gg.fillStyle = cut
-      gg.fillRect(mx - mr * 1.2, my - mr * 0.2, mr * 2.4, mr * 0.45)
+      // the moon broken by the water: no disc, a loose oval of short bright strokes, denser in its middle, and the glints
+      // scattered round it
       const r = rng(2304)
       gg.lineCap = 'round'
+      const moonC = p.dark ? p.moon : mix(p.card, p.moon, 0.5)
+      const glow = gg.createRadialGradient(mx, my, 0, mx, my, mr * 1.3)
+      glow.addColorStop(0, rgba(moonC, p.dark ? 0.35 : 0.5))
+      glow.addColorStop(1, rgba(moonC, 0))
+      gg.fillStyle = glow
+      gg.fillRect(mx - mr * 1.4, my - mr * 1.4, mr * 2.8, mr * 2.8)
+      for (let i = 0; i < 16; i++) {
+        const v = (r() * 2 - 1) * 0.95
+        const half = mr * Math.sqrt(1 - v * v) * (0.25 + r() * 0.6)
+        const y = my + v * mr * 0.95
+        const x = mx + (r() - 0.5) * mr * 0.9
+        gg.strokeStyle = rgba(moonC, (p.dark ? 0.75 : 0.95) * (0.4 + 0.6 * (1 - Math.abs(v))) * (0.5 + r() * 0.5))
+        gg.lineWidth = Math.max(1, mr * (0.07 + r() * 0.07))
+        gg.beginPath()
+        gg.moveTo(x - half, y)
+        gg.lineTo(x + half, y + (r() - 0.5) * 1.2)
+        gg.stroke()
+      }
       for (let i = 0; i < 26; i++) {
         const a = r() * TAU, q = 1.2 + r() * r() * 3.2
         const x = mx + Math.cos(a) * mr * q * 1.3, y = my + Math.sin(a) * mr * q * 0.7
@@ -351,7 +383,7 @@ export function bridgeScene(ctx: SceneCtx) {
       }
       out(mirArt, s.c)
       // the towers: bars and the cable, inverted and broken by the ripples, drawn once; faded in by the lantern
-      const th = Rr * 0.85
+      const th = Rr * (wide ? 0.42 : 0.3)
       const t = canvas(slab.w * 1.1, th, R.dpr)
       const tg = t.g
       const red = p.red
@@ -412,7 +444,7 @@ export function bridgeScene(ctx: SceneCtx) {
       gg.arc(pc[0], pc[1], Rr * 0.985, -Math.PI * 0.95, Math.PI * 0.15)
       gg.stroke()
       const r = rng(2305)
-      gg.strokeStyle = rgba(p.dark ? p.mist : p.card, p.dark ? 0.14 : 0.42)
+      gg.strokeStyle = rgba(p.dark ? p.mist : p.card, p.dark ? 0.09 : 0.2)
       for (let i = 0; i < 8; i++) {
         const rr = Rr * (0.22 + i * 0.09)
         gg.lineWidth = 0.9
@@ -430,10 +462,12 @@ export function bridgeScene(ctx: SceneCtx) {
       const gg = s.g
       const fw = s.x1 - s.x0, fh = s.y1 - s.y0
       const r = rng(2306)
-      const mHi: RGB = p.dark ? mix(p.mossC, p.moon, 0.12) : mix(p.mossC, p.card, 0.25)
-      const mMid: RGB = p.dark ? p.mossA : mix(p.mossA, p.mossC, 0.35)
-      const mLo: RGB = p.dark ? mix(p.mossB, p.umbra, 0.35) : mix(p.mossB, p.wash, 0.18)
-      const mDeep: RGB = p.dark ? mix(p.mossB, p.umbra, 0.7) : mix(p.mossB, p.wash, 0.45)
+      // a carpet of dark grey-green moss (a third less saturated than the moss tokens: it must not shout)
+      const grey = (c: RGB): RGB => { const l = c[0] * 0.3 + c[1] * 0.55 + c[2] * 0.15; return mix(c, [l, l, l * 1.04], 0.32) }
+      const mHi: RGB = grey(p.dark ? mix(p.mossC, p.moon, 0.12) : mix(p.mossC, p.card, 0.25))
+      const mMid: RGB = grey(p.dark ? p.mossA : mix(p.mossA, p.mossC, 0.35))
+      const mLo: RGB = grey(p.dark ? mix(p.mossB, p.umbra, 0.35) : mix(p.mossB, p.wash, 0.18))
+      const mDeep: RGB = grey(p.dark ? mix(p.mossB, p.umbra, 0.7) : mix(p.mossB, p.wash, 0.45))
       const [Lx, Ly] = [MOON[0], MOON[1]]
       const vw = R.span(g.zRim, 0)
       const ground = yield* field(fw, fh, 4, (x, y, o) => {
@@ -462,7 +496,7 @@ export function bridgeScene(ctx: SceneCtx) {
       yield
       // the rim: rocks of every size, overlapping, an inner row that leans over the water and an outer row behind it
       const tone: [RGB, RGB, RGB, RGB] = p.dark ? [p.hi, p.mid, p.lo, p.umbra] : [mix(p.hi, p.mid, 0.45), mix(p.mid, p.lo, 0.35), mix(p.lo, p.umbra, 0.12), mix(p.umbra, p.lo, 0.3)]
-      const mt: [RGB, RGB, RGB] = p.dark ? [p.mossC, p.mossA, p.mossB] : [mix(p.mossC, p.paper, 0.15), p.mossA, p.mossB]
+      const mt: [RGB, RGB, RGB] = p.dark ? [grey(p.mossC), grey(p.mossA), grey(p.mossB)] : [grey(mix(p.mossC, p.paper, 0.15)), grey(p.mossA), grey(p.mossB)]
       type Rock = [number, number, number, number, number, number] // x, y, w, h, moss, seed
       const rocks: Rock[] = []
       const inView = (x: number, y: number, rr: number) => x + rr > vw[0] && x - rr < vw[2] && y + rr > vw[1] && y - rr < vw[3]
@@ -512,7 +546,7 @@ export function bridgeScene(ctx: SceneCtx) {
         // the stone sits in its moss: a cushion or two at its foot, the contact shadow toward the lower left
         if (r() < 0.75) cushion(x + (r() - 0.6) * w * 0.6, y + hh * (0.25 + r() * 0.2), w * (0.3 + r() * 0.2), hh * (0.2 + r() * 0.12))
         softEllipse(gg, x + SH[0] * hh * 0.9, y + SH[1] * hh * 0.9, w * 0.62, hh * 0.6, p.umbra, p.dark ? 0.75 : 0.4)
-        const st = yield* stone({ w, h: hh, seed, tone, rim: p.dark ? p.moon : p.wash, rimA: p.dark ? 0.55 : 0.38, moss, mossTone: mt, flat: 0.38 + (seed % 7) * 0.03, wob: 0.14 + (seed % 5) * 0.02, bump: 0.05, height: 1.1, grain: 0.06, inkA: 0.6 }, s.d)
+        const st = yield* stone({ w, h: hh, seed, tone, rim: p.dark ? p.moon : p.wash, rimA: p.dark ? 0.7 : 0.45, moss, mossTone: mt, flat: 0.38 + (seed % 7) * 0.03, wob: 0.14 + (seed % 5) * 0.02, bump: 0.035, height: 1.2, grain: 0.05, inkA: 0.6, dry: 0.08, amb: 0.08 }, s.d)
         gg.drawImage(st, x - w / 2, y - hh / 2, w, hh)
         if (Math.hypot(x - pc[0], y - pc[1]) < Rr * 1.35 && y < pc[1] + Rr * 0.2) {
           const [mx, my] = inv(g.zM, x, y + hh * 0.95)
@@ -633,34 +667,31 @@ export function bridgeScene(ctx: SceneCtx) {
       })
     }
     for (const [el, kids] of fresh) el.replaceChildren(...kids)
-    // the tag hangs from the pole where it crosses the upper part of the frame (layer px: it is scaled with the pole)
+    // what the lantern turns, carved along the pole a little way up from the lantern (layer px: scaled with the pole)
     {
       const sp = R.sc(g.zPole)
-      const t = (Rr * (wide ? 0.62 : 0.44)) / sp
+      const len = wide ? 340 : 150
+      const t = (Rr * 0.13 + len / 2 + (wide ? 30 : 2)) / sp
       const at: Pt = [g.Lw[0] + poleDir[0] * t, g.Lw[1] + poleDir[1] * t]
-      // the board keeps inside the frame; its string stays on the pole
-      const bwS = wide ? 176 : 138
-      const ax = fwd(g.zPole, at[0], at[1])[0]
-      const off = clamp(ax - bwS / 2, R.gut + 8, W - R.gut - 8 - bwS) - (ax - bwS / 2)
-      Object.assign(tag.style, { left: `${f1(at[0])}px`, top: `${f1(at[1] + pw * 0.3)}px`, fontSize: `${f1((wide ? 14 : 13) / sp)}px`, width: `${f1(bwS / sp)}px` })
-      tag.style.setProperty('--off', `${f1(off / sp)}px`)
+      let deg = (Math.atan2(poleDir[1], poleDir[0]) * 180) / Math.PI
+      if (deg > 90 || deg < -90) deg += 180 // keep the words upright
+      Object.assign(poleLab.style, { left: `${f1(at[0])}px`, top: `${f1(at[1])}px`, fontSize: `${f1((wide ? 13.5 : 11) / sp)}px`, rotate: `${f1(deg)}deg`, width: `${f1(len / sp)}px` })
     }
     // the answer is ink on the open water under the slab; the question's slip floats near the bank beside it
     const slabBot = fwd(-D, slab.x, slab.y + slab.h / 2)[1]
-    const fsA = wide ? 19 : 16
+    const fsA = wide ? 16.5 : 15
     if (wide) {
-      const ax = pc[0] - Rr * 0.14
-      Object.assign(ans.style, { left: `${f1(ax)}px`, top: `${f1(slabBot + 14)}px`, width: `${f1(Rr * 0.92)}px`, fontSize: `${f1(fsA)}px`, textAlign: 'left' })
-      Object.assign(qPaper.style, { left: `${f1(pc[0] - Rr * 0.8)}px`, top: `${f1(slabBot + 22)}px`, maxWidth: `${f1(Rr * 0.5)}px`, fontSize: '15px', rotate: '-7deg' })
-      Object.assign(note.style, { left: `${f1(R.gut)}px`, right: 'auto', top: 'auto', bottom: '2px', width: `${f1(Math.max(220, Math.min(330, pc[0] - Rr * 1.1 - R.gut)))}px` })
+      Object.assign(col.style, { left: `${f1(pc[0] - Rr * 0.1)}px`, top: `${f1(slabBot - 14)}px`, width: `${f1(Rr * 0.95)}px`, fontSize: `${f1(fsA)}px`, textAlign: 'left' })
+      // (top right: the pole and its carved words take the top left)
+      Object.assign(note.style, { left: 'auto', right: `${f1(R.gut + 4)}px`, top: '6px', bottom: 'auto', width: `${f1(Math.min(330, W * 0.24))}px`, textAlign: 'right' })
     } else {
-      Object.assign(ans.style, { left: '20px', top: `${f1(slabBot + 10)}px`, width: `${f1(W - 40)}px`, fontSize: `${f1(fsA)}px`, textAlign: 'center' })
-      Object.assign(qPaper.style, { left: `${f1(R.gut + 10)}px`, top: `${f1(slabBot + 10 + fsA * 1.45 * 2 + 8)}px`, maxWidth: `${f1(Math.min(230, W * 0.62))}px`, fontSize: '14px', rotate: '4deg' })
-      Object.assign(note.style, { left: `${f1(R.gut + 4)}px`, right: `${f1(R.gut + 4)}px`, top: 'auto', bottom: '0px', width: 'auto' })
+      Object.assign(col.style, { left: `${f1(R.gut + 12)}px`, top: `${f1(slabBot + 4)}px`, width: `${f1(W - R.gut * 2 - 24)}px`, fontSize: `${f1(fsA)}px`, textAlign: 'center' })
+      Object.assign(note.style, { left: `${f1(R.gut + 4)}px`, right: `${f1(R.gut + 4)}px`, top: '4px', bottom: 'auto', width: 'auto' })
     }
     Object.assign(ring.style, { left: `${f1(g.Lw[0] - Rr * 0.5)}px`, top: `${f1(g.Lw[1] - Rr * 0.5)}px`, width: `${f1(Rr)}px`, height: `${f1(Rr)}px` })
     wisps.forEach((w, i) => Object.assign(w.style, { left: `${f1(pc[0] - Rr * (i ? -0.1 : 0.9))}px`, top: `${f1(pc[1] + Rr * (i ? -0.55 : 0.15))}px`, width: `${f1(Rr * 1.1)}px`, height: `${f1(Rr * 0.4)}px` }))
     ready = true
+    way.el.parentElement?.style.setProperty('--lab', `${f1(-(g.lr * 1.5 + 14))}px`)
     placeFish(false)
     paint()
     R.wake()
@@ -802,6 +833,8 @@ export function bridgeScene(ctx: SceneCtx) {
     halo.style.transform = `scale(${lerp(1, 1.3, e).toFixed(3)})`
     lampRefl.style.opacity = lerp(0.3, 0.75, e).toFixed(3)
     lamp.dataset.lv = String(Math.round(lv))
+    way.set(prog)
+    carved.style.opacity = sm(0.04, 0.6, prog).toFixed(3)
   }
 
   // ── the lantern as a slider: drag it down toward the water (or tap / keys)
@@ -852,21 +885,27 @@ export function bridgeScene(ctx: SceneCtx) {
     lamp.setAttribute('aria-valuenow', String(v))
     lamp.setAttribute('aria-valuetext', fill(K.valueText, { n: v, total: N }))
     R.root.dataset.lvl = String(v)
-    ans.textContent = K.answers[v]
-    if (!ans.hasAttribute('aria-live')) ans.setAttribute('aria-live', 'polite')
+    ans.forEach((el, i) => {
+      if (i <= v) delete el.dataset.off
+      else el.dataset.off = ''
+      el.classList.toggle('old', i < v)
+    })
+    if (!col.hasAttribute('aria-live')) col.setAttribute('aria-live', 'polite')
+    ctx.prompt(v === 0 ? K.prompt : v < N ? K.prompt2 : K.prompt2)
     if (!ctx.reduced) {
-      ans.animate([{ opacity: 0, filter: low ? 'none' : 'blur(5px)', letterSpacing: '0.06em' }, { opacity: 1, filter: 'blur(0)', letterSpacing: '0em' }], { duration: 1100, easing: 'cubic-bezier(.3,.1,.2,1)' })
+      ans[v].animate([{ opacity: 0, filter: low ? 'none' : 'blur(5px)', letterSpacing: '0.06em' }, { opacity: 1, filter: 'blur(0)', letterSpacing: '0em' }], { duration: 1100, easing: 'cubic-bezier(.3,.1,.2,1)' })
       ring.classList.remove('go')
       void ring.offsetWidth // restart the ripple from the lantern's foot
       ring.classList.add('go')
     }
     if (low || ctx.reduced) placeFish(false)
     ctx.chime(v === N ? 'ok' : 'tap')
-    if (v > 0) delete stoneSays.dataset.off
+    if (v > 0) (delete stoneSays.dataset.off, delete fishSays.dataset.off)
+    if (v > 0) (lampDot?.done(), (lampDot = null))
     if (v === N) delete real.dataset.off
     if (v === N && !done) {
       done = true
-      ctx.insight(K.insight, K.detail)
+      ctx.insight(K.insight, [K.detail, K.answersNote])
     }
   }
 }
