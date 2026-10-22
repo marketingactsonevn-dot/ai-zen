@@ -104,13 +104,6 @@
         "source": "t30-glasswing",
         "claimBy": "Anthropic"
       },
-      "debateLabel": "Câu hỏi còn mở",
-      "debate": {
-        "text": "Ai chọn người được vào rào, và ai kiểm chứng điều hãng tự nói về model?",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
-      },
       "insight": {
         "text": "Đèn là model, vết nứt là lỗ hổng phần mềm. Soi giỏi quá, nên hãng chỉ trao đèn cho người vá lỗi đã thẩm định.",
         "asOf": "2026-10-15",
@@ -118,7 +111,7 @@
         "kind": "opinion"
       },
       "detail": {
-        "text": "Năm 2026, Anthropic (Mythos Preview) và Google (Fairwind) đều làm vậy.",
+        "text": "Năm 2026, Anthropic (Mythos Preview) và Google (Fairwind) đều làm vậy. Câu hỏi còn mở: ai chọn người được vào rào, và ai kiểm chứng điều hãng tự nói về model?",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"

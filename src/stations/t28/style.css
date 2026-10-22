@@ -15,7 +15,14 @@
   color: var(--ink);
   text-shadow: 0 0 6px var(--paper), 0 0 12px var(--paper), 0 0 2px var(--paper);
 }
-/* the can's name sits on its stone, under the can (the label rides the stone's foot; this drops it below) */
+/* the names are part of their targets: a tap on the words waters too */
+.p2s3-label.t28g-hit {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.p2s3-label.t28g-over {
+  font-size: 14px;
+}
 .p2s3-label.t28g-under {
   margin-top: 1.45em;
   font-size: 14px;
@@ -45,10 +52,10 @@
   max-width: 7.4em;
 }
 .t28g-stele.is-tall .t28g-num {
-  font-size: 14px;
+  font-size: 16px;
 }
 .t28g-stele.is-tall .t28g-rest {
-  font-size: 11px;
+  font-size: 12px;
 }
 :root[data-theme='dark'] .t28g-num,
 :root[data-theme='dark'] .t28g-rest {
@@ -653,7 +660,29 @@
   cursor: grabbing;
 }
 .t28s-beam-hit:focus-visible {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--vermilion) 55%, transparent);
+  box-shadow: none;
+}
+/* keyboard focus: the stone beam itself glows (no box round it) */
+.t28s:has(.t28s-beam-hit:focus-visible:not([aria-disabled='true'])) .t28s-beam-art {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--vermilion) 70%, transparent));
+}
+/* the insight's corner a little wider here: a long sentence (EN) must not climb up onto the jar */
+.t28s ~ .scene-zone {
+  width: min(36rem, 44%);
+}
+/* insight 1 on a phone: written on the grass below the seesaw (the foot keeps the step's prompt) */
+.t28s-note {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  font: 400 1.05rem/1.45 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 10px var(--paper), 0 0 3px var(--paper);
+  transition: opacity 0.5s;
+}
+.t28s-note:empty {
+  opacity: 0;
 }
 .t28s-beam-hit[aria-disabled='true'] {
   cursor: default;
@@ -771,17 +800,35 @@
   opacity: 0.8;
 }
 .t28s-mark {
-  fill: var(--wash);
-  opacity: 0.35;
+  fill: #000;
+  opacity: 0.45;
   transition: opacity 0.6s, fill 0.6s;
 }
 .t28s-mark.on {
-  fill: var(--vermilion);
-  opacity: 0.95;
+  fill: var(--lantern);
+  opacity: 1;
+}
+/* the measuring stone: granite, its moonlit left edge, the notches cut into it */
+.t28s-stele {
+  fill: var(--rock-mid);
+}
+:root[data-theme='dark'] .t28s-stele {
+  fill: var(--rock-lo);
+}
+.t28s-stele-sh {
+  fill: var(--umbra);
+  opacity: 0.3;
+}
+.t28s-stele-rim {
+  fill: var(--moon-rim);
+}
+:root[data-theme='dark'] .t28s-stele-rim {
+  fill: var(--moon);
+  opacity: 0.6;
 }
 .t28s-illus {
-  font-family: var(--serif);
-  font-style: italic;
+  font-family: var(--sans);
+  font-size: 12px;
   fill: color-mix(in srgb, var(--wash) 75%, var(--moss-b));
 }
 :root[data-theme='dark'] .t28s-illus {
@@ -832,143 +879,157 @@
   }
 }
 
-/* 3 · moat (canvas disc) */
+/* 3 · moat: a lake at night seen from a low hill; the village ring, the moat, NVIDIA's island, bridges on piers */
 .t28m {
   position: relative;
   width: 100%;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 5%, #000 90%, transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 5%, #000 90%, transparent);
+  user-select: none;
+  -webkit-user-select: none;
 }
-.t28m-lake {
+.t28m-stage,
+.t28m-rig {
   position: absolute;
   inset: 0;
-  /* the lake runs to every edge of the frame and dissolves into the mist far away (top) and at the sides */
-  background: var(--water);
-  /* an ellipse that touches the frame's sides and is gone by then: no edge of the frame shows, only mist */
-  -webkit-mask-image: radial-gradient(closest-side at 50% 56%, #000 42%, rgba(0, 0, 0, 0.45) 74%, transparent 100%);
-  mask-image: radial-gradient(closest-side at 50% 56%, #000 42%, rgba(0, 0, 0, 0.45) 74%, transparent 100%);
-  pointer-events: none;
-}
-.t28m-sky {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(60% 45% at 62% 18%, color-mix(in srgb, var(--moon) 22%, transparent), transparent 70%);
-  pointer-events: none;
-}
-.t28m-wrap {
-  position: absolute;
-  perspective-origin: 50% 30%;
-}
-.t28m-disc {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-  transform: rotateX(var(--t28m-view, 32deg));
-  transition: transform 0.7s var(--ease);
-}
-.t28m-cv,
-.t28m-ring,
-.t28m-dots {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-.t28m-ring {
   width: 100%;
   height: 100%;
   overflow: visible;
   pointer-events: none;
 }
-.t28m-dots {
-  pointer-events: none;
+/* the lake is darker than the sky in both themes; it dissolves into the mist at the far shore */
+.t28m {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent), linear-gradient(to bottom, #000 90%, transparent);
+  mask-composite: intersect;
 }
-.t28m-sun {
-  fill: none;
-  stroke: var(--lantern);
-  stroke-width: 1.4;
-  opacity: 0;
-  transition: opacity 1.6s var(--ease-soft);
+.t28m-near {
+  fill: var(--wash);
 }
-.t28m-sunring {
-  fill: none;
-  stroke: var(--lantern);
-  stroke-width: 3;
-  opacity: 0;
-  transition: opacity 1.6s var(--ease-soft);
+:root[data-theme='dark'] .t28m-near {
+  fill: #000;
 }
-.t28m.all .t28m-sun {
-  opacity: 0.55;
+/* the lake: the sky's pale mist on it far away, deep near the viewer; always darker than the sky */
+.t28m-lk0 {
+  stop-color: color-mix(in srgb, var(--water) 55%, var(--mist));
 }
-.t28m.all .t28m-sunring {
+.t28m-lk1 {
+  stop-color: color-mix(in srgb, var(--water) 85%, var(--mist));
+}
+.t28m-lk2 {
+  stop-color: var(--water);
+}
+:root[data-theme='light'] .t28m-lk0 {
+  stop-color: color-mix(in srgb, var(--water) 70%, var(--paper));
+}
+:root[data-theme='light'] .t28m-lk1 {
+  stop-color: var(--water);
+}
+:root[data-theme='light'] .t28m-lk2 {
+  stop-color: color-mix(in srgb, var(--water) 82%, var(--wash));
+}
+.t28m-ripple {
+  fill: var(--mist);
+  opacity: 0.22;
+}
+:root[data-theme='light'] .t28m-ripple {
+  fill: var(--paper);
   opacity: 0.4;
 }
-.t28m-plank {
-  fill: color-mix(in srgb, var(--step-mid) 60%, var(--lantern));
-  opacity: 0;
-  transition: opacity 0.8s 1.6s;
-}
-.t28m-plank.on {
-  opacity: 0.95;
-}
-.t28m-thread {
-  fill: none;
-  stroke: var(--lantern);
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  opacity: 0.9;
-  transition: stroke-dashoffset 2s var(--ease);
-}
-.t28m.threads .t28m-thread {
-  stroke-dashoffset: 0;
-}
-.t28m-cuda {
-  font-family: var(--serif);
-  font-weight: 500;
-  fill: var(--wash);
-  letter-spacing: 0.03em;
-  paint-order: stroke;
-  stroke: color-mix(in srgb, var(--rock-hi) 85%, transparent);
-  stroke-width: 3px;
-}
-:root[data-theme='dark'] .t28m-cuda {
+.t28m-road {
   fill: var(--moon);
-  stroke: var(--wash);
+  opacity: 0.6;
 }
-/* NVIDIA cut into the plinth: shadow above the stroke, light below */
-.t28m-carve {
-  font-family: var(--serif);
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  fill: color-mix(in srgb, var(--wash) 72%, var(--rock-lo));
-  paint-order: stroke;
-  stroke: color-mix(in srgb, var(--rock-hi) 70%, transparent);
-  stroke-width: 1.2px;
+:root[data-theme='light'] .t28m-road {
+  fill: #fff;
+  opacity: 0.75;
 }
-:root[data-theme='dark'] .t28m-carve {
-  fill: color-mix(in srgb, var(--moon) 75%, var(--rock-mid));
-  stroke: var(--wash);
+.t28m-moat {
+  fill: color-mix(in srgb, var(--water) 70%, var(--wash));
 }
-/* the keep and the boats stand up out of the disc */
-.t28m-keep,
-.t28m-boat {
-  position: absolute;
-  transform-origin: 50% 92%;
-  transform: rotateX(calc(-1 * var(--t28m-view, 32deg)));
+:root[data-theme='dark'] .t28m-moat {
+  fill: color-mix(in srgb, var(--water) 60%, #000);
 }
-.t28m-keep svg {
-  display: block;
-  max-width: none;
-  overflow: visible;
+.t28m-bank {
+  fill: var(--rock-mid);
 }
-.t28m-keep-sh {
+:root[data-theme='dark'] .t28m-bank {
+  fill: var(--rock-lo);
+}
+.t28m-bank-face,
+.t28m-bank-in {
+  fill: var(--rock-lo);
+}
+:root[data-theme='dark'] .t28m-bank-face,
+:root[data-theme='dark'] .t28m-bank-in {
+  fill: color-mix(in srgb, var(--rock-lo) 50%, #000);
+}
+.t28m-bank-rim,
+.t28m-isle-rim {
+  fill: var(--moon-rim);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t28m-bank-rim,
+:root[data-theme='dark'] .t28m-isle-rim {
+  fill: var(--moon);
+  opacity: 0.55;
+}
+.t28m-moss {
+  fill: var(--moss-b);
+  opacity: 0.55;
+}
+.t28m-canal {
+  fill: color-mix(in srgb, var(--water) 75%, var(--wash));
+}
+:root[data-theme='dark'] .t28m-canal {
+  fill: color-mix(in srgb, var(--water) 60%, #000);
+}
+.t28m-canal-edge {
+  fill: var(--step-mid);
+  opacity: 0.7;
+}
+.t28m-sh {
   fill: var(--umbra);
   opacity: 0.35;
 }
-.t28m-keep-glow {
+.t28m-trunk {
+  fill: var(--wash);
+}
+.t28m-crown {
+  fill: color-mix(in srgb, var(--moss-b) 70%, var(--wash));
+}
+.t28m-crown-hi {
+  fill: var(--moss-a);
   opacity: 0.6;
+}
+/* the island: a stone wall in courses, its moonlit lip, a gravel court, the keep's plinth */
+.t28m-wall {
+  fill: var(--rock-mid);
+}
+:root[data-theme='dark'] .t28m-wall {
+  fill: var(--rock-lo);
+}
+.t28m-wall-sh {
+  fill: var(--umbra);
+  opacity: 0.3;
+}
+.t28m-isle {
+  fill: var(--step-mid);
+}
+:root[data-theme='dark'] .t28m-isle {
+  fill: var(--step-lo);
+}
+.t28m-plinth {
+  fill: var(--rock-hi);
+}
+:root[data-theme='dark'] .t28m-plinth {
+  fill: var(--rock-mid);
+}
+.t28m-plinth-face {
+  fill: var(--rock-lo);
+}
+.t28m-keep-glow {
+  opacity: 0.55;
 }
 .t28m-course {
   fill: var(--umbra);
@@ -998,43 +1059,123 @@
   fill: var(--moon);
   opacity: 0.6;
 }
+/* CUDA cut into the island wall: the stroke pale, a dark lip above it */
+.t28m-carve,
+.t28m-carve-lo {
+  font-family: var(--serif);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.t28m-carve {
+  fill: color-mix(in srgb, var(--wash) 78%, var(--rock-lo));
+}
+:root[data-theme='light'] .t28m-carve-lo {
+  fill: #fff;
+  opacity: 0.7;
+  transform: translateY(1.2px);
+}
+:root[data-theme='dark'] .t28m-carve {
+  fill: color-mix(in srgb, var(--moon) 80%, var(--rock-hi));
+}
+.t28m-carve-lo {
+  fill: #000;
+  opacity: 0.55;
+  transform: translateY(-1.6px);
+}
+/* bridges on piers: a bamboo deck, a thin rail, a post into the water, the reflection under it */
+.t28m-br-deck {
+  fill: color-mix(in srgb, var(--lantern) 28%, var(--step-mid));
+}
+:root[data-theme='dark'] .t28m-br-deck {
+  fill: color-mix(in srgb, var(--lantern) 30%, var(--step-lo));
+}
+.t28m-br-rail,
+.t28m-br-post {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t28m-br-rail,
+:root[data-theme='dark'] .t28m-br-post {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--rock-lo));
+}
+.t28m-br-refl {
+  fill: var(--wash);
+  opacity: 0.32;
+}
+:root[data-theme='dark'] .t28m-br-refl {
+  fill: var(--step-mid);
+  opacity: 0.18;
+}
+/* the five that hold the house: warmer, and red while they are pulled */
+.t28m-br .t28m-br-deck {
+  fill: color-mix(in srgb, var(--lantern) 55%, var(--step-mid));
+  transition: fill 0.3s;
+}
+.t28m.taut .t28m-br:not(.cut) .t28m-br-deck,
+.t28m-br.flash .t28m-br-deck {
+  fill: color-mix(in srgb, var(--vermilion) 70%, var(--step-lo));
+}
+.t28m-br.cut .t28m-br-deck,
+.t28m-br.cut .t28m-br-rail,
+.t28m-br.cut .t28m-br-refl {
+  opacity: 0.55;
+  transition: opacity 0.6s;
+}
+/* the way to the boat: a dotted wake on the water, plainer once the house is free */
+.t28m-arrow {
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 2;
+  stroke-dasharray: 2 8;
+  stroke-linecap: round;
+  opacity: 0.35;
+  transition: opacity 0.6s;
+}
+:root[data-theme='dark'] .t28m-arrow {
+  stroke: var(--moon);
+}
+.t28m.free .t28m-arrow {
+  opacity: 0.8;
+}
+.t28m.docked .t28m-arrow {
+  opacity: 0;
+}
+/* the boats float at their berths; the one that takes the house has a lit berth once the house is free */
 .t28m-boat {
-  display: grid;
-  justify-items: center;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  transition: transform 2s cubic-bezier(0.45, 0, 0.25, 1);
-}
-.t28m-boat svg {
-  width: 100%;
-  max-width: none;
-  overflow: visible;
-}
-.t28m-boat.in {
-  transform: translate(var(--dx), var(--dy)) rotateX(calc(-1 * var(--t28m-view, 32deg)));
-}
-.t28m-boat:focus-visible {
-  outline: 2px solid var(--vermilion);
-  outline-offset: 2px;
-  border-radius: 12px;
-}
-.t28m-tag {
   position: absolute;
-  left: 0;
-  top: 0;
-  padding: 1px 6px 2px;
-  font: 500 14px/1.2 var(--serif);
-  color: var(--ink);
-  white-space: nowrap;
-  border-radius: 40%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 78%, transparent), transparent);
-  text-shadow: 0 0 4px var(--paper), 0 0 8px var(--paper), 0 0 14px var(--paper), 0 0 2px var(--paper);
   pointer-events: none;
 }
-.t28m-tag.rowing {
-  transition: transform 2s cubic-bezier(0.45, 0, 0.25, 1);
+.t28m-boat svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.t28m-berth {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  top: 58%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--moon) 45%, transparent), transparent);
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.t28m.free .is-target .t28m-berth {
+  opacity: 0.7;
+}
+.t28m.lift .t28m-berth {
+  opacity: 1;
+}
+.t28m-boat.took .t28m-berth {
+  opacity: 0;
+}
+.t28m-refl {
+  fill: var(--wash);
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t28m-refl {
+  fill: var(--step-mid);
+  opacity: 0.16;
 }
 .t28m-hull {
   fill: var(--wash);
@@ -1042,7 +1183,6 @@
 :root[data-theme='dark'] .t28m-hull {
   fill: var(--rock-lo);
 }
-/* the boat's own lantern warms its hull and drops a streak on the water; the moon rims the rower */
 .t28m-hull-lit {
   opacity: 0.55;
 }
@@ -1073,149 +1213,49 @@
 }
 .t28m-bglow {
   opacity: 0.5;
-  transition: opacity 0.5s;
 }
-.t28m-boat[aria-pressed='true'] .t28m-bglow,
-.t28m-boat:hover .t28m-bglow {
-  opacity: 1;
-}
-/* the slip each boat's fact unrolls on: washi between two dark rods, tied by a string to the boat's mast */
-.t28m-string {
+/* names and CUDA's meaning written on the water, each with its faint reflection below (§3.6) */
+.t28m-tag,
+.t28m-cudasub {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s;
-}
-.t28m-string.on {
-  opacity: 1;
-}
-.t28m-string path {
-  fill: none;
-  stroke: color-mix(in srgb, var(--ink-3) 80%, transparent);
-  stroke-width: 1;
-}
-.t28m-slip {
-  position: absolute;
-  padding: 18px 20px 16px;
-  background:
-    radial-gradient(140% 90% at 30% 20%, color-mix(in srgb, var(--card) 96%, transparent), color-mix(in srgb, var(--paper-2) 96%, transparent)),
-    var(--sand-svg, none);
-  box-shadow: 0 14px 28px -20px color-mix(in srgb, var(--umbra) 70%, transparent);
-  /* deckled washi: its long edges soft, not a card's */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 5px, #000 calc(100% - 5px), transparent);
-  mask-image: linear-gradient(to right, transparent, #000 5px, #000 calc(100% - 5px), transparent);
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.9s var(--ease);
-  pointer-events: none;
-}
-:root[data-theme='dark'] .t28m-slip {
-  background:
-    radial-gradient(140% 90% at 30% 20%, color-mix(in srgb, var(--card) 88%, var(--moon)), color-mix(in srgb, var(--paper-2) 92%, var(--moon))),
-    var(--sand-svg, none);
-}
-.t28m-slip::before,
-.t28m-slip::after {
-  content: '';
-  position: absolute;
-  left: -6px;
-  right: -6px;
-  height: 6px;
-  border-radius: 3px;
-  background: color-mix(in srgb, var(--wash) 82%, var(--rock-lo));
-}
-.t28m-slip::before {
+  left: 0;
   top: 0;
-}
-.t28m-slip::after {
-  bottom: 0;
-}
-.t28m-slip.open {
-  clip-path: inset(0 -8px 0 -8px);
-  pointer-events: auto;
-}
-.t28m-who {
-  margin: 0 0 0.35em;
-  font: 500 1rem/1.3 var(--serif);
-  color: var(--ink);
-}
-.t28m-fact {
   margin: 0;
-  font: 300 clamp(0.98rem, 1.4vw, 1.1rem) / 1.5 var(--serif);
+  font: 500 14px/1.25 var(--serif);
   color: var(--ink);
-}
-:root[data-quality='low'] .t28m-disc,
-:root[data-quality='low'] .t28m-boat,
-:root[data-quality='low'] .t28m-tag.rowing,
-:root[data-quality='low'] .t28m-slip {
-  transition-duration: 0.01s;
-}
-@media (prefers-reduced-motion: reduce) {
-  .t28m-disc,
-  .t28m-boat,
-  .t28m-tag.rowing,
-  .t28m-slip,
-  .t28m-thread {
-    transition: none;
-  }
-}
-
-/* 3 · the house tied by five bridges (audit v3 28-3): drag it, cut the bridges, carry it to a boat */
-.t28m-boat {
-  cursor: default;
+  white-space: nowrap;
+  text-shadow: 0 0 6px var(--water), 0 0 12px var(--water);
   pointer-events: none;
 }
-.t28m-rig {
+:root[data-theme='light'] .t28m-tag,
+:root[data-theme='light'] .t28m-cudasub {
+  color: #f3f1ea;
+  text-shadow: 0 0 6px color-mix(in srgb, var(--wash) 60%, transparent);
+}
+.t28m-tag::after,
+.t28m-cudasub::after {
+  content: attr(data-t);
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
+  left: 0;
+  right: 0;
+  top: 100%;
+  transform: scaleY(-0.7);
+  transform-origin: 50% 0;
+  opacity: 0.18;
+  white-space: inherit;
+  text-align: inherit;
 }
-.t28m-br-sh {
-  fill: var(--umbra);
-  opacity: 0.25;
+.t28m-cudasub {
+  transform: translate(-50%, -50%);
+  white-space: normal;
+  text-align: center;
+  font-size: 14px;
 }
-.t28m-br-deck {
-  fill: color-mix(in srgb, var(--lantern) 55%, var(--step-lo));
-  stroke: var(--wash);
-  stroke-width: 0.8;
-  transition: fill 0.3s;
+.t28m-cudasub.one {
+  white-space: nowrap;
+  font-size: 13px;
 }
-:root[data-theme='dark'] .t28m-br-deck {
-  fill: color-mix(in srgb, var(--lantern) 60%, var(--step-mid));
-}
-.t28m-br-rail {
-  fill: var(--wash);
-  opacity: 0.8;
-}
-.t28m.taut .t28m-br:not(.cut) .t28m-br-deck,
-.t28m-br.flash .t28m-br-deck {
-  fill: color-mix(in srgb, var(--vermilion) 70%, var(--step-lo));
-}
-.t28m-br.cut {
-  opacity: 0.55;
-  transition: opacity 0.6s;
-}
-.t28m-arrow {
-  fill: none;
-  stroke: var(--wash);
-  stroke-width: 2;
-  stroke-dasharray: 2 7;
-  stroke-linecap: round;
-  opacity: 0.6;
-  transition: opacity 0.6s;
-}
-:root[data-theme='dark'] .t28m-arrow {
-  stroke: var(--moon);
-}
-.t28m-arrow.out {
-  opacity: 0;
-}
+/* the house: dragged, sprung back while it is tied */
 .t28m-house {
   position: absolute;
   left: 0;
@@ -1226,27 +1266,33 @@
   outline: none;
   transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.5, 1);
 }
+.t28m-house svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
 .t28m.is-drag .t28m-house {
   cursor: grabbing;
   transition: none;
 }
 .t28m.docked .t28m-house {
   cursor: default;
-  transition: transform 0.6s var(--ease);
 }
 .t28m-house:focus-visible {
-  border-radius: 10px;
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--vermilion) 55%, transparent);
+  outline: none;
 }
-.t28m-house > svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+.t28m-house:focus-visible svg {
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--vermilion) 75%, transparent));
 }
 .t28m-hglow {
-  opacity: 0.55;
+  opacity: 0.7;
 }
-/* the cut targets: 44 px, invisible but for focus; the guide dot shows the next */
+.t28m-house .p2g-dot.ride {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+}
+/* a 44 px target on each pier */
 .t28m-cut {
   position: absolute;
   left: -22px;
@@ -1265,6 +1311,11 @@
 .t28m-cut:focus-visible {
   outline: 2px solid var(--vermilion);
   outline-offset: -6px;
+}
+.t28m-cut .p2g-dot.ride {
+  position: absolute;
+  left: 50%;
+  top: 50%;
 }
 .t28m-rewrite {
   position: absolute;
@@ -1290,38 +1341,30 @@
     translate: 0 -22px;
   }
 }
-/* CUDA, carved straight under the castle */
-.t28m-cudalab {
-  position: absolute;
-  margin: 0;
-  transform: translate(-50%, 0);
-  display: grid;
-  justify-items: center;
-  text-align: center;
-  max-width: min(320px, 70vw);
-  font: 500 13px/1.25 var(--serif);
-  color: var(--ink);
-  text-shadow: 0 0 4px var(--paper), 0 0 8px var(--paper), 0 0 14px var(--paper);
-  pointer-events: none;
+.t28m .p2g-count {
+  color: color-mix(in srgb, var(--paper) 85%, var(--moon));
+  text-shadow: 0 1px 0 #000, 0 0 8px var(--wash);
+  font-size: 15px;
 }
-.t28m-cudalab b {
-  font-size: 18px;
-  letter-spacing: 0.08em;
+:root[data-theme='dark'] .t28m .p2g-count {
+  color: color-mix(in srgb, var(--moon) 85%, var(--rock-hi));
 }
 @media (prefers-reduced-motion: reduce) {
   .t28m-house,
-  .t28m-rewrite {
+  .t28m-rewrite,
+  .t28m-berth {
     transition: none;
     animation: none;
   }
 }
 
-/* 4 · goldrush: a paper ridge in front of a giant moon (progressTide hooks) */
+/* 4 · goldrush: a paper ridge in front of a giant moon; the band is the whole picture (progressTide hooks) */
 .t28r .p2t-paper,
 .t28r .p2t-roller,
 .t28r .p2t-rake,
 .t28r .p2t-track,
 .t28r .p2t-horizon,
+.t28r .p2t-horizon-label,
 .t28r .p2t-today,
 .t28r .p2t-ms,
 .t28r .p2t-mist,
@@ -1329,7 +1372,7 @@
 .t28r .p2t-compare {
   display: none;
 }
-/* the moon is the slider: only the moon and its halo (no ink ring, no focus ring: focus is a soft glow) */
+/* the moon is the slider: the disc, its halo melting into the mist, the vermilion dot at its heart */
 .t28r .p2t-moon {
   --m: var(--t28-moon, 220px);
   z-index: 0;
@@ -1338,9 +1381,19 @@
 .t28r .p2t-moon .p2p-moon-rim {
   display: none;
 }
+.t28r .p2t-moon::before {
+  content: '';
+  position: absolute;
+  inset: -70%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--moon) 30%, transparent), color-mix(in srgb, var(--moon) 10%, transparent) 55%, transparent);
+  pointer-events: none;
+}
+:root[data-theme='light'] .t28r .p2t-moon::before {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--moon) 70%, transparent), color-mix(in srgb, var(--moon) 25%, transparent) 55%, transparent);
+}
 .t28r .p2t-moon-disc {
-  filter: drop-shadow(0 0 28px color-mix(in srgb, var(--moon) 55%, transparent));
-  transition: filter 0.4s;
+  filter: drop-shadow(0 0 22px color-mix(in srgb, var(--moon) 50%, transparent));
 }
 .t28r .p2t-moon:focus-visible {
   outline: none;
@@ -1348,12 +1401,13 @@
 .t28r .p2t-moon:focus-visible .p2t-moon-disc {
   filter: drop-shadow(0 0 30px color-mix(in srgb, var(--moon) 80%, transparent)) drop-shadow(0 0 60px color-mix(in srgb, var(--lantern) 45%, transparent));
 }
-/* "ahead, in the mist": high in the sky at the right, clear of the gold */
-.t28r .p2t-horizon-label {
-  z-index: 2;
-  top: 4px !important;
+.t28r .p2t-moon .p2g-dot.ride {
+  position: absolute;
+  left: 46%;
+  top: 30%; /* on the part of the disc that clears the ridge at the start */
 }
 .t28r-far,
+.t28r-mid,
 .t28r-front {
   position: absolute;
   inset: 0;
@@ -1362,82 +1416,102 @@
   overflow: visible;
   pointer-events: none;
 }
+.t28r-mid,
 .t28r-front {
   z-index: 1;
 }
-/* the milestone's words: a wooden sign staked into the ridge under its lamp post (the tide's reading card) */
+/* the painting runs out past the frame's sides into the dark (no cut edge) */
+.t28r-far,
+.t28r-mid,
+.t28r-front {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+.t28r-cloud {
+  fill: var(--mist);
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t28r-cloud {
+  fill: var(--paper-2, var(--paper));
+  opacity: 0.75;
+}
+/* the milestone's words lie in the mist under the ridge: no card, no frame */
 .t28r .p2t-card {
-  top: var(--t28r-cy, 60%) !important;
-  left: var(--t28r-cx, 50%);
-  width: var(--t28r-cw, 320px);
-  max-height: none !important;
+  transform: none;
   overflow: visible;
-  padding: 10px 14px 8px;
+  padding: 0;
   z-index: 3;
-  background:
-    repeating-linear-gradient(178deg, transparent 0 7px, color-mix(in srgb, var(--wash) 6%, transparent) 7px 8px),
-    color-mix(in srgb, var(--lantern) 28%, var(--step-hi));
-  border-radius: 3px;
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--wash) 30%, transparent), 0 10px 24px -14px #000;
-  transition: left 0.5s var(--ease), top 0.5s var(--ease);
-}
-.t28r .p2t-card::before {
-  content: '';
-  position: absolute;
-  left: var(--t28r-stake, 50%);
-  top: -18px;
-  height: 18px;
-  border-left: 2px solid var(--wash);
-}
-.t28r .p2t-card,
-.t28r .p2t-card .p2t-fact,
-.t28r .p2t-card.mist .p2t-fact,
-.t28r .p2t-card .p2-eyebrow {
-  color: #1d2238;
-}
-:root[data-theme='dark'] .t28r .p2t-card {
-  background:
-    repeating-linear-gradient(178deg, transparent 0 7px, color-mix(in srgb, var(--wash) 10%, transparent) 7px 8px),
-    color-mix(in srgb, var(--lantern) 42%, var(--rock-hi));
-}
-:root[data-theme='dark'] .t28r .p2t-card::before {
-  border-color: #000;
+  text-align: left;
+  transition: opacity 0.4s;
 }
 .t28r .p2t-card .p2t-fact {
   margin: 0;
-  font-size: clamp(0.92rem, 1.2vw, 1.02rem);
-  line-height: 1.42;
+  font: 400 clamp(1rem, 1.25vw, 1.1rem) / 1.45 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 10px var(--paper), 0 0 3px var(--paper);
 }
 .t28r .p2t-card .p2-eyebrow {
-  margin-bottom: 0.2em;
-  font-weight: 600;
-  opacity: 0.8;
+  margin: 0 0 0.25em;
+  font: 600 0.82rem/1.3 var(--sans);
+  letter-spacing: 0;
+  color: var(--ink-2);
+  text-shadow: 0 0 8px var(--paper);
+}
+/* today: the prediction drifts in the mist, fainter than what has happened */
+.t28r .p2t-card.mist .p2t-fact {
+  color: var(--ink-2);
+  font-size: clamp(0.92rem, 1.1vw, 1rem);
 }
 .t28r-ridge {
+  fill: var(--wash);
   stroke: none;
 }
-.t28r-rg0 {
-  stop-color: var(--wash);
+:root[data-theme='dark'] .t28r-ridge {
+  fill: #020308;
 }
-.t28r-rg1 {
-  stop-color: var(--wash);
-  stop-opacity: 0.92;
+.t28r-fog0,
+.t28r-fog1,
+.t28r-fog2 {
+  stop-color: var(--paper);
 }
-.t28r-rg2 {
-  stop-color: var(--wash);
+.t28r-fog0 {
   stop-opacity: 0;
 }
-:root[data-theme='dark'] .t28r-rg0,
-:root[data-theme='dark'] .t28r-rg1,
-:root[data-theme='dark'] .t28r-rg2 {
-  stop-color: #000;
+.t28r-fog1 {
+  stop-opacity: 0.7;
+}
+.t28r-strata {
+  fill: var(--rock-mid);
+  opacity: 0.32;
+}
+.t28r-grass {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t28r-grass {
+  fill: #000;
 }
 .t28r-rim {
   fill: var(--moon);
-  opacity: 0.4;
+  opacity: 0.45;
 }
 :root[data-theme='dark'] .t28r-rim {
-  opacity: 0.65;
+  opacity: 0.7;
+}
+.t28r-rim-ledge {
+  opacity: 0.25;
+}
+.t28r-mouth {
+  fill: color-mix(in srgb, var(--lantern) 55%, var(--wash));
+}
+:root[data-theme='dark'] .t28r-mouth {
+  fill: color-mix(in srgb, var(--lantern) 45%, #000);
+}
+.t28r-spoil {
+  fill: var(--rock-lo);
+  opacity: 0.8;
+}
+.t28r-timber {
+  fill: color-mix(in srgb, var(--lantern) 22%, var(--rock-lo));
 }
 .t28r-sil,
 .t28r-fig {
@@ -1448,7 +1522,7 @@
   fill: #000;
 }
 .t28r-canvas {
-  fill: color-mix(in srgb, var(--wash) 85%, var(--lantern));
+  fill: color-mix(in srgb, var(--wash) 82%, var(--lantern));
 }
 .t28r-lamp {
   fill: var(--lantern);
@@ -1470,82 +1544,95 @@
   opacity: 1;
 }
 .t28r-digger.far.on {
-  opacity: 0.72;
+  opacity: 0.75;
 }
 .t28r-post {
-  opacity: 0.3;
+  opacity: 0.55;
   transition: opacity 0.6s var(--ease);
 }
 .t28r-post .t28r-glow,
 .t28r-post .t28r-lamp {
-  opacity: 0;
+  opacity: 0.15;
   transition: opacity 0.6s var(--ease);
 }
 .t28r-post.up {
   opacity: 1;
 }
 .t28r-post.up .t28r-glow {
-  opacity: 0.75;
+  opacity: 0.8;
 }
 .t28r-post.up .t28r-lamp {
   opacity: 1;
 }
-.t28r-pole,
-.t28r-cord {
+.t28r-pole {
   fill: var(--wash);
-  stroke: var(--wash);
-  stroke-width: 0;
 }
 .t28r-cord {
   fill: none;
+  stroke: var(--wash);
   stroke-width: 1;
 }
 :root[data-theme='dark'] .t28r-pole {
   fill: #000;
 }
 :root[data-theme='dark'] .t28r-cord {
-  stroke: var(--rock-mid);
-}
-/* a lamp post's date board: wood, the date burnt in; the post the moon stands at glows warmer */
-.t28r-plank {
-  fill: color-mix(in srgb, var(--lantern) 30%, var(--step-mid));
-  stroke: var(--wash);
-  stroke-width: 1;
-}
-:root[data-theme='dark'] .t28r-plank {
-  fill: color-mix(in srgb, var(--lantern) 40%, var(--rock-hi));
   stroke: #000;
 }
-.t28r-date,
-.t28r-carved {
-  font: 500 11.5px var(--sans);
-  fill: #1d2238;
+/* the lantern rope between posts: the moon's road; the stretch it has passed is lit */
+.t28r-rope-line {
+  fill: none;
+  stroke: var(--wash);
+  stroke-width: 1.1;
+  transition: stroke 0.6s;
+}
+.t28r-bead {
+  fill: var(--wash);
+  transition: fill 0.6s;
+}
+:root[data-theme='dark'] .t28r-rope-line {
+  stroke: color-mix(in srgb, var(--rock-mid) 55%, #000);
+}
+:root[data-theme='dark'] .t28r-bead {
+  fill: color-mix(in srgb, var(--rock-mid) 55%, #000);
+}
+.t28r-rope.lit .t28r-rope-line {
+  stroke: color-mix(in srgb, var(--lantern) 60%, var(--wash));
+}
+.t28r-rope.lit .t28r-bead {
+  fill: var(--lantern);
+}
+/* a lamp post's date: burnt into a plank hung from its arm; the post the moon stands at is warmer */
+.t28r-wood {
+  fill: color-mix(in srgb, var(--lantern) 26%, var(--step-mid));
+}
+:root[data-theme='dark'] .t28r-wood {
+  fill: color-mix(in srgb, var(--lantern) 34%, var(--rock-mid));
+}
+.t28r-grain {
+  fill: var(--wash);
+  opacity: 0.18;
+}
+.t28r-burnt,
+.t28r-burnt-lo {
+  font: 600 12px var(--sans);
   font-variant-numeric: tabular-nums;
 }
-.t28r-carved {
-  font: 600 13.5px var(--serif);
+.t28r-burnt {
+  fill: #2a2016;
 }
-.t28r-front.tight .t28r-post:not(.here) .t28r-board {
-  opacity: 0;
+.t28r-burnt-lo {
+  fill: color-mix(in srgb, var(--moon) 60%, transparent);
+}
+.t28r-post.here .t28r-wood {
+  fill: color-mix(in srgb, var(--lantern) 62%, var(--step-hi));
 }
 .t28r-board {
   transition: opacity 0.4s;
 }
-.t28r-post.here .t28r-plank {
-  fill: color-mix(in srgb, var(--lantern) 70%, var(--step-hi));
-}
-.t28r-now .t28r-plank {
-  fill: color-mix(in srgb, var(--vermilion) 55%, var(--lantern));
-}
-/* the comparison sign by the shed, once the second mound has risen */
-.t28r-sign {
+.t28r-front.tight .t28r-post:not(.here) .t28r-board {
   opacity: 0;
-  transition: opacity 0.6s 1.2s;
 }
-.t28r-front.gold-2 .t28r-sign {
-  opacity: 1;
-}
-/* the two mounds of gold in true proportion, on one ledge: a warm lit side, a shadow side, lumps catching the lantern */
+/* the two mounds of gold in true proportion, on the summit ledge: a warm lit side, a shadow side, lumps in the lantern */
 .t28r-heap {
   fill: color-mix(in srgb, var(--lantern) 82%, var(--wash));
 }
@@ -1562,45 +1649,75 @@
   fill: color-mix(in srgb, var(--lantern) 55%, var(--moon));
 }
 .t28r-heap-sh {
-  fill: var(--umbra);
-  opacity: 0.35;
+  fill: #000;
+  opacity: 0.45;
 }
-.t28r-amt {
-  font: 600 14px var(--serif);
-  fill: var(--ink);
-  paint-order: stroke;
-  stroke: var(--paper);
-  stroke-width: 4px;
-  stroke-linejoin: round;
+/* words cut into the ridge's face: a pale stroke, a darker lip above it (light from the moon) */
+.t28r-cut,
+.t28r-cut-lo {
+  font: 600 15px var(--serif);
 }
-.t28r-amt-l {
-  font: 400 11.5px var(--sans);
-  fill: var(--ink-2);
+.t28r-cut {
+  fill: color-mix(in srgb, var(--moon) 78%, var(--paper));
+}
+:root[data-theme='light'] .t28r-cut {
+  fill: color-mix(in srgb, var(--paper) 88%, var(--moon));
+}
+.t28r-cut-lo {
+  fill: #000;
+  opacity: 0.6;
+  transform: translateY(-1.6px);
+}
+.t28r-cut-l {
+  font: 400 12.5px var(--sans);
+}
+.t28r-cut.t28r-cut-l {
+  fill: color-mix(in srgb, var(--moon) 55%, var(--rock-mid));
+}
+:root[data-theme='light'] .t28r-cut.t28r-cut-l {
+  fill: color-mix(in srgb, var(--paper) 70%, var(--wash));
+}
+.t28r-gold,
+.t28r-amt-big,
+.t28r-amt-small {
+  transition: transform 1.4s var(--ease), opacity 0.6s;
 }
 .t28r-gold {
   transform-box: fill-box;
   transform-origin: 50% 100%;
   transform: scaleY(0);
   opacity: 0;
-  transition: transform 1.4s var(--ease), opacity 0.6s;
+}
+.t28r-amt-big,
+.t28r-amt-small {
+  opacity: 0;
+  transition-delay: 0.9s;
 }
 .t28r-front.gold-1 .t28r-gold-small,
 .t28r-front.gold-2 .t28r-gold-big {
   transform: none;
   opacity: 1;
 }
-.t28r-amts {
-  opacity: 0;
-  transition: opacity 0.6s 0.9s;
-}
-.t28r-front.gold-2 .t28r-amts {
+.t28r-front.gold-1 .t28r-amt-small,
+.t28r-front.gold-2 .t28r-amt-big {
   opacity: 1;
+}
+@media (max-width: 720px) {
+  .t28r-cut,
+  .t28r-cut-lo {
+    font-size: 14px;
+  }
+  .t28r-cut-l {
+    font-size: 12px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .t28r-gold,
   .t28r-digger,
   .t28r-post,
-  .t28r-sign,
+  .t28r-rope,
+  .t28r-amt-big,
+  .t28r-amt-small,
   .t28r .p2t-card {
     transition: none;
   }
@@ -1769,9 +1886,17 @@
   fill: var(--moon);
   opacity: 0.6;
 }
+/* the risen water's light on the wall: brightest at the waterline, gone at the notch (no flat panel) */
+.t28w-lv0 {
+  stop-color: var(--moon);
+  stop-opacity: 0;
+}
+.t28w-lv1 {
+  stop-color: color-mix(in srgb, var(--water) 50%, var(--moon));
+  stop-opacity: 0.55;
+}
 .t28w-level {
-  fill: color-mix(in srgb, var(--water) 60%, var(--moon));
-  opacity: 0.5;
+  opacity: 0.6;
   transform-box: fill-box;
   transform-origin: 50% 100%;
   transform: scaleY(0.4314); /* 22 of 51 */
@@ -1901,39 +2026,68 @@
   text-shadow: 0 0 6px var(--paper), 0 0 12px var(--paper);
   pointer-events: none;
 }
-/* the board staked in the shallows: the step's line cut into wet wood, its fact written under it */
+.t28w-isle::after {
+  content: attr(data-t);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  transform: scaleY(-0.7);
+  transform-origin: 50% 0;
+  opacity: 0.18;
+}
+/* the step's words on a wet plank staked in the shallows: wood with grain, a moonlit top edge, carved letters; two stakes
+   run down into the water, ripples where they enter it, the plank's shadowy reflection under it */
 .t28w-board {
   position: absolute;
-  padding: 10px 14px 9px;
-  color: #1d2238;
-  background:
-    repeating-linear-gradient(176deg, transparent 0 8px, color-mix(in srgb, var(--wash) 7%, transparent) 8px 9px),
-    color-mix(in srgb, var(--lantern) 24%, var(--step-mid));
-  border-radius: 3px;
-  box-shadow: 0 1px 0 color-mix(in srgb, #fff 40%, transparent) inset, 0 12px 22px -14px #000;
   opacity: 0;
   pointer-events: none;
 }
-:root[data-theme='dark'] .t28w-board {
+.t28w-face {
+  position: relative;
+  padding: 11px 16px 10px;
+  color: #241a10;
   background:
-    repeating-linear-gradient(176deg, transparent 0 8px, color-mix(in srgb, #000 10%, transparent) 8px 9px),
-    color-mix(in srgb, var(--lantern) 36%, var(--rock-hi));
+    linear-gradient(to bottom, color-mix(in srgb, var(--moon) 45%, transparent) 0 2px, transparent 2px),
+    repeating-linear-gradient(177deg, transparent 0 7px, color-mix(in srgb, #3a2a18 9%, transparent) 7px 8px, transparent 8px 13px),
+    linear-gradient(100deg, color-mix(in srgb, var(--lantern) 26%, var(--step-mid)), color-mix(in srgb, var(--lantern) 14%, var(--step-lo)));
+  clip-path: polygon(0.6% 6%, 30% 2%, 62% 4%, 99.4% 0%, 100% 52%, 99% 97%, 64% 100%, 28% 97%, 0% 100%, 1% 48%);
+  text-shadow: 0 1px 0 color-mix(in srgb, #fff 30%, transparent);
 }
-/* two stakes down into the water */
+:root[data-theme='dark'] .t28w-face {
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--moon) 55%, transparent) 0 2px, transparent 2px),
+    repeating-linear-gradient(177deg, transparent 0 7px, color-mix(in srgb, #000 12%, transparent) 7px 8px, transparent 8px 13px),
+    linear-gradient(100deg, color-mix(in srgb, var(--lantern) 34%, var(--rock-hi)), color-mix(in srgb, var(--lantern) 22%, var(--rock-mid)));
+}
 .t28w-board::before,
 .t28w-board::after {
   content: '';
   position: absolute;
-  top: 100%;
-  width: 5px;
-  height: 26px;
-  background: linear-gradient(var(--wash), transparent);
+  top: calc(100% - 4px);
+  width: 6px;
+  height: 30px;
+  border-radius: 1px;
+  background: linear-gradient(color-mix(in srgb, var(--wash) 85%, var(--lantern)), color-mix(in srgb, var(--wash) 60%, transparent));
 }
 .t28w-board::before {
-  left: 18%;
+  left: 16%;
 }
 .t28w-board::after {
-  right: 18%;
+  right: 16%;
+}
+.t28w-wet {
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: calc(100% + 18px);
+  height: 22px;
+  background:
+    radial-gradient(10% 34% at 17% 40%, transparent 58%, color-mix(in srgb, var(--moon) 45%, transparent) 62%, transparent 72%),
+    radial-gradient(10% 34% at 83% 40%, transparent 58%, color-mix(in srgb, var(--moon) 45%, transparent) 62%, transparent 72%),
+    linear-gradient(to bottom, color-mix(in srgb, var(--wash) 30%, transparent), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  pointer-events: none;
 }
 .t28w-board.in {
   animation: p2-fade 0.6s var(--ease) both;
@@ -1949,9 +2103,63 @@
 }
 .t28w-slip.open {
   display: block;
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid color-mix(in srgb, var(--wash) 25%, transparent);
+  margin-top: 5px;
+}
+/* the four step notches on the mill wall: tally cuts in the stone, lit with the lantern once their step is taken */
+.t28w-tick-cut {
+  fill: color-mix(in srgb, var(--wash) 85%, #000);
+  transition: fill 0.5s;
+}
+.t28w-tick-lip {
+  fill: var(--moon);
+  opacity: 0.5;
+}
+.t28w-tick-n {
+  font: 600 12px var(--sans);
+  fill: color-mix(in srgb, var(--wash) 70%, var(--rock-lo));
+  transition: fill 0.5s;
+}
+:root[data-theme='dark'] .t28w-tick-n {
+  fill: color-mix(in srgb, var(--rock-hi) 80%, var(--moon));
+}
+.t28w-tick.on .t28w-tick-cut {
+  fill: var(--lantern);
+}
+.t28w-tick.on .t28w-tick-n {
+  fill: color-mix(in srgb, var(--lantern) 80%, var(--wash));
+}
+:root[data-theme='dark'] .t28w-tick.on .t28w-tick-n {
+  fill: var(--lantern);
+}
+.t28w-board .t28w-fact,
+.t28w-board .t28w-fact span {
+  color: #2e2317;
+}
+.t28w-carved-s {
+  font-size: 0.85em;
+}
+.t28w-refl {
+  fill: var(--wash);
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t28w-refl {
+  fill: var(--moon);
+  opacity: 0.1;
+}
+.t28w-refl-mill {
+  fill: var(--wash);
+  opacity: 0.32;
+}
+:root[data-theme='dark'] .t28w-refl-mill {
+  fill: #000;
+  opacity: 0.55;
+}
+.t28w-refl-moon {
+  fill: var(--moon);
+  opacity: 0.18;
+}
+.t28w-isl-refl {
+  opacity: 0.25;
 }
 .t28w-fact {
   margin: 0;

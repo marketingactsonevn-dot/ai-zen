@@ -316,7 +316,7 @@
       "countTpl": "Step {n}/{total}",
       "notches": [
         "$22 billion",
-        "$51 billion in stakes"
+        "$51 billion\nin stakes"
       ],
       "circlePrompt": "Tap each stone: keeping customers, or a bubble?",
       "detail": {

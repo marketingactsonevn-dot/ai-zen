@@ -115,7 +115,11 @@ export function kura(w: number, hh: number, seed: number): SVGElement[] {
     s('path', { class: 't29f-kura-shade', d: `M${f1(x0 + w * 0.5)} 0L${f1(x0 + w * 0.5)} ${f1(-wall)}L${f1(x1)} ${f1(-wall)}L${f1(x1)} 0Z` }),
     s('path', { class: 't29f-kura-base', d: `M${f1(x0 - 2)} 0L${f1(x0 - 2)} ${f1(-wall * 0.28)}L${f1(x1 + 2)} ${f1(-wall * 0.28)}L${f1(x1 + 2)} 0Z` }),
     s('path', { class: 't29f-kura-grid', d: Array.from({ length: 7 }, (_, i) => `M${f1(x0 + ((x1 - x0) * (i + 0.5)) / 7)} ${f1(-wall * 0.27)}V0`).join('') + `M${f1(x0)} ${f1(-wall * 0.14)}H${f1(x1)}` }),
+    // the lit door, its warmth spilling out on the ground before it
+    s('ellipse', { class: 't29f-kura-spill', cx: f1(-w * 0.08), cy: f1(hh * 0.02), rx: f1(w * 0.3), ry: f1(hh * 0.07), fill: 'url(#t29-lamp)' }),
+    s('ellipse', { class: 't29f-kura-glow', cx: f1(-w * 0.08), cy: f1(-dh * 0.5), rx: f1(dw * 1.6), ry: f1(dh * 0.9), fill: 'url(#t29-lamp)' }),
     s('rect', { class: 't29f-kura-door', x: f1(-dw / 2 - w * 0.08), y: f1(-dh - wall * 0.02), width: f1(dw), height: f1(dh), rx: 1 }),
+    s('path', { class: 't29f-kura-frame', d: `M${f1(-dw / 2 - w * 0.08 - 2)} 0V${f1(-dh - wall * 0.02 - 2)}H${f1(dw / 2 - w * 0.08 + 2)}V0` }),
     s('rect', { class: 't29f-kura-win', x: f1(w * 0.12), y: f1(-wall * 0.82), width: f1(w * 0.06), height: f1(wall * 0.12) }),
     s('path', { class: 't29f-kura-roof', d: eave }),
     s('path', { class: 't29f-kura-tile', d: tiles }),

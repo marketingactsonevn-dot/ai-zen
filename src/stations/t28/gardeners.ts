@@ -394,11 +394,12 @@ export function gardenersScene(ctx: SceneCtx) {
   const yaw0 = tall ? -0.08 : -0.2
   // a tall frame: 45° down (the stage adds 0.13 rad to a tall pitch), the whole tray inside the side gutters
   const VIEW: { pitch: number; fit: [number, number]; target: [number, number, number]; shift: number } = tall
-    ? { pitch: 0.655, fit: [20.6, 12], target: [0, 1.0, 1.6], shift: 0.17 }
-    : { pitch: 0.46, fit: [13.6, 6.2], target: [-0.3, 1.3, -1.3], shift: 0.0 }
+    ? { pitch: 0.62, fit: [14.5, 9.6], target: [0, 1.2, 1.2], shift: 0.06 }
+    : { pitch: 0.46, fit: [13.6, 6.2], target: [-0.3, 1.3, -1.3], shift: 0.07 }
   // the foreground: where the gardener waits (left of the hill on a wide frame, in front of it on a tall one), the stele
-  const HOME: [number, number, number] = tall ? [-3.2, 0, 9.6] : [-6.2, 0, 3.6]
-  const STELE: [number, number] = tall ? [3.1, 9.2] : [6.5, 4.0]
+  // (a phone: the gardener and the stele come nearer — larger in the lower third — under the hill in the upper third)
+  const HOME: [number, number, number] = tall ? [-3.0, 0, 6.6] : [-6.2, 0, 3.6]
+  const STELE: [number, number] = tall ? [3.3, 6.2] : [6.7, 5.0]
   const CAN: [number, number] = tall ? [HOME[0] + 1.6, HOME[2] + 0.5] : [HOME[0] + 1.4, HOME[2] + 0.5]
   const low = ctx.quality === 'low'
   const stepped = low || ctx.reduced
@@ -445,13 +446,14 @@ export function gardenersScene(ctx: SceneCtx) {
     mix('rock-lo', 'rock-mid', 0.6, t.wall.uHi.value)
     t.wall.uMossLo.value.copy(tok['moss-b'])
     t.wall.uMossMid.value.copy(tok['moss-a'])
-    // dry beds: pale sand (--step-mid); wet: dark moss (--moss-b) holding a glint of the moon — a strong change of value
-    mix('step-mid', 'step-lo', dark ? 0.55 : 0.45, t.bed.uDry0.value)
-    t.bed.uDry1.value.copy(tok['step-mid'])
-    mix('step-mid', 'step-hi', dark ? 0.7 : 0.6, t.bed.uDry2.value)
-    mix('moss-b', 'wash', dark ? 0.7 : 0.55, t.bed.uWet0.value)
-    mix('moss-b', 'wash', dark ? 0.35 : 0.25, t.bed.uWet1.value)
-    mix('moss-b', 'moss-a', dark ? 0.15 : 0.3, t.bed.uWet2.value)
+    // dry beds: cushions of moss (--moss-b, its top catching the moon); wet: the moss goes near-black and holds a glint
+    // of the moon (audit v3 28-1) — a strong change of value
+    mix('moss-b', 'moss-a', dark ? 0.15 : 0.25, t.bed.uDry0.value)
+    mix('moss-a', 'step-mid', dark ? 0.15 : 0.2, t.bed.uDry1.value)
+    mix('moss-a', 'step-hi', dark ? 0.4 : 0.5, t.bed.uDry2.value)
+    mix('moss-b', 'wash', dark ? 0.92 : 0.82, t.bed.uWet0.value)
+    mix('moss-b', 'wash', dark ? 0.8 : 0.66, t.bed.uWet1.value)
+    mix('moss-b', 'wash', dark ? 0.6 : 0.45, t.bed.uWet2.value)
     // the lacquer: near-black ink, its sheen the moon
     mix('wash', 'umbra', 0.5, t.tray.uLacq.value)
     if (dark) mix('moon', 'step-hi', 0.3, t.tray.uLacqHi.value)
@@ -626,6 +628,20 @@ export function gardenersScene(ctx: SceneCtx) {
     })
   }
 
+  // H7: after 6 s still, the lever nods 10° toward its pull (until the pour has been seen)
+  const nod = () => {
+    if (!kit || !lever || seen.many || stepped) return
+    const lv = lever
+    let t = 0
+    kit.animate((dt) => {
+      t += dt
+      lv.rotation.z = -Math.sin(Math.min(1, t / 1.1) * Math.PI) * 0.17
+      return t < 1.1
+    })
+  }
+  ctx.el.addEventListener('p2:idle', nod)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', nod))
+
   inkStage(ctx, ctx.art, {
     label: G.art, hint: G.hint, fov: 35, dpr: [1.75, 1], idle: 0, sway: false,
     view: {
@@ -652,7 +668,9 @@ export function gardenersScene(ctx: SceneCtx) {
     mistK()
     mistFx = () => (css(mistU.uMistC.value, getComputedStyle(document.documentElement).getPropertyValue('--mist').trim()), mistK())
     const mistM = new THREE.ShaderMaterial({ vertexShader: MIST_V, fragmentShader: MIST_F, defines, transparent: true, depthWrite: false, uniforms: { ...U0, ...mistU } })
-    for (const [x, y, z, w, hh, ry] of [[-10.2, 0.9, -5.2, 9, 2.6, 0.9], [10.4, 0.9, -5.4, 9, 2.4, -0.9], [0, 0.16, 2.3, 22, 0.55, 0], [0, 4.2, -9.5, 18, 2.2, 0]]) {
+    // (the last three: thin veils drifting over the eight highest rows, art direction "nhạt dần vào fog")
+    for (const [x, y, z, w, hh, ry] of [[-10.2, 0.9, -5.2, 9, 2.6, 0.9], [10.4, 0.9, -5.4, 9, 2.4, -0.9], [0, 0.16, 2.3, 22, 0.55, 0], [0, 4.2, -9.5, 18, 2.2, 0],
+      [-1.2, 3.75, -3.4, 12, 0.7, 0], [1.5, 4.25, -4.8, 10, 0.6, 0], [-0.4, 4.7, -6.2, 8, 0.55, 0]]) {
       const m = new THREE.Mesh(new THREE.PlaneGeometry(w, hh), mistM)
       m.position.set(x, y, z)
       m.rotation.y = yaw0 + ry
@@ -823,25 +841,32 @@ export function gardenersScene(ctx: SceneCtx) {
     rockS.position.y = Y(ROWS) - 0.04
     spring.add(rockS)
     const bam = k.ink('bamboo', { rim: 1.2 })
-    const head = k.mesh(new THREE.CylinderGeometry(0.1, 0.11, 1.0, 9), bam, { parent: spring })
-    head.position.set(feed[0].x + 0.1, feed[0].y + 0.32, feed[0].z - 0.1)
+    // (audit v3 28-1: the head of the flume is a thick bamboo with a wooden lever, plain to see, not a pebble)
+    const head = k.mesh(new THREE.CylinderGeometry(0.2, 0.22, 1.5, 10), bam, { parent: spring })
+    head.position.set(feed[0].x + 0.12, feed[0].y + 0.5, feed[0].z - 0.1)
     head.rotation.z = 0.5
-    const valve = k.mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.34, 10), k.ink('bark'), { parent: spring })
-    valve.position.copy(feed[1]).add(new THREE.Vector3(0, 0.02, 0))
+    const node = k.mesh(new THREE.TorusGeometry(0.21, 0.035, 5, 14), bam, { parent: spring })
+    node.position.copy(head.position)
+    node.rotation.set(Math.PI / 2, 0, 0.5)
+    const valve = k.mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.42, 12), k.ink('bark', { rim: 1.2 }), { parent: spring })
+    valve.position.copy(feed[1]).add(new THREE.Vector3(0, 0.04, 0))
     valve.rotation.x = Math.PI / 2
     lever = new THREE.Group()
-    lever.position.copy(valve.position).add(new THREE.Vector3(0, 0.08, 0))
-    const arm = k.mesh(new THREE.BoxGeometry(0.08, 0.9, 0.08), k.ink('bark', { rim: 1.4 }), { parent: lever })
-    arm.position.y = 0.42
-    const grip = k.mesh(new THREE.BoxGeometry(0.22, 0.08, 0.1), k.ink('bark', { rim: 1.4 }), { parent: lever })
-    grip.position.y = 0.86
+    lever.position.copy(valve.position).add(new THREE.Vector3(0, 0.1, 0))
+    const arm = k.mesh(new THREE.BoxGeometry(0.13, 1.45, 0.13), k.ink('bark', { rim: 1.6 }), { parent: lever })
+    arm.position.y = 0.7
+    const grip = k.mesh(new THREE.BoxGeometry(0.4, 0.14, 0.16), k.ink('bark', { rim: 1.6 }), { parent: lever })
+    grip.position.y = 1.4
     spring.add(lever)
     k.root.add(spring)
     k.root.updateMatrixWorld(true)
     btnMany = k.tappable(spring, G.manyAria, () => go(true))
     btnMany.setAttribute('aria-pressed', 'false')
     dotMany = gd.dot(btnMany, { dir: [0, 1] })
-    k.label(spring, h('p', { class: 't28g-tag' }, G.many), [0.15, 0.12, 0])
+    // the names are part of the targets (audit v3 28-1: a tap on the words was a dead click)
+    const tagMany = h('p', { class: 't28g-tag t28g-hit' }, G.many)
+    tagMany.addEventListener('click', () => go(true))
+    k.label(spring, tagMany, [0.15, 0.12, 0])
     // the crest: a pine leaning toward the moon, a second rock
     if (!k.low) {
       const pn = at(0.2, R[ROWS] - 0.7, 0)
@@ -882,12 +907,16 @@ export function gardenersScene(ctx: SceneCtx) {
     btnOne.setAttribute('aria-pressed', 'false')
     dotOne = gd.dot(btnOne, { dir: [0, -1] })
     // its name is cut on the stone under it (anchored at the stone's foot, set below by CSS), clear of the gardener's head
-    k.label(canRock, h('p', { class: 't28g-tag t28g-under' }, G.one), [0, -0.4, 0.42])
+    // its name: right of the can on a wide frame (clear of the gardener), on the sand under its stone on a tall one
+    const tagOne = h('p', { class: `t28g-tag t28g-hit ${tall ? 't28g-under' : 't28g-over'}` }, G.one)
+    tagOne.addEventListener('click', () => go(false))
+    if (tall) k.label(canRock, tagOne, [0, -0.4, 0.42])
+    else k.label(can, tagOne, [1.25, -0.25, 0])
     const stele = new THREE.Group()
-    const slab = k.mesh(new THREE.BoxGeometry(tall ? 5 : 2.7, tall ? 2.4 : 1.25, 0.2), k.ink('rock', { moss: 0.3 }), { parent: stele })
+    const slab = k.mesh(new THREE.BoxGeometry(tall ? 3.4 : 2.7, tall ? 2.1 : 1.25, 0.2), k.ink('rock', { moss: 0.3 }), { parent: stele })
     slab.position.y = tall ? 1.25 : 0.7
     if (tall) slab.rotation.x = -0.42 // leaning back on its foot, its face toward a camera that looks down 45°
-    const foot = k.mesh(new THREE.BoxGeometry(tall ? 5.3 : 2.95, 0.16, tall ? 0.9 : 0.46), k.ink('rock', { moss: 0.5 }), { parent: stele })
+    const foot = k.mesh(new THREE.BoxGeometry(tall ? 3.7 : 2.95, 0.16, tall ? 0.9 : 0.46), k.ink('rock', { moss: 0.5 }), { parent: stele })
     foot.position.y = 0.07
     stele.position.set(STELE[0], 0, STELE[1])
     stele.rotation.y = yaw0 - 0.25
@@ -933,6 +962,26 @@ export function gardenersScene(ctx: SceneCtx) {
   }).ready.then((k) => {
     if (!k?.stage) return
     const st = k.stage
+    // the first draw uses ~19 programs at once, and each first use reads its link status and uniforms back from the GPU
+    // (three's onFirstUse): ~180 ms in one task at CPU 4×. All of them are compiled (compileAsync) before that draw, so
+    // the draw is spread instead: it starts with a fifth of the garden and brings in a fifth more each frame (about
+    // 80 ms in all, under the scene's fade-in) — each frame pays for the programs it meets first.
+    const parts = k.root.children.slice(), N = 5, was = new Map<THREE.Object3D, boolean>()
+    let reveal = -1
+    st.onFrame(() => {
+      if (reveal >= N) return
+      if (reveal < 0) {
+        if (st.renderer.info.render.frame) return void (reveal = N) // already drawn (a resize / theme redraw)
+        const progs = st.renderer.info.programs
+        if (!progs?.length || progs.some((p) => !(p as unknown as { isReady(): boolean }).isReady())) return // still compiling: this frame does not draw
+        parts.forEach((o, i) => i % N && (was.set(o, o.visible), (o.visible = false)))
+        reveal = 1
+      } else {
+        parts.forEach((o, i) => i % N === reveal && (o.visible = was.get(o) ?? true))
+        reveal++
+      }
+      st.render() // ask for the next frame until the whole garden is in
+    })
     const size = (w: number, hh: number) => {
       const tv = Math.tan((st.camera.fov * Math.PI) / 360), asp = w / hh
       // the haze starts just behind the front rows and swallows the crest a little, whatever the frame (inkStage's fit)

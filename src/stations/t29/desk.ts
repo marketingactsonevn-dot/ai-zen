@@ -16,7 +16,7 @@ const GB = [8, 16, 32, 64]
 const OPEN = [1, 3, 5, 8] // scrolls laid open at each width (as many as fit)
 const PLATES = 10
 // garden units (× k = px): desk height, apron, depth; the inkstone (the chip), the HBM tower, a scroll; the camera distance
-const HD = 66, TA = 14, DD = 200
+const HD = 66, TA = 18, DD = 200
 const INK = { x: 0, z: -44, w: 74, d: 62, t: 12 }
 const TOWER = { x: -72, z: -48, r: 29, gap: 7.5, open: 25, base: 9 }
 const SCR = { w: 100, d: 86 }
@@ -60,12 +60,20 @@ export function deskScene(ctx: SceneCtx) {
 
   // ── the controls and what they say (built once; the layout only moves them)
   const valueText = () => fill(G.valueText, { n: GB[idx] })
-  const boardText = h('span', { class: 't29d-board-text' }, valueText())
+  const boardText = h('span', { class: 'visually-hidden' }, valueText())
+  // the control is a thing on the desk: a wooden pull on its right end (drag it out or in), not a slider chip
   const board = h('div', {
     class: 't29d-board', role: 'slider', tabindex: '0', 'aria-label': G.slider, 'aria-valuemin': '0', 'aria-valuemax': String(GB.length - 1),
     'aria-valuenow': String(idx), 'aria-valuetext': valueText(),
-  }, h('span', { class: 't29d-board-grip', 'aria-hidden': 'true' }), boardText, h('span', { class: 't29d-board-grip', 'aria-hidden': 'true' }))
+  }, s('svg', { class: 't29d-pull', viewBox: '-24 -20 48 40', 'aria-hidden': 'true' },
+    s('path', { class: 't29d-pull-plate', d: 'M-15 -14Q0 -17 15 -14L16 13Q0 16 -16 13Z' }),
+    s('path', { class: 't29d-pull-bar', d: 'M-11 -3Q0 -6 11 -3L11 4Q0 1 -11 4Z' }),
+    s('path', { class: 't29d-pull-ink', d: 'M-11 -3Q0 -6 11 -3M-15 -14Q0 -17 15 -14' }),
+    s('circle', { class: 't29d-pull-nail', cx: -12, cy: -10, r: 1.4 }), s('circle', { class: 't29d-pull-nail', cx: 12, cy: 10, r: 1.4 })), boardText)
+  // the notched rail on the sand before the desk: its right end comes to rest over one notch (H2)
+  const railNotches = GB.map(() => s('g', { class: 't29d-notch' }))
   const msg = h('p', { class: 't29d-msg' })
+  const foreMsg = h('div', { class: 't29d-strip t29d-stake t29d-fore' }, h('div', { class: 't29d-strip-paper' }))
   const tower = h('div', { class: 't29d-hit', role: 'button', tabindex: '0', 'aria-expanded': 'false', 'aria-label': G.towerAria })
   const tag = h('p', { class: 't29d-tag-text' }, G.stackLabel)
   const slip = h('button', { class: 't29d-slip', type: 'button', 'aria-label': `${L.takeaway}: ${card?.title ?? ''}`, hidden: true }, h('span', null, L.takeaway))
@@ -107,7 +115,8 @@ export function deskScene(ctx: SceneCtx) {
       el.style.setProperty('--warm', clamp(1.15 - Math.hypot(x - LAMP.x, z - LAMP.z) / 300, 0, 1).toFixed(2))
     })
     // the carved board sits on the desk's near-right corner and travels with it
-    if (boardAt) boardAt.style.transform = at3((wd / 2 - 30) * k, -HD * k, (DD / 2 - 12) * k)
+    if (boardAt) boardAt.style.transform = at3((wd / 2 + 3) * k, (-HD + TA / 2) * k + 23, (DD / 2 - 46) * k)
+    railNotches.forEach((n, i) => n.classList.toggle('on', i === idx))
     if (slipAt) slipAt.style.transform = at3(-wd * 0.18 * k, 0, (DD / 2 + 70) * k)
     const t = idx / (GB.length - 1)
     root.style.setProperty('--pace', `${(1.5 - t * 1.05).toFixed(2)}s`)
@@ -144,6 +153,7 @@ export function deskScene(ctx: SceneCtx) {
       ctx.insight(G.insights[0] as Fact)
       prompts(2)
       boardDot.done()
+      boardWay.done()
       towerDot = gd.dot(tower, { dir: [0, -1] })
       shift()
       root.classList.add('is-cue') // the tower glows a few times: touch me
@@ -266,7 +276,7 @@ export function deskScene(ctx: SceneCtx) {
     root.style.height = `${f1(H)}px`
     wide = W / H > 1.15
     ;[wmin, wmax] = wide ? [290, 780] : [280, 470]
-    KURA = wide ? { x: -330, z: -1500 } : { x: -260, z: -1300 }
+    KURA = wide ? { x: -20, z: -1500 } : { x: -260, z: -1300 }
     yaw0 = wide ? -26 : -34
     pitch0 = wide ? 19 : 34
     // frame what must be seen at home: the widest desk and its corner board, the rod and lantern, the scribe, the tower;
@@ -274,13 +284,13 @@ export function deskScene(ctx: SceneCtx) {
     const pts: [number, number, number][] = [
       [-wmax / 2, 0, DD / 2], [wmax / 2, 0, DD / 2], [wmax / 2, -HD, -DD / 2], [-wmax / 2, -HD, -DD / 2],
       // on a phone the rod's foot may leave the frame (a near thing cut by the edge); the lantern may not
-      [wmax / 2 - 30, -HD - 40, DD / 2 - 12], wide ? [-(wmax / 2 + 100), 0, LAMP.z] : [-wmax / 2, -HD, 0], [LAMP.x, LAMP.y - 30, LAMP.z], [34, -250, -128],
+      [wmax / 2 + 30, -HD, DD / 2], [wmax / 2 + 56, 0, DD / 2 + 26], wide ? [-(wmax / 2 + 100), 0, LAMP.z] : [-wmax / 2, -HD, 0], [LAMP.x, LAMP.y - 30, LAMP.z], [34, -250, -128],
       [TOWER.x, -HD - TOWER.base - (PLATES - 1) * TOWER.gap - 30, TOWER.z],
     ]
     const pp = pts.map((p) => project(yaw0, pitch0, CAM, p))
     const xs = pp.map((p) => p[0]), ys = pp.map((p) => p[1])
     const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys)
-    const mL = wide ? 16 : 10, mR = (wide ? 76 : 56) + 10, mT = H * 0.05, mB = H * (wide ? 0.04 : 0.06)
+    const mL = wide ? W * 0.1 : 10, mR = (wide ? 40 : 30) + 10, mT = H * 0.05, mB = H * (wide ? 0.04 : 0.06)
     k = Math.min((W - mL - mR) / (x1 - x0), (H - mT - mB) / (y1 - y0), H / 330)
     Pd = CAM * k
     const fx = mL + (W - mL - mR - k * (x1 - x0)) / 2 - k * x0
@@ -312,7 +322,7 @@ export function deskScene(ctx: SceneCtx) {
     drawFg()
     yield
     // ground: raked sand round a moss bed, the stepping stones to the store, the lantern's pool, the desk's shadow
-    const FW = 3400, Z0 = 560, Z1 = -2500
+    const FW = 3600, Z0 = 760, Z1 = -2500
     const floor = plane('t29d-floor', 0, 0, u((Z0 + Z1) / 2), u(FW), u(Z0 - Z1))
     floor.append(floorArt(FW, Z0, Z1))
     R.cam.append(floor)
@@ -427,18 +437,40 @@ export function deskScene(ctx: SceneCtx) {
       s('svg', { viewBox: `${f1(-lr * 3.5)} ${f1(-lr * 0.2)} ${f1(lr * 7)} ${f1(lr * 7)}`, 'aria-hidden': 'true' }, paperLantern(0, 0, lr, 2905, lr * 1.2)))
     lC.style.top = '0px'
     R.bill(lC)
-    // the message strip hangs from the rod, left of the lantern
-    // the message strip: hung from the rod (wide), or a tanzaku on a stake in the moss before the desk (tall)
-    const mp: Pt = wide ? rodPts[17] : [-wmin / 2 - 10, -96]
-    const [mA, mC] = billboard(`t29d-strip${wide ? '' : ' t29d-stake'}`, u(mp[0]), u(mp[1]), u(wide ? LAMP.z : DD / 2 + 150), wide ? 190 : 156, 10, h('div', { class: 't29d-strip-paper' }, msg))
-    mC.style.top = '0px'
-    mC.style.height = 'auto'
-    R.bill(mC)
-    R.cam.append(rod, lA, mA)
+    // what the width means: carved along the desk's front apron (wide), or on a wooden board staked in the moss (tall)
+    let mA: HTMLElement | null = null
+    if (wide) {
+      foreMsg.remove()
+      mA = stand('t29d-carved', 0, u(-HD + TA), u(DD / 2) + 0.8, u(wmin - 26), u(TA))
+      mA.append(msg)
+      msg.style.fontSize = `${f1(clamp(u(TA) * 0.62, 10, 13))}px`
+    } else {
+      // the phone frame has no room on the apron: a board on a stake in the near sand, under the desk
+      msg.style.fontSize = ''
+      foreMsg.firstChild!.appendChild(msg)
+      if (!foreMsg.isConnected) root.append(foreMsg)
+    }
+    // the notched rail standing on the sand before the desk's right half: one notch per RAM size, where the desk's end
+    // comes to rest; the name of the scale carved at its left
+    const ra = -30, rb = wmax / 2 + 56, rz = DD / 2 + 26, rhh = wide ? 24 : 30
+    const rail = stand('t29d-rail', u((ra + rb) / 2), 0, u(rz), u(rb - ra), u(rhh))
+    const rlw = u(rb - ra), rht = u(rhh), fsz = clamp(rht * 0.46, 9, 13)
+    rail.append(s('svg', { viewBox: `0 0 ${f1(rlw)} ${f1(rht)}`, 'aria-hidden': 'true' },
+      s('path', { class: 't29d-rail-grain', d: stroke([[4, rht * 0.3], [rlw * 0.5, rht * 0.28], [rlw - 4, rht * 0.32]], 0.8, 0.3, 0.3, 0.2) + stroke([[rlw * 0.1, rht * 0.72], [rlw * 0.9, rht * 0.7]], 0.8, 0.3, 0.3, 0.2) }),
+      s('text', { class: 't29d-rail-name', x: f1(u(8)), y: f1(rht * 0.66), 'font-size': f1(fsz) }, `${G.rail} (${G.unit})`),
+      ...GB.map((n, i) => {
+        const x = u(wOf(i) / 2 - ra)
+        railNotches[i].replaceChildren(
+          s('path', { class: 't29d-notch-cut', d: `M${f1(x - rht * 0.18)} 0L${f1(x)} ${f1(rht * 0.32)}L${f1(x + rht * 0.18)} 0Z` }),
+          s('text', { class: 't29d-notch-n', x: f1(x), y: f1(rht * 0.8), 'text-anchor': 'middle', 'font-size': f1(fsz) }, String(n)))
+        return railNotches[i]
+      })))
+    const railSh = plane('t29d-rail-sh', u((ra + rb) / 2 + 10), -0.4, u(rz + 6), u(rb - ra + 20), u(18))
+    R.cam.append(rod, lA, ...(mA ? [mA] : []), railSh, rail)
     yield
     // the runner on the stones (high quality only; CSS walks him there and back while the desk is narrow)
     const path = stonePath()
-    const rh = u(44)
+    const rh = Math.max(40, u(58))
     const [rA, rC] = billboard('t29d-runner', 0, 0, 0, rh, rh * 1.1, s('svg', { viewBox: `${f1(-rh / 2)} ${f1(-rh * 1.1)} ${f1(rh)} ${f1(rh * 1.1)}`, 'aria-hidden': 'true' }, runner(rh)))
     const way = [path[0], path[3], path[6], path[path.length - 1]]
     way.forEach(([x, z], i) => rA.style.setProperty(`--p${i}`, at3(u(x), 0, u(z))))
@@ -446,7 +478,7 @@ export function deskScene(ctx: SceneCtx) {
     R.bill(rC)
     R.cam.append(rA)
     // the controls, in reading order: the board, the tower (above), the slip
-    const [bA, bC] = billboard('t29d-boardcard', 0, 0, 0, wide ? 152 : 112, wide ? 46 : 42, board)
+    const [bA, bC] = billboard('t29d-boardcard', 0, 0, 0, 52, 46, board)
     boardAt = bA
     R.bill(bC)
     const [slA, slC] = billboard('t29d-slipcard', 0, 0, 0, Math.max(96, u(110)), Math.max(40, u(46)), slip)
@@ -461,6 +493,11 @@ export function deskScene(ctx: SceneCtx) {
   const prompts = gd.steps(G.prompts)
   prompts(0)
   const boardDot = gd.dot(board, { dir: [1, 0] })
+  const boardWay = gd.gesture('drag-h', board, { r: 34 })
+  // H7: the pull is tugged out a little and slides back
+  const invite = () => stage === 0 && !ctx.reduced && board.animate([{ translate: '0 0' }, { translate: '10px 0' }, { translate: '0 0' }], { duration: 800, easing: 'ease-in-out' })
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', invite))
   let towerDot: ReturnType<typeof gd.dot> | null = null
 
   // ── paintings
@@ -476,6 +513,8 @@ export function deskScene(ctx: SceneCtx) {
       // a cloud bank across the moon's lower edge (garden 10: the moon half hidden)
       s('path', { class: 't29d-cloud', d: blob(mx + mr * 1.6, my + mr * 0.85, mr * 3.2, mr * 0.42, 2932, 0.2, 18) + blob(mx - mr * 2.4, my + mr * 1.3, mr * 2.4, mr * 0.3, 2933, 0.2, 14) }),
       mist(span / 2, hz - H * 0.06, span * 0.6, H * 0.16),
+      // the plain the garden lies in, under the far hills (the floor plane melts into it: no edge to the world)
+      s('rect', { class: 't29d-plain', x: 0, y: f1(hz + H * 0.01), width: f1(span), height: f1(H) }),
       hills(0, span, hz + H * 0.02, H * 0.2, 2934, 0.92, 7),
       hills(span * 0.08, span * 0.62, hz + H * 0.03, H * 0.12, 2935, 0.7, 3),
       hills(span * 0.55, span, hz + H * 0.03, H * 0.09, 2936, 0.75, 2),
@@ -494,7 +533,8 @@ export function deskScene(ctx: SceneCtx) {
   }
   // the stepping stones from the desk's left front into the mist, up to the store's door
   function stonePath(): Pt[] {
-    return curve([-wmax / 2 + 60, DD / 2 + 70], [-wmax / 2 - 260, -360], [KURA.x + 30, KURA.z + 110], 11)
+    // from the desk's right end, out round the moss and back into the mist to the store's lit door
+    return curve([wmax / 2 + 80, 20], [wmax / 2 + 330, -620], [KURA.x + 40, KURA.z + 120], 12)
   }
   function floorArt(FW: number, Z0: number, Z1: number): SVGElement {
     const u = (n: number) => n * k
@@ -532,6 +572,25 @@ export function deskScene(ctx: SceneCtx) {
       const a = r() * Math.PI * 2, d = Math.sqrt(r()) * 0.98
       tips += `M${f1(X(Math.cos(a) * ex * d))} ${f1(Z(20 + Math.sin(a) * ez * d))}h${f1(u(2 + r() * 3))}`
     }
+    // pebbles in the earth edge, tufts of grass along the moss's rim, a few stones half sunk in the moss
+    let rimPebbles = '', rimTufts = ''
+    for (let i = 0; i < 70; i++) {
+      const a = r() * Math.PI * 2, d = 1.06 + r() * 0.12
+      rimPebbles += blob(X(Math.cos(a) * ex * d), Z(22 + Math.sin(a) * ez * d), u(3 + r() * 7), u(2 + r() * 4), 2990 + i, 0.25, 8)
+    }
+    for (let i = 0; i < 90; i++) {
+      const a = r() * Math.PI * 2, d = 1.02 + r() * 0.06
+      const x = X(Math.cos(a) * ex * d), z = Z(20 + Math.sin(a) * ez * d), l = u(8 + r() * 10)
+      rimTufts += stroke([[x, z], [x + (r() - 0.5) * l * 0.5, z + l]], u(1.6 + r()), 0.1, 0.6, 0.2)
+    }
+    const bedStones: SVGElement[] = []
+    for (const [bx, bz, br] of [[-0.82, 0.3, 40], [0.75, -0.55, 30], [-0.4, -0.86, 26], [0.9, 0.42, 22]] as const) {
+      const x = bx * ex, z = 20 + bz * ez
+      bedStones.push(
+        s('path', { class: 't29d-st-sh', d: blob(X(x + br * 0.4), Z(z + br * 0.3), u(br * 1.1), u(br * 0.8), 3000 + br, 0.12, 12) }),
+        s('path', { class: 't29d-st-side', d: blob(X(x), Z(z + br * 0.18), u(br), u(br * 0.72), 3001 + br, 0.12, 12) }),
+        s('path', { class: 't29d-st-face', d: blob(X(x), Z(z), u(br), u(br * 0.72), 3001 + br, 0.12, 12) }))
+    }
     // stepping stones: side, face, the moon's rim on their far-left edge
     const stones: SVGElement[] = []
     stonePath().forEach(([x, z], i) => {
@@ -546,7 +605,12 @@ export function deskScene(ctx: SceneCtx) {
     return s('svg', { viewBox: `0 0 ${f1(u(FW))} ${f1(u(FD))}`, 'aria-hidden': 'true' },
       s('path', { class: 't29d-grain', d: grain }),
       s('path', { class: 't29d-ring', d: rings }),
+      // the bed's earth edge: a band of dark soil, pebbles scattered in it
+      s('path', { class: 't29d-soil', d: blob(X(0), Z(24), u(ex * 1.16), u(ez * 1.18), 2949, 0.09, 40) }),
+      s('path', { class: 't29d-pebbles', d: rimPebbles }),
       ...[1.08, 1, 0.9, 0.78].map((q, i) => s('path', { class: `t29d-moss t29d-moss-${i}`, d: blob(X(0), Z(20), u(ex * q), u(ez * q), 2953 + i, 0.07, 36) })),
+      s('path', { class: 't29d-rimtuft', d: rimTufts }),
+      ...bedStones,
       s('path', { class: 't29d-moss-dark', d: clumps }),
       s('path', { class: 't29d-moss-tip', d: tips }),
       ...stones,

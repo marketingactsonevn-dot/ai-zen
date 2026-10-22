@@ -107,13 +107,6 @@
         "source": "t30-glasswing",
         "claimBy": "Anthropic"
       },
-      "debateLabel": "Open questions",
-      "debate": {
-        "text": "Who chooses who gets inside the fence, and who checks what the company says about its own model?",
-        "asOf": "2026-10-15",
-        "source": "editorial",
-        "kind": "opinion"
-      },
       "insight": {
         "text": "The lamp is the model, the cracks are software flaws. It finds them too well, so the company hands the lamp only to vetted flaw-fixers.",
         "asOf": "2026-10-15",
@@ -121,7 +114,7 @@
         "kind": "opinion"
       },
       "detail": {
-        "text": "In 2026 Anthropic (Mythos Preview) and Google (Fairwind) both did this.",
+        "text": "In 2026 Anthropic (Mythos Preview) and Google (Fairwind) both did this. The open question: who chooses who gets inside the fence, and who checks what the company says about its own model?",
         "asOf": "2026-10-15",
         "source": "editorial",
         "kind": "opinion"

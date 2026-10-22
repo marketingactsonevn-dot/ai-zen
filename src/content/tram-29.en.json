@@ -27,6 +27,8 @@
       "closePrompt": "Touch again to stack the plates back",
       "slider": "Your computer’s RAM (the width of the desk)",
       "valueText": "Your computer’s RAM: {n} GB",
+      "rail": "Your RAM",
+      "unit": "GB",
       "small": "Cramped desk: data has to go to the storehouse (the drive) and come back",
       "large": "Wide desk: all the data within reach",
       "stackLabel": "HBM · layers of memory chips stacked right by the AI chip",
@@ -190,8 +192,8 @@
     },
     "refill": {
       "label": "When will the wells refill?",
-      "art": "Eye level with a dry well's curb, a great sky above is the stage. Three stones on the curb, each bringing its weather: heat shimmer over a clear sky and a cracking curb; masons raising a fab on a far hill under a cloud just forming; rain clouds rolling in, and the moon's reflection in the well at last, still trembling, not yet round.",
-      "prompt": "Touch each stone on the well’s rim",
+      "art": "A dry well in the near corner, a great sky above it is the stage. Three stones stand on along the curve of its curb, farther and farther toward the horizon, each bringing its weather: heat shimmer over a clear sky and a cracking curb; masons raising a fab on a far hill under a cloud just forming; rain clouds rolling in, and the moon's reflection in the well at last, still trembling, not yet round.",
+      "prompt": "Touch each stone round the dry well",
       "stoneNames": [
         "J.P. Morgan",
         "SK hynix",

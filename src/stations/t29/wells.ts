@@ -26,54 +26,68 @@ interface Geo {
   /** the sluice: x, the slab's foot y, the slab w × h */
   gate: { x: number; y: number; w: number; h: number }
   wells: Well[]
-  /** the notice board: left, the foot of its posts, width */
-  board: { x: number; y: number; w: number }
+  /** the memory-chip factory on the far right hill: foot centre, width */
+  factory: { x: number; y: number; w: number }
+  /** the flume from the factory down to the gate: its waypoints (trestles under each) */
+  flume: Pt[]
+  /** the run to the lake: from the gate over the brow and down into the water */
+  run: Pt[]
+  /** the stone on the brow that names the lake: foot centre, width */
+  sign: { x: number; y: number; w: number }
+  /** where the news is written in the sky: left, top, width */
+  say: { x: number; y: number; w: number }
 }
 
-/** Where everything stands (px in the art): a landscape and a portrait composition of the same hill. Nothing symmetric:
- *  the sluice sits in the brow's dip left of centre, each pipe takes its own way round the ground to it. */
+/** Where everything stands (px in the art): a landscape and a portrait composition of the same hill. The lake fills the
+ *  band under the far hills; the factory stands on the right hill and feeds the sluice at the right third by a flume; the
+ *  wells lie on a curve, the phone's near left and biggest, the laptop's in the middle, the graphics card's far right. */
 function geo(W: number, H: number): Geo {
   const wide = W / H > 1.15
   const X = (k: number) => k * W, Y = (k: number) => k * H
-  // a well of radius r at (x, y), pulled up so its carved name stays inside the frame; via = the pipe's waypoints
   const well = (x: number, y: number, r: number, i: number, via: Pt[]): Well => {
     const ry = r * 0.6, hc = r * 0.3
-    // the near wells may be cut by the frame's foot, but the name carved on the front of the rim stays in
     return { cx: X(x), cy: Math.min(Y(y), H * 0.965 - ry * 0.87 - 6), rx: r, ry, hc, i, via: via.map(([a, b]) => [X(a), Y(b)] as Pt) }
   }
+  const pts = (a: Pt[]) => a.map(([x, y]) => [X(x), Y(y)] as Pt)
   if (wide) {
-    const r = Math.min(X(0.096), Y(0.19))
-    const sw = clamp(X(0.068), 84, 116)
+    const sw = clamp(X(0.062), 80, 110)
     return {
       W, H, wide,
-      moon: [X(0.62), Y(0.1), Math.min(W, H) * 0.036],
-      hz: Y(0.31),
-      lake: { cx: X(0.47), cy: Y(0.405), rx: X(0.2), ry: Y(0.034) },
-      // the brow dips hard where the sluice stands: the notch the water goes down through
-      brow: ([[-0.02, 0.47], [0.12, 0.488], [0.25, 0.525], [0.35, 0.567], [0.41, 0.598], [0.44, 0.608], [0.48, 0.597], [0.56, 0.566], [0.68, 0.53], [0.84, 0.498], [1.02, 0.47]] as Pt[]).map(([x, y]) => [X(x), Y(y)]),
-      gate: { x: X(0.44), y: Y(0.655), w: sw, h: sw * 0.56 },
+      moon: [X(0.5), Y(0.085), Math.min(W, H) * 0.034],
+      hz: Y(0.215),
+      lake: { cx: X(0.36), cy: Y(0.3), rx: X(0.3), ry: Y(0.052) },
+      brow: pts([[-0.02, 0.43], [0.14, 0.44], [0.3, 0.452], [0.46, 0.47], [0.56, 0.49], [0.64, 0.5], [0.72, 0.49], [0.82, 0.46], [0.92, 0.44], [1.02, 0.43]]),
+      gate: { x: X(0.655), y: Y(0.6), w: sw, h: sw * 0.56 },
       wells: [
-        well(0.15, 0.79, r, 0, [[0.19, 0.67], [0.27, 0.7], [0.35, 0.675]]),
-        well(0.83, 0.8, r * 1.04, 2, [[0.77, 0.68], [0.68, 0.715], [0.58, 0.7], [0.5, 0.675]]),
-        well(0.54, 0.92, r * 1.18, 1, [[0.53, 0.775], [0.48, 0.74], [0.455, 0.705]]),
+        well(0.19, 0.8, Math.min(X(0.11), Y(0.21)), 0, [[0.3, 0.7], [0.45, 0.66], [0.58, 0.635]]),
+        well(0.43, 0.67, Math.min(X(0.072), Y(0.14)), 1, [[0.52, 0.645], [0.6, 0.625]]),
+        well(0.86, 0.62, Math.min(X(0.055), Y(0.11)), 2, [[0.78, 0.63], [0.71, 0.62]]),
       ],
-      board: { x: X(0.6), y: Y(0.565), w: clamp(X(0.19), 236, 290) },
+      factory: { x: X(0.865), y: Y(0.3), w: X(0.17) },
+      flume: pts([[0.8, 0.31], [0.765, 0.36], [0.735, 0.42], [0.705, 0.49], [0.68, 0.56]]),
+      run: pts([[0.63, 0.56], [0.605, 0.525], [0.585, 0.496], [0.57, 0.345]]),
+      sign: { x: X(0.13), y: Y(0.452), w: clamp(X(0.16), 180, 240) },
+      say: { x: X(0.68), y: Y(0.035), w: clamp(X(0.29), 300, 400) },
     }
   }
-  const r = Math.min(X(0.18), Y(0.125))
+  const sw = X(0.21)
   return {
     W, H, wide,
-    moon: [X(0.8), Y(0.07), W * 0.05],
-    hz: Y(0.22),
-    lake: { cx: X(0.6), cy: Y(0.3), rx: X(0.36), ry: Y(0.022) },
-    brow: ([[-0.02, 0.355], [0.2, 0.375], [0.38, 0.415], [0.5, 0.448], [0.6, 0.428], [0.8, 0.39], [1.02, 0.365]] as Pt[]).map(([x, y]) => [X(x), Y(y)]),
-    gate: { x: X(0.56), y: Y(0.49), w: X(0.16), h: X(0.1) },
+    moon: [X(0.14), Y(0.215), W * 0.045],
+    hz: Y(0.24),
+    lake: { cx: X(0.4), cy: Y(0.3), rx: X(0.42), ry: Y(0.03) },
+    brow: pts([[-0.02, 0.385], [0.2, 0.39], [0.4, 0.4], [0.55, 0.415], [0.7, 0.41], [0.85, 0.395], [1.02, 0.385]]),
+    gate: { x: X(0.6), y: Y(0.52), w: sw, h: sw * 0.6 },
     wells: [
-      well(0.2, 0.63, r, 0, [[0.3, 0.56], [0.4, 0.52]]),
-      well(0.8, 0.655, r * 1.04, 2, [[0.72, 0.57], [0.6, 0.53]]),
-      well(0.47, 0.87, r * 1.35, 1, [[0.52, 0.72], [0.47, 0.6], [0.5, 0.53]]),
+      well(0.3, 0.83, X(0.24), 0, [[0.36, 0.68], [0.5, 0.58], [0.56, 0.55]]),
+      well(0.2, 0.58, X(0.13), 1, [[0.36, 0.55], [0.5, 0.535]]),
+      well(0.84, 0.62, X(0.1), 2, [[0.76, 0.58], [0.68, 0.55]]),
     ],
-    board: { x: X(0.035), y: Y(0.395), w: X(0.36) },
+    factory: { x: X(0.8), y: Y(0.315), w: X(0.36) },
+    flume: pts([[0.7, 0.33], [0.67, 0.39], [0.645, 0.45], [0.63, 0.49]]),
+    run: pts([[0.56, 0.48], [0.535, 0.44], [0.515, 0.404], [0.5, 0.318]]),
+    sign: { x: X(0.26), y: Y(0.392), w: X(0.46) },
+    say: { x: X(0.05), y: Y(0.02), w: X(0.9) },
   }
 }
 
@@ -83,7 +97,7 @@ function geo(W: number, H: number): Geo {
  * in the dip of the brow: one source feeding both jointed bamboo kakehi out to the wells and, beyond the brow, the great
  * lake (AI data centres, named on its shore) at the bottom of the misty valley. Drag the sluice's slab up (or press it):
  * each lift is a long-term contract, twice: the run to the lake thickens and lights another row of halls, the runs to the
- * wells thin and their water sinks into the shaft until the bottoms are moss. The news arrives on a notice board.
+ * wells thin and their water sinks into the shaft until the bottoms are moss. The news is written in the sky, no card.
  */
 export function wellsScene(ctx: SceneCtx) {
   t29Defs()
@@ -95,19 +109,20 @@ export function wellsScene(ctx: SceneCtx) {
   const nearBack = s('svg', { 'aria-hidden': 'true' })
   const nearFront = s('svg', { 'aria-hidden': 'true' })
   const slab = h('button', { class: 't29w-slab', type: 'button', 'aria-label': G.gateAria }, h('span', { class: 't29w-slab-text' }, G.gate))
-  const noteBody = h('div', { class: 't29w-notice-body' })
-  const notice = h('div', { class: 't29w-notice' }, noteBody)
-  const near = layer('near', nearBack, slab, nearFront, notice)
+  const noteBody = h('div', { class: 't29w-say-body' })
+  const notice = h('div', { class: 't29w-say' }, noteBody)
+  const near = layer('near', nearBack, slab, nearFront)
   const layers = [layer('sky', sky), layer('valley', valley), layer('ground', ground), near]
   const sr = h('ul', { class: 'visually-hidden' })
-  const root = h('div', { class: 't29w', role: 'group', 'aria-label': G.art }, ...layers, sr)
+  const root = h('div', { class: 't29w', role: 'group', 'aria-label': G.art }, ...layers, notice, sr)
   ctx.art.append(root)
   const stableH = stableHeight(ctx, [G.insight as Fact])
   ctx.prompt(G.prompt)
   const gd = guide(ctx)
   const pull1 = gd.dot(slab, { dir: [0, -1] })
   const arrowUp = gd.gesture('drag-v', slab, { r: 30 })
-  const contracts = gd.count(G.countTpl, LEVELS.length - 1, () => (g ? [g.gate.x + g.gate.w * 0.95, g.gate.y + g.gate.h * 0.45] : [0, 0]))
+  const contracts = gd.count(G.countTpl, LEVELS.length - 1, () => (g ? [g.gate.x, g.gate.y + g.gate.h * 0.56] : [0, 0]))
+  contracts.el.classList.add('t29w-count')
   // H7: the slab twitches up a few px and drops back
   const invite = () => lv < LEVELS.length - 1 && !ctx.reduced && slab.animate([{ translate: '0 0' }, { translate: '0 -5px', offset: 0.35 }, { translate: '0 0' }], { duration: 650, easing: 'ease-in' })
   ctx.el.addEventListener('p2:idle', invite)
@@ -220,9 +235,9 @@ export function wellsScene(ctx: SceneCtx) {
     root.style.height = `${f1(H)}px`
     g = geo(W, H)
     for (const svg of [sky, valley, ground, nearBack, nearFront]) svg.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
-    const { gate, board } = g
+    const { gate, say } = g
     Object.assign(slab.style, { left: `${f1(gate.x - gate.w / 2)}px`, top: `${f1(gate.y - gate.h)}px`, width: `${f1(gate.w)}px`, height: `${f1(gate.h)}px` })
-    Object.assign(notice.style, { left: `${f1(board.x)}px`, bottom: `${f1(H - board.y)}px`, width: `${f1(board.w)}px` })
+    Object.assign(notice.style, { left: `${f1(say.x)}px`, top: `${f1(say.y)}px`, width: `${f1(say.w)}px` })
     root.classList.toggle('tall', !g.wide)
     const had = document.activeElement === slab
     job?.cancel()
@@ -265,104 +280,98 @@ function skyArt({ W, H, moon: [mx, my, mr], hz }: Geo): SVGElement[] {
   ]
 }
 
-/** The valley: two flanks falling into it, the lake at its bottom with the data-centre halls on the far shore (a row of
- *  lamps per level, doubled in the water), the far end of the kakehi pouring in, mist hiding the drop below the brow. */
+/** The valley: the great lake filling the band under the far hills, the data-centre halls along its far shore in three
+ *  terraces (one more lit per contract, every light doubled straight down in the water), the moon's broken road; the right
+ *  hill rising to the memory-chip factory (its name on its wall, a spout feeding the flume); the run to the lake going down
+ *  the far slope and pouring in; mist hiding the drop below the brow. */
 function valleyArt(g: Geo): { els: SVGElement[]; rows: SVGElement[][]; lake: SVGGElement } {
-  const { W, H, lake: L, hz, moon: [mx] } = g
+  const { W, H, lake: L, moon: [mx], wide } = g
   const q = rng(2930)
-  // the halls of the data centre: long low blocks on the far shore and on terraces above it, windows lit by CSS
   const rows: SVGElement[][] = []
   const halls: SVGElement[] = []
   const refl: SVGElement[] = []
-  for (let row = 0; row < 4; row++) {
-    const y = L.cy - L.ry * 0.82 - row * H * (g.wide ? 0.013 : 0.011)
-    const span = L.rx * (0.66 - row * 0.08)
-    const n = 5 + row
+  for (let row = 0; row < 3; row++) {
+    const y = L.cy - L.ry * 0.78 - row * H * (wide ? 0.017 : 0.013)
+    const span = L.rx * (0.7 - row * 0.1), x0 = L.cx - L.rx * 0.08 - span
+    const n = (wide ? 7 : 5) + row
     let walls = '', roofs = '', wins = '', lamps = '', rf = ''
     for (let j = 0; j < n; j++) {
-      const hw = (span * 2 * (0.6 + q() * 0.3)) / n, hh = H * (0.011 + q() * 0.005) * (1 - row * 0.12)
-      const x = L.cx - span + ((span * 2) * (j + 0.5)) / n - hw / 2 + (q() - 0.5) * 6
+      const hw = (span * 2 * (0.62 + q() * 0.3)) / n, hh = H * (0.014 + q() * 0.008) * (1 - row * 0.1)
+      const x = x0 + ((span * 2) * (j + 0.5)) / n - hw / 2 + (q() - 0.5) * 6
       walls += `M${f1(x)} ${f1(y)}h${f1(hw)}v${f1(-hh)}h${f1(-hw)}Z`
-      roofs += `M${f1(x - 1.5)} ${f1(y - hh)}h${f1(hw + 3)}l${f1(-hw * 0.06)} ${f1(-hh * 0.35)}h${f1(-hw * 0.88 - 3)}Z`
-      const nw = Math.max(3, Math.round(hw / 7))
-      for (let k = 0; k < nw; k++) wins += `M${f1(x + hw * 0.08 + ((hw * 0.84) * k) / nw)} ${f1(y - hh * 0.62)}h${f1((hw * 0.84) / nw * 0.55)}v${f1(hh * 0.26)}h${f1(-(hw * 0.84) / nw * 0.55)}Z`
-      // the reflection: broken warm streaks straight down into the water (only the shore row sits on it; the terraces' fall
-      // behind the shore row's own)
-      const len = L.ry * (1.1 + q() * 0.6) * (1 - row * 0.15)
-      for (let k = 0; k < 3; k++) {
+      roofs += `M${f1(x - 1.5)} ${f1(y - hh)}h${f1(hw + 3)}l${f1(-hw * 0.06)} ${f1(-hh * 0.3)}h${f1(-hw * 0.88 - 3)}Z`
+      const nw = Math.max(3, Math.round(hw / 8))
+      for (let k = 0; k < nw; k++) if (q() > 0.15) wins += `M${f1(x + hw * 0.08 + ((hw * 0.84) * k) / nw)} ${f1(y - hh * 0.62)}h${f1(((hw * 0.84) / nw) * 0.5)}v${f1(hh * 0.28)}h${f1(-((hw * 0.84) / nw) * 0.5)}Z`
+      if (row === 0) for (let k = 0; k < 3; k++) {
         const xx = x + hw * (0.2 + k * 0.3)
-        rf += stroke([[xx, L.cy - L.ry * 0.7 + k], [xx + (q() - 0.5) * 2, L.cy - L.ry * 0.7 + len]], Math.max(1.2, hw * 0.08), 0.05, 0.7, 0.1)
+        rf += stroke([[xx, L.cy - L.ry * 0.62 + k], [xx + (q() - 0.5) * 2, L.cy - L.ry * 0.62 + L.ry * (0.8 + q() * 0.7)]], Math.max(1.2, hw * 0.07), 0.05, 0.7, 0.1)
       }
     }
-    // the lamp line along the shore under the halls
-    for (let x = L.cx - span; x < L.cx + span; x += W * 0.009 + q() * W * 0.006) lamps += `M${f1(x)} ${f1(y + 1.6)}h${f1(1.8)}`
-    const wall = s('path', { class: 't29w-hall', d: walls })
-    const roof = s('path', { class: 't29w-hall-roof', d: roofs })
+    for (let x = x0; x < x0 + span * 2; x += W * 0.011 + q() * W * 0.006) lamps += `M${f1(x)} ${f1(y + 1.6)}h${f1(1.8)}`
+    const glow = s('ellipse', { class: 't29w-row-glow', cx: f1(x0 + span), cy: f1(y - H * 0.006), rx: f1(span * 1.05), ry: f1(H * 0.022), fill: 'url(#t29-lamp)' })
     const win = s('path', { class: 't29w-win', d: wins })
     const lamp = s('path', { class: 't29w-lamps', d: lamps })
-    const glow = s('ellipse', { class: 't29w-row-glow', cx: f1(L.cx), cy: f1(y - H * 0.004), rx: f1(span * 1.05), ry: f1(H * 0.018), fill: 'url(#t29-lamp)' })
     const rfl = s('path', { class: 't29w-refl', d: rf })
-    halls.unshift(s('g', { class: `t29w-row t29w-row-${row}` }, wall, roof, glow, win, lamp)) // farther rows behind
+    halls.unshift(s('g', { class: `t29w-row t29w-row-${row}` }, s('path', { class: 't29w-hall', d: walls }), s('path', { class: 't29w-hall-roof', d: roofs }), glow, win, lamp))
     refl.push(rfl)
     rows.push([glow, win, lamp, rfl])
   }
-  // the moon's road on the lake (the moon stands above its right half), ripples, the far shore's dark edge
   let road = ''
-  for (let y = L.cy - L.ry * 0.6; y < L.cy + L.ry * 0.95; y += L.ry * (0.16 + q() * 0.12)) {
-    const near = (y - L.cy + L.ry) / (2 * L.ry), len = L.rx * (0.04 + near * 0.08) * (0.6 + q())
-    const x = mx + (q() - 0.5) * L.rx * 0.12 - len / 2
-    road += stroke([[x, y], [x + len, y + (q() - 0.5)]], L.ry * (0.06 + near * 0.08), 0.25, 0.25, 0.1)
+  for (let y = L.cy - L.ry * 0.5; y < L.cy + L.ry * 0.95; y += L.ry * (0.12 + q() * 0.1)) {
+    const near = (y - L.cy + L.ry) / (2 * L.ry), len = L.rx * (0.03 + near * 0.07) * (0.6 + q())
+    const x = mx + (q() - 0.5) * L.rx * 0.1 - len / 2
+    road += stroke([[x, y], [x + len, y + (q() - 0.5)]], L.ry * (0.05 + near * 0.06), 0.25, 0.25, 0.1)
   }
   let rip = ''
-  for (let i = 0; i < 26; i++) {
-    const y = L.cy + (q() - 0.4) * L.ry * 1.6, len = L.rx * (0.03 + q() * 0.08)
+  for (let i = 0; i < 40; i++) {
+    const y = L.cy + (q() - 0.35) * L.ry * 1.5, len = L.rx * (0.02 + q() * 0.06)
     const x = L.cx + (q() - 0.5) * L.rx * 1.6
     rip += stroke([[x, y], [x + len, y + (q() - 0.5)]], 0.8 + q(), 0.3, 0.3, 0.1)
   }
-  const water = blob(L.cx, L.cy, L.rx, L.ry, 2931, 0.03, 32)
+  const water = blob(L.cx, L.cy, L.rx, L.ry, 2931, 0.03, 36)
   const lake = s('g', { class: 't29w-lake', style: `transform-origin:${f1(L.cx)}px ${f1(L.cy - L.ry)}px` },
     s('path', { class: 't29w-water', d: water, filter: 'url(#ink-wash)' }),
     s('path', { class: 'p2p-road', d: road }),
     s('path', { class: 'p2p-ripple', d: rip }),
     ...refl)
-  // the far end of the kakehi: down the right flank from behind the brow to the lake, pouring in
-  const gx = g.gate.x, top: Pt = [gx + W * 0.07, g.brow[Math.floor(g.brow.length / 2)][1] - H * 0.035]
-  const end: Pt = [L.cx + L.rx * 0.5, L.cy + L.ry * 0.7]
-  const fp = curve(top, [top[0] + W * 0.05, (top[1] + end[1]) / 2], end, 6)
-  let far = '', stakes = ''
-  for (let i = 0; i < fp.length - 1; i++) {
-    far += stroke([fp[i], [fp[i + 1][0], fp[i + 1][1] + 1.2]], Math.max(1.6, H * 0.004), 0.02, 0.02, 0.6)
-    stakes += `M${f1(fp[i + 1][0] - 2)} ${f1(fp[i + 1][1] + H * 0.012)}L${f1(fp[i + 1][0] + 1)} ${f1(fp[i + 1][1])}L${f1(fp[i + 1][0] + 3)} ${f1(fp[i + 1][1] + H * 0.012)}`
-  }
-  const spill = stroke([[end[0] - 2, end[1]], [end[0] - 2.4, end[1] + L.ry * 0.5]], Math.max(1.4, H * 0.003), 0.1, 0.4, 0.3)
-  let pebbles = ''
-  for (let i = 0; i < 40; i++) {
-    const a = Math.PI * (0.05 + q() * 0.9)
-    pebbles += blob(L.cx + Math.cos(a) * L.rx * (1 + q() * 0.04), L.cy + Math.sin(a) * L.ry * (1.05 + q() * 0.2), 2 + q() * 4, 1 + q() * 1.6, 2933 + i, 0.2, 7)
-  }
-  // the far shore the halls stand on: a low dark bank along the back of the lake
-  const shore = blob(L.cx, L.cy - L.ry * 0.86, L.rx * 0.74, L.ry * 0.3, 2937, 0.08, 24)
-  // the valley's sides: one ink hill each, their crowns off the frame, their flanks running down into the water
-  const base = L.cy + L.ry * 0.5, hh = base - (hz - H * (g.wide ? 0.16 : 0.1))
+  const shore = blob(L.cx - L.rx * 0.08, L.cy - L.ry * 0.82, L.rx * 0.8, L.ry * 0.28, 2937, 0.08, 24)
+  // the right hill and the factory on its shoulder
+  const F = g.factory
+  const hillR = `M${f1(F.x - F.w * (wide ? 1.6 : 1.2))} ${f1(H * 0.56)}C${f1(F.x - F.w * 1.0)} ${f1(F.y + H * 0.02)} ${f1(F.x - F.w * 0.7)} ${f1(F.y + H * 0.004)} ${f1(F.x - F.w * 0.3)} ${f1(F.y + H * 0.004)}L${f1(W * 1.04)} ${f1(F.y - H * 0.012)}L${f1(W * 1.04)} ${f1(H * 0.56)}Z`
+  const fh = F.w * 0.34, fx0 = F.x - F.w / 2
+  let saw = ''
+  for (let i = 0; i < 5; i++) saw += `l${f1(F.w / 10)} ${f1(-fh * 0.32)}l${f1(F.w / 10)} ${f1(fh * 0.32)}`
+  const hall = `M${f1(fx0)} ${f1(F.y)}V${f1(F.y - fh * 0.7)}${saw}V${f1(F.y)}Z`
+  const stack = `M${f1(fx0 + F.w * 0.84)} ${f1(F.y - fh * 0.9)}v${f1(-fh * 0.75)}h${f1(F.w * 0.045)}v${f1(fh * 0.75)}Z`
+  let fwins = ''
+  for (let i = 0; i < 10; i++) if (q() > 0.25) fwins += `M${f1(fx0 + F.w * (0.05 + i * 0.095))} ${f1(F.y - fh * 0.6)}h${f1(F.w * 0.035)}v${f1(fh * (0.08 + q() * 0.06))}h${f1(-F.w * 0.035)}Z`
+  const fs = clamp(F.w * (wide ? 0.068 : 0.075), 10, 15)
+  // the run comes over the brow (the far slope hides it) and out of the bank as a spout pouring into the lake
+  const sp = g.run[g.run.length - 1], spw = Math.max(3, H * 0.007)
+  const arc = (cx: number, cy: number, rx: number, ry: number, a0: number, a1: number): Pt[] => Array.from({ length: 13 }, (_, i) => {
+    const a = ((a0 + ((a1 - a0) * i) / 12) * Math.PI) / 180
+    return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry] as Pt
+  })
   const els: SVGElement[] = [
-    mist(L.cx, L.cy - L.ry * 2.6, L.rx * 1.6, H * 0.04),
+    mist(L.cx, L.cy - L.ry * 2.6, L.rx * 1.4, H * 0.04),
     s('path', { class: 't29w-shore', d: shore, filter: 'url(#ink-wash)' }),
     ...halls,
     lake,
-    hills(-W * 0.5, L.cx - L.rx * 0.6, base, hh, 2934, 0.25, 1),
-    hills(L.cx + L.rx * 0.62, W * 1.5, base, hh * 0.9, 2935, 0.32, 1),
-    mist(L.cx, L.cy + L.ry * 0.9, L.rx * 1.3, L.ry * 1.6),
-    s('path', { class: 't29w-pebble', d: pebbles }),
-    reeds(L.cx - L.rx * 0.86, L.cy + L.ry * 0.9, H * 0.03, 2936, 6),
-    // its name, carved on a stone on the near shore (the lake is the AI data centres)
-    s('text', { class: 't29w-lake-name', x: f1(L.cx - L.rx * (g.wide ? 0.72 : 0.62)), y: f1(L.cy + L.ry * (g.wide ? 1.9 : 2.6)), 'text-anchor': 'middle', 'font-size': f1(clamp(H * 0.022, 13, 18)) }, G.lake),
-    s('path', { class: 't29w-farpipe', d: far }),
-    s('path', { class: 't29w-farstake', d: stakes }),
-    s('path', { class: 't29w-spill', d: spill }),
-    s('path', { class: 't29w-flow t29w-flow-far', d: `M${fp.map(P).join('L')}`, style: `--len:${f1(len(fp))}` }),
-    // the drop below the brow: the valley floor lost in mist
-    mist(W * 0.5, L.cy + L.ry * 3.2, W * 0.75, H * (g.wide ? 0.08 : 0.06)),
-    mist(gx, g.brow[Math.floor(g.brow.length / 2)][1] - H * 0.04, W * 0.5, H * 0.05),
+    s('path', { class: 't29w-pebble', d: Array.from({ length: 30 }, (_, i) => { const a = Math.PI * (0.08 + q() * 0.84); return blob(L.cx + Math.cos(a) * L.rx * (1 + q() * 0.03), L.cy + Math.sin(a) * L.ry * (1.05 + q() * 0.2), 2 + q() * 4, 1 + q() * 1.6, 2933 + i, 0.2, 7) }).join('') }),
+    reeds(L.cx - L.rx * 0.9, L.cy + L.ry * 0.7, H * 0.03, 2936, 6),
+    mist(L.cx, L.cy + L.ry * 1.2, L.rx * 1.2, L.ry * 1.4),
+    // where the run pours in beyond the brow: rings spreading on the water by the near shore
+    s('path', { class: 't29w-spill', d: stroke(arc(sp[0], sp[1] - L.ry * 0.15, spw * 3, spw * 0.8, 200, 340), 1.2, 0.2, 0.2, 0.2) + stroke(arc(sp[0], sp[1] - L.ry * 0.15, spw * 6, spw * 1.5, 205, 335), 1, 0.3, 0.3, 0.2) }),
+    s('path', { class: 't29w-hillR', d: hillR, filter: 'url(#ink-wash)' }),
+    s('path', { class: 't29w-hillR-shade', d: hillR, fill: 'url(#t29-dusk)' }),
+    s('ellipse', { class: 't29w-contact', cx: f1(F.x + F.w * 0.06), cy: f1(F.y + 1), rx: f1(F.w * 0.6), ry: f1(H * 0.008) }),
+    s('path', { class: 't29w-fab', d: hall + stack }),
+    s('path', { class: 't29w-fab-rim', d: stroke([[fx0, F.y - fh * 0.7], [fx0 + F.w * 0.1, F.y - fh * 1.02]], 1.4, 0.1, 0.1, 0.3) }),
+    s('path', { class: 't29w-fab-win', d: fwins }),
+    // its name painted on a board along the wall
+    s('rect', { class: 't29w-fab-board', x: f1(fx0 + F.w * 0.08), y: f1(F.y - fh * 0.38), width: f1(F.w * 0.84), height: f1(fs * 1.35), rx: 1 }),
+    s('text', { class: 't29w-source', x: f1(F.x), y: f1(F.y - fh * 0.38 + fs * 1.02), 'text-anchor': 'middle', 'font-size': f1(fs) }, G.source),
+    mist(W * 0.5, g.brow[Math.floor(g.brow.length / 2)][1] - H * 0.03, W * 0.6, H * 0.04),
   ]
   return { els, rows, lake }
 }
@@ -409,10 +418,46 @@ function groundArt(g: Geo): SVGElement[] {
   const edge: SVGElement[] = []
   for (let x = W * 0.03; x < W; x += W * (0.06 + q() * 0.07)) if (Math.abs(x - g.gate.x) > g.gate.w * 1.4) edge.push(grass(x, yAt(x) + 2, H * (0.022 + q() * 0.02), 2950 + Math.round(x)))
   const rocks: SVGElement[] = []
-  for (const [x, w] of [[0.36, 0.04], [0.64, 0.03], [0.05, 0.05]]) {
-    const cx = W * x, cy = yAt(cx) + H * 0.012, rw = W * w * (g.wide ? 1 : 1.8)
+  for (const [x, dy, w] of (g.wide ? [[0.33, 0.03, 0.03], [0.985, 0.2, 0.05], [0.7, 0.4, 0.045], [0.745, 0.42, 0.02], [0.04, 0.34, 0.04]] : [[0.62, 0.04, 0.05], [0.95, 0.4, 0.07], [0.8, 0.5, 0.06]]) as [number, number, number][]) {
+    const cx = W * x, cy = yAt(cx) + H * dy, rw = W * w * (g.wide ? 1 : 1.6)
     rocks.push(s('g', { transform: `translate(${f1(cx)} ${f1(cy)})` }, stoneArt(rw * 1.6, rw * 0.62, 2960 + Math.round(x * 100))))
   }
+  // reeds in clumps where the ground is damp (by the wells, the basin), and darker sward in swathes
+  const reedy: SVGElement[] = []
+  for (const w of g.wells) reedy.push(reeds(w.cx - w.rx * 1.05, w.cy + w.ry * 0.3 + w.hc, w.rx * 0.5, 2955 + w.i, 5))
+  reedy.push(reeds(g.gate.x + g.gate.w * 1.4, g.gate.y + g.gate.h * 0.8, g.gate.h * 1.2, 2958, 4))
+  let swathes = ''
+  for (let i = 0; i < 7; i++) {
+    const x = q() * W, y0 = yAt(x), y = y0 + (0.2 + q() * 0.7) * (H - y0)
+    swathes += blob(x, y, W * (0.08 + q() * 0.1), H * (0.02 + q() * 0.03), 2945 + i, 0.3, 16)
+  }
+  // the stone that names the lake, on the brow above it, its name carved on its face
+  const sg = g.sign, sh0 = sg.w * 0.3
+  const fs = clamp(sg.w * (g.wide ? 0.075 : 0.07), 11, 16)
+  const sign = s('g', { class: 't29w-sign' },
+    s('ellipse', { class: 't29w-contact', cx: f1(sg.x + sg.w * 0.06), cy: f1(sg.y + 1), rx: f1(sg.w * 0.56), ry: f1(sh0 * 0.16) }),
+    s('g', { transform: `translate(${f1(sg.x)} ${f1(sg.y)})` }, stoneArt(sg.w, sh0, 2964)),
+    s('text', { class: 't29w-carve-lip', x: f1(sg.x - sg.w * 0.03), y: f1(sg.y - sh0 * 0.3 + 1), 'text-anchor': 'middle', 'font-size': f1(fs) }, G.lake),
+    s('text', { class: 't29w-carve t29w-lake-name', x: f1(sg.x - sg.w * 0.03), y: f1(sg.y - sh0 * 0.3), 'text-anchor': 'middle', 'font-size': f1(fs) }, G.lake))
+  // the flume from the factory: a plank trough on trestles stepping down to the gate, water in it
+  const fl = smooth(g.flume)
+  const fw = (y: number) => clamp(H * 0.006 + ((y - g.flume[0][1]) / (g.gate.y - g.flume[0][1])) * H * 0.012, 3, 14)
+  let trough = '', legs = '', inner = ''
+  for (let i = 0; i < fl.length - 1; i++) {
+    const [x, y] = fl[i], [x1, y1] = fl[i + 1], w = fw(y)
+    trough += stroke([[x, y], [x1, y1]], w * 1.4, 0.02, 0.02, 0.9)
+    inner += stroke([[x, y - w * 0.25], [x1, y1 - w * 0.25]], w * 0.5, 0.02, 0.02, 0.9)
+  }
+  const legAt = resample(fl, Math.max(4, Math.round(len(fl) / (W * (g.wide ? 0.035 : 0.07))))).slice(0, -1)
+  for (const [x, y] of legAt) {
+    const w = fw(y), lh = w * 3.2
+    legs += stroke([[x - w * 1.2, y + lh], [x, y]], Math.max(1, w * 0.25), 0.05, 0.05, 0.6) + stroke([[x + w * 1.2, y + lh], [x, y]], Math.max(1, w * 0.25), 0.05, 0.05, 0.6) + stroke([[x - w * 0.8, y + lh * 0.6], [x + w * 0.8, y + lh * 0.6]], Math.max(0.8, w * 0.18), 0.05, 0.05, 0.6)
+  }
+  const legFeet = legAt.map(([x, y]) => blob(x, y + fw(y) * 3.2, fw(y) * 1.8, fw(y) * 0.4, 2966 + Math.round(x), 0.1, 10)).join('')
+  // the run to the lake, near part: from the gate up over the brow, a thick cane on stakes (it swells with each contract)
+  const near = smooth(g.run.slice(0, 3))
+  let stakes = ''
+  for (const [x, y] of g.run.slice(1, 3)) stakes += stroke([[x - 6, y + 14], [x + 2, y - 2]], 2, 0.05, 0.05, 0.6) + stroke([[x + 6, y + 14], [x - 2, y - 2]], 2, 0.05, 0.05, 0.6)
   return [
     s('path', { class: 't29w-hill', d: top }),
     s('path', { class: 't29w-hill-shade', d: top, fill: 'url(#t29-dusk)' }),
@@ -422,7 +467,18 @@ function groundArt(g: Geo): SVGElement[] {
     s('path', { class: 't29w-tuft', d: tufts }),
     s('path', { class: 't29w-brow', d: stroke(brow, H * 0.006, 0.05, 0.05, 0.4), filter: 'url(#ink-rough)' }),
     s('path', { class: 't29w-brow-rim', d: stroke(brow.map(([x, y]) => [x, y - 1.6] as Pt), H * 0.003, 0.1, 0.1, 0.3) }),
+    s('path', { class: 't29w-swathe', d: swathes }),
+    s('path', { class: 't29w-contact', d: legFeet }),
+    s('path', { class: 't29w-stake', d: legs }),
+    s('path', { class: 't29w-trough', d: trough }),
+    s('path', { class: 't29w-trough-water', d: inner }),
+    s('path', { class: 't29w-flow t29w-flow-flume', d: `M${fl.map(P).join('L')}`, style: `--len:${f1(len(fl))}` }),
+    s('path', { class: 't29w-stake', d: stakes }),
+    s('path', { class: 't29w-run', d: `M${near.map(P).join('L')}` }),
+    s('path', { class: 't29w-run-rim', d: `M${near.map(([x, y]) => P([x, y - 2])).join('L')}` }),
+    sign,
     ...rocks,
+    ...reedy,
     ...edge,
   ]
 }
@@ -458,8 +514,6 @@ function gateBack(g: Geo): SVGElement[] {
     s('path', { class: 't29w-stone-shade', d: lintel, fill: 'url(#t29-dusk)' }),
     s('path', { class: 't29w-ink', d: stroke(curve([L - pw * 0.7, y - ph + lh * 0.2], [x, y - ph - lh * 0.15], [R + pw * 0.7, y - ph + lh * 0.2], 12), Math.max(1.6, lh * 0.14), 0.1, 0.1, 0.4), filter: 'url(#ink-rough)' }),
     s('path', { class: 't29w-rim', d: stroke(curve([L - pw * 0.5, y - ph - lh * 1.02], [x, y - ph - lh * 1.4], [R + pw * 0.5, y - ph - lh * 1.02], 12), Math.max(1.2, lh * 0.1), 0.2, 0.2, 0.2) }),
-    // the one source both the lake and the wells drink from
-    s('text', { class: 't29w-source', x: f1(x), y: f1(y - ph - lh * 1.75), 'text-anchor': 'middle', 'font-size': f1(clamp(w * 0.15, 13, 17)) }, G.source),
   ]
 }
 

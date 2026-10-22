@@ -1,9 +1,9 @@
-import { h, s } from '../../core/dom'
+import { s } from '../../core/dom'
 import { blob, curve, rng, stroke, type Pt } from '../../ui/part2/ink'
 
 /**
  * Station 30 brushes on top of the Part 2 kit (own copies, so other stations' rewrites never move this one): bamboo,
- * small ink figures, a far-shore house, potted saplings, a wooden bucket, sheets of paper, a hanging paper slip.
+ * small ink figures, a far-shore house, potted saplings, a wooden bucket, sheets of paper.
  * Static SVG; colours come from classes in style.css (tokens only). Moving pieces carry no filter (animate a parent).
  */
 
@@ -149,9 +149,4 @@ export function arc(cx: number, cy: number, rx: number, ry: number, a0: number, 
     const a = ((a0 + ((a1 - a0) * i) / n) * Math.PI) / 180
     return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry] as Pt
   })
-}
-
-/** A slip of rice paper hung in the scene on two threads (facts read on paper, not on a UI card). */
-export function paperSlip(cls = ''): HTMLElement {
-  return h('div', { class: `t30-slip ${cls}` })
 }

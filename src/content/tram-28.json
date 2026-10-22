@@ -313,7 +313,7 @@
       "countTpl": "Bước {n}/{total}",
       "notches": [
         "22 tỷ USD",
-        "51 tỷ USD cổ phần"
+        "51 tỷ USD\ncổ phần"
       ],
       "circlePrompt": "Chạm từng hòn đá: giữ chân khách, hay bong bóng?",
       "detail": {

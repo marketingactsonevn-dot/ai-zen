@@ -4,7 +4,7 @@ import { createLoop } from '../../core/loop'
 import { sliced } from '../../core/chunk'
 import type { SceneCtx } from '../types'
 import { blob, clamp, curve, onDigit, onSize, p2Defs, rng, stableHeight, stroke, type Pt } from '../../ui/part2/ink'
-import { grass, hills, mist, moon, paperLantern, pine, reeds, toro, wash } from '../../ui/part2/paint'
+import { hills, mist, moon, paperLantern, pine, reeds, toro, wash } from '../../ui/part2/paint'
 import { C } from './data'
 import { guide } from '../../ui/part2/guide'
 import { arc, bamboo, blossom, f1, figure, house, P, sapling } from './kit'
@@ -23,6 +23,7 @@ interface Flat {
   face?: number // which way the drawn side looks (° like phi); default phi
   draw: (w: number, h: number) => { art: SVGElement[]; back?: SVGElement[]; sil: string }
   cls?: string
+  open?: boolean // stands in the open garden: hidden while the wall is between it and the viewer
   el?: HTMLElement
   shade?: HTMLElement
   backEl?: SVGSVGElement
@@ -56,14 +57,15 @@ export function gateScene(ctx: SceneCtx) {
   table.append(band, top, sheen)
   world.append(table)
   const fg = s('svg', { class: 't30g-fg', 'aria-hidden': 'true' })
-  const faceLabel = h('p', { class: 't30g-face' }, G.closed)
+  // the face's name is carved into the lacquer side (a phone: into the stone base) — this copy is for screen readers
+  const faceLabel = h('p', { class: 't30g-face', 'aria-live': 'polite' }, G.closed)
   const line = h('p', { class: 't30g-line' })
   const caveat = h('p', { class: 't30g-caveat' })
   const read = h('div', { class: 't30g-read' }, faceLabel, line, caveat)
+  let faceCarve: SVGElement | null = null, baseCarve: SVGTextElement | null = null
   const turn = h('button', { class: 't30g-turn', type: 'button', 'aria-label': G.toggleAria, 'aria-pressed': 'false' })
   const lamps = T.map((t, i) => h('button', { class: 't30g-lamp', type: 'button', 'aria-pressed': 'false', 'aria-label': `${i + 1}. ${t.name}`, onClick: () => light(i) },
-    s('svg', { class: 't30g-lamp-art', viewBox: '-30 -64 60 70', 'aria-hidden': 'true' }, toro(0, 0, 58, true)),
-    h('span', { class: 't30g-lamp-name' }, t.name)))
+    lampArt(3110 + i), h('span', { class: 't30g-lamp-name' }, t.name)))
   const lampRow = h('div', { class: 't30g-lamps', role: 'group', 'aria-label': G.tradeoffLabel }, ...lamps)
   root.append(h('p', { class: 'visually-hidden' }, G.art), bg, world, fg, read, turn, lampRow)
   ctx.art.append(root)
@@ -72,7 +74,10 @@ export function gateScene(ctx: SceneCtx) {
   const gd = guide(ctx)
   const step = gd.steps(G.prompts)
   step(0)
-  const turnArrow = gd.gesture('drag-h', table, { r: 56 })
+  // a vermilion dot on the tray's right rim and a two-way ink arrow along its front rim (drawn in drawFg)
+  let rimAt: Pt = [0, 0]
+  const rimDot = gd.dot(() => rimAt, { dir: [-1, 0] })
+  const turnArrow = { done: () => root.classList.add('turned') }
   const lampDots = lamps.map((b) => gd.dot(b))
   let lampCount: ReturnType<typeof gd.count> | null = null
   const litOnce = new Set<number>()
@@ -95,7 +100,8 @@ export function gateScene(ctx: SceneCtx) {
       const e = 40 * Math.sin(al) // the lean: never more than 40° off the viewer, so never edge-on
       f.el.style.transform = `translate3d(${f1(X)}px,0,${f1(Z)}px) rotateY(${f1(e)}deg)`
       // far side: hazier; turned from the moon (behind, up right): darker
-      f.el.style.setProperty('--o', (0.88 + 0.12 * ((Z / R) / Math.max(0.2, f.r) + 1) / 2).toFixed(3))
+      const hide = f.open ? clamp((Math.cos(a) + 0.2) / 0.35, 0, 1) : 1 // behind the wall: out of sight
+      f.el.style.setProperty('--o', ((0.88 + 0.12 * ((Z / R) / Math.max(0.2, f.r) + 1) / 2) * hide).toFixed(3))
       if (f.shade) f.shade.style.opacity = (0.06 + 0.22 * (1 - (Math.sin((e - 30) * D2R) + 1) / 2) * (0.6 + 0.4 * Math.cos(al) ** 2)).toFixed(3)
       if (f.backEl) {
         const b = clamp(0.5 - Math.cos(al) * 1.6, 0, 1)
@@ -149,7 +155,7 @@ export function gateScene(ctx: SceneCtx) {
     if (o !== shownOpen) {
       shownOpen = o
       faceLabel.textContent = o ? G.open : G.closed
-      faceLabel.classList.toggle('t30-alt')
+      carveFace()
       if (o) root.classList.add('was-open')
       writeLine()
       ctx.chime('soft')
@@ -157,8 +163,9 @@ export function gateScene(ctx: SceneCtx) {
     seen.add(o ? 1 : 0)
     if (seen.size === 2 && !lampCount) {
       turnArrow.done()
+      rimDot.done()
       step(1)
-      lampCount = gd.count(G.lampTpl, T.length, lampRow, { n: litOnce.size })
+      lampCount = gd.count(G.lampTpl, T.length, () => countAt, { n: litOnce.size })
     }
     done()
   }
@@ -166,7 +173,7 @@ export function gateScene(ctx: SceneCtx) {
   function done() {
     if (seen.size < 2 || litOnce.size < 2 || root.classList.contains('both')) return
     root.classList.add('both')
-    caveat.textContent = G.caveat
+    carveFace()
     lampDots.forEach((d) => d.done())
     lampCount?.done()
     ctx.insight(G.insight as Fact, G.detail as Fact)
@@ -174,6 +181,7 @@ export function gateScene(ctx: SceneCtx) {
   }
   /** a lit lamp says both gardens side by side, walled then open, so nobody has to turn back to compare */
   function writeLine() {
+    root.classList.toggle('has-line', lit >= 0)
     if (lit < 0) return void line.replaceChildren()
     const t = T[lit]
     line.replaceChildren(h('span', { class: 't30g-line-name' }, t.name),
@@ -194,6 +202,14 @@ export function gateScene(ctx: SceneCtx) {
     ctx.chime('soft')
   }
   ctx.onCleanup(onDigit((d) => d <= T.length && light(d - 1)))
+  // H7: idle before the first turn, the tray gives a small push and settles back (a spring, no bounce)
+  const invite = () => {
+    if (seen.size > 1 || still || drag) return
+    vel = 34
+    loop.start()
+  }
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', invite))
 
   // ── drag to turn (pointer anywhere but the lanterns), inertia, snap to a face
   let drag: { id: number; x: number; t0: number; last: number; lt: number; from: number; tap: boolean } | null = null
@@ -256,9 +272,9 @@ export function gateScene(ctx: SceneCtx) {
     root.style.height = `${f1(H)}px`
     const tall = W / H < 0.9
     root.classList.toggle('tall', tall)
-    R = tall ? Math.min(W * 0.4, H * 0.23) : Math.min(W * 0.23, H * 0.38)
-    const cx = W / 2, cy = tall ? H * 0.31 : H * 0.44
-    const thick = R * 0.15
+    R = tall ? Math.min(W * 0.33, H * 0.2) : Math.min(W * 0.25, H * 0.4)
+    const cx = W / 2, cy = tall ? H * 0.31 : H * 0.395
+    const thick = R * (tall ? 0.17 : 0.15)
     const Pd = Math.max(R * 5, 900) // perspective distance
     world.style.perspective = `${f1(Pd)}px`
     world.style.perspectiveOrigin = `${f1(cx)}px ${f1(cy - R * 0.3)}px`
@@ -375,13 +391,13 @@ export function gateScene(ctx: SceneCtx) {
       { phi: 40, r: 0.34, w: 0.7, h: 0.82, draw: (_w, hh) => ({ art: [pine(0, 0, hh * 0.98, 3012, -1)], sil: '' }) },
       { phi: 0, r: 0.54, w: 1.36, h: 0.5, draw: wallArt, cls: 't30g-wallflat' },
       { phi: 14, r: 0.84, w: 0.36, h: 0.36, draw: visitorArt, cls: 't30g-v t30g-visitor' },
-      { phi: 180, r: 0.66, w: 1.12, h: 0.7, draw: gateArt },
-      { phi: 236, r: 0.46, w: 0.62, h: 0.62, draw: (_w, hh) => ({ art: [pine(0, 0, hh * 0.92, 3043, 1)], sil: '' }) },
-      { phi: 164, r: 0.36, w: 0.2, h: 0.3, draw: (_w, hh) => ({ art: [sapling(0, 0, hh * 0.95, 3044)], sil: '' }) },
-      { phi: 200, r: 0.42, w: 0.2, h: 0.28, draw: (_w, hh) => ({ art: [sapling(0, 0, hh * 0.95, 3045)], sil: '' }) },
-      { phi: 136, r: 0.74, w: 0.2, h: 0.26, draw: (_w, hh) => ({ art: [sapling(0, 0, hh * 0.95, 3046)], sil: '' }) },
-      { phi: 222, r: 0.76, w: 0.2, h: 0.24, draw: (_w, hh) => ({ art: [sapling(0, 0, hh * 0.95, 3047, false)], sil: '' }) },
-      { phi: 158, r: 0.56, w: 0.32, h: 0.36, draw: gardenerArt, cls: 't30g-v t30g-gardener' },
+      { phi: 180, r: 0.66, w: 1.12, h: 0.7, draw: gateArt, open: true },
+      { phi: 236, r: 0.46, w: 0.62, h: 0.62, draw: (_w, hh) => ({ art: [pine(0, 0, hh * 0.92, 3043, 1)], sil: '' }), open: true },
+      { phi: 164, r: 0.36, w: 0.2, h: 0.3, draw: (_w, hh) => ({ art: [sapling(0, 0, hh * 0.95, 3044)], sil: '' }), open: true },
+      { phi: 200, r: 0.42, w: 0.2, h: 0.28, draw: (_w, hh) => ({ art: [sapling(0, 0, hh * 0.95, 3045)], sil: '' }), open: true },
+      { phi: 136, r: 0.74, w: 0.2, h: 0.26, draw: (_w, hh) => ({ art: [sapling(0, 0, hh * 0.95, 3046)], sil: '' }), open: true },
+      { phi: 222, r: 0.76, w: 0.2, h: 0.24, draw: (_w, hh) => ({ art: [sapling(0, 0, hh * 0.95, 3047, false)], sil: '' }), open: true },
+      { phi: 158, r: 0.56, w: 0.32, h: 0.36, draw: gardenerArt, cls: 't30g-v t30g-gardener', open: true },
     ]
   }
 
@@ -560,10 +576,10 @@ export function gateScene(ctx: SceneCtx) {
     // the moon stands clear of the blossom tree's crown, up and to the right (the lacquer catches it on that side)
     const [mx, my] = [Math.min(cx + R * (tall ? 1.05 : 1.32), W * 0.86), Math.max(mr * 1.6, shore - R * (tall ? 0.62 : 0.92))]
     // far houses on the shore, both sides of the tray; paths of stepping stones reach them from the open side
-    const xs = tall ? [0.07, 0.24, 0.76, 0.93] : [0.1, 0.2, 0.3, 0.7, 0.8, 0.9]
+    const xs = tall ? [0.08, 0.25, 0.75, 0.92] : [0.08, 0.19, 0.3, 0.7, 0.81, 0.92]
     const houses = xs.map((k, i) => {
       const x = W * k + (r() - 0.5) * W * 0.02, y = shore + 2 + r() * R * 0.05
-      return { ...house(x, y, clamp(R * 0.11, 12, 26) * (0.85 + r() * 0.3), 3071 + i), x, y }
+      return { ...house(x, y, clamp(R * 0.15, 18, 40) * (0.85 + r() * 0.3), 3071 + i), x, y }
     })
     // stepping stones across the water: from the open side of the tray to the two nearest houses on each side, big and
     // far apart near the tray, small and close at the far shore; each a lit top, a dark lip, a shadow on the water
@@ -609,6 +625,7 @@ export function gateScene(ctx: SceneCtx) {
       road += stroke([[x, y], [x + len, y + (r() - 0.5)]], 0.9 + near * 1.6, 0.25, 0.25, 0.1)
     }
     const [lx, ly] = proj(0, thick, 0)
+    const bh = baseH()
     const vigPriv = houses[Math.min(1, houses.length - 1)], vigMis = houses[houses.length - 2]
     bg.replaceChildren(
       mist(W * 0.5, shore - R * 0.5, W * 0.7, R * 0.9),
@@ -626,7 +643,12 @@ export function gateScene(ctx: SceneCtx) {
         s('linearGradient', { id: 't30g-eave', x1: 0, y1: 0, x2: 0, y2: 1 },
           s('stop', { offset: 0, style: 'stop-color:var(--umbra);stop-opacity:.42' }),
           s('stop', { offset: 0.35, style: 'stop-color:var(--umbra);stop-opacity:.14' }),
-          s('stop', { offset: 1, style: 'stop-color:var(--umbra);stop-opacity:0' }))),
+          s('stop', { offset: 1, style: 'stop-color:var(--umbra);stop-opacity:0' })),
+        // the stone base: the moon behind-right leaves its left side in shade
+        s('linearGradient', { id: 't30g-base-g', x1: 0, y1: 0, x2: 1, y2: 0 },
+          s('stop', { offset: 0, style: 'stop-color:var(--umbra);stop-opacity:.55' }),
+          s('stop', { offset: 0.6, style: 'stop-color:var(--umbra);stop-opacity:.12' }),
+          s('stop', { offset: 1, style: 'stop-color:var(--umbra);stop-opacity:.02' }))),
       s('path', { class: 't30g-water', d: water, fill: `url(#${gid})` }),
       wash(`M${f1(-W * 0.05)} ${f1(shore + 3)}Q${f1(W * 0.25)} ${f1(shore - R * 0.06)} ${f1(W * 0.42)} ${f1(shore + 1)}L${f1(W * 0.58)} ${f1(shore + 1)}Q${f1(W * 0.78)} ${f1(shore - R * 0.07)} ${f1(W * 1.05)} ${f1(shore + 2)}L${f1(W * 1.05)} ${f1(shore + R * 0.05)}L${f1(-W * 0.05)} ${f1(shore + R * 0.05)}Z`, 0.5, 'p2p-wash t30g-land'),
       s('ellipse', { class: 't30g-road', cx: f1(mx), cy: f1(shore + (H - shore) * 0.3), rx: f1(R * 0.35), ry: f1((H - shore) * 0.36), fill: 'url(#p2-road)' }),
@@ -646,66 +668,140 @@ export function gateScene(ctx: SceneCtx) {
       mist(W * 0.5, shore + R * 0.05, W * 0.5, R * 0.06),
       ...paths,
       // the tray's reflection: a dark breath under it, the moon road broken by it
-      wash(blob(lx, ly + R * 0.42, R * 1.05, R * 0.2, 3093, 0.08), 0.32, 'p2p-wash t30g-reflect'),
-      wash(blob(lx, ly + R * 0.36, R * 1.12, R * 0.07, 3094, 0.12), 0.2, 'p2p-wash t30g-reflect'))
+      wash(blob(lx, ly + bh + R * 0.36, R * 1.0, R * 0.2, 3093, 0.08), 0.32, 'p2p-wash t30g-reflect'),
+      wash(blob(lx, ly + bh + R * 0.3, R * 1.1, R * 0.07, 3094, 0.12), 0.2, 'p2p-wash t30g-reflect'),
+      ...pedestal(thick, bh, proj))
   }
 
-  // ── what stands in front: the base caveat on the lacquer side, near reeds and a rock cut by the frame, lantern places
+  // ── the stone drum the tray rests on: it stands in the water, a ring of ripples at its foot, a dark lip where it
+  // meets the lacquer; its front takes the carving (the caveat; a phone: the face's name too)
+  const baseH = () => R * (root.classList.contains('tall') ? 0.42 : 0.54)
+  function pedestal(thick: number, bh: number, proj: (x: number, y: number, z: number) => Pt): SVGElement[] {
+    const rp = R * 0.62
+    const ring = (y: number, rr: number, a0 = -90, a1 = 90, n = 40) => Array.from({ length: n + 1 }, (_, i) => {
+      const a = (a0 + ((a1 - a0) * i) / n) * D2R
+      return proj(Math.sin(a) * rr, y, Math.cos(a) * rr)
+    })
+    const top = ring(thick, rp), bot = ring(thick + bh, rp)
+    const face = `M${top.map(P).join('L')}L${[...bot].reverse().map(P).join('L')}Z`
+    // block joints: one course line, staggered verticals following the drum
+    let joints = `M${ring(thick + bh * 0.5, rp, -84, 84, 30).map(P).join('L')}`
+    for (const [a, y0, y1] of [[-62, 0, 0.5], [-20, 0, 0.5], [24, 0, 0.5], [66, 0, 0.5], [-42, 0.5, 1], [2, 0.5, 1], [46, 0.5, 1]]) {
+      const p0 = proj(Math.sin(a * D2R) * rp, thick + bh * y0, Math.cos(a * D2R) * rp), p1 = proj(Math.sin(a * D2R) * rp, thick + bh * y1, Math.cos(a * D2R) * rp)
+      joints += `M${P(p0)}L${P(p1)}`
+    }
+    let moss = ''
+    for (let i = 0; i < 9; i++) {
+      const a = (-80 + i * 20) * D2R, [x, y] = proj(Math.sin(a) * rp, thick + bh * 0.93, Math.cos(a) * rp)
+      moss += blob(x, y, R * (0.05 + (i % 3) * 0.02), R * 0.02, 3120 + i, 0.4, 9)
+    }
+    const foot = ring(thick + bh, rp * 1.08, -100, 100, 44)
+    const lip = ring(thick + bh * 0.06, rp, -86, 86, 30)
+    const rim = ring(thick + bh * 0.04, rp, 20, 82, 16) // the moon is behind-right: its edge on the right of the drum
+    const reflect = `M${bot.map(P).join('L')}L${[...ring(thick + bh * 1.4, rp * 0.98)].reverse().map(P).join('L')}Z`
+    return [
+      s('path', { class: 't30g-base-refl', d: reflect }),
+      s('path', { class: 't30g-base', d: face, filter: 'url(#ink-rough)' }),
+      s('path', { class: 't30g-base-shade', d: face, fill: 'url(#t30g-base-g)' }),
+      s('path', { class: 't30g-base-joint', d: joints }),
+      s('path', { class: 't30g-base-lip', d: stroke(lip, Math.max(2, bh * 0.12), 0.05, 0.05, 0.7) }),
+      s('path', { class: 't30g-base-rim', d: stroke(rim, Math.max(1.2, R * 0.012), 0.3, 0.2, 0.2) }),
+      s('path', { class: 't30-leaf t30g-base-moss', d: moss, filter: 'url(#ink-wash)' }),
+      s('path', { class: 't30g-base-foam', d: stroke(foot, Math.max(1.2, R * 0.01), 0.2, 0.2, 0.2) }),
+    ]
+  }
+  /** the face's name on the lacquer side; at the end the caveat on the stone base (a phone: both on the base) */
+  function carveFace() {
+    if (!faceCarve || !baseCarve) return
+    const tall = root.classList.contains('tall'), both = root.classList.contains('both')
+    const name = isOpen() ? G.open : G.closed
+    if (!tall) faceCarve.textContent = name
+    // a phone's base is too small to carve on: there the face's name and the caveat read with the lantern's line
+    caveat.textContent = tall && both ? G.caveat : ''
+    const txt = !tall && both ? G.caveat : ''
+    const lines = wrap(txt, 42)
+    const fsz = Number(baseCarve.getAttribute('font-size'))
+    baseCarve.replaceChildren(...lines.map((l, j) => s('tspan', { x: baseCarve!.getAttribute('x')!, dy: j ? f1(fsz * 1.3) : f1(-((lines.length - 1) * fsz * 1.3) / 2) }, l)))
+    baseCarve.classList.toggle('note', both)
+  }
+
+  // ── what stands in front: the carvings, near reeds and a rock cut by the frame, the lanterns round the tray
+  let countAt: Pt = [0, 0]
   function drawFg(W: number, H: number, cx: number, cy: number, thick: number, proj: (x: number, y: number, z: number) => Pt, tall: boolean) {
     fg.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`)
-    const r = rng(3100)
-    // the lacquer side's front arc (two lines of carving fit on it when it is long enough)
-    const arcAt = (y: number) => {
+    const bh = baseH()
+    const arcAt = (y: number, rr = R * 1.002, a0 = -84, a1 = 84) => {
       const pts: Pt[] = []
       for (let i = 0; i <= 40; i++) {
-        const a = (-84 + (168 * i) / 40) * D2R
-        pts.push(proj(Math.sin(a) * R * 1.002, y, Math.cos(a) * R * 1.002))
+        const a = (a0 + ((a1 - a0) * i) / 40) * D2R
+        pts.push(proj(Math.sin(a) * rr, y, Math.cos(a) * rr))
       }
       return pts
     }
-    // the caveat carved round the lacquer side in two lines, when the side is long and tall enough to hold it
-    const mid = G.caveat.length / 2
-    const cut = [...G.caveat.matchAll(/\s/g)].map((m) => m.index!).reduce((a, b) => (Math.abs(b - mid) < Math.abs(a - mid) ? b : a), 0)
-    const lines = cut > 0 ? [G.caveat.slice(0, cut).trim(), G.caveat.slice(cut).trim()] : [G.caveat]
-    const a0 = arcAt(thick * 0.5)
-    const len = a0.reduce((n, p, i) => (i ? n + Math.hypot(p[0] - a0[i - 1][0], p[1] - a0[i - 1][1]) : 0), 0)
-    // two lines a full 1.35 em apart, both inside the lacquer side (never touching)
-    const fs = Math.min(thick * 0.32, (len * 0.92) / (Math.max(...lines.map((l) => l.length)) * 0.52))
-    const fits = !tall && fs >= 11
-    root.classList.toggle('carved', fits)
     const kids: SVGElement[] = []
-    if (fits) {
-      lines.forEach((l, i) => {
-        const id = `t30g-arc-${i}`
-        const y = lines.length > 1 ? thick * 0.5 + (i ? 1 : -1) * fs * 0.675 : thick * 0.55
-        kids.push(s('path', { id, d: `M${arcAt(y).map(P).join('L')}`, fill: 'none' }),
-          s('text', { class: 't30g-carve', 'font-size': f1(fs), 'text-anchor': 'middle', 'dominant-baseline': 'central' }, s('textPath', { href: `#${id}`, startOffset: '50%' }, l)))
-      })
+    // the face's name, carved into the lacquer side along its front (desk)
+    const fs = clamp(thick * 0.42, 13, 17)
+    kids.push(s('path', { id: 't30g-arc-face', d: `M${arcAt(thick * 0.55).map(P).join('L')}`, fill: 'none' }))
+    faceCarve = s('textPath', { href: '#t30g-arc-face', startOffset: '50%' })
+    kids.push(s('text', { class: `t30g-carve t30g-carve-face${tall ? ' off' : ''}`, 'font-size': f1(fs), 'text-anchor': 'middle', 'dominant-baseline': 'central' }, faceCarve))
+    // the stone base's carving, straight across its front
+    const [bx] = proj(0, 0, 0), by = (proj(0, thick, R)[1] + proj(0, thick + bh, R * 0.62)[1]) / 2 + 3
+    baseCarve = s('text', { class: 't30g-carve t30g-carve-base', x: f1(bx), y: f1(by), 'font-size': tall ? '14' : '14', 'text-anchor': 'middle', 'dominant-baseline': 'central' }) as SVGTextElement
+    kids.push(baseCarve)
+    // the turn mark: a two-way ink arrow on the island's front rim, a vermilion dot on its right rim (until turned)
+    const rimPts = arcAt(0, R * 0.9, -58, 58)
+    const hd = (p: Pt, q: Pt) => {
+      const a = Math.atan2(p[1] - q[1], p[0] - q[0]), k = 9
+      return `M${f1(p[0] + Math.cos(a + 2.6) * k)} ${f1(p[1] + Math.sin(a + 2.6) * k)}L${P(p)}L${f1(p[0] + Math.cos(a - 2.6) * k)} ${f1(p[1] + Math.sin(a - 2.6) * k)}`
     }
+    kids.push(s('path', { class: 't30g-turn-arrow', d: `M${rimPts.map(P).join('L')}` + hd(rimPts[0], rimPts[2]) + hd(rimPts[40], rimPts[38]) }))
+    rimAt = proj(Math.sin(80 * D2R) * R, 0, Math.cos(80 * D2R) * R)
     // near dark: reeds bottom left, a rock cut by the frame bottom right
     const rockD = blob(W * 1.02, H * 1.02, Math.min(W * 0.14, R * 0.6), R * 0.28, 3101, 0.12, 16)
     kids.push(
-      reeds(W * 0.04, H * 1.01, Math.min(H * 0.22, R * 0.9), 3102, 9),
-      grass(W * 0.12, H * 1.0, R * 0.2, 3103),
+      reeds(W * 0.03, H * 1.01, Math.min(H * 0.22, R * 0.9), 3102, 9),
       s('path', { class: 't30g-near-rock', d: rockD, filter: 'url(#ink-rough)' }),
       s('path', { class: 't30g-near-rim', d: stroke(curve([W * 1.02 - Math.min(W * 0.13, R * 0.56), H * 1.0 - R * 0.05], [W * 0.97, H - R * 0.27], [W * 1.02, H - R * 0.26], 10), Math.max(1.5, R * 0.012), 0.2, 0.3, 0.1) }))
     fg.replaceChildren(...kids)
-    // lanterns: round the front rim (wide) or a row under the tray (tall)
-    const lw = tall ? clamp(R * 0.26, 34, 46) : clamp(R * 0.3, 44, 70)
-    const spots: Pt[] = tall
-      ? lamps.map((_, i) => [W * (0.14 + i * 0.24), proj(0, thick, R * 1.0)[1] + lw * 1.1])
-      : [-104, -64, 64, 104].map((a) => proj(Math.sin(a * D2R) * R * 1.46, thick, Math.cos(a * D2R) * R * 1.46))
+    carveFace()
+    // lanterns round the tray on the water, on their own stones: two near its front, two out at its sides
+    const lw = tall ? clamp(R * 0.3, 32, 42) : clamp(R * 0.26, 50, 76)
+    const at: [number, number][] = tall ? [[-62, 1.18], [-22, 1.5], [22, 1.5], [62, 1.18]] : [[-108, 1.52], [-38, 1.24], [38, 1.24], [108, 1.52]]
+    const yw = thick + bh // the water line, at the stone base's foot
+    const spots = at.map(([a, k]) => proj(Math.sin(a * D2R) * R * k, yw, Math.cos(a * D2R) * R * k))
     lamps.forEach((b, i) => {
       const [x, y] = spots[i]
-      Object.assign(b.style, { left: `${f1(x - lw)}px`, top: `${f1(y - lw * 1.15)}px`, width: `${f1(lw * 2)}px` })
+      Object.assign(b.style, { left: `${f1(x - lw)}px`, top: `${f1(y - lw * 1.43)}px`, width: `${f1(lw * 2)}px` })
       b.style.setProperty('--lw', `${f1(lw)}px`)
     })
-    // tall: a lantern's name may take two lines ("Rủi ro lạm dụng"); the text stack starts 16 px under them
-    const rowBottom = Math.max(...spots.map((p) => p[1])) + (tall ? lw * 0.1 + 40 : lw * 0.75)
-    const [, fy] = proj(0, thick, R)
-    read.style.top = `${f1(Math.max(fy + R * 0.18, rowBottom + (tall ? 16 : 10)))}px`
+    // the reading: bottom left, left-aligned, the insight's column (a phone: under the lanterns)
+    const low = Math.max(...spots.map((p) => p[1])) + lw * 0.62 + 40
+    if (tall) Object.assign(read.style, { top: `${f1(Math.max(low, proj(0, yw, R)[1] + 16))}px`, bottom: '' })
+    else Object.assign(read.style, { top: '', bottom: '14px' })
+    countAt = tall ? [W / 2, Math.max(low, proj(0, yw, R)[1] + 16) - 14] : [cx, Math.max(...spots.map((p) => p[1])) + lw * 0.62 + 34]
     Object.assign(turn.style, { left: `${f1(cx - R)}px`, top: `${f1(cy - R * 0.9)}px`, width: `${f1(R * 2)}px`, height: `${f1(R * 1.3)}px` })
-    void r
   }
 }
 
+/** a short text in lines of at most n characters (whole words) */
+function wrap(t: string, n: number): string[] {
+  const out: string[] = []
+  for (const w of t.split(' ')) {
+    if (out.length && (out[out.length - 1] + ' ' + w).length <= n) out[out.length - 1] += ' ' + w
+    else out.push(w)
+  }
+  return out
+}
+
+/** a stone lantern on its own rock in the water: its broken reflection, a warm streak on the water once lit */
+function lampArt(seed: number): SVGSVGElement {
+  let glint = ''
+  for (let i = 0; i < 6; i++) glint += stroke([[-6 + (i % 2) * 5, 14 + i * 4.2], [5 + (i % 3) * 3, 14.4 + i * 4.2]], 1.6, 0.3, 0.3, 0.1)
+  return s('svg', { class: 't30g-lamp-art', viewBox: '-30 -66 60 92', 'aria-hidden': 'true' },
+    s('g', { class: 't30g-lamp-mirror', transform: 'translate(0 9) scale(1 -0.42)' }, toro(0, 0, 60, true)),
+    s('path', { class: 't30g-lamp-glint', d: glint }),
+    s('ellipse', { class: 't30g-lamp-ring', cx: 0, cy: 7, rx: 21, ry: 3.6 }),
+    s('path', { class: 't30g-lamp-rock', d: blob(0, 4, 17, 6, seed, 0.18, 12), filter: 'url(#ink-rough)' }),
+    s('path', { class: 't30g-lamp-rock-hi', d: stroke([[2, -1], [10, -0.5], [15, 2.5]], 1.4, 0.3, 0.3, 0.2) }),
+    toro(0, 0, 60, true))
+}

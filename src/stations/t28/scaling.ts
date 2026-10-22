@@ -273,7 +273,9 @@ export function scalingScene(ctx: SceneCtx) {
   const hit = h('div', { class: 't28s-beam-hit', role: 'slider', tabindex: '0', 'aria-label': G.beamAria, 'aria-valuemin': '0', 'aria-valuemax': '100' })
   const beamArtBox = h('div', { class: 't28s-beam-box' })
   const beam = h('div', { class: 't28s-beam' }, beamArtBox, jars[0].el, jars[1].el, hit)
-  const root = h('div', { class: 't28s', role: 'group', 'aria-label': G.art }, sky, ghost, ground, stick, pipe, beam, tree, front, compute, levelWord, tap, ...drops)
+  const note = h('p', { class: 't28s-note' })
+  const root = h('div', { class: 't28s', role: 'group', 'aria-label': G.art }, sky, ghost, ground, stick, pipe, beam, tree, front, compute, levelWord, tap, ...drops, note)
+  let wideNow = true
   ctx.art.append(root)
 
   let n = 0 // quarter turns of the tap: ×10 compute each
@@ -290,7 +292,6 @@ export function scalingScene(ctx: SceneCtx) {
   // on the heavy end of the seesaw
   const tapDot = g.dot(tap, { dir: [0.7, 0.7] })
   const way = g.track(() => [geo.tap, geo.mouth], { ticks: 4, labels: G.ticks })
-  let level: ReturnType<typeof g.drop> | null = null
   let heavy: ReturnType<typeof g.dot> | null = null
 
   function render() {
@@ -335,13 +336,18 @@ export function scalingScene(ctx: SceneCtx) {
     render()
     if (n < 3) return void ctx.chime('soft')
     tapDot.done()
+    way.done() // the ticks have done their work: the tree grows into where their words were
     tap.disabled = true
     root.classList.add('is-full')
     ctx.chime('ok')
-    ctx.insight(G.insights[0] as Fact)
-    // step 2: the seesaw wakes — its level outline (H3) and a dot on the heavy end (lift it)
+    // insight 1: on a wide frame in its corner of the art; on a phone written on the grass (the foot keeps step 2's prompt)
+    if (wideNow) ctx.insight(G.insights[0] as Fact)
+    else {
+      note.replaceChildren(ctx.fact(G.insights[0] as Fact, 'span'))
+      note.setAttribute('aria-live', 'polite')
+    }
+    // step 2: the seesaw wakes — a dot on the heavy end (lift it)
     step(1)
-    level = g.drop(() => [geo.cx, geo.cy], { w: geo.A * 2 + geo.bt * 2, h: geo.bt + 16, round: false })
     heavy = g.dot(() => end(a >= 0 ? 1 : -1), { dir: [0, -1] })
     if (document.activeElement === tap) hit.focus({ preventScroll: true })
   })
@@ -357,10 +363,10 @@ export function scalingScene(ctx: SceneCtx) {
     a = 0
     done = true
     render()
-    level?.hit()
     heavy?.done()
     g.ok(hit)
     root.classList.add('reveal')
+    note.replaceChildren()
     hit.setAttribute('aria-disabled', 'true')
     ctx.chime('ok')
     ctx.insight(G.insights[1] as Fact, G.detail as Fact)
@@ -379,7 +385,6 @@ export function scalingScene(ctx: SceneCtx) {
     box = root.getBoundingClientRect()
     hit.setPointerCapture(e.pointerId)
     root.classList.add('is-drag')
-    level?.lift(true)
     follow(e)
   })
   hit.addEventListener('pointermove', (e) => e.pointerId === drag && follow(e))
@@ -387,7 +392,6 @@ export function scalingScene(ctx: SceneCtx) {
     if (e.pointerId !== drag) return
     drag = -1
     root.classList.remove('is-drag')
-    level?.lift(false)
     settle()
   }
   hit.addEventListener('pointerup', up)
@@ -419,15 +423,16 @@ export function scalingScene(ctx: SceneCtx) {
     if (W < 60 || H < 60) return
     root.style.height = `${f1(H)}px`
     const wide = W / H > 1.15
+    wideNow = wide
     root.classList.toggle('tall', !wide)
-    const r = wide ? Math.min(H * 0.4, W * 0.2) : Math.min(W * 0.3, H * 0.2)
-    const cx = W * 0.5, cy = H * (wide ? 0.68 : 0.66)
+    const r = wide ? Math.min(H * 0.4, W * 0.2) : Math.min(W * 0.33, H * 0.21)
+    const cx = W * (wide ? 0.5 : 0.52), cy = H * (wide ? 0.68 : 0.64)
     const bt = Math.max(10, r * 0.12), A = r * 1.28
     const hp = r * 0.5 // the fulcrum stone's height
     const groundY = cy + hp
     const foot = cy - bt / 2
     // the crown at its full height stays clear of the frame's top (audit: under y 80)
-    const th = Math.max(60, Math.min(wide ? H * 0.42 : H * 0.26, (foot - 80) / 1.12))
+    const th = Math.max(60, Math.min(wide ? H * 0.42 : H * 0.3, (foot - 80) / 1.12))
     geo = { ...geo, cx, cy, A, bt, foot }
     ;[sky, ghost, ground, stick, pipe, front].forEach((v) => v.setAttribute('viewBox', `0 0 ${f1(W)} ${f1(H)}`))
     // ── sky: the moon behind the sapling's full crown, far ranges, mist
@@ -442,7 +447,7 @@ export function scalingScene(ctx: SceneCtx) {
       mist(W * 0.5, horizon + r * 0.12, W * 0.75, H * 0.06))
     // ── Gopher on its knoll in the mist (right third, about 70 % of the sapling's full height): its Size jar spilling,
     // its Data jar near empty; its name carved on the knoll
-    const gx = W * (wide ? 0.8 : 0.8), gy = wide ? horizon + r * 0.06 : cy - r * 1.15, gh = th * (wide ? 0.72 : 0.6)
+    const gx = W * (wide ? 0.8 : 0.8), gy = wide ? horizon + r * 0.06 : cy - r * 1.95, gh = th * (wide ? 0.72 : 0.55)
     const gj = (x: number, k: number, lvl: number) => {
       const jw = gh * (wide ? 0.17 : 0.26), jh = jw * 1.1
       const cid = `${id}-g${k}`
@@ -452,7 +457,7 @@ export function scalingScene(ctx: SceneCtx) {
         s('path', { class: 't28s-gjar', d: jarPath(jw, jh) }),
         s('rect', { class: 't28s-gwater', x: f1(-jw * 0.6), y: f1(-jh * Math.min(lvl, 1)), width: f1(jw * 1.2), height: f1(jh), 'clip-path': `url(#${cid})` }),
         lvl > 1 ? s('path', { class: 't28s-gspill', d: stroke(curve([jw * 0.3, -jh], [jw * 0.6, -jh * 0.6], [jw * 0.55, 0], 8), Math.max(1.5, jw * 0.06), 0.1, 0.4, 0.3) }) : null,
-        s('text', { class: 't28s-gname', x: 0, y: f1(-jh * 0.42), 'text-anchor': 'middle', 'font-size': f1(clamp(jw * 0.2, 9, 12)) }, G.jars[k].name.split(' · ')[0]))
+      )
     }
     const knoll = `M${P([gx - gh * 0.95, gy + gh * 0.05])}C${P([gx - gh * 0.6, gy - gh * 0.07])} ${P([gx - gh * 0.25, gy - gh * 0.08])} ${P([gx, gy - gh * 0.07])}C${P([gx + gh * 0.3, gy - gh * 0.06])} ${P([gx + gh * 0.65, gy - gh * 0.03])} ${P([gx + gh * 1, gy + gh * 0.06])}Z`
     ghost.replaceChildren(
@@ -528,10 +533,13 @@ export function scalingScene(ctx: SceneCtx) {
     const mouth: Pt = [cx - r * 0.24, foot - r * (wide ? 0.95 : 1.05)]
     geo.mouth = [mouth[0] - pw * 0.15, mouth[1] + pw * 0.6]
     geo.land = [cx - r * 0.12, foot - bt * 0.3]
-    const start: Pt = [cx - r * (wide ? 1.9 : 1.32), mouth[1] - r * (wide ? 0.42 : 0.5)]
-    const t0 = 0.24
+    const start: Pt = [cx - r * (wide ? 1.75 : 1.32), mouth[1] - r * (wide ? 0.42 : 0.5)]
+    // the pipe is carried: a riser from the spring in the ground up to its elbow (where the tap is), and crossed stakes
+    // tied under its middle
+    const t0 = wide ? 0.58 : 0.42
     const post: Pt = [start[0] + (mouth[0] - start[0]) * t0, start[1] + (mouth[1] - start[1]) * t0 + pw * 0.75]
     const pfoot: Pt = [post[0] - pw * 0.2, groundY - r * 0.2]
+    const riserFoot: Pt = [start[0] - pw * 0.35, groundY - r * 0.12]
     let thread = ''
     for (let i = 0; i < 9; i++) {
       const t = ((i + 0.6) / 9) ** 1.6
@@ -541,8 +549,12 @@ export function scalingScene(ctx: SceneCtx) {
     }
     const cord = stroke([[post[0] - pw * 0.6, post[1] - pw * 0.55], [post[0] + pw * 0.55, post[1] - pw * 0.25]], Math.max(1, pw * 0.1), 0.2, 0.2, 0.4)
       + stroke([[post[0] - pw * 0.55, post[1] - pw * 0.2], [post[0] + pw * 0.6, post[1] - pw * 0.6]], Math.max(1, pw * 0.1), 0.2, 0.2, 0.4)
+    const xa: Pt = [post[0] - pw * 1.6, pfoot[1]], xb: Pt = [post[0] + pw * 1.6, pfoot[1] + r * 0.02]
     pipe.replaceChildren(
-      bamboo(pfoot, post, pw * 0.85, 2823, true, '', pw * 0.15),
+      bamboo(xa, [post[0] + pw * 0.5, post[1] - pw * 0.2], pw * 0.6, 2823, false, '', pw * 0.1),
+      bamboo(xb, [post[0] - pw * 0.5, post[1] - pw * 0.2], pw * 0.6, 2825, false, '', -pw * 0.1),
+      bamboo(riserFoot, [start[0] - pw * 0.2, start[1] + pw * 0.4], pw * 1.05, 2826, false, '', pw * 0.05),
+      s('ellipse', { class: 't28s-jar-sh', cx: f1(riserFoot[0] + pw), cy: f1(riserFoot[1] + 2), rx: f1(pw * 2.2), ry: f1(pw * 0.4) }),
       bamboo([start[0] - pw * 1.2, start[1] - pw * 0.25], mouth, pw, 2815, true, '', -pw * 0.9),
       s('path', { class: 't28s-cord', d: cord }),
       s('path', { class: 't28s-hang', d: blob(geo.mouth[0], geo.mouth[1], pw * 0.16, pw * 0.22, 2816, 0.05, 8) }),
@@ -556,13 +568,19 @@ export function scalingScene(ctx: SceneCtx) {
     if (wide) Object.assign(compute.style, { left: `${f1(mid[0])}px`, top: `${f1(mid[1] - pw * 1.3)}px`, transform: `translate(-50%, -50%) rotate(${f1(ang)}deg)`, maxWidth: '' })
     else Object.assign(compute.style, { left: '12px', top: `${f1(Math.max(6, geo.tap[1] - 64))}px`, transform: 'none', maxWidth: `${f1(W * 0.62)}px` })
     // ── the measuring stake beside the sapling: a notch for each step it can gain (an illustration, not data)
-    const sx = cx + r * (wide ? 0.66 : 0.7)
+    // the measure: a slim standing stone on the ground behind the seesaw, a notch cut at each height the sapling reaches
+    const sx = cx + r * (wide ? 0.62 : 0.6)
     const lv = (k: number) => foot - th * (0.4 + 0.15 * k)
-    marks = [0, 1, 2, 3].map((k) => s('path', { class: 't28s-mark', d: stroke([[sx - 9, lv(k)], [sx + 9, lv(k) + 0.5]], 2.6, 0.1, 0.1, 0.4) }))
+    const sw = Math.max(10, r * 0.07), sTop = lv(3) - th * 0.07, sFoot = horizon + r * 0.04
+    const stele = `M${P([sx - sw * 0.55, sFoot])}L${P([sx - sw * 0.5, sTop + sw * 0.5])}Q${P([sx - sw * 0.45, sTop])} ${P([sx + sw * 0.1, sTop - sw * 0.1])}Q${P([sx + sw * 0.5, sTop + sw * 0.2])} ${P([sx + sw * 0.5, sTop + sw * 0.6])}L${P([sx + sw * 0.6, sFoot])}Z`
+    marks = [0, 1, 2, 3].map((k) => s('path', { class: 't28s-mark', d: stroke([[sx - sw * 0.5, lv(k)], [sx + sw * 0.55, lv(k) + 0.5]], 2.4, 0.05, 0.05, 0.6) }))
     stick.replaceChildren(
-      s('path', { class: 't28s-stake', d: stroke([[sx, groundY - r * 0.1], [sx + 0.5, lv(3) - th * 0.06]], Math.max(3, r * 0.025), 0.05, 0.2, 0.5) }),
+      s('ellipse', { class: 't28s-jar-sh', cx: f1(sx + sw * 0.8), cy: f1(sFoot + 1), rx: f1(sw * 1.6), ry: f1(sw * 0.3) }),
+      s('path', { class: 't28s-stele', d: stele, filter: 'url(#ink-rough)' }),
+      s('path', { class: 't28s-stele-sh', d: `M${P([sx + sw * 0.05, sFoot])}L${P([sx + sw * 0.1, sTop])}Q${P([sx + sw * 0.5, sTop + sw * 0.2])} ${P([sx + sw * 0.5, sTop + sw * 0.6])}L${P([sx + sw * 0.6, sFoot])}Z` }),
+      s('path', { class: 't28s-stele-rim', d: stroke([[sx - sw * 0.5, sFoot - 2], [sx - sw * 0.5, sTop + sw * 0.5], [sx - sw * 0.2, sTop]], 1.2, 0.1, 0.2, 0.3) }),
       ...marks,
-      s('text', { class: 't28s-illus', x: f1(sx + 12), y: f1(lv(3) - th * 0.04), 'font-size': 13 }, G.illus))
+      s('text', { class: 't28s-illus', x: f1(sx + sw * 0.9), y: f1(sTop + 4), 'font-size': 13 }, G.illus))
     // ── the near bank: a dark mossy edge cut by the frame
     let blades = ''
     const fr = rng(2817)
@@ -571,6 +589,7 @@ export function scalingScene(ctx: SceneCtx) {
       blades += stroke(curve([x, H + 2], [x + (fr() - 0.5) * 10, y - H * 0.03 * bl], [x + (fr() - 0.5) * 18, y - H * (0.03 + fr() * 0.035) * bl], 5), 1.4 + fr() * 1.6, 0.05, 0.8, 0.1)
     }
     front.replaceChildren(s('path', { class: 't28s-blades', d: blades }))
+    Object.assign(note.style, { top: `${f1(groundY + r * 0.42)}px` })
     render()
     g.refresh()
   }

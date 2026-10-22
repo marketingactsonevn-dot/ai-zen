@@ -8,13 +8,14 @@ import { blob, clamp, onDigit, onSize, p2Defs, rng, stableHeight, stroke, type P
 import { grass, hills, mist, moon, reeds, toro } from '../../ui/part2/paint'
 import { C } from './data'
 import { guide } from '../../ui/part2/guide'
-import { f1, figure, P, paperSlip } from './kit'
+import { f1, figure, P } from './kit'
 
 const G = C.scenes.fence
 const PITCH = 15 * (Math.PI / 180) // LOW 15°
 const HL = 0.5 // the lamp's flame height (fence radius = 1)
 const HALF = 0.95 // the beam's half-width (rad)
 const CRACKS = [0.16, 0.38, 0.6, 0.8] // along the wall
+const CRACKS_TALL = [0.3, 0.43, 0.57, 0.7]
 
 /**
  * II·12 "fence" (canvas): night, LOW 15°. A near-white lamp inside a ring of bamboo stakes tied with thorn rope is the key
@@ -35,18 +36,14 @@ export function fenceScene(ctx: SceneCtx) {
   const ca = h('canvas', { class: 't30f-cv', 'aria-hidden': 'true' }) // ground light, shadows, far stakes
   const lampSvg = s('svg', { class: 't30f-svg', 'aria-hidden': 'true' })
   const cb = h('canvas', { class: 't30f-cv', 'aria-hidden': 'true' }) // near stakes, gate, the beam in the air
-  // the facts hang in the open ground beside the fence: each guard's paper from its spear (Mythos with "why" tied under
-  // it, Fairwind with the open question carved on a wooden board under it); a phone shows the latest one only
-  const slips = G.cases.map(() => paperSlip('t30f-slip t30f-piece'))
-  const whySlip = paperSlip('t30f-slip t30f-piece')
-  const plaque = h('div', { class: 't30f-plaque t30f-piece' })
-  const hangs = [h('div', { class: 't30f-hang l', role: 'group', 'aria-label': G.group }, slips[0], whySlip), h('div', { class: 't30f-hang r', role: 'group', 'aria-label': G.group }, slips[1], plaque)]
-  const denied = h('p', { class: 't30f-denied' }, G.denied)
+  // one reading at a time, low on the left of the ground (a phone: under the compound), never a card: the gate's refusal,
+  // then the guard just called, then why the fence; at the end only the insight stays (the open question is in its detail)
+  const read = h('div', { class: 't30f-read', role: 'group', 'aria-label': G.group })
   const gate = h('button', { class: 't30f-gate', type: 'button', 'aria-label': G.gateAria }, h('span', { class: 't30f-gate-name' }, G.gate))
   const guards = G.cases.map((c, i) => h('button', { class: 't30f-guard', type: 'button', 'aria-pressed': 'false', onClick: () => pick(i) },
     guardArt(3040 + i, i ? -1 : 1), h('span', { class: 't30f-guard-name' }, c.name)))
   const lamp = h('div', { class: 't30f-lamp', role: 'slider', tabindex: '0', 'aria-label': G.lampAria, 'aria-valuemin': '0', 'aria-valuemax': '359', 'aria-valuenow': '90' })
-  root.append(h('p', { class: 'visually-hidden' }, G.art), bg, cw, mid, ca, lampSvg, cb, lamp, gate, denied, ...guards, ...hangs)
+  root.append(h('p', { class: 'visually-hidden' }, G.art), bg, cw, mid, ca, lampSvg, cb, lamp, gate, ...guards, read)
   ctx.art.append(root)
   // guide (audit v3 30-2): a prompt per step — the gate, the two guards' lanterns, then turn the lamp on the wall; a dot
   // on the next thing; a count of the cracks found
@@ -88,8 +85,9 @@ export function fenceScene(ctx: SceneCtx) {
   let barbs: { a: number; x: number; y: number; r: number }[] = [] // the knots of the barbed wire, to catch the beam
   let wallA: Pt = [0, 0], wallB: Pt = [0, 0], wallH = 0.9
   let pool: HTMLCanvasElement | null = null, poolAt: Pt = [0, 0], poolSize: Pt = [1, 1]
-  let crackCv: HTMLCanvasElement | null = null, spot: HTMLCanvasElement | null = null
-  let crackAt: Pt[] = []
+  let crackCv: HTMLCanvasElement | null = null, spot: HTMLCanvasElement | null = null, litCv: HTMLCanvasElement | null = null
+  let crackAt: Pt[] = [], crackPaths: Path2D[] = []
+  let countAt: Pt = [0, 0]
   let spotK = 1
 
   function layout() {
@@ -238,7 +236,9 @@ export function fenceScene(ctx: SceneCtx) {
     const xc = crackCv.getContext('2d')!
     xc.scale(dpr, dpr)
     crackAt = []
-    CRACKS.forEach((t, i) => {
+    crackPaths = []
+    // a phone's wall runs off both edges: its cracks sit where the frame shows them
+    ;(tall ? CRACKS_TALL : CRACKS).forEach((t, i) => {
       const x = wallA[0] + (wallB[0] - wallA[0]) * t, z = wallA[1] + (wallB[1] - wallA[1]) * t
       const y0 = wallH * (0.75 - (i % 2) * 0.12)
       const pts: Pt[] = []
@@ -246,6 +246,7 @@ export function fenceScene(ctx: SceneCtx) {
       for (let k = 0; k <= 6; k++) pts.push(proj(x + (rr() - 0.5) * 0.12, y0 - (k / 6) * wallH * 0.6, z))
       crackAt.push(proj(x, wallH * 0.45, z))
       const d = new Path2D(stroke(pts, Math.max(2.4, F * 0.008), 0.15, 0.3, 0.3))
+      crackPaths.push(d)
       xc.save()
       xc.translate(1.8, 0.8)
       xc.fillStyle = col.verm
@@ -256,6 +257,32 @@ export function fenceScene(ctx: SceneCtx) {
     })
     const w0 = proj(wallA[0], wallH * 0.5, wallA[1]), w1 = proj(wallA[0] + 1, wallH * 0.5, wallA[1])
     spotK = Math.hypot(w1[0] - w0[0], w1[1] - w0[1])
+    litCv = document.createElement('canvas')
+    litCv.width = ca.width
+    litCv.height = ca.height
+    paintLit()
+  }
+  /** the cracks found so far stay lit: a vermilion lip glowing softly round a dark split (redrawn only when one is found) */
+  function paintLit() {
+    if (!litCv) return
+    const x = litCv.getContext('2d')!
+    x.setTransform(1, 0, 0, 1, 0, 0)
+    x.clearRect(0, 0, litCv.width, litCv.height)
+    x.setTransform(dpr, 0, 0, dpr, 0, 0)
+    for (const i of revealed) {
+      const d = crackPaths[i]
+      if (!d) continue
+      x.save()
+      x.shadowColor = col.verm
+      x.shadowBlur = 9 * dpr
+      x.translate(1.6, 0.6)
+      x.fillStyle = col.verm
+      x.fill(d)
+      x.fill(d)
+      x.restore()
+      x.fillStyle = col.dark ? '#000' : col.ink
+      x.fill(d)
+    }
   }
 
   // ── the painted layers (static per layout): sky, moon, wall, mist; the compound floor; the lamp
@@ -273,14 +300,31 @@ export function fenceScene(ctx: SceneCtx) {
       bot.push(proj(x, 0, z))
     }
     const wall = `M${top.map(P).join('L')}L${[...bot].reverse().map(P).join('L')}Z`
-    let courses = '', crenels = ''
-    for (const k of [0.25, 0.5, 0.75]) {
-      for (let i = 0; i < N; i++) {
-        if (r() < 0.35) continue
-        const a = top[i], b = bot[i], c = top[i + 1], d = bot[i + 1]
-        const p0: Pt = [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k], p1: Pt = [c[0] + (d[0] - c[0]) * k, c[1] + (d[1] - c[1]) * k]
-        courses += `M${P(p0)}L${P([p0[0] + (p1[0] - p0[0]) * (0.6 + r() * 0.3), p0[1] + (p1[1] - p0[1]) * (0.6 + r() * 0.3)])}`
+    // dressed stone: five courses, the vertical joints staggered course by course, a few blocks a shade darker, moss
+    // creeping up from the foot and hanging from the merlons
+    let courses = '', crenels = '', dark = '', moss = ''
+    const at = (t: number, k: number): Pt => {
+      const x = wallA[0] + (wallB[0] - wallA[0]) * t, z = wallA[1] + (wallB[1] - wallA[1]) * t
+      return proj(x, wallH * (1 - k), z)
+    }
+    const NC = 5, NB = tall ? 26 : 46
+    for (let c = 1; c < NC; c++) courses += `M${Array.from({ length: N + 1 }, (_, i) => P(at(i / N, c / NC))).join('L')}`
+    for (let c = 0; c < NC; c++) {
+      for (let b = 0; b < NB; b++) {
+        const t0 = (b + (c % 2) * 0.5) / NB, t1 = (b + 1 + (c % 2) * 0.5) / NB
+        if (t0 > 1) continue
+        const p0 = at(t0, c / NC), p1 = at(t0, (c + 1) / NC)
+        courses += `M${P(p0)}L${P(p1)}`
+        if (r() < 0.16) dark += `M${P(p0)}L${P(at(Math.min(1, t1), c / NC))}L${P(at(Math.min(1, t1), (c + 1) / NC))}L${P(p1)}Z`
       }
+    }
+    for (let i = 0; i < 26; i++) {
+      const t = r(), [x, y] = at(t, 0.97 - r() * 0.06), sc = Math.max(0.3, at(t, 0)[1] - at(t, 0.1)[1])
+      moss += blob(x, y, sc * (1.5 + r() * 2.5), sc * 0.5, 3200 + i, 0.4, 9)
+    }
+    for (let i = 0; i < 14; i++) {
+      const t = r(), [x, y] = at(t, 0.04), sc = Math.max(0.3, at(t, 0)[1] - at(t, 0.1)[1])
+      moss += blob(x, y + sc * 0.6, sc * (0.8 + r()), sc * (0.6 + r() * 0.8), 3240 + i, 0.4, 9)
     }
     for (let i = 0; i < N * 2; i += 2) {
       const t0 = (i + (r() - 0.5) * 0.3) / (N * 2), t1 = (i + 0.8 + r() * 0.3) / (N * 2)
@@ -301,8 +345,10 @@ export function fenceScene(ctx: SceneCtx) {
       mist(W * 0.5, horizon, W * 0.7, F * 0.06),
       s('path', { class: 't30f-wall', d: wall, filter: 'url(#ink-rough)' }),
       s('path', { class: 't30f-wall-shade', d: wall }),
+      s('path', { class: 't30f-block-dark', d: dark }),
       s('path', { class: 't30f-crenel', d: crenels }),
       s('path', { class: 't30f-course', d: courses }),
+      s('path', { class: 't30f-moss', d: moss, filter: 'url(#ink-wash)' }),
       s('path', { class: 't30f-wall', d: tower, filter: 'url(#ink-rough)' }),
       s('path', { class: 't30f-roof', d: roof, filter: 'url(#ink-rough)' }),
       s('path', { class: 't30f-wall-top', d: stroke(top, Math.max(1.2, F * 0.004), 0.05, 0.05, 0.4) }),
@@ -345,8 +391,27 @@ export function fenceScene(ctx: SceneCtx) {
         s('stop', { offset: 0.3, style: 'stop-color:var(--moon);stop-opacity:.2' }),
         s('stop', { offset: 1, style: 'stop-color:var(--moon);stop-opacity:0' }))),
       s('g', { class: 't30f-post' }, toro(lx, ly, ly - lh, true)),
+      // the turn track: a ring of ink dots round the lamp's foot with a curved arrow each way (shown while sweeping)
+      s('path', { class: 't30f-ring', d: ringDots() }),
       s('circle', { class: 't30f-flame', cx: f1(lx), cy: f1(fy), r: f1(Math.max(2.5, F * 0.012)) }))
     void r
+  }
+
+  function ringDots() {
+    let d = ''
+    for (let i = 0; i < 36; i++) {
+      const a = (i / 36) * Math.PI * 2
+      const [x, y] = proj(Math.cos(a) * 0.3, 0, Math.sin(a) * 0.3)
+      d += blob(x, y, 1.6, 1.3, 3280 + i, 0.1, 6)
+    }
+    // arrowheads on the near side, pointing both ways round
+    for (const sd of [-1, 1]) {
+      const a = Math.PI / 2 + sd * 0.7
+      const p = proj(Math.cos(a) * 0.3, 0, Math.sin(a) * 0.3), q = proj(Math.cos(a - sd * 0.18) * 0.3, 0, Math.sin(a - sd * 0.18) * 0.3)
+      const ang = Math.atan2(p[1] - q[1], p[0] - q[0]), k = 8
+      d += stroke([[p[0] + Math.cos(ang + 2.5) * k, p[1] + Math.sin(ang + 2.5) * k], p, [p[0] + Math.cos(ang - 2.5) * k, p[1] + Math.sin(ang - 2.5) * k]], 1.6, 0.1, 0.1, 0.5)
+    }
+    return d
   }
 
   // ── buttons and paper placed on the painting
@@ -354,26 +419,21 @@ export function fenceScene(ctx: SceneCtx) {
     const g = proj(0, 0, 1.0), gt = proj(0, 0.5, 1.0)
     const gw = Math.max(54, (proj(0.3, 0, 1)[0] - g[0]) * 2)
     Object.assign(gate.style, { left: `${f1(g[0] - gw / 2)}px`, top: `${f1(gt[1] - 8)}px`, width: `${f1(gw)}px`, height: `${f1(g[1] - gt[1] + 34)}px` })
-    Object.assign(denied.style, { left: `${f1(g[0])}px`, top: `${f1(g[1] + 30)}px` })
     guards.forEach((b, i) => {
       const sd = i ? 1 : -1, dir = i ? -1 : 1
-      const at = proj(sd * (tall ? 0.62 : 0.46), 0, 1.32) // waiting at the gate
+      const at = proj(sd * (tall ? 0.5 : 0.46), 0, 1.32) // waiting at the gate
       // once called, a guard steps aside into the open ground (a phone has no room: it stays), its paper on its spear
       const out = tall ? at : proj(sd * 1.32, 0, 0.25)
-      const k = Math.abs(proj(0, 0.5, 1.32)[1] - at[1]), ko = tall ? k : Math.abs(proj(0, 0.5, 0.25)[1] - out[1])
+      const k = Math.abs(proj(0, 0.5, 1.32)[1] - at[1]) * 1.3, ko = tall ? k : Math.abs(proj(0, 0.5, 0.25)[1] - out[1]) * 1.3 // ×1.3 (audit v3 30-2)
       Object.assign(b.style, { left: `${f1(at[0] - k * 0.45)}px`, top: `${f1(at[1] - k)}px`, width: `${f1(k * 0.9)}px`, height: `${f1(k)}px` })
       b.style.setProperty('--in-x', `${f1(out[0] - at[0])}px`)
       b.style.setProperty('--in-y', `${f1(out[1] - ko / 2 - (at[1] - k / 2))}px`)
       b.style.setProperty('--in-s', (ko / k).toFixed(3))
-      // the spear tip once stepped aside (guard art: spear at x = -8·dir of a 52-wide box, tip 1/54 from the top)
-      const tip: Pt = [out[0] - dir * (8 / 52) * ko * 0.9, out[1] - ko * 0.98]
-      const hang = hangs[i]
-      if (tall) Object.assign(hang.style, { left: '6%', width: '88%', top: `${f1(proj(0, 0, 1.6)[1] + 26)}px`, right: '' })
-      else {
-        const cw = clamp(i ? W * 0.935 - tip[0] : tip[0] - W * 0.065, 170, 270)
-        Object.assign(hang.style, { left: `${f1(i ? tip[0] - 3 : tip[0] + 3 - cw)}px`, width: `${f1(cw)}px`, top: `${f1(tip[1])}px` })
-      }
+      void dir
     })
+    if (tall) Object.assign(read.style, { left: '6%', width: '88%', top: `${f1(proj(0, 0, 1.6)[1] + 40)}px`, bottom: '' })
+    else Object.assign(read.style, { left: '3.4%', width: 'min(28rem, 30%)', top: '', bottom: '18px' })
+    countAt = [g[0], g[1] + 16]
     const [lx, fb] = proj(0, 0, 0), [, ft] = proj(0, HL / 0.63, 0)
     Object.assign(lamp.style, { left: `${f1(lx - 26)}px`, top: `${f1(ft - 6)}px`, width: '52px', height: `${f1(fb - ft + 6)}px` })
   }
@@ -507,6 +567,7 @@ export function fenceScene(ctx: SceneCtx) {
         if (!revealed.has(i) && Math.abs(x - sx) < rx * 1.0 && Math.abs(y - sy) < ry * 1.6) reveal(i) // wide enough for a natural sweep (audit v3 30-2)
       }
     }
+    if (revealed.size && litCv) xw.drawImage(litCv, 0, 0, W, H)
   }
   // the beam's axis on the wall line (ground plane) → HIT: screen point and perspective scale; false when it misses
   function wallHit(): boolean {
@@ -528,21 +589,19 @@ export function fenceScene(ctx: SceneCtx) {
   }
 
   // ── the story: gate → guards → lamp → cracks
-  let latest: HTMLElement | null = null
-  function put(el: HTMLElement, ...kids: HTMLElement[]) {
-    el.replaceChildren(...kids)
-    el.classList.add('on')
-    latest?.classList.remove('latest')
-    latest = el
-    el.classList.add('latest') // a phone shows this one only
-    if (!el.hasAttribute('aria-live')) el.setAttribute('aria-live', 'polite')
+  function put(...kids: HTMLElement[]) {
+    read.replaceChildren(...kids)
+    read.classList.remove('t30f-new')
+    void read.offsetWidth // restart the fade-in
+    read.classList.add('t30f-new')
+    if (!read.hasAttribute('aria-live')) read.setAttribute('aria-live', 'polite')
   }
   function knock() {
     knocked = true
     root.classList.remove('knock')
     void root.offsetWidth // restart the shake
     root.classList.add('knock', 'knocked')
-    denied.classList.add('on')
+    if (!seen.size) put(h('p', { class: 't30f-denied' }, G.denied))
     ctx.chime('soft')
     if (!seen.size) {
       step(1)
@@ -553,13 +612,13 @@ export function fenceScene(ctx: SceneCtx) {
     guards.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)))
     guards[i].classList.add('in')
     seen.add(i)
-    put(slips[i], h('p', { class: 't30f-who' }, G.cases[i].name), ctx.fact(G.cases[i].fact as Fact, 'p'))
+    put(h('p', { class: 't30-eyebrow' }, G.cases[i].name), ctx.fact(G.cases[i].fact as Fact, 'p'))
     if (seen.size === G.cases.length && !root.classList.contains('guarded')) {
       root.classList.add('guarded')
       step(2)
       next.done()
       next = gd.dot(lamp, { dir: [1, 0] })
-      cracksFound = gd.count(G.crackTpl, CRACKS.length, gate, { n: revealed.size })
+      cracksFound = gd.count(G.crackTpl, CRACKS.length, () => countAt, { n: revealed.size })
     } else if (seen.size < G.cases.length) next.at(guards.find((_, k) => !seen.has(k))!)
     ctx.chime('soft')
     void knocked
@@ -567,13 +626,14 @@ export function fenceScene(ctx: SceneCtx) {
   function reveal(i: number) {
     revealed.add(i)
     root.classList.add('found')
-    if (revealed.size === 1) put(whySlip, h('p', { class: 't30-eyebrow' }, G.whyLabel), ctx.fact(G.why as Fact, 'p'))
+    paintLit()
+    if (revealed.size === 1) put(h('p', { class: 't30-eyebrow' }, G.whyLabel), ctx.fact(G.why as Fact, 'p'))
     ctx.chime(revealed.size === CRACKS.length ? 'ok' : 'soft')
     cracksFound?.set(revealed.size)
     if (revealed.size === CRACKS.length) {
       next.done()
       cracksFound?.done()
-      put(plaque, h('p', { class: 't30f-carved-label' }, G.debateLabel), ctx.fact(G.debate as Fact, 'p'))
+      root.classList.add('done')
       ctx.insight(G.insight as Fact, G.detail as Fact)
     }
   }
@@ -619,6 +679,21 @@ export function fenceScene(ctx: SceneCtx) {
     turnTo(beta + (k * Math.PI) / 18)
   })
   gate.addEventListener('click', knock)
+  // H7: idle while sweeping, the beam turns 10° toward the nearest crack not yet found
+  const invite = () => {
+    if (!root.classList.contains('guarded') || root.classList.contains('done')) return
+    let best = 0, bd = Infinity
+    ;(tall ? CRACKS_TALL : CRACKS).forEach((t, i) => {
+      if (revealed.has(i)) return
+      const a = Math.atan2(wallA[1] + (wallB[1] - wallA[1]) * t, wallA[0] + (wallB[0] - wallA[0]) * t)
+      const d = Math.atan2(Math.sin(a - beta), Math.cos(a - beta))
+      if (Math.abs(d) < Math.abs(bd)) (bd = d), (best = i)
+    })
+    if (bd !== Infinity) turnTo(beta + Math.sign(bd) * Math.min(Math.abs(bd), Math.PI / 18))
+    void best
+  }
+  ctx.el.addEventListener('p2:idle', invite)
+  ctx.onCleanup(() => ctx.el.removeEventListener('p2:idle', invite))
   ctx.onCleanup(onDigit((d) => d <= G.cases.length && pick(d - 1)))
 
   // ── first paint soaks in; resizes and theme changes redraw in one go

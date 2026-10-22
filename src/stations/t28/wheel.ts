@@ -3,7 +3,7 @@ import { createLoop } from '../../core/loop'
 import type { Fact } from '../../core/content'
 import type { SceneCtx } from '../types'
 import { blob, clamp, curve, onSize, p2Defs, rng, stableHeight, stoneArt, stroke, type Pt } from '../../ui/part2/ink'
-import { hills, mist, moon, reeds, toro, wash, water } from '../../ui/part2/paint'
+import { hills, mist, moon, pine, reeds, toro, wash, water } from '../../ui/part2/paint'
 import { C } from './data'
 import { guide } from '../../ui/part2/guide'
 
@@ -56,9 +56,10 @@ export function wheelScene(ctx: SceneCtx) {
   // the step's line and its fact, cut into one wet wooden board staked in the shallows (not a card over the painting)
   const plank = h('p', { class: 't28w-plank' })
   const slip = h('div', { class: 't28w-slip', 'aria-live': 'polite' })
-  const board = h('div', { class: 't28w-board' }, plank, slip)
+  // a wet plank on two stakes driven into the shallows: the face carries the words, the stakes and ripples stand below
+  const board = h('div', { class: 't28w-board' }, h('div', { class: 't28w-face' }, plank, slip), h('i', { class: 't28w-wet', 'aria-hidden': 'true' }))
   const wheel = h('div', { class: 't28w-hit', role: 'slider', tabindex: '0', 'aria-label': G.flowLabel, 'aria-valuemin': '0', 'aria-valuemax': String(G.flow.length), 'aria-valuenow': '0', 'aria-description': G.wheelAria })
-  const islandTags = G.islands.map((n) => h('span', { class: 't28w-isle' }, n))
+  const islandTags = G.islands.map((n) => h('span', { class: 't28w-isle', 'data-t': n }, n)) // written on the water, with its reflection
   const root = h('div', { class: 't28w', role: 'group', 'aria-label': G.art }, sky, back, wheelSvg, near, ...islandTags, wheel)
   ctx.art.append(root, board) // the board sits outside the painting's soft edges
 
@@ -81,7 +82,9 @@ export function wheelScene(ctx: SceneCtx) {
   // the four steps
   const dot = gd.dot(() => [geo.cx + geo.R * 1.02 * geo.sx, geo.cy], { dir: [0, 1] })
   const arrow = gd.gesture('rotate', () => [geo.cx, geo.cy], { r: 70 })
-  const steps = gd.count(G.countTpl, G.flow.length, () => [geo.cx, geo.cy + geo.R * 1.3])
+  // the four steps: notches cut in a row on the mill wall, each lit as its step is taken (H4, audit v3 28-5)
+  const tally = s('g', { class: 't28w-tally' })
+  const steps = { set: (n: number) => tally.querySelectorAll('.t28w-tick').forEach((e, i) => e.classList.toggle('on', i < n)), done: () => tally.classList.add('all') }
 
   /** a quarter turn forward: the next run of water lights, its words go on the plank, its fact on the slip */
   function advance() {
@@ -232,8 +235,9 @@ export function wheelScene(ctx: SceneCtx) {
     root.style.height = `${f1(H)}px`
     const wide = W / H > 1.15
     // a low camera under the axle: the wheel fills about 60 % of the height, against the moon; the far shore sits low
-    const R = wide ? H * 0.31 : Math.min(W * 0.32, H * 0.24)
-    const cx = wide ? W * 0.42 : W * 0.36, cy = wide ? H * 0.4 : H * 0.3
+    // (a phone: the wheel near the middle, the mill pushed back to its right; the islands come forward onto the lower water)
+    const R = wide ? H * 0.31 : Math.min(W * 0.3, H * 0.2)
+    const cx = wide ? W * 0.42 : W * 0.42, cy = wide ? H * 0.4 : H * 0.25
     const sx = 0.86, dx = R * 0.17, dy = -R * 0.06
     geo = { cx, cy, R, sx, dx, dy }
     const hz = cy + R * 0.5 // the far shore, below the axle (we look up)
@@ -249,19 +253,23 @@ export function wheelScene(ctx: SceneCtx) {
       water(-W * 0.05, hz, W * 1.05, H, 2860, cx + R * 0.12),
       mist(W * 0.5, hz + 2, W * 0.8, H * 0.03))
     // ── the islands and the stone channel, in perspective (far = thin, pale)
-    const isleAI: Pt = wide ? [W * 0.12, hz + H * 0.035] : [W * 0.17, hz + H * 0.03]
-    const isleDC: Pt = wide ? [W * 0.86, hz + H * 0.03] : [W * 0.8, hz + H * 0.028]
-    const millX = cx + R * sx * 1.04 + dx * 0.4, millW = wide ? R * 0.92 : R * 0.62, sideW = R * (wide ? 0.24 : 0.18)
+    const isleAI: Pt = wide ? [W * 0.12, hz + H * 0.035] : [W * 0.2, H * 0.55]
+    const isleDC: Pt = wide ? [W * 0.86, hz + H * 0.03] : [W * 0.76, H * 0.585]
+    const millX = cx + R * sx * 1.04 + dx * 0.4, millW = wide ? R * 0.92 : R * 0.78, sideW = R * (wide ? 0.24 : 0.16)
     const tail: Pt = [cx - R * 0.45, wl + R * 0.04]
     const head: Pt = [cx + R * 0.3, cy - R * 1.06] // where the trough pours onto the wheel
     const wallTop = cy - R * 0.62, wallBot = wl + R * 0.05
     const millTop: Pt = [millX + millW * 0.55, wallTop - R * 0.34]
-    const depthW = (y: number) => clamp(((y - hz) / (H - hz)) * R * 0.55, 4, R * 0.3)
+    const depthW = (y: number) => clamp(((y - hz) / (H - hz)) * R * (wide ? 0.55 : 0.4), 4, R * (wide ? 0.3 : 0.16))
     const run = (pts: Pt[]) => ({ pts, w: pts.map((p) => depthW(p[1])) })
-    const runs = [
-      run(bez(tail, [W * (wide ? 0.08 : 0.02), wl + R * 0.25], [isleAI[0] + 10, isleAI[1] + 4])),
+    const runs = wide ? [
+      run(bez(tail, [W * 0.08, wl + R * 0.25], [isleAI[0] + 10, isleAI[1] + 4])),
       run(bez([isleAI[0] + 14, isleAI[1]], [W * 0.5, hz + H * 0.004], [isleDC[0] - 14, isleDC[1]])),
-      run(bez([isleDC[0] - 6, isleDC[1] + 4], [W * (wide ? 0.95 : 0.98), wl - R * 0.1], [millX + millW * 0.7, wl - R * 0.02])),
+      run(bez([isleDC[0] - 6, isleDC[1] + 4], [W * 0.95, wl - R * 0.1], [millX + millW * 0.7, wl - R * 0.02])),
+    ] : [
+      run(bez(tail, [W * 0.04, wl + R * 0.3], [isleAI[0] - 8, isleAI[1] - 6])),
+      run(bez([isleAI[0] + 20, isleAI[1] - 4], [W * 0.48, isleAI[1] - H * 0.035], [isleDC[0] - 22, isleDC[1] - 6])),
+      run(bez([isleDC[0] + 10, isleDC[1] - 8], [W * 0.98, wl + R * 0.25], [millX + millW * 0.7, wl - R * 0.02])),
     ]
     // a stone channel: its walls (lit lip, dark inner wall), dark water, short silver glints that slide along when lit
     segs = runs.map(({ pts, w }, k) => {
@@ -285,12 +293,17 @@ export function wheelScene(ctx: SceneCtx) {
       s('path', { class: 't28w-flow', d: `M${tr.map(P).join('L')}`, 'stroke-width': f1(Math.max(1.2, tw * 0.3)), pathLength: 1 }))
     segs.push(trough)
     // the far islands: AI company (a pavilion with a lamp) · data centre (a row of stone lanterns, racks in the night)
-    const isle = (p: Pt, w: number, seed: number) => [wash(blob(p[0], p[1] + w * 0.1, w * 0.6, w * 0.12, seed, 0.15), 0.35, 'p2p-wash t28w-double'), s('g', { transform: `translate(${P(p)})` }, stoneArt(w, w * 0.32, seed))]
-    const iw = wide ? R * 0.7 : R * 0.62
+    // each island: a rock with a moss top and a pine, its reflection on the water, a lantern's warmth on its stone
+    const isle = (p: Pt, w: number, seed: number, dir: number) => [
+      wash(blob(p[0], p[1] + w * 0.12, w * 0.62, w * 0.12, seed, 0.15), 0.35, 'p2p-wash t28w-double'),
+      s('g', { class: 't28w-isl-refl', transform: `translate(${P([p[0], p[1] + w * 0.02])}) scale(1 -0.5)` }, stoneArt(w, w * 0.34, seed)),
+      s('g', { transform: `translate(${P(p)})` }, stoneArt(w, w * 0.34, seed)),
+      pine(p[0] + dir * w * 0.36, p[1] - w * 0.2, w * 0.62, seed + 3, -dir)]
+    const iw = wide ? R * 0.9 : R * 0.82
     const racks: SVGElement[] = []
-    for (let k = 0; k < 5; k++) racks.push(s('g', { transform: `translate(${f1(isleDC[0] - iw * 0.32 + k * iw * 0.16)} ${f1(isleDC[1] - iw * 0.22)})` }, toro(0, 0, iw * 0.3, true)))
+    for (let k = 0; k < 5; k++) racks.push(s('g', { transform: `translate(${f1(isleDC[0] - iw * 0.36 + k * iw * 0.16)} ${f1(isleDC[1] - iw * 0.24 + Math.abs(k - 2) * 1.5)})` }, toro(0, 0, iw * 0.36, true)))
     const pav = (p: Pt) => {
-      const pw = iw * 0.5, ph = iw * 0.32
+      const pw = iw * 0.62, ph = iw * 0.42
       return s('g', { class: 't28w-pav', transform: `translate(${f1(p[0])} ${f1(p[1] - iw * 0.2)})` },
         s('circle', { cx: 0, cy: f1(-ph * 0.5), r: f1(ph * 0.9), fill: 'url(#p2-lamp)', class: 't28w-pavglow' }),
         s('path', { class: 't28w-post', d: `M${f1(-pw * 0.35)} 0V${f1(-ph * 0.7)}M${f1(pw * 0.35)} 0V${f1(-ph * 0.7)}` }),
@@ -311,35 +324,52 @@ export function wheelScene(ctx: SceneCtx) {
       const xl = millX + inset * u0, xr = millX + millW - inset * u0
       for (let x = xl + (row % 2 ? R * 0.08 : 0); x < xr - 4; x += R * (0.14 + r() * 0.1)) blocks += `M${f1(x)} ${f1(y)}h${f1(Math.min(xr - x - 2, R * (0.12 + r() * 0.08)))}M${f1(x)} ${f1(y)}v${f1(rowH * 0.92)}`
     }
-    const unit = ((wallBot - wallTop) * 0.62) / 51 // px per billion
+    const unit = ((wallBot - wallTop) * (wide ? 0.5 : 0.42)) / 51 // px per billion (51 stays below the step notches)
     const n22 = wallBot - unit * 22, n51 = wallBot - unit * 51
     root.style.setProperty('--w22', `${f1(wallBot - n22)}px`)
     root.style.setProperty('--w51', `${f1(wallBot - n51)}px`)
     // a notch: a V cut — its upper face in shadow, its lower face catching light — and the number cut beside it
-    const notch = (y: number, t: string) => s('g', { class: 't28w-notch' },
-      s('path', { class: 't28w-cut-sh', d: `M${f1(millX + millW * 0.06)} ${f1(y - 3)}L${f1(millX + millW * 0.4)} ${f1(y - 3)}L${f1(millX + millW * 0.4)} ${f1(y)}L${f1(millX + millW * 0.06)} ${f1(y)}Z` }),
-      s('path', { class: 't28w-cut-hi', d: `M${f1(millX + millW * 0.06)} ${f1(y)}L${f1(millX + millW * 0.4)} ${f1(y)}L${f1(millX + millW * 0.4)} ${f1(y + 2)}L${f1(millX + millW * 0.06)} ${f1(y + 2)}Z` }),
-      s('text', { class: 't28w-carved', x: f1(millX + millW * 0.46), y: f1(y + 5) }, t))
+    // a waterline notch: a cut across the wall (shadowed upper face, lit lower face), its number cut just above it, inside the wall
+    const notch = (y: number, t: string) => {
+      const [a, b] = t.split('\n') // a long notch name is cut on two lines (the line break is in the content)
+      return s('g', { class: 't28w-notch' },
+        s('path', { class: 't28w-cut-sh', d: `M${f1(millX + millW * 0.05)} ${f1(y - 3)}L${f1(millX + millW * 0.95)} ${f1(y - 3)}L${f1(millX + millW * 0.95)} ${f1(y)}L${f1(millX + millW * 0.05)} ${f1(y)}Z` }),
+        s('path', { class: 't28w-cut-hi', d: `M${f1(millX + millW * 0.05)} ${f1(y)}L${f1(millX + millW * 0.95)} ${f1(y)}L${f1(millX + millW * 0.95)} ${f1(y + 2)}L${f1(millX + millW * 0.05)} ${f1(y + 2)}Z` }),
+        s('text', { class: 't28w-carved', x: f1(millX + millW * 0.92), y: f1(y - (b ? 20 : 7)), 'text-anchor': 'end' }, a),
+        b ? s('text', { class: 't28w-carved t28w-carved-s', x: f1(millX + millW * 0.92), y: f1(y - 7), 'text-anchor': 'end' }, b) : null)
+    }
+    // the four step notches in a row under the mill's name
+    // (tally cuts: a narrow V in the stone, its numeral under it — not a row of buttons)
+    const ty = wallTop + R * (wide ? 0.3 : 0.34), th0 = R * (wide ? 0.11 : 0.13)
+    tally.replaceChildren(...G.flow.map((_, k) => {
+      const x = millX + millW * (0.26 + k * 0.16)
+      return s('g', { class: `t28w-tick${k < step ? ' on' : ''}` },
+        s('path', { class: 't28w-tick-cut', d: stroke([[x, ty - th0 / 2], [x + 0.6, ty + th0 / 2]], Math.max(2.2, R * 0.016), 0.2, 0.2, 0.5) }),
+        s('path', { class: 't28w-tick-lip', d: stroke([[x + 1.6, ty - th0 / 2 + 1], [x + 2.1, ty + th0 / 2]], 0.9, 0.2, 0.2, 0.4) }),
+        s('text', { class: 't28w-tick-n', x: f1(x), y: f1(ty + th0 / 2 + 12), 'text-anchor': 'middle' }, String(k + 1)))
+    }))
     const eave = millW * 0.14, fas = R * 0.055, roofH = R * 0.3
     const eL: Pt = [millX - eave, wallTop - R * 0.02], eR: Pt = [S0.tr[0] + eave * 0.8, wallTop - R * 0.07]
     const soffit = `M${P(eL)}L${P(eR)}L${P(S0.tr)}L${P(F.tr)}L${P(F.tl)}Z`
     const fascia = `M${P(eL)}L${P(eR)}L${P([eR[0], eR[1] - fas])}L${P([eL[0], eL[1] - fas])}Z`
     const slope = `M${P([eL[0], eL[1] - fas])}L${P([eR[0], eR[1] - fas])}L${P([eR[0] - millW * 0.28, eR[1] - fas - roofH])}L${P([eL[0] + millW * 0.3, eL[1] - fas - roofH])}Z`
     back.replaceChildren(
-      ...isle(isleAI, iw, 2854), pav([isleAI[0], isleAI[1]]),
-      ...isle(isleDC, iw * 1.1, 2855), ...racks,
+      ...isle(isleAI, iw, 2854, -1), pav([isleAI[0], isleAI[1]]),
+      ...isle(isleDC, iw * 1.1, 2855, 1), ...racks,
       ...segs.slice(0, 3),
       s('path', { class: 't28w-wall', d: quad(F), filter: 'url(#ink-rough)' }),
       s('path', { class: 't28w-walllamp', d: quad(F) }),
       s('path', { class: 't28w-side', d: quad(S0), filter: 'url(#ink-rough)' }),
       s('path', { class: 't28w-course', d: blocks }),
-      s('rect', { class: 't28w-level', x: f1(millX), y: f1(n51), width: f1(millW), height: f1(wallBot - n51) }),
+      s('linearGradient', { id: 't28w-lv', x1: 0, x2: 0, y1: 0, y2: 1 }, s('stop', { offset: 0, class: 't28w-lv0' }), s('stop', { offset: 1, class: 't28w-lv1' })),
+      s('rect', { class: 't28w-level', x: f1(millX), y: f1(n51), width: f1(millW), height: f1(wallBot - n51), fill: 'url(#t28w-lv)' }),
       notch(n22, G.notches[0]), notch(n51, G.notches[1]),
       s('path', { class: 't28w-slope', d: slope, filter: 'url(#ink-rough)' }),
       s('path', { class: 't28w-soffit', d: soffit }),
       s('path', { class: 't28w-fascia', d: fascia }),
       s('path', { class: 't28w-eavelit', d: stroke([[eL[0], eL[1] - fas], [eR[0], eR[1] - fas]], Math.max(1.2, R * 0.012), 0.05, 0.05, 0.5) }),
       s('text', { class: 't28w-carved t28w-name', x: f1(millX + millW * 0.5), y: f1(wallTop + R * 0.22), 'text-anchor': 'middle' }, G.islands[0]),
+      tally,
       trough,
       s('circle', { class: 't28w-hub-sh', cx: f1(cx + R * 0.06), cy: f1(cy + R * 0.04), r: f1(R * 1.02) }))
     // ── the wheel: two rims (wet wood, grain, spokes), the axle; buckets hang from the rim and stay upright
@@ -368,6 +398,30 @@ export function wheelScene(ctx: SceneCtx) {
       s('path', { class: 't28w-bkt-water', d: `M${f1(-bw * 0.46)} ${f1(-bw * 0.02)}L${f1(bw * 0.46)} ${f1(-bw * 0.02)}L${f1(bw * 0.4)} ${f1(bw * 0.5)}L${f1(-bw * 0.4)} ${f1(bw * 0.5)}Z` }),
       s('path', { class: 't28w-drip', d: stroke([[bw * 0.1, bw * 0.6], [bw * 0.14, bw * 1.4]], bw * 0.08, 0.3, 0.6, 0.2) })))
     // ── in front: the millrace, drops threading off the low paddles, spray, the pour, wet reeds cut by the frame
+    // the wheel's rims mirrored under the race, broken by the ripples into short horizontal dashes
+    const reflDash = () => {
+      let d = ''
+      for (const k of [0.97, 0.72]) for (let i = 0; i < 60; i++) {
+        const a = (i / 60) * Math.PI * 2, x = cx + Math.cos(a) * R * k * sx, y = 2 * wl - cy + Math.sin(a) * R * k
+        if (y < wl + R * 0.06) continue
+        const len = R * (0.03 + r() * 0.07) * (1 - Math.abs(Math.cos(a)) * 0.5)
+        d += stroke([[x - len, y], [x + len, y + (r() - 0.5)]], R * (k > 0.9 ? 0.03 : 0.018), 0.4, 0.4, 0.1)
+      }
+      return d
+    }
+    const millRefl = () => {
+      let d = ''
+      const x0 = millX, x1 = millX + millW + sideW
+      for (let k = 0; k < 14; k++) {
+        const u = k / 14, y = wl + R * 0.08 + u * R * 0.85
+        for (let x = x0 + r() * 8; x < x1 - 6;) {
+          const len = (x1 - x0) * (0.12 + r() * 0.3) * (1 - u * 0.6)
+          d += stroke([[x, y], [Math.min(x1, x + len), y + (r() - 0.5)]], R * 0.022 * (1 - u * 0.7), 0.4, 0.4, 0.1)
+          x += len + (x1 - x0) * (0.05 + r() * 0.12) * (1 + u)
+        }
+      }
+      return d
+    }
     let drops = ''
     for (let i = 0; i < 26; i++) {
       const a = Math.PI * (0.2 + r() * 0.6), x = cx + Math.cos(a) * R * 1.05 * sx + dx * r(), y0 = cy + Math.sin(a) * R * 1.02
@@ -388,24 +442,35 @@ export function wheelScene(ctx: SceneCtx) {
       s('path', { class: 't28w-drops', d: drops }),
       s('path', { class: 't28w-foam', d: stroke(bez([cx - R * 0.85, wl + 2], [cx, wl - 6], [cx + R * 0.85, wl + 3], 16), R * 0.05, 0.3, 0.3, 0.2) }),
       s('path', { class: 't28w-spray', d: spray }),
+      // the wheel and the mill in the water below: still rings and the wall, broken by the ripples (rings do not show
+      // the turning, so the reflection needs no redraw)
+      s('g', { class: 't28w-refl', 'clip-path': `url(#t28w-rc)` },
+        s('clipPath', { id: 't28w-rc' }, s('rect', { x: 0, y: f1(wl + R * 0.06), width: f1(W), height: f1(H) })),
+        s('path', { d: reflDash() }),
+        s('path', { class: 't28w-refl-moon', d: blob(cx + R * 0.12, 2 * wl - cy + R * 0.1, R * 0.6 * sx, R * 0.5, 2863, 0.2) })),
+      // the mill tower's reflection: dark ink broken into horizontal ripples, shorter and thinner as it goes down
+      s('path', { class: 't28w-refl-mill', d: millRefl(), 'clip-path': 'url(#t28w-rc)' }),
       mist(cx, wl + R * 0.02, R * 1.3, R * 0.16),
       wash(blob(cx, wl + R * 0.14, R * 1.15, R * 0.12, 2856, 0.2), 0.3, 'p2p-wash t28w-reflect'),
       // wet reeds and foreground rushes fill the low frame, cut by its edges
-      reeds(W * 0.03, H * 1.0, H * 0.3, 2857, 11),
-      reeds(W * 0.97, H * 1.01, H * 0.26, 2858, 9),
-      reeds(cx - R * 1.35, wl + R * 0.32, H * 0.14, 2859, 6),
-      reeds(W * (wide ? 0.62 : 0.7), H * 1.02, H * 0.2, 2861, 7),
+      // (kept low and to the edges: the plank stands in the water in front of them)
+      reeds(W * 0.03, H * 1.0, H * (wide ? 0.3 : 0.14), 2857, 11),
+      reeds(W * 0.99, H * 1.01, H * (wide ? 0.16 : 0.12), 2858, 9),
+      reeds(cx - R * 1.35, wl + R * 0.32, H * (wide ? 0.14 : 0.08), 2859, 6),
+      ...(wide ? [reeds(W * 0.56, H * 1.02, H * 0.16, 2861, 7)] : []),
       wash(blob(W * 0.5, H * 1.02, W * 0.7, H * 0.08, 2862, 0.2), 0.45, 'p2p-wash t28w-bank'))
     // labels on the far islands (inside the frame), the board by the water, the wheel's hit area
     // (a tall frame: the wheel hides the far shore, so the names float on the water below the race, clear of the wheel)
-    const tag = (el: HTMLElement, p: Pt) => Object.assign(el.style, { left: `${f1(clamp(p[0], wide ? 70 : 62, W - (wide ? 76 : 66)))}px`, top: `${f1(wide ? p[1] + iw * 0.1 : wl + R * 0.1)}px` })
-    tag(islandTags[1], isleAI)
-    tag(islandTags[2], isleDC)
+    const tag = (el: HTMLElement, p: Pt) => Object.assign(el.style, { left: `${f1(clamp(p[0], wide ? 70 : 62, W - (wide ? 76 : 66)))}px`, top: `${f1(p[1] + iw * 0.12)}px` })
+    // (wide: each name set off to the island's outer side, away from where the flumes land)
+    tag(islandTags[1], wide ? [isleAI[0] - iw * 0.18, isleAI[1]] : isleAI)
+    tag(islandTags[2], wide ? [isleDC[0] + iw * 0.2, isleDC[1]] : isleDC)
     islandTags[0].hidden = true // NVIDIA is cut into the mill wall
     // the board stands in the shallows at the front right (wide: the insight takes the left) / under the wheel's race (tall): never on the wheel or mill
     Object.assign(board.style, wide
-      ? { left: `${f1(W * 0.965 - Math.min(360, W * 0.27))}px`, top: `${f1(Math.min(H * 0.7, wl + R * 0.28))}px`, width: `${f1(Math.min(360, W * 0.27))}px` }
-      : { left: `${f1(W * 0.06)}px`, top: `${f1(wl + R * 0.48)}px`, width: `${f1(W * 0.88)}px` })
+      ? { left: `${f1(W * 0.965 - Math.min(360, W * 0.27))}px`, top: `${f1(Math.min(H * 0.7, wl + R * 0.28))}px`, width: `${f1(Math.min(360, W * 0.27))}px`, transform: '' }
+      // (tall: hung from its foot, so a longer text grows up into the water, never down into the insight)
+      : { left: `${f1(W * 0.06)}px`, top: `${f1(H - 46)}px`, width: `${f1(W * 0.88)}px`, transform: 'translateY(-100%)' })
     Object.assign(wheel.style, { left: `${f1(cx - R * 1.05)}px`, top: `${f1(cy - R * 1.05)}px`, width: `${f1(R * 2.1)}px`, height: `${f1(R * 2.1)}px` })
     place()
     gd.refresh()

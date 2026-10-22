@@ -107,51 +107,6 @@
   text-shadow: 0 0 8px var(--paper), 0 0 8px var(--paper);
 }
 
-/* a slip of rice paper hung on two threads (facts are read on paper, not on a UI card) */
-.t30-slip {
-  position: absolute;
-}
-.t30-slip {
-  padding: 14px 18px 12px;
-  font: 400 0.98rem/1.5 var(--serif);
-  color: var(--ink);
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .13 0 0 0 0 .25 .5 0 0 0 -.17'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(110% 60% at 12% 0%, color-mix(in srgb, var(--moon) 18%, transparent), transparent 65%),
-    linear-gradient(178deg, color-mix(in srgb, var(--card) 82%, var(--paper)), color-mix(in srgb, var(--paper-2) 70%, var(--card)));
-  border-radius: 2px 5px 3px 4px / 4px 2px 5px 3px;
-  box-shadow: 0 16px 26px -20px var(--umbra), 0 2px 6px -4px var(--umbra), inset 0 0 0 1px color-mix(in srgb, var(--wash) 8%, transparent);
-}
-:root[data-theme='dark'] .t30-slip {
-  color: var(--ink);
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85 .5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .85 0 0 0 0 .87 0 0 0 0 .95 .3 0 0 0 -.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(110% 60% at 12% 0%, color-mix(in srgb, var(--moon) 10%, transparent), transparent 65%),
-    linear-gradient(178deg, color-mix(in srgb, var(--card) 80%, var(--moon) 14%), color-mix(in srgb, var(--card) 90%, var(--moon) 6%));
-  box-shadow: 0 16px 30px -18px #000, inset 0 0 0 1px color-mix(in srgb, var(--moon) 9%, transparent);
-}
-/* the two threads it hangs from */
-.t30-slip::before,
-.t30-slip::after {
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  width: 1px;
-  height: var(--hang, 22px);
-  background: color-mix(in srgb, var(--ink) 45%, transparent);
-}
-.t30-slip::before {
-  left: 18%;
-}
-.t30-slip::after {
-  right: 18%;
-}
-.t30-slip > * {
-  margin: 0 0 0.45em;
-}
-.t30-slip > :last-child {
-  margin-bottom: 0;
-}
 .t30-eyebrow {
   font: 500 0.74rem/1.3 var(--sans);
   letter-spacing: 0.02em;
@@ -570,7 +525,7 @@
   stop-color: var(--water);
 }
 .t30g-water {
-  opacity: 0.42;
+  opacity: 0.66;
 }
 :root[data-theme='dark'] .t30g-water {
   opacity: 1;
@@ -602,7 +557,7 @@
   opacity: 1;
 }
 .t30-win {
-  opacity: 0.12;
+  opacity: 0.45;
   transition: opacity 1.2s calc(0.7s + var(--i) * 0.22s) var(--ease-soft);
 }
 .was-open .t30-win {
@@ -696,7 +651,7 @@
   font-size: 0.84rem;
 }
 .t30g.tall .t30g-read > p + p {
-  margin-top: 16px !important;
+  margin-top: 6px !important;
 }
 .t30g-caveat:empty,
 .t30g.carved .t30g-caveat {
@@ -775,6 +730,161 @@
 .t30g-lamp:focus-visible {
   outline-offset: 2px;
   border-radius: 8px;
+}
+
+/* audit v3 30-1: the tray on its stone base, carvings, lanterns on their own stones round it, the reading bottom left */
+.t30g-base {
+  fill: color-mix(in srgb, var(--rock-mid) 85%, var(--moss) 8%);
+}
+:root[data-theme='dark'] .t30g-base {
+  fill: color-mix(in srgb, var(--rock-hi) 75%, var(--rock-mid));
+}
+.t30g-base-joint {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 1.1;
+  opacity: 0.35;
+}
+.t30g-base-lip {
+  fill: var(--umbra);
+  opacity: 0.5;
+}
+.t30g-base-rim {
+  fill: #fff;
+  opacity: 0.7;
+}
+:root[data-theme='dark'] .t30g-base-rim {
+  fill: var(--moon);
+  opacity: 0.55;
+}
+.t30g-base-moss {
+  opacity: 0.6;
+}
+.t30g-base-foam {
+  fill: #fff;
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t30g-base-foam {
+  fill: var(--moon);
+  opacity: 0.28;
+}
+.t30g-base-refl {
+  fill: var(--wash);
+  opacity: 0.22;
+}
+:root[data-theme='dark'] .t30g-base-refl {
+  fill: var(--rock-mid);
+  opacity: 0.22;
+}
+/* carved: the face's name in the lacquer side (gold leaf), the base's words cut into the stone */
+.t30g-carve-face {
+  opacity: 0.95 !important;
+  letter-spacing: 0.02em;
+}
+.t30g-carve-face.off {
+  display: none;
+}
+:root .t30g-carve.t30g-carve-base {
+  opacity: 1;
+  font-weight: 500;
+  fill: var(--wash);
+  paint-order: stroke;
+  stroke: color-mix(in srgb, #fff 40%, transparent);
+  stroke-width: 1.2px;
+}
+:root[data-theme='dark'] .t30g-carve.t30g-carve-base {
+  fill: color-mix(in srgb, var(--ink) 90%, var(--moon));
+  stroke: color-mix(in srgb, #000 70%, transparent);
+  stroke-width: 2px;
+}
+.t30g-carve-base.note {
+  font-size: 13px;
+  font-weight: 400;
+}
+.t30g-turn-arrow {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 70%, transparent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 5 4;
+  opacity: 0.85;
+  transition: opacity 0.6s;
+}
+.turned .t30g-turn-arrow,
+.was-open .t30g-turn-arrow {
+  opacity: 0;
+}
+.t30g-lamp-art {
+  width: calc(var(--lw) * 1.3);
+  height: calc(var(--lw) * 2);
+  overflow: visible;
+}
+.t30g-lamp-mirror {
+  opacity: 0.22;
+}
+.t30g-lamp-mirror .p2p-lamp-halo {
+  display: none;
+}
+.t30g-lamp-rock {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--rock-lo));
+}
+:root[data-theme='dark'] .t30g-lamp-rock {
+  fill: color-mix(in srgb, var(--rock-lo) 80%, #000);
+}
+.t30g-lamp-rock-hi {
+  fill: var(--moon);
+  opacity: 0.5;
+}
+.t30g-lamp-ring {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 0.8;
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t30g-lamp-ring {
+  stroke: var(--moon);
+  opacity: 0.25;
+}
+.t30g-lamp-glint {
+  fill: var(--lantern);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-soft);
+}
+.t30g-lamp[aria-pressed='true'] .t30g-lamp-glint {
+  opacity: 0.85;
+}
+.t30g-lamp .p2g-dot.ride {
+  top: 18%;
+}
+.t30g-read {
+  left: 3.4%;
+  transform: none;
+  width: min(30rem, 28%);
+  text-align: left;
+}
+.t30g:not(.tall) .t30g-face {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.t30g.tall .t30g-face {
+  margin-bottom: 0.35em !important;
+}
+/* a phone: once a lantern speaks (it names both gardens) the face's name steps aside for it */
+.t30g.tall.has-line .t30g-face {
+  display: none;
+}
+.t30g.tall .t30g-caveat {
+  font-size: 0.78rem;
+}
+.t30g.tall .t30g-read {
+  left: 6%;
+  width: 88%;
+}
+.t30g-line {
+  margin-top: 0 !important;
 }
 
 /* ───────── fence: the lamp behind the thorn fence ───────── */
@@ -950,7 +1060,7 @@
   width: max-content;
   max-width: 10rem;
   margin-top: 4px;
-  font: 400 0.86rem/1.25 var(--serif);
+  font: 400 0.9rem/1.25 var(--serif);
   color: var(--ink-2);
   text-align: center;
   text-shadow: 0 0 6px var(--paper), 0 0 8px var(--paper);
@@ -960,8 +1070,8 @@
   opacity: 0;
 }
 .t30f.tall .t30f-guard-name {
-  max-width: 8.5rem;
-  font-size: 0.8rem;
+  max-width: 7.5rem;
+  font-size: 0.875rem;
 }
 .t30f.tall .t30f-guard:first-of-type .t30f-guard-name {
   left: 0;
@@ -1012,142 +1122,71 @@
   border-radius: 50%;
   cursor: grab;
 }
-/* the papers hang in the open ground from the guards' spears: one thread at the spear, the next paper tied under it */
-.t30f-hang {
+/* one reading at a time on the ground, low left (a phone: under the compound) */
+.t30f-read {
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   z-index: 5;
-}
-.t30f-piece:not(.on) {
-  display: none;
-}
-.t30f-piece.on {
-  animation: t30f-unroll 0.8s var(--ease) both;
-}
-@keyframes t30f-unroll {
-  from {
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-  }
-}
-.t30f-slip {
-  position: relative;
-  padding: 9px 13px 8px;
-  font-size: 0.84rem;
-  line-height: 1.42;
-  --hang: 16px;
-}
-.t30f-hang.l > :first-child {
-  margin-top: 22px;
-  transform: rotate(-1.4deg);
-  transform-origin: 100% 0;
-}
-.t30f-hang.r > :first-child {
-  margin-top: 22px;
-  transform: rotate(1.2deg);
-  transform-origin: 0 0;
-}
-/* the first paper hangs from the spear by one thread at its corner */
-.t30f-hang.l > .t30-slip:first-child::before,
-.t30f-hang.r > .t30-slip:first-child::after {
-  display: none;
-}
-.t30f-hang.l > .t30-slip:first-child::after {
-  right: 3px;
-  height: 22px;
-}
-.t30f-hang.r > .t30-slip:first-child::before {
-  left: 3px;
-  height: 22px;
-}
-.t30f.tall .t30f-hang > * {
-  margin-top: 0;
-  transform: none;
-}
-.t30f.tall .t30f-piece:not(.latest) {
-  display: none;
-}
-.t30f.tall :is(.t30-slip, .t30f-plaque)::before,
-.t30f.tall :is(.t30-slip, .t30f-plaque)::after {
-  display: none;
-}
-.t30f-denied {
-  position: absolute;
-  margin: 0;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: min(22rem, 80%);
-  font: 400 italic 0.9rem/1.35 var(--serif);
-  color: var(--ink-2);
-  text-align: center;
-  text-shadow: 0 0 6px var(--paper), 0 0 10px var(--paper);
-  opacity: 0;
-  transition: opacity 0.6s var(--ease);
+  font: 400 1rem/1.48 var(--serif);
+  color: var(--ink);
+  text-shadow: 0 0 8px var(--paper), 0 0 12px var(--paper), 0 0 3px var(--paper);
   pointer-events: none;
 }
-.t30f-denied.on {
-  opacity: 1;
+.t30f-read > * {
+  margin: 0 0 0.3em;
+  pointer-events: auto;
 }
-.t30f.guarded .t30f-denied {
+.t30f-read > :last-child {
+  margin-bottom: 0;
+}
+.t30f-new {
+  animation: t30-in 0.7s var(--ease) both;
+}
+.t30f.done .t30f-read {
   opacity: 0;
+  transition: opacity 0.6s var(--ease-soft);
 }
-.t30f-who {
-  font-weight: 500;
+.t30f.tall .t30f-read {
+  font-size: 0.98rem;
+}
+.t30f-denied {
+  font-style: italic;
   color: var(--ink-2);
 }
-/* the open question, carved into a wooden board hung under Fairwind's paper */
-.t30f-plaque {
-  position: relative;
-  padding: 10px 14px 9px;
-  font: 500 0.88rem/1.42 var(--serif);
-  color: color-mix(in srgb, var(--umbra) 82%, var(--lantern));
-  text-shadow: 0 1px 0 color-mix(in srgb, #fff 45%, transparent), 0 -1px 0 color-mix(in srgb, var(--umbra) 30%, transparent);
-  background:
-    repeating-linear-gradient(177deg, transparent 0 7px, color-mix(in srgb, var(--umbra) 8%, transparent) 7px 8px, transparent 8px 13px),
-    radial-gradient(120% 70% at 30% 0%, color-mix(in srgb, var(--lantern) 26%, transparent), transparent 70%),
-    linear-gradient(180deg, color-mix(in srgb, var(--step-hi) 62%, var(--lantern) 22%), color-mix(in srgb, var(--step-mid) 70%, var(--lantern) 18%));
-  border-radius: 3px;
-  box-shadow: 0 14px 22px -16px var(--umbra), inset 0 -3px 0 color-mix(in srgb, var(--umbra) 18%, transparent), inset 0 1px 0 color-mix(in srgb, #fff 30%, transparent);
+.t30f.guarded .t30f-gate-name {
+  opacity: 0;
 }
-:root[data-theme='dark'] .t30f-plaque {
-  color: color-mix(in srgb, var(--lantern) 70%, var(--ink));
-  text-shadow: 0 1px 0 #000, 0 0 6px color-mix(in srgb, var(--lantern) 25%, transparent);
-  background:
-    repeating-linear-gradient(177deg, transparent 0 7px, rgba(0, 0, 0, 0.2) 7px 8px, transparent 8px 13px),
-    radial-gradient(120% 70% at 30% 0%, color-mix(in srgb, var(--lantern) 16%, transparent), transparent 70%),
-    linear-gradient(180deg, color-mix(in srgb, var(--step-lo) 72%, var(--lantern) 12%), color-mix(in srgb, var(--step-lo) 50%, #000));
-  box-shadow: 0 14px 28px -16px #000, inset 0 -3px 0 rgba(0, 0, 0, 0.35);
+.t30f-block-dark {
+  fill: var(--umbra);
+  opacity: 0.12;
 }
-.t30f-plaque::before,
-.t30f-plaque::after {
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  width: 1.5px;
-  height: 16px;
-  background: color-mix(in srgb, var(--ink) 50%, transparent);
-  left: 16%;
+.t30f-moss {
+  fill: var(--moss);
+  opacity: 0.55;
 }
-.t30f-plaque::after {
-  left: auto;
-  right: 16%;
+:root[data-theme='dark'] .t30f-moss {
+  fill: var(--moss-a);
+  opacity: 0.85;
 }
-.t30f-plaque > p {
-  margin: 0 0 0.3em;
+.t30f-ring {
+  fill: var(--ink);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-soft);
 }
-.t30f-plaque > :last-child {
-  margin: 0;
+.t30f.guarded:not(.done) .t30f-ring {
+  opacity: 0.7;
 }
-.t30f-carved-label {
-  font: 600 0.8rem/1.3 var(--sans);
-  letter-spacing: 0.03em;
-  opacity: 0.8;
+:root[data-quality='high'] .t30f.guarded:not(.done):not(.turned) .t30f-ring {
+  animation: t30f-ring 2.4s ease-in-out infinite alternate;
+}
+@keyframes t30f-ring {
+  from {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .t30f-ring {
+    animation: none !important;
+  }
 }
 /* ───────── laws: the tide of law, seen from the sea ───────── */
 .t30l :is(.p2t-paper, .p2t-rake, .p2t-track, .p2t-horizon, .p2t-mist, .p2t-roller, .p2t-today, .p2t-ms, .p2t-date, .p2t-horizon-label) {
@@ -1223,7 +1262,7 @@
   stop-color: color-mix(in srgb, var(--step-mid) 55%, var(--water));
 }
 :root[data-theme='dark'] .t30l-wet-st {
-  stop-color: color-mix(in srgb, var(--step-lo) 55%, var(--water));
+  stop-color: color-mix(in srgb, var(--step-lo) 78%, var(--moon) 4%);
 }
 .t30l-tideline {
   fill: var(--wash);
@@ -1279,19 +1318,25 @@
   fill: color-mix(in srgb, var(--rock-mid) 80%, var(--wash) 10%);
 }
 :root[data-theme='dark'] .t30l-stone {
-  fill: var(--rock-mid);
+  fill: color-mix(in srgb, var(--rock-hi) 62%, var(--rock-mid));
+}
+:root[data-theme='dark'] .t30l-cn .t30l-stone {
+  fill: color-mix(in srgb, var(--rock-mid) 70%, #000);
+}
+:root[data-theme='dark'] .t30l-us .t30l-stone {
+  fill: color-mix(in srgb, var(--rock-mid) 80%, var(--moss-a));
+}
+.t30l-us .t30l-stone {
+  fill: color-mix(in srgb, var(--rock-lo) 70%, var(--moss) 18%);
 }
 .t30l-cn .t30l-stone {
   fill: color-mix(in srgb, var(--rock-lo) 60%, var(--umbra));
-}
-.t30l-us .t30l-stone {
-  fill: color-mix(in srgb, var(--rock-lo) 70%, var(--water));
 }
 .t30l-vn .t30l-stone {
   fill: var(--step-hi);
 }
 :root[data-theme='dark'] .t30l-vn .t30l-stone {
-  fill: var(--step-mid);
+  fill: color-mix(in srgb, var(--step-hi) 70%, var(--step-mid));
 }
 .t30l-shade {
   fill: url(#p2-shade);
@@ -1456,7 +1501,7 @@
   transition: opacity 1.2s 0.4s var(--ease-soft);
 }
 .t30l-refl.up {
-  opacity: 0.26;
+  opacity: 0.3;
 }
 .t30l-stripe {
   fill: var(--rock-lo);
@@ -1465,7 +1510,7 @@
   fill: var(--step-mid);
 }
 :root[data-theme='dark'] .t30l-refl.up {
-  opacity: 0.28;
+  opacity: 0.36;
 }
 .t30l-rise {
   transform: translateY(var(--sink));
@@ -1640,48 +1685,273 @@
   font-size: 13px;
 }
 .t30l.tall .t30l-said {
-  width: 23vw;
-  font-size: 11px;
+  width: 21vw;
+  font-size: 14px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
-/* the board: what a content maker in Việt Nam has to do (after the insight) */
+/* the moon's disc is smaller than its hit area (64 px) */
+.t30l .p2t-moon-disc {
+  inset: 15%;
+  width: 70%;
+  height: 70%;
+}
+/* the board: what a content maker in Việt Nam has to do (after the insight): planks on two stakes driven into the sand */
 .t30l-board {
+  --leg: 26px;
   position: absolute;
-  right: 4.5%;
-  bottom: 5%;
-  width: min(22rem, 34%);
-  padding: 8px 12px 9px;
-  border-radius: 2px;
-  background:
-    repeating-linear-gradient(176deg, transparent 0 6px, color-mix(in srgb, var(--umbra) 6%, transparent) 6px 7px, transparent 7px 13px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--step-hi) 80%, var(--lantern) 8%), color-mix(in srgb, var(--step-mid) 90%, var(--lantern) 8%));
-  box-shadow: 0 8px 12px -8px var(--umbra), inset 0 0 0 1px color-mix(in srgb, var(--umbra) 18%, transparent);
+  transform: translateY(calc(-100% - var(--leg) + 10px));
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.7s, transform 0.9s var(--ease);
+  transition: opacity 0.9s var(--ease-soft), transform 1s var(--ease);
   pointer-events: none;
+  z-index: 3;
 }
 .t30l.has-board .t30l-board {
   opacity: 1;
-  transform: none;
+  transform: translateY(calc(-100% - var(--leg)));
   pointer-events: auto;
 }
-.t30l.tall .t30l-board {
+.t30l-planks {
+  position: relative;
+  padding: 10px 16px 11px;
+  border-radius: 3px 2px 4px 2px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 calc(33.3% - 1px), color-mix(in srgb, var(--umbra) 34%, transparent) calc(33.3% - 1px) 33.3%),
+    repeating-linear-gradient(178deg, transparent 0 5px, color-mix(in srgb, var(--umbra) 7%, transparent) 5px 6px, transparent 6px 11px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--step-hi) 72%, var(--lantern) 24%), color-mix(in srgb, var(--step-mid) 74%, var(--lantern) 22%));
+  box-shadow: 0 10px 14px -10px var(--umbra), inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent), inset 0 -2px 0 color-mix(in srgb, var(--umbra) 22%, transparent);
+}
+:root[data-theme='dark'] .t30l-planks {
+  background:
+    repeating-linear-gradient(180deg, transparent 0 calc(33.3% - 1px), color-mix(in srgb, #000 50%, transparent) calc(33.3% - 1px) 33.3%),
+    repeating-linear-gradient(178deg, transparent 0 5px, color-mix(in srgb, #000 12%, transparent) 5px 6px, transparent 6px 11px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--step-lo) 58%, var(--lantern) 36%), color-mix(in srgb, var(--step-lo) 66%, var(--lantern) 26%));
+  box-shadow: 0 12px 16px -10px #000, inset 0 1px 0 color-mix(in srgb, var(--moon) 45%, transparent), inset 0 -2px 0 color-mix(in srgb, #000 40%, transparent);
+}
+/* nail heads where the planks meet the stakes */
+.t30l-planks::before,
+.t30l-planks::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--umbra) 70%, transparent);
+  box-shadow: 0 calc(100% + 0px) 0 0 transparent;
+}
+.t30l-planks::before {
+  left: 14%;
+}
+.t30l-planks::after {
+  right: 14%;
+}
+.t30l-stake {
+  position: absolute;
+  top: -8px;
+  bottom: calc(-1 * var(--leg));
+  width: 9px;
+  border-radius: 2px 2px 1px 1px;
+  background: linear-gradient(to right, color-mix(in srgb, var(--step-lo) 80%, var(--umbra)), var(--step-mid) 60%, color-mix(in srgb, var(--step-lo) 60%, var(--umbra)));
+}
+:root[data-theme='dark'] .t30l-stake {
+  background: linear-gradient(to right, #000, color-mix(in srgb, var(--step-lo) 80%, #000) 55%, color-mix(in srgb, var(--moon) 30%, var(--step-lo)));
+}
+.t30l-stake.l {
+  left: 13%;
+}
+.t30l-stake.r {
+  right: 13%;
+}
+.t30l-board-sh {
+  position: absolute;
   left: 4%;
-  right: 4%;
-  width: auto;
-  bottom: auto;
-  top: 2%;
+  right: -6%;
+  bottom: calc(-1 * var(--leg) - 5px);
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 40%, transparent), transparent);
 }
 .t30l-board-text {
+  position: relative;
   margin: 0;
-  font: 500 14px/1.4 var(--serif);
+  font: 500 15px/1.42 var(--serif);
   color: var(--wash);
-  text-shadow: none;
+  text-shadow: 0 1px 0 color-mix(in srgb, #fff 45%, transparent);
+}
+:root[data-theme='dark'] .t30l-board-text {
+  color: color-mix(in srgb, var(--moon) 88%, #fff);
+  text-shadow: 0 -1px 0 #000;
+}
+.t30l.tall .t30l-board-text {
+  font-size: 14px;
+}
+/* a phone: the board takes the reading's place on the bared sand */
+.t30l.tall .p2t-card {
+  transition: opacity 0.8s var(--ease-soft);
+}
+.t30l.tall.has-board .p2t-card {
+  opacity: 0;
+}
+/* the pillars' build: courses, columns, strata, moss; the moon's side lights their edge and throws their shadow */
+.t30l {
+  --moon-x: -1;
+}
+.t30l-head {
+  fill: var(--wash);
+  opacity: 0.3;
+}
+:root[data-theme='dark'] .t30l-head {
+  fill: #000;
+  opacity: 0.75;
+}
+.t30l-rib {
+  fill: var(--wash);
+  opacity: 0.16;
+}
+:root[data-theme='dark'] .t30l-rib {
+  fill: var(--moon);
+  opacity: 0.1;
+}
+.t30l-face-st {
+  stop-color: var(--umbra);
+}
+.t30l-ledge {
+  fill: color-mix(in srgb, var(--rock-hi) 80%, #fff);
+}
+:root[data-theme='dark'] .t30l-ledge {
+  fill: color-mix(in srgb, var(--rock-hi) 70%, var(--moon) 20%);
+}
+.t30l-footing {
+  filter: brightness(0.9);
+}
+.t30l-col-dark {
+  fill: var(--umbra);
+  opacity: 0.22;
+}
+.t30l-joint {
+  fill: none;
+  stroke: var(--umbra);
+  stroke-width: 1;
+  opacity: 0.45;
+}
+.t30l-cn .t30l-joint,
+.t30l-us .t30l-joint,
+.t30l-vn .t30l-joint {
+  fill: var(--umbra);
+  stroke: none;
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t30l-joint {
+  stroke: #000;
+  opacity: 0.6;
+}
+:root[data-theme='dark'] :is(.t30l-cn, .t30l-us, .t30l-vn) .t30l-joint {
+  fill: #000;
+}
+.t30l-moss {
+  fill: var(--moss);
+  opacity: 0.75;
+}
+.t30l-side-dim {
+  fill: var(--umbra);
+  opacity: calc((1 - var(--moon-x)) * 0.3);
+  transition: opacity 0.6s;
+}
+.t30l-rim {
+  opacity: calc((1 + var(--moon-x)) * 0.45) !important;
+  transition: opacity 0.6s;
+}
+.t30l-rim-l {
+  fill: #fff;
+  opacity: calc((1 - var(--moon-x)) * 0.4);
+  transition: opacity 0.6s;
+}
+:root[data-theme='dark'] .t30l-rim-l {
+  fill: var(--moon);
+}
+.t30l-cast {
+  fill: var(--umbra);
+  opacity: 0.2;
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transform: skewX(calc(var(--moon-x) * -52deg));
+  transition: transform 0.7s var(--ease);
+}
+.t30l-near {
+  fill: color-mix(in srgb, var(--wash) 86%, var(--rock-lo));
+}
+:root[data-theme='dark'] .t30l-near {
+  fill: #02030a;
+}
+.t30l-near-foam {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.4;
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t30l-near-foam {
+  stroke: var(--moon);
+  opacity: 0.3;
+}
+.t30l-stake-wood {
+  fill: color-mix(in srgb, var(--step-lo) 70%, var(--lantern) 18%);
+}
+:root[data-theme='dark'] .t30l-stake-wood {
+  fill: color-mix(in srgb, var(--step-lo) 72%, var(--lantern) 14%);
+}
+.t30l-stake-hi {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1;
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t30l-stake-hi {
+  stroke: var(--moon);
+  opacity: 0.4;
+}
+.t30l-stake-ring {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1;
+  opacity: 0.55;
+}
+:root[data-theme='dark'] .t30l-stake-ring {
+  stroke: var(--moon);
+  opacity: 0.3;
+}
+/* a phone: the reading lies where the board will stand, so its stakes come with it (no stake behind the words) */
+:is(.t30l-stake-wood, .t30l-stake-hi, .t30l-stake-ring) {
+  transition: opacity 0.9s var(--ease-soft);
+}
+.t30l.tall:not(.has-board) :is(.t30l-stake-wood, .t30l-stake-hi, .t30l-stake-ring) {
+  opacity: 0;
+}
+/* the stakes are drawn in the painting (on a desk they wait in the sand from the start); the board's own pair stays hidden */
+.t30l-stake {
+  visibility: hidden;
+}
+.t30l-near-rim {
+  fill: var(--rake-hi);
+  opacity: 0.8;
+}
+:root[data-theme='dark'] .t30l-near-rim {
+  fill: var(--moon);
+  opacity: 0.45;
+}
+.t30l-crack-lip {
+  fill: #fff;
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .t30l-crack-lip {
+  fill: var(--moon);
+  opacity: 0.4;
 }
 @media (prefers-reduced-motion: reduce) {
   .t30l-cut,
   .t30l-slide,
-  .t30l-board {
+  .t30l-board,
+  .t30l-cast {
     transition: none;
   }
 }
@@ -1705,9 +1975,7 @@
   font-size: 0.98rem;
   line-height: 1.45;
 }
-.t30c.tall.files .p2c-card {
-  visibility: hidden;
-}
+
 .t30c .p2c-num,
 .t30c .p2c-ring {
   display: none;
@@ -1758,7 +2026,7 @@
 }
 /* the library upside down in the water */
 .t30c-spine {
-  opacity: 0.42;
+  opacity: 0.8;
 }
 .t30c-spine-0 {
   fill: var(--wash);
@@ -1773,7 +2041,7 @@
   fill: color-mix(in srgb, var(--lantern) 55%, var(--wash));
 }
 :root[data-theme='dark'] .t30c-spine {
-  opacity: 0.55;
+  opacity: 0.75;
 }
 :root[data-theme='dark'] .t30c-spine-0 {
   fill: var(--step-lo);
@@ -1789,23 +2057,71 @@
 }
 .t30c-shelf {
   fill: none;
-  stroke: var(--wash);
-  stroke-width: 2;
-  opacity: 0.4;
+  stroke: color-mix(in srgb, var(--wash) 60%, var(--lantern));
+  stroke-width: 1.6;
 }
 :root[data-theme='dark'] .t30c-shelf {
-  stroke: #000;
-  opacity: 0.7;
+  stroke: color-mix(in srgb, var(--rock-mid) 70%, var(--lantern));
 }
 .t30c-lib-win {
   fill: var(--lantern);
+  opacity: 0.38;
+}
+.t30c-lib-in {
+  fill: color-mix(in srgb, var(--wash) 80%, var(--lantern) 6%);
+}
+:root[data-theme='dark'] .t30c-lib-in {
+  fill: #05070f;
+}
+.t30c-lib-post,
+.t30c-lib-plinth {
+  fill: color-mix(in srgb, var(--wash) 70%, var(--lantern) 12%);
+}
+:root[data-theme='dark'] :is(.t30c-lib-post, .t30c-lib-plinth) {
+  fill: color-mix(in srgb, var(--rock-mid) 75%, var(--lantern) 12%);
+}
+.t30c-lib-plinth {
+  fill: var(--rock-lo);
+}
+:root[data-theme='dark'] .t30c-lib-plinth {
+  fill: var(--rock-mid);
+}
+.t30c-lib-roof {
+  fill: color-mix(in srgb, var(--wash) 88%, var(--rock-lo));
+}
+:root[data-theme='dark'] .t30c-lib-roof {
+  fill: color-mix(in srgb, var(--rock-lo) 70%, #000);
+}
+.t30c-lib-tile {
+  fill: none;
+  stroke: var(--rake-hi);
+  stroke-width: 1;
+}
+:root[data-theme='dark'] .t30c-lib-tile {
+  stroke: color-mix(in srgb, var(--moon) 25%, transparent);
+}
+.t30c-lib-ridge {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t30c-lib-ridge {
+  fill: #000;
+}
+.t30c-lib-rim {
+  fill: #fff;
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t30c-lib-rim {
+  fill: var(--moon);
   opacity: 0.45;
 }
-.t30c-lib-lattice {
-  fill: none;
-  stroke: var(--wash);
-  stroke-width: 1.5;
-  opacity: 0.5;
+.t30c-library {
+  opacity: 0.75;
+}
+.t30c-near {
+  fill: var(--wash);
+}
+:root[data-theme='dark'] .t30c-near {
+  fill: #02030a;
 }
 .t30c-moon-in {
   fill: var(--moon);
@@ -1957,6 +2273,9 @@
   fill: color-mix(in srgb, var(--ink-2) 70%, var(--lantern));
   stroke: none;
 }
+:root[data-theme='dark'] .t30c-lash {
+  fill: color-mix(in srgb, var(--ink-3) 62%, var(--lantern));
+}
 .t30c-pin {
   fill: var(--umbra);
 }
@@ -2082,9 +2401,17 @@
   stroke-width: 0.8;
 }
 .t30c-tag {
-  fill: var(--card);
+  fill: color-mix(in srgb, var(--step-hi) 85%, var(--lantern) 10%);
   stroke: var(--wash);
   stroke-width: 0.6;
+}
+.t30c-tag-hole {
+  fill: var(--umbra);
+  opacity: 0.6;
+}
+:root[data-theme='dark'] .t30c-tag {
+  fill: color-mix(in srgb, var(--step-mid) 80%, var(--lantern) 10%);
+  stroke: #000;
 }
 .t30c-tag-lines {
   fill: none;
@@ -2122,14 +2449,6 @@
 :root[data-theme='dark'] .lit:not(.busy) .t30c-beam {
   opacity: 0.6;
 }
-.t30c-rail {
-  fill: color-mix(in srgb, var(--moss-2) 50%, var(--stone));
-  opacity: 0;
-  transition: opacity 0.6s;
-}
-.files .t30c-rail {
-  opacity: 1;
-}
 .t30c-sweep {
   position: absolute;
   padding: 0;
@@ -2139,56 +2458,46 @@
   cursor: grab;
 }
 .t30c-sweep:focus-visible {
-  outline: none;
-  box-shadow: 0 0 22px 6px color-mix(in srgb, var(--lantern) 55%, transparent);
+  outline: 1.5px dashed color-mix(in srgb, var(--ink-3) 80%, transparent);
+  outline-offset: 4px;
+  border-radius: 12px;
 }
-/* the court files: two wooden boards hung by cords under the beam (a phone: from the rail at the bank) */
+/* the court file: one wooden board, hung level from the beam on two cords (a phone: on two stakes in the bank) */
 .t30c-boards {
   position: absolute;
-  inset: 0;
   z-index: 30;
   pointer-events: none;
 }
-.t30c.tall:not(.files) .t30c-boards {
+.t30c:not(.files) .t30c-boards {
   display: none;
 }
+.t30c.files .p2c-card {
+  visibility: hidden;
+}
 .t30c-board {
-  position: absolute;
-  box-sizing: border-box;
-  left: var(--x0);
-  top: calc(var(--y0) + 18px);
-  width: var(--w0);
-  transform: translateX(-50%) rotate(-1deg);
-  padding: 8px 12px 7px;
-  font: 400 0.82rem/1.4 var(--serif);
-  color: var(--ink);
+  position: relative;
+  padding: 10px 16px 11px;
+  font: 400 0.92rem/1.42 var(--serif);
+  color: var(--wash);
+  border-radius: 3px 2px 4px 2px;
   background:
-    repeating-linear-gradient(176deg, transparent 0 9px, color-mix(in srgb, var(--wash) 7%, transparent) 9px 10px),
-    linear-gradient(180deg, color-mix(in srgb, var(--step-hi) 80%, var(--lantern) 10%), color-mix(in srgb, var(--step-mid) 85%, var(--lantern) 8%));
-  border-radius: 3px;
-  box-shadow: 0 14px 24px -18px var(--umbra), inset 0 -2px 0 color-mix(in srgb, var(--wash) 14%, transparent);
+    repeating-linear-gradient(180deg, transparent 0 calc(33.3% - 1px), color-mix(in srgb, var(--umbra) 30%, transparent) calc(33.3% - 1px) 33.3%),
+    repeating-linear-gradient(178deg, transparent 0 5px, color-mix(in srgb, var(--umbra) 7%, transparent) 5px 6px, transparent 6px 11px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--step-hi) 72%, var(--lantern) 24%), color-mix(in srgb, var(--step-mid) 74%, var(--lantern) 22%));
+  box-shadow: 0 14px 22px -14px var(--umbra), inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent), inset 0 -2px 0 color-mix(in srgb, var(--umbra) 22%, transparent);
   pointer-events: auto;
-}
-.t30c-board.b1 {
-  left: var(--x1);
-  top: calc(var(--y1) + 18px);
-  width: var(--w1);
-  transform: translateX(-50%) rotate(0.8deg);
-}
-.t30c-boards.low .t30c-board {
-  top: calc(var(--y0) + 12px);
-  font-size: 0.8rem;
-  line-height: 1.38;
-  padding: 8px 10px 7px;
-}
-.t30c-boards.low .t30c-board.b1 {
-  top: calc(var(--y1) + 12px);
+  animation: t30-in 0.8s var(--ease) both;
 }
 :root[data-theme='dark'] .t30c-board {
+  color: color-mix(in srgb, var(--moon) 88%, #fff);
   background:
-    repeating-linear-gradient(176deg, transparent 0 9px, rgba(0, 0, 0, 0.18) 9px 10px),
-    linear-gradient(180deg, color-mix(in srgb, var(--step-lo) 70%, var(--lantern) 10%), color-mix(in srgb, var(--step-lo) 50%, #000));
-  box-shadow: 0 14px 28px -16px #000;
+    repeating-linear-gradient(180deg, transparent 0 calc(33.3% - 1px), color-mix(in srgb, #000 50%, transparent) calc(33.3% - 1px) 33.3%),
+    repeating-linear-gradient(178deg, transparent 0 5px, color-mix(in srgb, #000 12%, transparent) 5px 6px, transparent 6px 11px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--step-lo) 58%, var(--lantern) 36%), color-mix(in srgb, var(--step-lo) 66%, var(--lantern) 26%));
+  box-shadow: 0 14px 22px -12px #000, inset 0 1px 0 color-mix(in srgb, var(--moon) 45%, transparent), inset 0 -2px 0 color-mix(in srgb, #000 40%, transparent);
+}
+:root[data-theme='dark'] .t30c-board .t30-eyebrow {
+  color: color-mix(in srgb, var(--moon) 70%, var(--step-mid));
 }
 .t30c-board > p {
   margin: 0;
@@ -2196,21 +2505,57 @@
 .t30c-board > .t30-eyebrow {
   margin-bottom: 0.3em;
 }
-.t30c-board::before,
-.t30c-board::after {
-  content: '';
+/* the cords from the beam to the board's two eyelets (lengths set per layout: the beam slopes) */
+.t30c-cord-l,
+.t30c-cord-r {
   position: absolute;
-  left: 22%;
   bottom: 100%;
-  width: 1px;
-  height: 18px;
-  background: color-mix(in srgb, var(--ink) 50%, transparent);
+  width: 1.5px;
+  margin-bottom: -6px;
+  background: color-mix(in srgb, var(--ink-2) 80%, var(--lantern));
+  z-index: 1;
 }
-.t30c-boards.low .t30c-board::before,
-.t30c-boards.low .t30c-board::after {
-  height: 12px;
+.t30c-cord-l {
+  left: 14%;
+  height: calc(var(--cl, 20px) + 6px);
 }
-.t30c-board::after {
-  left: auto;
-  right: 22%;
+.t30c-cord-r {
+  right: 14%;
+  height: calc(var(--cr, 20px) + 6px);
+}
+.t30c-board-sh {
+  display: none;
+}
+/* standing: two stakes run up behind the planks and into the bank */
+.t30c-boards.stand {
+  transform: translateY(calc(-100% - 22px));
+}
+.t30c-boards.stand :is(.t30c-cord-l, .t30c-cord-r) {
+  top: -8px;
+  bottom: -22px;
+  height: auto;
+  width: 9px;
+  margin: 0;
+  border-radius: 2px;
+  background: linear-gradient(to right, color-mix(in srgb, var(--step-lo) 80%, var(--umbra)), var(--step-mid) 60%, color-mix(in srgb, var(--step-lo) 60%, var(--umbra)));
+  z-index: 0;
+}
+.t30c-boards.stand .t30c-board-sh {
+  display: block;
+  position: absolute;
+  left: 4%;
+  right: -6%;
+  bottom: -27px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--umbra) 40%, transparent), transparent);
+}
+.t30c-boards.small .t30c-board {
+  padding: 8px 12px 9px;
+  font-size: 0.875rem;
+  line-height: 1.38;
+}
+.t30c-stone-moss {
+  fill: var(--moss);
+  opacity: 0.7;
 }
